@@ -1,23 +1,20 @@
       subroutine gg_hggg(p,msq)
       implicit none
-c---Matrix element squared averaged over initial colors and spins
+c--- Matrix element squared averaged over initial colors and spins
 c
 c     g(-p1)+g(-p2) -->  H(p34)+g(p_iglue1=5)+g(p_iglue2=6)+g(p_iglue2=7) 
-c---Using the results of Frizzo and Company
+c
+c--- Using the results of Frizzo and Company
       include 'constants.f'
       include 'masses.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'zprods_com.f'
+      include 'nflav.f'
       integer j,k,nu
       double precision p(mxpart,4),Asq,fac,q(mxpart,4)
       double precision Hggggg,
      . Hqaggg,Haqggg,Hgqqgg,Hgaagg,Hqgqgg,Hagagg,Hggqag
-c      double precision 
-c     . Hqrqrg,Hqqqqg,
-c     . Hababg,Haaaag,
-c     . Hqarbg,Hqaqag,Hqbqbg,
-c     . Haqbrg,Haqaqg,Hbqbqg
       double precision qr_qrg,ar_arg,ab_abg,qa_rbg,
      .                 gr_rqa,gb_baq,rg_rqa,bg_baq,aq_brg
 
@@ -67,8 +64,6 @@ C--two quark three gluon terms
       call h2q3g(3,1,2,4,5,Hagagg)
       call h2q3g(3,2,1,4,5,Hgaagg)
       call h2q3g(4,3,1,2,5,Hggqag)
-
-c--- no definition of qa_rbg here: need to do so
 
 C--four quark one gluon terms
 C-----q r-->q r g
@@ -139,8 +134,8 @@ c--- apply flags
       aq_brg=f4q*aq_brg
 
 C----Fill up array with values;
-      do j=fn,nf
-      do k=fn,nf
+      do j=-nf,nf
+      do k=-nf,nf
       msq(j,k)=0d0
 
 C ---qq
@@ -164,7 +159,7 @@ C ---aa
 c ---qa
       if ((j.gt.0).and.(k.lt.0)) then
         if (j.eq.-k) then
-          msq(j,k)=aveqq*fac*(Hqaggg/6d0+qa_qag+dfloat(nf-1)*qa_rbg)
+          msq(j,k)=aveqq*fac*(Hqaggg/6d0+qa_qag+dfloat(nflav-1)*qa_rbg)
         else
           msq(j,k)=aveqq*fac*ra_rag
         endif
@@ -173,7 +168,7 @@ c ---qa
 c ---aq
       if ((j.lt.0).and.(k.gt.0)) then
         if (j.eq.-k) then
-          msq(j,k)=aveqq*fac*(Haqggg/6d0+aq_aqg+dfloat(nf-1)*aq_brg)
+          msq(j,k)=aveqq*fac*(Haqggg/6d0+aq_aqg+dfloat(nflav-1)*aq_brg)
         else
           msq(j,k)=aveqq*fac*ar_arg
         endif
@@ -181,27 +176,27 @@ c ---aq
 
 c--- qg
       if ((j.gt.0).and.(k.eq.0)) then
-        msq(j,0)=aveqg*fac*((Hqgqgg+qg_qqa)*0.5d0+dfloat(nf-1)*rg_rqa)
+       msq(j,0)=aveqg*fac*((Hqgqgg+qg_qqa)*0.5d0+dfloat(nflav-1)*rg_rqa)
       endif
       
 c--- ag
       if ((j.lt.0).and.(k.eq.0)) then
-        msq(j,0)=aveqg*fac*((Hagagg+ag_aaq)*0.5d0+dfloat(nf-1)*bg_baq)
+       msq(j,0)=aveqg*fac*((Hagagg+ag_aaq)*0.5d0+dfloat(nflav-1)*bg_baq)
       endif
 
 c--- gq
       if ((j.eq.0).and.(k.gt.0)) then
-        msq(0,k)=aveqg*fac*((Hgqqgg+gq_qqa)*0.5d0+dfloat(nf-1)*gr_rqa)
+       msq(0,k)=aveqg*fac*((Hgqqgg+gq_qqa)*0.5d0+dfloat(nflav-1)*gr_rqa)
       endif
 
 c--- ga
       if ((j.eq.0).and.(k.lt.0)) then
-        msq(0,k)=aveqg*fac*((Hgaagg+ga_aaq)*0.5d0+dfloat(nf-1)*gb_baq)
+       msq(0,k)=aveqg*fac*((Hgaagg+ga_aaq)*0.5d0+dfloat(nflav-1)*gb_baq)
       endif
 
 c--- gg
       if ((j.eq.0).and.(k.eq.0)) then
-        msq(0,0)=avegg*fac*(Hggggg/6d0+dfloat(nf)*Hggqag)
+        msq(0,0)=avegg*fac*(Hggggg/6d0+dfloat(nflav)*Hggqag)
       endif
       
       enddo

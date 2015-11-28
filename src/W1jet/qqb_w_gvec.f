@@ -38,14 +38,14 @@ c---in label of gluon which is contracted with n
       call dotem(5,p,s)
 
       if (in .eq. 1) then
-      p1p2(0,-1)=-aveqg*fac*w1jetn(5,2,1,p,n)
-      p1p2(0,+1)=-aveqg*fac*w1jetn(2,5,1,p,n)
+      p1p2(0,-1)=-aveqg*fac*w1jetn(5,2,3,4,1,p,n)
+      p1p2(0,+1)=-aveqg*fac*w1jetn(2,5,3,4,1,p,n)
       elseif (in .eq. 2) then
-      p1p2(+1,0)=-aveqg*fac*w1jetn(1,5,2,p,n)
-      p1p2(-1,0)=-aveqg*fac*w1jetn(5,1,2,p,n)
+      p1p2(+1,0)=-aveqg*fac*w1jetn(1,5,3,4,2,p,n)
+      p1p2(-1,0)=-aveqg*fac*w1jetn(5,1,3,4,2,p,n)
       elseif (in .eq. 5) then     
-      p1p2(1,-1)=+aveqq*fac*w1jetn(1,2,5,p,n)
-      p1p2(-1,1)=+aveqq*fac*w1jetn(2,1,5,p,n)
+      p1p2(1,-1)=+aveqq*fac*w1jetn(1,2,3,4,5,p,n)
+      p1p2(-1,1)=+aveqq*fac*w1jetn(2,1,3,4,5,p,n)
       endif
 
       do j=-nf,nf
@@ -70,10 +70,12 @@ c---in label of gluon which is contracted with n
 
       enddo
       enddo
+
       return
       end
  
-      double precision function w1jetn(j1,j2,j5,p,n)
+
+      double precision function w1jetn(j1,j2,j3,j4,j5,p,n)
       implicit none 
 C---calculates the amplitude squared for the process
 c   q(p1)+qbar(p2) --> W(l(p3)+a(p4)+g(p5)
@@ -83,16 +85,25 @@ c   contracted with the vector n(mu)
       include 'sprods_com.f'
       integer j1,j2,j3,j4,j5
       double precision p(mxpart,4),n(4),nDn,prop,
-     .                 nDp1,nDp2,nDp3,nDp4
-      j3=3
-      j4=4
+     .                 nDp1,nDp2,nDp3,nDp4,nDp5
+
       nDp1=n(4)*p(j1,4)-n(3)*p(j1,3)-n(2)*p(j1,2)-n(1)*p(j1,1)
       nDp2=n(4)*p(j2,4)-n(3)*p(j2,3)-n(2)*p(j2,2)-n(1)*p(j2,1)
       nDp3=n(4)*p(j3,4)-n(3)*p(j3,3)-n(2)*p(j3,2)-n(1)*p(j3,1)
       nDp4=n(4)*p(j4,4)-n(3)*p(j4,3)-n(2)*p(j4,2)-n(1)*p(j4,1)
       nDn=n(4)**2-n(3)**2-n(2)**2-n(1)**2
 
-      call checkndotp(p,n,j5)
+      nDp5=n(4)*p(j5,4)-n(3)*p(j5,3)-n(2)*p(j5,2)-n(1)*p(j5,1)
+
+c--- appropriate scale is approx 1d-3*energy(incoming)
+c--- so of order(1) for the Tevatron
+      if (abs(nDp5).gt.1d-3*abs(p(1,4))) then 
+         write(*,*) 'Error for :',j1,j2,j3,j4,j5
+         write(*,*) 'cutoff',1d-3*abs(p(j1,4))
+         write(6,*) 'nDp5',nDp5
+         call flush(6)
+         stop
+      endif
 
 c---calculate the propagator
       prop=((s(j3,j4)-wmass**2)**2+(wmass*wwidth)**2)

@@ -57,6 +57,9 @@
       elseif     (pdlabel .eq. 'mrs01_j') then
       amz=0.121d0
       nlooprun=2
+      elseif     (pdlabel .eq. 'mrs01lo') then
+      amz=0.130d0
+      nlooprun=1
 
 C MRS99
 C  1     COR01  central gluon, a_s    300      0.1175   0.00537  C
@@ -260,10 +263,13 @@ C   10     CTEQ4LQ  Low Q0                  0.114        0.7      cteq4lq.tbl
       Call SetCtq5(6)
       amz=0.106d0
       nlooprun=2
+      cmass=1000d0
+      bmass=1001d0
       elseif (pdlabel .eq. 'cteq5f4') then
       Call SetCtq5(7)
       amz=0.112d0
       nlooprun=2
+      bmass=1000d0
       elseif (pdlabel .eq. 'cteq5m1') then
       Call SetCtq5(8)
       amz=0.118d0
@@ -307,7 +313,7 @@ c--- need a value here: Lambda = 200 MeV
      .'mstw8lo,','mstw8nl,','mstw8nn,',
      .'mrs4nf3,','mrs4lf3,','mrs4nf4,','mrs4lf4,',
      .'mrs02nl,','mrs02nn,',
-     .'mrs0119,','mrs0117,','mrs0121,','mrs01_j,',
+     .'mrs0119,','mrs0117,','mrs0121,','mrs01_j,','mrs01lo,',
      .'mrs99_1,','mrs99_2,','mrs99_3,','mrs99_4,','mrs99_5,','mrs99_6,',
      .'mrs99_7,','mrs99_8,','mrs99_9,','mrs9910,','mrs9911,','mrs9912,',
      .'mrs98z1,','mrs98z2,','mrs98z3,','mrs98z4,','mrs98z5,','mrs98ht,',

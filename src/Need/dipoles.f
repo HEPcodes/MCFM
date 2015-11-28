@@ -379,13 +379,13 @@ c  - [x^2+(1-x)^2]*epinv
       end
       
 ***************************** Gluon-Quark *****************************
-c      double precision function if_gq(x,L,vorz)
-c      implicit none
-c      integer vorz
-c      double precision x,L,omx,lx,lomx
-c      include 'constants.f'
-c      include 'epinv.f'
-c      include 'alfacut.f'
+      double precision function if_gq(x,L,vorz)
+      implicit none
+      integer vorz
+      double precision x,L,omx,lx,lomx
+      include 'constants.f'
+      include 'epinv.f'
+      include 'alfacut.f'
 c--- returns the integral of the subtraction term for an
 c--- initial-final gluon-gluon antenna, either
 c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
@@ -394,21 +394,21 @@ c-- Id,agq=(1+(1-x)^2)/x*(L-[ln(x)]+[ln(1-x)])+x
 cIFgq =  + x - [ln(x)]*[(1+(1-x)^2)/x] + [ln(al)]*
 c [(1+(1-x)^2)/x] + [(1+(1-x)^2)/x]*L + [(1+(1-x)^2)/x]*
 c [ln(1-x)] - [(1+(1-x)^2)/x]*epinv
-c 
-c      
-c      if_gq=0d0
-c      if ((vorz .eq. 1).or.(vorz .eq. 3)) return
+ 
       
-c      omx=one-x
-c      lomx=dlog(omx)
-c      lx=dlog(x)
+      if_gq=0d0
+      if ((vorz .eq. 1).or.(vorz .eq. 3)) return
       
-c      if (vorz .eq. 2) then
-c        if_gq=(one+omx**2)/x*(lomx-lx+L-epinv+log(aif))+x
-c      endif
+      omx=one-x
+      lomx=dlog(omx)
+      lx=dlog(x)
       
-c      return
-c      end
+      if (vorz .eq. 2) then
+        if_gq=(one+omx**2)/x*(lomx-lx+L-epinv+dlog(aif))+x
+      endif
+      
+      return
+      end
 
 ***********************************************************************
 **************************** FINAL-INITIAL ****************************
@@ -657,9 +657,13 @@ c      end
       include 'alfacut.f'
       include 'nflav.f'
       include 'b0.f'
+      include 'colstruc.f'
 c--- returns the integral of the subtraction term for an
 c--- final-initial gluon-gluon antenna, either
 c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
+c--- 26/11/09: modified to enable separation of CA and TR pieces
+c---           (used in checks of single top + b process)
+
 C --MSbar
 c Id,aqg=-2/3*(epinv-L)-16/9
 c Id,agg=2*epinv*(epinv-L)+L^2+11/3*(epinv-L)+100/9-[pi]^2
@@ -671,21 +675,30 @@ c  * ( 2*al*b0 - 20/9*Tr*nflav - 2*[ln(al)]*b0 - 2*b0*L + 2*b0*epinv ) + 0.
 
       ff_gg=0d0
       if (vorz .eq. 1) then
-        ff_gg=two*epinv*(epinv2-L)+L**2+100d0/9d0-pisq
-     .        +two*b0/xn*(epinv-L)-dfloat(nflav)/xn*16d0/9d0
-        ff_gg=ff_gg-two*dlog(aff)**2+two*b0/xn*(aff-1d0-dlog(aff))
-        if (scheme .eq. 'tH-V') then
-          return
-        elseif (scheme .eq. 'dred') then
-          ff_gg=ff_gg-1d0/3d0
-          return
+        if (nfonly) then
+	  ff_gg=0d0
 	else
-	  write(6,*) 'Value of scheme not implemented properly ',scheme
-	  stop
-        endif
+          ff_gg=two*epinv*(epinv2-L)+L**2+100d0/9d0-pisq
+     .          +two*11d0/6d0*(epinv-L)
+          ff_gg=ff_gg-two*dlog(aff)**2+two*11d0/6d0*(aff-1d0-dlog(aff))
+          if (scheme .eq. 'tH-V') then
+            continue ! the above is the CT in this scheme
+          elseif (scheme .eq. 'dred') then
+            ff_gg=ff_gg-1d0/3d0
+                     ! no return yet, need to include nflav piece
+	  else
+	    write(6,*)'Value of scheme not implemented properly ',scheme
+	    stop
+          endif
+	endif
+        if (caonly) then
+          continue ! nothing more to do
+	else
+          ff_gg=ff_gg-4d0/3d0*tr*dfloat(nflav)/ca*(epinv-L)
+     .          -dfloat(nflav)/ca*16d0/9d0
+          ff_gg=ff_gg-4d0/3d0*tr*dfloat(nflav)/ca*(aff-1d0-dlog(aff))
+        endif		
       endif
+      
       return
       end
-
- 
- 

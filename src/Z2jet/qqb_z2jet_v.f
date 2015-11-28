@@ -94,6 +94,13 @@
       data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
       save first
 
+      if (Qflag .and. Gflag) then
+        write(6,*) 'Both Qflag and Gflag cannot be true'
+        write(6,*) 'They are set in file options.DAT'
+        write(6,*) 'Failed in qqb_z2jet_v.f'
+        stop
+      endif
+
       if (first) then
         first=.false.
         if (Gflag) then

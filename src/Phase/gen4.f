@@ -5,6 +5,7 @@
       include 'debug.f'
       include 'process.f'
       include 'phasemin.f'
+      include 'masses.f'
       integer nu
       double precision r(mxdim)
       double precision wt4,p1(4),p2(4),p3(4),p4(4),p5(4),p6(4)
@@ -12,9 +13,10 @@
       double precision pswt,xjac,p1ext(4),p2ext(4)
       double precision xx(2),tau,x1mx2,surd
       double precision lntaum
+      character*30 runstring
+      common/runstring/runstring
       common/pext/p1ext,p2ext
       common/x1x2/xx
-
 
       wt4=0d0
 
@@ -32,6 +34,13 @@ c      xjac=2*r(9)*(one-taumin)
       xx(2)=half*(-x1mx2+surd)
 
       xjac=xjac*two/surd
+
+c--- for comparison with C. Oleari's e+e- --> QQbg calculation
+      if (runstring(1:5) .eq. 'carlo') then
+        xx(1)=1d0
+	xx(2)=1d0
+	xjac=1d0
+      endif
 
       if   ((xx(1) .gt. 1d0) 
      & .or. (xx(2) .gt. 1d0)

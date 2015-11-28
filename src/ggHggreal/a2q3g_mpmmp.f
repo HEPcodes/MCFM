@@ -1,5 +1,5 @@
 *********************************************************
-* Based on eq.(3.15) of hep-ph/0412275 which gives q1- 2g+ g3- g4- qb5+
+* Based on eq.(3.15) of hep-th/0412275 which gives q1- 2g+ g3- g4- qb5+
 * Explicit result obtained with the Maple file NMHV_qq (m2=3,m3=4)
       DOUBLE COMPLEX FUNCTION  A2q3g_mpmmp(I1,I2,I3,I4,I5,za,zb)
 * ---------------------------------------------------------------------

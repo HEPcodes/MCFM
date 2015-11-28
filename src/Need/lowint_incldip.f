@@ -13,11 +13,15 @@
       include 'dynamicscale.f'
       include 'noglue.f'
       include 'process.f'
+      include 'qcdcouple.f'
       include 'efficiency.f'
       include 'maxwt.f'
       include 'phasemin.f'
       include 'PDFerrors.f'
       include 'wts_bypart.f'
+      include 'stopscales.f'
+      include 'ewcouple.f'
+      include 'ckm.f'
 c --- DSW. To store flavour information :
       include 'nflav.f'
 c      include 'b0.f'
@@ -28,7 +32,9 @@ c --- To use VEGAS random number sequence :
       integer ih1,ih2,j,k,nvec,sgnj,sgnk
       double precision r(mxdim),W,sqrts,xmsq,val,val2,
      . fx1(-nf:nf),fx2(-nf:nf),p(mxpart,4),pjet(mxpart,4),
-     . pswt,rscalestart,fscalestart
+     . pswt,rscalestart,fscalestart,
+     . fx1_H(-nf:nf),fx2_H(-nf:nf),fx1_L(-nf:nf),fx2_L(-nf:nf),
+     . fxb1(-nf:nf),fxb2(-nf:nf)
       double precision wgt,msq(-nf:nf,-nf:nf),m3,m4,m5,xmsqjk,
      . msq1(-nf:nf,-nf:nf),msq2(-nf:nf,-nf:nf),n(4)
       double precision xx(2),flux,vol,vol_mass,vol3_mass,vol_wt,BrnRat
@@ -39,6 +45,8 @@ c      double precision gx1(-nf:nf),gx2(-nf:nf)
 c      integer idum
 c      COMMON/ranno/idum
       character*30 runstring
+      double precision b1scale,q2scale,q1scale,b2scale
+      external qg_tbq,qg_tbq_gvec,qq_tbg,qq_tbg_gvec
       common/runstring/runstring
       common/density/ih1,ih2
       common/energy/sqrts
@@ -47,6 +55,7 @@ c      COMMON/ranno/idum
       common/BrnRat/BrnRat
       common/bypart/lord_bypart
       common/outputflags/creatent,dswhisto
+      common/bqscale/b1scale,q2scale,q1scale,b2scale
       data p/48*0d0/
       data first/.true./
       save first,rscalestart,fscalestart
@@ -88,7 +97,8 @@ c--- processes that use "gen2m"
 c--- processes that use "gen3"     
       elseif ( (case .eq. 'W_cjet') 
      .   .or.  (case .eq. 'W_tndk')
-     .   .or.  (case .eq. 'vlchwn') ) then
+     .   .or.  (case .eq. 'vlchwn')
+     .   .or.  (case .eq. 'epem3j') ) then
         npart=3
         call gen3(r,p,pswt,*999)
 
@@ -103,7 +113,7 @@ c--- processes that use "gen3jet"
         npart=3
         call gen3jet(r,p,pswt,*999)
 
-c--- processes that use "gen3m"     
+c--- processes that use "gen3m"
       elseif ( (case .eq. 'tottth') ) then
         m3=mt
         m4=mt
@@ -111,13 +121,22 @@ c--- processes that use "gen3m"
         npart=3
         call gen3m(r,p,m3,m4,m5,pswt,*999)
           
-c--- processes that use "gen3m"     
+c--- processes that use "gen3m"
       elseif (case .eq. 'tt_glu') then
         m3=mt
         m4=mt
         m5=0d0
         npart=3
         call gen3m(r,p,m3,m4,m5,pswt,*999)
+	
+c--- processes that use "gen3m"
+      elseif ((case .eq. 'qg_tbq') .or. (case .eq. 'qq_tbg')) then
+        m3=mt
+        m4=mb
+        m5=0d0
+        npart=3
+        call gen3m(r,p,m3,m4,m5,pswt,*999)
+	
 c--- processes that use "gen3m_rap"     
       elseif ( (case .eq. 'vlchm3') ) then
         taumin=(2d0*mt/sqrts)**2
@@ -135,6 +154,7 @@ c--- processes that use "gen4h"
 c--- processes that use "gen5" 
       elseif ( (case .eq. 'W_twdk') 
      . .or.    (case .eq. 'HWWjet') 
+     . .or.    (case .eq. 'HZZjet') 
      . .or.    (case .eq. 'WW_jet') 
      . .or.    (case .eq. 'ZZ_jet') 
      . .or.    (case .eq. 'vlchwt') 
@@ -151,6 +171,8 @@ c--- processes that use "gen6"
      .    .or. (case .eq. 'vlchwg')
      .    .or. (case .eq. 'vlchwh')
      .    .or. (case .eq. 'qq_HWW')
+     .    .or. (case .eq. 'HWW2jt')
+     .    .or. (case .eq. 'HZZ2jt')
      .    .or. (case .eq. 'WH__WW')
      .    .or. (case .eq. 'ZH__WW')) then
         npart=6
@@ -236,7 +258,7 @@ c--- DEFAULT: processes that use "gen4"
       
 c---impose cuts on final state
       if (case .ne. 'vlchk6' .and. case .ne. 'tautau') then
-        call masscuts(s,*999)
+        call masscuts(p,*999)
       endif
 c----reject event if any s(i,j) is too small
       call smalls(s,npart,*999)                                             
@@ -361,6 +383,12 @@ c--- Calculate the required matrix elements
         call gg_hg(p,msq)
       elseif (case .eq. 'HWWjet') then
         call gg_hWWg(p,msq)
+      elseif (case .eq. 'HZZjet') then
+        call gg_hZZg(p,msq)
+      elseif (case .eq. 'HWW2jt') then
+        call gg_hWWgg(p,msq)
+      elseif (case .eq. 'HZZ2jt') then
+        call gg_hZZgg(p,msq)
       elseif (case .eq. 'attjet') then
         call qqb_higgs_odd(p,msq)
       elseif (case .eq. 'qq_Hqq') then
@@ -371,6 +399,20 @@ c--- Calculate the required matrix elements
         call VV_HWW(p,msq)
       elseif (case .eq. 'tautau') then
         call qqb_tautau(p,msq)
+      elseif (case .eq. 'qg_tbq') then
+        call qg_tbq(p,msq)
+c--- Check of gvec routines
+c      call checkgvec(+2,0,2,p,qg_tbq,qg_tbq_gvec)
+c      call checkgvec(-1,0,2,p,qg_tbq,qg_tbq_gvec)
+      elseif (case .eq. 'qq_tbg') then
+        call qq_tbg(p,msq)
+c--- Check of gvec routines
+c      call checkgvec(2,-1,5,p,qq_tbg,qq_tbg_gvec)
+c      call checkgvec(-1,2,5,p,qq_tbg,qq_tbg_gvec)
+      elseif (case .eq. 'qqtbgg') then
+        call qq_tbg_g(p,msq)
+      elseif (case .eq. 'epem3j') then
+        call epem3j(p,msq)
       elseif (case .eq. 'gQ__ZQ') then
         call gQ_zQ(p,msq)
       elseif (case .eq. 'Zccmas') then
@@ -514,9 +556,51 @@ c--- initialize a PDF set here, if calculating errors
       endif
       
 c--- calculate PDF's  
-      if (case(1:4) .ne. 'vlch') then      
-        call fdist(ih1,xx(1),facscale,fx1)
-        call fdist(ih2,xx(2),facscale,fx2)
+      if ((case .eq. 'qg_tbq') .and. (dynamicscale .eqv. .false.)) then
+c--- for single top + b, make sure to use two different scales
+        call fdist(ih1,xx(1),facscale_H,fx1_H)
+        call fdist(ih2,xx(2),facscale_H,fx2_H)
+        call fdist(ih1,xx(1),facscale_L,fx1_L)
+        call fdist(ih2,xx(2),facscale_L,fx2_L)
+	do j=-nf,nf
+	  if (j .eq. 0) then   ! heavy quark line has gluon init. state
+	    fx1(j)=fx1_H(j)
+	    fx2(j)=fx2_H(j)
+	  else
+	    fx1(j)=fx1_L(j)
+	    fx2(j)=fx2_L(j)
+	  endif
+	enddo
+      elseif (case(1:4) .ne. 'vlch') then
+c--- for comparison with C. Oleari's e+e- --> QQbg calculation
+        if (runstring(1:5) .eq. 'carlo') then
+          flux=1d0/2d0/W/(as/twopi)
+c--- divide out by (ason2pi) and then the "LO" massless DY process
+	  flux=flux/(aveqq*xn*fourpi*(gwsq/fourpi)**2/3d0/sqrts**2)
+	  flux=flux/(xn/8d0)
+	  do j=-nf,nf
+	  fx1(j)=0d0
+	  fx2(j)=0d0
+	  enddo
+	  fx1(0)=1d0
+	  fx2(0)=1d0
+        elseif ((case .eq. 'bq_tpq') .or. (case .eq. 'qg_tbq')) then   
+c--- single top: allow for different scales on each leg  
+c---  (applies only if dynamic scale is true)
+          if (dynamicscale) then
+            call fdist(ih1,xx(1),b1scale,fxb1)
+            call fdist(ih2,xx(2),q2scale,fx2)
+            call fdist(ih1,xx(1),q1scale,fx1)
+            call fdist(ih2,xx(2),b2scale,fxb2)
+	  else          
+            call fdist(ih1,xx(1),facscale,fx1)
+            call fdist(ih2,xx(2),facscale,fx2)
+	  endif
+        else   
+c--- usual case            
+          call fdist(ih1,xx(1),facscale,fx1)
+          call fdist(ih2,xx(2),facscale,fx2)
+        endif
       endif
 
       do j=-nflav,nflav
@@ -534,7 +618,29 @@ c--- calculate PDF's
       if ((j.eq.0) .or. (k.eq.0)) goto 20
       endif
 
-      xmsqjk=fx1(j)*fx2(k)*msq(j,k)
+      if     ((case .eq. 'bq_tpq') .and. (dynamicscale)) then
+c--- special case for dynamic scale in t-channel single top
+        if     (abs(j) .eq. 5) then
+          xmsqjk=fxb1(j)*fx2(k)*msq(j,k)
+	elseif (abs(k) .eq. 5) then
+          xmsqjk=fx1(j)*fxb2(k)*msq(j,k)
+	else
+	  xmsqjk=0d0
+	endif
+      elseif ((case .eq. 'qg_tbq') .and. (dynamicscale)) then
+c--- special case for dynamic scale in t-channel single top
+        if     (j .eq. 0) then
+          xmsqjk=fxb1(j)*fx2(k)*msq(j,k)
+	elseif (k .eq. 0) then
+          xmsqjk=fx1(j)*fxb2(k)*msq(j,k)
+	else
+	  xmsqjk=0d0
+	endif
+      else
+c--- DEFAULT
+        xmsqjk=fx1(j)*fx2(k)*msq(j,k)
+      endif
+
       xmsq=xmsq+xmsqjk
       
       if     (j .gt. 0) then
@@ -563,7 +669,7 @@ c--- calculate PDF's
       if (currentPDF .eq. 0) then
         lowint=flux*pswt*xmsq/BrnRat
       endif
-      
+            
 c--- loop over all PDF error sets, if necessary
       if (PDFerrors) then
         PDFwgt(currentPDF)=flux*pswt*xmsq/BrnRat*wgt/itmx

@@ -14,6 +14,8 @@ c      include 'ewinput.f'
       include 'nflav.f'
       include 'b0.f'
       include 'dynamicscale.f'
+      include 'stopscales.f'
+      include 'fourthgen.f'
       character*4 part,mypart
       common/part/part
       integer i,nproc
@@ -34,9 +36,14 @@ c--- initialize the pdf set
       nlooprun=0
       call pdfwrap      
 
-      cmass=dsqrt(mcsq)
-      bmass=dsqrt(mbsq)
       musq=scale**2
+c--- set up masses used in running of alphas (alfamz.f)
+      cmass=dsqrt(mcsq)
+      if (fourthgen) then
+        continue ! normal b mass already set in chooser.f
+      else
+        bmass=dsqrt(mbsq) ! use the mass specified in the input file
+      endif
       
       if (nflav .lt. 5) then
         bmass=1001d0
@@ -89,6 +96,19 @@ c--- diagonal since we're not interested in these small effects
  47   format(' *      Vud=',g10.5,'Vus=',g10.5,'Vub=',g10.5,'  *')
  48   format(' *      Vcd=',g10.5,'Vcs=',g10.5,'Vcb=',g10.5,'  *')
       endif      
+
+c--- special write-out for stop+b case
+      if ((verbose) .and. (initrenscale_L .gt. 0d0)) then
+      write(6,*)
+      write(6,*) '************* Strong coupling, alpha_s  ************'
+      write(6,*) '*                                                  *'
+      write(6,49) 'alpha_s (zmass)    ',amz
+      write(6,49) 'alpha_s (hvy scale)',as_H
+      write(6,49) 'alpha_s (lgt scale)',as_L
+      write(6,50) ' (using ',nlooprun,'-loop running of alpha_s)'  
+      write(6,*) '****************************************************'
+      return
+      endif
 
       if ((verbose) .and. (scale .gt. 0d0)) then      
       write(6,*)

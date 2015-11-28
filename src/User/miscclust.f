@@ -1,10 +1,11 @@
-      subroutine findmind(p,pjet,pjetmin,pjetmax,dijmin,nmin1,nmin2)
+      subroutine findmind(p,pjet,pjetmin,pjetmax,dijmin,nmin1,nmin2,
+     .                    ipow)
 c--- this finds the minimum dij for pjet indices pjetmin through pjetmax
 c--- returns dijmin and indices of minimum in (nmin1,nmin2)
       implicit none
       include 'constants.f'
       double precision p(mxpart,4),pjet(mxpart,4),dijmin,dij,d
-      integer pjetmin,pjetmax,nmin1,nmin2,i,j
+      integer pjetmin,pjetmax,nmin1,nmin2,i,j,ipow
       logical dijerror
 
       dijmin=1d9
@@ -13,7 +14,7 @@ c--- returns dijmin and indices of minimum in (nmin1,nmin2)
       do i=pjetmin,pjetmax
         do j=i+1,pjetmax
           if (i .ne. j) then
-            d=dij(p,pjet,i,j)
+            d=dij(p,pjet,i,j,ipow)
             if (d .lt. dijmin) then
               dijmin=d
               nmin1=i
@@ -33,7 +34,7 @@ c--- returns dijmin and indices of minimum in (nmin1,nmin2)
       return
       end
       
-      subroutine findminet(p,pjet,pjetmin,pjetmax,dkmin,nk)
+      subroutine findminet(p,pjet,pjetmin,pjetmax,dkmin,nk,ipow)
 c--- this finds the minimum dkmin for pjet indices pjetmin through pjetmax
 c--- returns dijmin and indices of minimum in (nmin1,nmin2)
 C--- calculate the beam proto-jet separation see NPB406(1993)187, Eqn. 7
@@ -42,7 +43,7 @@ C--- in  practice this is just the minimum ptsq of protojets
       implicit none
       include 'constants.f'
       double precision p(mxpart,4),pjet(mxpart,4),dkmin,dk,pt
-      integer pjetmin,pjetmax,nk,i
+      integer pjetmin,pjetmax,nk,i,ipow
       logical dkerror
       
       dkmin=1d9
@@ -50,6 +51,7 @@ C--- in  practice this is just the minimum ptsq of protojets
       
       do i=pjetmin,pjetmax
         dk=pt(i,pjet)
+	if (ipow .ne. 1) dk=dk**(ipow)
         if (dk .lt. dkmin) then
           dkmin=dk
           nk=i
@@ -65,11 +67,11 @@ C--- in  practice this is just the minimum ptsq of protojets
       return
       end
       
-      double precision function dij(p,pjet,i,j)
+      double precision function dij(p,pjet,i,j,ipow)
 C---calculate the proto-jet separation see NPB406(1993)187, Eqn. 7
       implicit none
       include 'constants.f'
-      integer i,j
+      integer i,j,ipow
       double precision p(mxpart,4),pjet(mxpart,4),pti,ptj,pt,r
 c      double precision etarap,yi,yj,phii,phij
       
@@ -88,6 +90,10 @@ c      dij=dsqrt((yi-yj)**2+(phii-phij)**2)
 c--- new method - r() calculates true value of 0 < (phi-phij) < pi
       dij=r(pjet,i,j)
               
+      if (ipow .ne. 1) then
+        pti=pti**(ipow)
+        ptj=ptj**(ipow)
+      endif
       dij=dij*min(pti,ptj)
       
       return

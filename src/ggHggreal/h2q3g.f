@@ -11,7 +11,7 @@ C----   [arXiv:hep-ph/0404013].
 C-----has to be preceded by a call to spinoru to set up the za,zb
       include 'constants.f'
       include 'zprods_com.f'
-      double precision Hqaggg
+      double precision Hqaggg,sign,factor
       double complex qamp(6,2,2,2,2),temp(6,2,2,2,2)
       double complex A2q3g_mpppp,A2q3g_mmmpp, A2q3g_mmpmp, A2q3g_mpmmp
 
@@ -45,7 +45,16 @@ c--- restored in the sum below
       n(3)=p3
       n(4)=p4
       n(5)=p5
-
+      
+c--- To be used when relating amplitudes by symmetry: 
+c--- additional sign for the crossed amplitudes with initial gluon,
+c--- but no sign for two gluons
+      if ((p4 .eq. 4) .and. (p3 .lt. 3)) then
+        sign=-1d0
+      else
+        sign=+1d0
+      endif
+      
 C----definition of helicities is for outgoing lines
 C----labelling is as follows
 C     temp(j,h1,h3,h4,h5) since h2 can be obtained from h1
@@ -72,29 +81,38 @@ C     temp(j,h1,h3,h4,h5) since h2 can be obtained from h1
       temp(j,2,1,1,2) = A2q3g_mpmmp(n(2),n(i5(j)),n(i4(j)),n(i3(j)),
      .n(1),za,zb)
 
+c      temp(j,1,1,1,1)=A2q3g_mpppp(n(1),n(2),n(i3(j)),n(i4(j)),n(i5(j)),
+c     . zb,za) 
+c      temp(j,1,2,2,2)=A2q3g_mpppp(n(2),n(1),n(i5(j)),n(i4(j)),n(i3(j)),
+c     . za,zb)
 
-      temp(j,1,1,1,1)=A2q3g_mpppp(n(1),n(2),n(i3(j)),n(i4(j)),n(i5(j)),
-     . zb,za) 
-      temp(j,1,2,2,2)=A2q3g_mpppp(n(2),n(1),n(i5(j)),n(i4(j)),n(i3(j)),
-     . za,zb)
+c      temp(j,1,2,1,1) = A2q3g_mpmmp(n(1),n(i3(j)),n(i4(j)),n(i5(j)),
+c     . n(2),za,zb)
+c      temp(j,1,2,2,1) = A2q3g_mpmmp(n(2),n(i5(j)),n(i4(j)),n(i3(j)),
+c     . n(1),zb,za)
 
-      temp(j,1,2,1,1) = A2q3g_mpmmp(n(1),n(i3(j)),n(i4(j)),n(i5(j)),
-     . n(2),za,zb)
-      temp(j,1,2,2,1) = A2q3g_mpmmp(n(2),n(i5(j)),n(i4(j)),n(i3(j)),
-     . n(1),zb,za)
-
-      temp(j,1,1,1,2) = A2q3g_mmmpp(n(1),n(i3(j)),n(i4(j)),n(i5(j)),
-     . n(2),za,zb)
-      temp(j,1,1,2,2) = A2q3g_mmmpp(n(2),n(i5(j)),n(i4(j)),n(i3(j)),
-     . n(1),zb,za)
+c      temp(j,1,1,1,2) = A2q3g_mmmpp(n(1),n(i3(j)),n(i4(j)),n(i5(j)),
+c     . n(2),za,zb)
+c      temp(j,1,1,2,2) = A2q3g_mmmpp(n(2),n(i5(j)),n(i4(j)),n(i3(j)),
+c     . n(1),zb,za)
       
-      temp(j,1,1,2,1)= A2q3g_mmpmp(n(1),n(i3(j)),n(i4(j)),n(i5(j)),
-     . n(2),za,zb)
-      temp(j,1,2,1,2)= A2q3g_mmpmp(n(2),n(i5(j)),n(i4(j)),n(i3(j)),
-     . n(1),zb,za)
-            
+c      temp(j,1,1,2,1)= A2q3g_mmpmp(n(1),n(i3(j)),n(i4(j)),n(i5(j)),
+c     . n(2),za,zb)
+c      temp(j,1,2,1,2)= A2q3g_mmpmp(n(2),n(i5(j)),n(i4(j)),n(i3(j)),
+c     . n(1),zb,za)
+      
+c--- fastest to obtain remaining amplitudes by symmetry
+      temp(j,1,1,1,1)=-sign*dconjg(temp(j,2,2,2,2))
+      temp(j,1,2,2,2)=-sign*dconjg(temp(j,2,1,1,1))
+      temp(j,1,2,1,1)=-sign*dconjg(temp(j,2,1,2,2))
+      temp(j,1,2,2,1)=-sign*dconjg(temp(j,2,1,1,2))
+      temp(j,1,1,1,2)=-sign*dconjg(temp(j,2,2,2,1))
+      temp(j,1,1,2,2)=-sign*dconjg(temp(j,2,2,1,1))
+      temp(j,1,1,2,1)=-sign*dconjg(temp(j,2,2,1,2))
+      temp(j,1,2,1,2)=-sign*dconjg(temp(j,2,1,2,1))
+      
       enddo
-
+            
 C----At this stage we have setup the amplitudes but failed 
 C----to assign the helicities properly. So we now reshuffle 
 C----to get these right.     
@@ -118,21 +136,29 @@ C----to get these right.
 c--- now perform the sum with the appropriate weights,
 c--- c.f. Eq. (B.20); note that the factor of (gsq)**3
 c--- is included in the wrapping routine
+
+c--- NB: use symmetry to slightly improve speed, summing over
+c---     diagonal and above in matrix
       Hqaggg=0d0
       do j=1,6
-      do k=1,6
+      do k=j,6
       do h1=1,2
       do h3=1,2
       do h4=1,2
       do h5=1,2
+      if (j .eq. k) then
+      factor=one
+      else
+      factor=two
+      endif 
       Hqaggg=Hqaggg+2d0*Cf*djk(j,k)
-     . *dble(qamp(j,h1,h3,h4,h5)*dconjg(qamp(k,h1,h3,h4,h5)))
+     . *dble(qamp(j,h1,h3,h4,h5)*dconjg(qamp(k,h1,h3,h4,h5)))*factor
       enddo
       enddo
       enddo
       enddo
       enddo
       enddo
-
+            
       return
       end

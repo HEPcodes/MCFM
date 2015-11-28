@@ -1,6 +1,6 @@
 *********************************************************
 *  Code by Giulia Zanderighi
-*  Based on eq.(3.27) of hep-ph/0411092 which gives 1+ 2+ 3- 4- 5-
+*  Based on eq.(3.27) of hep-th/0411092 which gives 1+ 2+ 3- 4- 5-
 *  Taking the complex conjugate gives then 1- 2- 3+ 4+ 5+
 *  Explicit result obtained with the Maple file NMHV 
       DOUBLE COMPLEX FUNCTION  Ammppp(I1,I2,I3,I4,I5)                         

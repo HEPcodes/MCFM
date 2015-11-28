@@ -175,7 +175,7 @@ c--- if using a dynamic scale, set that scale with dipole kinematics
 
 c--- do something special if we're doing W+2,Z+2jet (jp .ne. 7)
         if ((jp .ne. 7) .and. (case .ne. 'HWWjet')
-     .      .and. (case .ne. 'qq_HWW')) then
+     .      .and. (case .ne. 'HZZjet') .and. (case .ne. 'qq_HWW')) then
           if (ip .lt. 7) then
 C ie for cases 56_i,65_i
             ipt=5
@@ -187,6 +187,22 @@ C ie for cases 76_i,75_i
 C ie for cases 57_i,67_i
           ipt=ip
         endif
+	
+c--- do something special for HWW/HZZ+2 jets
+        if ((case .eq. 'HWW2jt') .or. (case .eq. 'HZZ2jt')) then
+          if (jp .ne. 9) then
+            if (ip .lt. 9) then
+C ie for cases 78_i,87_i
+              ipt=7
+            else
+C ie for cases 98_i,97_i
+              ipt=8
+            endif
+          else
+C ie for cases 79_i,89_i
+            ipt=ip
+          endif
+	endif	
         
         call subr_corr(ptrans,vec,ipt,msqv)
                                 
@@ -232,11 +248,22 @@ c--- if using a dynamic scale, set that scale with dipole kinematics
 	
         call subr_born(ptrans,msq)
         if (ip .lt. kp) then
-          call subr_corr(ptrans,vec,5,msqv)
+          ipt=5
         else
-          call subr_corr(ptrans,vec,6,msqv)
+          ipt=6
         endif
                
+c--- do something special for HWW/HZZ+2 jets
+        if ((case .eq. 'HWW2jt') .or. (case .eq. 'HZZ2jt')) then
+          if (ip .lt. kp) then
+            ipt=7
+          else
+            ipt=8
+          endif
+	endif	
+
+        call subr_corr(ptrans,vec,ipt,msqv)
+         
         sub(qq)=gsq/sij*(two/(one-z*omy)-one-z)
         sub(gq)=gsq/sij
         sub(gg)=gsq/sij*(two/(one-z*omy)+two/(one-omz*omy)-four)

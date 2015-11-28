@@ -1,7 +1,7 @@
       block data codeversion_data
       implicit none
       include 'codeversion.f'
-      data codeversion/'5.6'/      
+      data codeversion/'5.7'/      
       data      prelim/.false./      ! if true, print warning message
       end
 
@@ -44,12 +44,15 @@ c--- warning message, if necessary
 
       write(6,*) '*                                                *'
       write(6,*) '* MCFM, v'//codeversion//
-     . '                 June 17th, 2009  *'
+     . '              January 22nd, 2010  *'
       write(6,*) '*                                                *'
       write(6,*) '* Authors: John Campbell, Keith Ellis            *'
-      write(6,*) '* (J.Campbell@physics.gla.ac.uk, ellis@fnal.gov) *'
+      write(6,*) '*         (johnmc@fnal.gov, ellis@fnal.gov)      *'
       write(6,*) '*                                                *'
       write(6,*) '* For details see:                               *'
+      write(6,*) '*  P.R.L. 102:142001, arXiv:0903.0005 [hep-ph]   *'
+      write(6,*) '*    (t-channel single top + explicit b,         *'
+      write(6,*) '*      JC, R.Frederix, F.Maltoni, F.Tramontano)  *'
       write(6,*) '*  N.P.B 726:109(2005), hep-ph/0506289 (W+t)     *'
       write(6,*) '*  Phys.Rev.D70:094012, hep-ph/0408158 (Sngl Top)*'
       write(6,*) '*       (with Francesco Tramontano)              *'

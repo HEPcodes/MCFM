@@ -111,10 +111,13 @@ c--- Extra common block to carry the information about maximum momenta entries
       integer imaxmom,ipdf
       common/iarray/imaxmom,ipdf
       integer i
-      real pfill(imaxmom*4+5+ipdf)
+c--- assume at most 10 final state particles and 60 PDF sets
+      real pfill(105)
       character*3 labelE,labelx,labely,labelz
       character*5 labelPDF
       logical first
+c--- force pfill to be allocated statically
+      common/pfillcommon/pfill      
       data first/.true./
       save first
       

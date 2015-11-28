@@ -12,6 +12,7 @@ c                            -->b(p3)+bbar(p4)
       include 'constants.f'
       include 'ptilde.f'
       include 'qqgg.f'
+      include 'nflav.f'
       integer j,k,nd
 c --- remember: nd will count the dipoles
       
@@ -136,9 +137,9 @@ c--- note g,g = 1,2 and qb=5, q=6 so (15),(25)-->q and (16),(26)-->qb
      .           +msq16_2(-2,k)+msq16_2(-1,k))*sub16_2(qg)*2d0*tr
       msq(4,j,k)=(msq26_1(k,-5)+msq26_1(k,-4)+msq26_1(k,-3)
      .           +msq26_1(k,-2)+msq26_1(k,-1))*sub26_1(qg)*2d0*tr
-      msq(5,j,k)=dfloat(nf)*half*(
+      msq(5,j,k)=dfloat(nflav)*half*(
      .+msq16_5(j,k)*sub56_1(gq)-msq56_1v(j,k)*sub56_1v)
-      msq(6,j,k)=dfloat(nf)*half*(
+      msq(6,j,k)=dfloat(nflav)*half*(
      .+msq26_5(j,k)*sub56_2(gq)-msq56_2v(j,k)*sub56_2v)
       msq(1,j,k)=msq(1,j,k)+half*xn*(
      . msq15_2(j,k)*sub15_2(gg)+msq15_2v(j,k)*sub15_2v)
@@ -214,7 +215,7 @@ c--- Q QBAR
      .    *(msq15_2(0,k)*sub15_2(gq)+msq15_2v(0,k)*sub15_2v)
         msq(4,j,k)=msq(4,j,k)+(xn-1d0/xn)
      .    *(msq26_1(j,0)*sub26_1(gq)+msq26_1v(j,0)*sub26_1v)
-        msq(6,j,k)=msq(6,j,k)+2d0*tr*dfloat(nf)
+        msq(6,j,k)=msq(6,j,k)+2d0*tr*dfloat(nflav)
      .    *(msq26_5(j,k)*sub56_2(gq)-msq56_2v(j,k)*sub56_2v)
         else 
         msq(1,j,k)=msq(1,j,k)+(xn-1d0/xn)
@@ -229,7 +230,7 @@ c--- QBAR Q
      .  *(msq25_1(j,0)*sub25_1(gq)+msq25_1v(j,0)*sub25_1v)
       msq(3,j,k)=msq(3,j,k)+(xn-1d0/xn)
      .  *(msq16_2(0,k)*sub16_2(gq)+msq16_2v(0,k)*sub16_2v)
-      msq(6,j,k)=msq(6,j,k)+2d0*tr*dfloat(nf)
+      msq(6,j,k)=msq(6,j,k)+2d0*tr*dfloat(nflav)
      . *(msq26_5(j,k)*sub56_2(gq)-msq56_2v(j,k)*sub56_2v)
       else 
       msq(2,j,k)=msq(2,j,k)+(xn-1d0/xn)

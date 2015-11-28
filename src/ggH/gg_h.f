@@ -10,7 +10,7 @@ c     g(-p1)+g(-p2)-->H -->  b(p3)+b(p4))
       include 'ewcouple.f'
       integer j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),s,s12
-      double precision hdecay,gg,Asq
+      double precision hdecay,gg,Asq,hprod,tn,ftn
       s(j,k)=2d0*(p(j,4)*p(k,4)-p(j,1)*p(k,1)
      .           -p(j,2)*p(k,2)-p(j,3)*p(k,3))
 
@@ -26,10 +26,24 @@ c--- set msq=0 to initialize
 c---  Deal with Higgs decay to b-bbar
       hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s12-4d0*mb**2) 
       hdecay=hdecay/((s12-hmass**2)**2+(hmass*hwidth)**2)
-      
+
+      hprod=1d0
+C--- The following lines may be uncommented in order to implement
+c--- the correct dependence on the top quark mass      
+c      tn = 4d0*(mt/hmass)**2
+c      if (tn.lt.(1.0d0)) then
+c         ftn = 0.5d0*((dlog((1d0+dsqrt(1d0-tn))
+c     &        /(1d0-dsqrt(1d0-tn))))**2-pisq)
+c      else
+c         ftn = -2d0*(dasin(1.0d0/dsqrt(tn)))**2
+c      endif
+c      hprod=((3d0*tn/4d0)*(2d0+(tn-1d0)*ftn))**2
+C---- end of mass corrections in production
+c      write(6,*) 'hprod',hprod
+
       Asq=(as/(3d0*pi))**2/vevsq
       gg=0.5d0*Asq*V*s12**2
-      msq(0,0)=avegg*gg*hdecay
+      msq(0,0)=avegg*gg*hdecay*hprod
             
       return
       end

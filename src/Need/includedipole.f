@@ -5,15 +5,16 @@
       include 'npart.f'
       include 'ptilde.f'
       include 'jetlabel.f'
+      include 'process.f'
       double precision ptrans(mxpart,4),pjet(mxpart,4),rcut
       integer i,j,nd,nqcdjets,nqcdstart,notag,isub
       logical gencuts,failedgencuts,makecuts
-
       integer ij
-      double precision dphizj,pt5sq,pt6sq,pt7sq
       character*30 runstring
-      common/runstring/runstring
+      double precision y32,y43,z3,z4,z5,z6
+      double precision dphizj,pt5sq,pt6sq,pt7sq
 
+      common/runstring/runstring
       common/nqcdjets/nqcdjets,nqcdstart
       common/rcut/rcut
       common/makecuts/makecuts
@@ -27,6 +28,38 @@
         isub=0
       endif
 
+c--- special procedure for comparison with C. Oleari's
+c---  e+e- --> QQbg calculation; run Durham algorithm
+      if (runstring(1:5) .eq. 'carlo') then
+        call durhamalg(ptrans,npart-isub,y32,y43,z3,z4,z5,z6)
+c---     set up momentum array just in case it's needed elsewhere
+        do j=1,4
+          do i=1,npart+2
+          ptildejet(nd,i,j)=ptrans(i,j)
+          enddo
+        enddo
+	jets=1
+        if (y43 .gt. 0d0) jets=2
+	if     ((case .eq. 'qq_tbg') .or. (case .eq. 'epem3j')) then
+c---     only keep events that have 3 jets when ycut=rcut
+	  if ((y32 .lt. rcut) .or. (y43 .gt. rcut)) then
+	    includedipole=.false.
+	    jets=-1
+	  endif
+	  return
+	elseif (case .eq. 'qqtbgg') then
+c---     only keep events that have 4 jets when ycut=rcut
+	  if (y43 .lt. rcut) then
+	    includedipole=.false.
+	    jets=-1
+	  endif
+	  return
+	else
+	  write(6,*) 'Unexpected case in includedipole.f!'
+	  stop
+	endif
+      endif
+      
       call genclust2(ptrans,rcut,pjet,isub)
       do j=1,4
         do i=1,npart+2

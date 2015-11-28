@@ -1,11 +1,14 @@
- ************** MCFM - version 5.6 ****************
+ ************** MCFM - version 5.7 ****************
  *                                                *
- * MCFM, v5.6                    June 17th, 2009  *
+ * MCFM, v5.7                 January 22nd, 2010  *
  *                                                *
  * Authors: John Campbell, Keith Ellis            *
- * (J.Campbell@physics.gla.ac.uk, ellis@fnal.gov) *
+ *         (johnmc@fnal.gov, ellis@fnal.gov)      *
  *                                                *
  * For details see:                               *
+ *  P.R.L. 102:142001, arXiv:0903.0005 [hep-ph]   *
+ *    (t-channel single top + explicit b,         *
+ *      JC, R.Frederix, F.Maltoni, F.Tramontano)  *
  *  N.P.B 726:109(2005), hep-ph/0506289 (W+t)     *
  *  Phys.Rev.D70:094012, hep-ph/0408158 (Sngl Top)*
  *       (with Francesco Tramontano)              *

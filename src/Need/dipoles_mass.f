@@ -470,7 +470,8 @@ c--- some redundancy here: ro=roj*rok
 
 
 ***************************** Quark-Quark *****************************
-*     (case when the emitter is massless and spectator is massive)    *
+*    (case when the emitter is massless and spectator is massive,     *
+*    plus the case when emitter is massive and spectator is massless) *
 ***********************************************************************
       double precision function ff_1mqq(x,L,mbar,vorz)
       implicit none
@@ -502,6 +503,9 @@ c--- some redundancy here: ro=roj*rok
       ommsq=1d0-mbarsq
       logm=dlog(mbarsq)
       logomm=dlog(ommsq)
+
+c--- Note: this routine uses the exact form of the eikonal integrals
+c---       given in the appendix, not the symmetric combination
 
 C----radiation from massive line with massless spectator
       afftmp=aff       
@@ -560,6 +564,145 @@ c---  leg, but this is the sum of both legs (as above)
       return
       end
       
+***************************** Quark-Quark *****************************
+*     (case when the emitter is massive and spectator is massless)    *
+***********************************************************************
+      double precision function ff_mqq0(x,L,mbar,vorz)
+      implicit none
+      integer vorz
+      double precision x,L,mbar,mbarsq,ddilog,afftmp
+     . ,Icolla,Ieika,arg,ommsq,logm,logomm,xp,yp
+     . ,arg1,arg2,arg3,ypp,ypm
+
+      include 'constants.f'
+      include 'epinv.f'
+      include 'epinv2.f'
+      include 'scheme.f'
+      include 'alfacut.f'
+c--- returns the integral of the subtraction term for a
+c--- final-final quark-quark antenna, either
+c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
+C --MSbar
+c g zipffqq0=colfac*del(omx)*(
+c epinv^2/2+epinv*(1-L/2+log(mbarsq)/2-log(1-mbarsq))-L+3+L**2/4-pisq*5/12
+c  -dilog(1-mbarsq)-log(mbarsq)*(log(mbarsq)/2-1+L)/2
+c  -log(1-mbarsq)*(log(mbarsq,1-mbarsq)-L+2)
+c  -mbarsq/(1-mbarsq)*log(mbarsq)
+c  )-ffqq0;
+
+c--- Note: this uses the symmetric form of the eikonal integrals, so
+c---       that it can match with ff_mgg
+
+      if (aff .lt. 1d0) then
+        write(6,*) 'Integrated dipole routine ff_mqq0 does not yet'
+	write(6,*) ' support values of alpha < 1.'
+	stop
+      endif
+
+      ff_mqq0=0d0 
+      if (vorz .eq. 1) then
+        if (mbar .gt. 1d0) then
+            write(6,*) 'Problem with mbar in ff_mqq0, mbar=',mbar
+            stop
+        endif
+
+        mbarsq=mbar**2
+        ff_mqq0=epinv*epinv2/2d0
+     .         +epinv*(1d0-L/2d0+dlog(mbarsq)/2d0-dlog(1d0-mbarsq))
+     .         -L+3d0+L**2/4d0-pisq*5d0/12d0
+     .         -ddilog(1d0-mbarsq)
+     .         -dlog(mbarsq)*(dlog(mbarsq)/2d0-1d0+L)/2d0
+     .         -dlog(1d0-mbarsq)*(dlog(mbarsq/(1d0-mbarsq))-L+2d0)
+     .         -mbarsq/(1d0-mbarsq)*dlog(mbarsq)
+	
+      endif
+      
+      return
+      end
+
+***************************** Gluon-Gluon *****************************
+*                (in this case the spectator is massive)              *
+***********************************************************************
+      double precision function ff_mgg(x,L,mbar,vorz)
+      implicit none
+      integer vorz
+      double precision x,L,mbar,mbarsq,ddilog
+
+      include 'constants.f'
+      include 'epinv.f'
+      include 'scheme.f'
+      include 'nflav.f'
+      include 'b0.f'
+      include 'alfacut.f'
+      include 'colstruc.f'
+c--- returns the integral of the subtraction term for a
+c--- final-final gluon-gluon antenna, either
+c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
+C --MSbar
+c g zipffgg=colfac*del(omx)*(
+c  (epinv-L)*(epinv+log(mbarsq)-2*log(1-mbarsq))+L**2/2+100/9-pisq*5/6
+c  +2*b0/xn*(epinv-L)
+c  -2*dilog(1-mbarsq)-log(mbarsq)^2/2
+c  -2*log(1-mbarsq)*(log(mbarsq,1-mbarsq))
+c  -22/3*(log(1-mbar)+mbar/(1+mbar))
+c  +4/3*mbarsq/(1-mbarsq)*log(2*mbar/(1+mu))
+c  -nfoN*4/3*(4/3-log(1-mbar)-mbar/(1+mbar))
+c  )-ffgg;
+
+      if (aff .lt. 1d0) then
+        write(6,*) 'Integrated dipole routine ff_mgg does not yet'
+	write(6,*) ' support values of alpha < 1.'
+	stop
+      endif
+
+      ff_mgg=0d0
+      if (vorz .eq. 1) then
+        mbarsq=mbar**2
+c	ff_mgg=(epinv-L)*(epinv+dlog(mbarsq)-2d0*dlog(1d0-mbarsq))
+c     .   +L**2/2d0+100d0/9d0-pisq*5d0/6d0
+c     .   +2d0*b0/xn*(epinv-L)
+c     .   -2d0*ddilog(1d0-mbarsq)-dlog(mbarsq)**2/2d0
+c     .   -2d0*dlog(1d0-mbarsq)*dlog(mbarsq/(1d0-mbarsq))
+c     .   -22d0/3d0*(dlog(1d0-mbar)+mbar/(1d0+mbar))
+c     .   +4d0/3d0*mbarsq/(1-mbarsq)*dlog(2d0*mbar/(1d0+mbar))
+c     .   -dfloat(nflav)/xn*4d0/3d0*(
+c     .       4d0/3d0-dlog(1d0-mbar)-mbar/(1d0+mbar)
+c     .      +mbarsq/(1d0-mbarsq)*dlog(2d0*mbar/(1d0+mbar)))
+c--- NB: last term added by JC, 6/10/08 
+        if (nfonly) then
+	  ff_mgg=0d0
+	else
+	   ff_mgg=(epinv-L)*(epinv+dlog(mbarsq)-2d0*dlog(1d0-mbarsq))
+     .    +L**2/2d0+100d0/9d0-pisq*5d0/6d0
+     .    +2d0*11d0/6d0*(epinv-L)
+     .    -2d0*ddilog(1d0-mbarsq)-dlog(mbarsq)**2/2d0
+     .    -2d0*dlog(1d0-mbarsq)*dlog(mbarsq/(1d0-mbarsq))
+     .    -22d0/3d0*(dlog(1d0-mbar)+mbar/(1d0+mbar))
+     .    +4d0/3d0*mbarsq/(1d0-mbarsq)*dlog(2d0*mbar/(1d0+mbar))
+          if (scheme .eq. 'tH-V') then
+            continue ! the above is the CT in this scheme
+          elseif (scheme .eq. 'dred') then
+            ff_mgg=ff_mgg-1d0/3d0
+            return
+	  else
+	    write(6,*)'Value of scheme not implemented properly ',scheme
+	    stop
+          endif
+        endif
+        if (caonly) then
+          continue ! nothing more to do
+	else
+	  ff_mgg=ff_mgg
+     .   -tr*4d0/3d0*dfloat(nflav)/ca*(epinv-L)
+     .   -dfloat(nflav)/ca*2d0*tr*4d0/3d0*(
+     .       4d0/3d0-dlog(1d0-mbar)-mbar/(1d0+mbar)
+     .      +mbarsq/(1d0-mbarsq)*dlog(2d0*mbar/(1d0+mbar)))
+         endif
+      endif
+      
+      return
+      end
+
       
       
       
@@ -693,32 +836,32 @@ c
       end
 
 ***************************** Gluon-Gluon *****************************
-      double precision function ff_mgg(x,L,mbar,vorz)
-      implicit none
-      integer vorz
-      double precision x,L,mbar,Ieik,Icoll
-      include 'constants.f'
-      include 'epinv.f'
-      include 'epinv2.f'
-c--- returns the integral of the subtraction term for an
-c--- final-initial gluon-gluon antenna, either
-c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
-C --MSbar
-c Id,aqg=-2/3*(epinv-L)-16/9
-c Id,agg=2*epinv*(epinv-L)+L^2+11/3*(epinv-L)+100/9-[pi]^2
-      
-      ff_mgg=0d0
-CDST Eq.5.32
-      if (vorz .eq. 1) then
-      Ieik=half*epinv*(epinv2-L)+half*L**2-pisq/4d0
-      Icoll=11d0/6d0*(epinv-L)+50d0/9d0
-CDST Eq.5.36 needs to be added too - need to fix this
-      Icoll=Icoll+half*dfloat(nf)/xn*(-2d0/3d0*(epinv-L)-16d0/9d0)
-      ff_mgg=2d0*(2d0*Ieik+Icoll)
-      return
-      endif
-      return
-      end
+c      double precision function ff_mgg(x,L,mbar,vorz)
+c      implicit none
+c      integer vorz
+c      double precision x,L,mbar,Ieik,Icoll
+c      include 'constants.f'
+c      include 'epinv.f'
+c      include 'epinv2.f'
+cc--- returns the integral of the subtraction term for an
+cc--- final-initial gluon-gluon antenna, either
+cc--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
+cC --MSbar
+cc Id,aqg=-2/3*(epinv-L)-16/9
+cc Id,agg=2*epinv*(epinv-L)+L^2+11/3*(epinv-L)+100/9-[pi]^2
+c      
+c      ff_mgg=0d0
+cCDST Eq.5.32
+c      if (vorz .eq. 1) then
+c      Ieik=half*epinv*(epinv2-L)+half*L**2-pisq/4d0
+c      Icoll=11d0/6d0*(epinv-L)+50d0/9d0
+cCDST Eq.5.36 needs to be added too - need to fix this
+c      Icoll=Icoll+half*dfloat(nf)/xn*(-2d0/3d0*(epinv-L)-16d0/9d0)
+c      ff_mgg=2d0*(2d0*Ieik+Icoll)
+c      return
+c      endif
+c      return
+c      end
 
 c
 c * Now write these expressions in a neater form

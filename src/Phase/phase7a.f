@@ -23,8 +23,12 @@ c---- with all 2 pi's (ie 1/(2*pi)^17)
       parameter(wt0=1d0/twopi**5)
 
 c--- written for real contribution to qq->H(->WW)+qq only
-      if (case .ne. 'qq_HWW') then
+      if  ((case .eq. 'qq_HWW') .or. (case .eq. 'HWW2jt')
+     ..or. (case .eq. 'HZZ2jt')) then
+        continue
+      else 
         write(6,*) 'Phase space routine not correct - needs updating.'
+        write(6,*) 'case',case
 	stop
       endif
 
@@ -36,19 +40,30 @@ c--- written for real contribution to qq->H(->WW)+qq only
       enddo
       smin=mb**2
 
-c--- In the case of HWWjet, we should generate s3456 according to
-c--- a Breit-Wigner at mH
+c--- In the case of HWW/HZZ+2jets, we should generate s3456 according
+c--- to a Breit-Wigner at mH
       n2=1
       mass2=hmass
       width2=hwidth
       n3=0
       call phi1_2(r(1),r(2),r(3),r(4),p12,p3456,p789,wt12,*99)
-      n2=1
-      mass2=wmass
-      width2=wwidth
-      n3=1
-      mass3=wmass
-      width3=wwidth
+
+      if     (case .eq. 'HWW2jt') then
+        n2=1
+        mass2=wmass
+        width2=wwidth
+        n3=1
+        mass3=wmass
+        width3=wwidth
+      elseif (case .eq. 'HZZ2jt') then
+        n2=1
+        mass2=zmass
+        width2=zwidth
+        n3=1
+        mass3=zmass
+        width3=zwidth
+      endif
+
       call phi1_2(r(5),r(6),r(7),r(8),p3456,p56,p34,wt3456,*99)
       call phi3m0(r(13),r(14),p34,p3,p4,wt34,*99)
       call phi3m0(r(11),r(12),p56,p5,p6,wt56,*99)

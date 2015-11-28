@@ -14,7 +14,8 @@ c----p(6,i) and p(7,i) are set equal to zero
       double precision p(mxpart,4),
      . p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4),m3,m4,m5
       double precision pswt,xjac,xx(2),tau,y
-
+      character*30 runstring
+      common/runstring/runstring
       common/energy/sqrts
       common/x1x2/xx
 
@@ -32,6 +33,13 @@ c----p(6,i) and p(7,i) are set equal to zero
       xx(1)=dsqrt(tau)*exp(+y)
       xx(2)=dsqrt(tau)*exp(-y)
 
+c--- for comparison with C. Oleari's e+e- --> QQbg calculation
+      if (runstring(1:5) .eq. 'carlo') then
+        xx(1)=1d0
+	xx(2)=1d0
+	xjac=1d0
+      endif
+
 c---if x's out of normal range alternative return
       if   ((xx(1) .gt. 1d0) 
      & .or. (xx(2) .gt. 1d0)
@@ -48,7 +56,7 @@ c---if x's out of normal range alternative return
       p2(2)=zip
       p2(3)=+xx(2)*sqrts*half
 
-      if (case .eq. 'tottth') then
+       if (case .eq. 'tottth') then
       m3=mt
       m4=mt
       m5=hmass
@@ -65,8 +73,7 @@ c---if x's out of normal range alternative return
       enddo 
       wt3=xjac*pswt
 
-
-
       if(wt3 .eq. 0d0) return 1
+
       return
       end

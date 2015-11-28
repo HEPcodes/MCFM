@@ -65,13 +65,15 @@ c      double precision sumjetpt(2)
       
       gencuts=.false.
 
+      hwwjetcuts=.false.
+c--- THIS FUNCTIONALITY REMOVED, TO AVOID CONFUSION
 c--- perform extra H(->WW)+jet search cuts if there is a minimum
 c---  jet rapidity, as is usually done
-      if (abs(etajetmin) .gt. 1d-6) then
-        hwwjetcuts=.true.
-      else
-        hwwjetcuts=.false.
-      endif 
+c      if (abs(etajetmin) .gt. 1d-6) then
+c        hwwjetcuts=.true.
+c      else
+c        hwwjetcuts=.false.
+c      endif 
 
 c--- extra transverse mass cut in W+jets for CDF
       if (runstring(1:7) .eq. 'cdfjoey') then
@@ -96,6 +98,14 @@ c--- do single-top search cuts instead
      .    maxparts=6+njets
         call stopcuts(pjet,maxparts,ht,qeta,mlbnu,merecon,reconcorr)  
         if (ht .lt. 0d0) gencuts=.true.
+        return
+      endif
+       
+      if (runstring(1:6) .eq. 'cdfhww') then
+c--- do CDF H->WW search cuts instead
+        maxparts=6+njets
+        call cdfhwwcuts(pjet,maxparts,passed)  
+        if (passed .eqv. .false.) gencuts=.true.
         return
       endif
        

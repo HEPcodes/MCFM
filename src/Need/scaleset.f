@@ -9,23 +9,112 @@
       include 'nlooprun.f'
       include 'ptilde.f'
       include 'jetlabel.f'
+      include 'process.f'
+      include 'npart.f'
       character*52 msg,rmsg,fmsg
-      character*4 prechar(6)
+      character*4 prechar(7)
       character boson
       integer nqcdjets,nqcdstart,n2,n3,j,iscale,iscalemax,
      . irscale,ifscale,iset
       double precision amz,rscalestart,fscalestart,
      . dot,pttwo,aveptjet,getEt,p(mxpart,4),alphas,
-     . setscale,pt,prescale(6),prefac
+     . setscale,pt,prescale(7),prefac
       logical first
       double precision mass2,width2,mass3,width3
+      double precision b1scale,q2scale,q1scale,b2scale
       common/breit/n2,n3,mass2,width2,mass3,width3
       common/nqcdjets/nqcdjets,nqcdstart
       common/couple/amz
-      data prescale/0.5d0,0.75d0,1d0,2d0,4d0,8d0/
-      data prechar/" 0.5","0.75"," 1.0"," 2.0"," 4.0"," 8.0"/
+      common/bqscale/b1scale,q2scale,q1scale,b2scale
+      data prescale/0.25d0,0.5d0,0.75d0,1d0,2d0,4d0,8d0/
+      data prechar/"0.25"," 0.5","0.75"," 1.0"," 2.0"," 4.0"," 8.0"/
       data first/.true./  
       save first
+
+c--- FIRST CHECK FOR SPECIAL CASES
+c---    single top s-channel, dynamic scale is (pt+pb)**2
+      if       (case .eq. 't_bbar') then
+        scale=dsqrt(abs(
+     .       +(p(3,4)+p(4,4)+p(5,4)+p(6,4))**2
+     .       -(p(3,1)+p(4,1)+p(5,1)+p(6,1))**2
+     .       -(p(3,2)+p(4,2)+p(5,2)+p(6,2))**2
+     .       -(p(3,3)+p(4,3)+p(5,3)+p(6,3))**2))
+        facscale=scale
+	if (first) then
+        write(6,*)
+        write(6,*)'************** Special scale choice ****************'
+        write(6,*)'*                                                  *'
+        write(6,*)'*        muR = muF =  (p(top)+p(bottom))^2         *'
+        write(6,*)'*                                                  *'
+        write(6,*)'****************************************************'
+	first=.false.
+	endif
+	goto 77
+
+      elseif    ((case .eq. 'bq_tpq') .or. (case .eq. 'qg_tbq')) then
+c---    single top t-channel, dynamic scale is:
+c---        Q^2=-(pt-pb)^2 on the light quark line
+c---        Q^2+mt^2 on the heavy quark line
+        if (case .eq. 'bq_tpq') then
+          q1scale=-(
+     .         +(p(3,4)+p(4,4)+p(5,4)+p(2,4))**2
+     .         -(p(3,1)+p(4,1)+p(5,1)+p(2,1))**2
+     .         -(p(3,2)+p(4,2)+p(5,2)+p(2,2))**2
+     .         -(p(3,3)+p(4,3)+p(5,3)+p(2,3))**2)
+          b2scale=-(
+     .         +(p(3,4)+p(4,4)+p(5,4)+p(2,4))**2
+     .         -(p(3,1)+p(4,1)+p(5,1)+p(2,1))**2
+     .         -(p(3,2)+p(4,2)+p(5,2)+p(2,2))**2
+     .         -(p(3,3)+p(4,3)+p(5,3)+p(2,3))**2)+mt**2
+          q2scale=-(
+     .         +(p(3,4)+p(4,4)+p(5,4)+p(1,4))**2
+     .         -(p(3,1)+p(4,1)+p(5,1)+p(1,1))**2
+     .         -(p(3,2)+p(4,2)+p(5,2)+p(1,2))**2
+     .         -(p(3,3)+p(4,3)+p(5,3)+p(1,3))**2)
+          b1scale=-(
+     .         +(p(3,4)+p(4,4)+p(5,4)+p(1,4))**2
+     .         -(p(3,1)+p(4,1)+p(5,1)+p(1,1))**2
+     .         -(p(3,2)+p(4,2)+p(5,2)+p(1,2))**2
+     .         -(p(3,3)+p(4,3)+p(5,3)+p(1,3))**2)+mt**2
+        else
+          q1scale=-(
+     .         +(p(5,4)+p(1,4))**2
+     .         -(p(5,1)+p(1,1))**2
+     .         -(p(5,2)+p(1,2))**2
+     .         -(p(5,3)+p(1,3))**2)
+          b2scale=-(
+     .         +(p(5,4)+p(1,4))**2
+     .         -(p(5,1)+p(1,1))**2
+     .         -(p(5,2)+p(1,2))**2
+     .         -(p(5,3)+p(1,3))**2)+mt**2
+          q2scale=-(
+     .         +(p(5,4)+p(2,4))**2
+     .         -(p(5,1)+p(2,1))**2
+     .         -(p(5,2)+p(2,2))**2
+     .         -(p(5,3)+p(2,3))**2)
+          b1scale=-(
+     .         +(p(5,4)+p(2,4))**2
+     .         -(p(5,1)+p(2,1))**2
+     .         -(p(5,2)+p(2,2))**2
+     .         -(p(5,3)+p(2,3))**2)+mt**2
+	endif
+	q1scale=max(dsqrt(q1scale),1d0) ! min. of 1 GeV for safety
+	b2scale=max(dsqrt(b2scale),1d0)
+	q2scale=max(dsqrt(q2scale),1d0)
+	b1scale=max(dsqrt(b1scale),1d0)
+	scale=q1scale   ! for safety
+	facscale=scale
+	if (first) then
+        write(6,*)
+        write(6,*)'************** Special scale choice ****************'
+        write(6,*)'*                                                  *'
+        write(6,*)'*        muR = muF = DDIS (c.f. Z. Sullivan)       *'
+        write(6,*)'*                                                  *'
+        write(6,*)'****************************************************'
+	first=.false.
+	endif
+	goto 77
+      endif
 
 c--- convert double precision starting values of the renormalization
 c--- and factorization scales to integers
@@ -87,7 +176,23 @@ c--- pt7
         setscale=pt(7,p)
         if (first) msg='*                 Dynamic scale = pt7      '//
      . '        *'
-      elseif ((iset .gt. 10) .and. (iset .lt. 17)) then
+      elseif (iset .eq. 7) then
+c--- HT-hat (HT, partonic, whether or not they pass cuts)      
+        setscale=0d0
+        do j=3,npart+2
+        setscale=setscale+pt(j,p)
+        enddo
+        if (first) msg='*    Dynamic scale = parton Et sum (HT-hat)'//
+     . '        *'
+      elseif (iset .eq. 8) then
+c--- sqrt(Qsq + 4*msq) for DIS processes
+        setscale=(p(1,4)+p(5,4))**2
+     .   -(p(1,1)+p(5,1))**2-(p(1,2)+p(5,2))**2-(p(1,3)+p(5,3))**2
+        setscale=dsqrt(-setscale+4d0*(
+     .   p(3,4)**2-p(3,1)**2-p(3,2)**2-p(3,3)**2))
+        if (first) msg='*        Dynamic scale = sqrt(Qsq + 4*msq) '//
+     . '        *'
+      elseif ((iset .gt. 10) .and. (iset .lt. 18)) then
 c--- sqrt(boson mass + boson pt) multiplied by a scale factor
         prefac=prescale(iset-10)
         if (nwz .eq. 0) then
@@ -99,12 +204,37 @@ c--- sqrt(boson mass + boson pt) multiplied by a scale factor
         endif  
         msg='* Dynamic scale = '//prechar(iset-10)//' * dsqrt('
      .    //boson//'mass**2'//' + pt_'//boson//'**2) *'
-      elseif ((iset .lt. 1) .or. (iset .gt. 7)) then
+      elseif ((iset .gt. 20) .and. (iset .lt. 28)) then
+c--- HT-hat (HT, partonic, whether or not they pass cuts) 
+c---  multiplied by a scale factor     
+        setscale=0d0
+        do j=3,npart+2
+        setscale=setscale+pt(j,p)
+        enddo
+        prefac=prescale(iset-20)
+        setscale=prefac*setscale
+        msg='*  Dynamic scale = '//prechar(iset-20)//
+     .      ' * [parton Et sum (HT-hat)] *'
+      elseif ((iset .gt. 30) .and. (iset .lt. 38)) then
+c--- average jet pt      
+        if (nqcdjets .eq. 0) then
+          write(6,*) 'Invalid choice of scale - no jets!'
+          stop
+        endif
+        setscale=aveptjet(p)
+        prefac=prescale(iset-30)
+        setscale=prefac*setscale
+        msg='*        Dynamic scale = '//prechar(iset-30)//
+     .      ' * [< pt_jet >]       *'
+
+        msg='*          Dynamic scale = < pt_jet >              *'
+
+       elseif ((iset .lt. 1) .or. (iset .gt. 8)) then
 c--- catch invalid inputs
         write(6,*) 'Invalid dynamic scale!'
         stop
       endif
-
+      
 c--- choose a reasonable minimum value for the scale      
       if (setscale .lt. 1d0) setscale=1d0 ! for safety
 
@@ -131,6 +261,8 @@ c--- choose a reasonable minimum value for the scale
         write(6,*)'****************************************************'
         first=.false.      
       endif
+  
+   77 continue
       
 c--- catch absurdly large scales      
       if  (scale .gt. 3000d0) scale=3000d0
@@ -138,7 +270,7 @@ c--- catch absurdly large scales
 
 c--- run alpha_s
       as=alphas(scale,amz,nlooprun)
-        
+	
       ason2pi=as/twopi
       ason4pi=as/fourpi
       gsq=fourpi*as

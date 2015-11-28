@@ -83,7 +83,7 @@ c---
 
 c--
 ! GZ replace call to Frizzo Amp dfm_amm with Ammppp which uses MHV 
-! amplitudes (hep-ph/0411092)
+! amplitudes (hep-th/0411092)
         elseif(iconf.eq. 7) then ! --+++
           amp_h5g=Ammppp(J(1),J(2),J(3),J(4),J(5))  
 

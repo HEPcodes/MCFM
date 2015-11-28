@@ -104,6 +104,7 @@ cz //
      & ,ETANOB
      & ,ETARAP
      & ,ETARAPTWO
+     & ,ETARAPTHREE
      & ,ETBIN
      & ,ETDOUBLEBIN
      & ,GETET
@@ -121,6 +122,7 @@ cz //
      & ,PTOTHER
      & ,ETAOTHER
      & ,PTTWO
+     & ,PTTHREE
      & ,QETA
      & ,R
      & ,R57
@@ -130,7 +132,9 @@ cz //
      & ,SWAP
      & ,WT
      & ,WT2
+     & ,YRAP
      & ,YRAPTWO
+     & ,YRAPTHREE
      & ,DPHI_LL
      & ,M_LL
      & ,MTRANS
@@ -147,14 +151,17 @@ cz Added by Z. Sullivan 1/25/05
 cz jet(3) will be filled with pt-ordered jets in all processes
 cz ibbar  will hold an index to the extra b in t-channel single-top for
 cz          use with bwgt
-      integer jet(mxpart),jetstart,ibbar,iz,izj,iztmp
+      integer jet(mxpart),jetstart,ibbar,iz,izj,iztmp,
+     . inotb,ilight1,ilight2
 cz //
 
+      double precision wtbbar,wtnotb,wtlight1,wtlight2
       double precision m34,etmiss,misset,
-     . p(mxpart,4),fphi,HT,etcharm,deltaeta
+     . p(mxpart,4),fphi,HT,etcharm,deltaeta,cosdeltaphi
       double precision eta3,eta4,eta5,eta6,eta7,eta8,eta34,eta56,y34
       double precision r34,r35,r45,r36,r46,r56,m345,m348,m567,m678
       double precision pt3,pt4,pt5,pt6,pt7,pt8,pt34,pt56,oldpt(5:7)
+      double precision pt345,eta345,y345,y3,y4
       double precision bclustmass,etvec(4),tmp5(4),tmp6(4),tmp7(4)
       double precision langle,plep(4),plep_wrest(4),pw(4),pw_wrest(4)
       integer nproc,eventpart,ib1,ib2,nqcdjets,nqcdstart
@@ -172,9 +179,17 @@ cz //
       common/hwwvars/dphi_ll,m_ll,mtrans,scut1,scut2
       double precision realeventp(mxpart,4),
      . sr15,sr16,sr17,sr25,sr26,sr27,sr56,sr57,sr67
+      double precision ycut001,ycut005,ycut010,ycut015,ycut020,
+     . y32,y43,z3,z4,z5,z6
       common/realeventp/realeventp
       data first/.true./
       save first
+
+c--- Check for special plotting instructions
+      if (runstring(1:4) .eq. 'cfmt') then
+        call plots_stop_cfmt(p,wt,wt2)
+	return
+      endif
 
 c--- Set up string for pt or Et
       if (useEt) then
@@ -235,6 +250,7 @@ c--- ensure we initialize all possible histograms
         m678=0d0
         HT=0d0
 	deltaeta=99d0
+	cosdeltaphi=99d0
         jetmerge=.true.
         jets=nqcdjets
         goto 99
@@ -255,13 +271,17 @@ c---  are handled with reference to nproc
         eventpart=4+jets
       endif
       if (    (case .eq. 'W_only') .or. (case .eq. 'Z_only')
-     .    .or.(case .eq. 'ggfus0')) then
+     .    .or.(case .eq. 'ggfus0') .or. (case .eq. 'qg_tbq')) then
         eventpart=4+jets
+      elseif (case .eq. 'bq_tpq') then
+        eventpart=5+jets
       elseif ((case .eq. 'WWqqbr') .or. (case .eq. 'WWnpol')
      .    .or.(case .eq. 'WZbbar') .or. (case .eq. 'ZZlept')
      .    .or.(case .eq. 'HWW_4l') .or. (case .eq. 'HZZ_4l')
      .    .or.(case .eq. 'HWWjet') .or. (case .eq. 'qq_HWW')
-     .    .or.(case .eq. 'WW_jet') .or. (case .eq. 'ZZ_jet')) then
+     .    .or.(case .eq. 'WW_jet') .or. (case .eq. 'ZZ_jet')
+     .    .or.(case .eq. 'HWWjet') .or. (case .eq. 'HZZjet')
+     .    .or.(case .eq. 'HWW2jt') .or. (case .eq. 'HZZ2jt')) then
         eventpart=6+jets
       elseif ((case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')) then
         eventpart=8
@@ -283,7 +303,7 @@ c--- re-order jets according to pt, for a W/Z/H+jet event
      .    (case .eq. 'W_3jet') .or. (case .eq. 'Z_3jet') .or.
      .    (case .eq. 'ggfus1') .or. (case .eq. 'ggfus2') .or.
      .    (case .eq. 'ggfus3') .or. (case .eq. 'qq_Hqq') .or.
-     .    (case .eq. 'qqHqqg')) then
+     .    (case .eq. 'qqHqqg') .or. (case .eq. 'qg_tbq')) then
         jetevent=.true.
         if (algorithm .eq. 'cone') then
           if (jets .gt. 0) pt5=getet(p(5,4),p(5,1),p(5,2),p(5,3))
@@ -369,8 +389,10 @@ c--- returns zero cluster mass if two b's are in one jet
       endif  
 
       eta3=etarap(3,p)
+      y3=yrap(3,p)
       pt3=pt(3,p)
       eta4=etarap(4,p)
+      y4=yrap(4,p)
       pt4=pt(4,p)        
       eta34=etaraptwo(3,4,p)
       y34=yraptwo(3,4,p)
@@ -385,6 +407,9 @@ c--- returns zero cluster mass if two b's are in one jet
       r45=R(p,4,5)
       m345=dsqrt((p(3,4)+p(4,4)+p(5,4))**2-(p(3,1)+p(4,1)+p(5,1))**2
      .          -(p(3,2)+p(4,2)+p(5,2))**2-(p(3,3)+p(4,3)+p(5,3))**2)
+      pt345=ptthree(3,4,5,p)
+      eta345=etarapthree(3,4,5,p)
+      y345=yrapthree(3,4,5,p)
       HT=HT+pt5
       endif
       
@@ -568,10 +593,30 @@ c---  when it is a b-quark and when it is not
 
 c--- find largest rapidity difference between the jets
       deltaeta=99d0
-      if     (jets .eq. 2) then
-        deltaeta=abs(eta5-eta6)
-      elseif (jets .eq. 3) then
-        deltaeta=max(abs(eta5-eta6),abs(eta5-eta7),abs(eta6-eta7))
+      cosdeltaphi=99d0
+      if ((jets .eq. 2) .or. (jets .eq. 3)) then
+        if     (jets .eq. 2) then
+	  i5=5
+	  i6=6
+        elseif (jets .eq. 3) then
+          if (abs(eta5-eta6).gt.max(abs(eta5-eta7),abs(eta6-eta7))) then
+	    i5=5
+	    i6=6
+	  else
+	    if (abs(eta5-eta7).gt.abs(eta6-eta7)) then
+	      i5=5
+	      i6=7
+	    else
+	      i5=6
+	      i6=7
+	    endif
+	  endif
+        endif
+	deltaeta=abs(etarap(i5,p)-etarap(i6,p))
+	cosdeltaphi=(p(i5,1)*p(i6,1)+p(i5,2)*p(i6,2))
+     .           /dsqrt((p(i5,1)**2+p(i5,2)**2)*(p(i6,1)**2+p(i6,2)**2))
+        if (cosdeltaphi .lt. -0.999999999D0) cosdeltaphi=-1d0
+c	cosdeltaphi=abs(cosdeltaphi)
       endif
 	  
    99 continue
@@ -584,6 +629,7 @@ c--- make plots for H(->WW)+jet paper
       endif
       
 cz Added by Z. Sullivan, 1/25/05
+c--- further amended by JC, 19/8/08
 cz jet(i) will hold a pt-ordered index to jet momenta.  jet(i)=0 by default
 cz This is designed to work for processes where jet momenta come last,
 cz  specifically single-top processes 160-179.  Check process.DAT for momenta
@@ -627,12 +673,17 @@ cz // end jet(3) filling
 cz Extract index to b~ (b for t~) in t-channel single-top
 cz Events should be plotted with weight = wt*bwgt instead of just wt.
       ibbar=0
+      inotb=0
       if (((nproc.eq.161).or.(nproc.eq.166)).and.(jets.gt.0)) then
-         if (bwgt.gt.1d-10) then    ! some reasonable minimal threshold
+c         if (bwgt.gt.1d-10) then    ! some reasonable minimal threshold
 c   There are 2 cases: 
 c   If merging did not occur, then only if jetlabel(i)=='pp' is it the b~.
             do iz=1,jets
-               if (jetlabel(jet(iz)-jetstart+1).eq.'pp') ibbar=jet(iz)
+               if     (jetlabel(jet(iz)-jetstart+1).eq.'pp') then
+	         ibbar=jet(iz)
+               elseif (jetlabel(jet(iz)-jetstart+1).eq.'qj') then
+	         inotb=jet(iz)
+               endif	  
             enddo
 c   If merging occurred, then it matters whether the merged jet was already
 c    a bq or not.  There is a dirty test for the simple case if removebr=true
@@ -644,10 +695,60 @@ c           Therefore, we are ignoring this case for now.  You should always
 c           use removebr = .true. for comparisons to event generators anyway.
                endif
             endif
-         endif  ! end bwgt > 1d-10
+c         endif  ! end bwgt > 1d-10
       endif
 cz // end finding index to b~ in t-channel single-top
 cz // Can now plot pt-ordered jets, and b~ fraction (with wt*bwgt)
+
+      if (case .eq. 'bq_tpq') then
+      ilight1=0
+      ilight2=0
+      wtbbar=0d0
+      wtnotb=0d0
+      wtlight1=0d0
+      wtlight2=0d0
+c--- there are three cases
+      if     (jets .eq. 1) then
+        if     (jetlabel(1) .eq. 'qj') then
+c---   1) only one jet, that is definitely not a b
+c---           jetlabel = (qj)
+	  ibbar=0
+c         inotb already set above
+	  wtnotb=wt
+	elseif (jetlabel(1) .eq. 'pp') then
+c---   2) only one jet, that could be a b
+c---           jetlabel = (pp)
+c         ibbar already set above
+	  inotb=ibbar
+	  wtbbar=wt*bwgt
+	  wtnotb=wt*(1d0-bwgt)
+        endif	  
+c---   3) two jets, one of which could be a b
+c---           jetlabel = (qj,pp) OR (pp,qj)
+      elseif (jets .eq. 2) then
+c       ibbar already set above
+c       inotb already set above
+        wtbbar=wt*bwgt
+	wtnotb=wt*bwgt
+        ilight1=jet(1) ! they are ordered according to pt
+        ilight2=jet(2) ! they are ordered according to pt
+	wtlight1=wt*(1d0-bwgt)
+	wtlight2=wtlight1
+      elseif (jets .eq. 0) then
+c--- nothing to set: all variables=0 and should only occur when notag=1
+        continue
+      else
+        write(6,*) 'Error: there should be 1 or 2 jets, instead ',jets
+	stop
+      endif
+      if (first) then
+c--- on first call, use dummies to ensure histograms are initialized
+	ibbar=6
+	inotb=7
+	ilight1=6
+	ilight2=7
+      endif
+      endif
 
 c--- Book and fill ntuple if that option is set, remembering to divide
 c--- by # of iterations now that is handled at end for regular histos
@@ -659,6 +760,115 @@ c        return
 
 c--- Otherwise, fill the histograms 
       n=1                  
+      
+c--- SPECIAL PLOTS FOR T-CHANNEL SINGLE TOP
+      if (case .eq. 'bq_tpq') then
+c--- RAPIDITY FIRST
+c--- leading jet that isn't a b
+c---    first account for events with only one non b jet (always occurs)
+c---    (always occurs, except if notag=1)
+      if (inotb .ne. 0) then
+      call bookplot(n,tag,'eta notb 1',
+     . etarap(inotb,p),wtnotb,wt2,-8d0,8d0,0.5d0,'lin')
+      endif
+c---    then account for events with two non b jets (only if ilight1>0)
+      if (ilight1 .ne. 0) then
+      call bookplot(n,tag,'eta notb 1',
+     . etarap(ilight1,p),wtlight1,wt2,-8d0,8d0,0.5d0,'lin')
+      endif
+      n=n+1
+c--- subleading jet that isn't a b (only if ilight1>0)
+      if (ilight1 .ne. 0) then
+      call bookplot(n,tag,'eta notb 2',
+     . etarap(ilight2,p),wtlight2,wt2,-8d0,8d0,0.5d0,'lin')
+      endif
+      n=n+1
+c--- b jet (only if ibbar>0)
+      if (ibbar .ne. 0) then
+      call bookplot(n,tag,'eta b',
+     . etarap(ibbar,p),wtbbar,wt2,-8d0,8d0,0.5d0,'lin')
+      endif
+      n=n+1
+
+c--- PT SECOND
+c--- leading jet that isn't a b
+c---    first account for events with only one non b jet (always occurs)
+c---    (always occurs, except if notag=1)
+      if (inotb .ne. 0) then
+      call bookplot(n,tag,'pt notb 1',
+     . pt(inotb,p),wtnotb,wt2,0d0,200d0,5d0,'log')
+      endif
+c---    then account for events with two non b jets (only if ilight1>0)
+      if (ilight1 .ne. 0) then
+      call bookplot(n,tag,'pt notb 1',
+     . pt(ilight1,p),wtlight1,wt2,0d0,200d0,5d0,'log')
+      endif
+      n=n+1
+c--- subleading jet that isn't a b (only if ilight1>0)
+      if (ilight1 .ne. 0) then
+      call bookplot(n,tag,'pt notb 2',
+     . pt(ilight2,p),wtlight2,wt2,0d0,200d0,5d0,'log')
+      endif
+      n=n+1
+c--- b jet (only if ibbar>0)
+      if (ibbar .ne. 0) then
+      call bookplot(n,tag,'pt b',
+     . pt(ibbar,p),wtbbar,wt2,0d0,200d0,5d0,'log')
+      endif
+      n=n+1
+      endif
+      
+      if (runstring(1:5) .eq. 'carlo') then
+c--- Special histograms for comparison with C. Oleari's
+c---  e+e- --> QQbg calculation (Durham jet rates)
+        ycut001=0d0
+	ycut005=0d0
+	ycut010=0d0
+	ycut015=0d0
+	ycut020=0d0
+	if (tag .eq. 'plot') then
+	  call durhamalg(p,npart-switch,y32,y43,z3,z4,z5,z6)
+	endif
+c	write(6,'(i3,3e16.6)') switch,y43,y32,wt
+	if ((y32 .gt. 0.01d0) .and. (y43 .lt. 0.01d0)) ycut001=1d0
+	if ((y32 .gt. 0.05d0) .and. (y43 .lt. 0.05d0)) ycut005=1d0
+	if ((y32 .gt. 0.10d0) .and. (y43 .lt. 0.10d0)) ycut010=1d0
+	if ((y32 .gt. 0.15d0) .and. (y43 .lt. 0.15d0)) ycut015=1d0
+	if ((y32 .gt. 0.20d0) .and. (y43 .lt. 0.20d0)) ycut020=1d0
+        call bookplot(n,tag,'ycut=0.01',ycut001,wt,wt2,
+     .                0.5d0,1.5d0,1d0,'lin')
+        n=n+1
+        call bookplot(n,tag,'ycut=0.05',ycut005,wt,wt2,
+     .                0.5d0,1.5d0,1d0,'lin')
+        n=n+1
+        call bookplot(n,tag,'ycut=0.10',ycut010,wt,wt2,
+     .                0.5d0,1.5d0,1d0,'lin')
+        n=n+1
+        call bookplot(n,tag,'ycut=0.15',ycut015,wt,wt2,
+     .                0.5d0,1.5d0,1d0,'lin')
+        n=n+1
+        call bookplot(n,tag,'ycut=0.20',ycut020,wt,wt2,
+     .                0.5d0,1.5d0,1d0,'lin')
+        n=n+1
+        call bookplot(n,tag,'y43      ',y43,wt,wt2,
+     .                0d0,1d0,0.05d0,'lin')
+        n=n+1
+        call bookplot(n,tag,'y43>0.01 ',y43,wt,wt2,
+     .                0.01d0,1.01d0,0.05d0,'lin')
+        n=n+1
+        call bookplot(n,tag,'y43>0.05 ',y43,wt,wt2,
+     .                0.05d0,1d0,0.05d0,'lin')
+        n=n+1
+        call bookplot(n,tag,'y43>0.10 ',y43,wt,wt2,
+     .                0.10d0,1d0,0.05d0,'lin')
+        n=n+1
+        call bookplot(n,tag,'y43>0.15 ',y43,wt,wt2,
+     .                0.15d0,1d0,0.05d0,'lin')
+        n=n+1
+        call bookplot(n,tag,'y43>0.20 ',y43,wt,wt2,
+     .                0.20d0,1d0,0.05d0,'lin')
+        n=n+1
+      endif
       
       if (runstring(1:4) .eq. 'stop') then
 c--- Special histograms for single top search
@@ -818,9 +1028,13 @@ c --- Histograms to monitor exclusive/inclusive cross-sections:
       if (nodecay .eqv. .false.) then
       call bookplot(n,tag,'eta3',eta3,wt,wt2,-4d0,4d0,0.2d0,'lin')
       n=n+1
+      call bookplot(n,tag,'y3',y3,wt,wt2,-4d0,4d0,0.2d0,'lin')
+      n=n+1
       call bookplot(n,tag,ptet//'3',pt3,wt,wt2,0d0,150d0,5d0,'log')
       n=n+1      
       call bookplot(n,tag,'eta4',eta4,wt,wt2,-4d0,4d0,0.2d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'y4',y4,wt,wt2,-4d0,4d0,0.2d0,'lin')
       n=n+1
       call bookplot(n,tag,ptet//'4',pt4,wt,wt2,25d0,50d0,0.5d0,'lin')
       n=n+1
@@ -849,6 +1063,12 @@ c --- Histograms to monitor exclusive/inclusive cross-sections:
       call bookplot(n,tag,ptet//'5',pt5,wt,wt2,0d0,500d0,5d0,'log')
       n=n+1
       call bookplot(n,tag,ptet//'5',pt5,wt,wt2,0d0,100d0,2d0,'log')
+      n=n+1
+      call bookplot(n,tag,'pt345',pt345,wt,wt2,0d0,200d0,5d0,'log')
+      n=n+1
+      call bookplot(n,tag,'eta345',eta345,wt,wt2,-4d0,4d0,0.2d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'y345',y345,wt,wt2,-4d0,4d0,0.2d0,'lin')
       n=n+1
       call bookplot(n,tag,'m345',m345,wt,wt2,108d0,308d0,2d0,'log')
       n=n+1
@@ -904,9 +1124,29 @@ c      n=n+1
      . wt,wt2,0d0,10d0,0.5d0,'lin')
       endif
       n=n+1      
+      if ((jets .eq. 2) .or. (tag .eq. 'book')) then
+      call bookplot(n,tag,'for phi: delta(eta) - 2 jets',deltaeta,
+     . wt*cosdeltaphi,wt2,0d0,10d0,0.5d0,'lin')
+      endif
+      n=n+1      
+      if ((jets .eq. 2) .or. (tag .eq. 'book')) then
+      call bookplot(n,tag,'cos delta(phi) - 2 jets',cosdeltaphi,
+     . wt,wt2,0d0,1d0,0.05d0,'lin')
+      endif
+      n=n+1      
       if ((jets .eq. 3) .or. (tag .eq. 'book')) then
       call bookplot(n,tag,'delta(eta) - 3 jets',deltaeta,
      . wt,wt2,0d0,10d0,0.5d0,'lin')
+      endif
+      n=n+1      
+      if ((jets .eq. 3) .or. (tag .eq. 'book')) then
+      call bookplot(n,tag,'for phi: delta(eta) - 3 jets',deltaeta,
+     . wt*cosdeltaphi,wt2,0d0,10d0,0.5d0,'lin')
+      endif
+      n=n+1      
+      if ((jets .eq. 3) .or. (tag .eq. 'book')) then
+      call bookplot(n,tag,'cos delta(phi) - 3 jets',cosdeltaphi,
+     . wt,wt2,0d0,1d0,0.05d0,'lin')
       endif
       n=n+1      
       endif

@@ -143,6 +143,11 @@ c-----assign MSTW to standard grid
              mode=4
              call mrst2001(x,xmu,mode,u_val,d_val,u_sea,d_sea,
      &                          s_sea,c_sea,b_sea,gluon)
+             elseif (pdlabel .eq. 'mrs01lo') then
+c             write(6,*) 'here'
+             mode=1
+             call mrstlo(x,xmu,mode,u_val,d_val,u_sea,d_sea,
+     &                          s_sea,c_sea,b_sea,gluon)
              elseif (pdlabel .eq. 'mrs99_1') then
              mode=1
              call mrs99(x,xmu,mode,u_val,d_val,u_sea,d_sea,

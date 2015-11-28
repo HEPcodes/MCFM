@@ -35,12 +35,13 @@
       include 'qcdcouple.f'
       include 'nlooprun.f'
       include 'initialscales.f'
+      include 'stopscales.f'
       include 'vanillafiles.f'
       character*72 inputfile,getinput
       character*90 line
       character*4 part
       character*30 runstring
-      integer nargs,iargc,lenocc,lenarg
+      integer nargs,lenocc,lenarg
       logical spira
       logical creatent,dswhisto,dryrun,makecuts
       integer nmin,nmax,n2,n3
@@ -169,6 +170,28 @@ c--- general options
       if (verbose) write(6,*) 'scale',scale
       read(20,*) facscale
       if (verbose) write(6,*) 'facscale',facscale
+      
+      initrenscale_L=0d0
+      initfacscale_L=0d0
+      initrenscale_H=0d0
+      initfacscale_H=0d0
+c--- catch special scale choices for stop+b process
+      if (((nproc .eq. 231) .or. (nproc .eq. 236)      
+     . .or.(nproc .eq. 241) .or. (nproc .eq. 246)      
+     . .or.(nproc .eq. 242) .or. (nproc .eq. 247)) .and.      
+     .    (scale .eq. 0d0) .and. (facscale .eq. 0d0)) then
+        read(20,*) initrenscale_L
+        if (verbose) write(6,*) 'renscale_L',initrenscale_L
+        read(20,*) initfacscale_L
+        if (verbose) write(6,*) 'facscale_L',initfacscale_L
+        read(20,*) initrenscale_H
+        if (verbose) write(6,*) 'renscale_H',initrenscale_H
+        read(20,*) initfacscale_H
+        if (verbose) write(6,*) 'facscale_H',initfacscale_H
+	scale=initrenscale_H
+	facscale=initfacscale_H        
+      endif
+
       read(20,*) dynamicscale
       if (verbose) write(6,*) 'dynamicscale',dynamicscale
       read(20,*) zerowidth
@@ -192,6 +215,19 @@ c--- general options
       read(20,*) Gflag
       if (verbose) write(6,*) 'Gflag',Gflag
       
+      if (verbose) write(6,*)
+      read(20,99) line
+c--- write-out comment line
+      read(20,99) line
+      if (verbose) write(6,*) line
+c--- heavy quark masses 
+      read(20,*) mt
+      if (verbose) write(6,*) 'mt',mt
+      read(20,*) mb
+      if (verbose) write(6,*) 'mb',mb
+      read(20,*) mc
+      if (verbose) write(6,*) 'mc',mc
+
       if (verbose) write(6,*)
       read(20,99) line
 c--- write-out comment line
@@ -312,8 +348,7 @@ c--- (the default behaviour going forward)
 
       read(20,99,end=88) line
       read(20,99,end=88) line
-      write(6,*) line
-      write(6,*) line(2:10)
+c      write(6,*) line
       if (line(2:10) .ne. 'Technical') goto 88
       technicalincluded=.true.
 
@@ -327,52 +362,62 @@ c--- file and open technical.DAT instead; otherwise continue on
         call checkversion(20,'technical.DAT')
       endif
 
+      if (verbose) write(6,*) '[Technical parameters that'//
+     .                        ' should not normally be changed]'
+      if (verbose) write(6,*)
+
 c---- read-in the technical parameters
 
       read(20,*) debug
-c      if (verbose) write(6,*) 'debug',debug
+      if (verbose) write(6,*) 'debug',debug
       read(20,*) verbose
-c      if (verbose) write(6,*) 'verbose',verbose
+      if (verbose) write(6,*) 'verbose',verbose
       read(20,*) new_pspace
-c      if (verbose) write(6,*) 'new_pspace',new_pspace
+      if (verbose) write(6,*) 'new_pspace',new_pspace
       read(20,*) virtonly
-c      if (verbose) write(6,*) 'virtonly',virtonly
+      if (verbose) write(6,*) 'virtonly',virtonly
       read(20,*) realonly
-c      if (verbose) write(6,*) 'realonly',realonly
+      if (verbose) write(6,*) 'realonly',realonly
       read(20,*) spira
-c      if (verbose) write(6,*) 'spira',spira
+      if (verbose) write(6,*) 'spira',spira
       read(20,*) noglue
-c      if (verbose) write(6,*) 'noglue',noglue
+      if (verbose) write(6,*) 'noglue',noglue
       read(20,*) ggonly
-c      if (verbose) write(6,*) 'ggonly',ggonly
+      if (verbose) write(6,*) 'ggonly',ggonly
       read(20,*) gqonly
-c      if (verbose) write(6,*) 'gqonly',gqonly
+      if (verbose) write(6,*) 'gqonly',gqonly
       read(20,*) vanillafiles
-c      if (verbose) write(6,*) 'vanillafiles',vanillafiles
+      if (verbose) write(6,*) 'vanillafiles',vanillafiles
       read(20,*) nmin
-c      if (verbose) write(6,*) 'nmin',nmin
+      if (verbose) write(6,*) 'nmin',nmin
       read(20,*) nmax
-c      if (verbose) write(6,*) 'nmax',nmax
+      if (verbose) write(6,*) 'nmax',nmax
       read(20,*) clustering
-c      if (verbose) write(6,*) 'clustering',clustering
+      if (verbose) write(6,*) 'clustering',clustering
       read(20,*) realwt
-c      if (verbose) write(6,*) 'realwt',realwt
+      if (verbose) write(6,*) 'realwt',realwt
       read(20,*) colourchoice
-c      if (verbose) write(6,*) 'colourchoice',colourchoice
+      if (verbose) write(6,*) 'colourchoice',colourchoice
       read(20,*) rtsmin
-c      if (verbose) write(6,*) 'rtsmin',rtsmin
+      if (verbose) write(6,*) 'rtsmin',rtsmin
       read(20,*) cutoff
-c      if (verbose) write(6,*) 'cutoff',cutoff
+      if (verbose) write(6,*) 'cutoff',cutoff
       read(20,*) aii
-c      if (verbose) write(6,*) 'aii',aii
+      if (verbose) write(6,*) 'aii',aii
       read(20,*) aif
-c      if (verbose) write(6,*) 'aii',aii
+      if (verbose) write(6,*) 'aii',aii
       read(20,*) afi
-c      if (verbose) write(6,*) 'aii',aii
+      if (verbose) write(6,*) 'aii',aii
       read(20,*) aff
-c      if (verbose) write(6,*) 'aii',aii
-
+      if (verbose) write(6,*) 'aii',aii
+      if (verbose) write(6,*)
       close(unit=20)
+
+      if ((etajetmin .lt. 0d0) .or. (etajetmax .lt. 0d0)) then
+        write(6,*) 'etajetmin and etajetmax are absolute values,'
+	write(6,*) ' please reset to a positive value.'
+	stop
+      endif
 
 c--- reset values of the alpha parameters, for specific runstrings
       if (runstring(1:5) .eq. 'alpha') then
@@ -466,6 +511,10 @@ c--- save initial scale choices (that may be changed later)
       initscale=scale
       initfacscale=facscale
 
+c--- assign squared masses for b- and c-quarks
+      mbsq=mb**2
+      mcsq=mc**2
+      
 c--- set-up mass window cuts
       bbsqmin=mbbmin**2
       bbsqmax=mbbmax**2
@@ -504,18 +553,24 @@ c--- this is an allowed combination
 c--- set up the default choices of static scale, if required
       if (scale .lt. 0d0) then
 	if     (scale .eq. -2d0) then
-	  factor=0.125d0
-	elseif (scale .eq. -3d0) then
 	  factor=0.25d0
-	elseif (scale .eq. -4d0) then
+	elseif (scale .eq. -3d0) then
 	  factor=0.5d0
+	elseif (scale .eq. -4d0) then
+	  factor=0.75d0
 	elseif (scale .eq. -5d0) then
+	  factor=1d0
+	elseif (scale .eq. -6d0) then
 	  factor=2d0
+	elseif (scale .eq. -7d0) then
+	  factor=4d0
         else
 	  factor=1d0
 	endif	  
         if (n2+n3 .ne. 0) then
         scale=factor*(dfloat(n2)*mass2+dfloat(n3)*mass3)/dfloat(n2+n3)
+c--- special cases where Higgs mass is neither mass2 nor mass3
+        if (case(1:1) .eq. 'H') scale=factor*hmass	
         as=alphas(scale,amz,nlooprun)
         ason2pi=as/twopi
         ason4pi=as/fourpi
@@ -539,19 +594,25 @@ c--- set up the default choices of static scale, if required
       endif
       if (facscale .lt. 0d0) then
 	if     (facscale .eq. -2d0) then
-	  factor=0.125d0
-	elseif (facscale .eq. -3d0) then
 	  factor=0.25d0
-	elseif (facscale .eq. -4d0) then
+	elseif (facscale .eq. -3d0) then
 	  factor=0.5d0
+	elseif (facscale .eq. -4d0) then
+	  factor=0.75d0
 	elseif (facscale .eq. -5d0) then
+	  factor=1d0
+	elseif (facscale .eq. -6d0) then
 	  factor=2d0
+	elseif (facscale .eq. -7d0) then
+	  factor=4d0
         else
 	  factor=1d0
 	endif	  
         if (n2+n3 .ne. 0) then
         facscale=factor*
      .           (dfloat(n2)*mass2+dfloat(n3)*mass3)/dfloat(n2+n3)
+c--- special cases where Higgs mass is neither mass2 nor mass3
+        if (case(1:1) .eq. 'H') facscale=factor*hmass	
         write(6,*)
         write(6,*)'****************************************************'
         write(6,77) facscale

@@ -1,5 +1,5 @@
-      subroutine genclust_kt(q,Rmin,qfinal,isub)
-c--- clusters momenta using plabel to determine which 
+      subroutine genclust_kt(q,Rmin,qfinal,isub,ipow)
+c--- Clusters momenta using plabel to determine which 
 c--- particles should be clustered. Forms 'jets' jets according to
 c--- the standard kT algorithm with cone size Rmin.
 c--- Furthermore, the clustered jets are only observed if
@@ -7,6 +7,11 @@ c--- pT(jet) >= ptjetmin and etajetmin <= |eta(jet)| <= etajetmax
 c--- 
 c--- qfinal is the final vector q1,.... q(4+jets)
 c--- where non-jet four vectors are set equal to the incoming q 
+c---
+c--- Modified 23/11/09: generalized to include whole class of kt-like
+c---                    algorithms with measures raised to the power
+c---                    "ipow" passed into routine. In particular,
+c---                    ipow = +1 (normal kt), ipow = -1 ("anti-kt")
       implicit none
       include 'constants.f'
       include 'npart.f'
@@ -15,7 +20,7 @@ c--- where non-jet four vectors are set equal to the incoming q
       double precision q(mxpart,4),qjet(mxpart,4),qfinal(mxpart,4)
       double precision pt,Rmin,dijmin,dkmin,aetarap
       integer i,nu,iter,nmin1,nmin2,maxjet,nk,
-     . ajet,jetindex(mxpart),isub
+     . ajet,jetindex(mxpart),isub,ipow
       character*2 plabel(mxpart)
       logical jetmerge,failed
       common/plabel/plabel
@@ -77,10 +82,10 @@ c      write(*,*) 'jets ',jets
 c      write(*,*) 'maxjet ',maxjet
 
 c--- step1: find (i,j) pair with lowest measure of all non-jets so far
-      call findmind(q,qjet,iter,maxjet,dijmin,nmin1,nmin2)
+      call findmind(q,qjet,iter,maxjet,dijmin,nmin1,nmin2,ipow)
  
 c--- step2: find jet K with lowest Et
-      call findminet(q,qjet,iter,maxjet,dkmin,nk)
+      call findminet(q,qjet,iter,maxjet,dkmin,nk,ipow)
       dkmin=dkmin*Rmin
 
 c      write(*,*) 'Comparing pair (',nmin1,',',nmin2,') value of'

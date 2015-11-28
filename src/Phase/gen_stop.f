@@ -31,13 +31,14 @@ c---- larger than the value of 'njets' passed
       double precision ptjetmin,etajetmin,etajetmax,pbreak
       double precision plstar,estar,plstarsq,y5starmax,y5starmin
       double precision bm(4),wp(4),nn(4),ep(4),pbg(4),g(4),wtwp,wtepnn
-      integer j,nu,njets,ijet,in
+      integer j,nu,njets,ijet,in,notag
       logical first,oldzerowidth,xxerror
       character*4 part
       parameter(wt0=1d0/twopi**2)
       common/part/part
       common/energy/sqrts
       common/x1x2/xx
+      common/notag/notag
       common/reset/reset,scalereset
       logical reset,scalereset
       data first/.true./,xxerror/.false./
@@ -47,22 +48,34 @@ c---- larger than the value of 'njets' passed
         first=.false.
         reset=.false.
         call read_jetcuts(ptjetmin,etajetmin,etajetmax)
-        if (part .eq. 'real') then
-c--- if we're generating phase space for real emissions, then we need
-c--- to produce partons spanning the whole phase space pt>0,eta<10;
-c--- in this case, pbreak=ptjetmin simply means that we
-c--- generate pt approx. 1/x for pt > pbreak and
-c--- pt approx. uniformly for pt < pbreak
+        if (notag .eq. 1) then
+c--- for the t-channel calculation, the default behaviour 
+c--- in chooser.f is to set notag=1 for this process; in that case,
+c--- the calculation is inclusive of all additional jets, so that
+c--- partons must be generated without any explicit cuts on pt and eta
+c--- necessary for t-channel process with notag=1
           pbreak=ptjetmin
           ptjetmin=0d0
           etajetmax=10d0
         else
-c--- for lord and virt, the partons produced here can be generated
-c--- right up to the jet cut boundaries and there is no need for pbreak
-          pbreak=0d0
-        endif
+c--- proceed as before (the old default)	
+          if (part .eq. 'real') then
+c---   if we're generating phase space for real emissions, then we need
+c---   to produce partons spanning the whole phase space pt>0,eta<10;
+c---   in this case, pbreak=ptjetmin simply means that we
+c---   generate pt approx. 1/x for pt > pbreak and
+c---   pt approx. uniformly for pt < pbreak
+            pbreak=ptjetmin
+            ptjetmin=0d0
+            etajetmax=10d0
+          else
+c---   for lord and virt, the partons produced here can be generated
+c---   right up to the jet cut boundaries and there is no need for pbreak
+            pbreak=0d0
+          endif
 c--- in case this routine is used for very small values of ptjetmin
-        if (ptjetmin .lt. 5d0) pbreak=5d0
+          if (ptjetmin .lt. 5d0) pbreak=5d0
+	endif
       endif        
 
       do nu=1,4

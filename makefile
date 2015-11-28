@@ -25,7 +25,7 @@ PDFROUTINES = NATIVE
 #            exists; output uses the FROOT package of P. Nadolsky.
 NTUPLES = NO
 
-FC = gfortran
+FC = g77
 FFLAGS 	= -fno-automatic -fno-f2c -O0 -g -I$(INCPATH)
 
 # If using FROOT package for ROOT ntuples, first specify C++ compiler:
@@ -34,10 +34,11 @@ CXXFLAGS=$(CXXFLAGS0) $(DROOT)
 # ROOTLIBS and ROOTINCLUDE are locations of ROOT libraries and header files.
 # Find the ROOT directory automatically by running root-config 
 # or specify it manually by editing the variable ROOTDIR 
-ROOTDIR= $(shell root-config --prefix)
-DMYROOT= -DMYROOT
-ROOTLIBS     := $(shell root-config --prefix=$(ROOTDIR)  --libs)
-ROOTINCLUDE     := -I $(shell root-config --prefix=$(ROOTDIR) --incdir)
+
+#ROOTDIR= $(shell root-config --prefix)
+#DMYROOT= -DMYROOT
+#ROOTLIBS     := $(shell root-config --prefix=$(ROOTDIR)  --libs)
+#ROOTINCLUDE     := -I $(shell root-config --prefix=$(ROOTDIR) --incdir)
 
 
 DIRS	=	$(MCFMHOME):\
@@ -62,19 +63,90 @@ DIRS	=	$(MCFMHOME):\
 		$(SOURCEDIR)/bbHiggs:$(SOURCEDIR)/Wt:\
                 $(SOURCEDIR)/qqH:$(SOURCEDIR)/qqHWW:$(SOURCEDIR)/ZQjet:\
                 $(SOURCEDIR)/ggH:$(SOURCEDIR)/ggHg:\
-                $(SOURCEDIR)/ggHggreal:\
-                $(SOURCEDIR)/WHWW:$(SOURCEDIR)/ZHWW:
+                $(SOURCEDIR)/ggHggreal:$(SOURCEDIR)/ggHggvirt:\
+                $(SOURCEDIR)/H4pCode:\
+                $(SOURCEDIR)/WHWW:$(SOURCEDIR)/ZHWW:\
+		$(SOURCEDIR)/Stopb:$(SOURCEDIR)/Stopjet:\
+		$(SOURCEDIR)/epem3j
 
 # -----------------------------------------------------------------------------
 # Specify the object files. 
 
+STOPBFILES = \
+qg_tbq.o \
+qg_tbq_g.o \
+qg_tbq_gs.o \
+qg_tbq_gvec.o \
+qg_tbq_v.o \
+qg_tbq_z.o \
+inter.o \
+inter_gg.o \
+inter_qq.o \
+reals1.o \
+reals2.o \
+reals3.o \
+reals_qq.o \
+stopf0.o \
+stopf1.o \
+stop_def.o \
+Ammm.o \
+Ammp.o \
+Ampm.o \
+Ampp.o \
+Apmm.o \
+Apmp.o \
+Appm.o \
+Appp.o \
+Bmmm.o \
+Bmmp.o \
+Bmpm.o \
+Bmpp.o \
+Bpmm.o \
+Bpmp.o \
+Bppm.o \
+Bppp.o
+
+STOPJETFILES = \
+inters.o \
+inters_qq.o \
+qq_tbg.o \
+qq_tbg_g.o \
+qq_tbg_gs.o \
+qq_tbg_gvec.o \
+qq_tbg_v.o \
+qq_tbg_z.o
+
+EPEM3JFILES = \
+epem3j.o \
+epem3j_g.o \
+epem3j_gs.o \
+epem3j_gvec.o \
+epem3j_v.o \
+epem3j_z.o
+
 HWWJETFILES = \
+gg_hZZg.o \
+gg_hZZgg.o \
+gg_hZZg_gs.o \
+gg_hZZg_gvec.o \
+gg_hZZg_v.o \
+gg_hZZg_z.o \
 gg_hWWg.o \
 gg_hWWgg.o \
 gg_hWWg_gs.o \
 gg_hWWg_gvec.o \
 gg_hWWg_v.o \
-gg_hWWg_z.o
+gg_hWWg_z.o \
+gg_hWWgg_v.o \
+gg_hWWgg_gvec.o \
+gg_hWWggg.o \
+gg_hWWgg_gs.o \
+gg_hWWgg_z.o \
+gg_hZZgg_v.o \
+gg_hZZgg_gvec.o \
+gg_hZZggg.o \
+gg_hZZgg_gs.o \
+gg_hZZgg_z.o \
 
 BBHIGGSFILES = \
 bbaqh.o \
@@ -98,11 +170,24 @@ gg_h_z.o \
 hqqgg.o \
 
 GGHGFILES = \
+amplonumer.o \
+Hqarbsq.o \
+Hqaqasq.o \
+qqgghn.o \
 gg_hgg.o \
+gg_hgg_v.o \
+gg_hgg_z.o \
+gg_hgg_gs.o \
+gg_hgg_gvec.o \
 gg_hg_gs.o \
 gg_hg_gvec.o \
 gg_hg_v.o \
 gg_hg_z.o \
+H4plo.o \
+HAQggnew.o \
+h4gnew.o \
+Amplo_AQgg.o \
+Ampsq_AQaq.o \
 h4q.o \
 h4g.o \
 hjetfill.o 
@@ -130,6 +215,78 @@ extract.o \
 gggghn_amp.o \
 hqqggdfm.o \
 ndveccur.o
+
+GGHGGvirtFILES = \
+checkegzres.o \
+checkscheme.o \
+H4prenorm.o \
+Ampvirt_AQgg.o \
+Ampvirt_gggg.o \
+Ampvirtsq_AQaq.o \
+Hggggvsqanal.o \
+HAQggvsqanal.o \
+Hqarbvsqanal.o \
+Hqaqavsqanal.o \
+Hqaggvsq.o \
+Hggggvsq.o \
+Hqarbvsq.o \
+Hqaqavsq.o \
+GZHggggvsqPoles.o \
+GZHqaggvsqPoles.o
+
+H4PCODEFILES = \
+A0phiggggpppp.o \
+A0phiggggpmmm.o \
+A0phiggggmmpp.o \
+A0phiggggmpmp.o \
+A0phiggggmmmm.o \
+A0Hggggpppp.o \
+A0Hggggpmmm.o \
+A0Hggggmmpp.o \
+A0Hggggmpmp.o \
+A1phiggggmmmm.o \
+A1phiggggmmpp.o \
+A1phiggggmpmp.o \
+A1Hggggpppp.o \
+A1Hggggpmmm.o \
+A1Hggggmmpp.o \
+A1Hggggmpmp.o \
+A0phiAQgg.o \
+A0phiAgQg.o \
+A0HAQgg.o \
+A1phiAQggmpmm.o \
+A1phiAQggmpmp.o \
+A1phiAQggmppm.o \
+A1phiAQggmppp.o \
+A1phiAgQgmmpp.o \
+A1phiAgQgmppm.o \
+A1phiAgQgmppp.o \
+A41phiAQgg.o \
+A41HAQgg.o \
+A43phiAQggmpmm.o \
+A43phiAQggmpmp.o \
+A43phiAQggmppm.o \
+A43HAQgg.o \
+A0Hqarb.o \
+A0phiqarb.o \
+A41Hqarb.o \
+A41phiqarb.o \
+A42Hqarb.o \
+A42phiqarb.o \
+Afphiqarbmpmp.o \
+Afphiqarbmppm.o \
+Alcphiqarbmpmp.o \
+Alcphiqarbmppm.o \
+Aslcphiqarbmpmp.o \
+Aslcphiqarbmppm.o \
+BGRL.o \
+F31m.o \
+F33m.o \
+F41m.o \
+F41mF.o \
+F42me.o \
+F42meF.o \
+F42mhF.o
 
 HWWFILES = \
 qqb_hww.o \
@@ -403,7 +560,9 @@ ttbbd1.o \
 qqb_ttz.o
 
 USERFILES = \
+cdfhwwcuts.o \
 deltarj.o \
+durhamalg.o \
 eventhandler.o \
 etdoublebin.o \
 fill_stdhep.o \
@@ -418,6 +577,7 @@ jetlabel_to_stdhep.o \
 mdata.o \
 miscclust.o \
 nplotter.o \
+plots_stop_cfmt.o \
 stopcuts.o \
 wbfcuts.o \
 wbfcuts_jeppe.o \
@@ -824,6 +984,8 @@ ifeq ($(PDFROUTINES),NATIVE)
    mrs99.o \
    mrsebh.o \
    mrsg.o \
+   mrst2001lo.o \
+   jeppelo.o \
    mrst2001.o \
    mrst2002.o \
    mrst2004.o \
@@ -858,9 +1020,11 @@ OURCODE = $(LIBFILES) $(NEEDFILES) \
           $(TAUTAUFILES) $(HTTBARFILES) \
           $(BBHIGGSFILES) $(WBBFILES) $(ZBBFILES) $(WZBBMFILES) \
           $(QQHFILES) $(QQHWWFILES) $(GGHFILES) $(GGHGFILES) \
-          $(GGHGGrealFILES) \
+          $(GGHGGrealFILES) $(GGHGGvirtFILES) $(H4PCODEFILES) \
 	  $(TOPFILES) $(ZQFILES) $(ZQJETFILES) $(WTFILES) $(HWWJETFILES) \
-	  $(WHWWFILES) $(ZHWWFILES) $(CHECKINGFILES)
+	  $(WHWWFILES) $(ZHWWFILES) \
+	  $(STOPBFILES) $(STOPJETFILES) $(EPEM3JFILES) \
+	  $(CHECKINGFILES)
           
 OTHER = $(INTEGRATEFILES) $(PARTONFILES) 
 ALLMCFM = $(OTHER) $(OURCODE)
@@ -883,7 +1047,7 @@ mcfm: $(ALLMCFM)
 # Specify other options.
 
 FTNCHEKPATH = /home/ellis/Fortran/Ftnchek/ftnchek-3.1.2
-FORCHKPATH = /usr/local/bin/
+FORCHKPATH = /home/ellis/bin/
 
 # Specify the dependencies of the .o files and the rules to make them.
 

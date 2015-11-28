@@ -20,6 +20,10 @@
       include 'PDFerrors.f'
       include 'wts_bypart.f'
       include 'dipolescale.f'
+      include 'stopscales.f'
+      include 'qcdcouple.f'
+      include 'ewcouple.f'
+      include 'ckm.f'
 cz
       integer nproc
       common/nproc/nproc
@@ -27,7 +31,8 @@ cz //
       integer ih1,ih2,j,k,nd,nmax,nmin,nvec
       double precision vector(mxdim),W,val,val2,valsum,xint,dot,tmp
       double precision sqrts,fx1(-nf:nf),fx2(-nf:nf),
-     . dipfx1(0:maxd,-nf:nf),dipfx2(0:maxd,-nf:nf)
+     . dipfx1(0:maxd,-nf:nf),dipfx2(0:maxd,-nf:nf),
+     . fx1_H(-nf:nf),fx2_H(-nf:nf),fx1_L(-nf:nf),fx2_L(-nf:nf)
       double precision p(mxpart,4),pjet(mxpart,4),p1ext(4),p2ext(4)
       double precision pswt,rscalestart,fscalestart
       double precision s(mxpart,mxpart),wgt,msq(-nf:nf,-nf:nf)
@@ -55,11 +60,15 @@ cz //
      . qqb_wz_g,qqb_wz_gs,qqb_zz_g,qqb_zz_gs,qqb_wgam_g,qqb_wgam_gs,
      . qqb_QQb_g,qqb_QQb_gs,
      . VV_Hqq_g,VV_Hqq_gs,VV_HWW_g,VV_HWW_gs,
-     . gg_Hg,gg_H_gs,gg_HWWgg,gg_HWWg_gs,gg_Hgg,gg_Hg_gs,
+     . gg_Hg,gg_H_gs,
+     . gg_HWWgg,gg_HWWg_gs,gg_HZZgg,gg_HZZg_gs,
+     . gg_Hgg,gg_Hg_gs,
      . gQ_zQ_g,gQ_zQ_gs,qqb_tbb_g,qqb_tbb_gs,
      . qqb_w_tndk_g,qqb_w_tndk_gs,
      . qqb_w_twdk_g,qqb_w_twdk_gs,qqb_w_twdk_gdk,qqb_w_twdk_gsdk,
-     . qqb_zbjet_g,qqb_zbjet_gs,qqb_w_cjet_g,qqb_w_cjet_gs
+     . qqb_zbjet_g,qqb_zbjet_gs,qqb_w_cjet_g,qqb_w_cjet_gs,
+     . gg_hggg,gg_hgg_gs,
+     . qg_tbq_g,qg_tbq_gs,qq_tbg_g,qq_tbg_gs,epem3j_g,epem3j_gs
       common/density/ih1,ih2
       common/energy/sqrts
       common/bin/bin
@@ -76,6 +85,7 @@ cz Add b fraction
       double precision msqtmp(0:maxd),bwgttmp(0:maxd)
       double precision realeventp(mxpart,4)
       common/realeventp/realeventp
+      double precision y32,y43,z3,z4,z5,z6
       
       data bwgt / 0d0 /  ! in common block
 cz // Add b fraction   Note: only msqtmp(0), bwgttmp(0) are used in nplotter.f
@@ -127,7 +137,13 @@ c--- processes that use "gen4"
       elseif ( (case .eq. 'W_cjet')
      .   .or.  (case .eq. 'Wgamma')
      .   .or.  (case .eq. 'Zgamma')
-     .   .or.  (case .eq. 'W_tndk') ) then
+     .   .or.  (case .eq. 'W_tndk')
+     .   .or.  (case .eq. 'epem3j')   ) then
+        npart=4
+        call gen4(vector,p,pswt,*999)
+                  
+c--- processes that use "gen4"     
+      elseif ((case .eq. 'qg_tbq') .or. (case .eq. 'qq_tbg')) then
         npart=4
         call gen4(vector,p,pswt,*999)
                   
@@ -136,6 +152,7 @@ c--- processes that use "gen6"
      .      (case .eq. 'W_twdk') 
      . .or. (case .eq. 'Wtdkay')
      . .or. (case .eq. 'HWWjet')
+     . .or. (case .eq. 'HZZjet')
      . ) then
         npart=6
         call gen6(vector,p,pswt,*999)
@@ -145,6 +162,8 @@ c--- processes that use "gen7"
      .      (case .eq. 'qq_HWW')
      . .or. (case .eq. 'WH__WW')
      . .or. (case .eq. 'ZH__WW')
+     . .or. (case .eq. 'HWW2jt')
+     . .or. (case .eq. 'HZZ2jt')
      . ) then
         npart=7
         call gen7(vector,p,pswt,*999)
@@ -201,7 +220,7 @@ c--- DEFAULT: processes that use "gen5"
       call dotem(nvec,p,s)
       
 c---impose cuts on final state
-      call masscuts(s,*999)
+      call masscuts(p,*999)
 c----reject event if any s(i,j) is too small
       call smalls(s,npart,*999)
      
@@ -221,6 +240,8 @@ c--- bother calculating the matrix elements for it, instead set to zero
         do j=-nf,nf
         do k=-nf,nf
           msq(j,k)=0d0
+          msqLH(j,k)=0d0   ! for stop+b process
+          msqHL(j,k)=0d0   ! for stop+b process
         enddo
         enddo
       endif
@@ -377,6 +398,20 @@ c        call singcheck(gg_hgg,gg_hg_gs,p)
 c        call singcheck(gg_hWWgg,gg_hWWg_gs,p)
         if (includereal) call gg_hWWgg(p,msq)
         call gg_hWWg_gs(p,msqc)
+      elseif (case .eq. 'HWW2jt') then
+c        call singcheck(gg_hWWgg,gg_hWWg_gs,p)
+        if (includereal) call gg_hWWggg(p,msq)
+        call gg_hWWgg_gs(p,msqc)
+      elseif (case .eq. 'HZZjet') then
+c        call singcheck(gg_hZZgg,gg_hZZg_gs,p)
+        if (includereal) call gg_hZZgg(p,msq)
+        call gg_hZZg_gs(p,msqc)
+      elseif (case .eq. 'HZZ2jt') then
+c        call singcheck(gg_hZZgg,gg_hZZg_gs,p)
+        if (includereal) call gg_hZZggg(p,msq)
+        call gg_hZZgg_gs(p,msqc)
+c	write(6,*) msq
+c	pause
       elseif (case .eq. 'qq_Hqq') then
 c        call singcheck(VV_Hqq_g,VV_Hqq_gs,p)
         if (includereal) call VV_Hqq_g(p,msq)
@@ -385,6 +420,22 @@ c        call singcheck(VV_Hqq_g,VV_Hqq_gs,p)
 c        call singcheck(VV_HWW_g,VV_HWW_gs,p)
         if (includereal) call VV_HWW_g(p,msq)
         call VV_HWW_gs(p,msqc)
+      elseif (case .eq. 'ggfus2') then
+c        call singcheck(gg_hggg,gg_hgg_gs,p)		! Checked 10/29/09
+        if (includereal) call gg_hggg(p,msq)
+        call gg_hgg_gs(p,msqc)
+      elseif (case .eq. 'qg_tbq') then
+c        call singcheck(qg_tbq_g,qg_tbq_gs,p)	 ! Checked 2/4/08
+       if (includereal) call qg_tbq_g(p,msq)
+       call qg_tbq_gs(p,msqc)
+      elseif (case .eq. 'qq_tbg') then
+c        call singcheck(qq_tbg_g,qq_tbg_gs,p)	 ! Checked 8/9/08
+       if (includereal) call qq_tbg_g(p,msq)
+       call qq_tbg_gs(p,msqc)
+      elseif (case .eq. 'epem3j') then
+c        call singcheck(epem3j_g,epem3j_gs,p)	 ! Checked 17/11/08
+       if (includereal) call epem3j_g(p,msq)
+       call epem3j_gs(p,msqc)
       elseif (case .eq. 'gQ__ZQ') then
 c        call singcheck(gQ_zQ_g,gQ_zQ_gs,p)
         if (includereal) call gQ_zQ_g(p,msq)
@@ -441,7 +492,7 @@ c--- calculate PDF's
         do nd=ndmax,0,-1  ! so that fx1,fx2 correct for real kinematics
           if (dipscale(nd) .lt. 1d-8) then	  
 c--- in case dipole is not used, set up dummy value of scale for safety
-c-- and set all PDF entries to zero
+c--- and set all PDF entries to zero
 	    dipscale(nd)=dipscale(0)
 	    do j=-nf,nf
 	      fx1(j)=0d0
@@ -457,14 +508,46 @@ c-- and set all PDF entries to zero
 	  endif
 	enddo
       else
-        call fdist(ih1,xx1,facscale,fx1)
-        call fdist(ih2,xx2,facscale,fx2)
+        if (case .eq. 'qg_tbq') then
+c--- for single top + b, make sure to use two different scales
+          call fdist(ih1,xx1,facscale_H,fx1_H)
+          call fdist(ih2,xx2,facscale_H,fx2_H)
+          call fdist(ih1,xx1,facscale_L,fx1_L)
+          call fdist(ih2,xx2,facscale_L,fx2_L)
+	  do j=-nf,nf
+	    if (j .eq. 0) then  ! heavy quark line has gluon init. state
+	      fx1(j)=fx1_H(j)
+	      fx2(j)=fx2_H(j)
+	    else
+	      fx1(j)=fx1_L(j)
+	      fx2(j)=fx2_L(j)
+	    endif
+	  enddo
+        else
+c--- for comparison with C. Oleari's e+e- --> QQbg calculation
+            if (runstring(1:5) .eq. 'carlo') then
+            flux=1d0/2d0/W/(as/twopi)**2
+c--- divide out by (ason2pi) and then the "LO" massless DY process
+	    flux=flux/(aveqq*xn*fourpi*(gwsq/fourpi)**2/3d0/sqrts**2)
+  	    flux=flux/(xn/8d0)
+	    do j=-nf,nf
+	    fx1(j)=0d0
+	    fx2(j)=0d0
+	    enddo
+	    fx1(0)=1d0
+	    fx1(1)=1d0
+	    fx2(0)=1d0
+	    fx2(1)=1d0
+          else   
+c--- usual case            
+            call fdist(ih1,xx1,facscale,fx1)
+            call fdist(ih2,xx2,facscale,fx2)
+	  endif
+        endif
       endif	
             
       do j=-nflav,nflav
       do k=-nflav,nflav
-c      do j=2,2
-c      do k=0,0
 
       if (ggonly) then
       if ((j.ne.0) .or. (k.ne.0)) goto 20
@@ -511,7 +594,15 @@ c      do k=0,0
            sgnk=0
          endif
 
-         xmsqjk=fx1(j)*fx2(k)*msq(j,k)
+c--- for single top + b, make sure to use two different scales
+         if (case .eq. 'qg_tbq') then
+           xmsqjk=fx1_L(j)*fx2_H(k)*msqLH(j,k)
+     .           +fx1_H(j)*fx2_L(k)*msqHL(j,k)
+         else
+c--- usual case            
+           xmsqjk=fx1(j)*fx2(k)*msq(j,k)
+	 endif
+	 
          xmsq(0)=xmsq(0)+xmsqjk
 cz
 cz Extract fraction with b in final state, store in common
@@ -651,7 +742,7 @@ c---if it does, add to total
 
         val=xmsq(nd)*wgt
         val2=xmsq(nd)**2*wgt
-
+	
 	valsum=valsum+val
 	
 cz Fill bwgt if needed

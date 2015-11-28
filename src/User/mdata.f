@@ -28,8 +28,8 @@ c
       data Gf_inp    / 1.16639d-5          /   ! G_F
       data aemmz_inp / 7.7585538055706d-03 /   ! alpha_EM(m_Z)=1/128.89
       data xw_inp    / 0.2312d0            /   ! sin^2(theta_W)
-      data wmass_inp / 80.419d0            /   ! W mass
-      data zmass_inp / 91.188d0            /   ! Z mass
+      data wmass_inp / 80.398d0            /   ! W mass
+      data zmass_inp / 91.1876d0           /   ! Z mass
       end
 ************************************************************************
 
@@ -57,16 +57,21 @@ c
       include 'nores.f'
 c--- if true, nores removes all of the gg contribution
       data nores/.false./
-c--- Masses: note that "mtausq", "mcsq" and "mbsq" are typically used
-c--- throughout the program to calculate couplings that depend on the
-c--- mass, while "mtau","mc" and "mb" are the masses that appear in
-c--- the rest of the matrix elements and phase space (and may be set
-c--- to zero in the program, depending on the process number) 
-      data mtausq,mcsq,mbsq/3.157729d0,2.25d0,22.5625d0/
-      data mtau/1.777d0/
-      data mc,mb,mt/1.5d0,4.75d0,172.5d0/
-c--- Widths: note that the top width is calculated in the program
-      data wwidth,zwidth/2.06d0,2.49d0/
+c--- Masses: note that "mtausq" is typically used throughout the
+c--- program to calculate couplings that depend on the mass, while
+c--- "mtau" is the mass that appears in the rest of the matrix
+c--- elements and phase space (and may be set to zero in the program,
+c--- depending on the process number) 
+
+      data mtau,mtausq/1.777d0,3.157729d0/
+c----   Note: after v5.6, the masses for top, bottom and charm quarks
+c----         are set in the input file
+
+c---  Widths: note that the top width is calculated in the program
+c---  The W width of 2.1054 is derived using the measured BR of
+c---    10.80 +/- 0.09 % (PDG) and the LO partial width calculation
+c---    for Mw=80.398 GeV
+      data wwidth,zwidth/2.1054d0,2.4952d0/
       data tauwidth/2.269d-12/
 c--- Number of active flavours in the initial state: this parameter
 c--- may be changed in the program for some processes

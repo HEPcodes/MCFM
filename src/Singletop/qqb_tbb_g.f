@@ -14,12 +14,27 @@ c---   and thus this corresponds to t-channel W-exchange
 c---  For the case isub=2, F(p6) represents b-bar and thus
 c---   this corresponds to s-channel production
 
+c--- added by JC, 4/9/08: common block "stopbmass" holds a logical
+c---  flag "masslessb" that determines whether the extra b~ that
+c---  appears in the real matrix elements is massless or not:
+c---
+c---       u -------------- d
+c---               $
+c---               $
+c---               $
+c---    g ~~~~~------------ t
+c---           \
+c---            \ 
+c---              b~
+
+
       include 'constants.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'ckm.f'
       include 'nwz.f'
       include 'zprods_com.f'
+      include 'stopbmass.f'
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),
      . ubtdg_l,ubtdg_h
       double precision fac,qqb,qbq,qg,gq,qbg,gqb,ub,bu,ubarb,bubar,gb,bg
@@ -68,6 +83,7 @@ c     .   *(zip*ubtdg_l(7,6,3,4,5,2,1,p)+ubtdg_h(7,6,3,4,5,2,1,p))
 c In this version of the matrix elements, the b-quark is in
 c position 7 with label "pp", for counting the extra b-quark
 c contribution - Z. Sullivan 1/25/05
+        if (masslessb) then
         qg= aveqg*fac
      .   *(zip*ubtdg_l(1,7,3,4,5,6,2,p)+ubtdg_h(1,7,3,4,5,6,2,p))
         gq= aveqg*fac
@@ -76,6 +92,7 @@ c contribution - Z. Sullivan 1/25/05
      .   *(zip*ubtdg_l(6,7,3,4,5,1,2,p)+ubtdg_h(6,7,3,4,5,1,2,p))
         gqb=aveqg*fac
      .   *(zip*ubtdg_l(6,7,3,4,5,2,1,p)+ubtdg_h(6,7,3,4,5,2,1,p))
+        endif
       elseif (isub .eq. 2) then
         qqb=aveqq*fac
      .   *(ubtdg_l(1,6,3,4,5,2,7,p)+ubtdg_h(1,6,3,4,5,2,7,p))
@@ -197,6 +214,7 @@ c     .   *(zip*ubtdg_l(2,6,4,3,5,7,1,p)+ubtdg_h(2,6,4,3,5,7,1,p))
 c In this version of the matrix elements, the b-quark is in
 c position 7 with label "pp", for counting the extra b-quark
 c contribution - Z. Sullivan 1/25/05
+        if (masslessb) then
         qg= aveqg*fac
      .   *(zip*ubtdg_l(6,7,4,3,5,1,2,p)+ubtdg_h(6,7,4,3,5,1,2,p))
         gq= aveqg*fac
@@ -205,6 +223,7 @@ c contribution - Z. Sullivan 1/25/05
      .   *(zip*ubtdg_l(1,7,4,3,5,6,2,p)+ubtdg_h(1,7,4,3,5,6,2,p))
         gqb=aveqg*fac
      .   *(zip*ubtdg_l(2,7,4,3,5,6,1,p)+ubtdg_h(2,7,4,3,5,6,1,p))
+        endif
       elseif (isub .eq. 2) then
         qqb=aveqq*fac
      .   *(ubtdg_l(2,6,4,3,5,1,7,p)+ubtdg_h(2,6,4,3,5,1,7,p))

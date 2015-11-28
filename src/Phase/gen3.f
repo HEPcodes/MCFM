@@ -17,7 +17,9 @@ c---- are required
       double precision r(mxdim),sqrts,wt3,rdk1,rdk2,
      . p(mxpart,4),p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4)
       double precision pswt,xjac,xx(2),tau,y
+      character*30 runstring
 
+      common/runstring/runstring
       common/energy/sqrts
       common/x1x2/xx
       data p6/0d0,0d0,0d0,0d0/
@@ -40,6 +42,13 @@ c--- dummy values if there's no decay
 
       xx(1)=dsqrt(tau)*dexp(+y)
       xx(2)=dsqrt(tau)*dexp(-y)
+
+c--- for comparison with C. Oleari's e+e- --> QQbg calculation
+      if (runstring(1:5) .eq. 'carlo') then
+        xx(1)=1d0
+        xx(2)=1d0
+        xjac=1d0
+      endif
 
 c--- phase space volume only checked for x1=x2=1
       if (case .eq. 'vlchwn') then

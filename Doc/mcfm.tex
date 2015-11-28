@@ -10,6 +10,7 @@
 \def\cteqthree{\mbox{MSU-HEP/41024}}
 \def\mrstff{\mbox{hep-ph/0603143}}
 \def\mrstohtwo{\mbox{hep-ph/0211080}}
+\def\mrstohtwofirst{\mbox{hep-ph/0201127}}
 \def\mrstohone{\mbox{hep-ph/0110215}}
 \def\mrsninenine{\mbox{hep-ph/9907231}}
 \def\mrsnineeight{\mbox{hep-ph/9803445}}
@@ -17,11 +18,10 @@
 \def\mrsninefive{\mbox{PLB354 (1995) 155}}
 \def\hmrs{\mbox{Durham DTP-90-04}}
 \def\mstwoheight{\mbox{0901.0002 [hep-ph]}}
-
 \thispagestyle{empty}
 \vspace*{3cm}
 \begin{center}
-{\Huge MCFM v5.6} \\
+{\Huge MCFM v5.7} \\
 \vspace*{0.5cm}
 \Large{A Monte Carlo for FeMtobarn} \\
 \Large{processes at Hadron Colliders} \\
@@ -30,10 +30,10 @@
 \vspace*{4cm}
 {\it Authors:} \\
 \vspace*{0.2cm}
-J. M. Campbell ({\tt J.Campbell@physics.gla.ac.uk}) \\
+J. M. Campbell ({\tt johnmc@fnal.gov}) \\
 R. K. Ellis ({\tt ellis@fnal.gov}) \\
 \vspace*{2.5cm}
-{\it \small Updated: 11th August 2009}
+{\it \small Updated: 22nd January 2010}
 \end{center}
 
 \newpage
@@ -91,6 +91,15 @@ are:
   quark tag,''} \\
   Phys.\ Rev.\ D {\bf 73}, 054007 (2006)
   [arXiv:hep-ph/0510362].
+\item J.~M.~Campbell, R.~Frederix, F.~Maltoni and F.~Tramontano,\\
+  {\it ``$t$-channel single top production at hadron colliders,''} \\ 
+  Phys. Rev. Lett. {\bf 102} (2009) 182003,
+  [arXiv:0903.0005 [hep-ph]].
+\item J.~M.~Campbell, R.~K.~Ellis and G.~Zanderighi, \\
+  {\it ``Next-to-leading order Higgs~$+~2$~jet production via
+  gluon fusion,''} \\
+  JHEP {\bf 0610}, 028 (2006)
+  [arXiv:hep-ph/0608194].
 \end{itemize}
 
 The following recent publications have also made use of calculations
@@ -99,11 +108,6 @@ public. Versions of the code that contain these calculations will be
 released in the future.
 
 \begin{itemize}
-\item J.~M.~Campbell, R.~K.~Ellis and G.~Zanderighi, \\
-  {\it ``Next-to-leading order Higgs~$+~2$~jet production via
-  gluon fusion,''} \\
-  JHEP {\bf 0610}, 028 (2006)
-  [arXiv:hep-ph/0608194].
 \item J.~Campbell, R.K.~Ellis, F.~Maltoni and S.~Willenbrock, \\
   {\it ``Production of a $W$ boson and two jets with one $b$-quark
   tag,''} \\
@@ -117,9 +121,6 @@ released in the future.
 \item R.~K.~Ellis, K.~Melnikov and G.~Zanderighi,\\
   {\it ``Generalized unitarity at work: first NLO QCD results for hadronic $W+$~3 jet production,''}
   arXiv:0901.4101 [hep-ph].
-\item J.~M.~Campbell, R.~Frederix, F.~Maltoni and F.~Tramontano,\\
-  {\it $t$-channel single-top production at hadron colliders,''}
-  arXiv:0903.0005 [hep-ph].
 \end{itemize}
 
 \section{Installation}
@@ -162,7 +163,7 @@ the values of all input parameters (see also Table~\ref{default}).
 \begin{table}
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|c|} \hline
- Paramter & Name & Input Value
+ Parameter & Name & Input Value
  & \multicolumn{4}{c|}{Output Value determined by \tt ewscheme} \\
 \cline{4-7}
 & ({\tt \_inp}) & & {\tt -1} & {\tt 0} & {\tt 1} & {\tt 2} \\ \hline
@@ -172,17 +173,17 @@ $\alpha(M_Z)$    & {\tt aemmz}   & 1/128.89
  & input & input & calculated & input \\
 $\sin^2 \theta_w$& {\tt xw}      & 0.2312               
  & calculated & input & calculated & input \\
-$M_W$            & {\tt wmass}   & 80.419 GeV                
+$M_W$            & {\tt wmass}   & 80.398 GeV                
  & input & calculated & input & calculated \\
-$M_Z$            & {\tt zmass}   & 91.188 GeV               
+$M_Z$            & {\tt zmass}   & 91.1876 GeV               
  & input & input & input & calculated \\
-$m_t$            & {\tt mt}      & 172.5 GeV                  
+$m_t$            & {\tt mt}      & {\tt input.DAT}                  
  & calculated & input & input & input \\
 \hline
 \end{tabular}
 \caption{Different options for the scheme used to fix the electroweak
 parameters of the Standard Model and the corresponding default input
-values.}
+values. $M_W$ and $M_Z$ from ref.~\cite{Amsler:2008zzb}.}
 \label{ewscheme}
 \end{center}
 \end{table}
@@ -208,7 +209,8 @@ new MadEvent default, which is also the same as that used in
 Alpgen~\cite{Alpgen} and LUSIFER~\cite{Lusifer} 
 For processes in which the top quark is directly produced  it is 
 preferable to use  the schemes ({\tt ewscheme=0,1,2}), since in these schemes
-one can adjust the top mass to its physical value, (in {\tt src/User/mdata.f}).
+one can adjust the top mass to its physical value (in the input file,
+{\tt input.DAT}).
 
 \begin{table}
 \begin{center}
@@ -217,11 +219,9 @@ Parameter & Fortran name & Default value \\
 \hline
 $m_\tau$         & {\tt mtau}      & 1.777 GeV            \\
 $m^2_\tau$& {\tt mtausq}  & 3.1577 GeV$^2$     \\
-$m^2_c$   & {\tt mcsq}    & 2.25  GeV$^2$       \\
-$m^2_b$   & {\tt mbsq}    & 17.64 GeV$^2$       \\
 $\Gamma_\tau$    & {\tt tauwidth}& 2.269$\times$10$^{-12}$~GeV \\
-$\Gamma_W$       & {\tt wwidth}  & 2.06 GeV               \\
-$\Gamma_Z$       & {\tt zwidth}  & 2.49 GeV               \\
+$\Gamma_W$       & {\tt wwidth}  & 2.141 GeV               \\
+$\Gamma_Z$       & {\tt zwidth}  & 2.4952 GeV               \\
 $V_{ud}$         & {\tt Vud}     & 0.975                  \\
 $V_{us}$         & {\tt Vus}     & 0.222             \\
 $V_{ub}$         & {\tt Vub}     & 0.                     \\
@@ -230,7 +230,8 @@ $V_{cs}$         & {\tt Vcs}     & 0.975                  \\
 $V_{cb}$         & {\tt Vcb}     & 0.                     \\
 \hline
 \end{tabular}
-\caption{Default values for the remaining parameters in {\tt MCFM}.}
+\caption{Default values for the remaining parameters in {\tt MCFM}.
+$\Gamma_W$ and $\Gamma_Z$ from ref.~\cite{Amsler:2008zzb}.}
 \label{default} 
 \end{center}
 \end{table}
@@ -254,7 +255,7 @@ the number of loops that should be used in the running of $\alpha_S$.
 The default mode of operation is to choose from a
 collection of modern parton distribution functions that are included with
 MCFM.  The distributions, together with their associated $\alpha_S(M_Z)$
-values, are given in Table\ref{pdlabel}. 
+values, are given in Table~\ref{pdlabel}. 
 For the older distributions, where the
 coupling was specified by $\Lambda$ this requires 
 some calculation and/or guesswork.
@@ -275,61 +276,63 @@ some calculation and/or guesswork.
 {\tt mrs0117}  & 0.117        & \mrstohone &
 {\tt mrs0121}  & 0.121        & \mrstohone \\
 {\tt mrs01\_j} & 0.121        & \mrstohone &
-{\tt mrs99\_1} & 0.1175       & \mrsninenine \\
-{\tt mrs99\_2} & 0.1175       & \mrsninenine &
-{\tt mrs99\_3} & 0.1175       & \mrsninenine \\
-{\tt mrs99\_4} & 0.1125       & \mrsninenine &    
-{\tt mrs99\_5} & 0.1225       & \mrsninenine \\
-{\tt mrs99\_6} & 0.1178       & \mrsninenine &    
-{\tt mrs99\_7} & 0.1171       & \mrsninenine \\
-{\tt mrs99\_8} & 0.1175       & \mrsninenine &    
-{\tt mrs99\_9} & 0.1175       & \mrsninenine \\
-{\tt mrs9910}  & 0.1175       & \mrsninenine &    
-{\tt mrs9911}  & 0.1175       & \mrsninenine \\
-{\tt mrs9912}  & 0.1175       & \mrsninenine &    
-{\tt mrs98z1}  &  0.1175      & \mrsnineeight \\  
-{\tt mrs98z2}  &  0.1175      & \mrsnineeight & 
-{\tt mrs98z3}  &  0.1175      & \mrsnineeight \\  
-{\tt mrs98z4}  &  0.1125      & \mrsnineeight &  
-{\tt mtungb1}  &  0.109       & \mrsnineeight \\
-{\tt mrs98z5}  &  0.1225      & \mrsnineeight &   
-{\tt mrs96r1}  &  0.113       & \mrsninesix \\    
-{\tt mrs96r2}  &  0.120       & \mrsninesix &  
-{\tt mrs96r3}  &  0.113       & \mrsninesix \\   
-{\tt mrs96r4}  &  0.120       & \mrsninesix &   
-{\tt mrs95ap}  &  0.1127      & \mrsninefive \\
-{\tt mrs95\_g} &  0.1148      & \mrsninefive &
-{\tt hmrs90e}  &  0.09838     & \hmrs \\ 
-{\tt hmrs90b}  &  0.10796     & \hmrs &
-{\tt cteq66m}  &  0.118       & \cteqsixsixm \\
-{\tt cteq61m}  &  0.118       & \cteqsixonem &
-{\tt cteq6\_m} &  0.118       & \cteqsix \\
-{\tt cteq6\_d} &  0.118       & \cteqsix &
-{\tt cteq6\_l} &  0.118       & \cteqsix \\
-{\tt cteq6l1}  &  0.130       & \cteqsix &
-{\tt cteq5hq}  &  0.118       & \cteqfive \\
-{\tt cteq5f3}  &  0.106       & \cteqfive &
-{\tt cteq5f4}  &  0.112       & \cteqfive \\
-{\tt cteq5\_m} &  0.118       & \cteqfive &
-{\tt cteq5\_d} &  0.118       & \cteqfive \\ 
-{\tt cteq5\_l} &  0.127       & \cteqfive & 
-{\tt cteq5l1}  &  0.127       & \cteqfive \\ 
-{\tt cteq5hj}  &  0.118       & \cteqfive &
-{\tt cteq5m1}  &  0.118       & \cteqfive \\
-{\tt ctq5hq1}  &  0.118       & \cteqfive &
-{\tt cteq4a5}  &  0.122       & \cteqfour \\
-{\tt cteq4hj}  &  0.116       & \cteqfour &
-{\tt cteq4lq}  &  0.114       & \cteqfour \\
-{\tt cteq4\_m} &  0.116       & \cteqfour &
-{\tt cteq4\_d} &  0.116       & \cteqfour \\
-{\tt cteq4\_l} &  0.132       & \cteqfour &
-{\tt cteq4a1}  &  0.110       & \cteqfour \\
-{\tt cteq4a2}  &  0.113       & \cteqfour &
-{\tt cteq4a3}  &  0.116       & \cteqfour \\
-{\tt cteq4a4}  &  0.119       & \cteqfour &
-{\tt cteq3\_m} &  0.112       & \cteqthree \\
-{\tt cteq3\_l} &  0.112       & \cteqthree &
-{\tt cteq3\_d} &  0.112       & \cteqthree \\
+{\tt mrs01lo}  & 0.130        & \mrstohtwofirst \\ 
+{\tt mrs99\_1} & 0.1175       & \mrsninenine &
+{\tt mrs99\_2} & 0.1175       & \mrsninenine \\
+{\tt mrs99\_3} & 0.1175       & \mrsninenine &
+{\tt mrs99\_4} & 0.1125       & \mrsninenine \\    
+{\tt mrs99\_5} & 0.1225       & \mrsninenine &
+{\tt mrs99\_6} & 0.1178       & \mrsninenine \\    
+{\tt mrs99\_7} & 0.1171       & \mrsninenine &
+{\tt mrs99\_8} & 0.1175       & \mrsninenine \\    
+{\tt mrs99\_9} & 0.1175       & \mrsninenine &
+{\tt mrs9910}  & 0.1175       & \mrsninenine \\    
+{\tt mrs9911}  & 0.1175       & \mrsninenine &
+{\tt mrs9912}  & 0.1175       & \mrsninenine \\    
+{\tt mrs98z1}  &  0.1175      & \mrsnineeight &  
+{\tt mrs98z2}  &  0.1175      & \mrsnineeight \\ 
+{\tt mrs98z3}  &  0.1175      & \mrsnineeight &  
+{\tt mrs98z4}  &  0.1125      & \mrsnineeight \\  
+{\tt mtungb1}  &  0.109       & \mrsnineeight &
+{\tt mrs98z5}  &  0.1225      & \mrsnineeight \\   
+{\tt mrs96r1}  &  0.113       & \mrsninesix &    
+{\tt mrs96r2}  &  0.120       & \mrsninesix \\  
+{\tt mrs96r3}  &  0.113       & \mrsninesix &   
+{\tt mrs96r4}  &  0.120       & \mrsninesix \\   
+{\tt mrs95ap}  &  0.1127      & \mrsninefive &
+{\tt mrs95\_g} &  0.1148      & \mrsninefive \\
+{\tt hmrs90e}  &  0.09838     & \hmrs & 
+{\tt hmrs90b}  &  0.10796     & \hmrs \\
+{\tt cteq66m}  &  0.118       & \cteqsixsixm &
+{\tt cteq61m}  &  0.118       & \cteqsixonem \\
+{\tt cteq6\_m} &  0.118       & \cteqsix &
+{\tt cteq6\_d} &  0.118       & \cteqsix \\
+{\tt cteq6\_l} &  0.118       & \cteqsix &
+{\tt cteq6l1}  &  0.130       & \cteqsix \\
+{\tt cteq5hq}  &  0.118       & \cteqfive &
+{\tt cteq5f3}  &  0.106       & \cteqfive \\
+{\tt cteq5f4}  &  0.112       & \cteqfive &
+{\tt cteq5\_m} &  0.118       & \cteqfive \\
+{\tt cteq5\_d} &  0.118       & \cteqfive & 
+{\tt cteq5\_l} &  0.127       & \cteqfive \\ 
+{\tt cteq5l1}  &  0.127       & \cteqfive & 
+{\tt cteq5hj}  &  0.118       & \cteqfive \\
+{\tt cteq5m1}  &  0.118       & \cteqfive &
+{\tt ctq5hq1}  &  0.118       & \cteqfive \\
+{\tt cteq4a5}  &  0.122       & \cteqfour &
+{\tt cteq4hj}  &  0.116       & \cteqfour \\
+{\tt cteq4lq}  &  0.114       & \cteqfour &
+{\tt cteq4\_m} &  0.116       & \cteqfour \\
+{\tt cteq4\_d} &  0.116       & \cteqfour &
+{\tt cteq4\_l} &  0.132       & \cteqfour \\
+{\tt cteq4a1}  &  0.110       & \cteqfour &
+{\tt cteq4a2}  &  0.113       & \cteqfour \\
+{\tt cteq4a3}  &  0.116       & \cteqfour &
+{\tt cteq4a4}  &  0.119       & \cteqfour \\
+{\tt cteq3\_m} &  0.112       & \cteqthree &
+{\tt cteq3\_l} &  0.112       & \cteqthree \\
+{\tt cteq3\_d} &  0.112       & \cteqthree & 
+&  & \\
 \hline
 \end{tabular}
 \end{center}
@@ -486,6 +489,8 @@ $f(p_i)$ denotes a generic partonic jet.
 \hline 
 44& $ Z^0(\to e^-(p_3)+e^+(p_4))+f(p_5)+f(p_6) $ & NLO \\
 45& $ Z^0(\to e^-(p_3)+e^+(p_4))+f(p_5)+f(p_6)+f(p_7) $ & LO \\
+46& $ Z^0(\to 3\times(\nu(p_3)+\bar{\nu}(p_4)))+f(p_5)+f(p_6) $ & NLO \\
+47& $ Z^0(\to 3\times(\nu(p_3)+\bar{\nu}(p_4)))+f(p_5)+f(p_6)+f(p_7) $ & LO \\
 \hline 
 48& $ Z^0(\to e^-(p_3)+e^+(p_4))+\gamma(p_5) $ & NLO \\
 49& $ Z^0(\to 3\times(\nu(p_3)+\bar{\nu}(p_4)))-~[ \mbox{sum over 3 $\nu$} ]+\gamma(p_5) $ & NLO \\
@@ -578,8 +583,10 @@ $f(p_i)$ denotes a generic partonic jet.
 \hline 
 161& $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+q(p_6) ~[ \mbox{t-channel} ] $ & NLO \\
 162& $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+q(p_6) ~[ \mbox{decay} ] $ & NLO \\
+163& $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+q(p_6) ~[ \mbox{t-channel} ] ~(m_b>0) $ & NLO \\
 166& $ \bar{t}(\to e^-(p_3)+\bar{\nu}(p_4)+\bar{b}(p_5))+q(p_6) ~[ \mbox{t-channel} ] $ & NLO \\
 167& $ \bar{t}(\to e^-(p_3)+\bar{\nu}(p_4)+\bar{b}(p_5))+q(p_6) ~[ \mbox{decay} ] $ & NLO \\
+168& $ \bar{t}(\to e^-(p_3)+\bar{\nu}(p_4)+\bar{b}(p_5))+q(p_6) ~[ \mbox{t-channel} ] ~(m_b>0) $ & NLO \\
 \hline 
 171& $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{b}(p_6)) ~[ \mbox{s-channel} ] $ & NLO \\
 172& $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{b}(p_6)) ~[ \mbox{decay} ] $ & NLO \\
@@ -606,6 +613,7 @@ $f(p_i)$ denotes a generic partonic jet.
 206& $ A(\to b(p_3)+\bar{b}(p_4)) + f(p_5) ~[ \mbox{full mt dep.} ] $ & LO \\
 207& $ A(\to \tau^-(p_3)+\tau^+(p_4)) + f(p_5) ~[ \mbox{full mt dep.} ] $ & LO \\
 208& $ H(\to W^+(\to \nu(p_3)+e^+(p_4))+W^-(\to e^-(p_5)+\bar{\nu}(p_6)))+f(p_7)$ & NLO \\
+209& $ H(-->Z^+(e^-(p_3),e^+(p_4))Z(mu^-(p_5),mu^+(p_6)))+f(p_7)$ & NLO \\
 \hline 
 \end{tabular}
 \end{center}
@@ -624,7 +632,18 @@ $f(p_i)$ denotes a generic partonic jet.
 217& $ H(\to \tau^-(p_3)+\tau^+(p_4))+f(p_5)+f(p_6)+f(p_7) ~[ \mbox{WBF+jet} ] $ & NLO \\
 \hline 
 221& $ \tau^-(\to e^-(p_3)+\bar{\nu}_e(p_4)+\nu_\tau(p_5))+\tau^+(\to \bar{\nu}_\tau(p_6)+\nu_e(p_7)+e^+(p_8)) $ & LO \\
-\hline
+\hline 
+231& $ f(p_1)+f(p_2) \to t(p_3)+\bar{b}(p_4)+q(p_5) ~[\mbox{t-channel}] $ & NLO \\
+236& $ f(p_1)+f(p_2) \to t~(p_3)+b(p_4)+q(p_5) ~[\mbox{t-channel}] $ & NLO \\
+\hline 
+% 241& $ f(p_1)+f(p_2) \to t(p_3)+\bar{b}(p_4)+f(p_5) ~[\mbox{s-channel}] $ & NLO \\
+% 242& $ f(p_1)+f(p_2) \to t(p_3)+\bar{b}(p_4)+f(p_5)+f(p_6) ~[\mbox{s-channel}] $ & LO \\
+% 246& $ f(p_1)+f(p_2) \to t~(p_3)+b(p_4)+f(p_5) ~[\mbox{s-channel}] $ & NLO \\
+% 247& $ f(p_1)+f(p_2) \to t~(p_3)+b(p_4)+f(p_5)+f(p_6) ~[\mbox{s-channel}] $ & LO \\
+% 249& $ f(p_1)+f(p_2) \to f(p_3)+f(p_4)+f(p_5) ~[e^+ e^- \to \mbox{3 jets}] $ & NLO \\
+% \hline 
+% 251& $ f(p_1)+\gamma(p_2) \to b(p_3)+\bar{b}(p_4) ~[\mbox{DIS}] $ & LO \\
+% \hline
 261& $ Z^0(\to e^-(p_3)+e^+(p_4))+b(p_5) $ & NLO \\
 262& $ Z^0(\to e^-(p_3)+e^+(p_4))+c(p_5) $ & NLO \\
 263& $ Z^0(\to e^-(p_3)+e^+(p_4))+\bar{b}(p_5)+b(p_6) ~[ \mbox{1 b-tag} ] $ & NLO \\
@@ -632,10 +651,12 @@ $f(p_i)$ denotes a generic partonic jet.
 266& $ Z^0(\to e^-(p_3)+e^+(p_4))+b(p_5)(+\bar{b}(p_6)) $ & NLO \\
 267& $ Z^0(\to e^-(p_3)+e^+(p_4))+c(p_5)(+\bar{c}(p_6)) $ & NLO \\
 \hline 
-271& $ H(b(p_3)+\bar{b}(p_4))+f(p_5)+f(p_6)~[ \mbox{in heavy top limit} ] $ & LO \\
-272& $ H(\tau^-(p_3)+\tau^+(p_4))+f(p_5)+f(p_6)~[ \mbox{in heavy top limit} ] $ & LO \\
-273& $ H(b(p_3)+\bar{b}(p_4))+f(p_5)+f(p_6)+f(p_7)~[ \mbox{in heavy top limit} ] $ & LO \\
-274& $ H(\tau^-(p_3)+\tau^+(p_4))+f(p_5)+f(p_6)+f(p_7)~[ \mbox{in heavy top limit} ] $ & LO \\
+271& $ H(b(p_3)+\bar{b}(p_4))+f(p_5)+f(p_6)~[ \mbox{in heavy top limit} ] $ & NLO \\
+272& $ H(\tau^-(p_3)+\tau^+(p_4))+f(p_5)+f(p_6)~[ \mbox{in heavy top limit} ] $ & NLO \\
+273& $ H(\to W^+(\nu(p_3),e^+(p_4))W^-(e^-(p_5),\bar \nu(p_6)))+f(p_7)+f(p_8) $ & NLO \\
+274& $ H(\to Z^+(e^-(p_3),e^+(p_4))Z(\mu^-(p_5),\mu^+(p_6)))+f(p_7)+f(p_8) $ & NLO \\
+275& $ H(b(p_3)+\bar{b}(p_4))+f(p_5)+f(p_6)+f(p_7)~[ \mbox{in heavy top limit} ] $ & LO \\
+276& $ H(\tau^-(p_3)+\tau^+(p_4))+f(p_5)+f(p_6)+f(p_7)~[ \mbox{in heavy top limit} ] $ & LO \\
 \hline 
 311& $  f(p_1)+b(p_2) \to  W^+(\to \nu(p_3)+e^+(p_4))+b(p_5)+f(p_6) $ & LO \\
 316& $  f(p_1)+b(p_2) \to  W^-(\to e^-(p_3)+\bar{\nu}(p_4))+b(p_5)+f(p_6) $ & LO \\
@@ -645,6 +666,16 @@ $f(p_i)$ denotes a generic partonic jet.
 \hline 
 331& $ W^+(\to \nu(p_3)+e^+(p_4))+c(p_5)+f(p_6) ~[ \mbox{c-s interaction} ] $ & LO \\
 336& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4))+c(p_5)+f(p_6) ~[ \mbox{c-s interaction} ] $ & LO \\
+\hline 
+\end{tabular}
+\end{center}
+\end{table}
+\begin{table}
+\begin{center}
+\hspace*{-1.5cm}
+\begin{tabular}{|l|l|l|}
+\hline
+{\tt nproc} & $ f(p_1)+f(p_2) \to \ldots $& Order \\ 
 \hline 
 341& $ Z^0(\to e^-(p_3)+e^+(p_4))+b(p_5)+f(p_6) [+f(p_7)]$ & NLO \\
 342& $ Z^0(\to e^-(p_3)+e^+(p_4))+b(p_5)+f(p_6) [+b~(p_7)]$ & (REAL) \\
@@ -742,10 +773,49 @@ that determines the method used to calculate the scale:
   processes involving jets
   \item {\tt 3d0} : $\mu^2 = \hat{s}$, the partonic centre of mass energy
   \item {\tt 4d0} : $\mu^2 = H_T^2$, where $H_T$ is the scalar sum of
-  the $p_T$'s of all the particles in each event
+  the $p_T$'s of all the particles in the event (with partons clustered into
+  jets)
+  \item {\tt 5d0} : $\mu^2 = \left( p_T^{5} \cdot p_T^{6} \cdot p_T^{7} \right)^{2/3}$
+  -- the geometric mean of the $p_T$ of particles $5$, $6$ and $7$, appropriate for
+  some processes, e.g. $W+3$~jets
+  \item {\tt 6d0} : $\mu^2 = \left( p_T^{7} \right)^2$
+  -- the transverse momentum of particle $7$, appropriate for
+  some processes, e.g. $W+3$~jets
+  \item {\tt 7d0} : $\mu^2 = \hat H_T^2$, where $H_T$ is the scalar sum of
+  the $p_T$'s of all the particles (partons) in the event (i.e. no clustering into jets)
   \end{itemize}
+  There is also a built-in facility for easily varying some of these scales by a constant
+  factor about the central choice. These are illustrated in Table~\ref{dynamicscales}.
   Note that care must be used when selecting this option, since not
   all choices are appropriate for each process.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|r|c|c|c|}
+\hline
+Central scale & $\mu_0^2 = M_V^2+p_T(V)^2$ & $\mu_0^2 = \hat H_T^2$ &
+ $\mu_0^2 = \langle p_T^{jet} \rangle^2$ \\
+\hline 
+ $0.25 \times \mu_0$ & {\tt 11}  & {\tt 21}  & {\tt 31} \\ 
+\hline 
+ $0.5  \times \mu_0$ & {\tt 12}  & {\tt 22}  & {\tt 32} \\ 
+\hline 
+ $0.75 \times \mu_0$ & {\tt 13}  & {\tt 23}  & {\tt 33} \\ 
+\hline
+ $\mu_0$             & {\tt 14} ({\tt 1}) & {\tt 24} ({\tt 7})  & {\tt 34} ({\tt 2}) \\ 
+\hline 
+ $   2 \times \mu_0$ & {\tt 15}  & {\tt 25}  & {\tt 35} \\ 
+\hline 
+ $   4 \times \mu_0$ & {\tt 16}  & {\tt 26}  & {\tt 36} \\ 
+\hline 
+ $   8 \times \mu_0$ & {\tt 17}  & {\tt 27}  & {\tt 37} \\ 
+\hline
+\end{tabular}
+\end{center}
+\caption{Choices of the input parameter {\tt dynamicscale} that allow rescaling by a
+constant factor about a central choice.}
+\label{dynamicscales}
+\end{table}
 
 \item {\tt zerowidth}. When set to {\tt .true.} then all vector
 bosons are produced on-shell. This is appropriate for calculations
@@ -797,6 +867,14 @@ below.
 
 \begin{center}
 \{blank line\} \\
+{\tt [Heavy quark masses] }
+\end{center}
+\item {\tt top mass}. The top quark pole mass (in GeV).
+\item {\tt bottom mass}. The bottom quark pole mass (in GeV).
+\item {\tt charm mass}. The charm quark pole mass (in GeV).
+
+\begin{center}
+\{blank line\} \\
 {\tt [Pdf selection] }
 \end{center}
 
@@ -837,7 +915,8 @@ instead contain an extra jet at NLO.
 
 \item {\tt algorithm.} This specifies the jet-finding algorithm that
 is used, and can take the values
-{\tt ktal} (for the Run II $k_T$-algorithm), {\tt cone} (for
+{\tt ktal} (for the Run II $k_T$-algorithm), {\tt ankt} (for the
+``anti-$k_T$'' algorithm~\cite{Cacciari:2008}), {\tt cone} (for
 a midpoint cone algorithm), {\tt hqrk} (for a simplified cone
 algorithm designed for heavy quark processes) and {\tt none} (to
 specify no jet clustering at all). The latter option is only a
@@ -846,8 +925,8 @@ without any jet definition: e.g. the single top process,
 $q{\bar q^\prime} \to t{\bar b}$, which is finite as
 $p_T({\bar b}) \to 0$.
 
-\item {\tt ptmin\_jet, etamin\_jet, etamax\_jet}. These specify the values
-of $p_T^{\rm min}$, $|\eta|^{\rm min}$ and $|\eta|^{\rm max}$ for the
+\item {\tt ptjet\_min, |etajet|\_min, |etajet|\_max}. These specify the values
+of $p_{T,{\rm min}}$, $|\eta|_{\rm min}$ and $|\eta|_{\rm max}$ for the
 jets that are found by the algorithm. 
 
 \item {\tt Rcut\_jet}. If the final state of the chosen process contains
@@ -863,13 +942,13 @@ parameters in this section are ignored. Otherwise, events will
 be rejected according to a set of cuts that is specified below.
 Further options may be implemented by editing {\tt src/User/gencuts.f}.
 
-\item {\tt ptmin\_lepton, etamax\_lepton}. These specify the values
-of $p_T^{\rm min}$ and $|y|^{\rm max}$ for the hardest lepton produced
+\item {\tt ptlepton\_min, |etalepton|\_max}. These specify the values
+of $p_{T,{\rm min}}$ and $|\eta|_{\rm max}$ for the hardest lepton produced
 in the process.
 \item {\tt ptmin\_missing}. Specifies the minimum missing transverse
 momentum (coming from neutrinos).
-\item {\tt ptmin\_lepton(2nd+), etamax\_lepton(2nd+)}. These specify
-the values of $p_T^{\rm min}$ and $|y|^{\rm max}$ for the remaining
+\item {\tt ptlepton(2nd+)\_min, |etalepton(2nd+)|\_max}. These specify
+the values of $p_{T,{\rm min}}$ and $|\eta|_{\rm max}$ for the remaining
 leptons in the process. This allows for staggered cuts where, for
 instance, only one lepton is required to be hard and central.
 
@@ -1345,7 +1424,7 @@ This process represents the production of a $W$ boson and $2$ jets,
 where the $W$ boson decays leptonically. The calculation may be
 performed up to NLO, as detailed below.
 
-For these processes (and also for $Z+2$~jet production, {\tt nproc=44})
+For these processes (and also for $Z+2$~jet production, {\tt nproc=44,46})
 the next-to-leading order matrix elements are
 particularly complex and so they have been divided into two groups.
 The division is according to the lowest order diagrams from which they
@@ -1414,7 +1493,7 @@ from the bottom quarks.
 
 When {\tt removebr} is true in process {\tt 41}, the $Z$ boson does not decay.
 
-\subsection{$Z+2$~jets production, process 44}
+\subsection{$Z+2$~jets production, processes 44, 46}
 \label{subsec:z2jets}
 
 \begin{center}
@@ -1422,20 +1501,22 @@ When {\tt removebr} is true in process {\tt 41}, the $Z$ boson does not decay.
  hep-ph/0202176 and hep-ph/0308195}]
 \end{center}
 
-This process represents the production of a $Z$ boson and $2$ jets,
-including also the effect of a virtual photon. The $Z/\gamma^*$ decays
-to an $e^+ e^-$ pair.  The calculation may be performed up to NLO -
+These processes represents the production of a $Z$ boson and $2$ jets,
+including also the effect of a virtual photon ({\tt nproc=44} only). The $Z/\gamma^*$ decays
+to an $e^+ e^-$ pair ({\tt nproc=44}) or into three species of neutrino ({\tt nproc=46}).
+The calculation may be performed up to NLO -
 please see the earlier Section~\ref{subsec:w2jets} for more details,
 especially the discussion {\tt Qflag} and {\tt Gflag}.
 
 When {\tt removebr} is true, the $Z$ boson does not decay.
 
-\subsection{$Z+3$~jets production, process 45}
+\subsection{$Z+3$~jets production, processes 45, 47}
 \label{subsec:z3jets}
 
-This process represents the production of a $Z$ boson and $3$ jets,
-including also the effect of a virtual photon. The $Z/\gamma^*$ decays
-to an $e^+ e^-$ pair.  The calculation may be performed at LO only.
+These processes represent the production of a $Z$ boson and $3$ jets,
+including also the effect of a virtual photon ({\tt nproc=45} only). The $Z/\gamma^*$ decays
+to an $e^+ e^-$ pair ({\tt nproc=45}) or into three species of neutrino ({\tt nproc=47}).
+The calculation may be performed at LO only.
 
 When {\tt removebr} is true, the $Z$ boson does not decay.
 
@@ -1789,7 +1870,18 @@ process {\tt 162}. This process number can be used with {\tt part=virt,real}
 only. To ensure consistency, it is far simpler to use {\tt 161}
 and this is the recommended approach.
 
-\subsection{$Wt$ production, processes 180--186}
+A further option is provided for the $t-$channel single top process (when no
+top quark decay is considered), relating to NLO real radiation diagrams that
+contain a bottom quark. In the processes above the bottom quark is taken to
+be massless. To include the effect of $m_b > 0$, one can run process
+{\tt 163} ({\tt 168}) in place of {\tt 161} ({\tt 166}) and additionally include
+process $\tt 231$ ({\tt 236}) at leading order.
+The non-zero bottom quark mass has little effect on
+the total cross section, but enables a (LO) study of the bottom quark kinematics.
+Higher order corrections to the bottom quark kinematics can only be studied by running
+process {\tt 231} ({\tt 236}) at NLO.
+
+\subsection{$Wt$ production, processes 180--187}
 \label{subsec:wt}
 
 \begin{center}
@@ -1859,14 +1951,15 @@ The calculations can be performed at LO only.
 
 When {\tt removebr} is true in process {\tt 196}, the $Z$ boson does not decay.
 
-\subsection{$H+$~jet production, processes 201--208}
+\subsection{$H+$~jet production, processes 201--209}
 \label{subsec:hjet}
 
 These processes represent the production of a Higgs boson in association
 with a single jet, with the subsequent decay of the Higgs to either
 a pair of bottom quarks (processes {\tt 201,203,206}) 
 or to a pair of tau's ({\tt 202,204,207}).
-or to a pair of W's which decay lepronically ({\tt 208}).
+or to a pair of W's which decay leptonically ({\tt 208}),
+or to a pair of Z's which decay leptonically ({\tt 209}).
 
 The Higgs boson couples to a pair of gluons via a loop of heavy fermions
 which, in the Standard Model, is accounted for almost entirely by including
@@ -1886,8 +1979,8 @@ and \cite{Glosser:2002gm}.
 Note that the effect of radiation from the bottom quarks in process {\tt 203}
 is not included.
 
-When {\tt removebr} is true in processes {\tt 201}, {\tt 203}, {\tt 206}
-and {\tt 208}, the Higgs boson does not decay.
+When {\tt removebr} is true in processes {\tt 201}, {\tt 203}, {\tt 206}, {\tt 208}
+and {\tt 209}, the Higgs boson does not decay.
 
 \subsection{Higgs production via WBF, processes 211--217}
 \label{subsec:wbf}
@@ -1917,6 +2010,17 @@ only. The relevant matrix elements are adapted from the ones in
 ref.~\cite{Kleiss:1988xr}.
 
 When {\tt removebr} is true, the tau leptons do not decay.
+
+\subsection{$t$-channel single top with an explicit $b$-quark, processes 231, 236}
+\label{subsec:stopb}
+
+\begin{center}
+[{\it For more details on this calculation, please refer to arXiv:0903.0005~[hep-ph]}]
+\end{center}
+
+These represent calculations of the $t$-channel single top~({\tt 231}) and anti-top~({\tt 231})
+processes in a scheme with four flavours of quark in the proton, so that a $b$-quark is forbidden.
+The $b$-quark is instead explicitly included in the final state.
 
 \subsection{$Z+Q$ production, processes 261--267}
 \label{subsec:ZQ}
@@ -1956,25 +2060,25 @@ dependence on the heavy quark mass), this can only be computed at LO.
 
 When {\tt removebr} is true, the $Z$ boson does not decay.
 
-\subsection{$H + 2$~jet production, processes 271, 272}
+\subsection{$H + 2$~jet production, processes 271--274}
 
 These processes represent the production of a Standard Model Higgs boson
 in association with two jets. The Higgs boson
 subsequently decays to either a bottom quark pair ({\tt nproc=271}), 
-or a pair of tau's ({\tt nproc=272}).
+a pair of tau's ({\tt nproc=272}), a pair of leptonically decaying $W$'s ({\tt nproc=273}) 
+or a pair of leptonically decaying $Z$'s ({\tt nproc=274}).
 
 The matrix elements are included in the infinite top mass limit
-using an effective Lagrangian approach. These calculations can be
-performed at LO only.
+using the effective Lagrangian approach. 
 
 When {\tt removebr} is true, the Higgs boson does not decay.
 
-\subsection{$H + 3$~jet production, processes 273, 274}
+\subsection{$H + 3$~jet production, processes 275, 276}
 
 These processes represent the production of a Standard Model Higgs boson
 in association with three jets. The Higgs boson
-subsequently decays to either a bottom quark pair ({\tt nproc=273}), 
-or a pair of tau's ({\tt nproc=274}).
+subsequently decays to either a bottom quark pair ({\tt nproc=275}), 
+or a pair of tau's ({\tt nproc=276}).
 
 The matrix elements are included in the infinite top mass limit
 using an effective Lagrangian approach. These calculations can be
@@ -2050,6 +2154,14 @@ When {\tt removebr} is true, the $Z$ boson does not decay.
 
 \begin{thebibliography}{99}
 %
+%\cite{Amsler:2008zzb}
+\bibitem{Amsler:2008zzb}
+  C.~Amsler {\it et al.}  [Particle Data Group],
+  %``Review of particle physics,''
+  Phys.\ Lett.\  B {\bf 667}, 1 (2008)
+ and 2009 partial update for the 2010 edition.
+  %%CITATION = PHLTA,B667,1;%%
+
 %\cite{Georgi:1991ci}
 \bibitem{Georgi:1991ci}
 H.~Georgi,
@@ -2071,6 +2183,20 @@ Michelangelo L. Mangano, Mauro Moretti, Fulvio Piccinini, Roberto Pittau and Ant
 \bibitem{Lusifer}
 Stefan Dittmaier and Markus Roth,\\
 {\it http://wwwth.mppmu.mpg.de/members/roth/Lusifer/lusifer.html}
+
+\bibitem{Cacciari:2008}
+   M.~Cacciari, G.~P.~Salam and G.~Soyez,
+  JHEP {\bf 0804}, 063 (2008)
+  [arXiv:0802.1189 [hep-ph]].
+
+%\cite{Nagy:2003tz}
+\bibitem{Nagy:2003tz}
+  Z.~Nagy,
+  %``Next-to-leading order calculation of three jet observables in hadron hadron
+  %collision,''
+  Phys.\ Rev.\  D {\bf 68}, 094002 (2003)
+  [arXiv:hep-ph/0307268].
+  %%CITATION = PHRVA,D68,094002;%%
 
 %\cite{Eskola:1998df}
 \bibitem{Eskola:1998df}
@@ -2143,15 +2269,6 @@ C.~J.~Glosser and C.~R.~Schmidt,
 JHEP {\bf 0212}, 016 (2002)
 [arXiv:hep-ph/0209248].
 %%CITATION = HEP-PH 0209248;%%
-
-%\cite{Nagy:2003tz}
-\bibitem{Nagy:2003tz}
-  Z.~Nagy,
-  %``Next-to-leading order calculation of three jet observables in hadron hadron
-  %collision,''
-  Phys.\ Rev.\  D {\bf 68}, 094002 (2003)
-  [arXiv:hep-ph/0307268].
-  %%CITATION = PHRVA,D68,094002;%%
 
 \end{thebibliography}
 

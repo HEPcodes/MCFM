@@ -31,7 +31,7 @@
       include 'limits.f'
       include 'pdlabel.f'
       integer ih1,ih2,itmx1,itmx2,ncall1,ncall2,idum,nmin,nmax
-      integer nproc,nargs,iargc
+      integer nproc,nargs
       double precision sqrts,Rcut,randummy,ran2
       double precision cmass,bmass
       character*72 optionsfile

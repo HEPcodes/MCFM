@@ -63,10 +63,12 @@ c      s2max=min(s1,bbsqmax)
         s2min=mc**2
       elseif (case .eq. 'W_tndk')  then
         s2min=mt**2
-      elseif (case .eq. 'Wtbndk')  then
+      elseif (case .eq. 'Wtbndk') then
         s2min=(mt+mb)**2
+      elseif ((case .eq. 'qq_tbg') .or. (case .eq. 'qqtbgg')) then
+        s2min=mt**2
       elseif ((case .eq. 'W_twdk') .or. (case .eq. 'Wtdkay')
-     .   .or. (case .eq. 'W_cwdk') .or. (case .eq. 'Wtbwdk'))  then
+     .   .or. (case .eq. 'W_cwdk') .or. (case .eq. 'Wtbwdk')) then
         oldzerowidth=zerowidth
         zerowidth=.true.
       endif
@@ -85,7 +87,11 @@ c      s2max=min(s1,bbsqmax)
       
       m2=dsqrt(s2)
       s3min=1d-15
+      if ((case .eq. 'qq_tbg') .or. (case .eq. 'qqtbgg')) s3min=mb**2
+c      s3min=mb**2 ! DEBUG: hack for s36 small
+c      s3min=mt**2 ! DEBUG: hack for s46 small
       s3max=(m2-m1)**2
+      if (s3max .lt. s3min) return 1 ! for safety
 c      if (s3max-s3min .lt. 1d-9) return 1
       if (n3 .eq. 0) then
          w3=s3max-s3min

@@ -2,6 +2,7 @@
 c--- this is a wrapper routine for the jet clustering algorithm
 c--- which re-routes according to the value of 'algorithm'  to:
 c---  ('ktal') genclust_kt.f     for kt clustering
+c---  ('ankt') genclust_kt.f     for "anti-kt" clustering
 c---  ('cone') genclust_cone.f   for cone algorithm
 c---  ('hqrk') genclust_hqrk.f   for simplified heavy-quark algorithm
 c---  ('none') to perform no clustering at all
@@ -29,6 +30,8 @@ c---  ('none') to perform no clustering at all
       write(6,*) '*********** Basic jet-defining parameters **********'
       if     (algorithm .eq. 'ktal') then
       write(6,*) '*          (Run II kT clustering algorithm)        *'
+      elseif (algorithm .eq. 'ankt') then
+      write(6,*) '*     (Anti-kt algorithm - see arXiv:0802.1189)    *'
       elseif (algorithm .eq. 'cone') then
       write(6,*) '*              (Run II cone algorithm)             *'
       elseif (algorithm .eq. 'hqrk') then
@@ -73,7 +76,9 @@ c---  ('none') to perform no clustering at all
    79 format(a25,f8.4,'                   *')
 
       if     (algorithm .eq. 'ktal') then
-        call genclust_kt(q,R,qfinal,isub)
+        call genclust_kt(q,R,qfinal,isub,+1)
+      elseif (algorithm .eq. 'ankt') then
+        call genclust_kt(q,R,qfinal,isub,-1)
       elseif (algorithm .eq. 'cone') then
         call genclust_cone(q,R,qfinal,isub)
       elseif (algorithm .eq. 'hqrk') then
@@ -89,7 +94,7 @@ c---  ('none') to perform no clustering at all
         return
       else
         write(6,*) 'Invalid choice of jet algorithm, must be'
-        write(6,*) '   ktal, cone, hqrk, none'
+        write(6,*) '   ktal, ankt, cone, hqrk, none'
         stop
       endif
 

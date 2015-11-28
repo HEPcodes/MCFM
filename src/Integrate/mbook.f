@@ -116,7 +116,7 @@ c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO'/
       HMIN(N)=XMIN
       HMAX(N)=XMAX
       NNBIN=INT((XMAX-XMIN)/DEL)
-      IF (NNBIN .GT. 150) THEN
+      IF (NNBIN .GT. 100) THEN
       WRITE(6,*) XMAX,XMIN,DEL,NNBIN,' BIN SIZE TOO LARGE'
       DEL=(XMAX-XMIN)/99.d0
       NNBIN=INT((XMAX-XMIN)/DEL)
@@ -359,7 +359,7 @@ c     &' SET ORDER X Y DY ')
      &' SET SCALE Y ',A5,/1X,
      &' (SET TICKS TOP OFF)   '/1x,     
      &' SET LIMITS X ',F10.5,' ',F10.5,/1X,
-     &' SET ORDER X Y DY ')
+     &' SET ORDER X Y ')
   101 FORMAT( /1x,                               
      &' SET WINDOW Y 2.5 TO 7.'/,1X,
      &' SET WINDOW X 2.5 TO 10.'/,1X,
@@ -371,7 +371,7 @@ c     &' SET ORDER X Y DY ')
      &' SET SCALE Y ',A5,/1X,
      &' (SET TICKS TOP OFF)   '/1x,     
      &' SET LIMITS X ',F10.5,' ',F10.5,/1X,
-     &' SET ORDER X Y DY ')
+     &' SET ORDER X Y ')
       DO 1 J=1,NBIN(N)
       IF(HIST(N,J).EQ.0.) GO TO 1
       if (scaleplots) then

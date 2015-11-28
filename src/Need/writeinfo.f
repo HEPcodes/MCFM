@@ -3,6 +3,7 @@
 *   Routine to write out run information to a desired unit             *
 ************************************************************************
       implicit none
+      include 'constants.f'
       include 'maxwt.f'
       include 'masses.f'
       include 'facscale.f'
@@ -19,6 +20,7 @@
       include 'removebr.f'
       include 'dynamicscale.f'
       include 'PDFerrors.f'
+      include 'stopscales.f'
       integer unitno,j,k,itno
       double precision xsec,xsec_err
       double precision lord_bypart(-1:1,-1:1),lordnorm
@@ -121,8 +123,19 @@ c--- variables in finalpart (normally done in mcfm_exit)
       write(unitno,97) ih1,'ih1'
       write(unitno,97) ih2,'ih2'
       write(unitno,99) hmass,'hmass'
-      write(unitno,99) scale,'scale'
-      write(unitno,99) facscale,'facscale'
+c--- catch special scale choices for stop+b process
+      if ( (nproc .eq. 231) .or. (nproc .eq. 236)      
+     . .or.(nproc .eq. 241) .or. (nproc .eq. 246)      
+     . .or.(nproc .eq. 242) .or. (nproc .eq. 247) ) then
+         write(unitno,99) renscale_L,'renscale_L'
+         write(unitno,99) facscale_L,'facscale_L'
+         write(unitno,99) renscale_H,'renscale_H'
+         write(unitno,99) facscale_H,'facscale_H'
+      else
+         write(unitno,99) scale,'scale'
+         write(unitno,99) facscale,'facscale'
+      endif
+
       write(unitno,98) dynamicscale,'dynamicscale'
       write(unitno,98) zerowidth,'zerowidth'
       write(unitno,98) removebr,'removebr'
@@ -135,6 +148,13 @@ c--- variables in finalpart (normally done in mcfm_exit)
       write(unitno,98) Qflag,'Qflag'
       write(unitno,98) Gflag,'Gflag'
       
+      write(unitno,*)
+      write(unitno,*) 
+     . '( [Heavy quark masses] )'
+      write(unitno,99) mt,'top mass'
+      write(unitno,99) mb,'bottom mass'
+      write(unitno,99) mc,'charm mass'
+
       write(unitno,*)
       write(unitno,*) 
      . '( [Pdf selection] )'

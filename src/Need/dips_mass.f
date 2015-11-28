@@ -31,12 +31,15 @@
      . vec(4),root,vtilde,pold(mxpart,4),pext(mxpart,4)
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),zp,zm
       double precision mksq,misq,mjsq,mijsq,muisq,mujsq,muksq,
-     . muijsq,kappa,vijk,vtijk,viji,ztmi,ztmj,muk,mqsq
+     . muijsq,kappa,vijk,vtijk,viji,ztmi,ztmj,muk,mqsq,subv_gg,subv_gq
       double precision yp,mass2,width2,mass3,width3
-      integer nd,ip,jp,kp,nu,j,jproc,n2,n3
+      integer nd,ip,jp,kp,nu,j,jproc,n2,n3,ipt
       logical incldip(0:maxd)
       common/incldip/incldip
       common/breit/n2,n3,mass2,width2,mass3,width3
+c--- common block to handle the possibility of multiple definitions
+c--- of subv in the final-final section
+      common/subv_ff/subv_gg,subv_gq
       external subr_born,subr_corr
       parameter(kappa=0d0)
       logical first
@@ -411,7 +414,6 @@ C---calculate the ptrans-momenta
 c       write(6,*) 'Dipole ',nd, 'ptrans'
 c       call writeout(ptrans)
 
-C have to enhance the store so that it works
        call storeptilde(nd,ptrans)
 
        ztmi=z-0.5d0+0.5d0*vijk
@@ -429,35 +431,37 @@ c--- if using a dynamic scale, set that scale with dipole kinematics
          vec(nu)=ztmi*p(ip,nu)-ztmj*p(jp,nu)
        enddo
 
-       if (ip .lt. kp) then
-         call subr_corr(ptrans,vec,5,msqv)
-       else
-         call subr_corr(ptrans,vec,6,msqv)
+       if (case .eq. 'qq_tbg') then
+         ipt=5
+	 else
+         if (ip .lt. kp) then
+           ipt=5
+         else
+           ipt=6
+         endif
        endif
+       call subr_corr(ptrans,vec,ipt,msqv)
               
-      if (jproc .eq. qq) then
-        vtijk=sqrt((one-muijsq-muksq)**2-4d0*muijsq*muksq)
+      if     (jproc .eq. qq) then
+        vtijk=dsqrt((one-muijsq-muksq)**2-4d0*muijsq*muksq)
      .  /(one-muijsq-muksq)
 
         sub(qq)=gsq/(qijsq-mijsq)*(two/(one-z*omy)
      .  -vtijk/vijk*(one+z+2d0*mqsq/pij))
      
-c        write(6,*) 'velocities ratio, vtijk/vijk=',vtijk/vijk
-c        write(6,*) 'sub(qq)=',sub(qq)
-C---debug
-c       sub(qq)=gsq/pij*(two/(one-omz*omy)
-c     . -(one+omz+2d0*mqsq/pij))
-C---debug
       elseif (jproc .eq. gq) then
-        sub(gq)=gsq/(qijsq-mijsq)*(one-two*kappa*(zp*zm-mqsq/qijsq))
-        subv   =+4d0*gsq/pij/pij
+        sub(gq)=gsq/(qijsq-mijsq)/vijk*(
+     .          one-two*kappa*(zp*zm-mqsq/qijsq))
+        subv   =+4d0*gsq/(qijsq-mijsq)/qijsq/vijk
+	subv_gq=subv ! put in common block
+
       elseif (jproc .eq. gg) then
-        vijk=sqrt((one-qijsq/Qsq-muksq)**2-4d0*qijsq/Qsq*muksq)
-     .  /(one-qijsq/Qsq-muksq)
         sub(gg)=two*gsq/(qijsq-mijsq)*(one/(one-z*omy)+one/(one-omz*omy)
      .    -(two-kappa*zp*zm)/vijk)
-      subv   =+4d0*gsq/(qijsq-mijsq)/pij/vijk
+        subv   =+4d0*gsq/(qijsq-mijsq)/pij/vijk
+	subv_gg=subv ! put in common block
       endif
+
  80   continue
       enddo
       endif

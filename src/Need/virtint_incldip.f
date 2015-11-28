@@ -33,6 +33,10 @@
       include 'masses.f'
       include 'wts_bypart.f'
       include 'nores.f'
+      include 'stopscales.f'
+      include 'stopbmass.f'
+      include 'ewcouple.f'
+      include 'ckm.f'
       double precision mqq(0:2,fn:nf,fn:nf)
       double precision msqx(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf)
       double precision msqx_cs(0:2,-nf:nf,-nf:nf)
@@ -40,7 +44,9 @@
 
       integer ih1,ih2,j,k,m,n,cs,ics,csmax,nvec,is,iq,ia,ib,ic
       double precision p(mxpart,4),pjet(mxpart,4),r(mxdim),W,sqrts,xmsq,
-     . val,val2,fx1(-nf:nf),fx2(-nf:nf),fx1z(-nf:nf),fx2z(-nf:nf),xmsqt
+     . val,val2,fx1(-nf:nf),fx2(-nf:nf),fx1z(-nf:nf),fx2z(-nf:nf),xmsqt,
+     . fx1_H(-nf:nf),fx2_H(-nf:nf),fx1_L(-nf:nf),fx2_L(-nf:nf),
+     . fx1z_H(-nf:nf),fx2z_H(-nf:nf),fx1z_L(-nf:nf),fx2z_L(-nf:nf)
       double precision pswt,xjac,rscalestart,fscalestart,m3,m4,m5,
      . wgt,msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),msqvdk(-nf:nf,-nf:nf),
      . msq_qq,msq_aa,msq_aq,msq_qa,msq_qg,msq_gq,epcorr
@@ -105,7 +111,8 @@ c--- processes that use "gen2m"
           
 c--- processes that use "gen3"     
       elseif ( (case .eq. 'W_cjet') 
-     .   .or.  (case .eq. 'W_tndk') ) then
+     .   .or.  (case .eq. 'W_tndk')
+     .   .or.  (case .eq. 'epem3j')  ) then
         npart=3
         call gen3(r,p,pswt,*999)
 
@@ -120,6 +127,14 @@ c--- processes that use "gen3jet"
         npart=3
         call gen3jet(r,p,pswt,*999)
 
+c--- processes that use "gen3m"     
+      elseif ((case .eq. 'qg_tbq') .or. (case .eq. 'qq_tbg')) then
+        m3=mt
+        m4=mb
+        m5=0d0
+        npart=3
+        call gen3m(r,p,m3,m4,m5,pswt,*999)
+	
 c--- processes that use "gen4h"     
       elseif ( (case .eq. 'HWW_4l')
      .    .or. (case .eq. 'HZZ_4l') ) then
@@ -129,6 +144,7 @@ c--- processes that use "gen4h"
 c--- processes that use "gen5" 
       elseif ( (case .eq. 'W_twdk') 
      . .or.    (case .eq. 'HWWjet') 
+     . .or.    (case .eq. 'HZZjet') 
      . .or.    (case .eq. 'Wtdkay') ) then 
         npart=5 
         call gen5(r,p,pswt,*999)
@@ -137,6 +153,8 @@ c--- processes that use "gen6"
       elseif ( (case .eq. 'tt_bbl')
      .    .or. (case .eq. 'tt_bbh')
      .    .or. (case .eq. 'tautau')
+     .    .or. (case .eq. 'HWW2jt') 
+     .    .or. (case .eq. 'HZZ2jt') 
      .    .or. (case .eq. 'qq_HWW')
      .    .or. (case .eq. 'WH__WW')
      .    .or. (case .eq. 'ZH__WW')
@@ -217,7 +235,7 @@ c--- DEFAULT: processes that use "gen4"
       call dotem(nvec,p,s)
 
 c---impose mass cuts on final state
-      call masscuts(s,*999)
+      call masscuts(p,*999)
 c----reject event if any s(i,j) is too small
       call smalls(s,npart,*999)
          
@@ -260,6 +278,11 @@ c--- contributions, so all these should be set to zero
       if  ( (case .eq. 'tdecay') .or. (case .eq. 'ttdkay') 
      . .or. (case .eq. 'Wtdkay') ) epcorr=0d0      
 
+c--- for stop+b, splittings on light quark line produce a quark
+      if (case .eq. 'qg_tbq') then
+        epcorr=epinv+2d0*dlog(renscale_L/facscale_L)
+      endif
+
       AP(q,q,1)=+ason2pi*Cf*1.5d0*epcorr
       AP(q,q,2)=+ason2pi*Cf*(-1d0-z)*epcorr
       AP(q,q,3)=+ason2pi*Cf*2d0/omz*epcorr
@@ -287,6 +310,11 @@ c--- modifications for running with mb>0
       AP(a,g,2)=AP(q,g,2)      
       endif
       
+c--- for stop+b, splittings on heavy quark line produce a gluon
+      if (case .eq. 'qg_tbq') then
+        epcorr=epinv+2d0*dlog(renscale_H/facscale_H)
+      endif
+
       AP(g,q,1)=0d0
       AP(g,q,2)=ason2pi*Cf*(1d0+omz**2)/z*epcorr
       AP(g,q,3)=0d0
@@ -297,6 +325,22 @@ c--- modifications for running with mb>0
       AP(g,g,1)=+ason2pi*b0*epcorr
       AP(g,g,2)=+ason2pi*xn*2d0*(1d0/z+z*omz-2d0)*epcorr
       AP(g,g,3)=+ason2pi*xn*2d0/omz*epcorr
+
+c--- for single top+b, make sure factors of alphas are correct
+      if (case .eq. 'qg_tbq') then
+        do is=1,3
+c--- splittings on the light quark line make a (anti-)quark init. state
+          AP(q,q,is)=AP(q,q,is)*(as_L/as)
+          AP(a,a,is)=AP(a,a,is)*(as_L/as)
+          AP(q,g,is)=AP(q,g,is)*(as_L/as)
+          AP(a,g,is)=AP(a,g,is)*(as_L/as)
+c--- splittings on the heavy quark line make a gluon init. state
+          AP(g,g,is)=AP(g,g,is)*(as_H/as)
+          AP(g,g,is)=AP(g,g,is)*(as_H/as)
+          AP(g,q,is)=AP(g,q,is)*(as_H/as)
+          AP(g,a,is)=AP(g,a,is)*(as_H/as)
+	enddo
+      endif
 
       if (case .eq. 'bq_tpq') then
       do ia=-1,+2
@@ -427,6 +471,10 @@ c--- Calculate the required matrix elements
         call gg_hWWg(p,msq)
         call gg_hWWg_v(p,msqv)
         call gg_hWWg_z(p,z)
+      elseif (case .eq. 'HZZjet') then
+        call gg_hZZg(p,msq)
+        call gg_hZZg_v(p,msqv)
+        call gg_hZZg_z(p,z)
       elseif ((case .eq. 'tt_tot')
      .   .or. (case .eq. 'bb_tot')
      .   .or. (case .eq. 'cc_tot')) then
@@ -498,6 +546,18 @@ c--- Calculate the required matrix elements
         call gg_hg(p,msq)
         call gg_hg_v(p,msqv)
         call gg_hg_z(p,z)
+      elseif (case .eq. 'ggfus2') then
+        call gg_hgg(p,msq)
+        call gg_hgg_v(p,msqv)
+        call gg_hgg_z(p,z)
+      elseif (case .eq. 'HWW2jt') then
+        call gg_hWWgg(p,msq)
+        call gg_hWWgg_v(p,msqv)
+        call gg_hWWgg_z(p,z)
+      elseif (case .eq. 'HZZ2jt') then
+        call gg_hZZgg(p,msq)
+        call gg_hZZgg_v(p,msqv)
+        call gg_hZZgg_z(p,z)
       elseif (case .eq. 'qq_Hqq') then
         call VV_hqq(p,msq)
         call VV_hqq_v(p,msqv)
@@ -506,6 +566,36 @@ c--- Calculate the required matrix elements
         call VV_HWW(p,msq)
         call VV_HWW_v(p,msqv)
         call VV_HWW_z(p,z)
+      elseif (case .eq. 'qg_tbq') then
+        call qg_tbq(p,msq)
+        call qg_tbq_v(p,msqv)
+        call qg_tbq_z(p,z)
+      elseif (case .eq. 'qq_tbg') then
+c--- do not include initial-state subtractions since we are only
+c--- calculating corrections on the heavy quark line (for now)
+        do j=-1,1
+        do k=-1,1
+        AP(j,k,1)=0d0
+        AP(j,k,2)=0d0
+        AP(j,k,3)=0d0
+        enddo
+        enddo
+        call qq_tbg(p,msq)
+        call qq_tbg_v(p,msqv)
+        call qq_tbg_z(p,z)
+      elseif (case .eq. 'epem3j') then
+c--- do not include initial-state subtractions since we are only
+c--- calculating corrections on the quark line
+        do j=-1,1
+        do k=-1,1
+        AP(j,k,1)=0d0
+        AP(j,k,2)=0d0
+        AP(j,k,3)=0d0
+        enddo
+        enddo
+        call epem3j(p,msq)
+        call epem3j_v(p,msqv)
+        call epem3j_z(p,z)
       elseif (case .eq. 'gQ__ZQ') then
         call gQ_zQ(p,msq)
         call gQ_zQ_v(p,msqv)
@@ -551,8 +641,40 @@ c--- initialize a PDF set here, if calculating errors
       if (PDFerrors) then
         call InitPDF(currentPDF)
       endif
-      call fdist(ih1,xx(1),facscale,fx1)
-      call fdist(ih2,xx(2),facscale,fx2)
+c--- calculate PDF's  
+      if (case .eq. 'qg_tbq') then
+c--- for single top + b, make sure to use two different scales
+        call fdist(ih1,xx(1),facscale_H,fx1_H)
+        call fdist(ih2,xx(2),facscale_H,fx2_H)
+        call fdist(ih1,xx(1),facscale_L,fx1_L)
+        call fdist(ih2,xx(2),facscale_L,fx2_L)
+        do j=-nf,nf
+        fx1z_H(j)=0d0
+        fx2z_H(j)=0d0
+        fx1z_L(j)=0d0
+        fx2z_L(j)=0d0
+        enddo
+      else
+c--- for comparison with C. Oleari's e+e- --> QQbg calculation
+        if (runstring(1:5) .eq. 'carlo') then
+          flux=1d0/2d0/W/(as/twopi)**2
+c--- divide out by (ason2pi) and then the "LO" massless DY process
+	  flux=flux/(aveqq*xn*fourpi*(gwsq/fourpi)**2/3d0/sqrts**2)
+	  flux=flux/(xn/8d0)
+	  do j=-nf,nf
+	  fx1(j)=0d0
+	  fx2(j)=0d0
+	  enddo
+	    fx1(0)=1d0
+	    fx1(1)=1d0
+	    fx2(0)=1d0
+	    fx2(1)=1d0
+        else   
+c--- usual case            
+          call fdist(ih1,xx(1),facscale,fx1)
+          call fdist(ih2,xx(2),facscale,fx2)
+	endif
+      endif
       
       do j=-nf,nf
       fx1z(j)=0d0
@@ -560,12 +682,40 @@ c--- initialize a PDF set here, if calculating errors
       enddo
             
       if (z .gt. xx(1)) then
-         x1onz=xx(1)/z
-         call fdist(ih1,x1onz,facscale,fx1z)
+        x1onz=xx(1)/z
+c--- for single top + b, make sure to use two different scales
+        if (case .eq. 'qg_tbq') then
+          call fdist(ih1,x1onz,facscale_H,fx1z_H)
+          call fdist(ih1,x1onz,facscale_L,fx1z_L)
+        else
+c--- for comparison with C. Oleari's e+e- --> QQbg calculation
+          if (runstring(1:5) .eq. 'carlo') then
+ 	    do j=-nf,nf
+	    fx1z(j)=0d0
+	    enddo
+          else   
+c--- usual case            
+            call fdist(ih1,x1onz,facscale,fx1z)
+          endif
+	endif
       endif
       if (z .gt. xx(2)) then
-         x2onz=xx(2)/z
-         call fdist(ih2,x2onz,facscale,fx2z)
+        x2onz=xx(2)/z
+c--- for single top + b, make sure to use two different scales
+        if (case .eq. 'qg_tbq') then
+          call fdist(ih2,x2onz,facscale_H,fx2z_H)
+          call fdist(ih2,x2onz,facscale_L,fx2z_L)
+        else
+c--- for comparison with C. Oleari's e+e- --> QQbg calculation
+          if (runstring(1:5) .eq. 'carlo') then
+ 	    do j=-nf,nf
+	    fx2z(j)=0d0
+	    enddo
+          else   
+c--- usual case            
+            call fdist(ih2,x2onz,facscale,fx2z)
+          endif
+	endif
       endif         
       
       do j=-nflav,nflav
@@ -599,7 +749,9 @@ c--- Note that in general each piece will be composed of many different
 c--- dipole contributions
 
 c--- SUM BY COLOUR STRUCTURES: H+2jets only
-      if     (case .eq. 'ggfus2')then
+      if  ( (case .eq. 'ggfus2') 
+     . .or. (case .eq. 'HWW2jt')
+     . .or. (case .eq. 'HZZ2jt')) then
        xmsq=xmsq+fx1(j)*fx2(k)*(
      . msqv(j,k)+msq(j,k))
 c      write(6,*) j,k,'-> msqv = ',fx1(j)*fx2(k)*(
@@ -1008,6 +1160,100 @@ c---   (interchange integrated CT's for q-qbar and qbar-q)
 
 c      write(6,*) j,k,'-> msqc = ',xmsq-tmp
 
+      elseif (case .eq. 'qg_tbq') then
+
+c--- SPECIAL SUM FOR SINGLE TOP + B CASE
+C--QQ
+      if     ((j .gt. 0) .and. (k.gt.0)) then
+      xmsq=xmsq
+     & +(msq(g,k)*(AP(g,q,2)+Q1(g,q,q,2)))*fx1z_H(j)/z*fx2_L(k)
+     & +(msq(j,g)*(AP(g,q,2)+Q2(g,q,q,2)))*fx1_L(j)*fx2z_H(k)/z
+C--QbarQbar
+      elseif ((j .lt. 0) .and. (k.lt.0)) then
+      xmsq=xmsq
+     & +(msq(g,k)*(AP(g,a,2)+Q1(g,a,a,2)))*fx1z_H(j)/z*fx2_L(k)
+     & +(msq(j,g)*(AP(g,a,2)+Q2(g,a,a,2)))*fx1_L(j)*fx2z_H(k)/z
+C--QQbar
+      elseif ((j .gt. 0) .and. (k.lt.0)) then
+      xmsq=xmsq
+     & +(msq(g,k)*(AP(g,q,2)+Q1(g,q,a,2)))*fx1z_H(j)/z*fx2_L(k)
+     & +(msq(j,g)*(AP(g,a,2)+Q2(g,a,q,2)))*fx1_L(j)*fx2z_H(k)/z
+
+      elseif ((j .lt. 0) .and. (k.gt.0)) then
+C--QbarQ
+      xmsq=xmsq
+     & +(msq(g,k)*(AP(g,a,2)+Q1(g,a,q,2)))*fx1z_H(j)/z*fx2_L(k)
+     & +(msq(j,g)*(AP(g,q,2)+Q2(g,q,a,2)))*fx1_L(j)*fx2z_H(k)/z
+
+      elseif ((j .eq. g) .and. (k.eq.g)) then
+C--gg
+       msq_qg=msq(+5,g)+msq(+4,g)+msq(+3,g)+msq(+2,g)+msq(+1,g)
+     &       +msq(-5,g)+msq(-4,g)+msq(-3,g)+msq(-2,g)+msq(-1,g)
+       msq_gq=msq(g,+5)+msq(g,+4)+msq(g,+3)+msq(g,+2)+msq(g,+1)
+     &       +msq(g,-5)+msq(g,-4)+msq(g,-3)+msq(g,-2)+msq(g,-1)
+       xmsq=xmsq
+     &  +(msq_qg*(AP(q,g,2)+Q1(q,g,g,2)))*fx1z_L(g)/z*fx2_H(g)
+     &  +(msq_gq*(AP(q,g,2)+Q2(q,g,g,2)))*fx1_H(g)*fx2z_L(g)/z
+
+      elseif (j .eq. g) then
+C--gQ
+       if    (k .gt. 0) then
+       msq_aq=msq(-1,k)+msq(-2,k)+msq(-3,k)+msq(-4,k)+msq(-5,k)
+       msq_qq=msq(+1,k)+msq(+2,k)+msq(+3,k)+msq(+4,k)+msq(+5,k)
+       xmsq=xmsq+(msqv(g,k)
+     & +msq(g,k)*(one+AP(g,g,1)-AP(g,g,3)+Q1(g,g,q,1)-Q1(g,g,q,3)
+     &               +AP(q,q,1)-AP(q,q,3)+Q2(q,q,g,1)-Q2(q,q,g,3)))
+     &               *fx1_H(g)*fx2_L(k)
+     & +(msq(g,k)*(AP(g,g,2)+AP(g,g,3)+Q1(g,g,q,2)+Q1(g,g,q,3))
+     & +   msq_aq*(AP(a,g,2)+Q1(a,g,q,2))
+     & +   msq_qq*(AP(q,g,2)+Q1(q,g,q,2)))*fx1z_H(g)/z*fx2_L(k)
+     & +(msq(g,k)*(AP(q,q,2)+AP(q,q,3)+Q2(q,q,g,2)+Q2(q,q,g,3))
+     & + msq(g,g)*(AP(g,q,2)+Q2(g,q,g,2)))*fx1_H(g)*fx2z_L(k)/z
+C--gQbar
+       elseif (k.lt.0) then
+       msq_qa=msq(+1,k)+msq(+2,k)+msq(+3,k)+msq(+4,k)+msq(+5,k)
+       msq_aa=msq(-1,k)+msq(-2,k)+msq(-3,k)+msq(-4,k)+msq(-5,k)
+       xmsq=xmsq+(msqv(g,k)
+     & +msq(g,k)*(one+AP(g,g,1)-AP(g,g,3)+Q1(g,g,a,1)-Q1(g,g,a,3)
+     &               +AP(a,a,1)-AP(a,a,3)+Q2(a,a,g,1)-Q2(a,a,g,3)))
+     &               *fx1_H(g)*fx2_L(k)
+     & +(msq(g,k)*(AP(g,g,2)+AP(g,g,3)+Q1(g,g,a,2)+Q1(g,g,a,3))
+     & +   msq_qa*(AP(q,g,2)+Q1(q,g,a,2))
+     & +   msq_aa*(AP(a,g,2)+Q1(a,g,a,2)))*fx1z_H(g)/z*fx2_L(k)
+     & +(msq(g,k)*(AP(a,a,2)+AP(a,a,3)+Q2(a,a,g,2)+Q2(a,a,g,3))
+     & + msq(g,g)*(AP(g,a,2)+Q2(g,a,g,2)))*fx1_H(g)*fx2z_L(k)/z
+       endif
+C--Qg
+      elseif (k .eq. g) then
+       if     (j.gt.0) then
+       msq_qa=msq(j,-1)+msq(j,-2)+msq(j,-3)+msq(j,-4)+msq(j,-5)
+       msq_qq=msq(j,+1)+msq(j,+2)+msq(j,+3)+msq(j,+4)+msq(j,+5)
+       xmsq=xmsq+(msqv(j,g)
+     & +msq(j,g)*(one
+     &               +AP(q,q,1)-AP(q,q,3)+Q1(q,q,g,1)-Q1(q,q,g,3)
+     &               +AP(g,g,1)-AP(g,g,3)+Q2(g,g,q,1)-Q2(g,g,q,3)))
+     &               *fx1_L(j)*fx2_H(g)
+     & +(msq(j,g)*(AP(q,q,2)+AP(q,q,3)+Q1(q,q,g,2)+Q1(q,q,g,3))
+     & + msq(g,g)*(AP(g,q,2)+Q1(g,q,g,2)))*fx1z_L(j)/z*fx2_H(g)
+     & +(msq(j,g)*(AP(g,g,2)+AP(g,g,3)+Q2(g,g,q,2)+Q2(g,g,q,3))
+     & +   msq_qa*(AP(a,g,2)+Q2(a,g,q,2))
+     & +   msq_qq*(AP(q,g,2)+Q2(q,g,q,2)))*fx1_L(j)*fx2z_H(g)/z
+C--Qbarg
+       elseif (j.lt.0) then
+       msq_aq=msq(j,+1)+msq(j,+2)+msq(j,+3)+msq(j,+4)+msq(j,+5)
+       msq_aa=msq(j,-1)+msq(j,-2)+msq(j,-3)+msq(j,-4)+msq(j,-5)
+       xmsq=xmsq+(msqv(j,g)
+     & +msq(j,g)*(one+AP(a,a,1)-AP(a,a,3)+Q1(a,a,g,1)-Q1(a,a,g,3)
+     &               +AP(g,g,1)-AP(g,g,3)+Q2(g,g,a,1)-Q2(g,g,a,3)))
+     &                *fx1_L(j)*fx2_H(g)
+     & +(msq(j,g)*(AP(a,a,2)+AP(a,a,3)+Q1(a,a,g,2)+Q1(a,a,g,3))
+     & + msq(g,g)*(AP(g,a,2)+Q1(g,a,g,2)))*fx1z_L(j)/z*fx2_H(g)
+     & +(msq(j,g)*(AP(g,g,2)+AP(g,g,3)+Q2(g,g,a,3)+Q2(g,g,a,2))
+     & + msq_aq*(AP(q,g,2)+Q2(q,g,a,2))
+     & + msq_aa*(AP(a,g,2)+Q2(a,g,a,2)))*fx1_L(j)*fx2z_H(g)/z
+       endif
+      endif
+      
       else
 
 c--- SUM BY TOTAL MATRIX ELEMENTS: everything else
@@ -1094,7 +1340,6 @@ C--QQbar
      & + msq(g,k)*(AP(g,q,2)+Q1(g,q,a,2)))*fx1z(j)/z*fx2(k)
      & +(msq(j,k)*(AP(a,a,2)+AP(a,a,3)+Q2(a,a,q,3)+Q2(a,a,q,2))
      & + msq(j,g)*(AP(g,a,2)+Q2(g,a,q,2)))*fx1(j)*fx2z(k)/z
-
       elseif ((j .lt. 0) .and. (k.gt.0)) then
 C--QbarQ
       xmsq=xmsq+(msqv(j,k)
@@ -1150,8 +1395,17 @@ C--gQ
      & +   msq_qq*(AP(q,g,2)+Q1(q,g,q,2)))*fx1z(g)/z*fx2(k)
      & +(msq(g,k)*(AP(q,q,2)+AP(q,q,3)+Q2(q,q,g,2)+Q2(q,q,g,3))
      & + msq(g,g)*(AP(g,q,2)+Q2(g,q,g,2)))*fx1(g)*fx2z(k)/z
+       if     ((case .eq. 'bq_tpq') .and. (k .ne. 5)
+     .   .and. (masslessb .eqv. .false.)) then
+c--- replace subtraction with a b in initial state by massive sub
+        xmsq=xmsq-(
+     & +   msq_aq*(AP(a,g,2)+Q1(a,g,q,2)
+     &            +ason2pi*Tr*(z**2+omz**2)*dlog(facscale**2/mbsq))
+     & +   msq_qq*(AP(q,g,2)+Q1(q,g,q,2)
+     &            +ason2pi*Tr*(z**2+omz**2)*dlog(facscale**2/mbsq))
+     &            )*fx1z(g)/z*fx2(k)
+       endif
 C--gQbar
-
        elseif (k.lt.0) then
        msq_qa=msq(+1,k)+msq(+2,k)+msq(+3,k)+msq(+4,k)+msq(+5,k)
        msq_aa=msq(-1,k)+msq(-2,k)+msq(-3,k)+msq(-4,k)+msq(-5,k)
@@ -1164,6 +1418,16 @@ C--gQbar
      & +   msq_aa*(AP(a,g,2)+Q1(a,g,a,2)))*fx1z(g)/z*fx2(k)
      & +(msq(g,k)*(AP(a,a,2)+AP(a,a,3)+Q2(a,a,g,2)+Q2(a,a,g,3))
      & + msq(g,g)*(AP(g,a,2)+Q2(g,a,g,2)))*fx1(g)*fx2z(k)/z
+       if     ((case .eq. 'bq_tpq') .and. (k .ne. -5)
+     .   .and. (masslessb .eqv. .false.)) then
+c--- replace subtraction with a b in initial state by massive sub
+        xmsq=xmsq-(
+     & +   msq_qa*(AP(q,g,2)+Q1(q,g,a,2)
+     &            +ason2pi*Tr*(z**2+omz**2)*dlog(facscale**2/mbsq))
+     & +   msq_aa*(AP(a,g,2)+Q1(a,g,a,2)
+     &            +ason2pi*Tr*(z**2+omz**2)*dlog(facscale**2/mbsq))
+     &            )*fx1z(g)/z*fx2(k)
+       endif
        endif
 C--Qg
       elseif (k .eq. g) then
@@ -1180,6 +1444,16 @@ C--Qg
      & +(msq(j,g)*(AP(g,g,2)+AP(g,g,3)+Q2(g,g,q,2)+Q2(g,g,q,3))
      & +   msq_qa*(AP(a,g,2)+Q2(a,g,q,2))
      & +   msq_qq*(AP(q,g,2)+Q2(q,g,q,2)))*fx1(j)*fx2z(g)/z
+       if     ((case .eq. 'bq_tpq') .and. (j .ne. 5)
+     .   .and. (masslessb .eqv. .false.)) then
+c--- replace subtraction with a b in initial state by massive sub
+        xmsq=xmsq-(
+     & +   msq_qa*(AP(a,g,2)+Q2(a,g,q,2)
+     &            +ason2pi*Tr*(z**2+omz**2)*dlog(facscale**2/mbsq))
+     & +   msq_qq*(AP(q,g,2)+Q2(q,g,q,2)
+     &            +ason2pi*Tr*(z**2+omz**2)*dlog(facscale**2/mbsq))
+     &            )*fx1(j)*fx2z(g)/z
+       endif
 C--Qbarg
        elseif (j.lt.0) then
        msq_aq=msq(j,+1)+msq(j,+2)+msq(j,+3)+msq(j,+4)+msq(j,+5)
@@ -1193,13 +1467,26 @@ C--Qbarg
      & +(msq(j,g)*(AP(g,g,2)+AP(g,g,3)+Q2(g,g,a,3)+Q2(g,g,a,2))
      & + msq_aq*(AP(q,g,2)+Q2(q,g,a,2))
      & + msq_aa*(AP(a,g,2)+Q2(a,g,a,2)))*fx1(j)*fx2z(g)/z
+       if     ((case .eq. 'bq_tpq') .and. (j .ne. -5)
+     .   .and. (masslessb .eqv. .false.)) then
+c--- replace subtraction with a b in initial state by massive sub
+        xmsq=xmsq-(
+     & +   msq_aq*(AP(q,g,2)+Q2(q,g,a,2)
+     &            +ason2pi*Tr*(z**2+omz**2)*dlog(facscale**2/mbsq))
+     & +   msq_aa*(AP(a,g,2)+Q2(a,g,a,2)
+     &            +ason2pi*Tr*(z**2+omz**2)*dlog(facscale**2/mbsq))
+     &            )*fx1(j)*fx2z(g)/z
+       endif
        endif
       endif
       
+c      if (xmsq-tmp .ne. 0d0) write(6,*) j,k,'-> msqc = ',xmsq-tmp
+
       endif
 
-c--- subtract off LO (we don't want it) for Wcs_ms case
-      if (case .eq. 'Wcs_ms') then
+c--- subtract off LO (we don't want it) for Wcs_ms case and for
+c--- the comparison with C. Oleari's e+e- --> QQbg calculation
+      if ((case .eq. 'Wcs_ms') .or. (runstring(1:5) .eq. 'carlo')) then
         xmsq=xmsq-msq(j,k)*fx1(j)*fx2(k)
       endif  
            
@@ -1247,8 +1534,6 @@ c--- code to check that epsilon poles cancel
         nshot=nshot+1
         epinv=0d0
         epinv2=0d0
-c        epinv=1d0
-c        epinv2=1d0
         goto 12
       elseif (nshot .eq. 2) then
         nshot=nshot+1

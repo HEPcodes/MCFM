@@ -25,6 +25,20 @@ c--- computes either pt or et, depending on the value of useEt
       return
       end
 
+      double precision function ptthree(j,k,m,p)
+c--- This routine is now just a wrapper to getet, which
+c--- computes either pt or et, depending on the value of useEt      
+      implicit none
+      include 'constants.f'
+      integer j,k,m
+      double precision p(mxpart,4),getet
+      
+      ptthree=getet(p(j,4)+p(k,4)+p(m,4),p(j,1)+p(k,1)+p(m,1),
+     .              p(j,2)+p(k,2)+p(m,2),p(j,3)+p(k,3)+p(m,3))
+
+      return
+      end
+
       double precision function etarap(j,p)
       implicit none
 C---returns the value of the pseudorapidity
@@ -115,7 +129,7 @@ c-- rapidities of 100 will be rejected by any sensible cuts
       return
       end
 
-c--- this is the pseudo-rapidity
+c--- this is the pseudo-rapidity of pair j,k
       double precision function etaraptwo(j,k,p)
       implicit none
       include 'constants.f'
@@ -132,6 +146,48 @@ c-- rapidities of 100 will be rejected by any sensible cuts
       etaraptwo=(etaraptwo+p(j,3)+p(k,3))
      .         /(etaraptwo-p(j,3)-p(k,3))
       etaraptwo=0.5d0*dlog(etaraptwo)
+      endif
+      
+      return
+      end
+
+      double precision function yrapthree(j,k,m,p)
+c--- this is the rapidity of the combination j+k+m
+      implicit none
+      include 'constants.f'
+      integer j,k,m
+      double precision p(mxpart,4)
+      yrapthree=(p(j,4)+p(k,4)+p(m,4)+p(j,3)+p(k,3)+p(m,3))
+     .         /(p(j,4)+p(k,4)+p(m,4)-p(j,3)-p(k,3)-p(m,3))
+      if (yrapthree .lt. 1d-13) then
+C-- set to 100 if this is very close to or less than zero
+c-- rapidities of 100 will be rejected by any sensible cuts
+      yrapthree=100d0
+      else 
+      yrapthree=0.5d0*dlog(yrapthree)
+      endif
+            
+      return
+      end
+
+      double precision function etarapthree(j,k,m,p)
+c--- this is the pseudo-rapidity of the combination j+k+m
+      implicit none
+      include 'constants.f'
+      integer j,k,m
+      double precision p(mxpart,4)
+      
+      etarapthree=
+     .    dsqrt((p(j,1)+p(k,1)+p(m,1))**2+(p(j,2)+p(k,2)+p(m,2))**2
+     .         +(p(j,3)+p(k,3)+p(m,3))**2)
+      if (abs(etarapthree)-abs(p(j,3)+p(k,3)+p(m,3)) .lt. 1d-13) then
+C-- set to 100 if this is very close to or less than zero
+c-- rapidities of 100 will be rejected by any sensible cuts
+      etarapthree=100d0
+      else 
+      etarapthree=(etarapthree+p(j,3)+p(k,3)+p(m,3))
+     .           /(etarapthree-p(j,3)-p(k,3)-p(m,3))
+      etarapthree=0.5d0*dlog(etarapthree)
       endif
       
       return

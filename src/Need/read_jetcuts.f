@@ -2,7 +2,7 @@
       implicit none
       include 'clustering.f'
       include 'jetcuts.f'
-      integer nargs,iargc
+      integer nargs
       character*72 jetcutsfile
       double precision read_ptmin,read_etamin,read_etamax
       double precision ptmin,etamax,ptmin_tev,etamax_tev,
