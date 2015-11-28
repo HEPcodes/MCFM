@@ -5,8 +5,8 @@
 *     May, 1999.                           
 *     calculate the element squared 
 *     for the process in terms of p     
-*     q(-p1) +qbar(-p2) -->  tau^+(nubar(p7)+nu(p3)+e+(p4))                    
-*                           +tau^-(nu(p8)+e-(p5)+nubar(p6))             
+*     q(-p1) +qbar(-p2) -->  tau^+(nubar_tau(p6)+nu_e(p7)+e+(p8))               
+*                           +tau^-(nu_tau(p5)+e-(p3)+nubar_e(p4))             
 *     This routine is nothing more than a wrapper for 
 *     Kleiss and Stirling
 ************************************************************************
@@ -52,21 +52,21 @@ c---- Fill common blocks for Kleiss and Stirling
 
 c---step one change momentum notation into the notation of Kleiss and Stirling
 c----My notation
-*     q(-p1) +qbar(-p2) -->  tau^+(nubar_tau(p7)+nu(p3)+e+(p4))              
-*                           +tau^-(nu_tau(p8)+e-(p5)+nubar(p6))             
+*     q(-p1) +qbar(-p2) -->  tau^+(nubar_tau(p6)+nu_e(p7)+e+(p8))               
+*                           +tau^-(nu_tau(p5)+e-(p3)+nubar_e(p4))             
 c----KS notation
-c---qbar(p1)+q(p2) = tau^+(nubar(p3)+nu_e(p4)+e^+(p5))
-c                   +tau^-(nu(p6)+e^-(p7)+nu_ebar(p8))
+c---qbar(p1)+q(p2) = tau^+(nubar_tau(p3)+e^-(p4)+nubar_e(p5))
+c                   +tau^-(nu_tau(p6)+nu_e(p7)+e^+(p8))
 
       do nu=1,4
       pks(nu,1)=-p(2,nu)
       pks(nu,2)=-p(1,nu)
-      pks(nu,3)=p(7,nu)
-      pks(nu,4)=p(3,nu)
-      pks(nu,5)=p(6,nu)
-      pks(nu,6)=p(8,nu)
-      pks(nu,7)=p(5,nu)
-      pks(nu,8)=p(6,nu)
+      pks(nu,3)=p(6,nu)
+      pks(nu,4)=p(7,nu)
+      pks(nu,5)=p(8,nu)
+      pks(nu,6)=p(5,nu)
+      pks(nu,7)=p(3,nu)
+      pks(nu,8)=p(4,nu)
       enddo
 
 
@@ -101,6 +101,6 @@ C---fill qb-q and q-qb elements
      .                    +qqbmm*(L(+j)*le*prop12-Q(j)))**2)
       endif
       enddo
-       
+      
       return
       end

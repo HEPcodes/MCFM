@@ -12,13 +12,13 @@ c--- qfinal is the final vector q1,q2,q3,q4,.... q(4+njets)
 c--- first four vectors are set equal to the incoming q 
       implicit none
       include 'constants.f'
+      include 'bbproc.f'
       double precision q(mxpart,4),qjet(mxpart,4),qfinal(mxpart,4)
       double precision R,dijmin,dkmin,pt,ayrap,ptjetmin,yjetmax
       double precision bclustmass
       integer nparti,npartf,njet,i,nu,iter,nmin1,nmin2,maxjet,nk,
      . npart,nqcdjets,nqcdstart,nremoved,nproc
       character jetlabel(mxpart)*2,plabel(mxpart)*2
-      logical bbproc
       common/plabel/plabel
       common/npart/npart
       common/nqcdjets/nqcdjets,nqcdstart
@@ -65,7 +65,7 @@ c--- step1: find (i,j) pair with lowest measure of all non-jets so far
 c--- step2: find jet K with lowest Et
       call findminet(q,qjet,iter,maxjet,dkmin,nk)
       dkmin=dkmin*R
-      
+
 c      write(*,*) 'Comparing pair (',nmin1,',',nmin2,') value of'
 c      write(*,*) 'dijmin = ',dijmin,' with ',nk,' value of dk = ',dkmin
       
@@ -153,31 +153,6 @@ c        write(*,*) i,jetlabel(i)
 c      enddo
 c      pause
 
-c--- set bbproc to TRUE if the process involves two b-jets
-      if (
-     .      (nproc .eq.  21)
-     . .or. (nproc .eq.  26)
-     . .or. (nproc .eq.  51)
-     . .or. (nproc .eq.  52)
-     . .or. (nproc .eq.  53)
-     . .or. (nproc .eq.  73)
-     . .or. (nproc .eq.  78)
-     . .or. (nproc .eq.  84)
-     . .or. (nproc .eq.  89)
-     . .or. (nproc .eq.  91)
-     . .or. (nproc .eq.  96)
-     . .or. (nproc .eq.  101)
-     . .or. (nproc .eq.  102)
-     . .or. (nproc .eq.  151)
-     . .or. (nproc .eq.  152)
-     . .or. (nproc .eq.  161)
-     . .or. (nproc .eq.  171)
-     . ) then
-        bbproc=.true.
-      else
-        bbproc=.false.
-      endif
-
 c--- check that 5 and 6 are b and b-bar
       if ((bbproc) .and. (bclustmass(njet,qfinal,jetlabel) .eq. 0d0))
      .  njet=-1    
@@ -257,19 +232,23 @@ C---calculate the proto-jet separation see NPB406(1993)187, Eqn. 7
       include 'constants.f'
       integer i,j
       double precision p(mxpart,4),pjet(mxpart,4),pti,ptj,phii,phij,
-     . yi,yj,ptjet,yrap
+     . yi,yj,ptjet,yrap,r
       
       pti=ptjet(i,p,pjet)
       ptj=ptjet(j,p,pjet)
-      
-      yi=yrap(i,pjet)
-      yj=yrap(j,pjet)
 
-      phii=atan2(pjet(i,1),pjet(i,2))
-      phij=atan2(pjet(j,1),pjet(j,2))
+c--- old method - bad because (phii-phij) can be > pi       
+c      yi=yrap(i,pjet)
+c      yj=yrap(j,pjet)
+
+c      phii=atan2(pjet(i,1),pjet(i,2))
+c      phij=atan2(pjet(j,1),pjet(j,2))
       
-      dij=dsqrt((yi-yj)**2+(phii-phij)**2)
-      
+c      dij=dsqrt((yi-yj)**2+(phii-phij)**2)
+
+c--- new method - r() calculates true value of 0 < (phi-phij) < pi
+      dij=r(pjet,i,j)
+            
       dij=dij*min(pti,ptj)
       
       return
@@ -279,10 +258,54 @@ C---calculate the proto-jet separation see NPB406(1993)187, Eqn. 7
       implicit none
       include 'constants.f'
       integer i,j
+      double precision p(mxpart,4),pjet(mxpart,4)
+      character jetlabel(mxpart)*2
+      
+c--Run II prescription
+      pjet(i,1)=pjet(i,1)+pjet(j,1)
+      pjet(i,2)=pjet(i,2)+pjet(j,2)
+      pjet(i,3)=pjet(i,3)+pjet(j,3)
+      pjet(i,4)=pjet(i,4)+pjet(j,4)
+
+
+      if (((jetlabel(i) .eq. 'bq') .and. (jetlabel(j) .eq. 'pp'))
+     ..or.((jetlabel(j) .eq. 'bq') .and. (jetlabel(i) .eq. 'pp'))) then
+        jetlabel(i)='bq'
+        return
+      endif
+      if (((jetlabel(i) .eq. 'ba') .and. (jetlabel(j) .eq. 'pp'))
+     ..or.((jetlabel(j) .eq. 'ba') .and. (jetlabel(i) .eq. 'pp'))) then
+        jetlabel(i)='ba'
+        return
+      endif
+      if (((jetlabel(i) .eq. 'bq') .and. (jetlabel(j) .eq. 'ba'))
+     ..or.((jetlabel(j) .eq. 'bq') .and. (jetlabel(i) .eq. 'ba'))) then
+        jetlabel(i)='bq'
+        return
+      endif
+      if (((jetlabel(i) .eq. 'bq') .and. (jetlabel(j) .eq. 'qj'))
+     ..or.((jetlabel(j) .eq. 'bq') .and. (jetlabel(i) .eq. 'qj'))) then
+        jetlabel(i)='bq'
+        return
+      endif
+      if (((jetlabel(i) .eq. 'ba') .and. (jetlabel(j) .eq. 'qj'))
+     ..or.((jetlabel(j) .eq. 'ba') .and. (jetlabel(i) .eq. 'qj'))) then
+        jetlabel(i)='ba'
+        return
+      endif
+
+      return
+      end
+      
+      subroutine combine_snowmass(p,pjet,i,j,jetlabel)
+      implicit none
+      include 'constants.f'
+      integer i,j
       double precision p(mxpart,4),pjet(mxpart,4),ptjetij,yjet,phijet,
      . ejet,ptjet,yrap,pti,ptj,yi,yj,phii,phij
       character jetlabel(mxpart)*2
       
+C----Snowmass style prescripton 
       pti=ptjet(i,p,pjet)
       ptj=ptjet(j,p,pjet)
       
@@ -291,7 +314,8 @@ C---calculate the proto-jet separation see NPB406(1993)187, Eqn. 7
       
       phii=atan2(pjet(i,1),pjet(i,2))
       phij=atan2(pjet(j,1),pjet(j,2))
-      
+c
+
       ptjetij=pti+ptj
       yjet=(pti*yi+ptj*yj)/ptjetij
       phijet=(pti*phii+ptj*phij)/ptjetij
@@ -301,7 +325,8 @@ C---calculate the proto-jet separation see NPB406(1993)187, Eqn. 7
       pjet(i,2)=ptjetij*dcos(phijet)
       pjet(i,3)=ptjetij*(ejet-1d0/ejet)/2d0
       pjet(i,4)=ptjetij*(ejet+1d0/ejet)/2d0
-      
+
+
       if (((jetlabel(i) .eq. 'bq') .and. (jetlabel(j) .eq. 'pp'))
      ..or.((jetlabel(j) .eq. 'bq') .and. (jetlabel(i) .eq. 'pp'))) then
         jetlabel(i)='bq'

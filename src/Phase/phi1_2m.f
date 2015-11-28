@@ -4,8 +4,8 @@ c     with invariant mass of particle three s3 integrated over.
 c     s3min is the minimum value of s3.
 c     Vectors returned p2 and p3 are in the same frame as p1 is supplied.
 c     Expression evaluated is 
-c     ds2 d^4 p2 d^4 p3 (2 pi)^4 delta(p1-p2-p3)/(2 pi)^6
-c     delta(p2^2-s2) delta(p3^2-s3)
+c     ds3 d^4 p2 d^4 p3 (2 pi)^4 delta(p1-p2-p3)/(2 pi)^6
+c     delta(p2^2-m2) delta(p3^2-s3)
       implicit none
       include 'constants.f'
       include 'masses.f'
@@ -23,6 +23,7 @@ c      logical first
       common/breit/n2,n3,mass2,width2,mass3,width3
       parameter(wt0=one/8.d0/pi)
       data jbranch/1/
+      data xjac,rtxth/1d0,1d0/
 c      data first/.true./
       save jbranch,xexp
 c      if (first) then
@@ -114,22 +115,9 @@ c      pause
       enddo
 
 
-c      write(6,*) '13',p1(4)*p3(4)-p1(3)*p3(3)-p1(2)*p3(2)-p1(2)*p3(2)
-c      write(6,*) '23',p2(4)*p3(4)-p2(3)*p3(3)-p2(2)*p3(2)-p2(2)*p3(2)
-c      write(6,*) 'costh',costh
-c      write(6,*) 'xth',xth
-c      pause
       if (  (p1(4) .lt. 0.d0) 
      & .or. (p2(4) .lt. 0.d0) 
      & .or. (p3(4) .lt. 0.d0)) then  
-c      write(6,*) 'p1(4)',p1(4)
-c      write(6,*) 'p2(4)',p2(4)
-c      write(6,*) 'p3(4)',p3(4)
-c      write(6,*) 'p1sq',p1(4)**2-p1(1)**2-p1(2)**2-p1(3)**2,s1
-c      write(6,*) 'p2sq',p2(4)**2-p2(1)**2-p2(2)**2-p2(3)**2,
-c      write(6,*) 'p3sq',p3(4)**2-p3(1)**2-p3(2)**2-p3(3)**2,s3
-c      write(6,*) 'in phi1_2m.f'
-c      write(6,*) n2,n3
       return 1
       endif
       return

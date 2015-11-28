@@ -9,7 +9,7 @@ C     the second for helicity of lepton line.
       include 'prods.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
-      include 'msq_cs.f'
+      include 'mmsq_cs.f'
       integer i1(2),i2(2),i3(2),i4(2),i5(2),i6(2),j,lh,h2,h3,hq,h(2:3)
       double precision mqqb(2,2),m1,m0,x,fac
       double complex tempm0,m(2)
@@ -88,8 +88,12 @@ C initialize loop sum to zero
         else
         m(j)=a6treeg1(st(h(i2(j)),h(i3(j))),
      .     i1(1),i2(j),i3(j),i4(1),i5(lh),i6(lh),za,zb)
+c  if hq=2,lh=2,h2=2,h3=2,j=1 then st='q+g+g+qb-'
+c  and we are calculating a6treeg1('q+g+g+qb-',1,2,3,4,5,6,za,zb)
+C  which corresponds to 
+c  q(4)+l(5) --> q_R(1)+l_R(6)+g_R(2)+g_R(3)
+c  hence, this routine thinks that particle 1 is an outgoing quark
         endif
-c        write(*,*) hq,h2,h3,lh,i2(j),i3(j),m(j)
         tempm0=tempm0+m(j)
         enddo
       m0=abs(tempm0)**2
@@ -106,6 +110,9 @@ c      write(*,*) 'tree ',hq,lh,mqqb(hq,lh)
 c--- USED TO COMPARE ONLY      
       if (compare) then
       tamp=a6treeg('q+g+g+qb-',4,3,2,1,6,5,zb,za)
+c--- This amplitude with the choice of arguments we have made
+c--- corresponds to
+c    q(1)+l(6) --> q_R(4)+l_R(5)+g_R(2)+g_R(3)
 c      write(*,*) 'q+g-g-qb-',tamp
       tamp=a6treeg('q+g-g+qb-',1,2,3,4,5,6,za,zb)
 c      write(*,*) 'q+g-g+qb-',tamp
@@ -136,7 +143,6 @@ c----wrapper to a6treeg that also includes config st='q+g-g-qb-'
       integer j1,j2,j3,j4,j5,j6
       include 'constants.f'
       include 'sprodx.f'
-      include 'dprodx.f'
       character*9 st
       double complex a6treeg
 

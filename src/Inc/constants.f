@@ -9,9 +9,9 @@
 c sqrt(2d0/pi)
       parameter(rt2onpi=0.797884560802865d0)
 c-----------------------------------------------------
-      double precision cf,ca,xn,xnsq,v,tr,qu,qd,qe,gf,aem,ninth
+      double precision cf,ca,xn,xnsq,xn4,v,tr,qu,qd,qe,gf,aem,Von4,ninth
       parameter(cf=4d0/3d0,ca=3d0,xn=3d0,xnsq=9d0,v=8d0,tr=0.5d0)
-      parameter(ninth=1d0/9d0)
+      parameter(Von4=2d0,ninth=1d0/9d0,xn4=xnsq-4d0)
       parameter(qu=2d0/3d0,qd=-1d0/3d0,qe=-1d0)
       parameter(gf=1.16639d-5,aem=1d0/137.035989d0)
       double precision spinave,aveqq,aveqg,avegg
@@ -33,8 +33,11 @@ c----decifemtobarns
       parameter(overa=pbGeV2/xn/256d0/pi)
 c-----------------------------------------------------
       double complex im,impi,czip,cone
-      parameter(im=(0d0,1d0),impi=im*pi,czip=(0d0,0d0),cone=(1d0,0d0))
+      parameter(im=(0d0,1d0),impi=(0d0,3.141592653589793238d0),
+     . czip=(0d0,0d0),cone=(1d0,0d0))
 c-----------------------------------------------------
       integer nloop,nf,fn,mxpart
-      parameter(nloop=2,nf=5,fn=-5,mxpart=10)
+      parameter(nloop=2,nf=5,fn=-5,mxpart=12)
+      double precision b0
+      parameter(b0=(xn*11d0-2d0*nf)/6d0)
 

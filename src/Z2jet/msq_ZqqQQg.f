@@ -2,27 +2,23 @@
 ************************************************************************
 *     Author: R.K. Ellis                                               *
 *     March, 2001.                                                     *
-*     Return matrix elements squared as a function of f1 anf f2        *
+*     Return matrix elements squared as a function of f1 and f2        *
 *     summed over helicity, using the formulae of                      *
 *     Nagy and Trocsnayi, PRD59 014020 (1999)                          *
 ************************************************************************
       implicit none
       include 'constants.f'
       include 'masses.f'
-      include 'ewcouple.f'
-      include 'qcdcouple.f'
       include 'zcouple.f'
-      include 'ewcharge.f'
-      include 'prods.f'
+      include 'dprodx.f'
       include 'hardscale.f'
       integer Qh,hq,hg,lh,f1,f3,i1,i2,i3,i4,i5,i6,i7,j
       double precision A(2,2,2),B(2,2,2),C(2,2,2),D(2,2,2),E(2,2,2),
      . F(2,2,2),G(2,2,2)
       double precision MI(2),MN(2,2),M0(2,2,2),Mx(2,2,2),My(2,2,2),
-     . Mz(2,2,2),Mxx(2,2,2),Mxy(2,2,2),gq,gl,Qg
+     . Mz(2,2,2),Mxx(2,2,2),Mxy(2,2,2)
       double precision x,y,z
       parameter(x=xn/cf,y=half/cf,z=0.25d0*(xn**2-two)/xn/cf**2)
-      double complex prop
       double complex 
      .               mb1_1234(2,2,2,2,2,2),mb2_1234(2,2,2,2,2,2),
      .               mb1_3412(2,2,2,2,2,2),mb2_3412(2,2,2,2,2,2),

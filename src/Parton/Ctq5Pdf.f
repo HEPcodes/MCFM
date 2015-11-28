@@ -1,18 +1,23 @@
-
 C============================================================================
 C                CTEQ Parton Distribution Functions: Version 5.0
-C                             March 1, 1999
+C                             Nov. 1, 1999
 C
 C   Ref: "GLOBAL QCD ANALYSIS OF PARTON STRUCTURE OF THE NUCLEON:
 C         CTEQ5 PPARTON DISTRIBUTIONS"
 C
-C  hep-ph/9903282
+C  hep-ph/9903282; to be published in Eur. Phys. J. C 1999.
 C
 C  These PDF's use quadratic interpolation of attached tables. A parametrized 
 C  version of the same PDF's without external tables is under construction.  
 C  They will become available later.
 C
-C   This package contains 7 sets of CTEQ5 PDF's. Details are:
+C   This package contains 7 sets of CTEQ5 PDF's; plus two updated ones.
+C   The undated CTEQ5M1 and CTEQHQ1 use an improved evolution code.
+C   Both the original and the updated ones fit current data with comparable
+C   accuracy.  The CTEQHQ1 set also involve a different choice of scale,
+C   hence differs from CTEQHQ slightly more.  It is preferred over CTEQ5HQ.
+
+C   Details are:
 C ---------------------------------------------------------------------------
 C  Iset   PDF        Description       Alpha_s(Mz)  Lam4  Lam5   Table_File
 C ---------------------------------------------------------------------------
@@ -23,9 +28,12 @@ C   4    CTEQ5HJ  Large-x gluon enhanced  0.118     326   226    cteq5hj.tbl
 C   5    CTEQ5HQ  Heavy Quark             0.118     326   226    cteq5hq.tbl
 C   6    CTEQ5F3  Nf=3 FixedFlavorNumber  0.106     (Lam3=395)   cteq5f3.tbl
 C   7    CTEQ5F4  Nf=4 FixedFlavorNumber  0.112     309   XXX    cteq5f4.tbl
+C         --------------------------------------------------------
+C   8    CTEQ5M1  Improved CTEQ5M         0.118     326   226    cteq5m1.tbl
+C   9    CTEQ5HQ1 Improved CTEQ5HQ        0.118     326   226    ctq5hq1.tbl
 C ---------------------------------------------------------------------------
 C   
-C   The available applied range is 10^-5 < x < 1 and 1.0 < Q < 10,000 (GeV). 
+C  The available applied range is 10^-5 << x << 1 and 1.0 << Q << 10,000 (GeV).
 C   Lam5 (Lam4, Lam3) represents Lambda value (in MeV) for 5 (4,3) flavors. 
 C   The matching alpha_s between 4 and 5 flavors takes place at Q=4.5 GeV,  
 C   which is defined as the bottom quark mass, whenever it can be applied.
@@ -137,7 +145,7 @@ C                           Find lower end of interval containing X
       If (X .lt. Xmin .and. First ) Then
          First = .false.
          Print '(A, 2(1pE12.4))', 
-     >     ' WARNING: X < Xmin, extrapolation used; X, Xmin =', X, Xmin
+     >     ' WARNING: X << Xmin, extrapolation used; X, Xmin =', X, Xmin
          If (Jx .LT. 0) Jx = 0
       Elseif (Jx .GT. Nx-M) Then
          Jx = Nx - M
@@ -159,7 +167,7 @@ C                                    Find the interval where Q lies
       If (Jq .LT. 0) Then
          Jq = 0
          If (Q .lt. Qini)  Print '(A, 2(1pE12.4))', 
-     >     ' WARNING: Q < Qini, extrapolation used; Q, Qini =', Q, Qini
+     >     ' WARNING: Q << Qini, extrapolation used; Q, Qini =', Q, Qini
       Elseif (Jq .GT. Nt-M) Then
          Jq = Nt - M
          If (Q .gt. Qmax)  Print '(A, 2(1pE12.4))', 
@@ -191,11 +199,12 @@ C                        ****************************
 
       Subroutine SetCtq5 (Iset)
       Implicit Double Precision (A-H,O-Z)
-      Parameter (Isetmax=7)
+      Parameter (Isetmax=9)
       Character Flnm(Isetmax)*12, Tablefile*40
       Data (Flnm(I), I=1,Isetmax)
      > / 'cteq5m.tbl', 'cteq5d.tbl', 'cteq5l.tbl', 'cteq5hj.tbl'
-     > , 'cteq5hq.tbl', 'cteq5f3.tbl', 'cteq5f4.tbl' /
+     > , 'cteq5hq.tbl', 'cteq5f3.tbl', 'cteq5f4.tbl'
+     > , 'cteq5m1.tbl', 'ctq5hq1.tbl'  /
       Data Tablefile / 'test.tbl' /
       Data Isetold, Isetmin, Isettest / -987, 1, 911 /
       save
@@ -206,6 +215,12 @@ C             If data file not initialized, do so.
          If (Iset .eq. Isettest) then
             Print* ,'Opening ', Tablefile
  21         Open(IU, File=Tablefile, Status='OLD', Err=101)
+            GoTo 22
+ 101        Print*, Tablefile, ' cannot be opened '
+            Print*, 'Please input the .tbl file:'
+            Read (*,'(A)') Tablefile
+            Goto 21
+ 22         Continue
          ElseIf (Iset.lt.Isetmin .or. Iset.gt.Isetmax) Then
 	    Print *, 'Invalid Iset number in SetCtq5 :', Iset
 	    Stop
@@ -222,12 +237,6 @@ C             If data file not initialized, do so.
  100  Print *, ' Data file ', Tablefile, ' cannot be opened '
      >//'in SetCtq5!!'
       Stop
- 101  Print*, Tablefile, ' cannot be opened '
-      Stop
-c---the following three lines commented by RKE
-c      Print*, 'Please input the .tbl file:'
-c      Read (*,'(A)') Tablefile
-c      Goto 21
 C                             ********************
       End
 

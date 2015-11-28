@@ -15,15 +15,14 @@
       include 'ewcharge.f'
       include 'prods.f'
       include 'hardscale.f'
-      integer Qh,hq,hg,f1,f2,f3,f4,i1,i2,i3,i4,i5,i6,i7,j
+      integer Qh,hq,hg,f1,f2,f3,f4,i1,i2,i3,i4,i5,i6,i7
       double precision A(5,5,5,5),B(5,5,5,5),C(5,5,5,5),D(5,5,5,5),
      . E(5,5,5,5),F(5,5,5,5),G(5,5,5,5)
       double precision MN(5,5,5,5),
      . M0(5,5,5,5),Mx(5,5,5,5),My(5,5,5,5),
-     . Mz(5,5,5,5),Mxx(5,5,5,5),Mxy(5,5,5,5),gq,gl,Qg,temp,ofac
+     . Mz(5,5,5,5),Mxx(5,5,5,5),Mxy(5,5,5,5),temp,ofac
       double precision x,y,z
       parameter(x=xn/cf,y=half/cf,z=0.25d0*(xn**2-two)/xn/cf**2)
-      double complex prop
       double complex 
      .               mb1_1234(5,5,5,5,2,2,2),mb2_1234(5,5,5,5,2,2,2),
      .               mb1_3412(5,5,5,5,2,2,2),mb2_3412(5,5,5,5,2,2,2),

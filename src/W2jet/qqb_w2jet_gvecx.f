@@ -24,9 +24,8 @@ C ip is the label of the emitter
       double precision fac,prop,n(4),Vfac
       double precision p1p2(0:2,-1:1,-1:1),q1q2(0:2,-1:1,-1:1)
       double complex zab(mxpart,mxpart),zba(mxpart,mxpart)
-      double precision msqv_cs(0:2,-nf:nf,-nf:nf),mmsqv_cs(0:2,2,2)
+      double precision msqv_cs(0:2,-nf:nf,-nf:nf)
       double precision msqvx(-nf:nf,-nf:nf,-nf:nf,-nf:nf)
-      common/msqv_cols/mmsqv_cs
       common/p1p2/p1p2
       common/q1q2/q1q2
 c--- note that we will use the first index of p1p2 to label
@@ -231,87 +230,7 @@ c      p1p2(0,-1)=aveqg*fac*w2jetn(5,2,3,4,1,6,p,n,za,zb,zab,zba)
       return
       end
  
-      subroutine w2jetnx(i1,i2,i3,i4,i5,i6,p,n,za,zb,zab,zba)
-C----matrix element squared with p5 line contracted with n(mu)
-C----nDp6 should be equal to zero
-      implicit none
-      include 'constants.f'
-      include 'sprodx.f'
-      double complex qcdabn(2,2,2),qcdban(2,2,2),qedn(2,2,2)
-      double complex zab(mxpart,mxpart),zba(mxpart,mxpart)
-      double precision msq1,msq2,msqq,n(4),p(mxpart,4)
-      double precision nDp5,nDp6
-      integer i1,i2,i3,i4,i5,i6
-      double precision mmsqv_cs(0:2,2,2)
-      common/msqv_cols/mmsqv_cs
 
-      nDp5=n(4)*p(i5,4)-n(3)*p(i5,3)-n(2)*p(i5,2)-n(1)*p(i5,1)
-      nDp6=n(4)*p(i6,4)-n(3)*p(i6,3)-n(2)*p(i6,2)-n(1)*p(i6,1)
-c--- appropriate scale is approx 1d-3*energy(incoming)
-c--- so of order(1) for the Tevatron
-      if (abs(nDp6).gt.1d-3*abs(p(i1,4))) then 
-         write(*,*) 'Error for :',i1,i2,i3,i4,i5,i6
-         write(*,*) 'cutoff',1d-3*abs(p(i1,4))
-         write(6,*) 'nDp5',nDp5
-         write(6,*) 'nDp6',nDp6
-         call flush(6)
-         stop
-      endif
-
-      call subqcdn(i1,i2,i3,i4,i5,i6,nDp5,za,zb,zab,zba,qcdabn,qcdban)
-            
-C--first argument is quark line
-C--second argument is polarization of i5 line
-C  1=L,2=R
-      qedn(1,1,1)=qcdabn(1,1,1)+qcdban(1,1,1) 
-      qedn(2,1,1)=qcdabn(2,1,1)+qcdban(2,1,1) 
-
-      msq1= abs(qcdabn(1,1,1))**2+abs(qcdabn(2,1,1))**2
-      msq2= abs(qcdban(1,1,1))**2+abs(qcdban(2,1,1))**2 
-      msqq= abs(qedn(1,1,1))**2+abs(qedn(2,1,1))**2
-
-      mmsqv_cs(0,+1,+1)=-ninth*msqq
-      mmsqv_cs(1,+1,+1)=msq1
-      mmsqv_cs(2,+1,+1)=msq2
-
-      return
-      end
-
-      subroutine storecsv_px(i,j)
-c-- this routine transfers the information on the colour structure
-c-- for the W2jet_gvec matrix elements into elements (..,i,j) of p1p2
-      implicit none
-      include 'constants.f'
-      integer i,j,k
-      double precision p1p2(0:2,-1:1,-1:1)
-      double precision mmsqv_cs(0:2,2,2)
-      common/msqv_cols/mmsqv_cs
-      common/p1p2/p1p2
-      
-      do k=0,2
-        p1p2(k,i,j)=mmsqv_cs(k,+1,+1)
-      enddo
-      
-      return
-      end
-      
-      subroutine storecsv_qx(i,j)
-c-- this routine transfers the information on the colour structure
-c-- for the W2jet_gvec matrix elements into elements (..,i,j) of q1q2
-      implicit none
-      include 'constants.f'
-      integer i,j,k
-      double precision q1q2(0:2,-1:1,-1:1)
-      double precision mmsqv_cs(0:2,2,2)
-      common/msqv_cols/mmsqv_cs
-      common/q1q2/q1q2
-      
-      do k=0,2
-        q1q2(k,i,j)=mmsqv_cs(k,+1,+1)
-      enddo
-      
-      return
-      end
       
 
 

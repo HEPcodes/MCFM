@@ -1,11 +1,8 @@
       subroutine ampqqb_qqb(i1,i2,i5,i6,qqbA,qqbB)
       implicit none
       include 'constants.f'
-      include 'qcdcouple.f'
-      include 'ewcouple.f'
       integer i1,i2,i5,i6,swap(2),j,k
       double complex aqqb_zbb_new
-      double complex amp1,amp2,amp3,amp4,amp5,amp6,amp7,amp8
       double complex qqbA(2,2,2),qqbB(2,2,2)
       data swap/2,1/
 c--- also include diagrams where the Z is attached to b-bbar line  

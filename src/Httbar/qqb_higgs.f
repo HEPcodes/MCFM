@@ -61,7 +61,7 @@ c--- matrix element for H -> bbbar
       include 'zcouple.f'
 c---Matrix element squared Eqn 2.2 of EHSV
       double complex ehsva2,ehsva4
-      double precision s,t,u,hmass2
+      double precision s,t,u
       logical approx
       parameter(approx=.false.)
 c--- approx TRUE uses the heavy fermion approximation to Msq

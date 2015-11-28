@@ -28,7 +28,9 @@ c---- with all 2 pi's (ie 1/(2*pi)^20)
 
       n2=0
       n3=0
-      if     (case .eq. 'qq_ttg') then
+      if  ((case .eq. 'qq_ttg') 
+     . .or.(case .eq. 'tt_bbl') 
+     . .or.(case .eq. 'tt_bbh')) then 
         mass2=mt
         width2=twidth
         mass3=mt
@@ -43,17 +45,23 @@ c---- with all 2 pi's (ie 1/(2*pi)^20)
         stop
       endif
       
+c     massive particle p12 decaying into pa pb
+c     with invariant mass 
+c     of particle two s2 and particle three s3 integrated over.
+c     vectors returned p2 and p3 are in the same frame as p1 is supplied
       call phi1_2(r(1),r(2),r(3),r(4),p12,pa,pb,wt12,*99)
 
       if (iflip .eq. 0) then
+C----emission of parton p9
         iflip=1
-        call phi1_2m(mb,r(5),r(6),r(7),smin,pa,p9,p345,wt9,*99)
+        call phi1_2m(0d0,r(5),r(6),r(7),smin,pa,p9,p345,wt9,*99)
         do nu=1,4
         p678(nu)=pb(nu)
         enddo
       elseif (iflip .eq. 1) then 
+C----emission of parton p9
         iflip=0
-        call phi1_2m(mb,r(5),r(6),r(7),smin,pa,p9,p678,wt9,*99)
+        call phi1_2m(0d0,r(5),r(6),r(7),smin,pa,p9,p678,wt9,*99)
         do nu=1,4
         p345(nu)=pb(nu)
         enddo
@@ -61,7 +69,9 @@ c---- with all 2 pi's (ie 1/(2*pi)^20)
 
       mass3=wmass
       width3=wwidth
+c--decay of p345 into p5 and p34
       call phi1_2m(mb,r(8),r(9),r(10),smin,p345,p5,p34,wt345,*99)
+c--decay of p678 into p6 and p78
       call phi1_2m(mb,r(11),r(12),r(13),smin,p678,p6,p78,wt678,*99)
 
       if ((p5(4).le.0d0).or.(p6(4).le.0d0)) goto 99

@@ -9,6 +9,7 @@ C     Eq. A.23 with a factor of 2*i*e^2*g^3/s removed
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'ckm.f'
+      include 'ckm1.f'
       include 'ewcharge.f'
       include 'prods.f'
       include 'hardscale.f'

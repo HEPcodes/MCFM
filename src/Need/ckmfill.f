@@ -2,6 +2,7 @@
       implicit none
       include 'constants.f'
       include 'ckm.f'
+      include 'ckm1.f'
       include 'ewcouple.f'
       include 'zcouple.f'
       integer nwz,j,k

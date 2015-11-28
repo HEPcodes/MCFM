@@ -28,27 +28,17 @@
       include 'ckm.f'
       include 'prods.f'
       include 'epinv.f'
-      include 'scale.f'
-      include 'hardscale.f'
+      include 'scheme.f'
       include 'flags.f'
       include 'msq_cs.f'
       include 'lc.f'
-      logical msbar
-      common/msbar/msbar
-      double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),
+      double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),fac,
      . mmsq_qqb,mmsq_qbq,mmsq_gq,mmsq_gqb,mmsq_qg,mmsq_qbg,mmsq_gg,
-     . p(mxpart,4),q(mxpart,4),pswap(mxpart,4),
-     . fac,qqb,qbq,
-     . xl12,xl15,xl16,xl25,xl26,xl56
-      double complex atrLLL,atrLRL,a61LLL,a61LRL
-      double complex tLLL,tLRL,fLLL,fLRL,prop
-      integer nu,j,k,n1,n2,cs
-      double precision ii_qg,ii_gq,ii_gg,if_qg,if_gg,fi_qg,fi_gg,
-     .                 ff_qg,ff_gg,fi_gq
-      double precision subqqb(0:2),subqbq(0:2),subgg(0:2),subgq(0:2),
-     .                 subqg(0:2),subqbg(0:2),subgqb(0:2),subuv(0:2),
-     .                 subqq(0:2),subqbqb(0:2)
-      double precision facqq,facgg,Vfac,temp
+     . p(mxpart,4),q(mxpart,4),pswap(mxpart,4)
+      double complex prop
+      integer nu,j,k,n1,n2,cs,rvcolourchoice
+      double precision subuv(0:2)
+      double precision Vfac
       double precision mqq(0:2,fn:nf,fn:nf)
       double precision msqx(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf)
       double precision msqx_cs(0:2,-nf:nf,-nf:nf)
@@ -62,6 +52,7 @@
      .                 qbqb_ijii,qbqb_ijjj,qbqb_iiij,qbqb_iiji
       logical first
       common/mqq/mqq
+      common/rvcolourchoice/rvcolourchoice
       data first/.true./
       save first
 
@@ -78,13 +69,13 @@
           write(*,*) '[LC is   1 ]'
           write(*,*) '[SLC is 1/N]'
         endif
-        if     (colourchoice .eq. 1) then
+        if     (rvcolourchoice .eq. 1) then
           write(*,*) 'Leading colour only in VIRTUAL'
-        elseif (colourchoice .eq. 2) then
+        elseif (rvcolourchoice .eq. 2) then
           write(*,*) 'Sub-leading colour only in VIRTUAL'
-        elseif (colourchoice .eq. 3) then
+        elseif (rvcolourchoice .eq. 3) then
           write(*,*) 'Sub-sub-leading colour only in VIRTUAL'
-        elseif (colourchoice .eq. 0) then
+        elseif (rvcolourchoice .eq. 0) then
           write(*,*) 'Total of all colour structures in VIRTUAL'
         else
           write(*,*) 'Bad colourchoice'
@@ -92,14 +83,11 @@
         endif
       endif
 
+      scheme='dred'
 c--- calculate the lowest order matrix element and fill the
 c--- common block twopij with s_{ij}
       call qqb_w2jetx(p,msq,mqq,msqx,msqx_cs)
       
-      if  ( (s(5,6) .lt. four*hscalesq) 
-     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. hscalesq) 
-     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. hscalesq) ) return 
-
       do j=-nf,nf
       do k=-nf,nf
       msqv(j,k)=0d0
@@ -108,173 +96,35 @@ c--- common block twopij with s_{ij}
 
       prop=s(3,4)/(s(3,4)-wmass**2+im*wmass*wwidth)
       
-c--- endpoint contributions from subtraction terms
-c--- Note that, compared to the _z terms, we must add additional
-c--- contributions representing the final-final singularities
-     
-      xl12=log(+s(1,2)/musq)
-      xl15=log(-s(1,5)/musq)
-      xl16=log(-s(1,6)/musq)
-      xl25=log(-s(2,5)/musq)
-      xl26=log(-s(2,6)/musq)
-      xl56=log(+s(5,6)/musq)
-
-      do cs=0,2
-      subgg(cs)=0d0
-      subqqb(cs)=0d0
-      subqbq(cs)=0d0
-      subqq(cs)=0d0
-      subqbqb(cs)=0d0
-      subqg(cs)=0d0
-      subgq(cs)=0d0
-      subqbg(cs)=0d0
-      subgqb(cs)=0d0
-      subuv(cs)=0d0
-      enddo
-
 ************************************************************************
 *     Contributions from QQGG matrix elements                          *
 ************************************************************************            
       if (Gflag) then
-      if ((colourchoice .eq. 1) .or. (colourchoice .eq. 0)) then
-      subgg(1)=xn*(if_gg(one,xl15,1)+fi_qg(one,xl15,1)
-     .            +if_gg(one,xl26,1)+fi_qg(one,xl26,1)
-     .            +two*ii_gg(one,xl12,1))/2d0
-      subgg(2)=xn*(if_gg(one,xl16,1)+fi_qg(one,xl16,1)
-     .            +if_gg(one,xl25,1)+fi_qg(one,xl25,1)
-     .            +two*ii_gg(one,xl12,1))/2d0
-      endif
-      if ((colourchoice .eq. 2) .or. (colourchoice .eq. 0)) then
-      subgg(0)=subgg(0)+
-     .         xn*(if_gg(one,xl15,1)+fi_qg(one,xl15,1)
-     .            +if_gg(one,xl16,1)+fi_qg(one,xl16,1)
-     .            +if_gg(one,xl25,1)+fi_qg(one,xl25,1)
-     .            +if_gg(one,xl26,1)+fi_qg(one,xl26,1))/2d0
-      subgg(1)=subgg(1)-ff_qg(one,xl56,1)/xn
-      subgg(2)=subgg(2)-ff_qg(one,xl56,1)/xn
-      endif
-      if ((colourchoice .eq. 3) .or. (colourchoice .eq. 0)) then
-      subgg(0)=subgg(0)-ff_qg(one,xl56,1)*(xn+1d0/xn)
-      endif
-
-c--- subqqb and subqbq should really include the _gq terms arising
-c--- from the q_gq subtraction contributions, but these are zero  
-      if ((colourchoice .eq. 1) .or. (colourchoice .eq. 0)) then
-      subqqb(1)=xn*(if_qg(one,xl15,1)+fi_gg(one,xl15,1)/2d0
-     .             +if_qg(one,xl26,1)+fi_gg(one,xl26,1)/2d0
-     .             +ff_gg(one,xl56,1))/2d0
-      subqqb(2)=xn*(if_qg(one,xl16,1)+fi_gg(one,xl16,1)/2d0
-     .             +if_qg(one,xl25,1)+fi_gg(one,xl25,1)/2d0
-     .             +ff_gg(one,xl56,1))/2d0
-      endif
-      if ((colourchoice .eq. 2) .or. (colourchoice .eq. 0)) then
-      subqqb(0)=subqqb(0)+
-     .          xn*(if_qg(one,xl15,1)+fi_gg(one,xl15,1)/2d0
-     .             +if_qg(one,xl16,1)+fi_gg(one,xl16,1)/2d0
-     .             +if_qg(one,xl25,1)+fi_gg(one,xl25,1)/2d0
-     .             +if_qg(one,xl26,1)+fi_gg(one,xl26,1)/2d0)/2d0
-      subqqb(1)=subqqb(1)-ii_qg(one,xl12,1)/xn
-      subqqb(2)=subqqb(2)-ii_qg(one,xl12,1)/xn
-      endif
-      if ((colourchoice .eq. 3) .or. (colourchoice .eq. 0)) then
-      subqqb(0)=subqqb(0)-ii_qg(one,xl12,1)*(xn+1d0/xn)
-      endif
-     
-      if ((colourchoice .eq. 1) .or. (colourchoice .eq. 0)) then
-      subqbq(1)=xn*(if_qg(one,xl16,1)+fi_gg(one,xl16,1)/2d0
-     .             +if_qg(one,xl25,1)+fi_gg(one,xl25,1)/2d0
-     .             +ff_gg(one,xl56,1))/2d0
-      subqbq(2)=xn*(if_qg(one,xl15,1)+fi_gg(one,xl15,1)/2d0
-     .             +if_qg(one,xl26,1)+fi_gg(one,xl26,1)/2d0
-     .             +ff_gg(one,xl56,1))/2d0
-      endif
-      if ((colourchoice .eq. 2) .or. (colourchoice .eq. 0)) then
-      subqbq(0)=subqbq(0)+
-     .          xn*(if_qg(one,xl15,1)+fi_gg(one,xl15,1)/2d0
-     .             +if_qg(one,xl16,1)+fi_gg(one,xl16,1)/2d0
-     .             +if_qg(one,xl25,1)+fi_gg(one,xl25,1)/2d0
-     .             +if_qg(one,xl26,1)+fi_gg(one,xl26,1)/2d0)/2d0
-      subqbq(1)=subqbq(1)-ii_qg(one,xl12,1)/xn
-      subqbq(2)=subqbq(2)-ii_qg(one,xl12,1)/xn
-      endif
-      if ((colourchoice .eq. 3) .or. (colourchoice .eq. 0)) then
-      subqbq(0)=subqbq(0)-ii_qg(one,xl12,1)*(xn+1d0/xn)
-      endif
-     
-c--- subqg etc. should also include _gq terms from the gq_g piece
-c--- but once again these are zero anyway
-      if ((colourchoice .eq. 1) .or. (colourchoice .eq. 0)) then
-      subqg(1)=xn*(2d0*ii_qg(one,xl12,1)+2d0*if_gg(one,xl26,1)
-     .                +fi_gg(one,xl26,1)
-     .            +2d0*ii_gg(one,xl12,1)
-     .            +2d0*ff_qg(one,xl56,1)+ff_gg(one,xl56,1))/4d0
-      subqg(2)=xn*(2d0*if_qg(one,xl16,1)+fi_gg(one,xl16,1)
-     .            +2d0*if_gg(one,xl26,1)+fi_gg(one,xl26,1)
-     .            +2d0*if_gg(one,xl25,1)
-     .            +2d0*fi_qg(one,xl25,1))/4d0
-      endif
-      if ((colourchoice .eq. 2) .or. (colourchoice .eq. 0)) then
-      subqg(0)=subqg(0)+
-     .         xn*(2d0*if_qg(one,xl16,1)+fi_gg(one,xl16,1)
-     .            +2d0*if_gg(one,xl25,1)+2d0*fi_qg(one,xl25,1)
-     .            +2d0*ii_qg(one,xl12,1)+2d0*ii_gg(one,xl12,1)
-     .            +2d0*ff_qg(one,xl56,1)+ff_gg(one,xl56,1))/4d0
-      subqg(1)=subqg(1)-(if_qg(one,xl15,1)+fi_qg(one,xl15,1))/xn/2d0
-      subqg(2)=subqg(2)-(if_qg(one,xl15,1)+fi_qg(one,xl15,1))/xn/2d0     
-      endif
-      if ((colourchoice .eq. 3) .or. (colourchoice .eq. 0)) then
-      subqg(0)=subqg(0)-(xn+1d0/xn)*
-     .        (if_qg(one,xl15,1)+fi_qg(one,xl15,1))/2d0
-      endif
-      
-      if ((colourchoice .eq. 1) .or. (colourchoice .eq. 0)) then
-      subgq(1)=xn*(2d0*ii_gg(one,xl12,1)
-     .            +2d0*if_gg(one,xl16,1)+fi_gg(one,xl16,1)
-     .            +2d0*ii_qg(one,xl12,1)
-     .            +2d0*ff_qg(one,xl56,1)+ff_gg(one,xl56,1))/4d0
-      subgq(2)=xn*(2d0*if_gg(one,xl16,1)+fi_gg(one,xl16,1)
-     .            +2d0*if_gg(one,xl15,1)
-     .            +2d0*fi_qg(one,xl15,1)+2d0*if_qg(one,xl26,1)
-     .                +fi_gg(one,xl26,1))/4d0
-      endif
-      if ((colourchoice .eq. 2) .or. (colourchoice .eq. 0)) then
-      subgq(0)=subgq(0)+
-     .         xn*(2d0*if_qg(one,xl26,1)+fi_gg(one,xl26,1)
-     .            +2d0*if_gg(one,xl15,1)+2d0*fi_qg(one,xl15,1)
-     .            +2d0*ii_qg(one,xl12,1)+2d0*ii_gg(one,xl12,1)
-     .            +2d0*ff_qg(one,xl56,1)+ff_gg(one,xl56,1))/4d0
-      subgq(1)=subgq(1)-(if_qg(one,xl25,1)+fi_qg(one,xl25,1))/xn/2d0
-      subgq(2)=subgq(2)-(if_qg(one,xl25,1)+fi_qg(one,xl25,1))/xn/2d0     
-      endif
-      if ((colourchoice .eq. 3) .or. (colourchoice .eq. 0)) then
-      subgq(0)=subgq(0)-(xn+1d0/xn)*
-     .        (if_qg(one,xl25,1)+fi_qg(one,xl25,1))/2d0
-      endif
-     
-      subgqb(0)=subgq(0)
-      subgqb(1)=subgq(2)
-      subgqb(2)=subgq(1)
-      
-      subqbg(0)=subqg(0)
-      subqbg(1)=subqg(2)
-      subqbg(2)=subqg(1)
-     
-c--- UV counter-term
-      
+c----UV counterterm contains the finite renormalization to arrive
+c----at MS bar scheme. 
       if     (colourchoice .eq. 1) then
-        subuv(1)=xn*(epinv-log(fourpi))*(11d0-2d0*dble(nf)/xn)/3d0
+        subuv(1)=2d0*xn*(epinv*(11d0-2d0*dble(nf)/xn)-1d0)/6d0
         subuv(2)=subuv(1)
       elseif (colourchoice .eq. 2) then
-        subuv(0)=xn*(epinv-log(fourpi))*(11d0-2d0*dble(nf)/xn)/3d0
+        subuv(0)=2d0*xn*(epinv*(11d0-2d0*dble(nf)/xn)-1d0)/6d0
       elseif (colourchoice .eq. 3) then
 c--- all zero already
       elseif (colourchoice .eq. 0) then
-        subuv(1)=xn*(epinv-log(fourpi))*(11d0-2d0*dble(nf)/xn)/3d0
+        subuv(1)=2d0*xn*(epinv*(11d0-2d0*dble(nf)/xn)-1d0)/6d0
         subuv(2)=subuv(1)
         subuv(0)=subuv(1)
       endif
-      
-c--- End of endpoint contributions
+
+c--- transfer lowest order matrix elements
+c--- NB: this breaks the routine if Qflag = Gflag = .true.
+
+      do cs=0,2
+        do j=-nf,nf
+        do k=-nf,nf
+        msq_cs(cs,j,k)=msqx_cs(cs,j,k)
+        enddo
+        enddo
+      enddo
 
 c--- Now calculate the relevant lowest-order matrix elements
 c--- for each possible initial state from the QQGG contribution
@@ -380,118 +230,6 @@ c--- calculate the gg terms
 *     Contributions from QQQQ matrix elements                          *
 ************************************************************************            
       if (Qflag) then
-      subqq(0)=(
-     . -(if_qg(one,xl15,1)+fi_qg(one,xl15,1))*one/xn
-     . -(if_qg(one,xl16,1)+fi_qg(one,xl16,1))*one/xn
-     . +ii_qg(one,xl12,1)*(xn+one/xn)
-     . +ff_qg(one,xl56,1)*(xn+one/xn)
-     . -(if_qg(one,xl25,1)+fi_qg(one,xl25,1))*one/xn
-     . -(if_qg(one,xl26,1)+fi_qg(one,xl26,1))*one/xn
-     . +ii_qg(one,xl12,1)*(xn+one/xn)
-     . +ff_qg(one,xl56,1)*(xn+one/xn))/2d0
-      subqq(1)=(
-     . -(if_qg(one,xl15,1)+fi_qg(one,xl15,1))*one/xn
-     . +(if_qg(one,xl16,1)+fi_qg(one,xl16,1))*(xn-two/xn)
-     . +ii_qg(one,xl12,1)*two/xn
-     . +ff_qg(one,xl56,1)*two/xn
-     . +(if_qg(one,xl25,1)+fi_qg(one,xl25,1))*(xn-two/xn)
-     . -(if_qg(one,xl26,1)+fi_qg(one,xl26,1))*one/xn
-     . +ii_qg(one,xl12,1)*two/xn
-     . +ff_qg(one,xl56,1)*two/xn)/2d0
-      subqq(2)=(
-     . +(if_qg(one,xl15,1)+fi_qg(one,xl15,1))*(xn-two/xn)
-     . -(if_qg(one,xl16,1)+fi_qg(one,xl16,1))*one/xn
-     . +ii_qg(one,xl12,1)*two/xn
-     . +ff_qg(one,xl56,1)*two/xn
-     . -(if_qg(one,xl25,1)+fi_qg(one,xl25,1))*one/xn
-     . +(if_qg(one,xl26,1)+fi_qg(one,xl26,1))*(xn-two/xn)
-     . +ii_qg(one,xl12,1)*two/xn
-     . +ff_qg(one,xl56,1)*two/xn)/2d0
-     
-      subqbqb(0)=(
-     . -(if_qg(one,xl15,1)+fi_qg(one,xl15,1))*one/xn
-     . -(if_qg(one,xl16,1)+fi_qg(one,xl16,1))*one/xn
-     . +ii_qg(one,xl12,1)*(xn+one/xn)
-     . +ff_qg(one,xl56,1)*(xn+one/xn)
-     . -(if_qg(one,xl25,1)+fi_qg(one,xl25,1))*one/xn
-     . -(if_qg(one,xl26,1)+fi_qg(one,xl26,1))*one/xn
-     . +ii_qg(one,xl12,1)*(xn+one/xn)
-     . +ff_qg(one,xl56,1)*(xn+one/xn))/2d0
-      subqbqb(1)=(
-     . -(if_qg(one,xl15,1)+fi_qg(one,xl15,1))*one/xn
-     . +(if_qg(one,xl16,1)+fi_qg(one,xl16,1))*(xn-two/xn)
-     . +ii_qg(one,xl12,1)*two/xn
-     . +ff_qg(one,xl56,1)*two/xn
-     . +(if_qg(one,xl25,1)+fi_qg(one,xl25,1))*(xn-two/xn)
-     . -(if_qg(one,xl26,1)+fi_qg(one,xl26,1))*one/xn
-     . +ii_qg(one,xl12,1)*two/xn
-     . +ff_qg(one,xl56,1)*two/xn)/2d0
-      subqbqb(2)=(
-     . +(if_qg(one,xl15,1)+fi_qg(one,xl15,1))*(xn-two/xn)
-     . -(if_qg(one,xl16,1)+fi_qg(one,xl16,1))*one/xn
-     . +ii_qg(one,xl12,1)*two/xn
-     . +ff_qg(one,xl56,1)*two/xn
-     . -(if_qg(one,xl25,1)+fi_qg(one,xl25,1))*one/xn
-     . +(if_qg(one,xl26,1)+fi_qg(one,xl26,1))*(xn-two/xn)
-     . +ii_qg(one,xl12,1)*two/xn
-     . +ff_qg(one,xl56,1)*two/xn)/2d0
- 
-      subqqb(0)=(
-     . -(if_qg(one,xl15,1)+fi_qg(one,xl15,1))*one/xn
-     . +(if_qg(one,xl16,1)+fi_qg(one,xl16,1))*(xn+one/xn)
-     . -ii_qg(one,xl12,1)*one/xn
-     . -ff_qg(one,xl56,1)*one/xn
-     . +(if_qg(one,xl25,1)+fi_qg(one,xl25,1))*(xn+one/xn)
-     . -(if_qg(one,xl26,1)+fi_qg(one,xl26,1))*one/xn
-     . -ii_qg(one,xl12,1)*one/xn
-     . -ff_qg(one,xl56,1)*one/xn)/2d0
-      subqqb(1)=(
-     . +(if_qg(one,xl15,1)+fi_qg(one,xl15,1))*(xn-two/xn)
-     . +(if_qg(one,xl16,1)+fi_qg(one,xl16,1))*two/xn
-     . -ii_qg(one,xl12,1)*one/xn
-     . -ff_qg(one,xl56,1)*one/xn
-     . +(if_qg(one,xl25,1)+fi_qg(one,xl25,1))*two/xn
-     . +(if_qg(one,xl26,1)+fi_qg(one,xl26,1))*(xn-two/xn)
-     . -ii_qg(one,xl12,1)*one/xn
-     . -ff_qg(one,xl56,1)*one/xn)/2d0
-      subqqb(2)=(
-     . -(if_qg(one,xl15,1)+fi_qg(one,xl15,1))*one/xn
-     . +(if_qg(one,xl16,1)+fi_qg(one,xl16,1))*two/xn
-     . +ii_qg(one,xl12,1)*(xn-two/xn)
-     . +ff_qg(one,xl56,1)*(xn-two/xn)
-     . +(if_qg(one,xl25,1)+fi_qg(one,xl25,1))*two/xn
-     . -(if_qg(one,xl26,1)+fi_qg(one,xl26,1))*one/xn
-     . +ii_qg(one,xl12,1)*(xn-two/xn)
-     . +ff_qg(one,xl56,1)*(xn-two/xn))/2d0
-      
-      subqbq(0)=(
-     . +(if_qg(one,xl15,1)+fi_qg(one,xl15,1))*(xn+one/xn)
-     . -(if_qg(one,xl16,1)+fi_qg(one,xl16,1))*one/xn
-     . -ii_qg(one,xl12,1)*one/xn
-     . -ff_qg(one,xl56,1)*one/xn
-     . -(if_qg(one,xl25,1)+fi_qg(one,xl25,1))*one/xn
-     . +(if_qg(one,xl26,1)+fi_qg(one,xl26,1))*(xn+one/xn)
-     . -ii_qg(one,xl12,1)*one/xn
-     . -ff_qg(one,xl56,1)*one/xn)/2d0
-      subqbq(1)=(
-     . +(if_qg(one,xl15,1)+fi_qg(one,xl15,1))*two/xn
-     . +(if_qg(one,xl16,1)+fi_qg(one,xl16,1))*(xn-two/xn)
-     . -ii_qg(one,xl12,1)*one/xn
-     . -ff_qg(one,xl56,1)*one/xn
-     . +(if_qg(one,xl25,1)+fi_qg(one,xl25,1))*(xn-two/xn)
-     . +(if_qg(one,xl26,1)+fi_qg(one,xl26,1))*two/xn
-     . -ii_qg(one,xl12,1)*one/xn
-     . -ff_qg(one,xl56,1)*one/xn)/2d0
-      subqbq(2)=(
-     . +(if_qg(one,xl15,1)+fi_qg(one,xl15,1))*two/xn
-     . -(if_qg(one,xl16,1)+fi_qg(one,xl16,1))*one/xn
-     . +ii_qg(one,xl12,1)*(xn-two/xn)
-     . +ff_qg(one,xl56,1)*(xn-two/xn)
-     . -(if_qg(one,xl25,1)+fi_qg(one,xl25,1))*one/xn
-     . +(if_qg(one,xl26,1)+fi_qg(one,xl26,1))*two/xn
-     . +ii_qg(one,xl12,1)*(xn-two/xn)
-     . +ff_qg(one,xl56,1)*(xn-two/xn))/2d0
-
 c--- UV counter-term is already included in a6routine.f
       subuv(1)=0d0
       subuv(2)=subuv(1)
@@ -507,6 +245,7 @@ c--- NB: this breaks the routine if Qflag = Gflag = .true.
         enddo
         enddo
       enddo
+
 c---  Now transform momenta into a notation 
 c---  suitable for calling the BDKW function with notation which is 
 c---  q-(-p4)+Q+(-p2)+l-(-p5) ---> q+(p1)+Q-(p3)+l+(p6)
@@ -650,91 +389,20 @@ c--- Add VIRTUAL terms
       enddo
       enddo
   
-c--- Add ENDPOINT terms for QQGG contributions
-
+************************************************************************
+*     UV contributions are included here                               *
+************************************************************************
       do j=-nf,nf
       do k=-nf,nf
 
-      temp=msqv(j,k)
-
-      if     ((j .gt. 0) .and. (k .lt. 0)) then
-        do cs=0,2
-        if (subqqb(cs) .ne. 0d0) then
-          msqv(j,k)=msqv(j,k)+
-     .      ason2pi*(subqqb(cs)-subuv(cs))*msq_cs(cs,j,k)
-        endif
-        enddo
-      elseif ((j .lt. 0) .and. (k .gt. 0)) then
-        do cs=0,2
-        if (subqbq(cs) .ne. 0d0) then
-          msqv(j,k)=msqv(j,k)+
-     .      ason2pi*(subqbq(cs)-subuv(cs))*msq_cs(cs,j,k)
-        endif
-        enddo
-      elseif ((j .gt. 0) .and. (k .gt. 0)) then
-        do cs=0,2
-        if (subqq(cs) .ne. 0d0) then
-          msqv(j,k)=msqv(j,k)+
-     .      ason2pi*(subqq(cs)-subuv(cs))*msq_cs(cs,j,k)
-        endif
-        enddo
-      elseif ((j .lt. 0) .and. (k .lt. 0)) then
-        do cs=0,2
-        if (subqbqb(cs) .ne. 0d0) then
-          msqv(j,k)=msqv(j,k)+
-     .      ason2pi*(subqbqb(cs)-subuv(cs))*msq_cs(cs,j,k)
-        endif
-        enddo
-      elseif ((j .gt. 0) .and. (k .eq. 0)) then
-        do cs=0,2
-        if (subqg(cs) .ne. 0d0) then
-          msqv(j,k)=msqv(j,k)+
-     .      ason2pi*(subqg(cs)-subuv(cs))*msq_cs(cs,j,k)
-        endif
-        enddo
-      elseif ((j .lt. 0) .and. (k .eq. 0)) then
-        do cs=0,2
-        if (subqbg(cs) .ne. 0d0) then
-          msqv(j,k)=msqv(j,k)+
-     .      ason2pi*(subqbg(cs)-subuv(cs))*msq_cs(cs,j,k)
-        endif
-        enddo
-      elseif ((j .eq. 0) .and. (k .gt. 0)) then
-        do cs=0,2
-        if (subgq(cs) .ne. 0d0) then
-          msqv(j,k)=msqv(j,k)+
-     .      ason2pi*(subgq(cs)-subuv(cs))*msq_cs(cs,j,k)
-        endif
-        enddo
-      elseif ((j .eq. 0) .and. (k .lt. 0)) then
-        do cs=0,2
-        if (subgqb(cs) .ne. 0d0) then
-          msqv(j,k)=msqv(j,k)+
-     .      ason2pi*(subgqb(cs)-subuv(cs))*msq_cs(cs,j,k)
-        endif
-        enddo
-      elseif ((j .eq. 0) .and. (k .eq. 0)) then
-        do cs=0,2
-        if (subgg(cs) .ne. 0d0) then
-          msqv(j,k)=msqv(j,k)+
-     .      ason2pi*(subgg(cs)-subuv(cs))*msq_cs(cs,j,k)
-        endif
-        enddo
-      endif
-
-c      if ((temp .ne. 0d0)) then
-c      write(*,91) 'j, k, msqv, sub',j,k,temp,msqv(j,k)-temp
-c     .      ,abs(temp/(msqv(j,k)-temp))-1d0,msqv(j,k)
-c      endif
-
+      do cs=0,2
+      msqv(j,k)=msqv(j,k)+
+     .  ason2pi*(-subuv(cs))*msq_cs(cs,j,k)
       enddo
-      enddo
-
-c      write(*,*) 'Using epinv =',epinv
-c      pause
- 
-   91 format(a16,2i3,2e16.7,f12.8,e18.10)
       
+      enddo
+      enddo             
+ 
       return
       end
      

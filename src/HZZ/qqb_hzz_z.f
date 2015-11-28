@@ -3,22 +3,26 @@
       include 'constants.f'
       include 'qcdcouple.f'
       include 'scale.f'
-      include 'PR.f'
-      double precision z,omz,lgomz,p(mxpart,4),xl12,dot
+      include 'PR_new.f'
+      include 'agq.f'
+      integer is
+      double precision z,p(mxpart,4),xl12,dot,ii_gg,ii_gq,tempgg,tempgq
 
-      omz=one-z
-      lgomz=log(omz)
       xl12=log(two*dot(p,1,2)/musq)
 
-      Rgg_g=ason2pi*2d0*xn*((2d0*lgomz+xl12-log(z))
-     . *(one/z-2d0+z*omz)-log(z)/omz)
-      Pgg_g=ason2pi*2d0*xn*(2d0*lgomz/omz+xl12/omz)
+      do is=1,3
+      tempgg=ason2pi*xn*ii_gg(z,xl12,is)
+      tempgq=ason2pi*cf*ii_gq(z,xl12,is)
+      Q1(g,g,g,is)=tempgg
+      Q2(g,g,g,is)=tempgg
 
-      Rg_gg=Rgg_g
-      Pg_gg=Pgg_g
+      Q1(g,q,g,is)=tempgq
+      Q1(g,a,g,is)=tempgq
 
-      Rqg_g=ason2pi*cf*((2d0*lgomz+xl12-log(z))*(1d0+omz**2)/z+z**2)
-      Rg_qg=Rqg_g
-
+      Q2(g,q,g,is)=tempgq
+      Q2(g,a,g,is)=tempgq
+      enddo
       return
       end
+
+

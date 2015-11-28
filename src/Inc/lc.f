@@ -1,6 +1,3 @@
-      logical LConly
-      common/LC/LConly
-
       integer colourchoice
 c--- 'colourchoice' allows calculation by colour structure
 c--- For Gflag=.true. [QQGG, QQGGG processes]

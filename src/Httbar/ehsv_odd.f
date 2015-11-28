@@ -36,7 +36,7 @@ C     ehsv:EqnA.11
       implicit none
       include 'masses.f'
       double precision hmass2,s,t,u
-      double complex w1,w2,w3
+      double complex w2,w3
       hmass2=hmass**2
       ehsvb2_odd=mbsq/hmass2**2*(
      .                       -s*w3(s,t,u,hmass2)+s/2d0*w3(t,s,u,hmass2)
@@ -51,7 +51,7 @@ C     ehsv:EqnA.14
       implicit none
       include 'masses.f'
       double precision hmass2,s,t,u
-      double complex w1,w2
+      double complex w2
       hmass2=hmass**2
       ehsva5_odd=mbsq/hmass2*2d0/3d0*(w2(s)-w2(hmass2))
       return 

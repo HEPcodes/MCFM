@@ -13,9 +13,22 @@
 *     ip labels the emitter parton                                     *
 *     jp labels the emitted parton                                     *
 *     kp labels the spectator parton                                   *
+*     msq - lowest order matrix elements at rescaled momentum, msq(j,k)*
+*     msqv -  lowest order matrix elements at rescaled momentum        *
+*      with emitter contracted with appropriate vector, msqv(j,k)      *
 *     subr_born is the subroutine which call the born process          *
 *     subr_corr is the subroutine which call the born process dotted   *
-*     with vec for an emitted gluon only                               *
+*      with vec for an emitted gluon only                              *
+*     mqq - 4-quark contribution to lowest order matrix elements sqd.  *
+*     msqx - lowest order matrix elements with 4 indices, msqx(j,k,l,m)*
+*            Sum_{l,m} msqx(j,k,l,m) = msq(j,k)                        *
+*     mg - 2-quark contribution to lowest order matrix elements sqd,   *
+*           separated by colours                                       *
+*     mvg - 2-quark contribution to lowest order matrix elements sqd,  *
+*           separated by colours, contracted with appropriate vector   *
+*     mvxg - lowest order matrix elements with 4 indices and           *
+*        contracted with appropriate vector, msqvx(j,k,l,m)            *
+*        Sum_{l,m} msqvx(j,k,l,m) = msqv(j,k)                          *
 ************************************************************************
 
       subroutine dipsx(nd,p,ip,jp,kp,sub,subv,msq,msqv,
@@ -30,9 +43,9 @@
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf)
       double precision mqq(0:2,-nf:nf,-nf:nf)
       double precision msqx(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf)
-      double precision mg(0:2,-nf:nf,-nf:nf)                                     integer i,j,k,
-      double precision mvg(0:2,-nf:nf,-nf:nf)                                     integer i,j,k,
-      double precision mvxg(-nf:nf,-nf:nf,-nf:nf,-nf:nf)                                     integer i,j,k,
+      double precision mg(0:2,-nf:nf,-nf:nf)
+      double precision mvg(0:2,-nf:nf,-nf:nf)
+      double precision mvxg(-nf:nf,-nf:nf,-nf:nf,-nf:nf)
       integer nd,ip,jp,kp,nu,j,k
       external subr_born,subr_corr
       

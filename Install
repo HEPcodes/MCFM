@@ -1,0 +1,40 @@
+#!/bin/csh
+
+# first configure the makefile
+
+# Insert the location of Cernlib on your system (if desired)
+set CERNLIB     = 
+# Insert the location of LHAPDF on your system (if desired)
+set LHAPDFLIB   = 
+
+if ($CERNLIB == '') then
+  echo 'Warning: no directory specified for CERNLIB'
+else
+  echo 'CERNLIB directory: '$CERNLIB
+endif
+if ($LHAPDFLIB == '') then
+  echo 'Warning: no directory specified for LHAPDF'
+else
+  echo 'LHAPDFLIB directory: '$LHAPDFLIB
+  ln -s $LHAPDFLIB/PDFsets Bin/PDFsets
+endif
+
+echo '# Makefile routine.' > makefile.new
+echo '' >> makefile.new
+echo '# Replace this with the location of Cernlib on your system (if desired)' >> makefile.new
+echo 'CERNLIB     = '$CERNLIB >> makefile.new
+echo '# Replace this with the location of LHAPDF on your system (if desired)' >> makefile.new
+echo 'LHAPDFLIB   = '$LHAPDFLIB >> makefile.new
+echo '' >> makefile.new
+echo 'MCFMHOME        = '`pwd` >> makefile.new
+echo 'SOURCEDIR       = '`pwd`'/src' >> makefile.new
+tail +10 makefile >> makefile.new
+mv makefile.new makefile
+
+mkdir obj/
+cd Doc
+latex mcfm > latex.out
+latex mcfm > latex.out
+
+echo ''
+echo 'Installation complete. You may now compile MCFM by running make.'

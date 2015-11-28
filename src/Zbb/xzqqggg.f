@@ -1,13 +1,20 @@
       subroutine xzqqggg(j1,j2,j3,j4,j5,j6,j7,mqqb)
       implicit none
-C     Author J.M.Campbell, February 2000
-C     Returns the amplitudes squared for the process
-C     0 ---> q(p1)+g(p2)+g(p3)+g(p4)+qbar(p5)+l(p6)+a(p7)
-C     mqqb(2,2) has two indices;the first for the helicity quark line;
-C     the second for helicity of lepton line.
+************************************************************************
+*     Author J.M.Campbell, February 2000                               *
+*     Returns the amplitudes squared for the process                   *
+*     0 ---> q(p1)+g(p2)+g(p3)+g(p4)+qbar(p5)+a(p6)+l(p7)              *
+*     mqqb(2,2) has two indices - the first for the helicity quark     *
+*     line, the second for helicity of lepton line                     *
+*     Averaging over 2 initial state gluons is assumed, and            *
+*     no final state average is included                               *
+*                                                                      *
+*     Specifying colourchoice = 1 --> leading colour only              *
+*     Specifying colourchoice = 2 --> sub-leading colour only          *
+*     Specifying colourchoice = 3 --> sub-sub-leading colour only      *
+*     Specifying colourchoice = 0 --> TOTAL                            *
+************************************************************************
       include 'constants.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'lc.f'
@@ -15,17 +22,6 @@ C     the second for helicity of lepton line.
       integer j1,j2,j3,j4,j5,j6,j7
       double precision mqqb(2,2),m1,m2,m0,fac
       double complex tempm0,m(6),amp_qqggg
-      double complex mppppm,mpmmmm,mpppmm,mppmpm,
-     .    mpmppm,mppmmm,mpmpmm,mpmmpm
-c        parameter(x=0.5d0*xn/cf,omx=1d0-x)
-c      data i2/2,2,4,3,3,4/
-c      data i3/3,4,2,4,2,3/
-c      data i4/4,3,3,2,4,2/
-C first argument is quark line helicity
-C second argument is lepton line helicity
-      
-C ---final matrix element squared is needed as function of quark line helicity
-C----and lepton line helicity
       
       fac=avegg*gsq**3*esq**2*xn**3*cf*8d0
 c--- extra factor of 8 due to colour matrix normalization (rt2**6)
@@ -49,7 +45,8 @@ c--- extra factor of 8 due to colour matrix normalization (rt2**6)
       i3(6)=j3
       i4(6)=j2
 
-      do hq=1,2
+c--- we will need hq=2 also, but we generate it by symmetry at the end
+      do hq=1,1
       do lh=1,2
 C initialize loop sums to zero
       mqqb(hq,lh)=0d0
@@ -70,15 +67,12 @@ C initialize loop sums to zero
           tempm0=tempm0+m(j)
           m2=m2+abs(m(j))**2
         enddo
-c        write(6,*) 'm2',m2  
         
-        m0=cdabs(tempm0)**2
-c--- check sign of the last three terms: original ver. had + vs. (B33)
-        m1=-2d0*m2
-     .   -2d0*Dble(Dconjg(m(1))*(m(2)+m(5)-m(6)))
-     .   -2d0*Dble(Dconjg(m(4))*(m(5)+m(6)-m(2)))
-     .   -2d0*Dble(Dconjg(m(3))*(m(6)+m(2)-m(5)))
+        if ((colourchoice .eq. 1) .or. (colourchoice .eq. 0)) then
+          mqqb(hq,lh)=mqqb(hq,lh)+fac*m2
+        endif
 
+        if ((colourchoice .eq. 2) .or. (colourchoice .eq. 0)) then
 c--- here we have (2,3,4)+(2,4,3)+(4,2,3) [4 is photon-like]
 c---         plus (3,4,2)+(3,2,4)+(2,3,4) [2 is photon-like]
 c---         plus (4,2,3)+(4,3,2)+(3,4,2) [3 is photon-like]
@@ -89,21 +83,22 @@ c--- (plus perms)
      .    +cdabs(m(5)+m(4)+m(6))**2
      .    +cdabs(m(2)+m(1)+m(5))**2
      .    +cdabs(m(6)+m(3)+m(2))**2
+          mqqb(hq,lh)=mqqb(hq,lh)+fac*(-m1/xnsq)
+        endif       
+        if ((colourchoice .eq. 3) .or. (colourchoice .eq. 0)) then
+          m0=cdabs(tempm0)**2
+          mqqb(hq,lh)=mqqb(hq,lh)+fac*m0*(xnsq+1d0)/xnsq**2        
+        endif
 
-c--- note that the x defined in this routine differs by a factor
-c--- of 2 from the x defined in Nagy-Trocs, cf. (39), (B30)
-c        mqqb(hq,lh)=mqqb(hq,lh)+fac*(omx**2*m0-x*omx*m1+x**2*m2)
-c--- re-written to make colour hierarchy explicit
-      if (LConly) then
-      mqqb(hq,lh)=mqqb(hq,lh)+fac*m2
-      else        
-      mqqb(hq,lh)=mqqb(hq,lh)+fac*(m2-m1/xnsq+(xnsq+1d0)*m0/xnsq**2)
-      endif
       enddo
       enddo
       enddo
+
       enddo
       enddo
+ 
+      mqqb(2,1)=mqqb(1,2)
+      mqqb(2,2)=mqqb(1,1)
       
       return
       end

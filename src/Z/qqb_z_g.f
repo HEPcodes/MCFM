@@ -12,12 +12,10 @@ c---
       include 'ewcouple.f'
       include 'zcouple.f'
       include 'ewcharge.f'
-      include 'cutoff.f'
       include 'dprodx.f'
       include 'sprodx.f'
       integer j,k
-      double precision msq(-nf:nf,-nf:nf),p(mxpart,4),
-     . qqbZg,qbqZg,qgZq,qbgZqb,gqbZqb,gqZq,z1jet,fac,v2(2)
+      double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac
       double complex AqqbZg(2,2,2),AqbqZg(2,2,2),AqgZq(2,2,2),
      .               AqbgZqb(2,2,2),AgqbZqb(2,2,2),AgqZq(2,2,2),prop
 
@@ -31,10 +29,10 @@ c---
       call spinoru(5,p,za,zb)
       
 c---protect from soft and collinear singularities
-      if  ((-s(1,5) .lt. cutoff) .or. (-s(2,5) .lt. cutoff)) return
+c      if  ((-s(1,5) .lt. cutoff) .or. (-s(2,5) .lt. cutoff)) return
 
 C-----Protect from photon pole by cutting off at some value about 10 GeV
-      if (s(3,4) .lt. 4d0*mbsq) return
+c      if (s(3,4) .lt. 4d0*mbsq) return
 
       prop=s(3,4)/Dcmplx((s(3,4)-zmass**2),zmass*zwidth)
       fac=4d0*V*esq**2*gsq

@@ -1,6 +1,6 @@
       subroutine qqb_w_gs(p,msq)
 c---Matrix element SUBTRACTION squared averaged over initial colors and spins
-c     q(-p1)+qbar(-p2) -->  W^+(p3)+a(p4)+g(p5)
+c     q(-p1)+qbar(-p2) -->  l(p3)+a(p4)+g(p5)
 c   positively charged W only
       implicit none 
       include 'constants.f'
@@ -26,6 +26,7 @@ c---- entries are left as dummies
 
       do j=-nf,nf
       do k=-nf,nf
+
       do nd=1,ndmax
       msq(nd,j,k)=0d0
       enddo
@@ -36,23 +37,19 @@ c---- entries are left as dummies
      .     .or.(j .lt. 0) .and. (k .gt. 0)) then
          msq(1,j,k)=2d0*cf*sub15_2(qq)*msq15_2(j,k)
          msq(2,j,k)=2d0*cf*sub25_1(qq)*msq25_1(j,k)
-
       elseif ((j .ne. 0) .and. (k .eq. 0)) then
-         msq(1,j,k)=0d0
          msq(2,j,k)=2d0*tr*sub25_1(qg)*(msq25_1(j,+1)+msq25_1(j,+2)
      &   +msq25_1(j,+3)+msq25_1(j,+4)+msq25_1(j,+5)
      &                                 +msq25_1(j,-1)+msq25_1(j,-2)
      &   +msq25_1(j,-3)+msq25_1(j,-4)+msq25_1(j,-5))
-
       elseif ((j .eq. 0) .and. (k .ne. 0)) then
          msq(1,j,k)=2d0*tr*sub15_2(qg)*(msq15_2(+1,k)+msq15_2(+2,k)
      &   +msq15_2(+3,k)+msq15_2(+4,k)+msq15_2(+5,k)
      &                                 +msq15_2(-1,k)+msq15_2(-2,k)
      &   +msq15_2(-3,k)+msq15_2(-4,k)+msq15_2(-5,k))
-      msq(2,j,k)=0d0
-
       endif
  20   continue
+
       enddo
       enddo
 

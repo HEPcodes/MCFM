@@ -13,18 +13,18 @@ c
       include 'constants.f'
       include 'masses.f'
       include 'qcdcouple.f'
-      include 'ckm.f'
       include 'prods.f'
       include 'zcouple.f'
       include 'ewcouple.f'
       include 'ewcharge.f'
       include 'hardscale.f'
       include 'flags.f'
-      integer j,k,nu,nquark,jj(-nf:nf),kk(-nf:nf)
+      include 'lc.f'
+      integer j,k,nquark,jj(-nf:nf),kk(-nf:nf)
       double precision P(mxpart,4),msq(-nf:nf,-nf:nf)
       double precision mmsq_gg(2,2),mmsq_qqb(2,2),mmsq_qbq(2,2),
      . mmsq_qg(2,2),mmsq_gq(2,2),mmsq_gqb(2,2),mmsq_qbg(2,2)
-      double precision fac,pswap(mxpart,4)
+      double precision fac
       double precision msqi_qq(2),msqi_qbqb(2),
      .                 msqi_qqb(2),msqi_qbq(2),
      .                 msqi_qqbs(2),msqi_qbqs(2),
@@ -36,8 +36,38 @@ c
      .                 msqn_qg(2,2),msqn_qbg(2,2),
      .                 msqn_gqb(2,2),msqn_gq(2,2)
       double complex prop
+      logical first
       data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
       data kk/-1,-2,-1,-2,-1,0,1,2,1,2,1/
+      data first/.true./
+      save first
+
+      if (first) then
+      first=.false.
+        if (Gflag) then
+          write(*,*) 'Using QQGG+G (REAL) matrix elements'
+          write(*,*) '[LC is     N   ]'
+          write(*,*) '[SLC is   1/N  ]'
+          write(*,*) '[SSLC is 1/N**3]'
+        endif
+        if (Qflag) then
+          write(*,*) 'Using QQBQQB+G (REAL) matrix elements'
+          write(*,*) '[LC is   1 ]'
+          write(*,*) '[SLC is 1/N]'
+        endif
+        if     (colourchoice .eq. 1) then
+          write(*,*) 'Leading colour only in REAL'
+        elseif (colourchoice .eq. 2) then
+          write(*,*) 'Sub-leading colour only in REAL'
+        elseif (colourchoice .eq. 3) then
+          write(*,*) 'Sub-sub-leading colour only in REAL'
+        elseif (colourchoice .eq. 0) then
+          write(*,*) 'Total of all colour structures in REAL'
+        else
+          write(*,*) 'Bad colourchoice'
+          stop
+        endif
+      endif
 
       do j=-nf,nf
       do k=-nf,nf

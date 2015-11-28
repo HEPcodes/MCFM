@@ -122,40 +122,14 @@ c      write(6,*) 'xw',xw
       write(6,*) '************** Electroweak parameters **************'
       write(6,*) '*                                                  *'
       write(6,75) 'zmass',zmass,'wmass',wmass
+      write(6,75) 'zwidth',zwidth,'wwidth',wwidth
       write(6,75) 'gwsq',gwsq,'gw',gw
-      write(6,76) 'xw',xw
+      write(6,75) 'xw',xw,'1/alpha',1d0/aemmz
+      write(6,76) 'esq',esq
       write(6,*) '****************************************************'
 
-   75 format(' *  ',a6,f12.8,10x,a6,f12.8,'  *')
-   76 format(' *  ',a6,f12.8,28x,'  *')
-
-      if(scale.le.0d0) then
-        if((nproc .ge. 70) .and. (nproc .le. 79)) then
-          scale=0.5d0*(wmass+zmass)
-        elseif((nproc .eq. 21) .or. (nproc .eq. 26)) then
-          scale=0.5d0*(wmass+hmass)
-        elseif((nproc .ge. 60) .and. (nproc .le. 69)) then
-          scale=wmass
-        elseif((nproc .ge. 80) .and. (nproc .le. 89)) then
-          scale=zmass
-        elseif((nproc .ge. 90) .and. (nproc .le. 96)) then
-          scale=hmass
-        elseif(nproc .eq. 111) then
-          scale=hmass
-        elseif ((nproc .ge. 150).or.(nproc .le. 152)) then
-          scale=100d0
-        elseif ((nproc .eq. 161)) then
-          scale=100d0
-        elseif ((nproc .eq. 171)) then
-          scale=100d0
-C appropriate scale to approximately include higher orders
-        else
-          write(*,*) 'Invalid input: please choose a scale'
-          stop
-        endif
-      write(*,*) 'Scale automatically set to ',scale
-      musq=scale**2
-      endif 
+   75 format(' *  ',a6,f13.8,7x,a7,f13.8,'  *')
+   76 format(' *  ',a6,f13.8,27x,'  *')
 
       call pdfwrap(pdlabel)      
 
@@ -163,20 +137,22 @@ C appropriate scale to approximately include higher orders
       bmass=sqrt(mbsq)
       musq=scale**2
       if (part .eq. 'lord') then
-        as=alphas(scale,amz,1)
+        as=alphas(abs(scale),amz,1)
       else
-        as=alphas(scale,amz,2)
+        as=alphas(abs(scale),amz,2)
       endif
       ason2pi=as/twopi
+      ason4pi=as/fourpi
       gsq=fourpi*as
 
       call couplz(xw)
 
 ***************************************
 
-c--- if we're doing W+2jets, automatically make the CKM matrix
+c--- if we're doing W + jets, automatically make the CKM matrix
 c--- diagonal since we're not interested in these small effects   
-      if ((nproc .eq. 22) .or. (nproc .eq. 27)) then
+      if (  (nproc .eq. 10) .or. (nproc .eq. 11) .or. (nproc .eq. 16)
+     . .or. (nproc .eq. 22) .or. (nproc .eq. 27)) then
         Vud=1d0
         Vus=0d0
         Vub=0d0
@@ -192,8 +168,9 @@ c--- diagonal since we're not interested in these small effects
       write(6,47) Vud,Vus,Vub
       write(6,48) Vcd,Vcs,Vcb
       write(6,*) '****************************************************'
-      if ((nproc .eq. 22) .or. (nproc .eq. 27)) then
-      write(6,*) '* Forced to be diagonal for simplicity in W+2 jets *'
+      if (  (nproc .eq. 10) .or. (nproc .eq. 11) .or. (nproc .eq. 16)
+     . .or. (nproc .eq. 22) .or. (nproc .eq. 27)) then
+      write(6,*) '* Forced to be diagonal for simplicity in W + jets *'
       write(6,*) '****************************************************'
       endif
  47   format(' *      Vud=',g10.5,'Vus=',g10.5,'Vub=',g10.5,'  *')
@@ -204,8 +181,13 @@ c--- diagonal since we're not interested in these small effects
       write(6,*)
       write(6,*) '************* Strong coupling, alpha_s  ************'
       write(6,*) '*                                                  *'
+      if (scale .gt. 0d0) then
       write(6,49) 'alpha_s (scale)',gsq/fourpi
       write(6,49) 'alpha_s (zmass)',amz
+      else
+      write(6,*) '*  Dynamic scale - alpha_s changed event-by-event  *'
+      write(6,49) 'alpha_s (zmass)',amz
+      endif
       write(6,*) '****************************************************'
  49   format(' *  ',a20,f12.8,16x,'*')
       endif

@@ -17,6 +17,7 @@ c     in common block qmass.
       COMMON/QMASS/CMASS,BMASS
       SAVE AMZ0,NLOOP0,AMB,AMC
       DATA AMZ0,NLOOP0/0D0,0/
+
       IF (Q .LE. 0D0) THEN 
          WRITE(6,*) 'q .le. 0 in alphas'
          WRITE(6,*) 'q= ',Q

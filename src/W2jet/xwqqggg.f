@@ -14,23 +14,16 @@
 *     Specifying colourchoice = 0 --> TOTAL                            *
 ************************************************************************
       include 'constants.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'lc.f'
-      integer i2(6),i3(6),i4(6),i6(2),i7(2),j,lh,h2,h3,h4,hq,h(7)
+      integer i2(6),i3(6),i4(6),j,lh,h2,h3,h4,hq,h(7)
       integer j1,j2,j3,j4,j5,j6,j7
       double precision mqqb,m1,m2,m0,fac
       double complex tempm0,m(6),amp_qqggg
-      double complex mppppm,mpmmmm,mpppmm,mppmpm,
-     .    mpmppm,mppmmm,mpmpmm,mpmmpm     
-      logical compare
       data i2/2,2,4,3,3,4/
       data i3/3,4,2,4,2,3/
       data i4/4,3,3,2,4,2/
-      data i6/7,6/
-      data i7/6,7/
      
       mqqb=0d0
       

@@ -498,14 +498,11 @@ c--- 4-quark contribution to matrix elements
       
       do j=-nf,nf
       do k=-nf,nf
+
       do i=0,2
       mqq(i,j,k)=0d0
-c      do l=-nf,nf
-c      do m=-nf,nf
-c        msqx(i,j,k,l,m)=0d0
-c      enddo
-c      enddo
       enddo
+
       if ((j .gt. 0) .and. (k .lt. 0)) then
         if (j. ne. -k) then
 c--- Q QBAR - different flavours
@@ -738,6 +735,11 @@ c--- 2-quark, 2-gluon contribution to matrix elements
       
       do j=-nf,nf
       do k=-nf,nf
+      
+      do i=0,2
+        msqx_cs(i,j,k)=0d0
+      enddo
+
       if     ((j .gt. 0) .and. (k .lt. 0)) then
           msq(j,k)=msq(j,k)+Vsq(j,k)*qqbWgg2
           do i=0,2

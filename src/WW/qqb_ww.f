@@ -16,17 +16,19 @@ c--- note that non-leptonic W decays do not include scattering diagrams
       include 'ewcouple.f'
       include 'zcouple.f'
       include 'ewcharge.f'
+      include 'anomcoup.f'
 
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),qdks(mxpart,4),ave
       double complex prop12,prop34,prop56
-      double complex AWW(2),a6treea,a6treeb
+      double complex AWW(2),a6treea,A6b_1,A6b_2,A6b_3
       double complex propwp,propwm,propzg,cprop
-      double complex Fa123456,Fa213456,Fb123456,Fb213456
-      double complex Fa126543,Fa216543,Fb126543,Fb216543
+      double complex Fa123456,Fa213456,Fb123456_z,Fb213456_z
+      double complex Fa126543,Fa216543,Fb126543_z,Fb216543_z
+      double complex Fb123456_g,Fb213456_g,Fb126543_g,Fb216543_g
       double complex Fa341256,Fa653421,Fa346521,Fa651243
       double complex Fa342156,Fa653412,Fa346512,Fa652143
-      double complex cs(2,2),cgamz(2,2),cz(2,2)
-      double precision fac,mp(nf)
+      double complex cs_z(2,2),cs_g(2,2),cgamz(2,2),cz(2,2)
+      double precision fac,mp(nf),xfac
       integer j,k,jk,tjk,minus,mplus
       parameter(ave=0.25d0/xn)
       data minus,mplus/1,2/
@@ -73,8 +75,10 @@ c--   s returned from sprod (common block) is 2*dot product
       
 c-- couplings with or without photon pole
       do j=1,2
-      cs(minus,j)=mp(j)*(2d0*Q(j)*xw+l(j)*sin2w*prop12)
-      cs(mplus,j)=mp(j)*2d0*Q(j)*xw*(1d0-prop12)
+      cs_z(minus,j)=+mp(j)*l(j)*sin2w*prop12
+      cs_z(mplus,j)=-mp(j)*2d0*Q(j)*xw*prop12
+      cs_g(minus,j)=+mp(j)*2d0*Q(j)*xw
+      cs_g(mplus,j)=+mp(j)*2d0*Q(j)*xw
       if (zerowidth .neqv. .true.) then
       cz(minus,j)=2d0*xw*ln*L(j)*prop12
       cz(mplus,j)=2d0*xw*ln*R(j)*prop12
@@ -83,7 +87,15 @@ c-- couplings with or without photon pole
       endif
       enddo
 
-
+c--- apply a dipole form factor to anomalous couplings
+      xfac=1d0/(1d0+s(1,2)/(tevscale*1d3)**2)**2
+      xdelg1_z=xfac*delg1_z
+      xdelg1_g=xfac*delg1_g
+      xdelk_z=xfac*delk_z
+      xdelk_g=xfac*delk_g
+      xlambda_z=xfac*lambda_z
+      xlambda_g=xfac*lambda_g
+      
 c---case dbar-d and d-dbar
    
       Fa126543=A6treea(1,2,6,5,4,3,za,zb)
@@ -91,10 +103,29 @@ c---case dbar-d and d-dbar
       Fa123456=A6treea(1,2,3,4,5,6,za,zb)
       Fa213456=A6treea(2,1,3,4,5,6,za,zb)
 
-      Fb123456=A6treeb(1,2,3,4,5,6,za,zb)
-      Fb126543=-Fb123456
-      Fb213456=A6treeb(2,1,3,4,5,6,za,zb)
-      Fb216543=-Fb213456
+      call A6treeb_anom(1,2,3,4,5,6,za,zb,A6b_1,A6b_2,A6b_3)
+      Fb123456_z=A6b_1*(2d0+xdelg1_z+xdelk_z+xlambda_z)
+     .          +A6b_2*(2d0*(1d0+xdelg1_z))
+     .          +A6b_3*(xlambda_z/wmass**2)
+      Fb123456_g=A6b_1*(2d0+xdelg1_g+xdelk_g+xlambda_g)
+     .          +A6b_2*(2d0*(1d0+xdelg1_g))
+     .          +A6b_3*(xlambda_g/wmass**2)
+      Fb126543_z=-Fb123456_z
+      Fb126543_g=-Fb123456_g
+      call A6treeb_anom(2,1,3,4,5,6,za,zb,A6b_1,A6b_2,A6b_3)
+      Fb213456_z=A6b_1*(2d0+xdelg1_z+xdelk_z+xlambda_z)
+     .          +A6b_2*(2d0*(1d0+xdelg1_z))
+     .          +A6b_3*(xlambda_z/wmass**2)
+      Fb213456_g=A6b_1*(2d0+xdelg1_g+xdelk_g+xlambda_g)
+     .          +A6b_2*(2d0*(1d0+xdelg1_g))
+     .          +A6b_3*(xlambda_g/wmass**2)
+      Fb216543_z=-Fb213456_z
+      Fb216543_g=-Fb213456_g
+     
+c      Fb123456=A6treeb(1,2,3,4,5,6,za,zb)
+c      Fb126543=-Fb123456
+c      Fb213456=A6treeb(2,1,3,4,5,6,za,zb)
+c      Fb216543=-Fb213456
 
       if (zerowidth .neqv. .true.) then
 c---for supplementary diagrams.
@@ -118,19 +149,27 @@ c--assign values
 c---Remember that base process is ub-u so this has the natural 123456 order
       if (j .gt. 0) then
           if         (tau(jk) .eq. +1d0) then
-                AWW(minus)=(Fa213456+cs(minus,2)*Fb213456)*prop56*prop34
-                AWW(mplus)=cs(mplus,2)*Fb123456*prop56*prop34
+            AWW(minus)=(Fa213456+cs_z(minus,2)*Fb213456_z
+     .                          +cs_g(minus,2)*Fb213456_g)*prop56*prop34
+            AWW(mplus)=(cs_z(mplus,2)*Fb123456_z
+     .                 +cs_g(mplus,2)*Fb123456_g)*prop56*prop34
           elseif     (tau(jk) .eq. -1d0) then
-                AWW(minus)=(Fa216543+cs(minus,1)*Fb216543)*prop56*prop34
-                AWW(mplus)=cs(mplus,1)*Fb126543*prop56*prop34
+            AWW(minus)=(Fa216543+cs_z(minus,1)*Fb216543_z
+     .                          +cs_g(minus,1)*Fb216543_g)*prop56*prop34
+            AWW(mplus)=(cs_z(mplus,1)*Fb126543_z
+     .                 +cs_g(mplus,1)*Fb126543_g)*prop56*prop34
           endif
       elseif (j .lt. 0) then
           if     (tau(jk) .eq. +1d0) then
-                AWW(minus)=(Fa123456+cs(minus,2)*Fb123456)*prop56*prop34
-                AWW(mplus)=cs(mplus,2)*Fb213456*prop56*prop34
+            AWW(minus)=(Fa123456+cs_z(minus,2)*Fb123456_z
+     .                          +cs_g(minus,2)*Fb123456_g)*prop56*prop34
+            AWW(mplus)=(cs_z(mplus,2)*Fb213456_z
+     .                 +cs_g(mplus,2)*Fb213456_g)*prop56*prop34
           elseif (tau(jk) .eq. -1d0) then
-                AWW(minus)=(Fa126543+cs(minus,1)*Fb126543)*prop56*prop34
-                AWW(mplus)=cs(mplus,1)*Fb216543*prop56*prop34
+            AWW(minus)=(Fa126543+cs_z(minus,1)*Fb126543_z
+     .                          +cs_g(minus,1)*Fb126543_g)*prop56*prop34
+            AWW(mplus)=(cs_z(mplus,1)*Fb216543_z
+     .                 +cs_g(mplus,1)*Fb216543_g)*prop56*prop34
           endif
       endif
      

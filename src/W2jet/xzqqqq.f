@@ -11,13 +11,11 @@ c*******************************************************************
 
       include 'constants.f'
       include 'ckm.f'
-      real*8 Von4
+      include 'ckm1.f'
       double complex flgl1,flgl2,frgl1,frgl2,flgr1,flgr2,frgr1,frgr2
 
 
       integer n1,n2
-
-      parameter(Von4=V/four)
 
       double complex mlll1,mlll2,mlrl1,mlrl2,mllr1,mllr2,mlrr1,mlrr2
       double complex mrll1,mrll2,mrrl1,mrrl2,mrlr1,mrlr2,mrrr1,mrrr2

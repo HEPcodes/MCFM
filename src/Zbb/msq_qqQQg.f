@@ -12,14 +12,11 @@ c---   j=2 : Z couples to the (3,4) line in M and M*
 c---   j=3 : Z couples to the (1,2) line in M and the (3,4) in M* (RE)
 c---   j=4 : Z couples to the (1,2) line in M and the (3,4) in M* (IM)
       include 'constants.f'
-      include 'qcdcouple.f'
       integer i1,i2,i3,i4,i5,i6,i7,j,hq,Qh,hg,lh
       double complex a1(2,2,2,2),a2(2,2,2,2),a3(2,2,2,2),a4(2,2,2,2),
      .               b1(2,2,2,2),b2(2,2,2,2),b3(2,2,2,2),b4(2,2,2,2)
-      double complex mbar1,mbar2,mbar3,mbar4,temp
-      double precision m0,mx,my,mz,mxx,mxy
-      double precision mA,mB,mC,mD,mE,mF,mG,msq(2,2,2,2)
-      double precision xA(4),xB(4),xC(4),xD(4),xE(4),xF(4),xG(4)
+      double complex temp
+      double precision xA(4),xD(4),xF(4),xG(4)
       double precision xy(4),xz(4),xxy(4),xsq(2,2,2,2,4)
       
 c--- note that 'a' corresponds to the perm 1,2,3,4,5

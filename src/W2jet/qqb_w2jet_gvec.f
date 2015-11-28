@@ -18,13 +18,12 @@ c   in the final state.
       include 'sprodx.f'
       include 'dprodx.f'
       include 'ckm.f'
+      include 'msqv_cs.f'
 C ip is the label of the emitter
       integer j,k,in,i,n1,n2
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4)
       double precision fac,prop,p1p2(0:2,-1:1,-1:1),n(4),Vfac
       double complex zab(mxpart,mxpart),zba(mxpart,mxpart)
-      double precision msqv_cs(0:2,-nf:nf,-nf:nf),mmsqv_cs(0:2,2,2)
-      common/msqv_cols/msqv_cs,mmsqv_cs
       common/p1p2/p1p2
 c--- note that we will use the first index of p1p2 to label
 c--- the colour structure of the squared matrix element:
@@ -197,13 +196,13 @@ C----nDp6 should be equal to zero
       implicit none
       include 'constants.f'
       include 'sprodx.f'
+      include 'msqv_cs.f'
+      include 'mmsqv_cs.f'
       double complex qcdabn(2,2,2),qcdban(2,2,2),qedn(2,2,2)
       double complex zab(mxpart,mxpart),zba(mxpart,mxpart)
       double precision msq1,msq2,msqq,n(4),p(mxpart,4)
       double precision nDp5,nDp6
       integer i1,i2,i3,i4,i5,i6
-      double precision msqv_cs(0:2,-nf:nf,-nf:nf),mmsqv_cs(0:2,2,2)
-      common/msqv_cols/msqv_cs,mmsqv_cs
 
       nDp5=n(4)*p(i5,4)-n(3)*p(i5,3)-n(2)*p(i5,2)-n(1)*p(i5,1)
       nDp6=n(4)*p(i6,4)-n(3)*p(i6,3)-n(2)*p(i6,2)-n(1)*p(i6,1)
@@ -242,10 +241,9 @@ c-- this routine transfers the information on the colour structure
 c-- for the W2jet_gvec matrix elements into elements (..,i,j) of p1p2
       implicit none
       include 'constants.f'
+      include 'mmsqv_cs.f'
       integer i,j,k
       double precision p1p2(0:2,-1:1,-1:1)
-      double precision msqv_cs(0:2,-nf:nf,-nf:nf),mmsqv_cs(0:2,2,2)
-      common/msqv_cols/msqv_cs,mmsqv_cs
       common/p1p2/p1p2
       
       do k=0,2

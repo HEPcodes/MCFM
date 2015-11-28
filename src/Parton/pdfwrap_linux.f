@@ -18,7 +18,15 @@ C  10    C0R10  charm up              300      0.1175   0.00525  C
 C  11    COR11  charm down            300      0.1175   0.00524  C
 C  12    COR12  larger d/u            300      0.1175   0.00515  C
 
-      if     (pdlabel .eq. 'mrs99_1') then
+      if     (pdlabel .eq. 'mrs0119') then
+      amz=0.119d0
+      elseif     (pdlabel .eq. 'mrs0117') then
+      amz=0.117d0
+      elseif     (pdlabel .eq. 'mrs0121') then
+      amz=0.121d0
+      elseif     (pdlabel .eq. 'mrs01_j') then
+      amz=0.121d0
+      elseif     (pdlabel .eq. 'mrs99_1') then
       amz=0.1175d0
       elseif (pdlabel .eq. 'mrs99_2') then
       amz=0.1175d0
@@ -52,6 +60,13 @@ C  12    COR12  larger d/u            300      0.1175   0.00515  C
       amz=0.1125d0
       elseif (pdlabel .eq. 'mrs98z5') then
       amz=0.1225d0
+      elseif (pdlabel .eq. 'mrs98ht') then
+c-- real value
+      amz=0.1170d0
+c-- modified - DEBUG
+      amz=0.1175d0
+      write(6,*) 'alpha_s(MZ) for mrs98ht has been modified from'
+      write(6,*) 'the inherent 0.1170 to a new value of 0.1175'    
       elseif (pdlabel .eq. 'mrs96r1') then
       amz=0.113d0
       elseif (pdlabel .eq. 'mrs96r2') then
@@ -81,6 +96,14 @@ C   7      CTEQ4A4  Alpha_s series          0.119        1.6      cteq4a4.tbl
 C   8      CTEQ4A5  Alpha_s series          0.122        1.6      cteq4a5.tbl
 C   9      CTEQ4HJ  High Jet                0.116        1.6      cteq4hj.tbl
 C   10     CTEQ4LQ  Low Q0                  0.114        0.7      cteq4lq.tbl
+      elseif (pdlabel .eq. 'cteq3_m') then
+      amz=0.112d0
+      elseif (pdlabel .eq. 'cteq3_l') then
+c---??????
+      amz=0.112d0
+      elseif (pdlabel .eq. 'cteq3_d') then
+c---??????
+      amz=0.112d0
       elseif (pdlabel .eq. 'cteq4_m') then
       amz=0.116d0
       elseif (pdlabel .eq. 'cteq4_d') then
@@ -123,6 +146,22 @@ c---debug
       elseif (pdlabel .eq. 'cteq5f4') then
       Call SetCtq5(7)
       amz=0.112d0
+      elseif (pdlabel .eq. 'cteq5m1') then
+      Call SetCtq5(8)
+      amz=0.118d0
+      elseif (pdlabel .eq. 'ctq5hq1') then
+      Call SetCtq5(9)
+      amz=0.118d0
+      elseif (pdlabel .eq. 'cteq6_m') then
+      amz=0.118d0
+      Call SetCtq6(1)
+      elseif (pdlabel .eq. 'cteq6_d') then
+      amz=0.118d0
+      Call SetCtq6(2)
+      elseif (pdlabel .eq. 'cteq6_l') then
+      amz=0.118d0
+      Call SetCtq6(3)
+
 c--- NEW ATTEMPT
       elseif (pdlabel .eq. 'mtungb1') then
 c--- need a value here: Lambda = 200 MeV
@@ -130,32 +169,22 @@ c--- need a value here: Lambda = 200 MeV
       else
           write(6,*) 'Unimplemented distribution= ',pdlabel
           write(6,*) 'Implemented are: ',
+     .'mrs0119,','mrs0117,','mrs0121,','mrs01_j,',
      .'mrs99_1,','mrs99_2,','mrs99_3,','mrs99_4,','mrs99_5,','mrs99_6,',
      .'mrs99_7,','mrs99_8,','mrs99_9,','mrs9910,','mrs9911,','mrs9912,',
-     . 'mrs98z1,',
-     . 'mrs98z2,',
-     . 'mrs98z3,',
-     . 'mrs98z4,',
-     . 'mrs98z5,',
-     . 'mrs96r1,',
-     . 'mrs96r2,',
-     . 'mrs96r3,',
-     . 'mrs96r4,',
-     . 'hmrs90e,',
-     . 'hmrs90b,',
-     . 'mrs95ap,',
-     . 'mrs95_g,',
-     . 'cteq4_m,',
-     . 'cteq5_m,',
-     . 'cteq5_d,',
-     . 'cteq5_l,',
-     . 'cteq5hj,',
-     . 'cteq5hq,',
-     . 'cteq5f3,',
-     . 'cteq5f4,',
-     . 'mtungb1'
+     .'mrs98z1,','mrs98z2,','mrs98z3,','mrs98z4,','mrs98z5,','mrs98ht,',
+     .'mrs96r1,','mrs96r2,','mrs96r3,','mrs96r4,',
+     .'hmrs90e,','hmrs90b,',
+     .'mrs95ap,','mrs95_g,',
+     .'cteq3_m,','cteq3_l,','cteq3_d,',
+     .'cteq4_m,','cteq4_d,','cteq4_l,','cteq4a1,','cteq4a2,',
+     .'cteq4a3,','cteq4a4,','cteq4a5,','cteq4hj,','cteq4lq,',
+     .'cteq5_m,','cteq5_d,','cteq5_l,','cteq5hj,','cteq5hq,',
+     .'cteq5f3,','cteq5f4,','cteq5m1,','ctq5hq1,',
+     .'cteq6_m,','cteq6_d,','cteq6_l,',
+     .'mtungb1'
 
-          stop
+      stop
       endif      
       return
       end

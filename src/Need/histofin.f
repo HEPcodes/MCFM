@@ -3,6 +3,7 @@
       include 'nplot.f'
       include 'hmass.f'
       include 'scale.f'
+      include 'verbose.f'
       integer j,nlength,lenocc
       character*9 runstring
       character*6 case
@@ -42,6 +43,7 @@ c      character*(*) graph
       write(6,*) '****************************************************'
       write(6,*) 'output file  ',outlabel2
       write(6,*) '****************************************************'
+      call flush(6)
       if     (nlength .eq. 28) then
         outfile28=outlabel2        
         open(unit=98,file=outfile28//'.dat',status='unknown')
@@ -53,19 +55,32 @@ c      character*(*) graph
       endif
       
       do j=1,nplot
+      if (verbose) then
+c        write(6,*) 'Finalizing plot ',j
+        call flush(6)
+      endif
       call mfinal(j)
       enddo
 
       do j=1,nplot
+      if (verbose) then
+c        write(6,*) 'Writing .dat for plot ',j
+        call flush(6)
+      endif
       call mprint(j)
       enddo
       close (unit=98)
 
 c---generate topdrawer file
       do j=1,nplot
-          call mtop(j,100,'x','y',linlog(j))
+      if (verbose) then
+c        write(6,*) 'Writing .top for plot ',j
+        call flush(6)
+      endif
+      call mtop(j,100,'x','y',linlog(j))
       enddo
       close (unit=99)
+
       return
       end
 

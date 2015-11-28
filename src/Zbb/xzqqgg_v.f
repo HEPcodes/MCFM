@@ -1,23 +1,27 @@
       subroutine xzqqgg_v(mqqb,mqqb_vec,mqqb_ax)
       implicit none
-C     Author J.M.Campbell, February 2000
-C     Returns the interference of the tree and loop
-C     amplitudes for the process
-C     0---> q(p1)+g(p2)+g(p3)+qbar(p4)+l(p5)+a(p6)
-C     mqqb(2,2) has two indices;the first for the helicity quark line;
-C     the second for helicity of lepton line.
+************************************************************************
+*     Author J.M.Campbell, February 2000                               *
+*     Returns the interference of the tree and loop                    *
+*     amplitudes for the process                                       *
+*     0---> q(p1)+g(p2)+g(p3)+qbar(p4)+l(p5)+a(p6)                     *
+*                                                                      *
+*     The value of COLOURCHOICE determines which colour structures     *
+*     are included in the calculation                                  *
+*                                                                      *
+*     mqqb(2,2) has two indices - the first for the helicity of the    *
+*     quark line, the second for the helicity of the lepton line.      *
+************************************************************************
       include 'constants.f'
       include 'prods.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
-      integer k,nu,iperm
+      include 'lc.f'
       integer i1(2),i2(2),i3(2),i4(2),i5(2),i6(2),j,lh,h2,h3,hq,h(2:3)
-      double precision p(mxpart,4),msq(-nf:nf,-nf:nf),mmsq(2,2),
-     . prop,qqb,qbq,pswap(mxpart,4)
-      double precision mqqb(2,2),mqqb_vec(2,2),mqqb_ax(2,2),m1,m0,x,fac
-      double complex tempm0,m(2),ml1(2),ml2(2),ml3,ml4(2),tamp
+      double precision mqqb(2,2),mqqb_vec(2,2),mqqb_ax(2,2),x,fac
+      double complex m(2),ml1(2),ml2(2),ml3,ml4(2)
       double complex ml_vec(2),ml1_ax(2),ml2_ax(2)
-      double complex amp_qqgg,a6treeg,a6treeg1,
+      double complex a6treeg1,
      . a61g1lc,a61g1slc,a61g1nf,a63g1,a64v,a64ax,a65ax
       character*9 st1(2,2),st2(2,2),st3(2,2)
       logical compare
@@ -31,7 +35,7 @@ C     the second for helicity of lepton line.
       data st1/'q+g-g-qb-','q+g-g+qb-','q+g+g-qb-','q+g+g+qb-'/
       data st2/'q+qb-g+g+','q+qb-g+g-','q+qb-g-g+','q+qb-g-g-'/
       data st3/'q+qb-g-g-','q+qb-g-g+','q+qb-g+g-','q+qb-g+g+'/
-      
+
       compare=.false.
       
 C ---final matrix element squared is needed as function of quark line helicity
@@ -51,8 +55,6 @@ c--- no extra factor here since colour algebra is already done in (2.12)
       mqqb(hq,lh)=0d0
       mqqb_vec(hq,lh)=0d0
       mqqb_ax(hq,lh)=0d0
-c--- set iperm=1 for same-helicity quarks and leptons, 2 otherwise
-      iperm=1+abs(hq-lh)
 
       do h2=1,2
       do h3=1,2
@@ -62,27 +64,42 @@ c--- set iperm=1 for same-helicity quarks and leptons, 2 otherwise
         if (hq .eq. 1) then
         m(j)=  a6treeg1(st1(3-h(i2(j)),3-h(i3(j))),
      .     i1(1),i2(j),i3(j),i4(1),i6(lh),i5(lh),zb,za)
+        if (colourchoice .le. 2) then
         ml1(j)= a61g1lc(st1(3-h(i2(j)),3-h(i3(j))),
      .     i1(1),i2(j),i3(j),i4(1),i6(lh),i5(lh),zb,za)
+        endif
+        if ((colourchoice .ge. 2) .or. (colourchoice .eq. 0)) then
         ml2(j)=a61g1slc(st2(3-h(i2(j)),3-h(i3(j))),
      .     i1(1),i2(j),i3(j),i4(1),i6(lh),i5(lh),zb,za)
+        endif
+        if (colourchoice .eq. 0) then
         ml4(j)=a61g1nf(st1(3-h(i2(j)),3-h(i3(j))),
      .     i1(1),i2(j),i3(j),i4(1),i6(lh),i5(lh),zb,za)
+        endif
+        if (colourchoice .le. 1) then
         ml_vec(j)=a64v(st2(3-h(i2(j)),3-h(i3(j))),
      .     i1(1),i4(1),i2(j),i3(j),i6(lh),i5(lh),zb,za)
         ml1_ax(j)=a64ax(st2(3-h(i2(j)),3-h(i3(j))),
      .     i1(1),i4(1),i2(j),i3(j),i6(lh),i5(lh),zb,za)
         ml2_ax(j)=a65ax(st2(3-h(i2(j)),3-h(i3(j))),
      .     i1(1),i4(1),i2(j),i3(j),i6(lh),i5(lh),zb,za)
+        endif
         else
         m(j)=  a6treeg1(st1(h(i2(j)),h(i3(j))),
      .     i1(1),i2(j),i3(j),i4(1),i5(lh),i6(lh),za,zb)
+        if (colourchoice .le. 2) then
         ml1(j)= a61g1lc(st1(h(i2(j)),h(i3(j))),
      .     i1(1),i2(j),i3(j),i4(1),i5(lh),i6(lh),za,zb)
+        endif
+        if ((colourchoice .ge. 2) .or. (colourchoice .eq. 0)) then
         ml2(j)=a61g1slc(st2(h(i2(j)),h(i3(j))),
      .     i1(1),i2(j),i3(j),i4(1),i5(lh),i6(lh),za,zb)
+        endif
+        if (colourchoice .eq. 0) then
         ml4(j)=a61g1nf(st1(h(i2(j)),h(i3(j))),
      .     i1(1),i2(j),i3(j),i4(1),i5(lh),i6(lh),za,zb)
+        endif
+        if (colourchoice .le. 1) then
         ml_vec(j)=a64v(st2(h(i2(j)),h(i3(j))),
      .     i1(1),i4(1),i2(j),i3(j),i5(lh),i6(lh),za,zb)
         ml1_ax(j)=a64ax(st2(h(i2(j)),h(i3(j))),
@@ -90,13 +107,33 @@ c--- set iperm=1 for same-helicity quarks and leptons, 2 otherwise
         ml2_ax(j)=a65ax(st2(h(i2(j)),h(i3(j))),
      .     i1(1),i4(1),i2(j),i3(j),i5(lh),i6(lh),za,zb)
         endif
+        endif
         enddo
+
+        if ((colourchoice .eq. 2) .or. (colourchoice .eq. 0)) then
         if (hq .eq. 1) then
         ml3=a63g1(st3(3-h2,3-h3),1,4,2,3,i6(lh),i5(lh),zb,za)
         else
         ml3=a63g1(st3(h2,h3),1,4,2,3,i5(lh),i6(lh),za,zb)
         endif
+        endif
 
+      if     (colourchoice .eq. 1) then
+        mqqb(hq,lh)=mqqb(hq,lh)+fac*(Dble(Dconjg(m(1))*ml1(1))
+     .                              +Dble(Dconjg(m(2))*ml1(2)))
+      elseif (colourchoice .eq. 2) then
+        mqqb(hq,lh)=mqqb(hq,lh)+fac*(
+     .    Dble(Dconjg(m(1))*(
+     .     -(ml1(1)+ml2(1)+ml1(2)-ml3)/xnsq
+     .     -(ml2(1)+ml2(2))/xnsq))
+     .   +Dble(Dconjg(m(2))*(
+     .     -(ml1(2)+ml2(2)+ml1(1)-ml3)/xnsq
+     .     -(ml2(1)+ml2(2))/xnsq)))
+      elseif (colourchoice .eq. 3) then
+        mqqb(hq,lh)=mqqb(hq,lh)+fac*(1d0+xnsq)/xnsq**2*
+     .                (Dble(Dconjg(m(1))*(ml2(1)+ml2(2)))
+     .                +Dble(Dconjg(m(2))*(ml2(1)+ml2(2))))
+      else
       mqqb(hq,lh)=mqqb(hq,lh)+fac*(
      .  Dble(Dconjg(m(1))*(
      .    ml1(1)
@@ -110,7 +147,9 @@ c--- set iperm=1 for same-helicity quarks and leptons, 2 otherwise
      .   +(ml2(1)+ml2(2))/xnsq**2
      .   +ml4(2)/xn
      .   -(ml4(1)+ml4(2))/xn**3)))
-     
+      endif
+      
+      if (colourchoice .le. 1) then
       mqqb_vec(hq,lh)=mqqb_vec(hq,lh)+fac/xnsq*(
      .  Dble(Dconjg(m(1))*(
      .    (xn-4d0/xn)*ml_vec(1)))
@@ -122,12 +161,14 @@ c--- set iperm=1 for same-helicity quarks and leptons, 2 otherwise
      .    (xn-2d0/xn)*ml1_ax(1)-2d0/xn*ml1_ax(2)+one/xn*ml2_ax(1)))
      . +Dble(Dconjg(m(2))*(
      .    (xn-2d0/xn)*ml1_ax(2)-2d0/xn*ml1_ax(1)+one/xn*ml2_ax(2))))
+      endif
+      
+      enddo
+      enddo
 
       enddo
       enddo
-      enddo
-      enddo
-         
+
       return
       end
       

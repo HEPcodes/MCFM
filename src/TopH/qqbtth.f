@@ -24,8 +24,6 @@ C b1(mu)=b(mu)-bsq/2/p1Db*p1(mu)-->p(9,mu)
 C b2(mu)=b(mu)-bsq/2/p2Db*p2(mu)-->p(10,mu)
 ************************************************************************
       include 'constants.f'
-      include 'ewcouple.f'
-      include 'qcdcouple.f'
       include 'masses.f'
       include 'sprodx.f'
       integer q4,a7,r1,r2,b1,b2

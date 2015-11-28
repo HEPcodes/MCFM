@@ -22,6 +22,7 @@ C---     /16.D0/PI**2/(11.D0-2.D0/3.D0*NF)
       DATA C2/0.453013579178645D0,0.30879037953664D0,0.14942733137107D0/
 C---     DEL=SQRT(4*C2-C1**2)
       DATA DEL/1.22140465909230D0,0.99743079911360D0,0.66077962451190D0/
+      DATA F,FP/0d0,1d0/
       F2(AS)=1D0/AS+C1(NF)*LOG((C1(NF)*AS)/(1D0+C1(NF)*AS))
       F3(AS)=1D0/AS+0.5D0*C1(NF)
      & *LOG((C2(NF)*AS**2)/(1D0+C1(NF)*AS+C2(NF)*AS**2))
@@ -38,10 +39,12 @@ C---     DEL=SQRT(4*C2-C1**2)
       IF (NLOOP .EQ. 2) THEN
       F=B0(NF)*T+F2(A_IN)-F2(AS)
       FP=1D0/(AS**2*(1D0+C1(NF)*AS))
-      ENDIF
-      IF (NLOOP .EQ. 3) THEN
+      ELSEIF (NLOOP .EQ. 3) THEN
       F=B0(NF)*T+F3(A_IN)-F3(AS)
       FP=1D0/(AS**2*(1D0+C1(NF)*AS+C2(NF)*AS**2))
+      ELSE
+      WRITE(6,*) 'Unimplemented value of NLOOP in newton1'
+      stop
       ENDIF
       A_OUT=AS-F/FP
       DELTA=ABS(F/FP/AS)

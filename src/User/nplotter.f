@@ -3,10 +3,25 @@
       integer n
       character titlex*8,llplot*3,tag*4
       double precision var,wt,xmin,xmax,dx
+      logical creatent,dswhisto
+      common/outputflags/creatent,dswhisto
+
       if (tag.eq.'book') then
-        call mbook(n,titlex,dx,xmin,xmax)
-       elseif (tag .eq. 'plot') then
-        call mfill(n,var,wt)
+        if (dswhisto .eqv. .false.) then
+c--- Traditional MCFM histograms
+          call mbook(n,titlex,dx,xmin,xmax)
+        else
+c--- DSW histograms - call hbook booking routine
+c        call dswhbook(n,titlex,dx,xmin,xmax)
+        endif
+      elseif (tag .eq. 'plot') then
+        if (dswhisto .eqv. .false.) then
+c--- Traditional MCFM histograms
+          call mfill(n,var,wt)
+        else
+c--- DSW histograms - call hbook filling routine
+c          call dswhfill(n,var,wt)
+        endif
         linlog(n)=llplot
         titlearray(n)=titlex
       endif
@@ -20,12 +35,14 @@
       include 'mxdim.f'
       include 'npart.f'
       include 'clustering.f'
-      integer idum,n,switch,jets
+      include 'bbproc.f'
+      integer idum,n,switch,jets,i5,i6,i7
       character tag*4,jetlabel(mxpart)*2
       double precision m56,m56_5,m56_10,m56_11,m56_12,m56_13,m56_15,
-     . sigma,m34,m345,m346,m3456,m678,m47,etmiss,misset,
+     . sigma,m34,m345,m346,m3456,m678,m47,etmiss,misset,m35,m45,
      . s(mxpart,mxpart),p(mxpart,4),eta,root,wt1
-      double precision y3,y4,y5,y6,y7,y8,y34,y56
+      double precision y3,y4,y5,y6,y7,y8,y34,y56,eta34,eta56
+      double precision r34,r35,r45,r36,r46,r56
       double precision pt3,pt4,pt5,pt6,pt7,pt8,pt34,pt56,pt34a,pt34b
       double precision ptbbsq,ptbbpair,m56smw,gasdev,
      . pt,yrap,chi,cosphi,phi,var,vector(mxdim),wt,r,
@@ -34,13 +51,15 @@
       double precision phill,thetall,fphi,ftheta,mtsqlet,mt1,mt2,mll
       double precision c4,cosnchi,nchi,m56psm20,m56psm40,smearp,swap
       double precision clustermass,m56clust,costhdd,cosllet,coslpairet
-      double precision pjet(mxpart,4),bclustmass,rn,etvec(4),r56,r35,r36
-      common/parts/jets,jetlabel
-      double precision dsigdy,dsigdytmp
-      double precision es17,es27,es56,es57,es67
+      double precision pjet(mxpart,4),bclustmass,rn,etvec(4)
+      double precision dsigdy,dsigdytmp,etaraptwo,transm345,transm435
+      double precision es17,es27,es56,es57,es67,etbin,etdoublebin
       integer nproc,eventpart
+      logical first
+      logical creatent,dswhisto
+      common/outputflags/creatent,dswhisto
+      common/parts/jets,jetlabel
       common/nproc/nproc
-      logical first,bbproc
       data idum/34265765/
       data first/.true./
       save first,eta
@@ -50,34 +69,39 @@
         tag='book'
 c--- ensure we initialize all possible histograms
         eventpart=npart+3
+        y3=0d0
+        pt3=0d0
+        y4=0d0
+        pt4=0d0
+        y5=0d0
+        pt5=0d0
+        y6=0d0
+        pt6=0d0
+        y7=0d0
+        pt7=0d0
+        y8=0d0
+        pt8=0d0
+        y34=0d0
+        eta34=0d0
+        pt34=0d0
+        r34=0d0
+        r35=0d0
+        r45=0d0
+        transm345=0d0
+        transm435=0d0
+        y56=0d0
+        eta56=0d0
+        pt56=0d0
+        m56clust=0d0
+        r36=0d0
+        r46=0d0
+        r56=0d0
+        misset=0d0
+        etbin=0d0
+        goto 99
       else
         tag='plot'
-
-c--- set bbproc to TRUE if the process involves two b-jets
-        if (
-     .      (nproc .eq.  21)
-     . .or. (nproc .eq.  26)
-     . .or. (nproc .eq.  51)
-     . .or. (nproc .eq.  52)
-     . .or. (nproc .eq.  53)
-     . .or. (nproc .eq.  73)
-     . .or. (nproc .eq.  78)
-     . .or. (nproc .eq.  84)
-     . .or. (nproc .eq.  89)
-     . .or. (nproc .eq.  91)
-     . .or. (nproc .eq.  96)
-     . .or. (nproc .eq.  101)
-     . .or. (nproc .eq.  102)
-     . .or. (nproc .eq.  151)
-     . .or. (nproc .eq.  131)
-     . .or. (nproc .eq.  152)
-     . .or. (nproc .eq.  161)
-     . .or. (nproc .eq.  171)
-     . ) then
-          bbproc=.true.
-        else
-          bbproc=.false.
-        endif
+      endif
 
 c--- eventpart will contain the number of actual particles that have
 c--- a defined momentum
@@ -104,7 +128,8 @@ c      write(6,*) 'mttbar',mttbar
 c      pause
         eventpart=npart-switch+2
         if (jets .gt. 0) eventpart=4+jets
-          
+        if ((nproc .ge. 60) .and. (nproc .le. 89)) eventpart=6+jets
+        
         if (switch .eq. 0) then
           es17=2d0*dot(p,1,7)  
           es27=2d0*dot(p,2,7)  
@@ -113,13 +138,19 @@ c      pause
           es67=2d0*dot(p,6,7)  
         endif
 
-        m34=dsqrt(2d0*dot(p,3,4))
+        m34=dsqrt((p(3,4)+p(4,4))**2
+     .           -(p(3,1)+p(4,1))**2
+     .           -(p(3,2)+p(4,2))**2
+     .           -(p(3,3)+p(4,3))**2)
 
         if (bbproc .and. clustering) then
 c--- returns zero cluster mass if two b's are in one jet
           m56clust=dsqrt(bclustmass(jets,p,jetlabel))
         else
-          m56clust=dsqrt(2d0*dot(p,5,6))
+          m56clust=dsqrt((p(5,4)+p(6,4))**2
+     .                  -(p(5,1)+p(6,1))**2
+     .                  -(p(5,2)+p(6,2))**2
+     .                  -(p(5,3)+p(6,3))**2)
         endif  
         r56=r(p,5,6)
         r35=r(p,3,5)
@@ -144,7 +175,9 @@ c--generate a gaussian kick only for event
         y4=yrap(4,p)
         pt4=pt(4,p)        
         y34=yraptwo(3,4,p)
+        eta34=etaraptwo(3,4,p)
         pt34=pttwo(3,4,p)
+        r34=R(p,3,4)
         if ((y34 .lt. -0.5d0) .or. (y34 .gt. 0.5d0)) then
           pt34a=-1d0
         else
@@ -159,13 +192,32 @@ c--generate a gaussian kick only for event
         if (eventpart .gt. 4) then        
         y5=yrap(5,p)
         pt5=pt(5,p)
-        endif
+        r35=R(p,3,5)
+        r45=R(p,4,5)
+        m35=dsqrt((p(3,4)+p(5,4))**2
+     .           -(p(3,1)+p(5,1))**2
+     .           -(p(3,2)+p(5,2))**2
+     .           -(p(3,3)+p(5,3))**2)
+        m45=dsqrt((p(4,4)+p(5,4))**2
+     .           -(p(4,1)+p(5,1))**2
+     .           -(p(4,2)+p(5,2))**2
+     .           -(p(4,3)+p(5,3))**2)
 
+        transm345=dsqrt((dsqrt(m45**2+(pt4+pt5)**2)+pt3)**2
+     .                 -(pt3+pt4+pt5)**2) 
+        transm435=dsqrt((dsqrt(m35**2+(pt3+pt5)**2)+pt4)**2
+     .                 -(pt3+pt4+pt5)**2) 
+        endif
+        
         if (eventpart .gt. 5) then        
         y6=yrap(6,p)
         pt6=pt(6,p)
         y56=yraptwo(5,6,p)
+        eta56=etaraptwo(5,6,p)
         pt56=pttwo(5,6,p)
+        r36=R(p,3,6)
+        r46=R(p,4,6)
+        r56=R(p,5,6)
         transm=2d0*dsqrt(pttwo(4,5,p)**2+2d0*dot(p,4,5))
         transcm=dsqrt(pttwo(4,5,p)**2+2d0*dot(p,4,5))+pttwo(3,6,p)
         endif
@@ -175,17 +227,27 @@ c--generate a gaussian kick only for event
         pt7=pt(7,p)
         endif
 
-         if (eventpart .gt. 7) then        
-         y8=yrap(8,p)
-         pt8=pt(8,p)
-         endif
-          
-         misset=etmiss(p,etvec)
+        if (eventpart .gt. 7) then        
+        y8=yrap(8,p)
+        pt8=pt(8,p)
+        endif
+         
+        misset=etmiss(p,etvec)
 
-c--- if we're doing W/Z+2 jets then make
+c--- if we're doing W/Z + jets then order the jets according to pt's:
 c--- JET 5 = highest Et
-c--- JET 6 = lowest Et
-      if ((nproc .eq. 22) .or. (nproc .eq. 44)) then
+c--- JET 6 = next-highest Et
+c--- JET 7 = lowest Et
+c--- one-jet processes are 11,16 and 41,42,43
+c--- two-jet processes are 22 and 44
+c--- three-jet process is 23
+
+c--- case where we have 2 jets to order
+      if ( (((nproc .eq. 22).or.(nproc .eq. 44))
+     .    .and. (jets .eq. 2))
+     . .or.(((nproc .eq. 11).or.(nproc .eq. 46).or.(nproc .eq. 41)
+     .                      .or.(nproc .eq. 42).or.(nproc .eq. 43))
+     .    .and. (jets .eq. 2)) ) then
         if (pt6 .gt. pt5) then
           swap=pt5
           pt5=pt6
@@ -195,10 +257,73 @@ c--- JET 6 = lowest Et
           y6=swap
         endif
       endif
-
+      
+c--- case where we have 3 jets to order
+      if ( (((nproc .eq. 22).or.(nproc .eq. 44))
+     .    .and. (jets .eq. 3))
+     . .or.  (nproc .eq. 23) ) then
+        if ((pt5 .gt. pt6) .and. (pt5 .gt. pt7)) then
+           i5=5
+          if (pt6 .gt. pt7) then
+            i6=6
+            i7=7
+          else
+            i6=7
+            i7=6
+          endif
+        endif
+        if ((pt6 .gt. pt5) .and. (pt6 .gt. pt7)) then
+           i5=6
+          if (pt5 .gt. pt7) then
+            i6=5
+            i7=7
+          else
+            i6=7
+            i7=5
+          endif
+        endif
+        if ((pt7 .gt. pt5) .and. (pt7 .gt. pt6)) then
+           i5=7
+          if (pt5 .gt. pt6) then
+            i6=5
+            i7=6
+          else
+            i6=6
+            i7=5
+          endif
+        endif
+        y5=yrap(i5,p)
+        pt5=pt(i5,p)
+        y6=yrap(i6,p)
+        pt6=pt(i6,p)
+        y56=yraptwo(i5,i6,p)
+        pt56=pttwo(i5,i6,p)
+        r56=r(p,i5,i6)
+        y7=yrap(i7,p)
+        pt7=pt(i7,p)
+        m56clust=dsqrt((p(i5,4)+p(i6,4))**2
+     .                -(p(i5,1)+p(i6,1))**2
+     .                -(p(i5,2)+p(i6,2))**2
+     .                -(p(i5,3)+p(i6,3))**2)
       endif
 
+      if ((nproc .eq. 60) .or. (nproc .eq. 61)) then
+        etbin=etdoublebin(pt4,pt5)
+      endif
+
+   99 continue
+
+c--- only fill the histograms if we're not creating n-tuples
+      if (creatent .eqv. .false.) then
       n=1                  
+
+c --- Histograms to monitor the weight distributions :
+      call bookplot(n,tag,'wt',wt,1.0d0,-1d-2,1d-2,2d-4,'lin')
+      n=n+1
+      call bookplot(n,tag,'log10wt',dlog10(dabs(wt)),
+     . 1.0d0,-2d0,0d0,0.1d0,'lin')
+     
+      n=n+1
       call bookplot(n,tag,'      y3',y3,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
       call bookplot(n,tag,'     pt3',pt3,wt,0d0,150d0,5d0,'log')
@@ -209,33 +334,65 @@ c--- JET 6 = lowest Et
       n=n+1
       call bookplot(n,tag,'     y34',y34,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
+      call bookplot(n,tag,'     y34',y34,wt,-5d0,5d0,0.2d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'   eta34',eta34,wt,-5d0,5d0,0.5d0,'lin')
+      n=n+1
       call bookplot(n,tag,'    pt34',pt34,wt,0d0,200d0,5d0,'log')
       n=n+1
-      call bookplot(n,tag,'d/pt34^2',pt34,wt/2d0/pt34*pt34**4,
+      call bookplot(n,tag,'    pt34',pt34,wt,0d0,200d0,10d0,'log')
+      n=n+1
+      call bookplot(n,tag,'d/pt34^2',pt34,wt/2d0*pt34**3,
      .     20d0,200d0,10d0,'log')
       n=n+1
       call bookplot(n,tag,'pt34,y=0',pt34a,wt,10d0,150d0,10d0,'log')
       n=n+1
       call bookplot(n,tag,'pt34,y=0',pt34a,wt,20d0,480d0,40d0,'log')
       n=n+1
-      call bookplot(n,tag,'     m34',m34,wt,20d0,140d0,5d0,'lin')
+      call bookplot(n,tag,'     m34',m34,wt,5d0,140d0,5d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'     r34',r34,wt,0d0,4d0,0.1d0,'lin')
       n=n+1
       if (eventpart .gt. 4) then
       call bookplot(n,tag,'      y5',y5,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
       call bookplot(n,tag,'     pt5',pt5,wt,0d0,200d0,5d0,'log')
       n=n+1
+      call bookplot(n,tag,'     r35',r35,wt,0d0,4d0,0.1d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'     r45',r45,wt,0d0,4d0,0.1d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'trnsm345',transm345,wt,0d0,200d0,10d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'trnsm345',transm345,wt,90d0,990d0,1d2,'lin')
+      n=n+1
+      call bookplot(n,tag,'trnsm435',transm435,wt,0d0,200d0,10d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'trnsm435',transm435,wt,90d0,990d0,1d2,'lin')
+      n=n+1
       endif
       if (eventpart .gt. 5) then
       call bookplot(n,tag,'      y6',y6,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
-      call bookplot(n,tag,'     pt6',pt6,wt,0d0,200d0,4d0,'log')
+      call bookplot(n,tag,'     pt6',pt6,wt,0d0,200d0,5d0,'log')
       n=n+1
       call bookplot(n,tag,'     y56',y56,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
+      call bookplot(n,tag,'   eta56',eta56,wt,-5d0,5d0,0.5d0,'lin')
+      n=n+1
       call bookplot(n,tag,'    pt56',pt56,wt,10d0,150d0,10d0,'log')
       n=n+1
-      call bookplot(n,tag,'     m56',m56clust,wt,20d0,200d0,4d0,'log')
+      call bookplot(n,tag,'     r36',r36,wt,0d0,4d0,0.1d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'     r46',r46,wt,0d0,4d0,0.1d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'     r56',r56,wt,0d0,4d0,0.1d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'     m56',m56clust,wt,0d0,200d0,4d0,'log')
+      n=n+1
+      call bookplot(n,tag,'     m56',m56clust,wt,0d0,200d0,8d0,'log')
+      n=n+1
+      call bookplot(n,tag,'     m56',m56clust,wt,0d0,400d0,10d0,'log')
       n=n+1
       call bookplot(n,tag,'     m56',m56clust,wt,84d0,117d0,3d0,'lin')
       n=n+1
@@ -261,18 +418,17 @@ c--- JET 6 = lowest Et
       n=n+1
       call bookplot(n,tag,'  misset',misset,wt,0d0,100d0,10d0,'lin')
       n=n+1
-      call bookplot(n,tag,'     r56',r56,wt,0d0,4d0,.1d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'     r35',r35,wt,0d0,4d0,.1d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'     r36',r36,wt,0d0,4d0,.1d0,'lin')
-      n=n+1
 c      call bookplot(n,tag,'  mttbar',mttbar,wt,300d0,1d3,20d0,'lin')
 c      n=n+1
 c      call bookplot(n,tag,'  transm',transm,wt,20d0,200d0,20d0,'lin')
 c      n=n+1
 c      call bookplot(n,tag,' transcm',transcm,wt,20d0,200d0,20d0,'lin')
 c      n=n+1
+      endif
+
+      if ((nproc .eq. 60) .or. (nproc .eq. 61)) then
+      call bookplot(n,tag,'   etbin',etbin,wt,0.5d0,25.5d0,1d0,'lin')
+      n=n+1
       endif
 
       if (eventpart .gt. 6) then
@@ -288,157 +444,10 @@ c      n=n+1
       call bookplot(n,tag,'     pt8',pt8,wt,0d0,100d0,5d0,'lin')
       endif      
 
-
-
-c      if (rn(1) .le. 0.5d0) then
-c        call mfill(n,m56,weight/2d0)
-c        call mfill(n,m47,weight/2d0)
-c      else
-c        call mfill(n,m56,weight)
-c      endif
-c      n=n+1
-c      call mfill(n,m345,weight)
-c      n=n+1
-c-15
-c      call mfill(n,m346,weight)
-c      n=n+1
-c-15
-c      if ((m56smw .gt. 84d0) .and. (m56smw .lt. 117d0))
-c     . call mfill(n,costh,weight)
-c      n=n+1
-
-c      if ((m56smw .gt. 84d0) .and. (m56smw .lt. 117d0))
-c     .  call mfill(n,cosnew1,weight)
-c      n=n+1
-
-c      if ((m56smw .gt. 84d0) .and. (m56smw .lt. 117d0))
-c     .  call mfill(n,cosnew2,weight)
-c      n=n+1
-c-1
-c      call mfill(n,cosnew3,weight)
-c      n=n+1
-c      phi=acos(cosphi)
-c      call mfill(n,phi,weight)
-c      write(6,*) 'phi',phi
-c      pause
-   
-
-c      n=n+1
-c      call mfill(n,ptbbpair,weight)
-c      n=n+1
-c      call mfill(n,pt5,weight)
-c      n=n+1
-c      call mfill(n,pt6,weight)
-c      n=n+1
-c      call mfill(n,pt7,weight)
-c      n=n+1
-c--- added by JMC
-c      phill=fphi(4,7,p)
-c      if (nnproc .eq. 61.or.nnproc .eq.111 .or. nnproc .eq. 181) then
-c        call dittdrein(p,4,7,costhdd)
-c        call mfill(n,180d0/pi*phill,weight)
-c      elseif (nnproc .eq. 71) then
-c        call mfill(n,180d0/pi*phill,weight/2d0)
-c        phill=fphi(4,5,p)
-c      call mfill(n,180d0/pi*phill,weight/2d0)c      
-c      elseif (nnproc .eq. 82) then
-c        call dittdrein(p,4,5,costhdd)
-c        phill=fphi(4,5,p)
-c        call mfill(n,180d0/pi*phill,weight)
-c      endif
-c      if(180d0/pi*phill .gt. 180d0) write(*,*) 'ERROR' 
-c      n=n+1
-c      thetall=ftheta(4,7,p)
-c      if (nnproc .eq. 61.or.nnproc .eq.111 .or. nnproc .eq. 181) then
-c        call mfill(n,180d0/pi*thetall,weight)
-c      elseif (nnproc .eq. 71) then
-c        call mfill(n,180d0/pi*thetall,weight/2d0)
-c        thetall=ftheta(4,5,p)
-c        call mfill(n,180d0/pi*thetall,weight/2d0)c      
-c      elseif (nnproc .eq. 82) then
-c        thetall=ftheta(4,5,p)
-c        call mfill(n,180d0/pi*thetall,weight)
-c      endif
-c      if(180d0/pi*thetall .gt. 180d0) write(*,*) 'ERROR' 
-c      n=n+1
-c      if (nnproc .eq. 61.or.nnproc .eq.111) then
-c        mt1=dsqrt(min(mtsqlet(4,5,6,p),mtsqlet(7,5,6,p)))
-c        call mfill(n,mt1,weight)
-c      elseif (nnproc .eq. 71) then
-c        mt1=dsqrt(min(mtsqlet(4,6,0,p),mtsqlet(7,6,0,p)))
-c        call mfill(n,mt1,weight/2d0)
-c        mt1=dsqrt(min(mtsqlet(4,6,0,p),mtsqlet(5,6,0,p)))
-c        call mfill(n,mt1,weight/2d0)
-c      elseif (nnproc .eq. 82) then
-c        mt1=dsqrt(min(mtsqlet(4,6,7,p),mtsqlet(5,6,7,p)))
-c        call mfill(n,mt1,weight)
-c      endif
-c      n=n+1
-c      if (nnproc .eq. 61.or.nnproc .eq.111) then
-c        mll=dsqrt(s(4,7))
-c        call mfill(n,mll,weight)
-c      elseif (nnproc .eq. 71) then
-c        call mfill(n,dsqrt(s(4,5)),weight/2d0)
-c        call mfill(n,dsqrt(s(4,7)),weight/2d0)
-c      elseif (nnproc .eq. 82) then
-c        mll=dsqrt(s(4,5))
-c        call mfill(n,mll,weight)
-c      endif
-c      n=n+1c      
-c      call mfill(n,costhdd,weight)
-c      n=n+1c      
-c      if (nnproc .eq. 61.or.nnproc .eq.111) then
-c        cosllet=coslpairet(4,7,5,6,p)
-c        call mfill(n,cosllet,weight)
-c      elseif (nnproc .eq. 82) then
-c        cosllet=coslpairet(4,5,6,7,p)
-c        call mfill(n,cosllet,weight)
-c      endif
-c      n=n+1c      
-
-c      call mfill(n,pt5+pt6,weight)
-c      n=n+1
-c      call mfill(n,transcm,weight)
-c      n=n+1
-c      call mfill(n,nchi,weight)
-c      n=n+1
-c      call mfill(n,m56psm20,weight)
-c      n=n+1
-c      call mfill(n,m56psm40,weight)
-c      n=n+1
-c      call mfill(n,pt34,weight)
-c      n=n+1
-c      call mfill(n,pt34,weight)
-c      n=n+1
-c      if (switch .eq. 1 ) then
-c      kt12=sqrt(s(1,3)*s(2,3)/s(1,2))
-c      kt14=sqrt(s(1,3)*s(4,3)/s(1,4))
-c      kt15=sqrt(s(1,3)*s(5,3)/s(1,5))
-c      kt24=sqrt(s(2,3)*s(4,3)/s(2,4))
-c      kt25=sqrt(s(2,3)*s(5,3)/s(2,5))
-c      kt56=sqrt(s(4,3)*s(5,3)/s(4,5))
-
-c      call mfill(n,-s(1,3),weight)
-c      n=n+1
-c      root=sqrt(-s(1,3))
-c      wt1=root*weight
-c      call mfill(n,-s(1,3),root*wt1)
-c      n=n+1
-c      call mfill(n,-s(2,3),weight)
-c      n=n+1
-c      root=sqrt(-s(2,3))
-c      wt1=root*weight
-c      call mfill(n,-s(2,3),root*wt1)
-c      n=n+1
-c      call mfill(n,+s(3,4),weight)
-c      n=n+1
-c      root=sqrt(s(3,4))
-c      wt1=root*weight
-c      call mfill(n,s(3,4),root*wt1)
-c      n=n+1
-c      call mfill(n,+s(3,5),weight)
-c      n=n+1
-
+      else
+c--- Book and fill ntuple if we're not doing histograms       
+c         call bookfill(tag,p,wt)       
+      endif
 
       return 
       end
@@ -452,6 +461,7 @@ c      n=n+1
       return
       end
 
+c--- this is the rapidity
       double precision function yraptwo(j,k,p)
       implicit none
       include 'constants.f'
@@ -466,6 +476,29 @@ c-- rapidities of 100 will be rejected by any sensible cuts
       else 
       yraptwo=0.5d0*dlog(yraptwo)
       endif
+            
+      return
+      end
+
+c--- this is the pseudo-rapidity
+      double precision function etaraptwo(j,k,p)
+      implicit none
+      include 'constants.f'
+      integer j,k
+      double precision p(mxpart,4)
+      
+      etaraptwo=dsqrt((p(j,1)+p(k,1))**2+(p(j,2)+p(k,2))**2
+     .               +(p(j,3)+p(k,3))**2)
+      etaraptwo=(etaraptwo+p(j,3)+p(k,3))
+     .         /(etaraptwo-p(j,3)-p(k,3))
+      if (etaraptwo .lt. 1d-13) then
+C-- set to 100 if this is very close to or less than zero
+c-- rapidities of 100 will be rejected by any sensible cuts
+      etaraptwo=100d0
+      else 
+      etaraptwo=0.5d0*dlog(etaraptwo)
+      endif
+      
       return
       end
 

@@ -44,8 +44,8 @@ c   positively charged W only
       gqWbbq  =+redmsq(2,7,1,5,6,3,4,4)*fac*aveqg
       gqbWbbqb=+redmsq(7,2,1,5,6,3,4,4)*fac*aveqg
 
-      do j=-nf,nf
-      do k=-nf,nf
+      do j=-(nf-1),(nf-1)
+      do k=-(nf-1),(nf-1)
 
       msq(j,k)=0d0
 
@@ -119,11 +119,7 @@ c---calculate the W propagator
       bpp=qcdbpp(j1,j2,j3,j4,j5,j6,j7,jb)
       ipp=qedipp(j1,j2,j3,j4,j5,j6,j7,jb)
       fpp=qedfpp(j1,j2,j3,j4,j5,j6,j7,jb)
-c      write(6,*) 'app',app
-c      write(6,*) 'bpp',bpp
-c      write(6,*) 'ipp',ipp
-c      write(6,*) 'fpp',fpp
-c      pause
+
       pp=V*xn/eight*(abs(app)**2+abs(bpp)**2)
      &+V/(eight*xn)*(abs(ipp)**2+abs(fpp)**2-two*(abs(ipp+fpp))**2)
 

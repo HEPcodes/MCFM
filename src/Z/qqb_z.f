@@ -26,7 +26,7 @@ c--set msq=0 to initialize
       enddo
       enddo
       s34=s(3,4)
-      if (s34 .lt. 4d0*mbsq) return 
+c      if (s34 .lt. 4d0*mbsq) return 
 
       fac=4d0*esq**2*xn
 

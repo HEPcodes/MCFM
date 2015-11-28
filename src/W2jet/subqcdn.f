@@ -4,6 +4,7 @@
       include 'constants.f'
       include 'dprodx.f'
       include 'sprodx.f'
+      include 'nwz.f'
       double complex zab(mxpart,mxpart),zba(mxpart,mxpart)
 C     first argument is the gluon polarization
 C     2nd argument is the fermion line
@@ -15,8 +16,7 @@ C     2 is right handed
       double complex qcdab(2,2,2),qcdba(2,2,2),ab36,ab36x,ab64x,ab64y,
      . ab64,ab35x,ab35,ab54,ab54x,ab31,ab24,aba23
       double precision s34,t15,t25,t16,t26,t56,t156,t256,nDp5
-      integer p1,p2,p3,p4,p5,p6,nwz,plep,pglu,pfer
-      common/nwz/nwz
+      integer p1,p2,p3,p4,p5,p6,plep,pglu,pfer
 
 
       do pglu=1,2

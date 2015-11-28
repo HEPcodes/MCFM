@@ -9,7 +9,7 @@ c--all momenta incoming
       implicit none
       include 'constants.f'
       include 'sprodx.f'
-      include 'msq_cs.f'
+      include 'mmsq_cs.f'
       double complex qcd1LL(-1:1,-1:1),qcd2LL(-1:1,-1:1)
       double complex qcd1LR(-1:1,-1:1),qcd2LR(-1:1,-1:1)
 c      double complex qcd1RL(-1:1,-1:1),qcd2RL(-1:1,-1:1)
@@ -75,11 +75,11 @@ c      msqq(2,2)=msqq(2,2)+abs(qedRR(pol(j),pol(k)))**2
       enddo                   
 
 
-      msq1(2,2)=msq2(1,1)
-      msq1(2,1)=msq2(1,2)
+      msq1(2,2)=msq1(1,1)
+      msq1(2,1)=msq1(1,2)
 
-      msq2(2,2)=msq1(1,1)
-      msq2(2,1)=msq1(1,2)
+      msq2(2,2)=msq2(1,1)
+      msq2(2,1)=msq2(1,2)
 
       msqq(2,2)=msqq(1,1)
       msqq(2,1)=msqq(1,2)

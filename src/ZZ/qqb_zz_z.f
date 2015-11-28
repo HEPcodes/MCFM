@@ -3,25 +3,31 @@
       include 'constants.f'
       include 'qcdcouple.f'
       include 'scale.f'
-      include 'PR.f'
-      double precision z,xl12,p(mxpart,4),dot
-      double precision ii_qg,ii_gq
+      include 'PR_new.f'
+      include 'agq.f'
+      integer is
+      double precision z,xl12,p(mxpart,4),dot,ii_qq,ii_qg,tempqq,tempqg
 
       xl12=log(two*dot(p,1,2)/musq)
 c----contributions for one leg
 
-      Rqq_qb=ason2pi*cf*ii_qg(z,xl12,2)
-      Rq_qbqb=Rqq_qb
-      Rqbqb_q=Rqq_qb
-      Rqb_qq=Rqq_qb
+      do is=1,3
+      tempqq=+ason2pi*cf*ii_qq(z,xl12,is)
+      tempqg=+ason2pi*tr*ii_qg(z,xl12,is)
 
-      Pqq_qb=ason2pi*cf*ii_qg(z,xl12,3)
-      Pq_qbqb=Pqq_qb
-      Pqbqb_q=Pqq_qb
-      Pqb_qq=Pqq_qb
-      
-      Rgq_q=ason2pi*tr*ii_gq(z,xl12,2)
-      Rq_gq=Rgq_q
+      Q1(q,q,a,is)=tempqq
+      Q2(a,a,q,is)=tempqq
+      Q1(a,a,q,is)=tempqq
+      Q2(q,q,a,is)=tempqq
 
+      Q2(q,g,q,is)=tempqg
+      Q2(a,g,q,is)=tempqg
+      Q2(q,g,a,is)=tempqg
+      Q2(a,g,a,is)=tempqg
+      Q1(q,g,q,is)=tempqg
+      Q1(a,g,q,is)=tempqg
+      Q1(q,g,a,is)=tempqg
+      Q1(a,g,a,is)=tempqg
+      enddo
       return
       end

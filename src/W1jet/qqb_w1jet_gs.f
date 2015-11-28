@@ -33,7 +33,7 @@ c --- remember: nd will count the dipoles
      & sub15_6(4),sub16_5(4),sub25_6(4),sub26_5(4),
      & sub56_1(4),sub56_2(4),sub56_1v,sub56_2v,
      & sub26_5v,sub26_1v,sub16_5v,sub16_2v,sub15_2v,sub15_6v,sub25_6v,
-     & sub25_1v,dsubv
+     & sub25_1v
       external qqb_w_g,qqb_w_gvec,donothing_gvec
       ndmax=6
 
@@ -46,8 +46,6 @@ c--- calculate all the initial-initial dipoles
      . qqb_w_g,qqb_w_gvec)
       call dips(4,p,2,6,1,sub26_1,sub26_1v,msq26_1,msq26_1v,
      . qqb_w_g,qqb_w_gvec)
-
-
 
 c--- now the basic initial final ones
       call dips(5,p,1,5,6,sub15_6,sub15_6v,msq15_6,msq15_6v,
@@ -66,11 +64,8 @@ c--- sub... and sub...v and msqv
       call dips(6,p,2,5,6,sub25_6,sub25_6v,dummy,dummyv,
      . qqb_w_g,donothing_gvec)
 
-c--- final-initial, again msq is already set up
-      
       do j=-nf,nf
-      do k=-nf,nf
-      
+      do k=-nf,nf      
       do nd=1,ndmax
         msq(nd,j,k)=0d0
       enddo
@@ -102,6 +97,7 @@ c--- note statistical factor of one half for two gluons in the final state
       do nd=1,ndmax
         msq(nd,j,k)=half*msq(nd,j,k)
       enddo
+
       elseif ((k .eq. 0).and. (j.ne.0)) then
 c--- q-g and qb-g cases
       msq(2,j,k)=2d0*tr*(msq25_1(j,-5)+msq25_1(j,-4)+msq25_1(j,-3)
@@ -160,7 +156,7 @@ c--- since Q --> Wq
       if ((j .gt. 0) .and. (k .gt. 0)) then
 c--- Q Q - different flavours
         if (j. ne. k) then
-         msq(1,j,k)=msq(1,j,k)+stat*(xn-1d0/xn)
+        msq(1,j,k)=msq(1,j,k)+stat*(xn-1d0/xn)
      .  *(msq15_2(0,k)*sub15_2(gq)+msq15_2v(0,k)*sub15_2v)
         msq(4,j,k)=msq(4,j,k)+stat*(xn-1d0/xn)
      .  *(msq26_1(j,0)*sub26_1(gq)+msq26_1v(j,0)*sub26_1v)

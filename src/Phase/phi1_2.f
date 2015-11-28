@@ -9,6 +9,7 @@ c     delta(p2^2-s2) delta(p3^2-s3)
       implicit none
       include 'constants.f'
       include 'masses.f'
+      include 'process.f'
       include 'zerowidth.f'
       double precision p1(4),p2(4),p3(4),p3cm(4)
       double precision x1,x2,x3,x4,costh,sinth,phi,cphi,sphi
@@ -40,6 +41,10 @@ c      s2min=bbsqmin
 c      s2max=min(s1,bbsqmax)
       s2min=0d0
       s2max=s1
+      if ((case .eq. 'Wbbmas') .or. (case .eq. 'Zbbmas')
+     .                         .or. (case .eq. 'vlchkm')) then
+      s2min=4d0*mb**2
+      endif
       if (s2min .gt. s2max) return 1
       if (n2 .eq. 0) then
          w2=s2max-s2min
@@ -50,7 +55,6 @@ c      s2max=min(s1,bbsqmax)
 
       m2=sqrt(s2)
       s3min=1d-15
-
       s3max=(m2-m1)**2
       if (s3max-s3min .lt. 1d-12) return 1
       if (n3 .eq. 0) then
@@ -89,11 +93,14 @@ c      write(6,*) s3min,s3,s3max,m1,m2,sqrt(s1),sqrt(s2)
       enddo
       if (  (p1(4) .lt. 0.d0) 
      & .or. (p2(4) .lt. 0.d0) 
-     & .or. (p3(4) .lt. 0.d0)) then  
-      write(6,*) 'p1',p1(4),p1(4)**2-p1(1)**2-p1(2)**2-p1(3)**2,s1
-      write(6,*) 'p2',p2(4),p2(4)**2-p2(1)**2-p2(2)**2-p2(3)**2,s2
-      write(6,*) 'p3',p3(4),p3(4)**2-p3(1)**2-p3(2)**2-p3(3)**2,s3
-      write(6,*) n2,n3
+     & .or. (p3(4) .lt. 0.d0)) then 
+       if (case(1:5) .ne. 'vlchk') then 
+        write(6,*) 'p1',p1(4),p1(4)**2-p1(1)**2-p1(2)**2-p1(3)**2,s1
+        write(6,*) 'p2',p2(4),p2(4)**2-p2(1)**2-p2(2)**2-p2(3)**2,s2
+        write(6,*) 'p3',p3(4),p3(4)**2-p3(1)**2-p3(2)**2-p3(3)**2,s3
+        write(6,*) n2,n3
+       endif
+       return 1
       endif
 
       return

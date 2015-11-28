@@ -30,6 +30,8 @@ c----hep-ph/9708239, Eqs(8.4,8.8,8.14,9.2,9.7,10.1) Multiplied by (-i)
      .(za(j3,j5)*zb(j2,j3)+za(j4,j5)*zb(j2,j4)))/
      .(s(j2,j3)*s(j5,j6)*zb(j3,j4)*t(j2,j3,j4)))
       elseif(st.eq.'q+g+g+qb-') then
+c---This amplitude corresponds to
+c    q(4)+l(5) --> q_R(1)+l_R(6)+g_R(2)+g_R(3)
       a6treeg= 
      .(-za(j4,j5)**2)/(za(j1,j2)*za(j2,j3)*za(j3,j4)*za(j5,j6))
       elseif(st.eq.'q+g+qb-g-') then

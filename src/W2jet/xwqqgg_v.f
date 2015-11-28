@@ -16,12 +16,9 @@
       include 'qcdcouple.f'
       include 'lc.f'
       integer i1(2),i2(2),i3(2),i4(2),i5(2),i6(2),j,lh,h2,h3,hq,h(2:3)
-      double precision p(mxpart,4),msq(-nf:nf,-nf:nf),mmsq(2,2),
-     . prop,qqb,qbq,pswap(mxpart,4)
-      double precision mqqb,m1,m0,x,fac
-      double complex tempm0,m(2),ml1(2),ml2(2),ml3,ml4(2),tamp
-      double complex amp_qqgg,a6treeg,a6treeg1,
-     . a61g1lc,a61g1slc,a61g1nf,a63g1
+      double precision mqqb,x,fac
+      double complex m(2),ml1(2),ml2(2),ml3,ml4(2)
+      double complex a6treeg1,a61g1lc,a61g1slc,a61g1nf,a63g1
       character*9 st1(2,2),st2(2,2),st3(2,2)
       logical compare
       parameter(x=xn/cf)
@@ -93,8 +90,7 @@ c--- no extra factor here since colour algebra is already done in (2.12)
         else
         ml3=a63g1(st3(h2,h3),1,4,2,3,i5(lh),i6(lh),za,zb)
         endif
-        endif
-        
+        endif       
 
       if     (colourchoice .eq. 1) then
         mqqb=mqqb+fac*(Dble(Dconjg(m(1))*ml1(1))

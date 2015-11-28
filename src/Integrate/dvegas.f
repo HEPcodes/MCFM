@@ -23,14 +23,16 @@ c
          implicit double precision (a-h,o-z)
          implicit integer*4 (i-n)
          include 'mxdim.f'
+         include 'gridinfo.f'
          parameter(mprod=50*mxdim)
          common/bveg1/xl(mxdim),xu(mxdim),acc,ndim,ncall,itmx,nprn
          common/bveg2/xi(50,mxdim),si,si2,swgt,schi,ndo,it
          COMMON/ranno/idum
+         common/maxwt/wtmax
          dimension d(50,mxdim),di(50,mxdim),xin(50),r(50),
      1   dx(mxdim),dt(mxdim),x(mxdim),kg(mxdim),ia(mxdim)
          data ndmx/50/,alph/1.5d0/,one/1d0/,mds/1/
-        
+         data wtmax/0d0/
 cc
 cc
          data XI/mprod*1.D0/
@@ -83,6 +85,22 @@ c        no initialisation
 c
 c    rebin preserving bin density
 c
+
+c--- read-in grid if necessary
+         if (readin) then
+           open(unit=11,file=ingridfile//'.in',status='unknown')
+         write(6,*)'***************************************************'
+         write(6,*)'* Reading in vegas grid from ',ingridfile,'.in  *'
+         write(6,*)'***************************************************'
+           call flush(6)
+           do j=1,ndim
+             read(11,203) jj,(xi(i,j),i=1,nd)
+           enddo
+           close(11)
+           ndo=nd
+           readin=.false.
+         endif
+
          if(nd.eq.ndo)go to 8
          rc=ndo/xnd
          do 7 J=1,ndim
@@ -180,7 +198,8 @@ c
 c
         if(nprn.eq.0)go to 21
         tsi=dsqrt(tsi)
-        write(6,201)it,ti,tsi,avgi,sd,chi2a
+c        write(6,201)it,ti,tsi,avgi,sd,chi2a
+        write(6,201)it,ti,avgi,tsi,sd,wtmax,chi2a
         call flush(6)
         if(nprn.ge.0)go to 21
         do 20 j=1,ndim
@@ -229,18 +248,42 @@ c
  28     xi(nd,j)=one
 c
         if(it.lt.itmx.and.acc*dabs(avgi).lt.sd)go to 9
- 200    format(1X,' Input parameters for vegas:  ndim=',i3,
+
+c--- write-out grid if necessary
+         if (writeout) then
+           open(unit=11,file=outgridfile//'.out',status='unknown')
+         write(6,*)'***************************************************'
+         write(6,*)'* Writing out vegas grid to ',outgridfile,'.out  *'
+         write(6,*)'***************************************************'
+           call flush(6)
+           do j=1,ndim
+             write(11,203) jj,(xi(i,j),i=1,nd)
+           enddo
+           close(11)
+         endif
+
+ 200    format(/ 1X,' Input parameters for vegas:  ndim=',i3,
      1  '   ncall=',f8.0/28x,'  it=',i5,'    itmx=',i5/28x,
      2  '  acc=',g9.3/28x,'  mds=',i3,'     nd=',i4/28x,
      3  '  (xl,xu)=',(t40,'( ',g12.6,' , ',g12.6,' )'))
- 201    format(/' Integration by vegas' / ' iteration no.',i3,
-     1  ':  integral=',g14.8/21x,'std dev =',g14.8 /
-     2  ' accumulated results:   integral=',g14.8/
-     3  24x,'std dev =',g14.8 / 24x,'chi**2 per it''n =',g10.4 /)
+c 201    format(///' Integration by vegas' / ' iteration no.',i3,
+c     1  ':  integral=',g14.8/21x,'std dev =',g14.8 /
+c     2  ' accumulated results:   integral=',g14.8/
+c     3  24x,'std dev =',g14.8 / 24x,'chi**2 per it''n =',g10.4)
+ 201    format(/'************* Integration by Vegas (iteration ',i3,
+     .   ') **************' / '*',63x,'*'/,
+     .   '*  integral  = ',g14.8,2x,
+     .   ' accum. integral = ',g14.8,'*'/,
+     .   '*  std. dev. = ',g14.8,2x,
+     .   ' accum. std. dev = ',g14.8,'*'/,
+     .   '*   max. wt. = ',g14.6,35x,'*'/,'*',63x,'*'/,
+     .   '**************   chi**2/iteration = ',
+     .   g10.4,'   ****************' /)     
  202    format(1X,' data for axis',i2,/,' ',6x,'x',7x,'  delt i ',
      1  2x,'conv','ce   ',11x,'x',7x,'  delt i ',2x,'conv','ce  '
      2  ,11x,'x',7x,'   delt i ',2x,'conv','CE  ',/,
      3  (1X,' ',3g12.4,5x,3g12.4,5x,3g12.4))
+ 203    format(/(5z16))
         return
         end
         subroutine save(ndim)

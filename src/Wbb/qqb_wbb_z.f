@@ -3,45 +3,47 @@
       include 'constants.f'
       include 'qcdcouple.f'
       include 'scale.f'
-      include 'PR.f'
+      include 'PR_new.f'
+      include 'agq.f'
+      integer is
       double precision z,p(mxpart,4),dot
-      double precision xl12,xl15,xl16,xl25,xl26
-      double precision ii_qg,ii_gq,if_qg,fi_qg
+      double precision xl12,xl15,xl16,xl25,xl26,xl56
+      double precision ii_qq,ii_qg,if_qq,fi_qq,ff_qq,tempqg
 
       xl12=log(two*dot(p,1,2)/musq)
       xl15=log(-two*dot(p,1,5)/musq)
       xl16=log(-two*dot(p,1,6)/musq)
       xl25=log(-two*dot(p,2,5)/musq)
       xl26=log(-two*dot(p,2,6)/musq)
+      xl56=log(+two*dot(p,5,6)/musq)
 
-      Rqq_qb=ason2pi/2d0*((xn-two/xn)*(if_qg(z,xl15,2)+fi_qg(z,xl15,2))
-     .                       +two/xn *(if_qg(z,xl16,2)+fi_qg(z,xl16,2))
-     .                       -one/xn * ii_qg(z,xl12,2))
-      Pqq_qb=ason2pi/2d0*((xn-two/xn)*(if_qg(z,xl15,3)+fi_qg(z,xl15,3))
-     .                       +two/xn *(if_qg(z,xl16,3)+fi_qg(z,xl16,3))
-     .                       -one/xn * ii_qg(z,xl12,3))
-      Rqbqb_q=ason2pi/2d0*((xn-two/xn)*(if_qg(z,xl25,2)+fi_qg(z,xl25,2))
-     .                        +two/xn *(if_qg(z,xl26,2)+fi_qg(z,xl26,2))
-     .                        -one/xn * ii_qg(z,xl12,2))
-      Pqbqb_q=ason2pi/2d0*((xn-two/xn)*(if_qg(z,xl25,3)+fi_qg(z,xl25,3))
-     .                        +two/xn *(if_qg(z,xl26,3)+fi_qg(z,xl26,3))
-     .                        -one/xn * ii_qg(z,xl12,3))
-      Rq_qbqb=ason2pi/2d0*((xn-two/xn)*(if_qg(z,xl26,2)+fi_qg(z,xl26,2))
-     .                        +two/xn *(if_qg(z,xl25,2)+fi_qg(z,xl25,2))
-     .                        -one/xn * ii_qg(z,xl12,2))
-      Pq_qbqb=ason2pi/2d0*((xn-two/xn)*(if_qg(z,xl26,3)+fi_qg(z,xl26,3))
-     .                        +two/xn *(if_qg(z,xl25,3)+fi_qg(z,xl25,3))
-     .                        -one/xn * ii_qg(z,xl12,3))
-      Rqb_qq=ason2pi/2d0*((xn-two/xn)*(if_qg(z,xl16,2)+fi_qg(z,xl16,2))
-     .                       +two/xn *(if_qg(z,xl15,2)+fi_qg(z,xl15,2))
-     .                       -one/xn * ii_qg(z,xl12,2))
-      Pqb_qq=ason2pi/2d0*((xn-two/xn)*(if_qg(z,xl16,3)+fi_qg(z,xl16,3))
-     .                       +two/xn *(if_qg(z,xl15,3)+fi_qg(z,xl15,3))
-     .                       -one/xn * ii_qg(z,xl12,3))
-
-      Rgq_q=ason2pi*tr*ii_gq(z,xl12,2)
-      Rq_gq=Rgq_q
-
+      do is=1,3
+      Q1(q,q,a,is)=ason4pi
+     .             *((xn-two/xn)*(if_qq(z,xl15,is)+fi_qq(z,xl15,is))
+     .                  +two/xn *(if_qq(z,xl16,is)+fi_qq(z,xl16,is))
+     .                  -one/xn *(ii_qq(z,xl12,is)+ff_qq(z,xl56,is)))
+      Q1(a,a,q,is)=ason4pi
+     .             *((xn-two/xn)*(if_qq(z,xl25,is)+fi_qq(z,xl25,is))
+     .                  +two/xn *(if_qq(z,xl26,is)+fi_qq(z,xl26,is))
+     .                  -one/xn *(ii_qq(z,xl12,is)+ff_qq(z,xl56,is)))
+      Q2(a,a,q,is)=ason4pi
+     .             *((xn-two/xn)*(if_qq(z,xl26,is)+fi_qq(z,xl26,is))
+     .                  +two/xn *(if_qq(z,xl25,is)+fi_qq(z,xl25,is))
+     .                  -one/xn *(ii_qq(z,xl12,is)+ff_qq(z,xl56,is)))
+      Q2(q,q,a,is)=ason4pi
+     .             *((xn-two/xn)*(if_qq(z,xl16,is)+fi_qq(z,xl16,is))
+     .                  +two/xn *(if_qq(z,xl15,is)+fi_qq(z,xl15,is))
+     .                  -one/xn *(ii_qq(z,xl12,is)+ff_qq(z,xl56,is)))
+      tempqg=ason2pi*tr*ii_qg(z,xl12,is)
+      Q1(q,g,q,is)=tempqg
+      Q1(a,g,q,is)=tempqg
+      Q1(q,g,a,is)=tempqg
+      Q1(a,g,a,is)=tempqg
+      Q2(q,g,q,is)=tempqg
+      Q2(a,g,q,is)=tempqg
+      Q2(q,g,a,is)=tempqg
+      Q2(a,g,a,is)=tempqg
+      enddo
       return
       end
 

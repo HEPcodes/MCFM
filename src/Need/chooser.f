@@ -1,6 +1,4 @@
       subroutine chooser(nproc)
-c--- Modified August, 2001 to implement Version 2.0
-c--- Various processes that are under construction removed
       implicit none
       include 'constants.f'
       include 'masses.f'
@@ -9,7 +7,9 @@ c--- Various processes that are under construction removed
       include 'zcouple.f'
       include 'vegas_common.f'
       include 'zerowidth.f'
-      include 'flags.f'
+      include 'bbproc.f'
+      include 'lc.f'
+      include 'nwz.f'
       character*4 part
       common/part/part
       double precision rtsmin
@@ -18,7 +18,7 @@ c--- Various processes that are under construction removed
       double precision br,BrnRat,brwen,brzee,brtau,brtop
       double precision mass2,width2,mass3,width3
       common/breit/n2,n3,mass2,width2,mass3,width3
-      integer nproc,nnproc,mproc,j,nwz,n2,n3,nqcdjets,nqcdstart
+      integer nproc,nnproc,mproc,j,n2,n3,nqcdjets,nqcdstart,isub
       logical spira
       character*66 pname
       character*2 plabel(mxpart)
@@ -26,40 +26,13 @@ c--- Various processes that are under construction removed
       common/process/case
       common/nproc/nnproc
       common/BrnRat/BrnRat
-      common/nwz/nwz
       common/spira/spira
       common/nqcdjets/nqcdjets,nqcdstart
       common/plabel/plabel
-
-c--- Version 2.0 removed processes
-      if   ((nproc .eq. 10)
-     . .or. (nproc .eq. 11)
-     . .or. (nproc .eq. 16)
-     . .or. (nproc .eq. 22)
-     . .or. (nproc .eq. 27)
-     . .or. (nproc .eq. 40)
-     . .or. (nproc .eq. 41)
-     . .or. (nproc .eq. 42)
-     . .or. (nproc .eq. 43)
-     . .or. (nproc .eq. 44)
-     . .or. (nproc .eq. 131)
-     . .or. (nproc .eq. 180)
-     . .or. (nproc .eq. 181)
-     . .or. (nproc .eq. 198)
-     . .or. (nproc .eq. 199)
-     . .or. (nproc .eq. 202)) then
-      write(6,*)
-      write(6,*) '**************************************************'//
-     . '********************'
-      write(6,*) '*     Sorry, this process is currently being'
-     . //' implemented in MCFM     *'
-      write(6,*) '*             Please contact us for further details'
-     . //'                  *'
-      write(6,*) '**************************************************'//
-     . '********************'
-      write(6,*)
-      stop      
-      endif
+      common/isub/isub
+      do j=1,mxpart
+      plabel(j)=''
+      enddo
 
 c set-up twidth
       x=wmass/mt
@@ -69,9 +42,11 @@ c set-up twidth
      . *((1d0-x**2)*(1+2d0*x**2)-y**2*(2d0-x**2-y**2))*lambda
 
       open(unit=21,file='process.DAT',status='old',err=43)
+      call checkversion(21,'process.DAT')
+      
       nnproc=nproc
 c      write(6,*) 'Chooser:process chosen by nproc=',nproc
-      do j=1,200
+      do j=1,300
       read(21,*,err=44) mproc,pname
       if (nproc .lt. 0) then 
       write(6,*) mproc,pname 
@@ -100,42 +75,38 @@ c 42   write(6,*) mproc
       call coupling
 
       nqcdjets=0
+      isub=0
+      bbproc=.false.
 
       if (nproc/10 .eq. 0) then
-
              case='W_only'
              mass3=wmass
              width3=wwidth
              n3=1
              ndim=4
              BrnRat=1d0
+             nqcdjets=0
 c---W^+
              if (nproc .lt. 5) then
-              nqcdjets=0
-              nqcdstart=5
               plabel(3)='nl'
               plabel(4)='ea'
               plabel(5)='pp'
               nwz=1
 c---W^-
              elseif (nproc .ge. 5) then
-              nqcdjets=0
-              nqcdstart=5
               plabel(3)='el'
               plabel(4)='na'
               plabel(5)='pp'
               nwz=-1
              endif
-
 c---total cross-section
              if ((nproc .eq. 0) .or. (nproc .eq. 5)) then
              call branch(brwen,brzee,brtau,brtop)
              BrnRat=brwen
              endif
 
-      elseif (nproc/10 .eq. 1) then
+      elseif ((nproc .ge. 10) .and. (nproc .le. 16)) then
              nqcdjets=1
-             nqcdstart=5
              BrnRat=1d0
              case='W_1jet'
              ndim=7
@@ -162,12 +133,52 @@ c---total cross-section
              plabel(4)='na'
              nwz=-1
              endif
-c---case w+jet
+      elseif ((nproc .eq. 18) .or. (nproc .eq. 19)) then
+             nqcdjets=0
+             BrnRat=1d0
+             case='Wgamma'
+             ndim=7
+             mb=0
+             n2=0
+             n3=1
+             mass3=wmass
+             width3=wwidth
+             if (nproc .eq. 18) then
+             nwz=1
+             plabel(3)='nl'
+             plabel(4)='ea'
+             plabel(5)='ga'
+             plabel(6)='pp'
+             elseif (nproc .eq. 19) then
+             nwz=-1
+             plabel(3)='el'
+             plabel(4)='na'
+             plabel(5)='ga'
+             plabel(6)='pp'
+             write(6,*) 'chooser',case
+             endif
+
       elseif (nproc/10 .eq. 2) then
              nqcdjets=2
-             nqcdstart=5
+             if (nproc .eq. 20) then
+             case='Wbbmas'
+             write(6,*) 'mb=',mb
+             bbproc=.true.
+             plabel(3)='nl'
+             plabel(4)='ea'
+             plabel(5)='bq'
+             plabel(6)='ba'
+             plabel(7)='pp'
+             nwz=1
+             ndim=10
+             n2=0
+             n3=1
+             mass3=wmass
+             width3=wwidth
+             endif
              if (nproc .eq. 21) then
              case='Wbbbar'
+             bbproc=.true.
              plabel(3)='nl'
              plabel(4)='ea'
              plabel(5)='bq'
@@ -196,9 +207,26 @@ c---case w+jet
              mass3=wmass
              width3=wwidth
              endif
+             if (nproc .eq. 23) then
+             nqcdjets=3
+             case='W_3jet'
+             plabel(3)='nl'
+             plabel(4)='ea'
+             plabel(5)='pp'
+             plabel(6)='pp'
+             plabel(7)='pp'
+             nwz=1
+             ndim=13
+             mb=0
+             n2=0
+             n3=1
+             mass3=wmass
+             width3=wwidth
+             endif
 
              if (nproc .eq. 26) then
              case='Wbbbar'
+             bbproc=.true.
              nwz=-1
              plabel(3)='el'
              plabel(4)='na'
@@ -230,7 +258,6 @@ c---case w+jet
 
       elseif (nproc/10 .eq. 3) then
              nqcdjets=0
-             nqcdstart=5
              case='Z_only'
              nwz=0
              mass3=zmass
@@ -262,10 +289,8 @@ c---case w+jet
              l1=ln*sqrt(3d0)
              r1=rn*sqrt(3d0)
              elseif (nproc .eq. 33) then
-             nqcdjets=2
-             nqcdstart=3
-             plabel(3)='bq'
-             plabel(4)='ba'
+             plabel(3)='qb'
+             plabel(4)='ab'
              plabel(5)='pp'
              q1=Q(5)*sqrt(xn)
              l1=l(5)*sqrt(xn)
@@ -273,6 +298,7 @@ c---case w+jet
              endif 
 
       elseif (nproc/10 .eq. 4) then
+             nqcdjets=1
              case='Z_1jet'
              nwz=0
              ndim=7
@@ -293,7 +319,6 @@ c---case w+jet
              BrnRat=brzee
              elseif (nproc .eq. 41) then
              nqcdjets=1
-             nqcdstart=5
              plabel(3)='el'
              plabel(4)='ea'
              plabel(5)='pp'
@@ -303,7 +328,6 @@ c---case w+jet
              r1=re
              elseif (nproc .eq. 42) then
              nqcdjets=1
-             nqcdstart=5
              plabel(3)='nl'
              plabel(4)='na'
              plabel(5)='pp'
@@ -311,12 +335,9 @@ c---case w+jet
              q1=0d0
              l1=ln*sqrt(3d0)
              r1=rn*sqrt(3d0)
-
              elseif (nproc .eq. 43) then
-             nqcdjets=3
-             nqcdstart=3
-             plabel(3)='bq'
-             plabel(4)='ba'
+             plabel(3)='qb'
+             plabel(4)='ab'
              plabel(5)='pp'
              plabel(6)='pp'
              q1=Q(5)*sqrt(xn)
@@ -326,7 +347,6 @@ c---case w+jet
              case='Z_2jet'
              ndim=10
              nqcdjets=2
-             nqcdstart=5
              plabel(3)='el'
              plabel(4)='ea'
              plabel(5)='pp'
@@ -335,20 +355,64 @@ c---case w+jet
              q1=-1d0
              l1=le
              r1=re
-
-             endif 
-
-      elseif (nproc/10 .eq. 5) then
-             case='Zbbbar'
-             ndim=10
+             elseif (nproc .eq. 45) then
+             nqcdjets=3
+             case='Z_3jet'
+             ndim=13
+             nqcdjets=3
+             plabel(3)='el'
+             plabel(4)='ea'
+             plabel(5)='pp'
+             plabel(6)='pp'
+             plabel(7)='pp'
+             q1=-1d0
+             l1=le
+             r1=re
+             elseif (nproc .eq. 48) then
+             nqcdjets=0
+             BrnRat=1d0
+             case='Zgamma'
+             q1=-1d0
+             l1=le
+             r1=re
+             ndim=7
              mb=0
              n2=0
              n3=1
              mass3=zmass
              width3=zwidth
-             if     (nproc .eq. 51) then
+             nwz=0
+             plabel(3)='el'
+             plabel(4)='ea'
+             plabel(5)='ga'
+             plabel(6)='pp'
+             write(6,*) 'chooser',case
+             endif
+      elseif (nproc/10 .eq. 5) then
+             case='Zbbbar'
+             colourchoice=0
+             ndim=10
+             n2=0
+             n3=1
+             mass3=zmass
+             width3=zwidth
+             if     (nproc .eq. 50) then
+             case='Zbbmas'
+               write(6,*) 'mb=',mb
+               bbproc=.true.
                nqcdjets=2
-               nqcdstart=5
+               plabel(3)='el'
+               plabel(4)='ea'
+               plabel(5)='bq'
+               plabel(6)='ba'
+               plabel(7)='pp'
+               q1=-1d0
+               l1=le
+               r1=re
+             elseif (nproc .eq. 51) then
+               bbproc=.true.
+               mb=0d0
+               nqcdjets=2
                plabel(3)='el'
                plabel(4)='ea'
                plabel(5)='bq'
@@ -358,8 +422,9 @@ c---case w+jet
                l1=le
                r1=re
              elseif (nproc .eq. 52) then
+               bbproc=.true.
+               mb=0d0
                nqcdjets=2
-               nqcdstart=5
                plabel(3)='nl'
                plabel(4)='na'
                plabel(5)='bq'
@@ -369,10 +434,11 @@ c---case w+jet
                l1=ln*sqrt(3d0)
                r1=rn*sqrt(3d0)
              elseif (nproc .eq. 53) then
-               nqcdjets=4
-               nqcdstart=3
-               plabel(3)='bq'
-               plabel(4)='ba'
+               bbproc=.true.
+               mb=0d0
+               nqcdjets=2
+               plabel(3)='qb'
+               plabel(4)='ab'
                plabel(5)='bq'
                plabel(6)='ba'
                plabel(7)='pp'
@@ -384,52 +450,51 @@ c---case w+jet
              write(6,*) 'not implemented yet'
              pause
              endif
+
 c---case WW
       elseif (nproc/10 .eq. 6) then
-               nqcdjets=0  
-               nqcdstart=7
-               case='WWqqbr'
-               plabel(3)='nl'
-               plabel(4)='ea'
-               plabel(5)='el'
-               plabel(6)='na'
-               plabel(7)='pp'
-               nwz=1
-               ndim=10
-               mb=0
-               n2=1
-               n3=1
-               mass2=wmass
-               width2=wwidth
-               mass3=wmass
-               width3=wwidth
-               l1=1d0
+             call readcoup
+             nqcdjets=0  
+             case='WWqqbr'
+             plabel(3)='nl'
+             plabel(4)='ea'
+             plabel(5)='el'
+             plabel(6)='na'
+             plabel(7)='pp'
+             nwz=1
+             ndim=10
+             mb=0
+             n2=1
+             n3=1
+             mass2=wmass
+             width2=wwidth
+             mass3=wmass
+             width3=wwidth
+             l1=1d0
              if    (nproc .eq. 60) then
-             call branch(brwen,brzee,brtau,brtop)
-             BrnRat=brwen**2
+               call branch(brwen,brzee,brtau,brtop)
+               BrnRat=brwen**2
              elseif (nproc .eq. 62) then
 c--- note: scattering diagrams are NOT included, only couplings change
                plabel(3)='nl'
                plabel(4)='ea'
-               plabel(5)='pp'
-               plabel(6)='pp'
+               plabel(5)='qq'
+               plabel(6)='aa'
                plabel(7)='pp'
-               nqcdjets=2
-               nqcdstart=5
                l1=dsqrt(xn*2d0)
              elseif (nproc .eq. 63) then
 c--- note: scattering diagrams are NOT included, only couplings change
-               plabel(3)='pp'
-               plabel(4)='pp'
+               plabel(3)='qq'
+               plabel(4)='aa'
                plabel(5)='el'
                plabel(6)='na'
                plabel(7)='pp'
-               nqcdjets=2
-               nqcdstart=3
                l1=dsqrt(xn*2d0)
              endif
 c---case WZ
       elseif (nproc/10 .eq. 7) then
+             call readcoup
+             nqcdjets=0
              case='WZbbar'
              ndim=10
              mb=0
@@ -451,8 +516,6 @@ c---case W^+Z
              plabel(5)='ml'
              plabel(6)='ma'
              plabel(7)='pp'
-             nqcdjets=0
-             nqcdstart=7
              call branch(brwen,brzee,brtau,brtop)
              BrnRat=brwen*brzee
              elseif (nproc .eq. 71) then             
@@ -461,8 +524,6 @@ c---case W^+Z
                plabel(5)='ml'
                plabel(6)='ma'
                plabel(7)='pp'
-               nqcdjets=0
-               nqcdstart=7
                q1=-1d0
                l1=le
                r1=re
@@ -472,18 +533,15 @@ c---case W^+Z
                plabel(5)='nl'
                plabel(6)='na'
                plabel(7)='pp'
-               nqcdjets=0
-               nqcdstart=7
                q1=0d0
-               l1=ln*sqrt(3d0)
-               r1=rn*sqrt(3d0)
-             elseif (nproc .eq. 73) then
-               nqcdjets=2
-               nqcdstart=5
+               l1=ln
+               r1=rn
+            elseif (nproc .eq. 73) then
+               bbproc=.true.
                plabel(3)='nl'
                plabel(4)='ea'
-               plabel(5)='bq'
-               plabel(6)='ba'
+               plabel(5)='qb'
+               plabel(6)='ab'
                plabel(7)='pp'
                q1=Q(5)*sqrt(xn)
                l1=l(5)*sqrt(xn)
@@ -498,8 +556,6 @@ c---case W^-Z
                plabel(5)='ml'
                plabel(6)='ma'
                plabel(7)='pp'
-               nqcdjets=0
-               nqcdstart=7
                q1=-1d0
                l1=le
                r1=re
@@ -511,8 +567,6 @@ c---case W^-Z
                plabel(5)='ml'
                plabel(6)='ma'
                plabel(7)='pp'
-               nqcdjets=0
-               nqcdstart=7
                q1=-1d0
                l1=le
                r1=re
@@ -522,18 +576,15 @@ c---case W^-Z
                plabel(5)='nl'
                plabel(6)='na'
                plabel(7)='pp'
-               nqcdjets=0
-               nqcdstart=7
                q1=0d0
-               l1=ln*sqrt(3d0)
-               r1=rn*sqrt(3d0)
+               l1=ln
+               r1=rn
              elseif (nproc .eq. 78) then
-               nqcdjets=2
-               nqcdstart=5
+               bbproc=.true.
                plabel(3)='el'
                plabel(4)='na'
-               plabel(5)='bq'
-               plabel(6)='ba'
+               plabel(5)='qb'
+               plabel(6)='ab'
                plabel(7)='pp'
                q1=Q(5)*sqrt(xn)
                l1=l(5)*sqrt(xn)
@@ -544,6 +595,8 @@ c---case W^-Z
             
 c---case ZZ
       elseif (nproc/10 .eq. 8) then
+             call readcoup
+             nqcdjets=0
              case='ZZlept'
              nwz=1
              ndim=10
@@ -557,8 +610,6 @@ c---case ZZ
              q1=-1d0
              l1=le
              r1=re
-             nqcdjets=0
-             nqcdstart=7
              if (nproc .eq. 80 .or. nproc .eq. 85) then
                plabel(3)='el'
                plabel(4)='ea'
@@ -585,27 +636,24 @@ c---case ZZ
                plabel(5)='nl'
                plabel(6)='na'
                plabel(7)='pp'
-                q2=0d0
-                l2=ln*sqrt(3d0)
-                r2=rn*sqrt(3d0)
+               q2=0d0
+               l2=ln*sqrt(3d0)
+               r2=rn*sqrt(3d0)
              elseif (nproc .eq. 83 .or. nproc .eq. 88) then
-               nqcdjets=2
-               nqcdstart=5
                plabel(3)='el'
                plabel(4)='ea'
-               plabel(5)='bq'
-               plabel(6)='ba'
+               plabel(5)='qb'
+               plabel(6)='ab'
                plabel(7)='pp'
                q2=Q(5)*sqrt(xn)
                l2=l(5)*sqrt(xn)
                r2=r(5)*sqrt(xn)
              elseif ((nproc .eq. 84) .or. (nproc .eq. 89))  then
-               nqcdjets=2
-               nqcdstart=5
+               bbproc=.true.
                plabel(3)='nl'
                plabel(4)='na'
-               plabel(5)='bq'
-               plabel(6)='ba'
+               plabel(5)='qb'
+               plabel(6)='ab'
                plabel(7)='pp'
                q2=0d0
                l2=ln*sqrt(3d0)
@@ -652,9 +700,11 @@ c--reset higgs width so that whole gives correct BR
                call branch(brwen,brzee,brtau,brtop)
                BrnRat=brwen*br
              elseif (nproc .eq. 91) then
+               bbproc=.true.
                nqcdjets=2
                nwz=1
              elseif (nproc .eq. 96) then
+               bbproc=.true.
                nqcdjets=2
                nwz=-1
              endif
@@ -702,6 +752,7 @@ C--reset higgs width so that whole gives coreect BR
                call branch(brwen,brzee,brtau,brtop)
                BrnRat=brzee*br
              elseif (nproc .eq. 101) then
+               bbproc=.true.
                plabel(3)='el'
                plabel(4)='ea'
                plabel(5)='bq'
@@ -712,6 +763,7 @@ C--reset higgs width so that whole gives coreect BR
                l1=le
                r1=re
              elseif (nproc .eq. 102) then
+               bbproc=.true.
                plabel(3)='nl'
                plabel(4)='na'
                plabel(5)='bq'
@@ -838,8 +890,83 @@ c--reset higgs width so that whole gives correct BR
                r1=re
                l2=l(5)*sqrt(3d0)
                r2=r(5)*sqrt(3d0)
-               endif
-      elseif ((nproc .ge. 150) .and. (nproc .le. 155)) then
+             endif
+      elseif (nproc/10 .eq. 14) then
+             case='H_1jet'
+             ndim=7
+             nqcdstart=5
+             plabel(3)='ml'
+             plabel(4)='ma'
+             plabel(5)='bq'
+             nqcdjets=1
+
+             if (spira) then
+                 call higgsp(bbbr,gamgambr,wwbr,br)
+             else
+                 call higgsw(br)
+             endif
+C--reset higgs width so that whole gives correct BR, (if we have set
+C mb=0, keeps mbsq in the coupling but ignores it in the phase space) 
+             hwidth=xn*sqrt(2d0)/8d0/pi*gf*hmass*mbsq
+     .         *(1d0-4d0*mb**2/hmass**2)**1.5d0/br
+             write(6,99) hmass,hwidth,br
+
+             n2=0
+             n3=1
+             mass3=hmass
+             width3=hwidth
+             BrnRat=br
+             
+             if     (nproc .eq. 141) then
+             isub=1
+             plabel(6)='pp'
+             elseif (nproc .eq. 142) then
+             isub=2
+             plabel(5)='ba'
+             plabel(6)='bq'
+             elseif (nproc .eq. 143) then
+             isub=3
+             plabel(5)='ba'
+             plabel(6)='qj'
+             elseif (nproc .eq. 144) then
+             isub=4
+             plabel(5)='bq'
+             plabel(6)='ba'
+             elseif (nproc .eq. 145) then
+             isub=2
+             plabel(5)='ba'
+             plabel(6)='bq'
+             nqcdjets=2
+             endif
+             
+      elseif (nproc .eq. 146) then
+             case='H_1jet'
+             ndim=7
+             nqcdstart=3
+             plabel(3)='bq'
+             plabel(4)='ba'
+             plabel(5)='bq'
+             plabel(6)='pp'
+             nqcdjets=3
+
+             if (spira) then
+                 call higgsp(bbbr,gamgambr,wwbr,br)
+             else
+                 call higgsw(br)
+             endif
+C--reset higgs width so that whole gives correct BR, (if we have set
+C mb=0, keeps mbsq in the coupling but ignores it in the phase space) 
+             hwidth=xn*sqrt(2d0)/8d0/pi*gf*hmass*mbsq
+     .         *(1d0-4d0*mb**2/hmass**2)**1.5d0/br
+             write(6,99) hmass,hwidth,br
+
+             n2=0
+             n3=1
+             mass3=hmass
+             width3=hwidth
+             BrnRat=1d0
+
+      elseif ((nproc .ge. 150) .and. (nproc .le. 152)) then
              nwz=1
              ndim=16
              n2=1
@@ -861,18 +988,22 @@ c--reset higgs width so that whole gives correct BR
                 call branch(brwen,brzee,brtau,brtop)
                 BrnRat=(brwen*brtop)**2
              elseif (nproc .eq. 151) then
+                bbproc=.true.
                 plabel(3)='nl'
                 plabel(4)='ea'
-                plabel(5)='bq'
-                plabel(6)='ba'
+                plabel(5)='ea'
+                plabel(6)='ea'
                 plabel(7)='el'
                 plabel(8)='na'
-                nqcdjets=2
+                plabel(9)='el'
+c----debug
+                nqcdjets=0
                 nqcdstart=5
                 case='tt_bbl'
                 write(6,*) 'nproc=',nproc
                 write(6,*) 'case=',case
              elseif (nproc .eq. 152) then
+                bbproc=.true.
                 plabel(3)='nl'
                 plabel(4)='ea'
                 plabel(5)='bq'
@@ -886,6 +1017,45 @@ c--need to extend--not quite correct
                 write(6,*) 'nproc=',nproc
                 write(6,*) 'case=',case
              endif 
+      elseif ((nproc .ge. 153) .and. (nproc .le. 154)) then
+             nwz=1
+             ndim=14
+             n2=1
+             n3=1
+             mass2=mt
+             width2=twidth
+             mass3=mt
+             width3=twidth
+             if (nproc .eq. 153) then
+                bbproc=.true.
+                plabel(3)='nl'
+                plabel(4)='ea'
+                plabel(5)='ea'
+                plabel(6)='ea'
+                plabel(7)='el'
+                plabel(8)='na'
+                plabel(9)='el'
+c----debug
+                nqcdjets=0
+                nqcdstart=5
+                case='ttbdkl'
+                write(6,*) 'nproc=',nproc
+                write(6,*) 'case=',case
+             elseif (nproc .eq. 154) then
+                bbproc=.true.
+                plabel(3)='nl'
+                plabel(4)='ea'
+                plabel(5)='bq'
+                plabel(6)='ba'
+                plabel(7)='pj'
+                plabel(8)='pj'
+                nqcdjets=4
+                nqcdstart=5
+c--need to extend--not quite correct
+                case='ttbdkh'
+                write(6,*) 'nproc=',nproc
+                write(6,*) 'case=',case
+             endif
       elseif (nproc .eq. 156) then
              nwz=1
              ndim=19
@@ -900,8 +1070,39 @@ c            nqcdstart=5
              plabel(7)='el'
              plabel(8)='na'
              plabel(9)='pj'
+      elseif (nproc .eq. 157) then
+c--- for now, pretend the heavy quarks are electrons, to avoid
+c--- any jet cuts taking place
+             case='tt_tot'
+             nqcdjets=0
+             ndim=4
+             mass2=mt
+             plabel(3)='ea'
+             plabel(4)='ea'
+             plabel(5)='pp'
+      elseif (nproc .eq. 158) then
+c--- for now, pretend the heavy quarks are electrons, to avoid
+c--- any jet cuts taking place
+             case='bb_tot'
+             nqcdjets=0
+             ndim=4
+             mass2=mb
+             plabel(3)='ea'
+             plabel(4)='ea'
+             plabel(5)='pp'
+      elseif (nproc .eq. 159) then
+c--- for now, pretend the heavy quarks are electrons, to avoid
+c--- any jet cuts taking place
+             case='cc_tot'
+             nqcdjets=0
+             ndim=4
+             mass2=mc
+             plabel(3)='ea'
+             plabel(4)='ea'
+             plabel(5)='pp'
  
       elseif (nproc/10 .eq. 16) then
+             bbproc=.true.
              nqcdjets=3
              nqcdstart=5
              case='qg_tbb'
@@ -920,6 +1121,7 @@ c            nqcdstart=5
              mass3=mt
              width3=twidth
       elseif (nproc/10 .eq. 17) then
+             bbproc=.true.
              nqcdjets=2
              nqcdstart=5
              plabel(3)='nl'
@@ -943,9 +1145,11 @@ C----not correct yet!
              plabel(4)='ea'
              plabel(5)='na'
              plabel(6)='na'
-             plabel(7)='pp'
+             plabel(7)='na'
+             plabel(8)='na'
              write(6,*) 'nproc=',nproc
              write(6,*) 'case=',case
+             nqcdjets=0
              nwz=1
              ndim=16
              n2=1
@@ -1124,7 +1328,13 @@ c---first work out width into a tau pair (EHSV, 1.3)
 c---now compensate for b-bbar branching ratio
                Brnrat=br/Brnrat
              endif
-      elseif (nproc/10 .eq. 30) then
+      elseif (nproc .eq. 240) then
+             ndim=7 
+             case='threeb'
+             plabel(3)='bq'
+             plabel(4)='bq'
+             plabel(5)='ba'
+      elseif (nproc/10 .ge. 30) then
              write(6,*) 'Setting part to lord and zerowidth to false'
              zerowidth=.false.
              part='lord'
@@ -1182,9 +1392,32 @@ c---now compensate for b-bbar branching ratio
              width2=twidth
              mass3=mt
              width3=twidth
+          elseif (nproc .eq. 309) then
+             case='vlchkm'
+             write(6,*) 'mb=',mb
+             nwz=1
+             ndim=10
+             n2=1
+             n3=1
+             mass2=hmass
+             width2=hwidth
+             mass3=wmass
+             width3=wwidth
+          elseif (nproc .eq. 310) then
+             case='vlchm3'
+             write(6,*) 'mt=',mt
+             nwz=1
+             ndim=7
+             n2=0
+             n3=0
+             mass2=mt
+             width2=twidth
+             mass3=mt
+             width3=twidth
           endif
       else 
       write(6,*) 'chooser:Unimplemented case'
+      write(6,*) 'nproc=',nproc
       stop
       endif
 

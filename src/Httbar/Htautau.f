@@ -6,7 +6,6 @@ c---     + tau~ (-> vt~(p6) + ve(p7) + e+ (p8) )
       include 'constants.f'
       include 'masses.f'
       include 'ewcouple.f'
-      include 'qcdcouple.f'
       include 'dprodx.f'
       include 'sprodx.f'
       integer j,k

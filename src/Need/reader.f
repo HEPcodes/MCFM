@@ -14,18 +14,22 @@
       include 'impsample.f'
       include 'cutoff.f'
       include 'clustering.f'
+      include 'flags.f'
+      include 'lc.f'
+      include 'gridinfo.f'
       integer ih1,ih2,itmx1,itmx2,ncall1,ncall2,idum,nmin,nmax
-      integer nproc
-      double precision alphas
+      integer nproc,nargs,iargc
       double precision sqrts,Rcut
       double precision cmass,bmass
       character*7 pdlabel
+      character*72 optionsfile
       character*9 runstring
       character*4 part
+      character*6 case
       logical verbose,makecuts,dryrun
       logical msbar,spira
       double precision bbsqmin,bbsqmax,wsqmin,wsqmax,rtsmin
-      double precision mbbmin,mbbmax,Mwmin,Mwmax,deltam
+      double precision mbbmin,mbbmax,Mwmin,Mwmax
       common/iterat/itmx1,ncall1,itmx2,ncall2
       common/nproc/nproc
       common/spira/spira
@@ -33,6 +37,7 @@
       common/part/part
       common/runstring/runstring
       common/Rcut/Rcut
+      common/process/case
 
 
       common/limits/bbsqmin,bbsqmax,wsqmin,wsqmax
@@ -41,7 +46,6 @@
       common/dryrun/dryrun
       common/energy/sqrts
       common/qmass/cmass,bmass
-      common/deltam/deltam
 
       common/density/ih1,ih2
       common/pdlabel/pdlabel
@@ -56,10 +60,18 @@
       data impsample/.false./
       data msbar/.false./
 
+      nargs=iargc()
+      if (nargs .ge. 1) then
+      call getarg(1,optionsfile)
+      else
+      optionsfile='options.DAT'
+      endif
+      write(6,*) 'Using options file named ',optionsfile
       write(6,*) '****************'
       write(6,*) 'Options file:'
       write(6,*)
-      open(unit=20,file='options.DAT',status='old',err=999)
+      open(unit=20,file=optionsfile,status='old',err=999)
+      call checkversion(20,optionsfile)
       read(20,*) nproc
       write(6,*) 'nproc=',nproc
       read(20,*) part
@@ -114,10 +126,18 @@
       if (verbose) write(6,*) 'dryrun',dryrun
       read(20,*) debug
       if (verbose) write(6,*) 'debug',debug
+      read(20,*) Qflag
+      if (verbose) write(6,*) 'Qflag',Qflag
+      read(20,*) Gflag
+      if (verbose) write(6,*) 'Gflag',Gflag
+      read(20,*) colourchoice
+      if (verbose) write(6,*) 'colourchoice',colourchoice
+
       close(unit=20)
 
 c      if (debug) then
       open(unit=21,file='debug.DAT',status='old',err=999)
+      call checkversion(21,'debug.DAT')
       read(21,*) new_pspace
       if (verbose) write(6,*) 'new_pspace',new_pspace
       read(21,*) virtonly
@@ -150,6 +170,36 @@ c      endif
 
       call chooser(nproc)
 
+      write(6,*)
+      write(6,*) '****************'
+      write(6,*) 'Grid file:'
+      write(6,*)
+c--- read in grid options file
+      open(unit=21,file='gridinfo.DAT',status='old',err=998)
+      call checkversion(21,'gridinfo.DAT')
+      read(21,*) readin
+      if (verbose) write(6,*) 'readin',readin
+      read(21,*) writeout
+      if (verbose) write(6,*) 'writeout',writeout
+      read(21,*) ingridfile
+      read(21,*) outgridfile
+
+      if (ingridfile .eq. '') then
+        ingridfile=case//'_'//part//'_grid'
+      else
+        ingridfile=ingridfile(1:16)
+      endif
+      if (outgridfile .eq. '') then
+        outgridfile=case//'_'//part//'_grid'
+      else
+        outgridfile=outgridfile(1:16)
+      endif
+
+      if (verbose) write(6,*) 'ingridfile =',ingridfile
+      if (verbose) write(6,*) 'outgridfile=',outgridfile
+      close(unit=21)
+      write(6,*) '****************'
+
 c-----initialize various quantities
 
 c---initialize masses for alpha_s routine
@@ -165,13 +215,32 @@ c---initialize masses for alpha_s routine
 
 
 c-----stange-marciano formula for resolution
-      deltam=sqrt(0.64d0*hmass+0.03d0**2*hmass**2)
-
+c      deltam=sqrt(0.64d0*hmass+0.03d0**2*hmass**2)
 c      if (verbose) write(6,*) 'delta m',deltam
 
       return
+
+ 998  continue
+      write(6,*) 'Problem reading gridinfo.DAT'
+      write(6,*)
+      write(6,*) 'Required format is:'
+      write(6,*) 'logical     [readin]'
+      write(6,*) 'logical     [writeout]'
+      write(6,*) 'char*16     [ingridfile]'
+      write(6,*) 'char*16     [outgridfile]'
+      write(6,*)
+      write(6,*) 'READIN/WRITEOUT = True/False specify whether'
+      write(6,*) 'a grid should be read-in and/or written-out'
+      write(6,*) 'INGRIDFILE/OUTGRIDFILE specify the names of the'
+      write(6,*) 'files read/written, but may be left blank for default'
+      write(6,*)
+      stop
+
  999  continue
-      write(6,*) 'Problem reading options.DAT'
+      write(6,*) 'Problem reading ',optionsfile
+      write(6,*)
+      write(6,*) 'Refer to documentation for the format of options.DAT'
+      write(6,*)
       stop
 
       end

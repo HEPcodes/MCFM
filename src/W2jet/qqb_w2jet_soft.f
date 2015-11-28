@@ -11,16 +11,16 @@ c--all momenta incoming
       include 'qcdcouple.f'
       include 'masses.f'
       include 'flags.f'
+      include 'msq_cs.f'
       integer i,j,k,n,jets,nqcdjets,nqcdstart,a(6),b(6),c(6),qq
-      integer pntr(5:7,5:7),perm(5:7,5:7),swapab(6),swapbc(6)
+      integer perm(5:7,5:7)
       double precision P(mxpart,4),msq(-nf:nf,-nf:nf),pjet(mxpart,4),
-     . msq0(-nf:nf,-nf:nf),s(mxpart,mxpart),facqqb,facqbq,Rcut,temp
+     . msq0(-nf:nf,-nf:nf),s(mxpart,mxpart),Rcut
       double precision eik56,eik15,eik16,eik26,eik25,eik12
       double precision eik17_2,eik17_5,eik17_6,eik27_5,eik27_6
       double precision eik27_1,eik57_1,eik67_1,eik57_2,eik67_2
       double precision eik57_6,eik67_5,eik65_1,eik76_5,eik65_2
       double precision eik15_6,eik56_1,eik56_7,eik25_6,eik56_2
-      double precision msq_cs(0:2,-nf:nf,-nf:nf),mmsq_cs(0:2,2,2)
       double precision eik1a_b(6),eikba_1(6),eikab_c(6),
      .                 eikcb_a(6),eikbc_2(6),eik2c_b(6),
      .                 eik1b_2(6),eik2b_1(6),eikf,eikc,
@@ -28,9 +28,7 @@ c--all momenta incoming
       character jetlabel(mxpart)*2
       common/nqcdjets/nqcdjets,nqcdstart
       common/parts/jets,jetlabel
-      common/msq_cols/msq_cs,mmsq_cs
       common/rcut/rcut
-     . 
       double precision mqq(0:2,-nf:nf,-nf:nf)
       double precision 
      . sub17_2(4),sub27_1(4),sub57_6(4),sub67_5(4),
@@ -41,10 +39,10 @@ c--all momenta incoming
       data a/5,5,7,6,6,7/
       data b/6,7,5,7,5,6/
       data c/7,6,6,5,7,5/
-      data pntr/0,2,2,1,0,2,1,1,0/
+c      data pntr/0,2,2,1,0,2,1,1,0/
       data perm/0,4,6,2,0,3,1,5,0/
-      data swapab/5,3,2,6,1,4/
-      data swapbc/2,1,6,5,4,3/
+c      data swapab/5,3,2,6,1,4/
+c      data swapbc/2,1,6,5,4,3/
       
       do j=-nf,nf
       do k=-nf,nf

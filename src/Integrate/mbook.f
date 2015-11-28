@@ -306,12 +306,14 @@ c      ENDIF
       write(98,21) n
       RETURN
       end if
-      WRITE(98,7) N,IYEAR,IMON,IDAY,CTIME(1:5)
+c      WRITE(98,7) N,IYEAR,IMON,IDAY,CTIME(1:5)
+      WRITE(98,8) N
       WRITE(98,*) TITLE(N)
       WRITE(98,10) (XHIS(N,I),HIST(N,I),I=1,NBIN(N))
       WRITE(98,15) HAVG(N),HSIG(N),HINT(N)
       WRITE(98,20) IENT(N),IUSCORE(N),IOSCORE(N)
     7 FORMAT(4X,'HIST = ',I3,'   19',I2,'-',I2,'-',I2,1X,A5/)
+    8 FORMAT(4X,'HIST = ',I3)
    10 FORMAT(4X,2G13.6)
    15 FORMAT(/' AVG =',E10.3,4X,' RMS =',E10.3,' INTEGRAL =',E10.3,/)
    20 FORMAT('ENTRIES=',I10,1X,'U`FLOW=',I10,1X,'O`FLOW=',I10,//)

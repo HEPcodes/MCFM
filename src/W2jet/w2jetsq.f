@@ -3,7 +3,7 @@
       include 'constants.f'
       include 'sprodx.f'
       include 'lc.f'
-      include 'msq_cs.f'
+      include 'mmsq_cs.f'
       double complex qcd1(-1:1,-1:1),qcd2(-1:1,-1:1),qed(-1:1,-1:1)
       double precision msq1,msq2,msqq,msq
       integer i1,i2,i3,i4,i5,i6

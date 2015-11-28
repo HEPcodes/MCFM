@@ -11,8 +11,8 @@ c----calculate the jets separation between p(i) and p(j)
 
       r2= (p(i,1)*p(j,1)+p(i,2)*p(j,2))
      .   /dsqrt((p(i,1)**2+p(i,2)**2)*(p(j,1)**2+p(j,2)**2))
-      if (r2 .lT. -0.999999999D0) r2=-1D0
-      delphi=acos(r2)
+      if (r2 .lt. -0.999999999D0) r2=-1D0
+      delphi=dacos(r2)
       
       r=dsqrt(dely**2+delphi**2)
       

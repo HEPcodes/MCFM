@@ -5,9 +5,8 @@
       include 'dprodx.f'
       
       double precision P(mxpart,4),msq(-nf:nf,-nf:nf)
-      integer j,k,N
-      N=6
-      call dotem(N,p,s)
+      integer j,k
+      call dotem(mxpart,p,s)
       do j=-nf,nf
       do k=-nf,nf
       msq(j,k)=0d0

@@ -8,7 +8,7 @@ C--Appendix A
       include 'prods.f'
       integer i1,i2,i3,i4,i5,i6,i7,j,k,qh,h2,h3,h4,lh,g1,g2,g3,g4,lg,
      . j6,j7
-      double complex t2a,t3a,t3b,tx,A(2,2,2,2,2)
+      double complex t2a,t3a,t3b
       double complex xa(mxpart,mxpart),xb(mxpart,mxpart)
       double precision t123,t234,t345,t567,t167
 

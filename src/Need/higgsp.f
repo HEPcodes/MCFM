@@ -34,7 +34,6 @@ C  Other branching ratios could be added.
  86   continue
       do j=1,npt
       read(48,*) xmh(j),brgg,brgamgam(j),brzgam,brww(j),brzz(j),width(j)
- 88   format(7(1x,g10.3))
       enddo
       close(unit=48)
       endif

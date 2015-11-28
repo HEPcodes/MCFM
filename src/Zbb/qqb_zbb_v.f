@@ -1,4 +1,4 @@
-      subroutine qqb_zbb_v(P,msqv)
+      subroutine qqb_zbb_v(p,msqv)
       implicit none
 ************************************************************************
 *     Author: J.M. Campbell                                            *
@@ -7,30 +7,29 @@
 *     calculate the virtual matrix element squared and subtraction     *
 *     terms for the process                                            *
 *     q(-p1)+qb(-p2) --> e^-(p3)+e^+(p4)+b(p5)+bb(p6)                  *
-*     q(-p1) +Q(-p5)+ l(-p7) -->   q(p2)+Q(p4) +l(p6)                  *
 ************************************************************************
       include 'constants.f'
       include 'qcdcouple.f'
       include 'masses.f'
-      include 'ckm.f'
       include 'prods.f'
       include 'ewcouple.f'
       include 'ewcharge.f'
       include 'zcouple.f'
       include 'epinv.f'
-      include 'scale.f'
+      include 'scheme.f'
       include 'hardscale.f'
-      include 'msq_cs.f'
-      logical msbar
-      common/msbar/msbar
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),
-     . p(mxpart,4),q_bdkw(mxpart,4),faclo,dot,
-     . fac,xl12,xl15,xl16,xl25,xl26,xl56,subqbq,subqqb,v2(2),vQ(nf,2),
-     . mmsq(2,2),mmsq_vec(2,2),mmsq_ax(2,2),pswap(mxpart,4),subgg
-      double complex tamp,lamp,atreez,a61z,prop
+     . p(mxpart,4),q_bdkw(mxpart,4),faclo,subuv,
+     . fac,v2(2),vQ(nf,2),
+     . mmsq(2,2),mmsq_vec(2,2),mmsq_ax(2,2),pswap(mxpart,4)
+      double complex tamp,lamp,atreez,a61z,prop,
+     . atreez_123456(2,2,2),atreez_214356(2,2,2),
+     . atreez_423156(2,2,2),atreez_241356(2,2,2),
+     . a61z_123456(2,2,2),a61z_214356(2,2,2),
+     . a61z_423156(2,2,2),a61z_241356(2,2,2)
       integer nu,j,k,polq,polb,polz
-      double precision ii_qg,ii_gq,if_qg,fi_qg,ff_qg,ii_gg,if_gg
 
+      scheme='dred'
       do j=-nf,nf
       do k=-nf,nf
       msqv(j,k)=0d0
@@ -48,59 +47,36 @@ c---twopij with s_{ij} (in rke notation)
 
       prop=s(3,4)/dcmplx((s(3,4)-zmass**2),zmass*zwidth)
 
-c---add result of integrating subtraction terms
-      xl12=log(s(1,2)/musq)
-      xl15=log(-s(1,5)/musq)
-      xl16=log(-s(1,6)/musq)
-      xl25=log(-s(2,5)/musq)
-      xl26=log(-s(2,6)/musq)
-      xl56=log(s(5,6)/musq)
-
-      subqqb=0.5d0*((xn-two/xn)*(if_qg(one,xl15,1)+fi_qg(one,xl15,1))
-     .                 +two/xn *(if_qg(one,xl16,1)+fi_qg(one,xl16,1))
-     .                 -one/xn *(ii_qg(one,xl12,1)+ff_qg(one,xl56,1)))
-     .      +0.5d0*((xn-two/xn)*(if_qg(one,xl26,1)+fi_qg(one,xl26,1))
-     .                 +two/xn *(if_qg(one,xl25,1)+fi_qg(one,xl25,1))
-     .                 -one/xn *(ii_qg(one,xl12,1)+ff_qg(one,xl56,1)))
-     
-      subqbq=0.5d0*((xn-two/xn)*(if_qg(one,xl25,1)+fi_qg(one,xl25,1))
-     .                 +two/xn *(if_qg(one,xl26,1)+fi_qg(one,xl26,1))
-     .                 -one/xn *(ii_qg(one,xl12,1)+ff_qg(one,xl56,1)))
-     .      +0.5d0*((xn-two/xn)*(if_qg(one,xl16,1)+fi_qg(one,xl16,1))
-     .                 +two/xn *(if_qg(one,xl15,1)+fi_qg(one,xl15,1))
-     .                 -one/xn *(ii_qg(one,xl12,1)+ff_qg(one,xl56,1)))
-
-      if (msbar) then 
-        subqqb=subqqb+2*cf
-        subqbq=subqbq+2*cf
-      endif
-      
-      subqqb=subqqb*ason2pi
-      subqbq=subqbq*ason2pi
-
 c--- calculate the gg terms
+c ---Call the two gluon process which is defined in xzqqgg_v 
+C ---in the notation
+C     0 ---> q(p1)+g(p2)+g(p3)+qbar(p4)+a(p5)+  l(p6)
+C ---compared with ours which is:-
+c     0 ---> b(p6)+g(p1)+g(p2)+bb(p5)+e^+(p4)+e^-(p3)
       do nu=1,4
-      pswap(1,nu)=p(5,nu)
+      pswap(1,nu)=p(6,nu)
       pswap(2,nu)=p(1,nu)
       pswap(3,nu)=p(2,nu)
-      pswap(4,nu)=p(6,nu)
-      pswap(5,nu)=p(3,nu)
-      pswap(6,nu)=p(4,nu)
+      pswap(4,nu)=p(5,nu)
+      pswap(5,nu)=p(4,nu)
+      pswap(6,nu)=p(3,nu)
       enddo
       call spinoru(6,pswap,za,zb)
       call xzqqgg_v(mmsq,mmsq_vec,mmsq_ax)
       
-
 c---  Now transform momenta into a notation 
 c---  suitable for calling the BDKW function with notation which is 
-c---  q-(-p4)+Q+(-p2)+l-(-p5) ---> q+(p1)+Q-(p3)+l+(p6)
+c---    q-(-p4)+Q+(-p2)+l-(-p5) ---> q+(p1)+Q-(p3)+l+(p6)
+compared to ours which is (see above)
+c--     q (-p1)+b (-p5)+l-(-p4) ---> q+(p2)+b (p6)+e-(p3)
+
       do nu=1,4
-      q_bdkw(1,nu)=p(2,nu)
-      q_bdkw(2,nu)=p(6,nu)
-      q_bdkw(3,nu)=p(5,nu)
       q_bdkw(4,nu)=p(1,nu)
-      q_bdkw(5,nu)=p(4,nu)
+      q_bdkw(1,nu)=p(2,nu)
       q_bdkw(6,nu)=p(3,nu)
+      q_bdkw(5,nu)=p(4,nu)
+      q_bdkw(2,nu)=p(5,nu)
+      q_bdkw(3,nu)=p(6,nu)
       enddo      
       call spinoru(6,q_bdkw,za,zb)
 
@@ -115,7 +91,27 @@ c---  q-(-p4)+Q+(-p2)+l-(-p5) ---> q+(p1)+Q-(p3)+l+(p6)
         vQ(j,2)=R(j)
       enddo
 
-      do j=-nf,nf
+c--- set-up amplitudes first, to improve efficiency
+      do polq=1,2
+      do polz=1,2
+      do polb=1,2
+      atreez_123456(polq,polb,polz)
+     .      =atreez(polq,polb,polz,1,2,3,4,5,6,za,zb)
+      atreez_214356(polq,polb,polz)
+     .      =atreez(polq,polb,polz,2,1,4,3,5,6,za,zb)
+      atreez_423156(polq,polb,polz)
+     .      =atreez(polq,polb,polz,4,2,3,1,5,6,za,zb)
+      atreez_241356(polq,polb,polz)
+     .      =atreez(polq,polb,polz,2,4,1,3,5,6,za,zb)
+      a61z_123456(polq,polb,polz)=a61z(polq,polb,polz,1,2,3,4,5,6,za,zb)
+      a61z_214356(polq,polb,polz)=a61z(polq,polb,polz,2,1,4,3,5,6,za,zb)
+      a61z_423156(polq,polb,polz)=a61z(polq,polb,polz,4,2,3,1,5,6,za,zb)
+      a61z_241356(polq,polb,polz)=a61z(polq,polb,polz,2,4,1,3,5,6,za,zb)
+      enddo
+      enddo
+      enddo
+
+      do j=-(nf-1),(nf-1)
       k=-j
 
       do polq=1,2
@@ -125,22 +121,22 @@ c---  q-(-p4)+Q+(-p2)+l-(-p5) ---> q+(p1)+Q-(p3)+l+(p6)
           tamp=0d0
           lamp=0d0
         elseif ((j .gt. 0) .and. (k .lt. 0)) then
-          tamp=atreez(polq,polb,polz,1,2,3,4,5,6,za,zb)
+          tamp=atreez_123456(polq,polb,polz)
      .         *(Q(j)*q1+vQ(j,polq)*v2(polz)*prop)
-     .        -atreez(3-polb,3-polq,polz,2,1,4,3,5,6,za,zb)
+     .        -atreez_214356(3-polb,3-polq,polz)
      .         *(Q(1)*q1+vQ(1,polb)*v2(polz)*prop)
-          lamp=a61z(polq,polb,polz,1,2,3,4,5,6,za,zb)
+          lamp=a61z_123456(polq,polb,polz)
      .         *(Q(j)*q1+vQ(j,polq)*v2(polz)*prop)
-     .        -a61z(3-polb,3-polq,polz,2,1,4,3,5,6,za,zb)
+     .        -a61z_214356(3-polb,3-polq,polz)
      .         *(Q(1)*q1+vQ(1,polb)*v2(polz)*prop)
         elseif ((j .lt. 0) .and. (k .gt. 0)) then
-          tamp=atreez(polq,polb,polz,4,2,3,1,5,6,za,zb)
+          tamp=atreez_423156(polq,polb,polz)
      .         *(Q(k)*q1+vQ(k,polq)*v2(polz)*prop)
-     .        -atreez(3-polb,3-polq,polz,2,4,1,3,5,6,za,zb)
+     .        -atreez_241356(3-polb,3-polq,polz)
      .         *(Q(1)*q1+vQ(1,polb)*v2(polz)*prop)
-          lamp=a61z(polq,polb,polz,4,2,3,1,5,6,za,zb)
+          lamp=a61z_423156(polq,polb,polz)
      .         *(Q(k)*q1+vQ(k,polq)*v2(polz)*prop)
-     .        -a61z(3-polb,3-polq,polz,2,4,1,3,5,6,za,zb)
+     .        -a61z_241356(3-polb,3-polq,polz)
      .         *(Q(1)*q1+vQ(1,polb)*v2(polz)*prop)
         endif
         msqv(j,k)=msqv(j,k)+fac*2d0*dble(tamp*dconjg(lamp))
@@ -158,39 +154,14 @@ c---  q-(-p4)+Q+(-p2)+l-(-p5) ---> q+(p1)+Q-(p3)+l+(p6)
       enddo
       enddo
       
-      if    ((j .gt. 0) .and. (k .lt. 0)) then
-        msqv(j,k)=msqv(j,k)+subqqb*msq(j,k) 
-      elseif ((j .lt. 0) .and. (k .gt. 0)) then
-        msqv(j,k)=msqv(j,k)+subqbq*msq(j,k) 
-      elseif ((j .eq. 0) .and. (k .eq. 0)) then
-        subgg=xn*(if_gg(one,xl15,1)+fi_qg(one,xl15,1)
-     .           +if_gg(one,xl26,1)+fi_qg(one,xl26,1)
-     .           +two*ii_gg(one,xl12,1))/2d0*msq_cs(1,j,k)
-     .       +xn*(if_gg(one,xl25,1)+fi_qg(one,xl25,1)
-     .           +if_gg(one,xl16,1)+fi_qg(one,xl16,1)
-     .           +two*ii_gg(one,xl12,1))/2d0*msq_cs(2,j,k)
-     .     -one/xn*(two*ff_qg(one,xl56,1))/2d0*msq_cs(0,j,k)
-     .     -one/xn*(two*ff_qg(one,xl56,1))/2d0*msq_cs(1,j,k)
-     .     -one/xn*(two*ff_qg(one,xl56,1))/2d0*msq_cs(2,j,k)
-     .     +xn*(if_gg(one,xl15,1)+if_gg(one,xl26,1))/2d0*msq_cs(0,j,k)
-     .     +xn*(fi_qg(one,xl15,1)+fi_qg(one,xl26,1))/2d0*msq_cs(0,j,k)
-     .     +xn*(if_gg(one,xl16,1)+if_gg(one,xl25,1))/2d0*msq_cs(0,j,k)
-     .     +xn*(fi_qg(one,xl16,1)+fi_qg(one,xl25,1))/2d0*msq_cs(0,j,k)
-     .     -xn*(two*ff_qg(one,xl56,1))/2d0*msq_cs(0,j,k)
-c--- add in UV counter-term here
-        subgg=subgg-
-     .    xn*(epinv-log(fourpi))*(11d0-2d0*dble(nf)/xn)/3d0*msq(j,k)
-        if (msbar) then 
-          subgg=subgg-cf*msq(j,k)
-        endif
-        subgg=subgg*ason2pi
-c      write(*,*) 'msqv(j,k),subgg,msqv(j,k)+subgg,1d0+subgg/msqv(j,k)'
-c      write(*,*) msqv(j,k),subgg,msqv(j,k)+subgg,1d0+subgg/msqv(j,k)
-c      pause
-        msqv(j,k)=msqv(j,k)+subgg
-      endif
-      
       enddo
+
+c--- add in UV counter-term for gg sub-process here
+c--- (UV subtraction occurs for the other pieces in a6routine.f)
+c----UV counterterm contains the finite renormalization to arrive
+c----at MS bar scheme. 
+      subuv=2d0*(epinv*b0-xn/6d0)
+      msqv(0,0)=msqv(0,0)-ason2pi*subuv*msq(0,0)
 
       return
       end

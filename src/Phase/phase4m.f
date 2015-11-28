@@ -12,7 +12,7 @@ c---- with all 2 pi's (ie 1/(2*pi)^8)
       double precision r(mxdim)
       double precision p1(4),p2(4),p3(4),p4(4),p5(4),p6(4)
       double precision p12(4),p56(4),p456(4),s3min
-      double precision wt,wt3456,wt34,wt456,wt56,wt0
+      double precision wt,wt3456,wt456,wt56,wt0
       integer j,iflag
       parameter(wt0=1d0/twopi**2)
       data iflag/0/

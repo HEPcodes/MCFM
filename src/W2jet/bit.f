@@ -13,26 +13,26 @@
       double precision s167,s267,s123,s124,s125,s134,s145,
      . s234,s345,s235,s467,s367
       double precision s67,s23,s34,s12,s14
-      double complex dLR1,dLR2,dLR3,dLR4,dLR5,dLR6,
-     .               dLR7,dLR8,dLR9,dLR10,dLR11,dLR12
+c      double complex dLR1,dLR2,dLR3,dLR4,dLR5,dLR6,
+c     .               dLR7,dLR8,dLR9,dLR10,dLR11,dLR12
       double complex dLRa1,dLRa2,dLRna1,dLRna2,t2
-      double complex eLR1,eLR2,eLR3,eLR4,eLR5,eLR6,
-     .               eLR7,eLR8,eLR9,eLR10,eLR11,eLR12
+c      double complex eLR1,eLR2,eLR3,eLR4,eLR5,eLR6,
+c     .               eLR7,eLR8,eLR9,eLR10,eLR11,eLR12
       double complex eLRa1,eLRa2,eLRna1,eLRna2
-      double complex fRL1,fRL2,fRL3,fRL4,fRL5,fRL6,
-     .               fRL7,fRL8,fRL9,fRL10,fRL11,fRL12 
+c      double complex fRL1,fRL2,fRL3,fRL4,fRL5,fRL6,
+c     .               fRL7,fRL8,fRL9,fRL10,fRL11,fRL12 
       double complex fRLa1,fRLa2,fRLna1,fRLna2
 
-      double complex dLL1,dLL2,dLL3,dLL4,dLL5,dLL6,
-     .               dLL7,dLL8,dLL9,dLL10,dLL11,dLL12 
+c      double complex dLL1,dLL2,dLL3,dLL4,dLL5,dLL6,
+c     .               dLL7,dLL8,dLL9,dLL10,dLL11,dLL12 
       double complex dLLa1,dLLa2,dLLna1,dLLna2
-      double complex eLL1,eLL2,eLL3,eLL4,eLL5,eLL6,
-     .               eLL7,eLL8,eLL9,eLL10,eLL11,eLL12
+c      double complex eLL1,eLL2,eLL3,eLL4,eLL5,eLL6,
+c     .               eLL7,eLL8,eLL9,eLL10,eLL11,eLL12
       double complex eLLa1,eLLa2,eLLna1,eLLna2
       double complex diLLa1,diLLa2,diLLna1,diLLna2
 
-      double complex fLL1,fLL2,fLL3,fLL4,fLL5,fLL6,
-     .               fLL7,fLL8,fLL9,fLL10,fLL11,fLL12 
+c      double complex fLL1,fLL2,fLL3,fLL4,fLL5,fLL6,
+c     .               fLL7,fLL8,fLL9,fLL10,fLL11,fLL12 
       double complex fLLa1,fLLa2,fLLna1,fLLna2
       double complex fiLLa1,fiLLa2,fiLLna1,fiLLna2
 

@@ -8,6 +8,7 @@ c     factor of (2*pi)^4 included in definition of phase space
       implicit none
       include 'constants.f'
       include 'masses.f'
+      include 'process.f'
       double precision p0(4),p1(4),p2(4),p1cm(4)
       double precision xth,xphi,phi,s,roots,costh,sinth
       double precision wt0,wt
@@ -21,8 +22,10 @@ c     factor of (2*pi)^4 included in definition of phase space
 
       smin=(m1+m2)**2
       if (s .lt. smin) then
-      write(6,*) 's<smin',s,smin
-      return 1
+       if (case(1:4) .ne. 'vlch') then 
+        write(6,*) 's<smin',s,smin
+       endif
+       return 1
       endif
 
       roots=sqrt(s)
@@ -35,7 +38,7 @@ c     factor of (2*pi)^4 included in definition of phase space
       lambda2=((s+m1sq-m2sq)**2-4.d0*m1sq*s)
 
       if (lambda2 .lt. 0.d0) then
-      write(6,*) 'lambda2=', lambda2
+      write(6,*) 'phi3m:lambda2=', lambda2
       return 1
       endif
       lambda=dsqrt(lambda2)

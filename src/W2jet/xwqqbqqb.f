@@ -1,18 +1,17 @@
-      real*8 function xwqqbqqb(i1,i2,i3,i4,n1,n2)
+      double precision function xwqqbqqb(i1,i2,i3,i4,n1,n2)
       implicit none
       include 'constants.f'
+      include 'basic.f'
+      include 'ckm.f'
+      include 'ckm1.f'
 
-      real*8 Von4,fac
-      real*8 xma,xmb,xmc,xmd,xme
+      double precision fac,xma,xmb,xmc,xmd,xme
       integer n1,n2,nj,nk,i1,i2,i3,i4
 
-      parameter(Von4=V/four)
 
       double complex mlll1,mlll2,mlrl1,mlrl2
       double complex mrll1,mrll2
 
-      include 'basic.f'
-      include 'ckm.f'
 
 
       if (n1 .ne. -n2) then

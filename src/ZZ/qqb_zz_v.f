@@ -18,15 +18,12 @@ c----No statistical factor of 1/2 included.
       include 'zcouple.f'
       include 'dprodx.f'
       include 'sprodx.f'
-      include 'epinv.f'
+      include 'scheme.f'
       include 'ewcharge.f'
-      include 'scale.f'
-      include 'zerowidth.f'
-      logical msbar,dronly
-      common/msbar/msbar
+      logical dronly
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),
      . p(mxpart,4),qdks(mxpart,4),v2(2),v1(2),virt,
-     . fac,facnlo,sub,ave,xl12
+     . fac,facnlo,ave
      
       double complex qqb(2,2,2),qbq(2,2,2),lqqb(2,2,2),lqbq(2,2,2)
       double complex qqb1(2,2,2),qbq1(2,2,2),qqb2(2,2,2),qbq2(2,2,2)
@@ -38,6 +35,7 @@ c----No statistical factor of 1/2 included.
       integer j,k,polq,pol1,pol2
       parameter(ave=0.25d0/xn)
 
+      scheme='dred'
 c--- THIS SWITCHES OFF SINGLY RESONANT TERMS REGARDLESS OF ZEROWIDTH
 c--- SINCE THEY'RE NOT INCLUDED IN THE REAL EMISSION CONTRIBUTION YET
       dronly=.true.
@@ -59,14 +57,6 @@ c--set msq=0 to initalize
 
 c---calculate the lowest order matrix element
       call qqb_zz(p,msq)
-
-c---add result of integrating subtraction terms
-      xl12=log(s(1,2)/musq)
-      sub = epinv**2+epinv*(1.5d0-xl12)
-     . +half*xl12**2-pisqo6-0.5d0
-      if (msbar) sub=sub+1d0
-c---note extra colour factor
-      sub=sub*ason2pi*two*cf
 
 C----Change the momenta to DKS notation 
 c   We have --- q(-p1)+qbar(-p2)-->l(p3)+lbar(p4) + l'(p5)+lbar'(p6)
@@ -249,7 +239,7 @@ C-- Inclusion of width a la Baur and Zeppenfeld
 
       endif
 
-      msqv(j,k)=sub*msq(j,k)+virt
+      msqv(j,k)=virt
 
  20   continue
       enddo

@@ -12,15 +12,20 @@ c   for the moment --- radiation only from initial line
       include 'ewcouple.f'
       include 'zcouple.f'
       include 'ewcharge.f'
+      include 'anomcoup.f'
+
       integer j,k,jk,tjk,polg,polq,minus,mplus,jp,kp,jtype
       double precision P(mxpart,4),qdks(mxpart,4),msq(-nf:nf,-nf:nf),
-     . ave,s127,fac,fac1,offsh
+     . ave,s127,fac,fac1,offsh,xfac
+      double complex ct(2,2),cs_z(2,2),cs_g(2,2),
+     . cgamz(2,2),cz(2,2),mp(nf)
+      double complex u_ub(5,2,2),d_db(5,2,2),ub_u(5,2,2),db_d(5,2,2),
+     .               u_g(5,2,2), d_g(5,2,2), g_ub(5,2,2),g_db(5,2,2),
+     .               ub_g(5,2,2),db_g(5,2,2),g_u(5,2,2),g_d(5,2,2),
+     .               amp(5),propwp,propwm,propzg,prop12,cprop,A(2,2)
+      common/xanomcoup/xdelg1_z,xdelg1_g,xlambda_g,xlambda_z,
+     . xdelk_g,xdelk_z
       common/pchoice/j,k
-      double complex ct(2,2),cs(2,2),cgamz(2,2),cz(2,2),mp(nf)
-      double complex u_ub(4,2,2),d_db(4,2,2),ub_u(4,2,2),db_d(4,2,2),
-     .               u_g(4,2,2), d_g(4,2,2), g_ub(4,2,2),g_db(4,2,2),
-     .               ub_g(4,2,2),db_g(4,2,2),g_u(4,2,2),g_d(4,2,2),
-     .               amp(4),propwp,propwm,propzg,prop12,cprop,A(2,2)
       data minus,mplus/1,2/
       data mp/-1d0,+1d0,-1d0,+1d0,-1d0/
 
@@ -71,8 +76,10 @@ c-- couplings according to 3.4 and 3.6
       do j=1,2
       ct(minus,j)=1d0
       ct(mplus,j)=0d0
-      cs(minus,j)=mp(j)*(two*Q(j)*xw+l(j)*sin2w*prop12)
-      cs(mplus,j)=mp(j)*two*Q(j)*xw*(1d0-prop12)
+      cs_z(minus,j)=+mp(j)*l(j)*sin2w*prop12
+      cs_z(mplus,j)=-mp(j)*2d0*Q(j)*xw*prop12
+      cs_g(minus,j)=+mp(j)*2d0*Q(j)*xw
+      cs_g(mplus,j)=+mp(j)*2d0*Q(j)*xw
       cz(minus,j)=0d0
       cz(mplus,j)=0d0
       cgamz(minus,j)=0d0
@@ -91,6 +98,15 @@ c      le=(-1d0-two*(-1d0)*xw)/sin2w ; re=(-two*(-1d0)*xw)/sin2w
 c      ln=(+1d0-two*(+0d0)*xw)/sin2w ; rn=0d0
 c---
 
+c--- apply a dipole form factor to anomalous couplings
+      xfac=1d0/(1d0+s127/(tevscale*1d3)**2)**2
+      xdelg1_z=xfac*delg1_z
+      xdelg1_g=xfac*delg1_g
+      xdelk_z=xfac*delk_z
+      xdelk_g=xfac*delk_g
+      xlambda_z=xfac*lambda_z
+      xlambda_g=xfac*lambda_g
+      
 c---remember ub-u is the basic process.
 c---case ubar-u
       call wwamps(1,2,3,4,5,6,7,za,zb,ub_u)
@@ -135,8 +151,8 @@ c-- skip non-diagonal quark flavors except gluon
       endif
       do polg=1,2
       do polq=1,2
-c---sum is over diagram type t,s,e,n
-      do jtype=1,4
+c---sum is over diagram type t,s(Z),e,n,s(photon)
+      do jtype=1,5
 	  if    (j .lt. 0 .and. tau(jk) .eq. -1d0 .and. k .ne. 0) then
 	    amp(jtype)=db_d(jtype,polg,polq)
 	  elseif(j .lt. 0 .and. tau(jk) .eq.  1d0 .and. k .ne. 0) then
@@ -169,7 +185,7 @@ C---tjk is equal to 2 (u,c) or 1 (d,s,b)
 
 c-- include coupling in l1 to account for non-leptonic W decays
       A(polg,polq)=l1*dcmplx(fac)*cprop
-     . *(ct(polq,tjk)*amp(1)+cs(polq,tjk)*amp(2)
+     . *(ct(polq,tjk)*amp(1)+cs_z(polq,tjk)*amp(2)+cs_g(polq,tjk)*amp(5)
      .  +cz(polq,tjk)*amp(3)+cgamz(polq,tjk)*amp(4))
 	  
       enddo

@@ -13,7 +13,6 @@ c---
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'dprodx.f'
-      include 'cutoff.f'
       integer j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac
       double precision qqbWg,qbqWg,qgWq,qbgWqb,gqbWqb,gqWq,w1jet

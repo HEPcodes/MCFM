@@ -5,8 +5,12 @@ c     vectors returned p1 and p2 are in the frame in which
 C     p0 is supplied
 c result is 1/8/pi * 2|p|/sqrts  * domega/(4*pi)
 c     factor of (2*pi)^4 included in definition of phase space
+c     Expression evaluated is 
+c     d^4 p1 d^4 p2 (2 pi)^4 delta(p0-p1-p2)/(2 pi)^6
+c     delta(p2^2) delta(p3^2)
       implicit none
       include 'constants.f'
+      include 'process.f'
       double precision p0(4),p1(4),p2(4),p1cm(4)
       double precision xth,xphi,phi,s,roots,costh,sinth
       double precision wt0,wt
@@ -16,8 +20,10 @@ c     factor of (2*pi)^4 included in definition of phase space
 
       s=p0(4)**2-p0(1)**2-p0(2)**2-p0(3)**2  
       if (s .lt. zip) then
-      write(6,*) 's<0 in phi3m0',s
-      return 1
+       if (case(1:5) .ne. 'vlchk') then 
+        write(6,*) 's<0 in phi3m0',s
+       endif
+       return 1
       endif
 
       roots=sqrt(s)

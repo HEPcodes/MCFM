@@ -17,10 +17,11 @@ c--initial state gluons coupling to b not included
       include 'masses.f'
       include 'ptilde.f'
       include 'qqgg.f'
+      include 'hardscale.f'
       integer j,k,nd
 c --- remember: nd will count the dipoles
       
-      double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf)
+      double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf),dot
       double precision 
      & msq17_2(-nf:nf,-nf:nf),msq27_1(-nf:nf,-nf:nf),
      & msq57_6(-nf:nf,-nf:nf),msq67_5(-nf:nf,-nf:nf),
@@ -28,18 +29,26 @@ c --- remember: nd will count the dipoles
      & msq17_6(-nf:nf,-nf:nf),
      & msq27_5(-nf:nf,-nf:nf),
      & msq27_6(-nf:nf,-nf:nf),
-     & msq56_7(-nf:nf,-nf:nf),msq56_7v(-nf:nf,-nf:nf),
      & dummy(-nf:nf,-nf:nf),dummyv(-nf:nf,-nf:nf),
      & sub17_2(4),sub27_1(4),sub57_6(4),sub67_5(4),
      & sub17_5(4),sub57_1(4),sub27_5(4),sub57_2(4),
-     & sub17_6(4),sub67_1(4),sub27_6(4),sub67_2(4),
-     & sub56_7(4),sub56_7v,dsubv
+     & sub17_6(4),sub67_1(4),sub27_6(4),sub67_2(4),dsubv
       external qqb_wbb,donothing_gvec
-c      external qqb_w2jet,qqb_w2jet_gvec
 
-c      ndmax=9
-c---- Dipole 9 unfinished
       ndmax=8
+
+      do j=-nf,nf
+      do k=-nf,nf
+      do nd=1,ndmax
+        msq(nd,j,k)=0d0
+      enddo
+      enddo
+      enddo
+
+      if (
+     .      (two*dot(p,5,6) .lt. four*hscalesq) 
+     . .or. (two*dot(p,1,5)*dot(p,2,5)/dot(p,1,2) .lt. hscalesq) 
+     . .or. (two*dot(p,1,6)*dot(p,2,6)/dot(p,1,2) .lt. hscalesq))return 
 
 c--- calculate all the initial-initial dipoles
       call dips(1,p,1,7,2,sub17_2,dsubv,msq17_2,dummyv,
@@ -73,20 +82,9 @@ c--- sub..
       call dips(8,p,6,7,2,sub67_2,dsubv,dummy,dummyv,
      . qqb_wbb,donothing_gvec)
 
-
-
-c---- Dipole 9 unfinished
-c      call dips(9,p,5,6,7,sub56_7,sub56_7v,msq56_7,msq56_7v,
-c     . qqb_w2jet,qqb_w2jet_gvec)
-
+      do j=-(nf-1),(nf-1)
+      do k=-(nf-1),(nf-1)
       
-      do j=-nf,nf
-      do k=-nf,nf
-      
-      do nd=1,ndmax
-        msq(nd,j,k)=0d0
-      enddo
-
       if ((j.gt.0).and.(k.lt.0)) then
 c----------q-qb
 

@@ -1,0 +1,40 @@
+nproc=          44
+ part=tota
+ runstring=scal
+ verbose= T
+ sqrts=   14000.0000000000
+ ih1           1
+ ih2           1
+ pdlabel cteq4_l
+ hmass   200.000000000000
+ scale   91.0000000000000
+ m34min   10.0000000000000
+ m34max   1000.00000000000
+ m56min  0.000000000000000E+000
+ m56max   14000.0000000000
+ rtsmin   40.0000000000000
+ zerowidth F
+ makecuts T
+ Rcut  0.700000000000000
+ itmx1          10
+ ncall1      100000
+ itmx2          10
+ ncall2      200000
+ idum        1089
+ realwt F
+ cutoff  1.000000000000000E-002
+ dryrun F
+ debug F
+ Qflag F
+ Gflag T
+ colourchoice           0
+ new_pspace F
+ virtonly F
+ realonly F
+ spira T
+ noglue F
+ ggonly F
+ ggexcl F
+ nmin           1
+ nmax           2
+ clustering T

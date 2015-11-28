@@ -13,10 +13,10 @@ c--all momenta incoming
       include 'zcouple.f'
       include 'ewcharge.f'
       include 'prods.f'
-      include 'hardscale.f'
       include 'msq_cs.f'
       include 'flags.f'
-      integer i,j,k,f,pq,pl,nquark,ics,swap(2),nup,ndo,j1,j2,j3,icol
+      integer i,j,k,pq,pl,nquark,swap(2),swap1(0:2),nup,ndo,
+     . j1,j2,j3,icol
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac,faclo,
      .   qqbZgg2(2,2),qbqZgg2(2,2),qgZqg2(2,2),
      .   qbgZqbg2(2,2),gqbZqbg2(2,2),gqZqg2(2,2),ggZqbq2(2,2),
@@ -42,9 +42,11 @@ c--all momenta incoming
 
       double precision mqq(0:2,fn:nf,fn:nf)
       common/mqq/mqq
-
+      
       data swap/2,1/
       save swap
+      data swap1/0,2,1/
+      save swap1
 
       do j=-nf,nf
       do k=-nf,nf
@@ -56,42 +58,44 @@ c--all momenta incoming
       call spinorU(6,p,za,zb)
 C---exclude the photon pole, 4*mbsq choosen as a scale approx above upsilon 
 c--debug
-      if (s(3,4) .lt. 4d0*mbsq) return
-
-c ensure that we have a hard process
-c--debug
-c      if (
-c     .      (s(5,6) .lt. four*hscalesq) 
-c     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. hscalesq) 
-c     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. hscalesq) ) return
+c      if (s(3,4) .lt. 4d0*mbsq) return
 
 
       prop=s(3,4)/dcmplx((s(3,4)-zmass**2),zmass*zwidth)
-
 
 c--- calculate 2-quark, 2-gluon amplitudes
       if (Gflag) then
         call z2jetsq(1,2,3,4,5,6,za,zb,qqbZgg2)
         call storecsz(qqbZgg2_cs)
-
-        call z2jetsq(2,1,3,4,5,6,za,zb,qbqZgg2)
-        call storecsz(qbqZgg2_cs)
-
         call z2jetsq(1,5,3,4,2,6,za,zb,qgZqg2)
         call storecsz(qgZqg2_cs)
-
         call z2jetsq(2,5,3,4,1,6,za,zb,gqZqg2)
         call storecsz(gqZqg2_cs)
 
-        call z2jetsq(5,1,3,4,2,6,za,zb,qbgZqbg2)
-        call storecsz(qbgZqbg2_cs)
-  
-        call z2jetsq(5,2,3,4,1,6,za,zb,gqbZqbg2)
-        call storecsz(gqbZqbg2_cs)
+        do j=1,2
+        do k=1,2
+        qbqZgg2(j,k)=qqbZgg2(swap(j),k)
+        qbgZqbg2(j,k)=qgZqg2(swap(j),k)
+        gqbZqbg2(j,k)=gqZqg2(swap(j),k)
+        do i=0,2
+        qbqZgg2_cs(i,j,k)=qqbZgg2_cs(swap1(i),swap(j),k)
+        qbgZqbg2_cs(i,j,k)=qgZqg2_cs(swap1(i),swap(j),k)
+        gqbZqbg2_cs(i,j,k)=gqZqg2_cs(swap1(i),swap(j),k)
+        enddo
+        enddo
+        enddo
 
+c        call z2jetsq(2,1,3,4,5,6,za,zb,qbqZgg2)
+c        call storecsz(qbqZgg2_cs)
+c        call z2jetsq(5,1,3,4,2,6,za,zb,qbgZqbg2)
+c        call storecsz(qbgZqbg2_cs)
+c        call z2jetsq(5,2,3,4,1,6,za,zb,gqbZqbg2)
+c        call storecsz(gqbZqbg2_cs)
+        
 C --NB this is the matrix element for gg->Z qb(5) q(6)
         call z2jetsq(5,6,3,4,1,2,za,zb,ggZqbq2)
         call storecsz(ggZqbq2_cs)        
+
         fac=v*xn/four*(esq*gsq)**2
         do pq=1,2
         do pl=1,2
@@ -127,7 +131,6 @@ C --NB this is the matrix element for gg->Z qb(5) q(6)
       if (Qflag) then
       call spinoru(6,p,za,zb)
 
-
 c--- qRb->qRb
       call ampqqb_qqb(1,5,2,6,qRb_a,qRb_b)
 c--- qR->qR
@@ -141,15 +144,6 @@ c instead of calling ampqqb_qqb(1,5,6,2,qR_a,qR_b)
       enddo
       enddo
 c--- qbR->qbR
-c instead of calling ampqqb_qqb(5,1,6,2,qbR_a,qbR_b)
-      do j1=1,2
-      do j2=1,2
-      do j3=1,2
-      qbR_a(j1,j2,j3)=-qRb_a(swap(j1),swap(j2),j3)
-      qbR_b(j1,j2,j3)=-qRb_b(swap(j1),swap(j2),j3)
-      enddo
-      enddo
-      enddo
       call ampqqb_qqb(6,1,5,2,qbR_a,qbR_b)
 
 c--- qbRb->qbRb
@@ -165,16 +159,16 @@ c instead of calling ampqqb_qqb(5,1,2,6,qbRb_a,qbRb_b)
 
 c--- qqb->qqb
       call ampqqb_qqb(1,2,5,6,qqb_a,qqb_b)
-c--- qbq->qbq
+c--- qbq->qqb
+c instead of calling ampqqb_qqb(2,1,5,6,qbq_a,qbq_b)
       do j1=1,2
       do j2=1,2
       do j3=1,2
-      qbq_a(j1,j2,j3)=-qqb_a(swap(j1),swap(j2),j3)
-      qbq_b(j1,j2,j3)=-qqb_b(swap(j1),swap(j2),j3)
+      qbq_a(j1,j2,j3)=-qqb_a(swap(j1),j2,j3)
+      qbq_b(j1,j2,j3)=+qqb_b(swap(j1),j2,j3)
       enddo
       enddo
       enddo
-      call ampqqb_qqb(2,1,5,6,qbq_a,qbq_b)
 
 c--- qq->qq
       call ampqqb_qqb(1,6,5,2,qq_a,qq_b)
@@ -517,7 +511,7 @@ c--case where final state from annihilation diagrams is the same quark
       tup=faclo*(abs(b111)**2+abs(b112)**2+abs(b221)**2+abs(b222)**2
      .          +abs(b122)**2+abs(b212)**2+abs(b121)**2+abs(b211)**2)
 
-      mqq(1,j,k)=mqq(1,j,k)+nup*tup+ndo*tdo
+      mqq(1,j,k)=mqq(1,j,k)+dfloat(nup)*tup+dfloat(ndo)*tdo
       endif
       elseif ((j .lt. 0) .and. (k .gt. 0)) then
 C---Qb-q case
@@ -609,7 +603,7 @@ c  unequal to initial annihilating quarks
             b212=(Q(-j)*q1+R(-j)*r1*prop)*qbq_a(2,1,2)
      .          +(Q(+3)*q1+L(+3)*r1*prop)*qbq_b(2,1,2)
       tdo=faclo*(abs(b111)**2+abs(b112)**2+abs(b221)**2+abs(b222)**2
-     .             +abs(b122)**2+abs(b212)**2+abs(b121)**2+abs(b211)**2)
+     .          +abs(b122)**2+abs(b212)**2+abs(b121)**2+abs(b211)**2)
 
             b111=(Q(-j)*q1+L(-j)*l1*prop)*qbq_a(1,1,1)
      .          +(Q(+2)*q1+L(+2)*l1*prop)*qbq_b(1,1,1)
@@ -630,7 +624,7 @@ c  unequal to initial annihilating quarks
       tup=faclo*(abs(b111)**2+abs(b112)**2+abs(b221)**2+abs(b222)**2
      .          +abs(b122)**2+abs(b212)**2+abs(b121)**2+abs(b211)**2)
 
-      mqq(1,j,k)=mqq(1,j,k)+nup*tup+ndo*tdo
+      mqq(1,j,k)=mqq(1,j,k)+dfloat(nup)*tup+dfloat(ndo)*tdo
 
           endif
           endif

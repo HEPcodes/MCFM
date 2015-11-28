@@ -12,10 +12,9 @@
       double precision A(2,2,2),B(2,2,2),C(2,2,2),D(2,2,2),E(2,2,2),
      . F(2,2,2),G(2,2,2)
       double precision MI(2,2),MN(2,2),M0(2,2,2),Mx(2,2,2),My(2,2,2),
-     . Mz(2,2,2),Mxx(2,2,2),Mxy(2,2,2),gq,gl,Qg
+     . Mz(2,2,2),Mxx(2,2,2),Mxy(2,2,2)
       double precision x,y,z
       parameter(x=xn/cf,y=half/cf,z=0.25d0*(xn**2-two)/xn/cf**2)
-      double complex prop
       double complex 
      .               mb1_1234(2,2,2,2,2,2),mb2_1234(2,2,2,2,2,2),
      .               mb1_3412(2,2,2,2,2,2),mb2_3412(2,2,2,2,2,2),

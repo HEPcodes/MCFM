@@ -475,8 +475,6 @@ c--- restore proper colourchoice if necessary
       subroutine amp_q_QbQ_qb(i1,i2,i5,i6,amp1,amp2,amp3,amp4) 
       implicit none
       include 'constants.f'
-      include 'qcdcouple.f'
-      include 'ewcouple.f'
       integer i1,i2,i5,i6
       double complex aqqb_zbb_new,amp1,amp2,amp3,amp4
 c--- Amplitudes for q(i1) + qb(i2) --> qb(i6) + q(i5) + W (-> 3+4)
@@ -503,7 +501,7 @@ c-- for the W2jet matrix elements into separate arrays for each
 c-- incoming parton case
       implicit none
       include 'constants.f'
-      include 'msq_cs.f'
+      include 'mmsq_cs.f'
       integer i
       double precision mcs(0:2)
       

@@ -67,7 +67,7 @@ C---exclude the photon pole, 4*mbsq choosen as a scale approx above upsilon
 
       if (in .eq. 1) then
 Cargument 1-4 represent (1) incoming quark line
-C                       (2) incoming quark line
+C                       (2) incoming anti-quark line
 C                       (3) outgoing gluon line
 C                       (4) outgoing gluon line contracted with n
            call z2jetsqn(5,6,2,1,p,n,za,zb,zab,zba,ggZqbq)
@@ -202,56 +202,6 @@ C                       (4) outgoing gluon line contracted with n
       enddo
       endif
 
-c      do j=-nf,nf
-c      do k=-nf,nf
-c      if( j .ne. 0 .and. k .ne. 0 .and. j .ne. -k) goto 19c
-c
-c      if     ((j .eq. 0) .and. (k .eq. 0)) then
-c           ggtemp=0d0
-c    c       do nquark=1,nf
-c    c       ggtemp=ggtemp
-c     .c    c    c     +abs(Q(nquark)*q1+L(nquark)*l1*prop)**2*ggqbq(1,1)
-c     .c    c    c     +abs(Q(nquark)*q1+R(nquark)*r1*prop)**2*ggqbq(2,2)
-c     .c    c    c     +abs(Q(nquark)*q1+L(nquark)*r1*prop)**2*ggqbq(1,2)
-c     .c    c    c     +abs(Q(nquark)*q1+R(nquark)*l1*prop)**2*ggqbq(2,1)
-c    c       enddo
-c    c      msq(j,k)=ggtemp
-c      elseif ((j .gt. 0) .and. (k .lt. 0)) then
-c    c      msq(j,k)=+abs(Q(j)*q1+L(j)*l1*prop)**2*qqbgg(1,1)
-c     .c    c    c     +abs(Q(j)*q1+R(j)*r1*prop)**2*qqbgg(2,2)
-c     .c    c    c     +abs(Q(j)*q1+L(j)*r1*prop)**2*qqbgg(1,2)
-c     .c    c    c     +abs(Q(j)*q1+R(j)*l1*prop)**2*qqbgg(2,1)
-c      elseif ((j .lt. 0) .and. (k .gt. 0)) then
-c    c      msq(j,k)=+abs(Q(k)*q1+L(k)*l1*prop)**2*qbqgg(1,1)
-c     .c    c    c     +abs(Q(k)*q1+R(k)*r1*prop)**2*qbqgg(2,2)
-c     .c    c    c     +abs(Q(k)*q1+L(k)*r1*prop)**2*qbqgg(1,2)
-c     .c    c    c     +abs(Q(k)*q1+R(k)*l1*prop)**2*qbqgg(2,1)
-c      elseif ((j .gt. 0) .and. (k .eq. 0)) then
-c    c      msq(j,k)=+abs(Q(j)*q1+L(j)*l1*prop)**2*qgqg(1,1)
-c     .c    c    c     +abs(Q(j)*q1+R(j)*r1*prop)**2*qgqg(2,2)
-c     .c    c    c     +abs(Q(j)*q1+L(j)*r1*prop)**2*qgqg(1,2)
-c     .c    c    c     +abs(Q(j)*q1+R(j)*l1*prop)**2*qgqg(2,1)
-c      elseif ((j .lt. 0) .and. (k .eq. 0)) then
-c    c      msq(j,k)=+abs(Q(-j)*q1+L(-j)*l1*prop)**2*qbgqbg(1,1)
-c     .c    c    c     +abs(Q(-j)*q1+R(-j)*r1*prop)**2*qbgqbg(2,2)
-c     .c    c    c     +abs(Q(-j)*q1+L(-j)*r1*prop)**2*qbgqbg(1,2)
-c     .c    c    c     +abs(Q(-j)*q1+R(-j)*l1*prop)**2*qbgqbg(2,1)
-c      elseif ((j .eq. 0) .and. (k .gt. 0)) then
-c    c      msq(j,k)=+abs(Q(k)*q1+L(k)*l1*prop)**2*gqqg(1,1)
-c     .c    c    c     +abs(Q(k)*q1+R(k)*r1*prop)**2*gqqg(2,2)
-c     .c    c    c     +abs(Q(k)*q1+L(k)*r1*prop)**2*gqqg(1,2)
-c     .c    c    c     +abs(Q(k)*q1+R(k)*l1*prop)**2*gqqg(2,1)
-c      elseif ((j .eq. 0) .and. (k .lt. 0)) then
-c    c      msq(j,k)=+abs(Q(-k)*q1+L(-k)*l1*prop)**2*gqbqbg(1,1)
-c     .c    c    c     +abs(Q(-k)*q1+R(-k)*r1*prop)**2*gqbqbg(2,2)
-c     .c    c    c     +abs(Q(-k)*q1+L(-k)*r1*prop)**2*gqbqbg(1,2)
-c     .c    c    c     +abs(Q(-k)*q1+R(-k)*l1*prop)**2*gqbqbg(2,1)
-c      endif
-
-c   19 continue
-c      enddo
-c      enddo
-
       return
       end
       
@@ -261,7 +211,7 @@ c-- this routine transfers the information on the colour structure
 c-- for the Z2jet_gvec matrix elements into elements of p1p2
       implicit none
       include 'constants.f'
-      include 'msqv_cs.f'
+      include 'mmsqv_cs.f'
       integer icol,pq,pl
       double precision p1p2(0:2,2,2)
       

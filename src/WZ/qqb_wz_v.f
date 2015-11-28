@@ -9,7 +9,6 @@ C For nwz=-1
 c     d(-p1)+ubar(-p2)-->mu^-(p5)+mu^+(p6)+e^-(p3)+nbar(p4)
 c---  averaged(summed) over initial(final) colours and spins
       implicit none
-      integer j,k,nwz
       include 'constants.f'
       include 'qcdcouple.f'
       include 'ewcouple.f'
@@ -18,39 +17,41 @@ c---  averaged(summed) over initial(final) colours and spins
       include 'ckm.f'
       include 'sprodx.f'
       include 'dprodx.f'
-      include 'epinv.f'
+      include 'scheme.f'
       include 'zerowidth.f'
       include 'ewcharge.f'
-      include 'scale.f'
-      logical msbar
-      common/msbar/msbar
+      include 'anomcoup.f'
+      include 'nwz.f'
+
+      integer j,k
       double precision p(mxpart,4),qdks(mxpart,4)
       double precision msqv(-nf:nf,-nf:nf),msq(-nf:nf,-nf:nf)
-      double precision facnlo,sub,ave,cotw,xl12,virt
+      double precision facnlo,ave,cotw
       double precision FAC,FACM
-      common/nwz/nwz
       double complex AWZM,AWZP,BWZM,BWZP,Vpole,Vpole12,suppl
       double complex prop12,prop34,prop56
-      double complex props,propw,propz,cprop
-      double complex a6treea,a6treeb,a6loopa,a6loopb
-      double complex Fa123456,Fa126543,Fb123456
-      double complex Fa123465,Fa125643,Fb123465
-      double complex Fa213456,Fa216543,Fb213456
-      double complex Fa213465,Fa215643,Fb213465
-      double complex La123456,La126543,Lb123456
-      double complex La123465,La125643,Lb123465
-      double complex La213456,La216543,Lb213456
-      double complex La213465,La215643,Lb213465
+      double complex props,propw,propz,cprop,A6b_1,A6b_2,A6b_3,A6b_4
+      double complex a6treea,a6loopa,a6loopb
+      double complex Fa123456,Fa126543,Fb123456_z,Fb123456_g
+      double complex Fa123465,Fa125643,Fb123465_z,Fb123465_g
+      double complex Fa213456,Fa216543,Fb213456_z,Fb213456_g
+      double complex Fa213465,Fa215643,Fb213465_z,Fb213465_g
+      double complex La123456,La126543,Lb123456_z,Lb123456_g
+      double complex La123465,La125643,Lb123465_z,Lb123465_g
+      double complex La213456,La216543,Lb213456_z,Lb213456_g
+      double complex La213465,La215643,Lb213465_z,Lb213465_g
       double complex Fa346512,Fa342156,Fa652143
       double complex Fa345612,Fa342165,Fa653421
       double complex Fa346521,Fa341256,Fa651243
       double complex Fa345621,Fa341265,Fa653412
 c      double complex Fa561243,Fa562143
-      double precision v2(2),cl1,cl2,en1,en2
+      double precision v2(2),cl1,cl2,en1,en2,xfac
       double complex ZgL(-nf:nf),ZgR(-nf:nf)
 
       parameter(ave=0.25d0/xn)
+      data cl1,cl2,en1,en2/4*1d0/
 
+      scheme='dred'
       FAC=-2D0*gwsq*esq
       FACNLO=ason2pi*cf
       if ((nwz.eq.1) .or. (nwz .eq. -1)) then
@@ -82,14 +83,6 @@ c      double complex Fa561243,Fa562143
 
 c---calculate the lowest order matrix element
       call qqb_wz(p,msq)
-
-c---add result of integrating subtraction terms
-      xl12=log(s(1,2)/musq)
-      sub = epinv**2+epinv*(1.5d0-xl12)
-     . +half*xl12**2-pisqo6-0.5d0
-      if (msbar) sub=sub+1d0
-c---note extra colour factor
-      sub=sub*ason2pi*2d0*cf
 
 c---Change the momenta to DKS notation 
 c   We have --- d(-p1)+ubar(-p2)-->nu(p6)+e^+(p7)+mu^-(p4)+mu^+(p5)
@@ -123,37 +116,85 @@ c--   calculate propagators
       cprop=props*propw*propz
       endif
 
+c--- apply a dipole form factor to anomalous couplings
+      xfac=1d0/(1d0+s(1,2)/(tevscale*1d3)**2)**2
+      xdelg1_z=xfac*delg1_z
+      xdelg1_g=xfac*delg1_g
+      xdelk_z=xfac*delk_z
+      xdelk_g=xfac*delk_g
+      xlambda_z=xfac*lambda_z
+      xlambda_g=xfac*lambda_g
+
 c---case dbar-u
-      Fb123456=A6treeb(1,2,3,4,5,6,za,zb)
+      call A6treeb_anom_wz(1,2,3,4,5,6,za,zb,A6b_1,A6b_2,A6b_3,A6b_4)
+      Fb123456_z=A6b_1*(2d0+xdelg1_z+xdelk_z+xlambda_z*s(1,2)/wmass**2)
+     .          +A6b_2*(2d0+xdelg1_z+xdelk_z+xlambda_z)
+     .          +A6b_3*2d0*(1d0+xdelg1_z) 
+     .          +A6b_4*xlambda_z/wmass**2
+      Fb123456_g=A6b_1*(2d0+xdelg1_g+xdelk_g+xlambda_g*s(1,2)/wmass**2)
+     .          +A6b_2*(2d0+xdelg1_g+xdelk_g+xlambda_g)
+     .          +A6b_3*2d0*(1d0+xdelg1_g) 
+     .          +A6b_4*xlambda_g/wmass**2
       Fa123456=A6treea(1,2,3,4,5,6,za,zb)
       Fa126543=A6treea(1,2,6,5,4,3,za,zb)
 
-      Fb123465=A6treeb(1,2,3,4,6,5,za,zb)
+      call A6treeb_anom_wz(1,2,3,4,6,5,za,zb,A6b_1,A6b_2,A6b_3,A6b_4)
+      Fb123465_z=A6b_1*(2d0+xdelg1_z+xdelk_z+xlambda_z*s(1,2)/wmass**2)
+     .          +A6b_2*(2d0+xdelg1_z+xdelk_z+xlambda_z)
+     .          +A6b_3*2d0*(1d0+xdelg1_z) 
+     .          +A6b_4*xlambda_z/wmass**2
+      Fb123465_g=A6b_1*(2d0+xdelg1_g+xdelk_g+xlambda_g*s(1,2)/wmass**2)
+     .          +A6b_2*(2d0+xdelg1_g+xdelk_g+xlambda_g)
+     .          +A6b_3*2d0*(1d0+xdelg1_g) 
+     .          +A6b_4*xlambda_g/wmass**2
       Fa123465=A6treea(1,2,3,4,6,5,za,zb)
       Fa125643=A6treea(1,2,5,6,4,3,za,zb)
 
-      Lb123456=A6loopb(1,2,3,4,5,6,za,zb)
+c--- loop for a6b is simply tree*Vpole
+      Vpole12=Vpole(s(1,2))
+
+      Lb123456_z=Vpole12*Fb123456_z
+      Lb123456_g=Vpole12*Fb123456_g
       La123456=A6loopa(1,2,3,4,5,6,za,zb)
       La126543=A6loopa(1,2,6,5,4,3,za,zb)
 
-      Lb123465=A6loopb(1,2,3,4,6,5,za,zb)
+      Lb123465_z=Vpole12*Fb123465_z
+      Lb123465_g=Vpole12*Fb123465_g
       La123465=A6loopa(1,2,3,4,6,5,za,zb)
       La125643=A6loopa(1,2,5,6,4,3,za,zb)
 
 c---case u-dbar
-      Fb213456=A6treeb(2,1,3,4,5,6,za,zb)
+      call A6treeb_anom_wz(2,1,3,4,5,6,za,zb,A6b_1,A6b_2,A6b_3,A6b_4)
+      Fb213456_z=A6b_1*(2d0+xdelg1_z+xdelk_z+xlambda_z*s(1,2)/wmass**2)
+     .          +A6b_2*(2d0+xdelg1_z+xdelk_z+xlambda_z)
+     .          +A6b_3*2d0*(1d0+xdelg1_z) 
+     .          +A6b_4*xlambda_z/wmass**2
+      Fb213456_g=A6b_1*(2d0+xdelg1_g+xdelk_g+xlambda_g*s(1,2)/wmass**2)
+     .          +A6b_2*(2d0+xdelg1_g+xdelk_g+xlambda_g)
+     .          +A6b_3*2d0*(1d0+xdelg1_g) 
+     .          +A6b_4*xlambda_g/wmass**2
       Fa213456=A6treea(2,1,3,4,5,6,za,zb)
       Fa216543=A6treea(2,1,6,5,4,3,za,zb)
 
-      Fb213465=A6treeb(2,1,3,4,6,5,za,zb)
+      call A6treeb_anom_wz(2,1,3,4,6,5,za,zb,A6b_1,A6b_2,A6b_3,A6b_4)
+      Fb213465_z=A6b_1*(2d0+xdelg1_z+xdelk_z+xlambda_z*s(1,2)/wmass**2)
+     .          +A6b_2*(2d0+xdelg1_z+xdelk_z+xlambda_z)
+     .          +A6b_3*2d0*(1d0+xdelg1_z) 
+     .          +A6b_4*xlambda_z/wmass**2
+      Fb213465_g=A6b_1*(2d0+xdelg1_g+xdelk_g+xlambda_g*s(1,2)/wmass**2)
+     .          +A6b_2*(2d0+xdelg1_g+xdelk_g+xlambda_g)
+     .          +A6b_3*2d0*(1d0+xdelg1_g) 
+     .          +A6b_4*xlambda_g/wmass**2
       Fa213465=A6treea(2,1,3,4,6,5,za,zb)
       Fa215643=A6treea(2,1,5,6,4,3,za,zb)
 
-      Lb213456=A6loopb(2,1,3,4,5,6,za,zb)
+      Lb213456_z=Vpole12*Fb213456_z
+      Lb213456_g=Vpole12*Fb213456_g
       La213456=A6loopa(2,1,3,4,5,6,za,zb)
       La216543=A6loopa(2,1,6,5,4,3,za,zb)
 
-      Lb213465=A6loopb(2,1,3,4,6,5,za,zb)
+      Lb213465_z=Vpole12*Fb213465_z
+      Lb213465_g=Vpole12*Fb213465_g
       La213465=A6loopa(2,1,3,4,6,5,za,zb)
       La215643=A6loopa(2,1,5,6,4,3,za,zb)
 
@@ -189,22 +230,30 @@ c---note that L/R labels the LEPTON coupling v2, NOT the quarks (all L)
       if (Vsq(j,k) .ne. 0d0) then
         if     ((j .gt. 0) .and. (k .lt. 0)) then
             AWZM=(FAC*(ZgL(+j)*Fa213456+ZgL(-k)*Fa216543)
-     .           +FACM*(v2(1)*cotw*prop56+q1)*prop12*Fb213456)*prop34
+     .           +FACM*(v2(1)*cotw*prop56*Fb213456_z
+     .                                +q1*Fb213456_g)*prop12)*prop34
             AWZP=(FAC*(ZgR(+j)*Fa213465+ZgR(-k)*Fa215643)
-     .           +FACM*(v2(2)*cotw*prop56+q1)*prop12*Fb213465)*prop34
+     .           +FACM*(v2(2)*cotw*prop56*Fb213465_z
+     .                                +q1*Fb213465_g)*prop12)*prop34
             BWZM=(FAC*(ZgL(+j)*La213456+ZgL(-k)*La216543)
-     .           +FACM*(v2(1)*cotw*prop56+q1)*prop12*Lb213456)*prop34
+     .           +FACM*(v2(1)*cotw*prop56*Lb213456_z
+     .                                +q1*Lb213456_g)*prop12)*prop34
             BWZP=(FAC*(ZgR(+j)*La213465+ZgR(-k)*La215643)
-     .           +FACM*(v2(2)*cotw*prop56+q1)*prop12*Lb213465)*prop34
+     .           +FACM*(v2(2)*cotw*prop56*Lb213465_z
+     .                                +q1*Lb213465_g)*prop12)*prop34
         elseif ((j .lt. 0) .and. (k .gt. 0)) then
             AWZM=(FAC*(ZgL(+k)*Fa123456+ZgL(-j)*Fa126543)
-     .           +FACM*(v2(1)*cotw*prop56+q1)*prop12*Fb123456)*prop34
+     .           +FACM*(v2(1)*cotw*prop56*Fb123456_z
+     .                                +q1*Fb123456_g)*prop12)*prop34
             AWZP=(FAC*(ZgR(+k)*Fa123465+ZgR(-j)*Fa125643)
-     .           +FACM*(v2(2)*cotw*prop56+q1)*prop12*Fb123465)*prop34
+     .           +FACM*(v2(2)*cotw*prop56*Fb123465_z
+     .                                +q1*Fb123465_g)*prop12)*prop34
             BWZM=(FAC*(ZgL(+k)*La123456+ZgL(-j)*La126543)
-     .           +FACM*(v2(1)*cotw*prop56+q1)*prop12*Lb123456)*prop34
+     .           +FACM*(v2(1)*cotw*prop56*Lb123456_z
+     .                                +q1*Lb123456_g)*prop12)*prop34
             BWZP=(FAC*(ZgR(+k)*La123465+ZgR(-j)*La125643)
-     .           +FACM*(v2(2)*cotw*prop56+q1)*prop12*Lb123465)*prop34
+     .           +FACM*(v2(2)*cotw*prop56*Lb123465_z
+     .                                +q1*Lb123465_g)*prop12)*prop34
         endif
         if (zerowidth .neqv. .true.) then
 c---we need supplementary diagrams for gauge invariance.
@@ -247,11 +296,8 @@ C-- Inclusion of width for W,Z a la Baur and Zeppenfeld
       BWZM=cprop*BWZM
       BWZP=cprop*BWZP
 
-	virt=FACNLO*Vsq(j,k)*ave*2d0*
+      msqv(j,k)=FACNLO*Vsq(j,k)*ave*2d0*
      .  dble(dconjg(AWZM)*BWZM+dconjg(AWZP)*BWZP)
-      msqv(j,k)=sub*msq(j,k)+virt
-
-      msqv(j,k)=sub*msq(j,k)+virt
 
       endif
 

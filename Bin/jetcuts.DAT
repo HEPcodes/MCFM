@@ -1,0 +1,13 @@
+'3.2'		[file version number]
+'ktal'		[algorithm]
+F		[inclusive]
+F               [useTevcuts]
+F               [useLHCcuts]
+15d0		[ptmin]
+2d0		[ymax]
+15d0		[ptmin_Tevatron]
+2.4d0		[ymax_Tevatron]
+20d0		[ptmin_LHC]
+4.5d0		[ymax_LHC]
+
+

@@ -10,8 +10,6 @@ c--all momenta incoming
       include 'constants.f'
       include 'qcdcouple.f'
       integer j,k
-      logical hhhh
-      common/hhhh/hhhh
       double precision P(mxpart,4),msq(-nf:nf,-nf:nf),
      . msq0(-nf:nf,-nf:nf),s(mxpart,mxpart),
      . facqqb,facqbq,facgqb,facqbg,facgq,facqg
@@ -22,7 +20,6 @@ c--all momenta incoming
       eik12=s(1,2)/(s(1,6)*s(2,6))
       eik15=s(1,5)/(s(1,6)*s(6,5))
       eik25=s(2,5)/(s(2,6)*s(6,5))
-      if (hhhh)  write(6,*) 'eik12',eik12
 
       facqqb=two*gsq*(xn*(eik15+eik25)-eik12/xn)
       facqbq=facqbq
@@ -39,7 +36,7 @@ c      facgq=two*gsq*(-eik25/xn)
 c      facgqb=two*gsq*(-eik25/xn)
 c      facqbg=two*gsq*(-eik15/xn)
 
-      call qqb_z_g(p,msq0)
+      call qqb_z1jet(p,msq0)
       
       do j=-nf,nf
       do k=-nf,nf

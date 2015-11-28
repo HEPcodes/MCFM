@@ -16,7 +16,7 @@ C   There are eight diagrams
       include 'qcdcouple.f'
       include 'masses.f'
       include 'sprodx.f'
-      integer q4,r7,s1,s2,t1,t2,x1,x2,y1,y2,j,pol1,pol2
+      integer q4,r7,s1,s2,t1,t2,x1,x2,j,pol1,pol2
       parameter(q4=3,r7=5,s1=6,s2=8,t1=9,t2=10,x1=1,x2=2)
 C  for the moment only!!!!!!!!!!!!!!!!!!!!
       double precision wtgg,p(mxpart,4),dens,dent,denx,deny,nab(8)

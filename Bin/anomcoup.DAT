@@ -1,0 +1,7 @@
+'3.2'		[file version number]
+0.0d0		[Delta_g1(Z)]
+0.0d0		[Delta_K(Z)]
+0.0d0		[Delta_K(gamma)]
+0.0d0		[Lambda(Z)]
+0.0d0		[Lambda(gamma)]
+2.0d0		[Form-factor scale, in TeV]

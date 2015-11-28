@@ -1,2 +1,2 @@
       double precision epinv
-      parameter(epinv=1d3)
+      common/epinv/epinv

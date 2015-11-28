@@ -32,8 +32,8 @@ C--calculate matrix element squared
       qqb=msqwbb(1,2,5,6)
       qbq=msqwbb(2,1,5,6)
 
-      do j=-nf,nf
-      do k=-nf,nf
+      do j=-(nf-1),(nf-1)
+      do k=-(nf-1),(nf-1)
       if     ((j .gt. 0) .and. (k .lt. 0)) then
                msq(j,k)=Vsq(j,k)*qqb
       elseif ((j .lt. 0) .and. (k .gt. 0)) then

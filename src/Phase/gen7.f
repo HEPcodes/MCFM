@@ -46,7 +46,9 @@ c      xjac=2*r(13)*(one-taumin)
       p2(nu)=xx(2)*p2ext(nu)
       enddo
 
-      if     (case .eq. 'qq_ttg') then
+      if ((case .eq. 'qq_ttg')
+     ..or.(case .eq. 'tt_bbl') 
+     ..or.(case .eq. 'tt_bbh')) then
         call  phase7(r,p1,p2,p3,p4,p5,p6,p7,p8,p9,pswt,*999) 
       elseif (case .eq. 'hlljet') then
         call phase7m(r,p1,p2,p3,p4,p5,p6,p7,p8,p9,pswt,*999)

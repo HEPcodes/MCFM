@@ -1,4 +1,3 @@
-
       subroutine qqb_zbb_gs(P,msq)
 ************************************************************************
 *     Author: R.K. Ellis                                               *
@@ -17,7 +16,7 @@ c--initial state gluons coupling to b not included
       include 'masses.f'
       include 'ptilde.f'
       include 'qqgg.f'
-      include 'msq_cs.f'
+      include 'hardscale.f'
       integer j,k,nd
 c --- remember: nd will count the dipoles
       
@@ -38,21 +37,29 @@ c --- remember: nd will count the dipoles
      & sub17_2v,sub27_1v,sub17_5v,sub17_6v,sub27_5v,sub27_6v
       double precision mgg17_2(0:2),mgg27_1(0:2),
      &                 mgg57_6(0:2),mgg67_5(0:2),
-     &                 mgg17_5(0:2),mgg57_1(0:2),
-     &                 mgg17_6(0:2),mgg67_1(0:2),
-     &                 mgg27_5(0:2),mgg57_2(0:2),
-     &                 mgg27_6(0:2),mgg67_2(0:2)
+     &                 mgg17_5(0:2),mgg17_6(0:2),
+     &                 mgg27_5(0:2),mgg27_6(0:2)
       double precision mgg17_2v(0:2),mgg27_1v(0:2),
      &                 mgg57_6v(0:2),mgg67_5v(0:2),
-     &                 mgg17_5v(0:2),mgg57_1v(0:2),
-     &                 mgg17_6v(0:2),mgg67_1v(0:2),
-     &                 mgg27_5v(0:2),mgg57_2v(0:2),
-     &                 mgg27_6v(0:2),mgg67_2v(0:2)
+     &                 mgg17_5v(0:2),mgg17_6v(0:2),
+     &                 mgg27_5v(0:2),mgg27_6v(0:2)
 
-      external qqb_zbb,donothing_gvec
-      external qqb_zbb_gvec,qqb_z2jet
+      external qqb_zbb,donothing_gvec,qqb_zbb_gvec
 
       ndmax=8
+
+      do j=-nf,nf
+      do k=-nf,nf
+      do nd=1,ndmax
+        msq(nd,j,k)=0d0
+      enddo
+      enddo
+      enddo
+
+      if (
+     .      (two*dot(p,5,6) .lt. four*hscalesq) 
+     . .or. (two*dot(p,1,5)*dot(p,2,5)/dot(p,1,2) .lt. hscalesq) 
+     . .or. (two*dot(p,1,6)*dot(p,2,6)/dot(p,1,2) .lt. hscalesq))return 
 
 c--- calculate all the initial-initial dipoles
       call dips(1,p,1,7,2,sub17_2,sub17_2v,msq17_2,msq17_2v,
@@ -92,31 +99,11 @@ c--- now the basic initial final ones
       call dips(8,p,6,7,2,sub67_2,dsubv,dummy,dummyv,
      . qqb_zbb,donothing_gvec)
       
-      do j=-nf,nf
-      do k=-nf,nf
+      do j=-(nf-1),(nf-1)
+      do k=-(nf-1),(nf-1)
       
-      do nd=1,ndmax
-        msq(nd,j,k)=0d0
-      enddo
-
       if ((j.gt.0).and.(k.lt.0)) then
 c----------q-qb
-
-      msq(1,j,k)=-sub17_2(qq)*msq17_2(j,k)/xn
-      msq(2,j,k)=-sub27_1(qq)*msq27_1(j,k)/xn
-      msq(3,j,k)=-sub57_6(qq)*msq57_6(j,k)/xn
-      msq(4,j,k)=-sub67_5(qq)*msq67_5(j,k)/xn
-      msq(5,j,k)=+sub17_5(qq)*msq17_5(j,k)*(xn-two/xn)
-     .           +sub57_1(qq)*msq17_5(j,k)*(xn-two/xn)
-      msq(6,j,k)=+sub17_6(qq)*msq17_6(j,k)*two/xn
-     .           +sub67_1(qq)*msq17_6(j,k)*two/xn
-      msq(7,j,k)=+sub27_5(qq)*msq27_5(j,k)*two/xn
-     .           +sub57_2(qq)*msq27_5(j,k)*two/xn
-      msq(8,j,k)=+sub27_6(qq)*msq27_6(j,k)*(xn-two/xn)
-     .           +sub67_2(qq)*msq27_6(j,k)*(xn-two/xn)
-
-      elseif((j.lt.0).and.(k.gt.0)) then
-c----------qb-q
 
       msq(1,j,k)=-sub17_2(qq)*msq17_2(j,k)/xn
       msq(2,j,k)=-sub27_1(qq)*msq27_1(j,k)/xn
@@ -131,6 +118,22 @@ c----------qb-q
       msq(8,j,k)=+sub27_6(qq)*msq27_6(j,k)*two/xn
      .           +sub67_2(qq)*msq27_6(j,k)*two/xn
 
+      elseif((j.lt.0).and.(k.gt.0)) then
+c----------qb-q
+
+      msq(1,j,k)=-sub17_2(qq)*msq17_2(j,k)/xn
+      msq(2,j,k)=-sub27_1(qq)*msq27_1(j,k)/xn
+      msq(3,j,k)=-sub57_6(qq)*msq57_6(j,k)/xn
+      msq(4,j,k)=-sub67_5(qq)*msq67_5(j,k)/xn
+      msq(5,j,k)=+sub17_5(qq)*msq17_5(j,k)*(xn-two/xn)
+     .           +sub57_1(qq)*msq17_5(j,k)*(xn-two/xn)
+      msq(6,j,k)=+sub17_6(qq)*msq17_6(j,k)*two/xn
+     .           +sub67_1(qq)*msq17_6(j,k)*two/xn
+      msq(7,j,k)=+sub27_5(qq)*msq27_5(j,k)*two/xn
+     .           +sub57_2(qq)*msq27_5(j,k)*two/xn
+      msq(8,j,k)=+sub27_6(qq)*msq27_6(j,k)*(xn-two/xn)
+     .           +sub67_2(qq)*msq27_6(j,k)*(xn-two/xn)
+
       elseif ((j.eq.0) .and. (k.eq.0)) then
 c---------g-g
           msq(1,j,k)=(sub17_2(gg)*(mgg17_2(1)+mgg17_2(2))
@@ -141,37 +144,44 @@ c---------g-g
      .               -sub57_6(qq)*(mgg57_6(1)+mgg57_6(2))/xn
           msq(4,j,k)=-sub67_5(qq)*mgg67_5(0)*(xn+one/xn)
      .               -sub67_5(qq)*(mgg67_5(1)+mgg67_5(2))/xn
-          msq(5,j,k)=((sub17_5(gg)+sub57_1(qq))*(mgg17_5(1)+mgg17_5(0))
-     .                +sub17_5v*(mgg17_5v(1)+mgg17_5v(0)))*xn
-          msq(6,j,k)=((sub17_6(gg)+sub67_1(qq))*(mgg17_6(2)+mgg17_6(0))
-     .                +sub17_6v*(mgg17_6v(2)+mgg17_6v(0)))*xn
-          msq(7,j,k)=((sub27_5(gg)+sub57_2(qq))*(mgg27_5(2)+mgg27_5(0))
-     .                +sub27_5v*(mgg27_5v(2)+mgg27_5v(0)))*xn
-          msq(8,j,k)=((sub27_6(gg)+sub67_2(qq))*(mgg27_6(1)+mgg27_6(0))
-     .                +sub27_6v*(mgg27_6v(1)+mgg27_6v(0)))*xn
-c      write(*,*) 'subt 1',sub17_2(gg)*mgg17_2(1)*xn
-c      write(*,*) 'subt 2',sub17_5(gg)*mgg17_5(1)*xn
-c      write(*,*) 'subt 3',sub57_1(qq)*mgg17_5(1)*xn
+          msq(5,j,k)=((sub17_5(gg)+sub57_1(qq))*(mgg17_5(2)+mgg17_5(0))
+     .                +sub17_5v*(mgg17_5v(2)+mgg17_5v(0)))*xn
+          msq(6,j,k)=((sub17_6(gg)+sub67_1(qq))*(mgg17_6(1)+mgg17_6(0))
+     .                +sub17_6v*(mgg17_6v(1)+mgg17_6v(0)))*xn
+          msq(7,j,k)=((sub27_5(gg)+sub57_2(qq))*(mgg27_5(1)+mgg27_5(0))
+     .                +sub27_5v*(mgg27_5v(1)+mgg27_5v(0)))*xn
+          msq(8,j,k)=((sub27_6(gg)+sub67_2(qq))*(mgg27_6(2)+mgg27_6(0))
+     .                +sub27_6v*(mgg27_6v(2)+mgg27_6v(0)))*xn
+
       elseif (j.eq.0) then
           if (k.gt.0) then
 c---------g-q
           msq(1,j,k)=sub17_2(qg)
      &    *(msq17_2(-1,k)+msq17_2(-2,k)+msq17_2(-3,k)+msq17_2(-4,k)
      .     +msq17_2(-5,k))
+          msq(2,j,k)=msq(2,j,k)+(aveqg/avegg)*
+     .    (sub27_1(gq)*msq27_1(0,0)+sub27_1v*msq27_1v(0,0))
           elseif (k.lt.0) then
 c---------g-qbar
           msq(1,j,k)=sub17_2(qg)
      &    *(msq17_2(+1,k)+msq17_2(+2,k)+msq17_2(+3,k)+msq17_2(+4,k)
      .    +msq17_2(+5,k))
+          msq(2,j,k)=msq(2,j,k)+(aveqg/avegg)*
+     .    (sub27_1(gq)*msq27_1(0,0)+sub27_1v*msq27_1v(0,0))
           endif 
       elseif (k.eq.0) then
           if (j.gt.0) then
 c---------q-g
+          msq(1,j,k)=msq(1,j,k)+(aveqg/avegg)*
+     .    (sub17_2(gq)*msq17_2(0,0)+sub17_2v*msq17_2v(0,0))
           msq(2,j,k)=sub27_1(qg)
      &    *(msq27_1(j,-1)+msq27_1(j,-2)+msq27_1(j,-3)+msq27_1(j,-4)
      .    +msq27_1(j,-5))
           elseif (j.lt.0) then
 c---------qbar-g
+          msq(1,j,k)=msq(1,j,k)+(aveqg/avegg)*
+     .    (sub17_2(gq)*msq17_2(0,0)+sub17_2v*msq17_2v(0,0))
+
           msq(2,j,k)=sub27_1(qg)
      &    *(msq27_1(j,+1)+msq27_1(j,+2)+msq27_1(j,+3)+msq27_1(j,+4)
      .     +msq27_1(j,+5))
@@ -192,10 +202,9 @@ c--- each parton configuration
       implicit none
       include 'constants.f'
       include 'msq_cs.f'
+      include 'msqv_cs.f'
       integer i
       double precision mgg(0:2),mggv(0:2)
-      double precision msqv_cs(0:2,-nf:nf,-nf:nf),mmsqv_cs(0:2,2,2)
-      common/msqv_cols/msqv_cs,mmsqv_cs
       
       do i=0,2
         mgg(i)=msq_cs(i,0,0)
@@ -206,3 +215,4 @@ c--- each parton configuration
       end
       
 
+      

@@ -1,5 +1,5 @@
       subroutine gen3m(r,p,m3,m4,m5,wt3,*)
-c----generate 3 dimensional phase space weight and vectors p(7,4)
+c----generate 3 dimensional phase space weight and vectors p(mxpart,4)
 c----           p1+p2+p3+p4+p5=0
 c----and x1 and x2 given seven random numbers
 c----p(6,i) and p(7,i) are set equal to zero
@@ -8,7 +8,7 @@ c----p(6,i) and p(7,i) are set equal to zero
       include 'mxdim.f'
       include 'masses.f'
       include 'process.f'
-      integer nu
+      integer nu,j
 
       double precision r(mxdim),sqrts,wt3
       double precision p(mxpart,4),
@@ -19,8 +19,12 @@ c----p(6,i) and p(7,i) are set equal to zero
       common/x1x2/xx
       common/taumin/taumin
       parameter(xmin=1d-5)
-      data p6/0d0,0d0,0d0,0d0/
-      data p7/0d0,0d0,0d0,0d0/
+
+      do nu=1,4
+      do j=1,mxpart
+      p(j,nu)=0d0
+      enddo 
+      enddo 
 
       wt3=0d0
       tau=exp(log(taumin)*r(6))
@@ -51,6 +55,7 @@ c---if x's out of normal range alternative return
       m4=mt
       m5=hmass
       endif
+
       call phase3m(r,p1,p2,p3,p4,p5,p6,p7,m3,m4,m5,pswt)
 
       do nu=1,4
@@ -59,10 +64,11 @@ c---if x's out of normal range alternative return
       p(3,nu)=p3(nu)
       p(4,nu)=p4(nu)
       p(5,nu)=p5(nu)
-      p(6,nu)=p6(nu)
-      p(7,nu)=p7(nu)
       enddo 
       wt3=xjac*pswt
+
+
+
       if(wt3 .eq. 0) return 1
       return
       end

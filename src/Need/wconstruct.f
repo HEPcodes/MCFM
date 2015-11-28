@@ -5,17 +5,16 @@
       include 'mxdim.f'
       include 'nn.f'
       logical exact_w_mom
-      double precision ptn,pte,ple,pln,Ee,En,ptwsq,mtsq,a,b,c,cosnew1,
+      double precision ptn,pte,ple,pln,Ee,En,ptwsq,mtsq,a,b,cosnew1,
      & cosnew2
       double precision cosnew3,nh_cmw1(4),nh_cmw2(4),nw_cmh1(4),
      & nw_cmh2(4)
       double precision discr,plntrue,p(mxpart,4),pw(4),pbb(4),pwbb(4),
      & p1(4),p2(4),
-     & p1cm(4),pbbcm(4),pcscm(4),pwcm(4),plnp,plnm,wsq,costh_h,
-     & dotpr,lambda,e1,e2,s2,shat,pbbcm1(4),p1cm1(4),n1(4),n2(4),
-     & n1in(4),n1out(4),betaw,betah,nw_cmh(4),nh_cmw(4)
-     & ,cosnew,p4cm(4),p5cm(4),ncm(4),p3(4),p4(4),p5(4),p6(4),xx
-     & ,pdiff(4),pdiffcm(4),cosphi
+     & p1cm(4),pbbcm(4),pcscm(4),pwcm(4),plnp,plnm,costh_h,
+     & dotpr,lambda,e1,e2,s2,shat,
+     & p4cm(4),p5cm(4),ncm(4),p3(4),p4(4),p5(4),p6(4),xx,
+     & pdiff(4),pdiffcm(4),cosphi
       integer j
 
       exact_w_mom=.true.
@@ -65,8 +64,8 @@ c      write(6,*) 'wmass**2,mtsq',wmass**2,mtsq
       discr=Ee*sqrt((wmass**2-mtsq)*(wmass**2-mtsq+4*pte*ptn))
       a=pte**2
       b=-(2*pte*ptn+wmass**2-mtsq)*ple
-      c=-0.25d0*(wmass**2-mtsq+2*pte*ptn)**2
-     # +ptn**2*Ee**2
+c      c=-0.25d0*(wmass**2-mtsq+2*pte*ptn)**2
+c     # +ptn**2*Ee**2
 c      write(6,*) 'discr',sqrt(b**2-4*a*c),discr
       else
       discr=0
@@ -74,7 +73,7 @@ c      write(6,*) 'discr',sqrt(b**2-4*a*c),discr
       b=-2*pte*ptn*ple
       endif
 
-      wsq=pw(4)**2-pw(1)**2-pw(2)**2-pw(3)**2
+c      wsq=pw(4)**2-pw(1)**2-pw(2)**2-pw(3)**2
 c      write(6,*) 'cal:mw',wsq,plntrue
       plnp=(-b+discr)/(two*a)
       plnm=(-b-discr)/(two*a)
@@ -84,14 +83,14 @@ c---substitute calculated value of pln
       En=sqrt(pln**2+ptn**2)
       pw(3)=pln+p(4,3)
       pw(4)=En+p(4,4)
-      wsq=pw(4)**2-pw(1)**2-pw(2)**2-pw(3)**2
+c      wsq=pw(4)**2-pw(1)**2-pw(2)**2-pw(3)**2
 c      write(6,*) 'meas:mwm',wsq,pln
 
       pln=plnp
       En=sqrt(pln**2+ptn**2)
       pw(4)=En+p(4,4)
       pw(3)=pln+p(4,3)
-      wsq=pw(4)**2-pw(1)**2-pw(2)**2-pw(3)**2
+c      wsq=pw(4)**2-pw(1)**2-pw(2)**2-pw(3)**2
 
 c      write(6,*) 'meas:mwp',wsq,pln
 c      pause
@@ -130,7 +129,7 @@ c----calculate bb momentum in centre of mass
 c---momentum of higgs in cm
       lambda=sqrt(pbbcm(1)**2+pbbcm(2)**2+pbbcm(3)**2)
 c----beta of W in cm
-      betaw=sqrt(pwcm(1)**2+pwcm(2)**2+pwcm(3)**2)/pwcm(4)
+c      betaw=sqrt(pwcm(1)**2+pwcm(2)**2+pwcm(3)**2)/pwcm(4)
 c---Collins-Soper angle
       costh_h=-dotpr(pcscm,pbb)/(lambda*sqrt(E1*E2*shat))
 

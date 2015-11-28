@@ -1,9 +1,10 @@
       real*8 function CoupleC(j,k,nwz)
       implicit none
       include 'constants.f'
+      include 'ckm.f'
+      include 'ckm1.f'
       logical decay
       integer j,k,nwz
-      include 'ckm.f'
       double complex bwf
       common/bwf/bwf
       common/decay/decay
@@ -41,9 +42,10 @@
       real*8 function CoupleV(j,k,nwz)
       implicit none
       include 'constants.f'
+      include 'ckm.f'
+      include 'ckm1.f'
       logical decay
       integer j,k,nwz
-      include 'ckm.f'
       double complex bwf
       common/bwf/bwf
       common/decay/decay

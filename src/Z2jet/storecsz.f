@@ -4,7 +4,7 @@ c-- for the Z2jet matrix elements into separate arrays for each
 c-- incoming parton case
       implicit none
       include 'constants.f'
-      include 'msq_cs.f'
+      include 'mmsq_cs.f'
       integer i,j,k
       double precision mcs(0:2,2,2)
       
@@ -15,8 +15,5 @@ c-- incoming parton case
           enddo
         enddo
       enddo
-c      write(6,*) 'storecsz:mcs',mcs      
-c      write(6,*) 'storecsz:mmsq_cs',mmsq_cs
-c      write(6,*) 'storecsz:msq_cs',msq_cs
       return
       end

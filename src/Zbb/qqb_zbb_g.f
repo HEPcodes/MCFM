@@ -4,22 +4,21 @@
 *     July, 1998.                                                      *
 ************************************************************************
 c---Matrix element squared averaged over initial colors and spins
-c     q(-p1)+qbar(-p2) -->  g*  + Z + g(p7)
-c                           |     |
-c                           |     --> e-(p3)+e^+(p4)
-c                           |
-c                           ---> b(p5)+bb(p6)
+c     p(-p1)+p(-p2) -->  g*  + Z + p(p7)
+c                        |     |
+c                        |     --> e-(p3)+e^+(p4)
+c                        |
+c                         ---> bb(p5)+b(p6)
       implicit none 
       include 'constants.f'
       include 'masses.f'
       include 'qcdcouple.f'
-      include 'ckm.f'
       include 'prods.f'
       include 'zcouple.f'
       include 'ewcouple.f'
       include 'ewcharge.f'
       include 'hardscale.f'
-      integer j,k,nu,hq,Qh,hg,lh
+      integer j,k,hq,Qh,hg,lh
       double precision P(mxpart,4),msq(-nf:nf,-nf:nf),mmsq(2,2)
       double precision fac,LRq(2),LRb(2),lr1(2)
       double precision msq_qqb(2,2,2,2,4),msq_qbq(2,2,2,2,4),
@@ -37,7 +36,11 @@ C---call spinor routine and load common block twopij
       call spinoru(7,p,za,zb)
       prop=s(3,4)/dcmplx((s(3,4)-zmass**2),zmass*zwidth)
 
-      call xzqqggg(5,1,2,7,6,3,4,mmsq)
+C so our notation is
+C     0 ---> q(p6)+g(p1)+g(p2)+g(p7)+qbar(p5)+a(p4)+l(p3)
+C whilst xzqqggg notation is
+C     0 ---> q(p1)+g(p2)+g(p3)+g(p4)+qbar(p5)+a(p6)+l(p7)
+      call xzqqggg(6,1,2,7,5,4,3,mmsq)
 
 
       if (
@@ -46,12 +49,12 @@ C---call spinor routine and load common block twopij
      . .or. (s(1,6)*s(2,6)/s(1,2) .lt. hscalesq) ) return
 
 c--- note that (2,1) and (4,3) are switched due to crossing from NT
-      call msq_qqQQg(2,1,5,6,7,4,3,msq_qqb)
-      call msq_qqQQg(1,2,5,6,7,4,3,msq_qbq)
-      call msq_qqQQg(7,1,5,6,2,4,3,msq_qg)
-      call msq_qqQQg(2,7,5,6,1,4,3,msq_gqb)
-      call msq_qqQQg(7,2,5,6,1,4,3,msq_gq)
-      call msq_qqQQg(1,7,5,6,2,4,3,msq_qbg)
+      call msq_qqQQg(2,1,6,5,7,4,3,msq_qqb)
+      call msq_qqQQg(1,2,6,5,7,4,3,msq_qbq)
+      call msq_qqQQg(7,1,6,5,2,4,3,msq_qg)
+      call msq_qqQQg(2,7,6,5,1,4,3,msq_gqb)
+      call msq_qqQQg(7,2,6,5,1,4,3,msq_gq)
+      call msq_qqQQg(1,7,6,5,2,4,3,msq_qbg)
 
 c--- note the factor of 4d0*xw**2 relative to wbb
       fac=4d0*gsq**3*esq**2
@@ -61,8 +64,8 @@ c--- extra factor of 2**3=8 to compensate for Ta normalization
       LRb(1)=L(1)
       LRb(2)=R(1)
 
-      do j=-nf,nf
-      do k=-nf,nf
+      do j=-(nf-1),(nf-1)
+      do k=-(nf-1),(nf-1)
       if( j .ne. 0 .and. k .ne. 0 .and. j .ne. -k) goto 19
       
       msq(j,k)=0d0
