@@ -1,0 +1,9 @@
+*.o
+/Bin/mcfm
+/Doc/*.aux
+/Doc/*.dvi
+/Doc/*.log
+/Doc/*.out
+/Doc/*.pdf
+/Doc/*.toc
+/mcfm.dSYM
