@@ -1,9 +1,6 @@
       double precision function Hggggvsqanal(j1,j2,j3,j4)
       implicit none
       include 'constants.f'
-      include 'scale.f' 
-      include 'masses.f' 
-      include 'zprods_com.f' 
 C---  matrix element squared for 0 --> H + g(j1)+g(j2)+g(j3)+g(j4)
       integer j1,j2,j3,j4,j,k,h1,h2,h3,h4
       double complex Avirt(3,2,2,2,2),Alo(3,2,2,2,2)

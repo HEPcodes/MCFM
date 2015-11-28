@@ -5,14 +5,31 @@ c     q(-p1)+qbar(-p2) -->  e-(p3)+e+(p4))+a(p5)+g(p6)
       include 'constants.f'
       include 'ptilde.f'
       include 'qqgg.f'
+      include 'frag.f'
+      include 'ewcharge.f'
       integer j,k,nd
 
       double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf)
       double precision msq16_2(-nf:nf,-nf:nf),msq26_1(-nf:nf,-nf:nf),
      . sub16_2(4),sub26_1(4),dummyv(-nf:nf,-nf:nf),dsubv
-      external qqb_zgam,donothing_gvec
+      double precision sub56_1,sub56_2,msq56_1(-nf:nf,-nf:nf),
+     . msq56_2(-nf:nf,-nf:nf)
+      logical phot_dip(mxpart) 
 
-      ndmax=2
+      common/phot_dip/phot_dip
+      external qqb_zgam,donothing_gvec
+      external qqb_z1jet
+
+      if(frag) then
+         ndmax=4
+      else
+         ndmax=2
+      endif
+
+      do j=1,mxpart
+         phot_dip(j)=.false.
+      enddo
+
 
 c---- calculate both initial-initial dipoles
 c---- note that we do not require the gg dipoles, so the v-type
@@ -21,6 +38,15 @@ c---- entries are left as dummies
      . qqb_zgam,donothing_gvec)
       call dips(2,p,2,6,1,sub26_1,dsubv,msq26_1,dummyv,
      . qqb_zgam,donothing_gvec)
+      
+      if (frag) then 
+         call dipsfrag(3,p,5,6,1,sub56_1,msq56_1,qqb_z1jet)
+         phot_dip(3)=.true.
+         call dipsfrag(4,p,5,6,2,sub56_2,msq56_2,qqb_z1jet)
+         phot_dip(4)=.true.
+      endif
+    
+
 
       do j=-nf,nf
       do k=-nf,nf
@@ -31,26 +57,33 @@ c---- entries are left as dummies
 
       if  ((j .eq. 0) .and. (k .eq. 0)) then
          goto 20
-      elseif  ((j .gt. 0) .and. (k .lt. 0)
-     .     .or.(j .lt. 0) .and. (k .gt. 0)) then
+      elseif  ((j .gt. 0) .and. (k .eq. -j)
+     .        .or.(j .lt. 0) .and. (k .eq. -j)) then
          msq(1,j,k)=2d0*cf*sub16_2(qq)*msq16_2(j,k)
          msq(2,j,k)=2d0*cf*sub26_1(qq)*msq26_1(j,k)
       elseif ((j .ne. 0) .and. (k .eq. 0)) then
-         msq(2,j,k)=2d0*tr*sub26_1(qg)*(msq26_1(j,+1)+msq26_1(j,+2)
-     &   +msq26_1(j,+3)+msq26_1(j,+4)+msq26_1(j,+5)
-     &                                 +msq26_1(j,-1)+msq26_1(j,-2)
-     &   +msq26_1(j,-3)+msq26_1(j,-4)+msq26_1(j,-5))
+         msq(2,j,k)=2d0*tr*sub26_1(qg)*msq26_1(j,-j)
+         if(frag) then 
+            msq(3,j,k)=Q(j)**2*sub56_1*msq56_1(j,k) 
+         endif
       elseif ((j .eq. 0) .and. (k .ne. 0)) then
-         msq(1,j,k)=2d0*tr*sub16_2(qg)*(msq16_2(+1,k)+msq16_2(+2,k)
-     &   +msq16_2(+3,k)+msq16_2(+4,k)+msq16_2(+5,k)
-     &                                 +msq16_2(-1,k)+msq16_2(-2,k)
-     &   +msq16_2(-3,k)+msq16_2(-4,k)+msq16_2(-5,k))
+         msq(1,j,k)=2d0*tr*sub16_2(qg)*msq16_2(-k,k)
+         
+         if(frag) then 
+            msq(4,j,k)=Q(k)**2*sub56_2*msq56_2(j,k) 
+         endif
+         
+     
+    
+
+         
       endif
  20   continue
 
       enddo
       enddo
 
+   
       return      
       end
 

@@ -26,7 +26,7 @@ c--- multiply by (1+ep^2*zeta2)
       mtsq=m**2
       s=2d0*dble(cdot(zp1,zp2))
       u1=2d0*dble(cdot(zp2,zp3))
-      uu=u1+mtsq;
+      uu=u1+mtsq
       t1=-s-u1 
       Denu=s*u1+u1**2+mtsq*s
 

@@ -409,6 +409,11 @@ c--- 2-quark, 2-gluon contribution to matrix elements
       
       do j=-nf,nf
       do k=-nf,nf
+
+      do i=0,2
+      msq_cs(i,j,k)=0d0
+      enddo
+
       if     ((j .gt. 0) .and. (k .lt. 0)) then
           msq(j,k)=msq(j,k)+Vsq(j,k)*qqbWgg2
           do i=0,2

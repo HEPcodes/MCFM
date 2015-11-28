@@ -24,13 +24,13 @@
       include 'nflav.f'
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),
      . p(mxpart,4),q_bdkw(mxpart,4),faclo,subuv,scalesq,
-     . fac,v2(2),vQ(nf,2),
-     . mmsq(2,2),mmsq_vec(2,2),mmsq_ax(2,2),pswap(mxpart,4)
+     . fac,v2(2),vQ(nf,2),mmsq(2,2),pswap(mxpart,4)
       double complex tamp,lamp,atreez,a61z,prop,
      . atreez_123456(2,2,2),atreez_214356(2,2,2),
      . atreez_423156(2,2,2),atreez_241356(2,2,2),
      . a61z_123456(2,2,2),a61z_214356(2,2,2),
-     . a61z_423156(2,2,2),a61z_241356(2,2,2)
+     . a61z_423156(2,2,2),a61z_241356(2,2,2),
+     . mmsq_vec(2,2),mmsq_ax(2,2),vcouple(2)
       integer nu,j,k,polq,polb,polz
       logical first
       data first/.true./
@@ -113,6 +113,16 @@ c--     q (-p1)+b (-p5)+l-(-p4) ---> q+(p2)+b (p6)+e-(p3)
         vQ(j,2)=R(j)
       enddo
 
+c--- compute correct vector-like coupling for diagrams with Z coupled to a loop
+      vcouple(1)=czip
+      vcouple(2)=czip
+      do j=1,nf
+      do polz=1,2
+      vcouple(polz)=vcouple(polz)
+     & +Q(j)*q1+0.5d0*(vQ(j,1)+vQ(j,2))*v2(polz)*prop
+      enddo
+      enddo
+      
 c--- set-up amplitudes first, to improve efficiency
       do polq=1,2
       do polz=1,2
@@ -166,11 +176,10 @@ c--- set-up amplitudes first, to improve efficiency
       if ((j .eq. 0) .and. (k .eq. 0)) then
         msqv(j,k)=msqv(j,k)+mmsq(polq,polz)*(
      .    cdabs(Q(flav)*q1+vQ(flav,polq)*v2(polz)*prop)**2)
-     .            +mmsq_vec(polq,polz)*dble(
-     .    (Q(flav)*q1+vQ(flav,polq)*v2(polz)*prop)
-     .   *(Q(flav)*q1+0.5d0*(vQ(flav,1)+vQ(flav,2))*v2(polz)*prop))
-     .            +mmsq_ax(polq,polz)*dble(
-     .    (Q(flav)*q1+vQ(flav,polq)*v2(polz)*prop)
+     .            +dble(mmsq_vec(polq,polz)
+     .   *dconjg(Q(flav)*q1+vQ(flav,polq)*v2(polz)*prop)*vcouple(polz))
+     .            +dble(mmsq_ax(polq,polz)
+     .   *dconjg(Q(flav)*q1+vQ(flav,polq)*v2(polz)*prop)
      .   *(v2(polz)*prop)/sin2w)
       endif
       enddo

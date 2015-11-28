@@ -4,23 +4,8 @@
 ************************************************************************
       implicit none
       include 'constants.f'
-      include 'maxwt.f'
-      include 'masses.f'
-      include 'facscale.f'
-      include 'scale.f'
-      include 'zerowidth.f'
-      include 'flags.f'
-      include 'clustering.f'
-      include 'anomcoup.f'
-      include 'gridinfo.f'
-      include 'limits.f'
-      include 'jetcuts.f'
-      include 'lhapdf.f'
-      include 'pdlabel.f'
       include 'removebr.f'
-      include 'dynamicscale.f'
       include 'PDFerrors.f'
-      include 'stopscales.f'
       include 'process.f'
       integer unitno,j,k,itno
       double precision xsec,xsec_err
@@ -35,10 +20,6 @@
       integer NPTYPE,NGROUP,NSET
       double precision sqrts
       double precision Rcut
-      double precision leptpt,leptrap,misspt,Rjlmin,Rllmin,delyjjmin,
-     . leptpt2,leptrap2,gammpt,gammrap,gammcone,gammcut
-      integer lbjscheme
-      logical jetsopphem
  
       common/outputflags/creatent,dswhisto      
 
@@ -54,9 +35,6 @@
       
       common/Rcut/Rcut
       common/makecuts/makecuts
-      common/leptcuts/leptpt,leptrap,misspt,Rjlmin,Rllmin,delyjjmin,
-     . leptpt2,leptrap2,gammpt,gammrap,gammcone,gammcut,
-     . lbjscheme,jetsopphem
 
       common/origij/origij
 
@@ -115,113 +93,119 @@ c---  normalized by sigma(gg->H, finite mt)/sigma(gg->H, mt-> infinity)
         write(unitno,*)
       endif
 
-      write(unitno,*) '( Run corresponds to this input file)'
-      write(unitno,*)
-      write(unitno,*)
-     . '( [Flags to specify the mode in which MCFM is run] )'
-      write(unitno,98) evtgen,'evtgen'
-      write(unitno,98) creatent,'creatent'
-      write(unitno,98) skipnt,'skipnt'
-      write(unitno,98) dswhisto,'dswhisto'
+c--- new routine for writing out contents of input file
+      call writeinput(unitno,' (',' )','WRITEALL')
 
-      write(unitno,*)
-      write(unitno,*)
-     . '( [General options to specify the process and execution] )'
-      write(unitno,97) nproc,'nproc'
-      write(unitno,96) part,'part'
-      write(unitno,96) runstring,'runstring'
-      write(unitno,99) sqrts,'sqrts'
-      write(unitno,97) ih1,'ih1'
-      write(unitno,97) ih2,'ih2'
-      write(unitno,99) hmass,'hmass'
-c--- catch special scale choices for stop+b process
-      if ( (nproc .eq. 231) .or. (nproc .eq. 236)      
-     . .or.(nproc .eq. 241) .or. (nproc .eq. 246)      
-     . .or.(nproc .eq. 242) .or. (nproc .eq. 247) ) then
-         write(unitno,99) renscale_L,'renscale_L'
-         write(unitno,99) facscale_L,'facscale_L'
-         write(unitno,99) renscale_H,'renscale_H'
-         write(unitno,99) facscale_H,'facscale_H'
-      else
-         write(unitno,99) scale,'scale'
-         write(unitno,99) facscale,'facscale'
-      endif
 
-      write(unitno,98) dynamicscale,'dynamicscale'
-      write(unitno,98) zerowidth,'zerowidth'
-      write(unitno,98) removebr,'removebr'
-      write(unitno,97) itmx1,'itmx1'
-      write(unitno,97) ncall1,'ncall1'
-      write(unitno,97) itmx2,'itmx2'
-      write(unitno,97) ncall2,'ncall2'
-      write(unitno,97) origij,'ij'
-      write(unitno,98) dryrun,'dryrun'
-      write(unitno,98) Qflag,'Qflag'
-      write(unitno,98) Gflag,'Gflag'
-      
-      write(unitno,*)
-      write(unitno,*) 
-     . '( [Heavy quark masses] )'
-      write(unitno,99) mt,'top mass'
-      write(unitno,99) mb,'bottom mass'
-      write(unitno,99) mc,'charm mass'
+c--- old lines for writing out inputs
 
-      write(unitno,*)
-      write(unitno,*) 
-     . '( [Pdf selection] )'
-      write(unitno,96) pdlabel,'pdlabel '
-      write(unitno,97) NGROUP,'NGROUP'
-      write(unitno,97) NSET,'NSET'
-      write(unitno,96) PDFname,'LHAPDF group'
-      write(unitno,97) PDFmember,'LHAPDF set'
-
-      write(unitno,*)
-      write(unitno,*)
-     . '( [Jet definition and event cuts] )'
-      write(unitno,99) dsqrt(wsqmin),'m34min'
-      write(unitno,99) dsqrt(wsqmax),'m34max'
-      write(unitno,99) dsqrt(bbsqmin),'m56min'
-      write(unitno,99) dsqrt(bbsqmax),'m56max'
-      write(unitno,98) inclusive,'inclusive'
-      write(unitno,96) algorithm,'algorithm'
-      write(unitno,99) ptjetmin,'ptjetmin'
-      write(unitno,99) etajetmax,'etajetmax'
-      write(unitno,99) Rcut,'Rcut'
-      write(unitno,98) makecuts,'makecuts'
-      write(unitno,99) leptpt,'leptpt'
-      write(unitno,99) leptrap,'leptrap'
-      write(unitno,99) misspt,'misspt'
-      write(unitno,99) leptpt2,'leptpt2'
-      write(unitno,99) leptrap2,'leptrap2'
-      write(unitno,99) Rjlmin,'Rjlmin'
-      write(unitno,99) Rllmin,'Rllmin'
-      write(unitno,99) delyjjmin,'delyjjmin'
-      write(unitno,98) jetsopphem,'jetsopphem'
-      write(unitno,97) lbjscheme,'lbjscheme'
-      write(unitno,99) gammpt,'gammpt'
-      write(unitno,99) gammrap,'gammrap'
-      write(unitno,99) gammcone,'gammcone'
-      write(unitno,99) gammcut,'gammcut'
-
-      write(unitno,*)
-      write(unitno,*)
-     . '( [Anomalous couplings of the W and Z] )'
-      write(unitno,99) delg1_z,'delg1_z'
-      write(unitno,99) delk_z,'delk_z'
-      write(unitno,99) delk_g,'delk_g'
-      write(unitno,99) lambda_z,'lambda_z'
-      write(unitno,99) lambda_g,'lambda_g'
-      write(unitno,99) tevscale,'tevscale'
-
-      write(unitno,*)
-      write(unitno,*) 
-     . '( [How to resume/save a run] )'
-      write(unitno,98) readin,'readin'
-      write(unitno,98) writeout,'writeout'
-      write(unitno,96) ingridfile,'ingridfile'
-      write(unitno,96) outgridfile,'outgridfile'
-
-      write(unitno,99)
+c      write(unitno,*) '( Run corresponds to this input file)'
+c      write(unitno,*)
+c      write(unitno,*)
+c     . '( [Flags to specify the mode in which MCFM is run] )'
+c      write(unitno,98) evtgen,'evtgen'
+c      write(unitno,98) creatent,'creatent'
+c      write(unitno,98) skipnt,'skipnt'
+c      write(unitno,98) dswhisto,'dswhisto'
+c
+c      write(unitno,*)
+c      write(unitno,*)
+c     . '( [General options to specify the process and execution] )'
+c      write(unitno,97) nproc,'nproc'
+c      write(unitno,96) part,'part'
+c      write(unitno,96) runstring,'runstring'
+c      write(unitno,99) sqrts,'sqrts'
+c      write(unitno,97) ih1,'ih1'
+c      write(unitno,97) ih2,'ih2'
+c      write(unitno,99) hmass,'hmass'
+cc--- catch special scale choices for stop+b process
+c      if ( (nproc .eq. 231) .or. (nproc .eq. 236)      
+c     . .or.(nproc .eq. 241) .or. (nproc .eq. 246)      
+c     . .or.(nproc .eq. 242) .or. (nproc .eq. 247) ) then
+c         write(unitno,99) renscale_L,'renscale_L'
+c         write(unitno,99) facscale_L,'facscale_L'
+c         write(unitno,99) renscale_H,'renscale_H'
+c         write(unitno,99) facscale_H,'facscale_H'
+c      else
+c         write(unitno,99) scale,'scale'
+c         write(unitno,99) facscale,'facscale'
+c      endif
+c
+c      write(unitno,98) dynamicscale,'dynamicscale'
+c      write(unitno,98) zerowidth,'zerowidth'
+c      write(unitno,98) removebr,'removebr'
+c      write(unitno,97) itmx1,'itmx1'
+c      write(unitno,97) ncall1,'ncall1'
+c      write(unitno,97) itmx2,'itmx2'
+c      write(unitno,97) ncall2,'ncall2'
+c      write(unitno,97) origij,'ij'
+c      write(unitno,98) dryrun,'dryrun'
+c      write(unitno,98) Qflag,'Qflag'
+c      write(unitno,98) Gflag,'Gflag'
+c      
+c      write(unitno,*)
+c      write(unitno,*) 
+c     . '( [Heavy quark masses] )'
+c      write(unitno,99) mt,'top mass'
+c      write(unitno,99) mb,'bottom mass'
+c      write(unitno,99) mc,'charm mass'
+c
+c      write(unitno,*)
+c      write(unitno,*) 
+c     . '( [Pdf selection] )'
+c      write(unitno,96) pdlabel,'pdlabel '
+c      write(unitno,97) NGROUP,'NGROUP'
+c      write(unitno,97) NSET,'NSET'
+c      write(unitno,96) PDFname,'LHAPDF group'
+c      write(unitno,97) PDFmember,'LHAPDF set'
+c
+c      write(unitno,*)
+c      write(unitno,*)
+c     . '( [Jet definition and event cuts] )'
+c      write(unitno,99) dsqrt(wsqmin),'m34min'
+c      write(unitno,99) dsqrt(wsqmax),'m34max'
+c      write(unitno,99) dsqrt(bbsqmin),'m56min'
+c      write(unitno,99) dsqrt(bbsqmax),'m56max'
+c      write(unitno,98) inclusive,'inclusive'
+c      write(unitno,96) algorithm,'algorithm'
+c      write(unitno,99) ptjetmin,'ptjetmin'
+c      write(unitno,99) etajetmax,'etajetmax'
+c      write(unitno,99) Rcut,'Rcut'
+c      write(unitno,98) makecuts,'makecuts'
+c      write(unitno,99) leptpt,'leptpt'
+c      write(unitno,99) leptrap,'leptrap'
+c      write(unitno,99) misspt,'misspt'
+c      write(unitno,99) leptpt2,'leptpt2'
+c      write(unitno,99) leptrap2,'leptrap2'
+c      write(unitno,99) Rjlmin,'Rjlmin'
+c      write(unitno,99) Rllmin,'Rllmin'
+c      write(unitno,99) delyjjmin,'delyjjmin'
+c      write(unitno,98) jetsopphem,'jetsopphem'
+c      write(unitno,97) lbjscheme,'lbjscheme'
+c      write(unitno,99) gammpt,'gammpt'
+c      write(unitno,99) gammrap,'gammrap'
+c      write(unitno,99) gammcone,'gammcone'
+c      write(unitno,99) gammcut,'gammcut'
+c
+c      write(unitno,*)
+c      write(unitno,*)
+c     . '( [Anomalous couplings of the W and Z] )'
+c      write(unitno,99) delg1_z,'delg1_z'
+c      write(unitno,99) delk_z,'delk_z'
+c      write(unitno,99) delk_g,'delk_g'
+c      write(unitno,99) lambda_z,'lambda_z'
+c      write(unitno,99) lambda_g,'lambda_g'
+c      write(unitno,99) tevscale,'tevscale'
+c
+c      write(unitno,*)
+c      write(unitno,*) 
+c     . '( [How to resume/save a run] )'
+c      write(unitno,98) readin,'readin'
+c      write(unitno,98) writeout,'writeout'
+c      write(unitno,96) ingridfile,'ingridfile'
+c      write(unitno,96) outgridfile,'outgridfile'
+c
+c      write(unitno,99)
 
       return
 

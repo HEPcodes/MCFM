@@ -41,7 +41,7 @@ c---
       qbg=aveqg*fac*ubdgmsq(6,1,4,3,5,2,zb,za)
 
       endif
-
+     
 
       do j=-nf,nf
       do k=-nf,nf
@@ -51,6 +51,7 @@ c--set msq=0 to initalize
             msq(j,k)=Vsq(j,k)*qqb
           elseif ((j .eq. 0) .and. (k .lt. 0)) then
             msq(j,k)=Vsum(k)*gqb
+            
           elseif ((j .eq. 0) .and. (k .gt. 0)) then
             msq(j,k)=Vsum(k)*gq
           elseif ((j .lt. 0) .and. (k .gt. 0)) then

@@ -10,7 +10,6 @@ c---     average is fixed for "qqbar" rather than "qg"
       include 'sprods_com.f'
       include 'masses.f'
       include 'ewcouple.f'
-      include 'qcdcouple.f'
       include 'nwz.f'
       include 'stopscales.f'
       double precision me_lc,me_slc

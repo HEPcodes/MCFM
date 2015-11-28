@@ -6,7 +6,6 @@ c--- label on amplitudes represent gluon helicities for ia,ig
 c---   1 = negative helicity, 2 = positive helicity    
       implicit none
       include 'constants.f'
-      include 'masses.f'
       include 'zprods_decl.f'
       integer is,ig,ie,in,ia,je,jn,jb
       double precision p(mxpart,4),tsq,mq,qwidth

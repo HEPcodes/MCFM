@@ -101,8 +101,8 @@ c--- ensure that MFINAL doesn't turn off booking for intermediate results
 c        write(6,*) 'Writing .dat for plot ',j
         call flush(6)
       endif
-      call mprint(j)
-      if (book(j) .ne. 'YES') nempty=nempty+1
+      call mprint(j,2*maxhisto+j)
+c      if (book(j) .ne. 'YES') nempty=nempty+1
       enddo
       close (unit=98)
 

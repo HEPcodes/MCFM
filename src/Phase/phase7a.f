@@ -14,9 +14,8 @@ c---- with all 2 pi's (ie 1/(2*pi)^17)
       double precision r(mxdim)
       double precision p1(4),p2(4),p5(4),p6(4),p3(4),p4(4),p7(4),
      . p8(4),p9(4)
-      double precision p12(4),p345(4),p678(4),p789(4),p34(4),smin,
-     . p78(4),p56(4),p3456(4)
-      double precision wt,wt0,wt12,wt789,wt345,wt34,wt78,wt3456,wt56
+      double precision p12(4),p789(4),p34(4),p78(4),p56(4),p3456(4)
+      double precision wt,wt0,wt12,wt789,wt34,wt78,wt3456,wt56
       double precision mass2,width2,mass3,width3
       common/breit/n2,n3,mass2,width2,mass3,width3 
       integer j
@@ -24,7 +23,7 @@ c---- with all 2 pi's (ie 1/(2*pi)^17)
 
 c--- written for real contribution to qq->H(->WW)+qq only
       if  ((case .eq. 'qq_HWW') .or. (case .eq. 'HWW2jt')
-     ..or. (case .eq. 'HZZ2jt')) then
+     ..or. (case .eq. 'HZZ2jt') .or. (case .eq. 'WpWp3j')) then
         continue
       else 
         write(6,*) 'Phase space routine not correct - needs updating.'
@@ -38,14 +37,22 @@ c--- written for real contribution to qq->H(->WW)+qq only
       do j=1,4
       p12(j)=-p1(j)-p2(j)
       enddo
-      smin=mb**2
 
 c--- In the case of HWW/HZZ+2jets, we should generate s3456 according
 c--- to a Breit-Wigner at mH
+
+      if (case.eq.'WpWp3j') then
+      n2=0
+      mass2=0
+      width2=0
+      n3=0
+      else
       n2=1
       mass2=hmass
       width2=hwidth
       n3=0
+      endif
+
       call phi1_2(r(1),r(2),r(3),r(4),p12,p3456,p789,wt12,*99)
 
       if     (case .eq. 'HWW2jt') then
@@ -62,6 +69,13 @@ c--- to a Breit-Wigner at mH
         n3=1
         mass3=zmass
         width3=zwidth
+      elseif (case .eq. 'WpWp3j') then
+        n2=1
+        mass2=wmass
+        width2=wwidth
+        n3=1
+        mass3=wmass
+        width3=wwidth
       endif
 
       call phi1_2(r(5),r(6),r(7),r(8),p3456,p56,p34,wt3456,*99)

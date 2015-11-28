@@ -1,6 +1,5 @@
       subroutine wwamps(j1,j2,j3,j4,j5,j6,j7,za,zb,f)
 c  -first label of fs,ft is gluon polarization, second is qqb line
-
       implicit none
       include 'constants.f'
       include 'sprods_com.f'
@@ -9,19 +8,14 @@ c  -first label of fs,ft is gluon polarization, second is qqb line
       include 'masses.f'
       include 'anomcoup.f'
       include 'process.f'
-      
+      include 'srdiags.f'      
       integer j,k,jtype,j1,j2,j3,j4,j5,j6,j7,mplus,minus
       double complex A7treea,B7treea,B7treeb
       double complex f(5,2,2),A7b_1,A7b_2,A7b_3
       double complex prop34,prop56,propboth
-      logical srdiags
       common/xanomcoup/xdelg1_z,xdelg1_g,xlambda_g,xlambda_z,
-     . xdelk_g,xdelk_z
+     & xdelk_g,xdelk_z
       data minus,mplus/1,2/
-      
-c--- include singly resonant diagrams if zerowidth=.false. , but only
-c---  as long as anomtgc=.false. too
-      srdiags=((zerowidth .eqv. .false.) .and. (anomtgc .eqv. .false.))
       
 c----initialize to zero
       do jtype=3,4

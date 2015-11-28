@@ -14,7 +14,7 @@ c---- with all 2 pi's (ie 1/(2*pi)^8)
       double precision r(mxdim)
       double precision p1(4),p2(4),p3(4),p4(4),p5(4),p6(4)
       double precision p12(4),p34(4),p56(4),p345(4)
-      double precision wt,wt3456,wt34,wt56,wt0,m3,m4,mtbsq
+      double precision wt,wt3456,wt34,wt56,wt0,mtbsq
       double precision p35(4),p46(4),wt35,wt46
       integer j
       parameter(wt0=1d0/twopi**2)
@@ -26,7 +26,7 @@ c p56 is the b-bbar system
 c--- p3 and p4 are normally massless, except for single top
 c--- production with an explicit b - then use mt (p3) and mb (p4)
       if ((case .eq. 'qg_tbq') .or. (case .eq. 'qq_tbg')
-     ..or.(case .eq. 'qqtbgg')) then
+     ..or.(case .eq. 'qqtbgg') .or. (case .eq. 'qgtbqq')) then
 c--- hack to generate small s56
 c        r(1)=1d0-r(1)/1d3
 c        r(2)=r(2)/1d3

@@ -8,7 +8,6 @@ c---     u,q1,d,q2 are already fixed for this crossing
       include 'sprods_com.f'
       include 'masses.f'
       include 'ewcouple.f'
-      include 'qcdcouple.f'
       include 'nwz.f'
       include 'stopscales.f'
       double precision me

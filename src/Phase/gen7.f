@@ -48,7 +48,7 @@ c---if x's out of normal range alternative return
       p2(3)=+xx(2)*sqrts*half
 
       if  ((case .eq. 'qq_HWW') .or. (case .eq. 'HWW2jt')
-     ..or. (case .eq. 'HZZ2jt')) then
+     ..or. (case .eq. 'HZZ2jt').or.(case .eq. 'WpWp3j')) then
         call  phase7a(r,p1,p2,p3,p4,p5,p6,p7,p8,p9,pswt,*999) 
       elseif ((case .eq. 'WH__WW') .or. (case .eq. 'ZH__WW')) then
         call  phase7b(r,p1,p2,p3,p4,p5,p6,p7,p8,p9,pswt,*999) 

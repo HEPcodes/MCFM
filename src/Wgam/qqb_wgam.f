@@ -25,7 +25,8 @@ c--set msq=0 to initalize
 
       call spinoru(5,p,za,zb)
       fac=aveqq*2d0*xn*gwsq**2*esq
-      
+
+    
       if (nwz .eq. -1) then 
          qbq=fac*(abs(agamtree(1,2,3,4,5,za,zb,-1))**2
      .           +abs(agamtree(1,2,3,4,5,za,zb,+1))**2)
@@ -39,14 +40,18 @@ c--set msq=0 to initalize
       endif
 
       do j=-nf,nf
-      do k=-nf,nf
-          if ((j .gt. 0) .and. (k .lt. 0)) then
+      do k=-nf,nf 
+         if ((j .gt. 0) .and. (k .lt. 0)) then            
             msq(j,k)=Vsq(j,k)*qqb
-          elseif ((j .lt. 0) .and. (k .gt. 0)) then
+       
+         elseif ((j .lt. 0) .and. (k .gt. 0)) then
             msq(j,k)=Vsq(j,k)*qbq
-          endif
+           
+         endif
+         
       enddo
       enddo
+            
       return
       end
 
@@ -73,7 +78,7 @@ C  -i * Matrix element is what is implemented
      .           +Qd*zb(p1,p5)/za(p2,p5)*prp34
          agamtree=+agamtree*za(p1,p3)**2/(za(p4,p3)*(s(p1,p2)-s(p3,p4)))
          endif
-      return
+         return
       else
          if (hgamma .eq. -1) then
          agamtree=Qu*za(p2,p5)/(zb(p4,p3)*zb(p1,p5))*prp34
@@ -87,6 +92,7 @@ C  -i * Matrix element is what is implemented
          agamtree=agamtree*za(p1,p3)**2/(s(p1,p2)-s(p3,p4))
          endif
       endif
+
       return
       end
 

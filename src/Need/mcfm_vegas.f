@@ -1,19 +1,32 @@
       subroutine mcfm_vegas(myinit,myitmx,myncall,mybin,xinteg,xerr)
 ************************************************************************
 *                                                                      *
-*  This routine should perform the sweeps of vegasnr                     *
+*  This routine should perform the sweeps of vegasnr                   *
 *                                                                      *
 *    Input parameters:                                                 *
-*       myinit  :  the vegasnr routine entry point                       *
-*       myitmx  :  the number of vegasnr sweeps                          *
+*       myinit  :  the vegasnr routine entry point                     *
+*       myitmx  :  the number of vegasnr sweeps                        *
 *      myncall  :  the number of iterations per sweep                  *
 *          bin  :  whether or not the results should be histogrammed   *
 *                                                                      *
 *    Returned variables:                                               *
 *       xinteg  :  value of integration                                *
-*         xerr  :  integration error
+*         xerr  :  integration error                                   *
+*                                                                      *
+*    This version is modified to work with photon processes.           *
+*    At NLO one can have:                                              *
+*                                                                      *
+*    virt -> Born + virtual corrections + integrated QCD counterterms  *
+*    real -> Real + subtraction terms                                  *  
+*                [+ QED photon-quark subtractions if frag=.true.]      *
+*    frag -> Fragmentation contributions, incl. integrated QED dipoles *
+*    frag -> Fragmentation contributions, incl. integrated QED dipoles *
+*                                                                      *
+*    tota -> virt + real [frag=.false.]                                *
+*    tota -> virt + real + frag [frag=.true.]                          *
 *                                                                      *
 ************************************************************************
+
       implicit none
       include 'gridinfo.f'
       include 'realwt.f'
@@ -21,22 +34,24 @@
       include 'facscale.f'
       include 'vegas_common.f'
       include 'PDFerrors.f'
+      include 'frag.f'
+      include 'reset.f'
       integer myitmx,myncall,myinit,i,j,k,nproc
       logical mybin,bin
       double precision sig,sd,chi,sigr,sdr,sigdk,sddk,chidk,
-     . xreal,xreal2,xinteg,xerr,adjust,myscale,myfacscale
+     & sigfrag,sdfrag,chifrag,
+     & xreal,xreal2,xinteg,xerr,adjust,myscale,myfacscale
       character*4 part,mypart
       common/nproc/nproc
       common/part/part
       common/mypart/mypart
       common/bin/bin
       common/xreal/xreal,xreal2
-      common/reset/reset,scalereset
-      double precision lowint,virtint,realint
+      double precision lowint,virtint,realint,fragint
       double precision region(2*mxdim),lord_bypart(-1:1,-1:1)
-      logical first,reset,scalereset,myreadin
+      logical first,myreadin
       common/bypart/lord_bypart
-      external lowint,virtint,realint
+      external lowint,virtint,realint,fragint
       data first/.true./
       save first
            
@@ -45,9 +60,11 @@ c--- total of virt and real may be combined at the end for 'tota'
       sig=0d0
       sigr=0d0
       sigdk=0d0
+      sigfrag=0d0
       sd=0d0
       sdr=0d0
       sddk=0d0
+      sdfrag=0d0
       xreal=0d0
       xreal2=0d0
       
@@ -87,6 +104,17 @@ c--- Basic lowest-order integration
      .               0,sig,sd,chi)
       endif
 
+
+c---- REMOVE THIS PIECE EVENTUALLY
+      if (part .eq. 'frit') then
+         ndim=ndim+1
+         call boundregion(ndim,region) 
+         call vegasnr(region,ndim,lowint,myinit,myncall,myitmx,
+     &                 0,sig,sd,chi)
+         ndim=ndim-1
+      endif
+c---- REMOVE THIS PIECE EVENTUALLY
+
 c--- If we're doing the tota integration, then set up the grid info
       if ((mypart .eq. 'tota') .or. (mypart .eq. 'todk')) then        
         if (first .and. (myinit .eq. 1)) then
@@ -110,7 +138,7 @@ c--- Virtual integration should have one extra dimension
 c--- (added and then taken away)
       if (  (mypart .eq. 'virt') .or. (mypart .eq. 'tota')
      . .or. (mypart .eq. 'todk') )  then
-        part='virt'
+        part='virt'        
         reset=.true.
         scalereset=.true.
         ndim=ndim+1
@@ -138,7 +166,7 @@ c-- special input name for real grid
           endif
         endif        
       endif 
-      
+
 c--- Real integration should have three extra dimensions
 c--- 'realwt' is a special option that in general should be false
 c--- ('realwt' true samples the integral according to the
@@ -248,9 +276,50 @@ c-- special input name for real grid
         endif
       endif      
 
+c--- Fragmentation contribution: only if frag is set to .true.
+c--- If we're doing the tota integration and , then set up the grid info
+      if ((mypart .eq. 'tota') .and. (frag)) then
+        if (first .and. (myinit .eq. 1)) then
+c-- special input name for real grid
+          ingridfile(8:11)='frag'
+          readin=myreadin
+        else
+          if (first .eqv. .true.) then
+            readin=.false.
+            writeout=.true.
+            outgridfile='dvegas_frag.grid'          
+          else
+            readin=.true.
+            writeout=.false.
+            ingridfile='dvegas_frag.grid'
+          endif
+        endif        
+      endif 
+      
+      if ( ((mypart .eq. 'tota') .and. (frag))
+     & .or. (mypart .eq. 'frag') ) then
+         part='frag'
+         scale=myscale
+         facscale=myfacscale
+         if (mypart .eq. 'frag') then
+	   scalereset=.true.
+         else
+	   reset=.true.
+         endif
+	 rescale=.true.		! turn on rescaling for this piece
+         ncall=myncall
+c         write(6,*) 'Adjusting number of points for frag to',ncall
+         ndim=ndim+1
+         call boundregion(ndim,region) 
+         call vegasnr(region,ndim,fragint,myinit,myncall,myitmx,
+     &                 0,sigfrag,sdfrag,chifrag)
+         ndim=ndim-1
+	 rescale=.false. 	! turn rescaling off again
+      endif
+
 c--- calculate integration variables to be returned
-      xinteg=sig+sigr+sigdk
-      xerr=dsqrt(sd**2+sdr**2+sddk**2)      
+      xinteg=sig+sigr+sigdk+sigfrag
+      xerr=dsqrt(sd**2+sdr**2+sddk**2+sdfrag**2)      
       
 c--- return part and scale to their real values
       part=mypart

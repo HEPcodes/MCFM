@@ -32,10 +32,24 @@ tail -n +10 makefile >> makefile.new
 mv makefile makefile.orig
 mv makefile.new makefile
 
+# Produce LaTeX manual
 mkdir -p obj/
 cd Doc
 latex mcfm > latex.out
 latex mcfm > latex.out
+cd ..
+
+# Manually adjust path in ff directory
+sed -e "s|REPLACEPATH|${PWD}|" QCDLoop/ff/ffinit_mine_orig.f > QCDLoop/ff/ffinit_mine.f
+
+# Compile QCDLoop libraries if necessary
+if ( ! -e QCDLoop/ql/libqcdloop.a ) then
+  ls
+  echo 'Compiling QCDLoop library'
+  cd QCDLoop
+  make
+  cd ..
+endif
 
 echo ''
 echo 'Installation complete. You may now compile MCFM by running make.'

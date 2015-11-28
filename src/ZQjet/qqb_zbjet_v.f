@@ -31,12 +31,13 @@
       include 'nflav.f'
       include 'heavyflav.f'
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),
-     . mmsq_gq(2,2),mmsq_gq_vec(2,2),mmsq_gq_ax(2,2),
-     . mmsq_qg(2,2),mmsq_qg_vec(2,2),mmsq_qg_ax(2,2),
-     . mmsq_qbg(2,2),mmsq_qbg_vec(2,2),mmsq_qbg_ax(2,2),
-     . mmsq_gqb(2,2),mmsq_gqb_vec(2,2),mmsq_gqb_ax(2,2),
+     . mmsq_gq(2,2),mmsq_qg(2,2),mmsq_qbg(2,2),mmsq_gqb(2,2),
      . p(mxpart,4),pswap(mxpart,4),fac
-      double complex atreez,a61z,a63z,prop,tamp,lamp
+      double complex atreez,a61z,a63z,prop,vcouple(2),tamp,lamp,
+     . mmsq_gq_vec(2,2),mmsq_gq_ax(2,2),
+     . mmsq_qg_vec(2,2),mmsq_qg_ax(2,2),
+     . mmsq_qbg_vec(2,2),mmsq_qbg_ax(2,2),
+     . mmsq_gqb_vec(2,2),mmsq_gqb_ax(2,2)
       integer nu,j,k,cs,polq,polb,polz
       double precision subuv(0:2)
       double precision faclo,v2(2),vQ(nf,2)
@@ -82,6 +83,16 @@ c--- initialize the matrix element squared
         vQ(j,2)=R(j)
       enddo
 
+c--- compute correct vector-like coupling for diagrams with Z coupled to a loop
+      vcouple(1)=czip
+      vcouple(2)=czip
+      do j=1,nf
+      do polz=1,2
+      vcouple(polz)=vcouple(polz)
+     & +Q(j)*q1+0.5d0*(vQ(j,1)+vQ(j,2))*v2(polz)*prop
+      enddo
+      enddo
+      
 ************************************************************************
 *     Endpoint contributions from QQGG matrix elements                 *
 *     Loop matrix elements are also initialized here                   *
@@ -109,11 +120,11 @@ CALL    0--> q(p5)+g(p6)+g(p1)+qb(p2)+lbar(p4)+l(p3)
       call xzqqgg_v(mmsq_gq,mmsq_gq_vec,mmsq_gq_ax)
 
 c--- obtain gqb from gq by symmetry
-      call xzqqgg_v_sym(mmsq_gqb_ax)
       do polq=1,2
       do polz=1,2
         mmsq_gqb(polq,polz)=mmsq_gq(3-polq,polz)
         mmsq_gqb_vec(polq,polz)=mmsq_gq_vec(3-polq,polz)
+        mmsq_gqb_ax(polq,polz)=-mmsq_gq_ax(3-polq,polz)
       enddo
       enddo
 
@@ -132,11 +143,11 @@ CALL    0--> q(p5)+g(p6)+g(p2)+qb(p1)+lbar(p4)+l(p3)
       call xzqqgg_v(mmsq_qg,mmsq_qg_vec,mmsq_qg_ax)
 
 c--- obtain qbg from qg by symmetry
-      call xzqqgg_v_sym(mmsq_qbg_ax)
       do polq=1,2
       do polz=1,2
         mmsq_qbg(polq,polz)=mmsq_qg(3-polq,polz)
         mmsq_qbg_vec(polq,polz)=mmsq_qg_vec(3-polq,polz)
+        mmsq_qbg_ax(polq,polz)=-mmsq_qg_ax(3-polq,polz)
       enddo
       enddo
       
@@ -157,41 +168,37 @@ c--- UV counter-term is already included in a6routine.f
       if     ((j .eq.  +flav) .and. (k .eq. 0)) then
         msqv(j,k)=msqv(j,k)+(aveqg/avegg)*(mmsq_qg(polq,polz)*(
      .             cdabs(Q(j)*q1+vQ(j,polq)*v2(polz)*prop)**2)
-     .                     +mmsq_qg_vec(polq,polz)*dble(
-     .             (Q(j)*q1+vQ(j,polq)*v2(polz)*prop)
-     .            *(Q(j)*q1+0.5d0*(vQ(j,1)+vQ(j,2))*v2(polz)*prop))
-     .                     +mmsq_qg_ax(polq,polz)*dble(
-     .             (Q(j)*q1+vQ(j,polq)*v2(polz)*prop)
-     .            *(v2(polz)*prop)/sin2w))
+     .                     +dble(mmsq_qg_vec(polq,polz)
+     .          *dconjg(Q(j)*q1+vQ(j,polq)*v2(polz)*prop)*vcouple(polz))
+     .                     +dble(mmsq_qg_ax(polq,polz)
+     .          *dconjg(Q(j)*q1+vQ(j,polq)*v2(polz)*prop)
+     .          *(v2(polz)*prop)/sin2w))
 
       elseif ((j .eq. -flav) .and. (k .eq. 0)) then
         msqv(j,k)=msqv(j,k)+(aveqg/avegg)*(mmsq_qbg(polq,polz)*(
      .             cdabs(Q(-j)*q1+vQ(-j,polq)*v2(polz)*prop)**2)
-     .                     +mmsq_qbg_vec(polq,polz)*dble(
-     .             (Q(-j)*q1+vQ(-j,polq)*v2(polz)*prop)
-     .            *(Q(-j)*q1+0.5d0*(vQ(-j,1)+vQ(-j,2))*v2(polz)*prop))
-     .                     +mmsq_qbg_ax(polq,polz)*dble(
-     .             (Q(-j)*q1+vQ(-j,polq)*v2(polz)*prop)
-     .            *(v2(polz)*prop)/sin2w))
+     .                     +dble(mmsq_qbg_vec(polq,polz)
+     .        *dconjg(Q(-j)*q1+vQ(-j,polq)*v2(polz)*prop)*vcouple(polz))
+     .                     +dble(mmsq_qbg_ax(polq,polz)
+     .        *dconjg(Q(-j)*q1+vQ(-j,polq)*v2(polz)*prop)
+     .        *(v2(polz)*prop)/sin2w))
 
       elseif ((j .eq. 0) .and. (k .eq. +flav)) then
         msqv(j,k)=msqv(j,k)+(aveqg/avegg)*(mmsq_gq(polq,polz)*(
      .             cdabs(Q(k)*q1+vQ(k,polq)*v2(polz)*prop)**2)
-     .                     +mmsq_gq_vec(polq,polz)*dble(
-     .             (Q(k)*q1+vQ(k,polq)*v2(polz)*prop)
-     .            *(Q(k)*q1+0.5d0*(vQ(k,1)+vQ(k,2))*v2(polz)*prop))
-     .                     +mmsq_gq_ax(polq,polz)*dble(
-     .             (Q(k)*q1+vQ(k,polq)*v2(polz)*prop)
-     .            *(v2(polz)*prop)/sin2w))
+     .                     +dble(mmsq_gq_vec(polq,polz)
+     .          *dconjg(Q(k)*q1+vQ(k,polq)*v2(polz)*prop)*vcouple(polz))
+     .                     +dble(mmsq_gq_ax(polq,polz)
+     .          *dconjg(Q(k)*q1+vQ(k,polq)*v2(polz)*prop)
+     .          *(v2(polz)*prop)/sin2w))
       elseif ((j .eq. 0) .and. (k .eq. -flav)) then
         msqv(j,k)=msqv(j,k)+(aveqg/avegg)*(mmsq_gqb(polq,polz)*(
      .             cdabs(Q(-k)*q1+vQ(-k,polq)*v2(polz)*prop)**2)
-     .                     +mmsq_gqb_vec(polq,polz)*dble(
-     .             (Q(-k)*q1+vQ(-k,polq)*v2(polz)*prop)
-     .            *(Q(-k)*q1+0.5d0*(vQ(-k,1)+vQ(-k,2))*v2(polz)*prop))
-     .                     +mmsq_gqb_ax(polq,polz)*dble(
-     .             (Q(-k)*q1+vQ(-k,polq)*v2(polz)*prop)
-     .            *(v2(polz)*prop)/sin2w))
+     .                     +dble(mmsq_gqb_vec(polq,polz)
+     .        *dconjg(Q(-k)*q1+vQ(-k,polq)*v2(polz)*prop)*vcouple(polz))
+     .                     +dble(mmsq_gqb_ax(polq,polz)
+     .        *dconjg(Q(-k)*q1+vQ(-k,polq)*v2(polz)*prop)
+     .        *(v2(polz)*prop)/sin2w))
       endif
 
       enddo

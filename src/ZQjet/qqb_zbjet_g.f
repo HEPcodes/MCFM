@@ -25,8 +25,6 @@ c--- isub=2 means that p7 is another heavy quark
       include 'zcouple.f'
       include 'ewcouple.f'
       include 'ewcharge.f'
-      include 'flags.f'
-      include 'lc.f'
       integer j,k,jj(-nf:nf),kk(-nf:nf)
       double precision P(mxpart,4),msq(-nf:nf,-nf:nf)
       double precision mmsq_gg(2,2),

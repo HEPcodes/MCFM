@@ -16,10 +16,10 @@ c      include 'ewinput.f'
       include 'dynamicscale.f'
       include 'stopscales.f'
       include 'fourthgen.f'
-      character*4 part,mypart
+      character*4 part
       common/part/part
-      integer i,nproc
-      double precision aemmz,alphas,amz,cmass,bmass
+      integer nproc
+      double precision alphas,amz,cmass,bmass
       double precision Vud,Vus,Vub,Vcd,Vcs,Vcb
       common/cabib/Vud,Vus,Vub,
      &             Vcd,Vcs,Vcb

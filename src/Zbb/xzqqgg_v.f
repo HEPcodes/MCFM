@@ -18,11 +18,12 @@
       include 'qcdcouple.f'
       include 'lc.f'
       integer i1(2),i2(2),i3(2),i4(2),i5(2),i6(2),j,lh,h2,h3,hq,h(2:3)
-      double precision mqqb(2,2),mqqb_vec(2,2),mqqb_ax(2,2),fac
-      double complex m(2),ml1(2),ml2(2),ml3,ml4(2)
+      double precision mqqb(2,2),fac
+      double complex m(2),ml1(2),ml2(2),ml3,ml4(2),
+     & mqqb_vec(2,2),mqqb_ax(2,2)
       double complex ml_vec(2),ml1_ax(2),ml2_ax(2)
       double complex a6treeg1,
-     . a61g1lc,a61g1slc,a61g1nf,a63g1,a64v,a64ax,a65ax
+     & a61g1lc,a61g1slc,a61g1nf,a63g1,a64v,a64ax,a65ax
       character*9 st1(2,2),st2(2,2),st3(2,2)
       data i1/1,4/
       data i2/2,3/
@@ -38,10 +39,6 @@ C ---final matrix element squared is needed as function of quark line helicity
 C----and lepton line helicity
 C----first argument is quark line helicity
 C----second argument is lepton line helicity
-      mqqb(1,1)=0d0
-      mqqb(1,2)=0d0
-      mqqb(2,1)=0d0
-      mqqb(2,2)=0d0
 
       fac=avegg*8d0*gsq**2*esq**2*cf*xn**3*ason2pi
 c--- no extra factor here since colour algebra is already done in (2.12)
@@ -49,8 +46,8 @@ c--- no extra factor here since colour algebra is already done in (2.12)
       do hq=1,2
       do lh=1,2
       mqqb(hq,lh)=0d0
-      mqqb_vec(hq,lh)=0d0
-      mqqb_ax(hq,lh)=0d0
+      mqqb_vec(hq,lh)=czip
+      mqqb_ax(hq,lh)=czip
 
       do h2=1,2
       do h3=1,2
@@ -73,11 +70,12 @@ c--- no extra factor here since colour algebra is already done in (2.12)
      .     i1(1),i2(j),i3(j),i4(1),i6(lh),i5(lh),zb,za)
         endif
         if (colourchoice .le. 1) then
-        ml_vec(j)=a64v(st2(3-h(i2(j)),3-h(i3(j))),
+        ml_vec(j)=a64v(st3(3-h(i2(j)),3-h(i3(j))),
      .     i1(1),i4(1),i2(j),i3(j),i6(lh),i5(lh),zb,za)
-        ml1_ax(j)=a64ax(st2(3-h(i2(j)),3-h(i3(j))),
+c--- note: this symmetry relation (including minus sign) checked numerically 
+        ml1_ax(j)=-a64ax(st3(3-h(i2(j)),3-h(i3(j))),
      .     i1(1),i4(1),i2(j),i3(j),i6(lh),i5(lh),zb,za)
-        ml2_ax(j)=a65ax(st2(3-h(i2(j)),3-h(i3(j))),
+        ml2_ax(j)=-a65ax(st3(3-h(i2(j)),3-h(i3(j))),
      .     i1(1),i4(1),i2(j),i3(j),i6(lh),i5(lh),zb,za)
         endif
         else
@@ -96,11 +94,11 @@ c--- no extra factor here since colour algebra is already done in (2.12)
      .     i1(1),i2(j),i3(j),i4(1),i5(lh),i6(lh),za,zb)
         endif
         if (colourchoice .le. 1) then
-        ml_vec(j)=a64v(st2(h(i2(j)),h(i3(j))),
+        ml_vec(j)=a64v(st3(h(i2(j)),h(i3(j))),
      .     i1(1),i4(1),i2(j),i3(j),i5(lh),i6(lh),za,zb)
-        ml1_ax(j)=a64ax(st2(h(i2(j)),h(i3(j))),
+        ml1_ax(j)=a64ax(st3(h(i2(j)),h(i3(j))),
      .     i1(1),i4(1),i2(j),i3(j),i5(lh),i6(lh),za,zb)
-        ml2_ax(j)=a65ax(st2(h(i2(j)),h(i3(j))),
+        ml2_ax(j)=a65ax(st3(h(i2(j)),h(i3(j))),
      .     i1(1),i4(1),i2(j),i3(j),i5(lh),i6(lh),za,zb)
         endif
         endif
@@ -147,16 +145,15 @@ c--- no extra factor here since colour algebra is already done in (2.12)
       
       if (colourchoice .le. 1) then
       mqqb_vec(hq,lh)=mqqb_vec(hq,lh)+fac/xnsq*(
-     .  Dble(Dconjg(m(1))*(
-     .    (xn-4d0/xn)*ml_vec(1)))
-     . +Dble(Dconjg(m(2))*(
-     .    (xn-4d0/xn)*ml_vec(2))))
+     .  Dconjg(m(1))*(xn-4d0/xn)*ml_vec(1)
+     . +Dconjg(m(2))*(xn-4d0/xn)*ml_vec(2))
 
       mqqb_ax(hq,lh)=mqqb_ax(hq,lh)+fac/xnsq*(
-     .  Dble(Dconjg(m(1))*(
-     .    (xn-2d0/xn)*ml1_ax(1)-2d0/xn*ml1_ax(2)+one/xn*ml2_ax(1)))
-     . +Dble(Dconjg(m(2))*(
-     .    (xn-2d0/xn)*ml1_ax(2)-2d0/xn*ml1_ax(1)+one/xn*ml2_ax(2))))
+     .  Dconjg(m(1))*(
+     .    (xn-2d0/xn)*ml1_ax(1)-2d0/xn*ml1_ax(2)+one/xn*ml2_ax(1))
+     . +Dconjg(m(2))*(
+     .    (xn-2d0/xn)*ml1_ax(2)-2d0/xn*ml1_ax(1)+one/xn*ml2_ax(2)))
+     
       endif
       
       enddo
@@ -278,8 +275,8 @@ c----definition (2.13) of BDK, writes in terms of fvs and fvf
       double complex fvs,fvf
 
       if     (st.eq.'q+qb-g-g-') then
-        a64v=-fvs('q+qb-g+g+',j4,j1,j2,j3,j6,j5,zb,za)
-     .       -fvf('q+qb-g+g+',j4,j1,j2,j3,j6,j5,zb,za)
+        a64v=-fvs('q+qb-g+g+',j4,j1,j3,j2,j6,j5,zb,za)
+     .       -fvf('q+qb-g+g+',j4,j1,j3,j2,j6,j5,zb,za)
       elseif (st.eq.'q+qb-g-g+') then
         a64v=-fvs('q+qb-g+g-',j1,j4,j3,j2,j5,j6,za,zb)
      .       -fvf('q+qb-g+g-',j1,j4,j3,j2,j5,j6,za,zb)
@@ -301,11 +298,12 @@ c----definition (2.13) of BDK
       double complex fax
 
       if (st.eq.'q+qb-g-g-') then
-        a64ax=fax('q+qb-g+g+',j4,j1,j2,j3,j6,j5,zb,za)
+c--- note: this symmetry relation checked numerically 
+        a64ax=fax('q+qb-g+g+',j4,j1,j3,j2,j6,j5,zb,za)
       else
         a64ax=fax(st,j1,j4,j2,j3,j5,j6,za,zb)
       endif
-      
+
       return
       end
 
@@ -319,6 +317,7 @@ c----definition (2.13) of BDK
       double complex faxsl
 
       if     (st.eq.'q+qb-g-g-') then
+c--- note: this symmetry relation checked numerically 
         a65ax=faxsl('q+qb-g+g+',j4,j1,j2,j3,j6,j5,zb,za)
       elseif (st.eq.'q+qb-g-g+') then
         a65ax=faxsl('q+qb-g+g-',j1,j4,j3,j2,j5,j6,za,zb)

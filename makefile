@@ -10,6 +10,8 @@ SOURCEDIR       = /Users/johnmc/MCFM/src
 VPATH		= $(DIRS)
 BIN		= $(MCFMHOME)/Bin
 INCPATH  	= $(SOURCEDIR)/Inc
+QLDIR		= $(MCFMHOME)/QCDLoop/ql
+FFDIR		= $(MCFMHOME)/QCDLoop/ff
 OUTPUT_OPTION	= -o $(MCFMHOME)/obj/$@
 
 # Set this to NATIVE/PDFLIB/LHAPDF
@@ -26,7 +28,11 @@ PDFROUTINES = NATIVE
 NTUPLES = NO
 
 FC = gfortran
-FFLAGS 	= -fno-automatic -fno-f2c -O0 -g -I$(INCPATH)
+FFLAGS 	= -fno-automatic -fno-f2c -O0 -g -I$(INCPATH) -Iobj
+
+F90 = gfortran
+F90FLAGS = -fno-automatic -fno-f2c -O2 -g -I$(INCPATH) -Iobj -Jobj
+
 
 # If using FROOT package for ROOT ntuples, first specify C++ compiler:
 CXX = g++
@@ -43,7 +49,7 @@ CXXFLAGS=$(CXXFLAGS0) $(DROOT)
 
 DIRS	=	$(MCFMHOME):\
 		$(MCFMHOME)/obj:\
-		$(SOURCEDIR)/User:$(SOURCEDIR)/Vol:\
+		$(SOURCEDIR)/User:$(SOURCEDIR)/Procdep:$(SOURCEDIR)/Vol:\
 		$(SOURCEDIR)/Need:$(SOURCEDIR)/Lib:$(SOURCEDIR)/Phase:\
 		$(SOURCEDIR)/Parton:$(SOURCEDIR)/Integrate:\
 		$(SOURCEDIR)/Wbb:$(SOURCEDIR)/Zbb:\
@@ -57,7 +63,7 @@ DIRS	=	$(MCFMHOME):\
 		$(SOURCEDIR)/W1jet:$(SOURCEDIR)/Z1jet:\
 		$(SOURCEDIR)/Wcjet:$(SOURCEDIR)/Wbjet:\
 		$(SOURCEDIR)/W2jet:$(SOURCEDIR)/W2jetvirt:\
-		$(SOURCEDIR)/WZbbm:\
+		$(SOURCEDIR)/Wbbm:$(SOURCEDIR)/Zbbm:\
 		$(SOURCEDIR)/Wgam:$(SOURCEDIR)/Zgam:\
                 $(SOURCEDIR)/Z2jet:$(SOURCEDIR)/Zb:\
 		$(SOURCEDIR)/bbHiggs:$(SOURCEDIR)/Wt:\
@@ -67,10 +73,41 @@ DIRS	=	$(MCFMHOME):\
                 $(SOURCEDIR)/H4pCode:\
                 $(SOURCEDIR)/WHWW:$(SOURCEDIR)/ZHWW:\
 		$(SOURCEDIR)/Stopb:$(SOURCEDIR)/Stopjet:\
-		$(SOURCEDIR)/epem3j
+		$(SOURCEDIR)/epem3j:\
+		$(SOURCEDIR)/WpWp2j:$(SOURCEDIR)/F90\
+		$(SOURCEDIR)/qqZtt:$(SOURCEDIR)/ggHgaga:\
+		$(SOURCEDIR)/Gamgam:$(SOURCEDIR)/Dirgam:\
+		$(SOURCEDIR)/Frag
+		
 
 # -----------------------------------------------------------------------------
 # Specify the object files. 
+
+FRAGFILES = \
+NP_FragSetI.o \
+NP_FragSetII.o \
+Pert_Frag.o \
+dipolesfrag.o \
+dopols.o \
+fragdriver.o \
+int_dips_ga.o \
+locate.o \
+rescale_pjet.o \
+transformfrag.o
+
+WPWP2JFILES = \
+qqqqampl.o \
+qqb_wpwp_qqb.o\
+qqb_wpwp_qqb_g.o \
+qqqqgampl.o
+
+F90FILES = \
+consts_dp.o \
+spinfns.o \
+recurrenceA.o \
+recurrenceB.o \
+recurrenceC.o \
+recurrence.o 
 
 STOPBFILES = \
 qg_tbq.o \
@@ -160,6 +197,38 @@ qqb_Hg_gs.o \
 qqb_Hg_v.o \
 qqb_Hg_z.o
 
+DIRGAMFILES = \
+qqb_dirgam_swap.o \
+qqb_dirgam.o \
+qqb_dirgam_g.o \
+qqb_dirgam_gs.o \
+qqb_dirgam_gvec.o \
+qqb_dirgam_v.o \
+qqb_dirgam_z.o \
+Bigagam.o \
+Bigbgam.o \
+Bigcgam.o 
+
+GAMGAMFILES = \
+qqb_gamgam.o \
+qqb_gamgam_singfrag.o \
+qqb_gamgam_fragdips.o \
+qqb_gamgam_g.o \
+qqb_gamgam_gs.o \
+qqb_gamgam_gvec.o \
+qqb_gamgam_v.o \
+qqb_gamgam_z.o \
+Cgamgam.o \
+A51ppppp.o \
+A51mpppp.o \
+A51mmppp.o \
+A51mpmpp.o \
+Aboxfill.o \
+ggtogagag.o \
+Virtgggamgam.o \
+twoloop.o \
+oneloopep.o
+
 GGHFILES = \
 finitemtcorr.o \
 gg_h.o \
@@ -169,6 +238,12 @@ gg_h_gvec.o \
 gg_h_v.o \
 gg_h_z.o \
 hqqgg.o \
+gg_hgamgam.o \
+gg_hgamgamg.o \
+gg_hgamgam_gs.o \
+gg_hgamgam_gvec.o \
+gg_hgamgam_v.o \
+gg_hgamgam_z.o
 
 GGHGFILES = \
 amplonumer.o \
@@ -309,8 +384,7 @@ HTTBARFILES = \
 qqb_higgs.o \
 qqb_higgs_odd.o \
 ehsv.o \
-ehsv_odd.o \
-li2.o \
+ehsv_odd.o
 
 INTEGRATEFILES = \
 vegas.o \
@@ -321,21 +395,28 @@ ran1.o \
 rn.o
 
 LIBFILES = \
+cli2.o \
 ddilog.o \
-lenocc.o
+lenocc.o \
+Li2.o \
+Li3.o \
+Li4.o \
+WGPLG.o
 
 NEEDFILES = \
 aveptjet.o \
 banner.o \
+basic_di_frix.o \
+basic_frix.o \
+basic_Vfrix.o \
 boost.o \
 boostx.o \
 branch.o \
 checkndotp.o \
 checkversion.o \
 checkjets.o \
-checkorder.o \
-chooser.o \
 ckmfill.o \
+count_parts.o \
 coupling.o \
 coupling2.o \
 couplz.o \
@@ -350,6 +431,7 @@ donothing_gvec.o \
 dot.o \
 dotem.o \
 etmiss.o \
+ff_alpha.o \
 getbs.o \
 getptildejet.o \
 getptQ1.o \
@@ -359,7 +441,6 @@ higgsw.o \
 histofin.o \
 itransform.o \
 includedipole.o \
-lowint_incldip.o \
 masscuts.o \
 mcfm.o \
 mcfm_exit.o \
@@ -372,7 +453,7 @@ read_jetcuts.o \
 readcoup.o \
 reader_input.o \
 realhistos.o \
-realint.o \
+Rgen.o \
 scaleset.o \
 sethparams.o \
 setmb_msbar.o \
@@ -381,15 +462,16 @@ smalls.o \
 spinork.o \
 spinoru.o \
 storedip.o \
+storedip_mass.o \
 storeptilde.o \
+store_zdip.o \
 swapjet.o \
 transform.o \
-virtint_incldip.o \
+transform_mass.o \
 writeinfo.o \
+writeinput.o \
 writeout.o \
 dips_mass.o \
-storedip_mass.o \
-transform_mass.o \
 zeromsq.o
 
 PARTONFILES = \
@@ -407,6 +489,7 @@ gen3.o \
 gen3a.o \
 gen3b.o \
 gen3jet.o \
+gen3jetgaga.o \
 gen3m.o \
 gen3m_rap.o \
 gen3from2.o \
@@ -424,6 +507,7 @@ gen7m.o \
 phase7m_alt.o \
 gen7_rap.o \
 gen8.o \
+gen_phots_jets.o \
 gen_njets.o \
 gen_soft.o \
 genff.o \
@@ -461,6 +545,14 @@ wt2gen.o \
 wt4gen.o \
 wtgen.o
 
+PROCDEPFILES = \
+checkorder.o \
+chooser.o \
+fragint.o \
+lowint_incldip.o \
+realint.o \
+virtint_incldip.o
+
 QQHFILES = \
 qq_Hqq_g.o \
 VV_Hqq.o \
@@ -487,6 +579,10 @@ WW_HWW_gs.o \
 ZZ_HWW_gs.o \
 VV_HWW_v.o \
 VV_HWW_z.o
+
+QQZTTFILES = \
+qqbZtt.o \
+qqbZtt1.o
 
 SINGLETOPFILES = \
 topwidth.o \
@@ -529,6 +625,12 @@ qqb_QQbdk_gs.o \
 qqb_QQbdk_gvec.o \
 qqb_QQbdk_v.o \
 qqb_QQbdk_z.o \
+qqb_QQbdku.o \
+qqb_QQbdku_g.o \
+qqb_QQbdku_gs.o \
+qqb_QQbdku_gvec.o \
+qqb_QQbdku_v.o \
+qqb_QQbdku_z.o \
 KMampsqggQQb.o \
 KMampsqqqbQQb.o \
 KMampsqggQQbdk.o \
@@ -613,28 +715,44 @@ qqb_tth.o \
 qqb_tottth.o
 
 TOPZFILES = \
-ttbbd1.o \
-qqb_ttz.o
+qqb_ttz.o \
+qqbttz.o \
+ggttz.o
 
 USERFILES = \
 cdfhwwcuts.o \
+cms_higgsWW.o \
 deltarj.o \
 durhamalg.o \
 eventhandler.o \
 etdoublebin.o \
 fill_stdhep.o \
+filterWbbmas.o \
 genclust2.o \
 genclust_kt.o \
 genclust_cone.o \
+genclustphotons.o \
 gencuts.o \
 getet.o \
 hwwcuts.o \
 hwwjetplots.o \
+iso.o \
 jetlabel_to_stdhep.o \
 jetreorder.o \
 mdata.o \
 miscclust.o \
 nplotter.o \
+nplotter_generic.o \
+nplotter_gamgam.o \
+nplotter_Vgamma.o \
+nplotter_W_only.o \
+nplotter_Z_only.o \
+nplotter_Wbbmas.o \
+nplotter_Wjets.o \
+nplotter_WPWP.o \
+photo_iso.o \
+photgenclust.o \
+photoncuts.o \
 plots_stop_cfmt.o \
 stopcuts.o \
 wbfcuts.o \
@@ -754,6 +872,7 @@ a7tree.o \
 amps_anom.o \
 b7tree.o \
 fa.o \
+gg_WW.o \
 qqb_ww.o \
 qqb_ww_unpol.o \
 susana.o \
@@ -770,20 +889,6 @@ qqb_wz_gs.o \
 qqb_wz_v.o \
 qqb_wz_z.o \
 wzamps.o
-
-WZBBMFILES = \
-gamps0.o \
-gampsabc.o \
-gampsdef.o \
-gampsgh.o \
-mamps.o \
-qqb_wbbm.o \
-qqb_zbbm.o \
-qqb_wbbm_g.o \
-wbbgmassa.o \
-wbbgmassb.o \
-wbbgmassi.o \
-wbbgmassf.o
 
 WBBFILES = \
 a6.o \
@@ -815,12 +920,48 @@ t.o \
 t1234.o \
 vv.o
 
+WBBMFILES = \
+a61mass.o \
+a6treemass.o \
+Afh.o \
+ALC_mm.o \
+ALC_mp.o \
+ALC_pm.o \
+ALC_pp.o \
+BDK1211mm.o \
+BDK1211mp.o \
+BDKfillmm.o \
+BDKfillmp.o \
+BLC_mm.o \
+BLC_mp.o \
+BLC_pm.o \
+BLC_pp.o \
+catani.o \
+clearcoeffs.o \
+computescalars.o \
+qqb_wbbm.o \
+qqb_wbbm_g.o \
+qqb_wbbm_gs.o \
+qqb_wbbm_v.o \
+qqb_wbbm_z.o \
+spstrng.o \
+sumamp.o \
+Ubkslash_w.o \
+writetable.o \
+Wbb.o \
+zab.o \
+zaba.o \
+zabab.o \
+zbab.o
+
 WGAMFILES = \
 qqb_wgam.o \
 qqb_wgam_g.o \
 qqb_wgam_gs.o \
 qqb_wgam_v.o \
 qqb_wgam_z.o \
+qqb_wgam_fragdips.o \
+qqb_wfrag.o \
 fagamma.o \
 fbgamma.o \
 vpole.o
@@ -868,13 +1009,6 @@ wampd.o \
 wcjetn.o \
 wtransform_wt.o
 
-ZGAMFILES = \
-qqb_zgam.o \
-qqb_zgam_g.o \
-qqb_zgam_gs.o \
-qqb_zgam_v.o \
-qqb_zgam_z.o
-
 ZFILES = \
 qqb_z.o \
 qqb_z1jet.o \
@@ -901,6 +1035,7 @@ makem.o \
 makemb.o \
 msq_ZqqQQg.o \
 msq_z2jetx.o \
+ps_check.o \
 qqb_z2jet.o \
 qqb_z2jet_g.o \
 qqb_z2jet_gs.o \
@@ -913,6 +1048,26 @@ storecsz.o \
 xzqqgg_v_sym.o \
 z2jetsq.o \
 z2jetsqn.o
+
+ZBBMFILES = \
+gamps0.o \
+gampsabc.o \
+gampsdef.o \
+gampsgh.o \
+mamps.o \
+qqb_zbbm.o \
+qqb_zccm.o
+
+ZGAMFILES = \
+gg_zgam.o \
+ggZgam_vec.o \
+qqb_zgam.o \
+qqb_zgam_g.o \
+qqb_zgam_gs.o \
+qqb_zgam_v.o \
+qqb_zgam_z.o \
+qqb_zgam_fragdips.o \
+qqb_zfrag.o
 
 ZHBBARFILES = \
 qqb_zh.o \
@@ -928,12 +1083,15 @@ qqb_zh_ww_gs.o \
 qqb_zh_ww_v.o
 
 ZZFILES = \
+gg_ZZ.o \
 qqb_zz.o \
 qqb_zz_g.o \
 qqb_zz_gs.o \
 qqb_zz_v.o \
 qqb_zz_z.o \
-zzamps.o
+zzamps.o \
+zzamp.o \
+zzgamp.o
 
 ZBBFILES = \
 amp_qqggg.o \
@@ -955,8 +1113,7 @@ gQ_zQ.o \
 gQ_zQ_g.o \
 gQ_zQ_gs.o \
 gQ_zQ_v.o \
-gQ_zQ_z.o \
-qqb_zccm.o
+gQ_zQ_z.o
 
 ZQJETFILES = \
 genclust_hqrk.o \
@@ -969,7 +1126,7 @@ qqb_zbjet_v.o \
 qqb_zbjet_z.o
 
 LIBDIR=.
-LIBFLAGS=
+LIBFLAGS=-lqcdloop -lff
 
 # Check NTUPLES flag
 ifeq ($(NTUPLES),FROOT)
@@ -979,7 +1136,7 @@ ifeq ($(NTUPLES),FROOT)
   endif
   USERFILES += mcfm_froot.o froot.co
   LIBDIR=$(CERNLIB)
-  LIBFLAGS = -lmathlib -lpacklib -lkernlib
+  LIBFLAGS += -lmathlib -lpacklib -lkernlib
   LIBFLAGS += $(ROOTLIBS)
   NTUPMSG='   ----> MCFM compiled with FROOT n-tuple output <----'
  else
@@ -992,7 +1149,7 @@ ifeq ($(NTUPLES),FROOT)
     LIBDIR=$(CERNLIB)
 # Note: some versions of the CERN libraries (e.g. Redhat v7.2)
 #       require that "-lpacklib" be changed to "-lpacklib_noshift"
-    LIBFLAGS = -lmathlib -lpacklib -lkernlib
+    LIBFLAGS += -lmathlib -lpacklib -lkernlib
     NTUPMSG='   ----> MCFM compiled with optional n-tuple output <----'
   else
     ifeq ($(NTUPLES),NO)
@@ -1012,7 +1169,7 @@ ifeq ($(PDFROUTINES),PDFLIB)
    fdist_pdflib.o \
    pdfwrap_pdflib.o
    LIBDIR=$(CERNLIB)
-   LIBFLAGS := -lpdflib804 $(LIBFLAGS)
+   LIBFLAGS += -lpdflib804 $(LIBFLAGS)
    ifeq (,$(findstring packlib,$(LIBFLAGS)))
      LIBFLAGS += -lpacklib -lmathlib
    endif
@@ -1066,7 +1223,7 @@ endif
 # extra lines: -L$(CRNLIB) -L/home/johnmc/madgraph/lib/ 
 #              -ldhelas
 
-OURCODE = $(LIBFILES) $(NEEDFILES) \
+OURCODE = $(LIBFILES) $(NEEDFILES)  $(PROCDEPFILES) \
           $(PHASEFILES) $(SINGLETOPFILES) \
           $(TOPHFILES) $(TOPZFILES) $(TOPDKFILES) \
           $(USERFILES) $(VOLFILES) $(WFILES) $(W2JETFILES) \
@@ -1076,12 +1233,15 @@ OURCODE = $(LIBFILES) $(NEEDFILES) \
           $(ZZFILES) $(ZGFILES) $(W1JETFILES) $(Z2JETFILES) \
 	    $(Z1JETFILES) $(HWWFILES) $(HZZFILES) \
           $(TAUTAUFILES) $(HTTBARFILES) \
-          $(BBHIGGSFILES) $(WBBFILES) $(ZBBFILES) $(WZBBMFILES) \
+          $(BBHIGGSFILES) $(WBBFILES) $(ZBBFILES) \
           $(QQHFILES) $(QQHWWFILES) $(GGHFILES) $(GGHGFILES) \
           $(GGHGGrealFILES) $(GGHGGvirtFILES) $(H4PCODEFILES) \
 	  $(TOPFILES) $(ZQFILES) $(ZQJETFILES) $(WTFILES) $(HWWJETFILES) \
 	  $(WHWWFILES) $(ZHWWFILES) \
-	  $(STOPBFILES) $(STOPJETFILES) $(EPEM3JFILES) \
+	  $(STOPBFILES) $(STOPJETFILES) $(EPEM3JFILES) $(QQZTTFILES) \
+	  $(WPWP2JFILES) $(F90FILES) \
+	  $(GAMGAMFILES) $(DIRGAMFILES) \
+	  $(WBBMFILES) $(ZBBMFILES) $(FRAGFILES)\
 	  $(CHECKINGFILES)
           
 OTHER = $(INTEGRATEFILES) $(PARTONFILES) 
@@ -1091,7 +1251,7 @@ ALLMCFM = $(OTHER) $(OURCODE)
 # CERNLIB libraries for PDFLIB: -lpdflib804 -lmathlib -lpacklib 
 
 mcfm: $(ALLMCFM)
-	$(FC) $(FFLAGS) -L$(LIBDIR) -o $@ \
+	$(FC) $(FFLAGS) -L$(LIBDIR) -L$(QLDIR) -L$(FFDIR) -o $@ \
 	$(patsubst %,obj/%,$(ALLMCFM)) $(LIBFLAGS) 
 	mv mcfm Bin/
 	@echo $(PDFMSG)
@@ -1100,6 +1260,9 @@ mcfm: $(ALLMCFM)
 # for FROOT package
 %.co: %.c
 	$(CXX) -c $(CXXFLAGS) $(DMYROOT) $(ROOTINCLUDE) -o obj/$@ $<
+# TM Include F90 files too
+%.o: %.f90
+	$(F90) $(F90FLAGS) -c -o obj/$@ $<
 
 # -----------------------------------------------------------------------------
 # Specify other options.
@@ -1134,9 +1297,19 @@ checkf:
 		$(FORCHKPATH)/forchk -I $(INCPATH) $(PRJSF)
 
 clean:
-	- rm -f *.o obj/*.o *.s *.prj *~ core
+	- rm -f *.o obj/*.o obj/*.mod *.s *.prj *~ core
 
 # -----------------------------------------------------------------------------
 
 # DO NOT DELETE
 
+consts_dp.o:
+spinfns.o: consts_dp.o
+recurrenceA.o: consts_dp.o spinfns.o
+recurrenceB.o: consts_dp.o spinfns.o recurrenceA.o
+recurrenceC.o: consts_dp.o spinfns.o recurrenceA.o recurrenceB.o
+recurrence.o: consts_dp.o spinfns.o recurrenceA.o recurrenceB.o recurrenceC.o
+qqqqampl.o: consts_dp.o spinfns.o recurrence.o
+qqqqampl.o: consts_dp.o spinfns.o recurrence.o
+qqb_wpwp_qqb.o: qqqqampl.o consts_dp.o
+qqb_wpwp_qqb_g.o: qqqqgampl.o consts_dp.o

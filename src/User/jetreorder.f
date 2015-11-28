@@ -86,6 +86,13 @@ c      enddo
       
 c      call writeout(q)
 c      pause
+ 
+c--- reset jetlabel to correspond to plabel      
+      do i=1,jets
+      jetlabel(i)=plabel(jetindex(i))
+c      write(6,*) 'i,jetindex(i),jetlabel(i)',i,jetindex(i),jetlabel(i)
+      enddo
+c      write(6,*)
       
       return
       end

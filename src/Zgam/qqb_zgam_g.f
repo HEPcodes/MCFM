@@ -9,18 +9,17 @@ c     q(-p1)+qbar(-p2)-->(e^-(p3)+e^+(p4))+gamma(p5)+g(p6)
       include 'masses.f'
       include 'ewcouple.f'
       include 'zcouple.f'
+      include 'qcdcouple.f'
       include 'ewcharge.f'
       include 'zprods_decl.f'
       include 'sprods_com.f'
       integer j,k,h5,h6
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac,s345,s34,
-     . qqb(2),qbq(2),gq(2),gqb(2),qg(2),qbg(2)
+     & qqb(2),qbq(2),gq(2),gqb(2),qg(2),qbg(2)
       double complex pr345,prp34,
-     . qbqi(2,2,2,2),qbqf(2,2,2,2),qqbi(2,2,2,2),qqbf(2,2,2,2),
-     . qbgi(2,2,2,2),qbgf(2,2,2,2),qgi(2,2,2,2),qgf(2,2,2,2),
-     . gqi(2,2,2,2),gqf(2,2,2,2),gqbi(2,2,2,2),gqbf(2,2,2,2)
-
-     
+     & qbqi(2,2,2,2),qbqf(2,2,2,2),qqbi(2,2,2,2),qqbf(2,2,2,2),
+     & qbgi(2,2,2,2),qbgf(2,2,2,2),qgi(2,2,2,2),qgf(2,2,2,2),
+     & gqi(2,2,2,2),gqf(2,2,2,2),gqbi(2,2,2,2),gqbf(2,2,2,2)     
       integer jj(-nf:nf),kk(-nf:nf)
       data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
       data kk/-1,-2,-1,-2,-1,0,1,2,1,2,1/
@@ -37,7 +36,7 @@ c--set msq=0 to initialize
       s34=s(3,4)
       s345=s(3,4)+s(3,5)+s(4,5)
       
-      fac=16d0*esq**3*xn*cf
+      fac=16d0*esq**3*xn*cf*gsq
 
 c--   calculate propagator factors
       prp34=s34/Dcmplx((s34-zmass**2),zmass*zwidth)
@@ -64,60 +63,60 @@ c----sum over helicities
       do h5=1,2
       do h6=1,2
       qbq(j)=qbq(j)
-     .       +cdabs(Q(j)*(Q(j)*q1+L(j)*l1*prp34)*qbqi(1,1,h5,h6)
-     .               +q1*(Q(j)*q1+L(j)*l1*pr345)*qbqf(1,1,h5,h6))**2
-     .       +cdabs(Q(j)*(Q(j)*q1+R(j)*r1*prp34)*qbqi(2,2,h5,h6)
-     .               +q1*(Q(j)*q1+R(j)*r1*pr345)*qbqf(2,2,h5,h6))**2
-     .       +cdabs(Q(j)*(Q(j)*q1+L(j)*r1*prp34)*qbqi(1,2,h5,h6)
-     .               +q1*(Q(j)*q1+L(j)*r1*pr345)*qbqf(1,2,h5,h6))**2
-     .       +cdabs(Q(j)*(Q(j)*q1+R(j)*l1*prp34)*qbqi(2,1,h5,h6)
-     .               +q1*(Q(j)*q1+R(j)*l1*pr345)*qbqf(2,1,h5,h6))**2
+     &       +cdabs(Q(j)*(Q(j)*q1+L(j)*l1*prp34)*qbqi(1,1,h5,h6)
+     &               +q1*(Q(j)*q1+L(j)*l1*pr345)*qbqf(1,1,h5,h6))**2
+     &       +cdabs(Q(j)*(Q(j)*q1+R(j)*r1*prp34)*qbqi(2,2,h5,h6)
+     &               +q1*(Q(j)*q1+R(j)*r1*pr345)*qbqf(2,2,h5,h6))**2
+     &       +cdabs(Q(j)*(Q(j)*q1+L(j)*r1*prp34)*qbqi(1,2,h5,h6)
+     &               +q1*(Q(j)*q1+L(j)*r1*pr345)*qbqf(1,2,h5,h6))**2
+     &       +cdabs(Q(j)*(Q(j)*q1+R(j)*l1*prp34)*qbqi(2,1,h5,h6)
+     &               +q1*(Q(j)*q1+R(j)*l1*pr345)*qbqf(2,1,h5,h6))**2
       qqb(j)=qqb(j)
-     .       +cdabs(Q(j)*(Q(j)*q1+L(j)*l1*prp34)*qqbi(1,1,h5,h6)
-     .               +q1*(Q(j)*q1+L(j)*l1*pr345)*qqbf(1,1,h5,h6))**2
-     .       +cdabs(Q(j)*(Q(j)*q1+R(j)*r1*prp34)*qqbi(2,2,h5,h6)
-     .               +q1*(Q(j)*q1+R(j)*r1*pr345)*qqbf(2,2,h5,h6))**2
-     .       +cdabs(Q(j)*(Q(j)*q1+L(j)*r1*prp34)*qqbi(1,2,h5,h6)
-     .               +q1*(Q(j)*q1+L(j)*r1*pr345)*qqbf(1,2,h5,h6))**2
-     .       +cdabs(Q(j)*(Q(j)*q1+R(j)*l1*prp34)*qqbi(2,1,h5,h6)
-     .               +q1*(Q(j)*q1+R(j)*l1*pr345)*qqbf(2,1,h5,h6))**2
+     &       +cdabs(Q(j)*(Q(j)*q1+L(j)*l1*prp34)*qqbi(1,1,h5,h6)
+     &               +q1*(Q(j)*q1+L(j)*l1*pr345)*qqbf(1,1,h5,h6))**2
+     &       +cdabs(Q(j)*(Q(j)*q1+R(j)*r1*prp34)*qqbi(2,2,h5,h6)
+     &               +q1*(Q(j)*q1+R(j)*r1*pr345)*qqbf(2,2,h5,h6))**2
+     &       +cdabs(Q(j)*(Q(j)*q1+L(j)*r1*prp34)*qqbi(1,2,h5,h6)
+     &               +q1*(Q(j)*q1+L(j)*r1*pr345)*qqbf(1,2,h5,h6))**2
+     &       +cdabs(Q(j)*(Q(j)*q1+R(j)*l1*prp34)*qqbi(2,1,h5,h6)
+     &               +q1*(Q(j)*q1+R(j)*l1*pr345)*qqbf(2,1,h5,h6))**2
       gqb(j)=gqb(j)
-     .       +cdabs(Q(j)*(Q(j)*q1+L(j)*l1*prp34)*gqbi(1,1,h5,h6)
-     .               +q1*(Q(j)*q1+L(j)*l1*pr345)*gqbf(1,1,h5,h6))**2
-     .       +cdabs(Q(j)*(Q(j)*q1+R(j)*r1*prp34)*gqbi(2,2,h5,h6)
-     .               +q1*(Q(j)*q1+R(j)*r1*pr345)*gqbf(2,2,h5,h6))**2
-     .       +cdabs(Q(j)*(Q(j)*q1+L(j)*r1*prp34)*gqbi(1,2,h5,h6)
-     .               +q1*(Q(j)*q1+L(j)*r1*pr345)*gqbf(1,2,h5,h6))**2
-     .       +cdabs(Q(j)*(Q(j)*q1+R(j)*l1*prp34)*gqbi(2,1,h5,h6)
-     .               +q1*(Q(j)*q1+R(j)*l1*pr345)*gqbf(2,1,h5,h6))**2
+     &       +cdabs(Q(j)*(Q(j)*q1+L(j)*l1*prp34)*gqbi(1,1,h5,h6)
+     &               +q1*(Q(j)*q1+L(j)*l1*pr345)*gqbf(1,1,h5,h6))**2
+     &       +cdabs(Q(j)*(Q(j)*q1+R(j)*r1*prp34)*gqbi(2,2,h5,h6)
+     &               +q1*(Q(j)*q1+R(j)*r1*pr345)*gqbf(2,2,h5,h6))**2
+     &       +cdabs(Q(j)*(Q(j)*q1+L(j)*r1*prp34)*gqbi(1,2,h5,h6)
+     &               +q1*(Q(j)*q1+L(j)*r1*pr345)*gqbf(1,2,h5,h6))**2
+     &       +cdabs(Q(j)*(Q(j)*q1+R(j)*l1*prp34)*gqbi(2,1,h5,h6)
+     &               +q1*(Q(j)*q1+R(j)*l1*pr345)*gqbf(2,1,h5,h6))**2
       gq(j)=gq(j)
-     .       +cdabs(Q(j)*(Q(j)*q1+L(j)*l1*prp34)*gqi(1,1,h5,h6)
-     .               +q1*(Q(j)*q1+L(j)*l1*pr345)*gqf(1,1,h5,h6))**2
-     .       +cdabs(Q(j)*(Q(j)*q1+R(j)*r1*prp34)*gqi(2,2,h5,h6)
-     .               +q1*(Q(j)*q1+R(j)*r1*pr345)*gqf(2,2,h5,h6))**2
-     .       +cdabs(Q(j)*(Q(j)*q1+L(j)*r1*prp34)*gqi(1,2,h5,h6)
-     .               +q1*(Q(j)*q1+L(j)*r1*pr345)*gqf(1,2,h5,h6))**2
-     .       +cdabs(Q(j)*(Q(j)*q1+R(j)*l1*prp34)*gqi(2,1,h5,h6)
-     .               +q1*(Q(j)*q1+R(j)*l1*pr345)*gqf(2,1,h5,h6))**2
+     &       +cdabs(Q(j)*(Q(j)*q1+L(j)*l1*prp34)*gqi(1,1,h5,h6)
+     &               +q1*(Q(j)*q1+L(j)*l1*pr345)*gqf(1,1,h5,h6))**2
+     &       +cdabs(Q(j)*(Q(j)*q1+R(j)*r1*prp34)*gqi(2,2,h5,h6)
+     &               +q1*(Q(j)*q1+R(j)*r1*pr345)*gqf(2,2,h5,h6))**2
+     &       +cdabs(Q(j)*(Q(j)*q1+L(j)*r1*prp34)*gqi(1,2,h5,h6)
+     &               +q1*(Q(j)*q1+L(j)*r1*pr345)*gqf(1,2,h5,h6))**2
+     &       +cdabs(Q(j)*(Q(j)*q1+R(j)*l1*prp34)*gqi(2,1,h5,h6)
+     &               +q1*(Q(j)*q1+R(j)*l1*pr345)*gqf(2,1,h5,h6))**2
       qbg(j)=qbg(j)
-     .       +cdabs(Q(j)*(Q(j)*q1+L(j)*l1*prp34)*qbgi(1,1,h5,h6)
-     .               +q1*(Q(j)*q1+L(j)*l1*pr345)*qbgf(1,1,h5,h6))**2
-     .       +cdabs(Q(j)*(Q(j)*q1+R(j)*r1*prp34)*qbgi(2,2,h5,h6)
-     .               +q1*(Q(j)*q1+R(j)*r1*pr345)*qbgf(2,2,h5,h6))**2
-     .       +cdabs(Q(j)*(Q(j)*q1+L(j)*r1*prp34)*qbgi(1,2,h5,h6)
-     .               +q1*(Q(j)*q1+L(j)*r1*pr345)*qbgf(1,2,h5,h6))**2
-     .       +cdabs(Q(j)*(Q(j)*q1+R(j)*l1*prp34)*qbgi(2,1,h5,h6)
-     .               +q1*(Q(j)*q1+R(j)*l1*pr345)*qbgf(2,1,h5,h6))**2
+     &       +cdabs(Q(j)*(Q(j)*q1+L(j)*l1*prp34)*qbgi(1,1,h5,h6)
+     &               +q1*(Q(j)*q1+L(j)*l1*pr345)*qbgf(1,1,h5,h6))**2
+     &       +cdabs(Q(j)*(Q(j)*q1+R(j)*r1*prp34)*qbgi(2,2,h5,h6)
+     &               +q1*(Q(j)*q1+R(j)*r1*pr345)*qbgf(2,2,h5,h6))**2
+     &       +cdabs(Q(j)*(Q(j)*q1+L(j)*r1*prp34)*qbgi(1,2,h5,h6)
+     &               +q1*(Q(j)*q1+L(j)*r1*pr345)*qbgf(1,2,h5,h6))**2
+     &       +cdabs(Q(j)*(Q(j)*q1+R(j)*l1*prp34)*qbgi(2,1,h5,h6)
+     &               +q1*(Q(j)*q1+R(j)*l1*pr345)*qbgf(2,1,h5,h6))**2
 
       qg(j)=qg(j)
-     .       +cdabs(Q(j)*(Q(j)*q1+L(j)*l1*prp34)*qgi(1,1,h5,h6)
-     .               +q1*(Q(j)*q1+L(j)*l1*pr345)*qgf(1,1,h5,h6))**2
-     .       +cdabs(Q(j)*(Q(j)*q1+R(j)*r1*prp34)*qgi(2,2,h5,h6)
-     .               +q1*(Q(j)*q1+R(j)*r1*pr345)*qgf(2,2,h5,h6))**2
-     .       +cdabs(Q(j)*(Q(j)*q1+L(j)*r1*prp34)*qgi(1,2,h5,h6)
-     .               +q1*(Q(j)*q1+L(j)*r1*pr345)*qgf(1,2,h5,h6))**2
-     .       +cdabs(Q(j)*(Q(j)*q1+R(j)*l1*prp34)*qgi(2,1,h5,h6)
-     .               +q1*(Q(j)*q1+R(j)*l1*pr345)*qgf(2,1,h5,h6))**2
+     &       +cdabs(Q(j)*(Q(j)*q1+L(j)*l1*prp34)*qgi(1,1,h5,h6)
+     &               +q1*(Q(j)*q1+L(j)*l1*pr345)*qgf(1,1,h5,h6))**2
+     &       +cdabs(Q(j)*(Q(j)*q1+R(j)*r1*prp34)*qgi(2,2,h5,h6)
+     &               +q1*(Q(j)*q1+R(j)*r1*pr345)*qgf(2,2,h5,h6))**2
+     &       +cdabs(Q(j)*(Q(j)*q1+L(j)*r1*prp34)*qgi(1,2,h5,h6)
+     &               +q1*(Q(j)*q1+L(j)*r1*pr345)*qgf(1,2,h5,h6))**2
+     &       +cdabs(Q(j)*(Q(j)*q1+R(j)*l1*prp34)*qgi(2,1,h5,h6)
+     &               +q1*(Q(j)*q1+R(j)*l1*pr345)*qgf(2,1,h5,h6))**2
 
       enddo
       enddo
@@ -131,14 +130,16 @@ c----sum over helicities
             msq(j,k)=aveqg*fac*gqb(-kk(k))
           elseif ((j .eq. 0) .and. (k .gt. 0)) then
             msq(j,k)=aveqg*fac*gq(kk(k))
-          elseif ((j .gt. 0) .and. (k .lt. 0)) then
+          elseif ((j .gt. 0) .and. (k .eq. -j)) then
             msq(j,k)=aveqq*fac*qqb(jj(j))
-          elseif ((j .lt. 0) .and. (k .gt. 0)) then
+          elseif ((j .lt. 0) .and. (k .eq. -j)) then
             msq(j,k)=aveqq*fac*qbq(kk(k))
           elseif ((j .gt. 0) .and. (k .eq. 0)) then
             msq(j,k)=aveqg*fac*qg(jj(j))
           elseif ((j .lt. 0) .and. (k .eq. 0)) then
             msq(j,k)=aveqg*fac*qbg(-jj(j))
+          else 
+            msq(j,k)=0d0
           endif
       enddo
       enddo
@@ -152,13 +153,13 @@ c----sum over helicities
       include 'constants.f'
       include 'zprods_decl.f'
       include 'sprods_com.f'
+      include 'zerowidth.f'
       integer p1,p2,p3,p4,p5,p6,h12,h34,h5,h6
       double precision s34,s345,s156,s256
       double complex ai(2,2,2,2),af(2,2,2,2),zazb,zbza
       double complex z6354,z2354,z6453,z3162,z1264
       double complex z3456,z1263,z4162,z1254,z6254,z3165,z1253
       double complex z6253,z4165,z3152,z3156,z5264,z4152,z4156,z5263
-      include 'zerowidth.f'
 
       zazb(p1,p2,p3,p4)=+za(p1,p2)*zb(p2,p4)+za(p1,p3)*zb(p3,p4)
       zbza(p1,p2,p3,p4)=+zb(p1,p2)*za(p2,p4)+zb(p1,p3)*za(p3,p4)
@@ -213,94 +214,94 @@ C  DKS hep/9803250 Eqs (4.9) - (4.12) Multiplied by -i
 
 
       ai(1,1,1,1)=zb(p2,p4)**2
-     . /(zb(p4,p3)*zb(p2,p5)*zb(p1,p5)*zb(p2,p6)*zb(p6,p1)*(s345-s34))
-     . *(zb(p2,p5)*zbza(p1,p4,p3,p5)-zb(p1,p5)*zbza(p2,p4,p3,p5))
+     & /(zb(p4,p3)*zb(p2,p5)*zb(p1,p5)*zb(p2,p6)*zb(p6,p1)*(s345-s34))
+     & *(zb(p2,p5)*zbza(p1,p4,p3,p5)-zb(p1,p5)*zbza(p2,p4,p3,p5))
 
       ai(1,2,1,1)=zb(p2,p3)**2
-     . /(zb(p3,p4)*zb(p2,p5)*zb(p1,p5)*zb(p2,p6)*zb(p6,p1)*(s345-s34))
-     . *(zb(p2,p5)*zbza(p1,p3,p4,p5)-zb(p1,p5)*zbza(p2,p3,p4,p5))
+     & /(zb(p3,p4)*zb(p2,p5)*zb(p1,p5)*zb(p2,p6)*zb(p6,p1)*(s345-s34))
+     & *(zb(p2,p5)*zbza(p1,p3,p4,p5)-zb(p1,p5)*zbza(p2,p3,p4,p5))
 
       ai(1,1,2,1)=
-     . -zb(p2,p4)*za(p6,p1)*zbza(p5,p2,p4,p3)
-     . /(s34*za(p1,p5)*zb(p6,p1)*s156)
-     . +zb(p2,p5)*za(p1,p3)*zbza(p4,p2,p5,p6)
-     . /(s34*za(p2,p5)*zb(p2,p6)*s256)
-     . -zbza(p2,p1,p6,p3)
-     . *(zb(p4,p3)*zb(p2,p5)*za(p3,p1)+zb(p4,p5)*zb(p2,p6)*za(p6,p1))
-     . /(s34*za(p1,p5)*zb(p2,p6)*zb(p6,p1)*(s345-s34))
-     . +zbza(p2,p1,p6,p3)
-     . *(zbza(p5,p1,p6,p3)*zb(p3,p4)+zb(p5,p4)*zb(p1,p6)*za(p6,p1))
-     . /(s34*za(p2,p5)*zb(p2,p6)*zb(p6,p1)*(s345-s34))
+     & -zb(p2,p4)*za(p6,p1)*zbza(p5,p2,p4,p3)
+     & /(s34*za(p1,p5)*zb(p6,p1)*s156)
+     & +zb(p2,p5)*za(p1,p3)*zbza(p4,p2,p5,p6)
+     & /(s34*za(p2,p5)*zb(p2,p6)*s256)
+     & -zbza(p2,p1,p6,p3)
+     & *(zb(p4,p3)*zb(p2,p5)*za(p3,p1)+zb(p4,p5)*zb(p2,p6)*za(p6,p1))
+     & /(s34*za(p1,p5)*zb(p2,p6)*zb(p6,p1)*(s345-s34))
+     & +zbza(p2,p1,p6,p3)
+     & *(zbza(p5,p1,p6,p3)*zb(p3,p4)+zb(p5,p4)*zb(p1,p6)*za(p6,p1))
+     & /(s34*za(p2,p5)*zb(p2,p6)*zb(p6,p1)*(s345-s34))
 
       ai(1,2,2,1)=
-     . -zb(p2,p3)*za(p6,p1)*zbza(p5,p2,p3,p4)
-     . /(s34*za(p1,p5)*zb(p6,p1)*s156)
-     . +zb(p2,p5)*za(p1,p4)*zbza(p3,p2,p5,p6)
-     . /(s34*za(p2,p5)*zb(p2,p6)*s256)
-     . -zbza(p2,p1,p6,p4)
-     . *(zb(p3,p4)*zb(p2,p5)*za(p4,p1)+zb(p3,p5)*zb(p2,p6)*za(p6,p1))
-     . /(s34*za(p1,p5)*zb(p2,p6)*zb(p6,p1)*(s345-s34))
-     . +zbza(p2,p1,p6,p4)
-     . *(zbza(p5,p1,p6,p4)*zb(p4,p3)+zb(p5,p3)*zb(p1,p6)*za(p6,p1))
-     . /(s34*za(p2,p5)*zb(p2,p6)*zb(p6,p1)*(s345-s34))
+     & -zb(p2,p3)*za(p6,p1)*zbza(p5,p2,p3,p4)
+     & /(s34*za(p1,p5)*zb(p6,p1)*s156)
+     & +zb(p2,p5)*za(p1,p4)*zbza(p3,p2,p5,p6)
+     & /(s34*za(p2,p5)*zb(p2,p6)*s256)
+     & -zbza(p2,p1,p6,p4)
+     & *(zb(p3,p4)*zb(p2,p5)*za(p4,p1)+zb(p3,p5)*zb(p2,p6)*za(p6,p1))
+     & /(s34*za(p1,p5)*zb(p2,p6)*zb(p6,p1)*(s345-s34))
+     & +zbza(p2,p1,p6,p4)
+     & *(zbza(p5,p1,p6,p4)*zb(p4,p3)+zb(p5,p3)*zb(p1,p6)*za(p6,p1))
+     & /(s34*za(p2,p5)*zb(p2,p6)*zb(p6,p1)*(s345-s34))
 
 
 
 c------------------------------------------------------------------
 
       ai(1,1,2,2)=za(p1,p3)**2
-     . /(za(p3,p4)*za(p1,p5)*za(p2,p5)*za(p1,p6)*za(p6,p2)*(s345-s34))
-     . *(za(p1,p5)*zazb(p2,p3,p4,p5)-za(p2,p5)*zazb(p1,p3,p4,p5))
+     & /(za(p3,p4)*za(p1,p5)*za(p2,p5)*za(p1,p6)*za(p6,p2)*(s345-s34))
+     & *(za(p1,p5)*zazb(p2,p3,p4,p5)-za(p2,p5)*zazb(p1,p3,p4,p5))
 
       ai(1,2,2,2)=za(p1,p4)**2
-     . /(za(p4,p3)*za(p1,p5)*za(p2,p5)*za(p1,p6)*za(p6,p2)*(s345-s34))
-     . *(za(p1,p5)*zazb(p2,p4,p3,p5)-za(p2,p5)*zazb(p1,p4,p3,p5))
+     & /(za(p4,p3)*za(p1,p5)*za(p2,p5)*za(p1,p6)*za(p6,p2)*(s345-s34))
+     & *(za(p1,p5)*zazb(p2,p4,p3,p5)-za(p2,p5)*zazb(p1,p4,p3,p5))
 
       ai(1,1,1,2)=
-     . -za(p1,p3)*zb(p6,p2)*zazb(p5,p1,p3,p4)
-     . /(s34*zb(p2,p5)*za(p6,p2)*s256)
-     . +za(p1,p5)*zb(p2,p4)*zazb(p3,p1,p5,p6)
-     . /(s34*zb(p1,p5)*za(p1,p6)*s156)
-     . -zazb(p1,p2,p6,p4)
-     . *(za(p3,p4)*za(p1,p5)*zb(p4,p2)+za(p3,p5)*za(p1,p6)*zb(p6,p2))
-     . /(s34*zb(p2,p5)*za(p1,p6)*za(p6,p2)*(s345-s34))
-     . +zazb(p1,p2,p6,p4)
-     . *(zazb(p5,p2,p6,p4)*za(p4,p3)+za(p5,p3)*za(p2,p6)*zb(p6,p2))
-     . /(s34*zb(p1,p5)*za(p1,p6)*za(p6,p2)*(s345-s34))
+     & -za(p1,p3)*zb(p6,p2)*zazb(p5,p1,p3,p4)
+     & /(s34*zb(p2,p5)*za(p6,p2)*s256)
+     & +za(p1,p5)*zb(p2,p4)*zazb(p3,p1,p5,p6)
+     & /(s34*zb(p1,p5)*za(p1,p6)*s156)
+     & -zazb(p1,p2,p6,p4)
+     & *(za(p3,p4)*za(p1,p5)*zb(p4,p2)+za(p3,p5)*za(p1,p6)*zb(p6,p2))
+     & /(s34*zb(p2,p5)*za(p1,p6)*za(p6,p2)*(s345-s34))
+     & +zazb(p1,p2,p6,p4)
+     & *(zazb(p5,p2,p6,p4)*za(p4,p3)+za(p5,p3)*za(p2,p6)*zb(p6,p2))
+     & /(s34*zb(p1,p5)*za(p1,p6)*za(p6,p2)*(s345-s34))
 
       ai(1,2,1,2)=
-     . -za(p1,p4)*zb(p6,p2)*zazb(p5,p1,p4,p3)
-     . /(s34*zb(p2,p5)*za(p6,p2)*s256)
-     . +za(p1,p5)*zb(p2,p3)*zazb(p4,p1,p5,p6)
-     . /(s34*zb(p1,p5)*za(p1,p6)*s156)
-     . -zazb(p1,p2,p6,p3)
-     . *(za(p4,p3)*za(p1,p5)*zb(p3,p2)+za(p4,p5)*za(p1,p6)*zb(p6,p2))
-     . /(s34*zb(p2,p5)*za(p1,p6)*za(p6,p2)*(s345-s34))
-     . +zazb(p1,p2,p6,p3)
-     . *(zazb(p5,p2,p6,p3)*za(p3,p4)+za(p5,p4)*za(p2,p6)*zb(p6,p2))
-     . /(s34*zb(p1,p5)*za(p1,p6)*za(p6,p2)*(s345-s34))
+     & -za(p1,p4)*zb(p6,p2)*zazb(p5,p1,p4,p3)
+     & /(s34*zb(p2,p5)*za(p6,p2)*s256)
+     & +za(p1,p5)*zb(p2,p3)*zazb(p4,p1,p5,p6)
+     & /(s34*zb(p1,p5)*za(p1,p6)*s156)
+     & -zazb(p1,p2,p6,p3)
+     & *(za(p4,p3)*za(p1,p5)*zb(p3,p2)+za(p4,p5)*za(p1,p6)*zb(p6,p2))
+     & /(s34*zb(p2,p5)*za(p1,p6)*za(p6,p2)*(s345-s34))
+     & +zazb(p1,p2,p6,p3)
+     & *(zazb(p5,p2,p6,p3)*za(p3,p4)+za(p5,p4)*za(p2,p6)*zb(p6,p2))
+     & /(s34*zb(p1,p5)*za(p1,p6)*za(p6,p2)*(s345-s34))
 
       ai(2,1,1,1)=Dconjg(ai(1,2,2,2))
 
       else
 
       af(1,1,1,1)=+(z6354*zb(p2,p6)+z1264*zb(p1,p2))*zb(p2,p4)
-     . /(s345*zb(p1,p6)*zb(p2,p6)*zb(p3,p5)*zb(p4,p5))
+     & /(s345*zb(p1,p6)*zb(p2,p6)*zb(p3,p5)*zb(p4,p5))
       af(1,2,1,1)=-(z6453*zb(p2,p6)+z1263*zb(p1,p2))*zb(p2,p3)
-     . /(s345*zb(p1,p6)*zb(p2,p6)*zb(p3,p5)*zb(p4,p5))
+     & /(s345*zb(p1,p6)*zb(p2,p6)*zb(p3,p5)*zb(p4,p5))
       af(2,1,1,1)=-(z2354*zb(p1,p2)+z6354*zb(p1,p6))*zb(p1,p4)
-     . /(s345*zb(p1,p6)*zb(p2,p6)*zb(p3,p5)*zb(p4,p5))
+     & /(s345*zb(p1,p6)*zb(p2,p6)*zb(p3,p5)*zb(p4,p5))
       af(1,1,2,2)=+(z3456*za(p1,p6)-z3162*za(p1,p2))*za(p1,p3)
-     . /(s345*za(p1,p6)*za(p2,p6)*za(p3,p5)*za(p4,p5))
+     & /(s345*za(p1,p6)*za(p2,p6)*za(p3,p5)*za(p4,p5))
 
       af(1,1,1,2)=-z1264**2 
-     . /(s345*za(p1,p6)*za(p2,p6)*zb(p3,p5)*zb(p4,p5))
+     & /(s345*za(p1,p6)*za(p2,p6)*zb(p3,p5)*zb(p4,p5))
       af(1,2,1,2)=+z1263**2 
-     . /(s345*za(p1,p6)*za(p2,p6)*zb(p3,p5)*zb(p4,p5))
+     & /(s345*za(p1,p6)*za(p2,p6)*zb(p3,p5)*zb(p4,p5))
       af(1,1,2,1)=-z3162**2
-     . /(s345*za(p3,p5)*za(p4,p5)*zb(p1,p6)*zb(p2,p6))
+     & /(s345*za(p3,p5)*za(p4,p5)*zb(p1,p6)*zb(p2,p6))
       af(1,2,2,1)=+z4162**2  
-     . /(s345*za(p3,p5)*za(p4,p5)*zb(p1,p6)*zb(p2,p6))
+     & /(s345*za(p3,p5)*za(p4,p5)*zb(p1,p6)*zb(p2,p6))
 
       af(1,2,2,2)=Dconjg(af(2,1,1,1))
       af(2,1,2,2)=Dconjg(af(1,2,1,1))
@@ -314,36 +315,36 @@ c------------------------------------------------------------------
 
 
       ai(1,1,1,1)=zb(p1,p2)*zb(p2,p4)**2
-     . /(zb(p4,p3)*zb(p1,p5)*zb(p2,p5)*zb(p1,p6)*zb(p2,p6))
+     & /(zb(p4,p3)*zb(p1,p5)*zb(p2,p5)*zb(p1,p6)*zb(p2,p6))
 
       ai(1,2,1,1)=zb(p1,p2)*zb(p2,p3)**2
-     . /(zb(p3,p4)*zb(p1,p5)*zb(p2,p5)*zb(p1,p6)*zb(p2,p6))
+     & /(zb(p3,p4)*zb(p1,p5)*zb(p2,p5)*zb(p1,p6)*zb(p2,p6))
 
       ai(1,1,2,2)=za(p1,p2)*za(p1,p3)**2
-     . /(za(p4,p3)*za(p1,p5)*za(p2,p5)*za(p1,p6)*za(p2,p6))
+     & /(za(p4,p3)*za(p1,p5)*za(p2,p5)*za(p1,p6)*za(p2,p6))
 
       ai(2,1,1,1)=zb(p1,p2)*zb(p1,p4)**2
-     . /(zb(p3,p4)*zb(p1,p5)*zb(p2,p5)*zb(p1,p6)*zb(p2,p6))
+     & /(zb(p3,p4)*zb(p1,p5)*zb(p2,p5)*zb(p1,p6)*zb(p2,p6))
 
       ai(1,1,2,1)=-z1254*z3162
-     . /(s34*za(p1,p5)*za(p2,p5)*zb(p1,p6)*zb(p2,p6))
-     . +za(p1,p3)*zb(p2,p5)*z6254/(s34*s256*za(p2,p5)*zb(p2,p6))
-     . +za(p1,p6)*zb(p2,p4)*z3165/(s34*s156*za(p1,p5)*zb(p1,p6))
+     & /(s34*za(p1,p5)*za(p2,p5)*zb(p1,p6)*zb(p2,p6))
+     & +za(p1,p3)*zb(p2,p5)*z6254/(s34*s256*za(p2,p5)*zb(p2,p6))
+     & +za(p1,p6)*zb(p2,p4)*z3165/(s34*s156*za(p1,p5)*zb(p1,p6))
 
       ai(1,2,2,1)=-z1253*z4162
-     . /(s34*za(p1,p5)*za(p2,p5)*zb(p1,p6)*zb(p2,p6))
-     . +za(p1,p4)*zb(p2,p5)*z6253/(s34*s256*za(p2,p5)*zb(p2,p6))
-     . +za(p1,p6)*zb(p2,p3)*z4165/(s34*s156*za(p1,p5)*zb(p1,p6))
+     & /(s34*za(p1,p5)*za(p2,p5)*zb(p1,p6)*zb(p2,p6))
+     & +za(p1,p4)*zb(p2,p5)*z6253/(s34*s256*za(p2,p5)*zb(p2,p6))
+     & +za(p1,p6)*zb(p2,p3)*z4165/(s34*s156*za(p1,p5)*zb(p1,p6))
 
       ai(1,1,1,2)=-z1264*z3152
-     . /(s34*za(p1,p6)*za(p2,p6)*zb(p1,p5)*zb(p2,p5))
-     . +za(p1,p5)*zb(p2,p4)*z3156/(s34*s156*za(p1,p6)*zb(p1,p5))
-     . +za(p1,p3)*zb(p2,p6)*z5264/(s34*s256*za(p2,p6)*zb(p2,p5))
+     & /(s34*za(p1,p6)*za(p2,p6)*zb(p1,p5)*zb(p2,p5))
+     & +za(p1,p5)*zb(p2,p4)*z3156/(s34*s156*za(p1,p6)*zb(p1,p5))
+     & +za(p1,p3)*zb(p2,p6)*z5264/(s34*s256*za(p2,p6)*zb(p2,p5))
 
       ai(1,2,1,2)=-z1263*z4152
-     . /(s34*za(p1,p6)*za(p2,p6)*zb(p1,p5)*zb(p2,p5))
-     . +za(p1,p5)*zb(p2,p3)*z4156/(s34*s156*za(p1,p6)*zb(p1,p5))
-     . +za(p1,p4)*zb(p2,p6)*z5263/(s34*s256*za(p2,p6)*zb(p2,p5))
+     & /(s34*za(p1,p6)*za(p2,p6)*zb(p1,p5)*zb(p2,p5))
+     & +za(p1,p5)*zb(p2,p3)*z4156/(s34*s156*za(p1,p6)*zb(p1,p5))
+     & +za(p1,p4)*zb(p2,p6)*z5263/(s34*s256*za(p2,p6)*zb(p2,p5))
 
       ai(1,2,2,2)=Dconjg(ai(2,1,1,1))
 

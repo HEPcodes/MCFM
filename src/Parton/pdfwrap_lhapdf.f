@@ -11,6 +11,7 @@
       double precision amz,alphasPDF
       logical validPDF
       character*30 oldPDFname
+      character*72 checkpath 
       integer i,iorder
 
       common/couple/amz
@@ -57,7 +58,7 @@ c      endif
       write(6,*)
 
 c      write(6,*) '+ Name = ','PDFsets/'//PDFname
-      call InitPDFset('PDFsets/'//PDFname)
+      call InitPDFset(checkpath('PDFsets/'//PDFname))
 c      write(6,*) '+ PDF set succesfully initialized'
       
       if (PDFmember .lt. 0) then

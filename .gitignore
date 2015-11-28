@@ -1,6 +1,11 @@
 *.o
 /makefile.orig
+/obj
 /Bin/mcfm
+/QCDLoop/ff/ffinit_mine.f
+/QCDLoop/ff/libff.a
+/QCDLoop/ql/libqcdloop.a
+/QCDLoop/test
 /Doc/*.aux
 /Doc/*.dvi
 /Doc/*.log

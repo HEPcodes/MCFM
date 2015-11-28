@@ -21,7 +21,7 @@
 \thispagestyle{empty}
 \vspace*{3cm}
 \begin{center}
-{\Huge MCFM v5.8} \\
+{\Huge MCFM v6.0} \\
 \vspace*{0.5cm}
 \Large{A Monte Carlo for FeMtobarn} \\
 \Large{processes at Hadron Colliders} \\
@@ -30,10 +30,11 @@
 \vspace*{4cm}
 {\it Authors:} \\
 \vspace*{0.2cm}
-J. M. Campbell ({\tt johnmc@fnal.gov}) \\
-R. K. Ellis ({\tt ellis@fnal.gov}) \\
-\vspace*{2.5cm}
-{\it \small Updated: 8th April 2010}
+John M. Campbell ({\tt johnmc@fnal.gov}) \\
+R. Keith Ellis ({\tt ellis@fnal.gov}) \\
+Ciaran Williams ({\tt ciaran@fnal.gov}) \\
+\vspace*{2cm}
+{\it \small Updated: May 2nd 2011}
 \end{center}
 
 \newpage
@@ -103,7 +104,17 @@ are:
 \item J.~M.~Campbell, R.~K.~Ellis and C.~Williams, \\
   {\it ``Hadronic production of a Higgs boson and two jets at next-to-leading
   order,''} \\
-  arXiv:1001.4495 [hep-ph].
+   Phys.\ Rev.\ D {\bf 81} 074023 (2010),
+  [arXiv:1001.4495 [hep-ph]].
+\item S.~Badger, J.~M.~Campbell and R.~K.~Ellis, \\
+  {\it ``QCD corrections to the hadronic production of a heavy quark pair and a
+  W-boson including decay correlations,''} \\
+ JHEP {\bf 1103}, 027 (2011)
+  [arXiv:1011.6647 [hep-ph]].
+\item J.~M.~Campbell, R.~K.~Ellis and C.~Williams, \\
+  {\it ``Vector boson pair production at the LHC,''} \\
+ FERMILAB-PUB-11-182-T,
+  [arXiv:1105.0020 [hep-ph]]. 
 \end{itemize}
 
 The following recent publications have also made use of calculations
@@ -135,8 +146,10 @@ After extracting, the source can be initialized by running the
 {\tt Install} command and then compiled with {\tt make}. The
 {\tt Install} script may be edited prior to running, to include
 the locations of the CERNLIB and LHAPDF libraries, if desired.
-The code has been developed and tested under Redhat Linux. Please report
+The code has been developed and tested under Redhat Linux and Mac OSX,
+using the compiler {\tt gfortran}. Please report
 any compilation problems under other operating systems to the authors.
+Note that, as of version 6.0, the code requires a Fortran90 compiler.
 
 The directory structure of the installation is as follows:
 \begin{itemize}
@@ -146,6 +159,10 @@ and various essential files -- notably the options file {\tt input.DAT}.
 \item {\tt Bin/Pdfdata}. The directory containing the PDF data-files.
 \item {\tt obj}. The object files produced by the compiler. 
 \item {\tt src}. The Fortran source files in various subdirectories.
+\item {\tt QCDLoop}. The source files to version 1.9 of the Fortran
+library QCDLoop~\cite{Ellis:2007qk}. The location of these libraries
+is set in the {\tt makefile} (by {\tt QLDIR} and {\tt FFDIR}) and may be
+changed to reflect existing installations if desired. 
 \end{itemize}
 The files which it is most likely that the user will need to modify
 are located in {\tt src/User}. It is convenient, if one wants to 
@@ -187,7 +204,7 @@ $m_t$            & {\tt mt}      & {\tt input.DAT}
 \end{tabular}
 \caption{Different options for the scheme used to fix the electroweak
 parameters of the Standard Model and the corresponding default input
-values. $M_W$ and $M_Z$ from ref.~\cite{Amsler:2008zzb}.}
+values. $M_W$ and $M_Z$ are taken from ref.~\cite{Amsler:2008zzb}.}
 \label{ewscheme}
 \end{center}
 \end{table}
@@ -450,7 +467,13 @@ Section~\ref{subsec:otheroutput} for further details.
 \item {\tt nproc}.
 The process to be studied is given by
 choosing a process number, according to Table~\ref{nproctable}.
-$f(p_i)$ denotes a generic partonic jet.
+$f(p_i)$ denotes a generic partonic jet. Processes denoted as
+``LO'' may only be calculated in the Born approximation. For photon
+processes, ``NLO+F'' signifies that the calculation may be performed
+both at NLO and also including the effects of photon fragmentation
+and experimental isolation. In contrast, ``NLO'' for a process involving
+photons means that no fragmentation contributions are included and isolation
+is performed according to the procedure of Frixione~\cite{Frixione:1998jh}.
 
 \begin{table}
 \begin{center}
@@ -459,253 +482,293 @@ $f(p_i)$ denotes a generic partonic jet.
 \hline
 {\tt nproc} & $f(p_1)+f(p_2) \to \ldots $& Order \\
 \hline
- 
-1 & $ W^+(\to \nu(p_3)+e^+(p_4)) $ & NLO \\
-6 & $ W^-(\to e^-(p_3)+\bar{\nu}(p_4)) $ & NLO \\
+%  
+1  & $ W^+(\to \nu(p_{3})+e^+(p_{4}))$   & NLO \\
+6  & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))$   & NLO \\
 \hline 
-11& $ W^+(\to \nu(p_3)+e^+(p_4))+f(p_5) $ & NLO \\
-12& $ W^+(\to \nu(p_3)+e^+(p_4))+\gamma(p_5) $ & NLO \\
-13& $ W^+(\to \nu(p_3)+e^+(p_4))+\bar{c}(p_5) $ & NLO \\
-14& $ W^+(\to \nu(p_3)+e^+(p_4))+\bar{c}(p_5) ~[ \mbox{massless} ] $ & NLO \\
-16& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4))+f(p_5) $ & NLO \\
-17& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4))+\gamma(p_5) $ & NLO \\
-18& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4))+c(p_5) $ & NLO \\
-19& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4))+c(p_5) ~[ \mbox{massless} ] $ & NLO \\
+11 & $ W^+(\to \nu(p_{3})+e^+(p_{4}))+f(p_{5})$    & NLO \\
+13 & $ W^+(\to \nu(p_{3})+e^+(p_{4}))+\bar{c}(p_{5})$   & NLO \\
+14 & $ W^+(\to \nu(p_{3})+e^+(p_{4}))+\bar{c}(p_{5}) [\mbox{massless}]$   & LO \\
+16 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+f(p_{5})$   & NLO \\
+18 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+c(p_{5})$   & NLO \\
+19 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+c(p_{5}) [\mbox{massless}]$   & LO \\
 \hline 
-20& $ W^+(\to \nu(p_3)+e^+(p_4)) +b(p_5)+\bar{b}(p_6) ~[ \mbox{massive} ] $ & LO \\
-21& $ W^+(\to \nu(p_3)+e^+(p_4)) +b(p_5)+\bar{b}(p_6) $ & NLO \\
-22& $ W^+(\to \nu(p_3)+e^+(p_4)) +f(p_5)+f(p_6) $ & NLO \\
-23& $ W^+(\to \nu(p_3)+e^+(p_4)) +f(p_5)+f(p_6)+f(p_7) $ & LO \\
-24& $ W^+(\to \nu(p_3)+e^+(p_4)) +b(p_5)+\bar{b}(p_6)+f(p_7) $ & LO \\
-25& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4)) +b(p_5)+\bar{b}(p_6) ~[ \mbox{massive} ] $ & LO \\
-26& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4)) +b(p_5)+\bar{b}(p_6) $ & NLO \\
-27& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4)) +f(p_5)+f(p_6) $ & NLO \\
-28& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4)) +f(p_5)+f(p_6)+f(p_7) $ & LO \\
-29& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4)) +b(p_5)+\bar{b}(p_6)+f(p_7) $ & LO \\
+20 & $ W^+(\to \nu(p_{3})+e^+(p_{4})) +b(p_{5})+\bar{b}(p_{6}) [\mbox{massive}]$   & NLO \\
+21 & $ W^+(\to \nu(p_{3})+e^+(p_{4})) +b(p_{5})+\bar{b}(p_{6})$   & NLO \\
+22 & $ W^+(\to \nu(p_{3})+e^+(p_{4})) +f(p_{5})+f(p_{6})$   & NLO \\
+23 & $ W^+(\to \nu(p_{3})+e^+(p_{4})) +f(p_{5})+f(p_{6})+f(p_{7})$   & LO \\
+24 & $ W^+(\to \nu(p_{3})+e^+(p_{4})) +b(p_{5})+\bar{b}(p_{6})+f(p_{7})$   & LO \\
+25 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4})) +b(p_{5})+\bar{b}(p_{6}) [\mbox{massive}]$   & NLO \\
+26 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4})) +b(p_{5})+\bar{b}(p_{6})$   & NLO \\
+27 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4})) +f(p_{5})+f(p_{6})$   & NLO \\
+28 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4})) +f(p_{5})+f(p_{6})+f(p_{7})$   & LO \\
+29 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4})) +b(p_{5})+\bar{b}(p_{6})+f(p_{7})$   & LO \\
 \hline 
-31& $ Z^0(\to e^-(p_3)+e^+(p_4)) $ & NLO \\
-32& $ Z^0(\to 3\times(\nu(p_3)+\bar{\nu}(p_4))) $ & NLO \\
-33& $ Z^0(\to b(p_3)+\bar{b}(p_4)) $ & NLO \\
+31 & $ Z^0(\to e^-(p_{3})+e^+(p_{4}))$   & NLO \\
+32 & $ Z^0(\to 3\times(\nu(p_{3})+\bar{\nu}(p_{4})))$   & NLO \\
+33 & $ Z^0(\to b(p_{3})+\bar{b}(p_{4}))$   & NLO \\
+34 & $ Z^0(\to 3\times(d(p_{5})+\bar{d}(p_{6})))$   & NLO \\
+35 & $ Z^0(\to 2\times(u(p_{5})+\bar{u}(p_{6})))$   & NLO \\
+36 & $  Z \to  t(\to \nu(p_{3})+e^+(p_{4})+b(p_{5}))+\bar{t}(\to \bar{b}(p_{6})+e^-(p_{7})+\bar{\nu}(p_{8}))$   & LO \\
 \hline 
-41& $ Z^0(\to e^-(p_3)+e^+(p_4))+f(p_5) $ & NLO \\
-42& $ Z_0(\to 3\times(\nu(p_3)+\bar{\nu}(p_4)))-~[ \mbox{sum over 3 $\nu$} ]+f(p_5) $ & NLO \\
-43& $ Z^0(\to b(p_3)+\bar{b}(p_4))+f(p_5) $ & NLO \\
+41 & $ Z^0(\to e^-(p_{3})+e^+(p_{4}))+f(p_{5})$   & NLO \\
+42 & $ Z_0(\to 3\times(\nu(p_{3})+\bar{\nu}(p_{4})))+f(p_{5})$   & NLO \\
+43 & $ Z^0(\to b(p_{3})+\bar{b}(p_{4}))+f(p_{5})$   & NLO \\
 \hline 
-44& $ Z^0(\to e^-(p_3)+e^+(p_4))+f(p_5)+f(p_6) $ & NLO \\
-45& $ Z^0(\to e^-(p_3)+e^+(p_4))+f(p_5)+f(p_6)+f(p_7) $ & LO \\
-46& $ Z^0(\to 3\times(\nu(p_3)+\bar{\nu}(p_4)))+f(p_5)+f(p_6) $ & NLO \\
-47& $ Z^0(\to 3\times(\nu(p_3)+\bar{\nu}(p_4)))+f(p_5)+f(p_6)+f(p_7) $ & LO \\
+44 & $ Z^0(\to e^-(p_{3})+e^+(p_{4}))+f(p_{5})+f(p_{6})$   & NLO \\
+45 & $ Z^0(\to e^-(p_{3})+e^+(p_{4}))+f(p_{5})+f(p_{6})+f(p_{7})$   & LO \\
+46 & $ Z^0(\to 3\times(\nu(p_{3})+\bar{\nu}(p_{4}))+f(p_{5})+f(p_{6})$   & NLO \\
+47 & $ Z^0(\to 3\times(\nu(p_{3})+\bar{\nu}(p_{4}))+f(p_{5})+f(p_{6})+f(p_{7})$   & LO \\
 \hline 
-48& $ Z^0(\to e^-(p_3)+e^+(p_4))+\gamma(p_5) $ & NLO \\
-49& $ Z^0(\to 3\times(\nu(p_3)+\bar{\nu}(p_4)))-~[ \mbox{sum over 3 $\nu$} ]+\gamma(p_5) $ & NLO \\
-\hline 
-50& $ Z^0(\to e^-(p_3)+e^+(p_4))+\bar{b}(p_5)+b(p_6) ~[ \mbox{massive} ] $ & LO \\
-51& $ Z^0(\to e^-(p_3)+e^+(p_4))+b(p_5)+\bar{b}(p_6) $ & NLO \\
-52& $ Z_0(\to 3\times(\nu(p_3)+\bar{\nu}(p_4)))+b(p_5)+\bar{b}(p_6) $ & NLO \\
-53& $ Z^0(\to b(p_3)+\bar{b}(p_4))+b(p_5)+\bar{b}(p_6) $ & NLO \\
-54& $ Z^0(\to e^-(p_3)+e^+(p_4))+b(p_5)+\bar{b}(p_6)+f(p_7) $ & LO \\
-\hline 
-56& $ Z^0(\to e^-(p_3)+e^+(p_4))+c(p_5)+\bar{c}(p_6) $ & NLO \\
+50 & $ Z^0(\to e^-(p_{3})+e^+(p_{4}))+\bar{b}(p_{5})+b(p_{6}) [\mbox{massive}]$   & LO \\
+51 & $ Z^0(\to e^-(p_{3})+e^+(p_{4}))+b(p_{5})+\bar{b}(p_{6})$   & NLO \\
+52 & $ Z_0(\to 3\times(\nu(p_{3})+\bar{\nu}(p_{4})))+b(p_{5})+\bar{b}(p_{6})$   & NLO \\
+53 & $ Z^0(\to b(p_{3})+\bar{b}(p_{4}))+b(p_{5})+\bar{b}(p_{6})$   & NLO \\
+54 & $ Z^0(\to e^-(p_{3})+e^+(p_{4}))+b(p_{5})+\bar{b}(p_{6})+f(p_{7})$   & LO \\
 \hline 
 \end{tabular}
 \end{center}
 \end{table}
+\newpage
 \begin{table}
 \begin{center}
-\hspace*{-1.5cm}
 \begin{tabular}{|l|l|l|}
 \hline
-{\tt nproc} & $ f(p_1)+f(p_2) \to \ldots $& Order \\ 
-\hline
-61& $ W^+(\to \nu(p_3)+e^+(p_4)) +W^-(\to e^-(p_5)+\bar{\nu}(p_6)) $ & NLO \\
-62& $ W^+(\to \nu(p_3)+e^+(p_4)) +W^-(\to q(p_5)+\bar{q}(p_6)) $ & NLO \\
-63& $ W^+(\to  q(p_3)+ \bar{q}(p_4)) +W^-(\to e^-(p_5)+\bar{\nu}(p_6)) $ & NLO \\
-64& $ W^+(\to \nu(p_3)+e^+(p_4)) +W^-(\to e^-(p_5)+\bar{\nu}(p_6)) ~[ \mbox{no pol} ] $ & NLO \\
-66& $ W^+(\to  q(p_3)+ \bar{q}(p_4)) +W^-(\to e^-(p_5)+\bar{\nu}(p_6))+f(p_7) $ & NLO \\
+56 & $ Z^0(\to e^-(p_{3})+e^+(p_{4}))+c(p_{5})+\bar{c}(p_{6})$   & NLO \\
 \hline 
-71& $ W^+(\to \nu(p_3)+\mu^+(p_4))+Z^0(\to e^-(p_5)+e^+(p_6)) $ & NLO \\
-72& $ W^+(\to \nu(p_3)+\mu^+(p_4))+Z^0(\to \nu_e(p_5)+\bar{\nu}_e(p_6)) $ & NLO \\
-73& $ W^+(\to \nu(p_3)+\mu^+(p_4))+Z^0(\to b(p_5)+\bar{b}(p_6)) $ & NLO \\
+61 & $ W^+(\to \nu(p_{3})+e^+(p_{4})) +W^-(\to e^-(p_{5})+\bar{\nu}(p_{6}))$   & NLO \\
+62 & $ W^+(\to \nu(p_{3})+e^+(p_{4})) +W^-(\to q(p_{5})+\bar{q}(p_{6}))$   & NLO \\
+63 & $ W^+(\to  q(p_{3})+ \bar{q}(p_{4})) +W^-(\to e^-(p_{5})+\bar{\nu}(p_{6}))$   & NLO \\
+64 & $ W^+(\to \nu(p_{3})+e^+(p_{4})) +W^-(\to e^-(p_{5})+\bar{\nu}(p_{6})) [\mbox{no pol}]$   & LO \\
+66 & $ W^+(\to \nu(p_{3})+e^+(p_{4})) +W^-(\to e^-(p_{5})+\bar{\nu}(p_{6}))+f(p_{7})$   & LO \\
 \hline 
-76& $ W^-(\to \mu^-(p_3)+\bar{\nu}(p_4))+Z^0(\to e^-(p_5)+e^+(p_6)) $ & NLO \\
-77& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4))+Z^0(\to \nu(p_5)+\bar{\nu}(p_6)) $ & NLO \\
-78& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4))+Z^0(\to b(p_5)+\bar{b}(p_6)) $ & NLO \\
+71 & $ W^+(\to \nu(p_{3})+\mu^+(p_{4}))+Z^0(\to e^-(p_{5})+e^+(p_{6}))$   & NLO \\
+72 & $ W^+(\to \nu(p_{3})+\mu^+(p_{4}))+Z^0(\to 3\times(\nu_e(p_{5})+\bar{\nu}_e(p_{6})))$   & NLO \\
+73 & $ W^+(\to \nu(p_{3})+\mu^+(p_{4}))+Z^0(\to b(p_{5})+\bar{b}(p_{6}))$   & NLO \\
+74 & $ W^+(\to \nu(p_{3})+\mu^+(p_{4}))+Z^0(\to 3\times(d(p_{5})+\bar{d}(p_{6})))$   & NLO \\
+75 & $ W^+(\to \nu(p_{3})+\mu^+(p_{4}))+Z^0(\to 2\times(u(p_{5})+\bar{u}(p_{6})))$   & NLO \\
 \hline 
-81& $ Z^0(\to \mu^-(p_3)+\mu^+(p_4)) + Z^0(\to e^-(p_5)+e^+(p_6)) $ & NLO \\
-82& $ Z^0(\to e^-(p_3)+e^+(p_4)) + Z^0(\to 3\times(\nu(p_5)+\bar{\nu}(p_6)))$ & NLO \\
-83& $ Z^0(\to e^-(p_5)+e^+(p_6)) + Z^0(\to b(p_3)+\bar{b}(p_4)) $ & NLO \\
-84& $ Z^0(\to b(p_3)+\bar{b}(p_4)) + Z^0(\to 3\times(\nu(p_5)+\bar{\nu}(p_6)))$ & NLO \\
-85& $ Z^0(\to e^-(p_3)+e^+(p_4)) + Z^0(\to 3\times(\nu(p_5)+\bar{\nu}(p_6))) + f(p_7)$ & LO \\
+76 & $ W^-(\to \mu^-(p_{3})+\bar{\nu}(p_{4}))+Z^0(\to e^-(p_{5})+e^+(p_{6}))$   & NLO \\
+77 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+Z^0(\to 3\times(\nu(p_{5})+\bar{\nu}(p_{6})))$   & NLO \\
+78 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+Z^0(\to b(p_{5})+\bar{b}(p_{6}))$   & NLO \\
+79 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+Z^0(\to 3\times(d(p_{5})+\bar{d}(p_{6})))$   & NLO \\
+80 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+Z^0(\to 2\times(u(p_{5})+\bar{u}(p_{6})))$   & NLO \\
 \hline 
-86& $ Z^0(\to \mu^-(p_3)+\mu^+(p_4)) + Z^0(\to e^-(p_5)+e^+(p_6))~[ \mbox{no $\gamma^*$} ] $ & NLO \\
-87& $ Z^0(\to e^-(p_3)+e^+(p_4))+Z^0(\to 3\times(\nu(p_5)+\bar{\nu}(p_6))) ~[ \mbox{no $\gamma^*$} ] $ & NLO \\
-88& $ Z^0(\to e^-(p_3)+e^+(p_4))+Z^0(\to b(p_5)+\bar{b}(p_6)) ~[ \mbox{no $\gamma^*$} ] $ & NLO \\
-89& $ Z^0(\to b(p_3)+\bar{b}(p_4))+Z^0(\to 3\times(\nu(p_5)+\bar{\nu}(p_6)))~[ \mbox{no $\gamma^*$} ] $ & NLO \\
+81 & $ Z^0(\to \mu^-(p_{3})+\mu^+(p_{4})) + Z^0(\to e^-(p_{5})+e^+(p_{6}))$   & NLO \\
+82 & $ Z^0(\to e^-(p_{3})+e^+(p_{4})) + Z^0(\to 3\times(\nu(p_{5})+\bar{\nu}(p_{6})))$   & NLO \\
+83 & $ Z^0(\to e^-(p_{3})+e^+(p_{4})) + Z^0(\to b(p_{5})+\bar{b}(p_{6}))$   & NLO \\
+84 & $ Z^0(\to b(p_{3})+\bar{b}(p_{4})) + Z^0(\to 3\times(\nu(p_{5})+\bar{\nu}(p_{6})))$   & NLO \\
+85 & $ Z^0(\to e^-(p_{3})+e^+(p_{4})) + Z^0(\to 3\times(\nu(p_{5})+\bar{\nu}(p_{6})))+f(p_{7})$   & LO \\
 \hline 
-91& $ W^+(\to \nu(p_3)+e^+(p_4)) + H(\to b(p_5)+\bar{b}(p_6))  $ & NLO \\
-92& $ W^+(\to \nu(p_3)+e^+(p_4)) + H(\to W^+(\nu(p_5) e^+(p_6)) + W^-(e^-(p_7) \bar{\nu}(p_8)))  $ & NLO \\
-96& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4)) + H(\to b(p_5)+\bar{b}(p_6)) $ & NLO \\ 
-97& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4)) + H(\to W^+(\nu(p_5) e^+(p_6)) + W^-(e^-(p_7) \bar{\nu}(p_8)))  $ & NLO \\
+86 & $ Z^0(\to \mu^-(p_{3})+\mu^+(p_{4}))+Z^0(\to e^-(p_{5})+e^+(p_{6}))[\mbox{no gamma*}]$   & NLO \\
+87 & $ Z^0(\to e^-(p_{3})+e^+(p_{4})) + Z^0(\to 3\times(\nu(p_{5})+\bar{\nu}(p_{6}))) [\mbox{no gamma*}]$   & NLO \\
+88 & $ Z^0(\to e^-(p_{3})+e^+(p_{4}))+Z^0(\to b(p_{5})+\bar{b}(p_{6})) [\mbox{no gamma*}]$   & NLO \\
+89 & $ Z^0(\to b(p_{3})+\bar{b}(p_{4})) + Z^0(\to 3\times(\nu(p_{5})+\bar{\nu}(p_{6}))) [\mbox{no gamma*}]$   & NLO \\
 \hline 
-101& $ Z^0(\to e^-(p_3)+e^+(p_4)) + H(\to b(p_5)+\bar{b}(p_6)) $ & NLO \\
-102& $ Z^0(\to 3\times(\nu(p_3)+\bar{\nu}(p_4))) + H(\to b(p_5)+\bar{b}(p_6)) $ & NLO \\
-103& $ Z^0(\to b(p_3)+\bar{b}(p_4)) + H(\to b(p_5)+\bar{b}(p_6)) $ & NLO \\     
-106& $ Z^0(\to e^-(p_3)+e^+(p_4)) + H(\to W^+(\nu(p_5) e^+(p_6)) + W^-(e^-(p_7) \bar{\nu}(p_8))) $ & NLO \\
-107& $ Z^0(\to 3\times(\nu(p_3)+\bar{\nu}(p_4))) + H(\to W^+(\nu(p_5) e^+(p_6)) + W^-(e^-(p_7) \bar{\nu}(p_8))) $ & NLO \\
-108& $ Z^0(\to b(p_3)+\bar{b}(p_4)) + H(\to W^+(\nu(p_5) e^+(p_6)) + W^-(e^-(p_7) \bar{\nu}(p_8))) $ & NLO \\     
-\hline 
-111& $ H(\to b(p_3)+\bar{b}(p_4)) $ & NLO \\
-112& $ H(\to \tau^-(p_3)+\tau^+(p_4)) $ & NLO \\
-113& $ H(\to  W^+(\nu(p_3)+e^+(p_4)) + W^-(e^-(p_5)+\bar{\nu}(p_6))) $ & NLO \\
-114& $ H(\to Z^0(\mu^-(p_3)+\mu^+(p_4)) + Z^0(e^-(p_5)+e^+(p_6)) $ & NLO \\
-115& $ H(\to Z^0(3\times(\nu(p_3)+\bar{\nu}(p_4)))+ Z^0(e^-(p_5)+e^+(p_6)) $ & NLO \\
-116& $ H(\to Z^0(\mu^-(p_3)+\mu^+(p_4)) + Z^0(b(p_5)+\bar{b}(p_6)) $ & NLO \\
+91 & $ W^+(\to \nu(p_{3})+e^+(p_{4})) + H(\to b(p_{5})+\bar{b}(p_{6}))$   & NLO \\
+92 & $ W^+(\to \nu(p_{3})+e^+(p_{4})) + H(\to W^+(\nu(p_{5}),e^+(p_{6}))W^-(e^-(p_{7}),\bar{\nu}(p_{8})))$   & NLO \\
+96 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4})) + H(\to b(p_{5})+\bar{b}(p_{6}))$    & NLO \\
+97 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4})) + H(\to W^+(\nu(p_{5}),e^+(p_{6}))W^-(e^-(p_{7}),\bar{\nu}(p_{8})))$   & NLO \\
 \hline 
 \end{tabular}
 \end{center}
 \end{table}
+\newpage
 \begin{table}
 \begin{center}
-\hspace*{-1.5cm}
 \begin{tabular}{|l|l|l|}
 \hline
-{\tt nproc} & $ f(p_1)+f(p_2) \to \ldots $& Order \\ 
-\hline
-141& $ H(\to b(p_3)+\bar{b}(p_4)) + b(p_5) (+g(p_6)) $ & NLO \\
-142& $ H(\to b(p_3)+\bar{b}(p_4)) + \bar{b}(p_5) (+b(p_6)) $ & NLO \\
-143& $ H(\to b(p_3)+\bar{b}(p_4)) + b(p_5) + \bar{b}(p_6) ~[ \mbox{both observed} ] $ & NLO \\
+101 & $ Z^0(\to e^-(p_{3})+e^+(p_{4})) + H(\to b(p_{5})+\bar{b}(p_{6}))$   & NLO \\
+102 & $ Z^0(\to 3\times(\nu(p_{3})+\bar{\nu}(p_{4}))) + H(\to b(p_{5})+\bar{b}(p_{6}))$   & NLO \\
+103 & $ Z^0(\to b(p_{3})+\bar{b}(p_{4})) + H(\to b(p_{5})+\bar{b}(p_{6}))$        & NLO \\
+106 & $ Z^0(\to e^-(p_{3})+e^+(p_{4})) + H(\to W^+(\nu(p_{5}),e^+(p_{6}))W^-(e^-(p_{7}),\bar{\nu}(p_{8})))$   & NLO \\
+107 & $ Z^0(\to 3\times(\nu(p_{3})+\bar{\nu}(p_{4}))) + H(\to W^+(\nu(p_{5}),e^+(p_{6}))W^-(e^-(p_{7}),\bar{\nu}(p_{8})))$   & NLO \\
+108 & $ Z^0(\to b(p_{3})+\bar{b}(p_{4})) + H(\to W^+(\nu(p_{5}),e^+(p_{6}))W^-(e^-(p_{7}),\bar{\nu}(p_{8})))$        & NLO \\
 \hline 
-151& $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{t}(\to \bar{b}(p_6)+e^-(p_7)+\bar{\nu}(p_8)) $ & NLO \\
-152& $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{t}(\to \bar{b}(p_6)+q(p_7)+\bar{q}(p_8)) $ & NLO \\
+111 & $ H(\to b(p_{3})+\bar{b}(p_{4}))$   & NLO \\
+112 & $ H(\to \tau^-(p_{3})+\tau^+(p_{4}))$   & NLO \\
+113 & $ H(\to  W^+(\nu(p_{3})+e^+(p_{4})) + W^-(e^-(p_{5})+\bar{\nu}(p_{6})))$   & NLO \\
+114 & $ H(\to Z^0(\mu^-(p_{3})+\mu^+(p_{4})) + Z^0(e^-(p_{5})+e^+(p_{6}))$   & NLO \\
+115 & $ H(\to Z^0(3\times(\nu(p_{3})+\bar{\nu}(p_{4})))+ Z^0(e^-(p_{5})+e^+(p_{6}))$   & NLO \\
+116 & $ H(\to Z^0(\mu^-(p_{3})+\mu^+(p_{4})) + Z^0(b(p_{5})+\bar{b}(p_{6}))$   & NLO \\
+117 & $ H(\to \gamma(p_{3})+\gamma(p_{4}))$   & NLO \\
 \hline 
-156& $t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{t}(\to \bar{b}(p_6) +e^-(p_7)+\bar{\nu}(p_8))+g(p_9) $ & LO \\
+121 & $ W^+(\to \nu(p_{3})+e^+(p_{4})) + W^+(\to \nu(p_{5})+e^+(p_{6}))+f(p_{7})+f(p_{8})$   & LO \\
+122 & $ W^+(\to \nu(p_{3})+e^+(p_{4})) + W^+(\to \nu(p_{5})+e^+(p_{6}))+f(p_{7})+f(p_{8})+f(p_{9})$   & LO \\
 \hline 
-157& $ t \bar{t} ~[ \mbox{for total Xsect} ] $ & NLO \\
-158& $ b \bar{b} ~[ \mbox{for total Xsect} ] $ & NLO \\
-159& $ c \bar{c} ~[ \mbox{for total Xsect} ] $ & NLO \\
-160& $ t \bar{t} + g ~[ \mbox{for total Xsect} ] $ & LO \\
+141 & $ H(\to b(p_{3})+\bar{b}(p_{4})) + b(p_{5}) (+g(p_{6}))$   & NLO \\
+142 & $ H(\to b(p_{3})+\bar{b}(p_{4})) + \bar{b}(p_{5}) (+b(p_{6}))$   & (REAL) \\
+143 & $ H(\to b(p_{3})+\bar{b}(p_{4})) + b(p_{5}) + \bar{b}(p_{6}) [\mbox{both observed}]$   & (REAL) \\
 \hline 
-161& $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+q(p_6) ~[ \mbox{t-channel} ] $ & NLO \\
-162& $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+q(p_6) ~[ \mbox{decay} ] $ & NLO \\
-163& $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+q(p_6) ~[ \mbox{t-channel} ] ~(m_b>0) $ & NLO \\
-166& $ \bar{t}(\to e^-(p_3)+\bar{\nu}(p_4)+\bar{b}(p_5))+q(p_6) ~[ \mbox{t-channel} ] $ & NLO \\
-167& $ \bar{t}(\to e^-(p_3)+\bar{\nu}(p_4)+\bar{b}(p_5))+q(p_6) ~[ \mbox{decay} ] $ & NLO \\
-168& $ \bar{t}(\to e^-(p_3)+\bar{\nu}(p_4)+\bar{b}(p_5))+q(p_6) ~[ \mbox{t-channel} ] ~(m_b>0) $ & NLO \\
-\hline 
-171& $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{b}(p_6)) ~[ \mbox{s-channel} ] $ & NLO \\
-172& $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{b}(p_6)) ~[ \mbox{decay} ] $ & NLO \\
-176& $ \bar{t}(\to e^-(p_3)+\bar{\nu}(p_4)+\bar{b}(p_5))+b(p_6)) ~[ \mbox{s-channel} ] $ & NLO \\
-177& $ \bar{t}(\to e^-(p_3)+\bar{\nu}(p_4)+\bar{b}(p_5))+b(p_6)) ~[ \mbox{decay} ] $ & NLO \\
-\hline 
-180& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4))+t(p_5) $ & NLO \\
-181& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4))+t(\nu(p_5)+e^+(p_6)+b(p_7)) $ & NLO \\
-182& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4))+t(\nu(p_5)+e^+(p_6)+b(p_7)) ~[ \mbox{decay} ] $ & NLO \\
-185& $ W^+(\to \nu(p_3)+e^+(p_4))+\bar{t}(p_5) $ & NLO \\
-186& $ W^+(\to \nu(p_3)+e^+(p_4))+\bar{t}(e^-(p_5)+\bar{\nu}(p_6)+\bar{b}(p_7)) $ & NLO \\
-187& $ W^+(\to \nu(p_3)+e^+(p_4))+\bar{t}(e^-(p_5)+\bar{\nu}(p_6)+\bar{b}(p_7)) ~[ \mbox {decay} ] $ & NLO \\
-\hline 
-190& $t(p_3)+\bar{t}(p_4)+H(p_5) $ & LO \\
-191& $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{t}(\to \bar{\nu}(p_7)+e^-(p_8)+\bar{b}(p_6))+H(p_9+p_{10}) $ & LO \\
-\hline 
-196& $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{t}(\to \bar{\nu}(p_7)+e^-(p_8)+\bar{b}(p_6))+Z(e^-(p_9),e^+(p_{10})) $ & LO \\
-197& $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{t}(\to \bar{\nu}(p_7)+e^-(p_8)+\bar{b}(p_6))+Z(b(p_9),\bar{b}(p_{10})) $ & LO \\
-\hline 
-201& $ H(\to b(p_3)+\bar{b}(p_4)) + f(p_5) ~[ \mbox{full mt dep.} ] $ & LO \\
-202& $ H(\to \tau^-(p_3)+\tau^+(p_4)) + f(p_5) ~[ \mbox{full mt dep.} ] $ & LO \\
-203& $ H(\to b(p_3)+\bar{b}(p_4)) + f(p_5) $ & NLO \\
-204& $ H(\to \tau^-(p_3)+\tau^+(p_4)) + f(p_5) $ & NLO \\
-206& $ A(\to b(p_3)+\bar{b}(p_4)) + f(p_5) ~[ \mbox{full mt dep.} ] $ & LO \\
-207& $ A(\to \tau^-(p_3)+\tau^+(p_4)) + f(p_5) ~[ \mbox{full mt dep.} ] $ & LO \\
-208& $ H(\to W^+(\to \nu(p_3)+e^+(p_4))+W^-(\to e^-(p_5)+\bar{\nu}(p_6)))+f(p_7)$ & NLO \\
-209& $ H(-->Z^+(e^-(p_3),e^+(p_4))Z(mu^-(p_5),mu^+(p_6)))+f(p_7)$ & NLO \\
+151 & $ t(\to \nu(p_{3})+e^+(p_{4})+b(p_{5}))+\bar{t}(\to \bar{b}(p_{6})+e^-(p_{7})+\bar{\nu}(p_{8}))$   & NLO \\
+152 & $ t(\to \nu(p_{3})+e^+(p_{4})+b(p_{5}))+\bar{t}(\to \bar{b}(p_{6})+q(p_{7})+\bar{q}(p_{8}))$   & NLO \\
+153 & $ t(\to \nu(p_{3})+e^+(p_{4})+b(p_{5}))+\bar{t}(\to \bar{b}(p_{6})+e^-(p_{7})+\bar{\nu}(p_{8})) (uncorr)$   & NLO \\
 \hline 
 \end{tabular}
 \end{center}
 \end{table}
+\newpage
 \begin{table}
 \begin{center}
-\hspace*{-1.5cm}
 \begin{tabular}{|l|l|l|}
-\hline
-{\tt nproc} & $ f(p_1)+f(p_2) \to \ldots $& Order \\ 
+\hline156 & $ t(\to \nu(p_{3})+e^+(p_{4})+b(p_{5}))+\bar{t}(\to \bar{b}(p_{6})+e^-(p_{7})+\bar{\nu}(p_{8}))+f(p_{9})$   & LO \\
 \hline 
-211& $ H(\to b(p_3)+\bar{b}(p_4))+f(p_5)+f(p_6) ~[ \mbox{WBF} ] $ & NLO \\
-212& $ H(\to \tau^-(p_3)+\tau^+(p_4))+f(p_5)+f(p_6) ~[ \mbox{WBF} ] $ & NLO \\
-213& $ H(\to W^+(\nu(p_3) e^+(p_4)) + W^-(e^-(p_5) \bar{\nu}(p_6)))+f(p_7)+f(p_8) ~[ \mbox{WBF} ] $ & NLO \\
-216& $ H(\to b(p_3)+\bar{b}(p_4))+f(p_5)+f(p_6)+f(p_7) ~[ \mbox{WBF+jet} ] $ & NLO \\
-217& $ H(\to \tau^-(p_3)+\tau^+(p_4))+f(p_5)+f(p_6)+f(p_7) ~[ \mbox{WBF+jet} ] $ & NLO \\
+157 & $ t \bar{t} [\mbox{for total Xsect}]$   & NLO \\
+158 & $ b \bar{b} [\mbox{for total Xsect}]$   & NLO \\
+159 & $ c \bar{c} [\mbox{for total Xsect}]$   & NLO \\
+160 & $ t \bar{t} + g [\mbox{for total Xsect}]$   & LO \\
 \hline 
-221& $ \tau^-(\to e^-(p_3)+\bar{\nu}_e(p_4)+\nu_\tau(p_5))+\tau^+(\to \bar{\nu}_\tau(p_6)+\nu_e(p_7)+e^+(p_8)) $ & LO \\
+161 & $ t(\to \nu(p_{3})+e^+(p_{4})+b(p_{5}))+q(p_{6}) [\mbox{t-channel}]$   & NLO \\
+162 & $ t(\to \nu(p_{3})+e^+(p_{4})+b(p_{5}))+q(p_{6}) [\mbox{decay}]$   & NLO \\
+163 & $ t(\to \nu(p_{3})+e^+(p_{4})+b(p_{5}))+q(p_{6}) [\mbox{t-channel}] mb>0$   & NLO \\
+166 & $ \bar{t}(\to e^-(p_{3})+\bar{\nu}(p_{4})+\bar{b}(p_{5}))+q(p_{6}) [\mbox{t-channel}]$   & NLO \\
+167 & $ \bar{t}(\to e^-(p_{3})+\bar{\nu}(p_{4})+\bar{b}(p_{5}))+q(p_{6}) [\mbox{decay}]$   & NLO \\
+168 & $ \bar{t}(\to e^-(p_{3})+\bar{\nu}(p_{4})+\bar{b}(p_{5}))+q(p_{6}) [\mbox{t-channel}] mb>0$   & NLO \\
 \hline 
-231& $ f(p_1)+f(p_2) \to t(p_3)+\bar{b}(p_4)+q(p_5) ~[\mbox{t-channel}] $ & NLO \\
-236& $ f(p_1)+f(p_2) \to t~(p_3)+b(p_4)+q(p_5) ~[\mbox{t-channel}] $ & NLO \\
+171 & $ t(\to \nu(p_{3})+e^+(p_{4})+b(p_{5}))+\bar{b}(p_{6})) [\mbox{s-channel}]$   & NLO \\
+172 & $ t(\to \nu(p_{3})+e^+(p_{4})+b(p_{5}))+\bar{b}(p_{6})) [\mbox{decay}]$   & NLO \\
+176 & $ \bar{t}(\to e^-(p_{3})+\bar{\nu}(p_{4})+\bar{b}(p_{5}))+b(p_{6})) [\mbox{s-channel}]$   & NLO \\
+177 & $ \bar{t}(\to e^-(p_{3})+\bar{\nu}(p_{4})+\bar{b}(p_{5}))+b(p_{6})) [\mbox{decay}]$   & NLO \\
 \hline 
-% 241& $ f(p_1)+f(p_2) \to t(p_3)+\bar{b}(p_4)+f(p_5) ~[\mbox{s-channel}] $ & NLO \\
-% 242& $ f(p_1)+f(p_2) \to t(p_3)+\bar{b}(p_4)+f(p_5)+f(p_6) ~[\mbox{s-channel}] $ & LO \\
-% 246& $ f(p_1)+f(p_2) \to t~(p_3)+b(p_4)+f(p_5) ~[\mbox{s-channel}] $ & NLO \\
-% 247& $ f(p_1)+f(p_2) \to t~(p_3)+b(p_4)+f(p_5)+f(p_6) ~[\mbox{s-channel}] $ & LO \\
-% 249& $ f(p_1)+f(p_2) \to f(p_3)+f(p_4)+f(p_5) ~[e^+ e^- \to \mbox{3 jets}] $ & NLO \\
-% \hline 
-% 251& $ f(p_1)+\gamma(p_2) \to b(p_3)+\bar{b}(p_4) ~[\mbox{DIS}] $ & LO \\
-% \hline
-261& $ Z^0(\to e^-(p_3)+e^+(p_4))+b(p_5) $ & NLO \\
-262& $ Z^0(\to e^-(p_3)+e^+(p_4))+c(p_5) $ & NLO \\
-263& $ Z^0(\to e^-(p_3)+e^+(p_4))+\bar{b}(p_5)+b(p_6) ~[ \mbox{1 b-tag} ] $ & NLO \\
-264& $ Z^0(\to e^-(p_3)+e^+(p_4))+\bar{c}(p_5)+c(p_6) ~[ \mbox{1 c-tag} ] $ & NLO \\
-266& $ Z^0(\to e^-(p_3)+e^+(p_4))+b(p_5)(+\bar{b}(p_6)) $ & NLO \\
-267& $ Z^0(\to e^-(p_3)+e^+(p_4))+c(p_5)(+\bar{c}(p_6)) $ & NLO \\
+180 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+t(p_{5})$   & NLO \\
+181 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+t(\nu(p_{5})+e^+(p_{6})+b(p_{7}))$   & NLO \\
+182 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+t(\nu(p_{5})+e^+(p_{6})+b(p_{7})) [\mbox{decay}]$   & NLO \\
+183 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+t(\nu(p_{5})+e^+(p_{6})+b(p_{7}))+b(p_{8})$   & LO \\
+184 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+t(p_{5})+b(p_{6}) [\mbox{massive b}]$   & LO \\
+185 & $ W^+(\to \nu(p_{3})+e^+(p_{4}))+\bar{t}(p_{5})$   & NLO \\
+186 & $ W^+(\to \nu(p_{3})+e^+(p_{4}))+\bar{t}(e^-(p_{5})+\bar{\nu}(p_{6})+\bar{b}(p_{7})$   & NLO \\
+187 & $ W^+(\to \nu(p_{3})+e^+(p_{4}))+\bar{t}(e^-(p_{5})+\bar{\nu}(p_{6})+\bar{b}(p_{7}) [\mbox{decay}]$   & NLO \\
 \hline 
-271& $ H(b(p_3)+\bar{b}(p_4))+f(p_5)+f(p_6)~[ \mbox{in heavy top limit} ] $ & NLO \\
-272& $ H(\tau^-(p_3)+\tau^+(p_4))+f(p_5)+f(p_6)~[ \mbox{in heavy top limit} ] $ & NLO \\
-273& $ H(\to W^+(\nu(p_3),e^+(p_4))W^-(e^-(p_5),\bar \nu(p_6)))+f(p_7)+f(p_8) $ & NLO \\
-274& $ H(\to Z^+(e^-(p_3),e^+(p_4))Z(\mu^-(p_5),\mu^+(p_6)))+f(p_7)+f(p_8) $ & NLO \\
-275& $ H(b(p_3)+\bar{b}(p_4))+f(p_5)+f(p_6)+f(p_7)~[ \mbox{in heavy top limit} ] $ & LO \\
-276& $ H(\tau^-(p_3)+\tau^+(p_4))+f(p_5)+f(p_6)+f(p_7)~[ \mbox{in heavy top limit} ] $ & LO \\
+190 & $ t(p_{3})+\bar{t}(p_{4})+H(p_{5})$   & LO \\
+191 & $ t(\to \nu(p_{3})+e^+(p_{4})+b(p_{5}))+\bar{t}(\to \bar{\nu}(p_{7})+e^-(p_{8})+\bar{b}(p_{6}))+H(p_{9}+p_{10})$   & LO \\
 \hline 
-311& $  f(p_1)+b(p_2) \to  W^+(\to \nu(p_3)+e^+(p_4))+b(p_5)+f(p_6) $ & LO \\
-316& $  f(p_1)+b(p_2) \to  W^-(\to e^-(p_3)+\bar{\nu}(p_4))+b(p_5)+f(p_6) $ & LO \\
-\hline 
-321& $  f(p_1)+b(p_2) \to  W^+(\to \nu(p_3)+e^+(p_4))+c(p_5)+f(p_6) $ & LO \\
-326& $  f(p_1)+b(p_2) \to  W^-(\to e^-(p_3)+\bar{\nu}(p_4))+c(p_5)+f(p_6) $ & LO \\
-\hline 
-331& $ W^+(\to \nu(p_3)+e^+(p_4))+c(p_5)+f(p_6) ~[ \mbox{c-s interaction} ] $ & LO \\
-336& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4))+c(p_5)+f(p_6) ~[ \mbox{c-s interaction} ] $ & LO \\
+196 & $ t(\to \nu(p_{3})+e^+(p_{4})+b(p_{5}))+\bar{t}(\to \bar{\nu}(p_{7})+e^-(p_{8})+\bar{b}(p_{6}))+Z(e^-(p_{9}),e^+(p_{10}))$   & LO \\
+197 & $ t(\to \nu(p_{3})+e^+(p_{4})+b(p_{5}))+\bar{t}(\to \bar{\nu}(p_{7})+e^-(p_{8})+\bar{b}(p_{6}))+Z(b(p_{9}),\bar{b}(p_{10}))$   & LO \\
 \hline 
 \end{tabular}
 \end{center}
 \end{table}
+\newpage
 \begin{table}
 \begin{center}
-\hspace*{-1.5cm}
 \begin{tabular}{|l|l|l|}
 \hline
-{\tt nproc} & $ f(p_1)+f(p_2) \to \ldots $& Order \\ 
+201 & $ H(\to b(p_{3})+\bar{b}(p_{4})) + f(p_{5}) [\mbox{full mt dep.}]$   & LO \\
+202 & $ H(\to \tau^-(p_{3})+\tau^+(p_{4})) + f(p_{5}) [\mbox{full mt dep.}]$   & LO \\
+203 & $ H(\to b(p_{3})+\bar{b}(p_{4})) + f(p_{5})$   & NLO \\
+204 & $ H(\to \tau^-(p_{3})+\tau^+(p_{4})) + f(p_{5})$   & NLO \\
+206 & $ A(\to b(p_{3})+\bar{b}(p_{4})) + f(p_{5}) [\mbox{full mt dep.}]$   & LO \\
+207 & $ A(\to \tau^-(p_{3})+\tau^+(p_{4})) + f(p_{5}) [\mbox{full mt dep.}]$   & LO \\
+208 & $ H(\to W^+(\nu(p_{3}),e^+(p_{4}))W^-(e^-(p_{5}),\bar{\nu}(p_{6})))+f(p_{7})$   & NLO \\
+209 & $ H(\to Z^+(e^-(p_{3}),e^+(p_{4}))Z(\mu^-(p_{5}),\mu^+(p_{6})))+f(p_{7})$   & NLO \\
 \hline 
-341& $ Z^0(\to e^-(p_3)+e^+(p_4))+b(p_5)+f(p_6) [+f(p_7)]$ & NLO \\
-342& $ Z^0(\to e^-(p_3)+e^+(p_4))+b(p_5)+f(p_6) [+b~(p_7)]$ & (REAL) \\
-346& $ Z^0(\to e^-(p_3)+e^+(p_4))+b(p_5)+f(p_6)+f(p_7)$ & LO \\
-347& $ Z^0(\to e^-(p_3)+e^+(p_4))+b(p_5)+f(p_6)+b~(p_7)$ & LO \\
+211 & $ H(\to b(p_{3})+\bar{b}(p_{4}))+f(p_{5})+f(p_{6}) [\mbox{WBF}]$   & NLO \\
+212 & $ H(\to \tau^-(p_{3})+\tau^+(p_{4}))+f(p_{5})+f(p_{6}) [\mbox{WBF}]$   & NLO \\
+213 & $ H(\to W^+(\nu(p_{3}),e^+(p_{4}))W^-(e^-(p_{5}),\bar{\nu}(p_{6})))+f(p_{7})+f(p_{8}) [\mbox{WBF}]$   & NLO \\
+216 & $ H(\to b(p_{3})+\bar{b}(p_{4}))+f(p_{5})+f(p_{6})+f(p_{7}) [\mbox{WBF+jet}]$   & LO \\
+217 & $ H(\to \tau^-(p_{3})+\tau^+(p_{4}))+f(p_{5})+f(p_{6})+f(p_{7}) [\mbox{WBF+jet}]$   & LO \\
 \hline 
-351& $ Z^0(\to e^-(p_3)+e^+(p_4))+c(p_5)+f(p_6) [+f(p_7)]$ & NLO \\
-352& $ Z^0(\to e^-(p_3)+e^+(p_4))+c(p_5)+f(p_6) [+c~(p_7)]$ & (REAL) \\
-356& $ Z^0(\to e^-(p_3)+e^+(p_4))+c(p_5)+f(p_6)+f(p_7)$ & LO \\
-357& $ Z^0(\to e^-(p_3)+e^+(p_4))+c(p_5)+f(p_6)+c~(p_7)$ & LO \\
+221 & $ \tau^-(\to e^-(p_{3})+\bar{\nu}_e(p_{4})+\nu_\tau(p_{5}))+\tau^+(\to \bar{\nu}_\tau(p_{6})+\nu_e(p_{7})+e^+(p_{8}))$   & LO \\
 \hline 
-902 --& $  ~[ \mbox{Internal consistency checks} ] $ & -- \\
-% 903& $  ~[ \mbox{Check of Volume of 3 particle phase space} ] $ & -- \\
-% 904& $  ~[ \mbox{Check of Volume of 4 particle phase space} ] $ & -- \\
-% 905& $  ~[ \mbox{Check of Volume of 5 particle phase space} ] $ & -- \\
-% 906& $  ~[ \mbox{Check of Volume of 6 particle phase space} ] $ & -- \\
-% 908& $  ~[ \mbox{Check of Volume of 8 particle phase space} ] $ & -- \\
-% 909& $  ~[ \mbox{Check of Volume of 4 particle massive phase space} ] $ & -- \\
-% 910& $  ~[ \mbox{Check of Volume of 3 particle (2 massive) phase space} ] $ & -- \\
+231 & $ t(p_{3})+\bar{b}(p_{4})+q(p_{5}) [\mbox{t-channel}]$   & NLO \\
+232 & $ t(p_{3})+\bar{b}(p_{4})+q(p_{5})+q(p_{6}) [\mbox{t-channel}]$   & LO \\
+236 & $ \bar{t}(p_{3})+b(p_{4})+q(p_{5}) [\mbox{t-channel}]$   & NLO \\
+237 & $ \bar{t}(p_{3})+b(p_{4})+q(p_{5})+q(p_{6}) [\mbox{t-channel}]$   & LO \\
+\hline 
+261 & $ Z^0(\to e^-(p_{3})+e^+(p_{4}))+b(p_{5})$   & NLO \\
+262 & $ Z^0(\to e^-(p_{3})+e^+(p_{4}))+c(p_{5})$   & NLO \\
+263 & $ Z^0(\to e^-(p_{3})+e^+(p_{4}))+\bar{b}(p_{5})+b(p_{6}) [\mbox{1 b-tag}]$   & LO \\
+264 & $ Z^0(\to e^-(p_{3})+e^+(p_{4}))+\bar{c}(p_{5})+c(p_{6}) [\mbox{1 c-tag}]$   & LO \\
+266 & $ Z^0(\to e^-(p_{3})+e^+(p_{4}))+b(p_{5})(+\bar{b}(p_{6}))$   & NLO \\
+267 & $ Z^0(\to e^-(p_{3})+e^+(p_{4}))+c(p_{5})(+\bar{c}(p_{6}))$   & NLO \\
+\hline 
+\end{tabular}
+\end{center}
+\end{table}
+\newpage
+\begin{table}
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+271 & $ H(b(p_{3})+\bar{b}(p_{4}))+f(p_{5})+f(p_{6}) [\mbox{in heavy top limit}]$   & NLO \\
+272 & $ H(\tau^-(p_{3})+\tau^+(p_{4}))+f(p_{5})+f(p_{6}) [\mbox{in heavy top limit}]$   & NLO \\
+273 & $ H(\to W^+(\nu(p_{3}),e^+(p_{4}))W^-(e^-(p_{5}),\bar{\nu}(p_{6})))+f(p_{7})+f(p_{8})$   & NLO \\
+274 & $ H(\to Z^+(e^-(p_{3}),e^+(p_{4}))Z(\mu^-(p_{5}),\mu^+(p_{6})))+f(p_{7})+f(p_{8})$   & NLO \\
+275 & $ H(b(p_{3})+\bar{b}(p_{4}))+f(p_{5})+f(p_{6})+f(p_{7}) [\mbox{in heavy top limit}]$   & LO \\
+276 & $ H(\tau^-(p_{3})+\tau^+(p_{4}))+f(p_{5})+f(p_{6})+f(p_{7}) [\mbox{in heavy top limit}]$   & LO \\
+\hline 
+280 & $ f(p_{1})+f(p_{2})\to  \gamma(p_{3})+f(p_{4})$   & NLO \\
+282 & $ f(p_{1})+f(p_{2})\to  \gamma(p_{3})+f(p_{4})+f(p_{5})$   & LO \\
+285 & $ f(p_{1})+f(p_{2})\to  \gamma(p_{3})+\gamma(p_{4})$   & NLO+F \\
+286 & $ f(p_{1})+f(p_{2})\to  \gamma(p_{3})+\gamma(p_{4})+f(p_{5})$   & LO \\
+\hline 
+290 & $ W^+(\to \nu(p_{3})+e^+(p_{4}))+\gamma(p_{5})$   & NLO+F \\
+292 & $ W^+(\to \nu(p_{3})+e^+(p_{4})) +\gamma(p_{5})+f(p_{6}) $   & NLO \\
+295 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+\gamma(p_{5})$   & NLO+F \\
+297 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+\gamma(p_{5})+f(p_{6}) $   & NLO \\
+\hline 
+300 & $ Z^0(\to e^-(p_{3})+e^+(p_{4}))+\gamma(p_{5})$   & NLO+F \\
+302 & $ Z^0(\to e^-(p_{3})+e^+(p_{4}))+\gamma(p_{5})+f(p_{6})$   & LO \\
+305 & $ Z^0(\to 3\times(\nu(p_{3})+\bar{\nu}(p_{4})))+\gamma(p_{5})$   & NLO \\
+\hline 
+311 & $ f(p_{1})+b(p_{2}) \to  W^+(\to \nu(p_{3})+e^+(p_{4}))+b(p_{5})+f(p_{6})$   & LO \\
+316 & $ f(p_{1})+b(p_{2}) \to  W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+b(p_{5})+f(p_{6})$   & LO \\
+\hline 
+321 & $ f(p_{1})+c(p_{2}) \to  W^+(\to \nu(p_{3})+e^+(p_{4}))+c(p_{5})+f(p_{6})$   & LO \\
+326 & $ f(p_{1})+c(p_{2}) \to  W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+c(p_{5})+f(p_{6})$   & LO \\
+\hline 
+331 & $ W^+(\to \nu(p_{3})+e^+(p_{4}))+c(p_{5})+f(p_{6}) [\mbox{c-s interaction}]$   & LO \\
+336 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+c(p_{5})+f(p_{6}) [\mbox{c-s interaction}]$   & LO \\
+\hline 
+341 & $ f(p_{1})+b(p_{2}) \to  Z^0(\to e^-(p_{3})+e^+(p_{4}))+b(p_{5})+f(p_{6}) [+f(p_{7})]$   & NLO \\
+342 & $ f(p_{1})+b(p_{2}) \to  Z^0(\to e^-(p_{3})+e^+(p_{4}))+b(p_{5})+f(p_{6}) [+\bar{b}(p_{7})]$  & (REAL) \\
+346 & $ f(p_{1})+b(p_{2}) \to  Z^0(\to e^-(p_{3})+e^+(p_{4}))+b(p_{5})+f(p_{6})+f(p_{7})$   & LO \\
+347 & $ f(p_{1})+b(p_{2}) \to  Z^0(\to e^-(p_{3})+e^+(p_{4}))+b(p_{5})+f(p_{6})+\bar{b}(p_{7})$   & LO \\
+\hline 
+\end{tabular}
+\end{center}
+\end{table}
+\newpage
+\begin{table}
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+351 & $ f(p_{1})+c(p_{2}) \to  Z^0(\to e^-(p_{3})+e^+(p_{4}))+c(p_{5})+f(p_{6}) [+f(p_{7})]$   & NLO \\
+352 & $ f(p_{1})+c(p_{2}) \to  Z^0(\to e^-(p_{3})+e^+(p_{4}))+c(p_{5})+f(p_{6}) [+\bar{c}(p_{7})]$  & (REAL) \\
+356 & $ f(p_{1})+c(p_{2}) \to  Z^0(\to e^-(p_{3})+e^+(p_{4}))+c(p_{5})+f(p_{6})+f(p_{7})$   & LO \\
+357 & $ f(p_{1})+c(p_{2}) \to  Z^0(\to e^-(p_{3})+e^+(p_{4}))+c(p_{5})+f(p_{6})+\bar{c}(p_{7})$   & LO \\
+\hline 
+361 & $ c(p_{1})+\bar{s}(p_{2}) \to  W^+(\to \nu(p_{3})+e^+(p_{4})) [\mbox{mc=0 in NLO}]$   & NLO \\
+362 & $ c(p_{1})+\bar{s}(p_{2}) \to  W^+(\to \nu(p_{3})+e^+(p_{4})) [\mbox{massless corrections only}]$   & NLO \\
+363 & $ c(p_{1})+\bar{s}(p_{2}) \to  W^+(\to \nu(p_{3})+e^+(p_{4})) [\mbox{massive charm in real}]$   & NLO \\
+\hline 
+420 & $ W^+(\to \nu(p_{3})+e^+(p_{4}))+b(p_{5}) [\mbox{1 or 2 jets only}]$   & NLO \\
+421 & $ W^+(\to \nu(p_{3})+e^+(p_{4}))+(b+\bar{b})(p_{5}) [\mbox{1 or 2 jets only}]$   & NLO \\
+422 & $ W^+(\to \nu(p_{3})+e^+(p_{4}))+b(p_{5})+jet(p_{6}) [\mbox{2 or 3 jets only}]$   & NLO \\
+425 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+b(p_{5}) [\mbox{1 or 2 jets only}]$   & NLO \\
+426 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+(b+\bar{b})(p_{5}) [\mbox{1 or 2 jets only}]$   & NLO \\
+427 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+b(p_{5})+jet(p_{6}) [\mbox{2 or 3 jets only}]$   & NLO \\
+\hline 
+902 & Check of Volume of 2 particle phase space & \\  
+903 & Check of Volume of 3 particle phase space & \\  
+904 & Check of Volume of 4 particle phase space & \\  
+905 & Check of Volume of 5 particle phase space & \\  
+906 & Check of Volume of 6 particle phase space & \\  
+908 & Check of Volume of 8 particle phase space & \\  
+909 & Check of Volume of 4 particle massive phase space & \\  
+910 & Check of Volume of 3 particle (2 massive) phase space & \\  
+911 & Check of Volume of 5 particle W+t (with decay) massive phase space & \\  
+912 & Check of Volume of 5 particle W+t (no decay) massive phase space & \\  
+913 & Check of Volume of 5 particle W+t+g (in decay) massive phase space & \\  
+914 & Check of Volume of 5 particle W+t+g (in production) massive phase space & \\  
+\hline 
 \hline
 \end{tabular}
 \end{center}
 \caption{Processes indicated by choice of the variable {\tt nproc}.\label{nproctable}}
-
 \end{table}
-
+\clearpage
+%
 \item {\tt part}.
 This parameter has 5 possible values, described below:
 \begin{itemize}
@@ -728,10 +791,16 @@ the full next-to-leading order result. In this case, the number of
 points specified by {\tt ncall1} and {\tt ncall2} is automatically
 increased when performing the {\tt real} calculation. In practice,
 it may be more efficient to do run the pieces separately by hand, 
-(c.f. {\tt ncall} below.
+(c.f. {\tt ncall} below. For photon processes that include fragmentation,
+{\tt tota} also includes the calculation of the fragmentation ({\tt frag})
+contributions.
 \item {\tt todk}
 Processes 161,166,171,176,181,186 only, see sections~\ref{subsec:stop} and
 \ref{subsec:wt} below.
+\item {\tt frag}.
+Processes  285, 290, 295 300 only, see sections~\ref{subsec:gamgam}, \ref{subsec:wgamma} and
+\ref{subsec:zgamma} below.
+
 \end{itemize}
 
 \item {\tt runstring}.
@@ -955,6 +1024,8 @@ momentum (coming from neutrinos).
 the values of $p_{T,{\rm min}}$ and $|\eta|_{\rm max}$ for the remaining
 leptons in the process. This allows for staggered cuts where, for
 instance, only one lepton is required to be hard and central.
+\item {\tt mtrans34cut}. Specifies the minimum transverse mass
+of particles 3 and 4.
 
 \item {\tt R(jet,lept)\_min}. Using the definition of $\Delta R$ above,
 requires that all jet-lepton pairs are separated by
@@ -986,18 +1057,43 @@ and a process involving $b$-quarks is being calculated, then these can
 be used to specify {\em stricter} values of $p_T^{\rm min}$
 and $|\eta|^{\rm max}$ for $b$-jets.
 
-\item {\tt ptminphoton, etamaxphoton}. These specify the values
-of $p_T^{\rm min}$ and $|y|^{\rm max}$ for any photons produced.
+\begin{center}
+\{blank line\} \\
+{\tt [Settings for photon processes] }
+\end{center}
+\item {\tt frag}. This parameter is a logical variable that determines whether the production of photons by a parton 
+fragmentation process is included. If {\tt frag} is set to {\tt .false.} the code implements
+a Frixione-style photon cut~\cite{Frixione:1998jh} with parameters $\varepsilon_\gamma=1, n=1$ and $\delta_0$ set by
+{\tt cone\_ang} specified below. Setting {\tt frag} to  {\tt .true.} will include fragmentation contributions at NLO. 
 
-\item {\tt conephoton, coneptcut}. These constitute a photon isolation
-cut which ensures that the amount of hadronic
-transverse momentum in a cone around each photon is less than
-a specified fraction of the photon's $p_T$.
-\begin{displaymath}
-\sum_{R < R_0} p_T^{\rm hadronic} < f \times p_T^{photon},
-\end{displaymath}
-where $R_0$ and $f$ are specified by {\tt cone\_photon} and
-{\tt cone\_ptcut} respectively.
+
+\item {\tt fragset}. A character*8 variable that will be used to choose the particular photon fragmentation set. Currently implemented fragmentation functions can be called with 
+`BFGSet\_I' or `BFGSetII'~\cite{Bourhis:1997yu}.  
+
+\item {\tt frag\_scale}. A double precision variable that will be used to choose the scale 
+at which the photon fragmentation is evaluated. 
+
+\item {\tt ptminphoton, etamaxphoton}. These specify the values
+of $p_T^{\rm min}$ and $|y|^{\rm max}$ for any photons produced in the process.
+Note that these cuts on the photons, as well as all the other cuts specified in this section
+of the input file, are applied even if {\tt makecuts} is set to {\tt .false.}.
+\item {\tt R(photon,lept)\_min}. Using the usual definition of $\Delta R$,
+this requires that all photon-lepton pairs are separated by
+$\Delta R >$~{\tt R(photon,lept)\_min}. This parameter must be non-zero
+for processes in which photon radiation from leptons is included.
+\item {\tt cone\_ang}. A double precision variable that fixes the cone size ($\delta_0$) for photon isolation. This cone is used in both forms of isolation. 
+\item {\tt epsilon\_h}. This cut controls the amount of radiation allowed in cone when  {\tt frag} is set to {\tt .true.}. If  {\tt epsilon\_h} $ < 1$ then the isolation corresponds to isolating the photon using
+$\sum_{\in R_0} E_T{\rm{(had)}} < \epsilon_h \, p^{\gamma}_{T}.$ Otherwise {\tt epsilon\_h}  $ > 1$ sets $E_T(max)$ in  $\sum_{\in R_0} E_T{\rm{(had)}} < E_T(max)$.  
+
+%These constitute a photon isolation
+%cut which ensures that the amount of hadronic
+%transverse momentum in a cone around each photon is less than
+%a specified fraction of the photon's $p_T$.
+%\begin{displaymath}
+%\sum_{R < R_0} p_T^{\rm hadronic} < f \times p_T^{photon},
+%\end{displaymath}
+%where $R_0$ and $f$ are specified by {\tt cone\_photon} and
+%{\tt cone\_ptcut} respectively.
 
 \begin{center}
 \{blank line\} \\
@@ -1094,7 +1190,7 @@ A technical parameter used in alternative phase space generating routines.
 This logical parameter determines whether clustering is performed to yield
 jets. Only during a debugging phase should this variable be set to false. 
 \item {\tt realwt}.  
-This is a logical paramter that in general should be set to false.
+This is a logical parameter that in general should be set to false.
 If set to true, mcfm samples the integral according to the
 unsubtracted real emission weight.
 \item {\tt colourchoice}.  
@@ -1131,6 +1227,14 @@ limit the kinematic range for the subtraction of final-final dipoles
 as suggested by Trocsanyi and Nagy~\cite{Nagy:2003tz}.   
 The value {\tt aff=1d0} corresponds 
 to standard Catani-Seymour subtraction.
+\item {\tt bfi}. 
+A double precision variable which can be used to
+limit the kinematic range for the subtraction of final-initial dipoles
+in the photon fragmentation case. In this version it is not yet operative.
+\item {\tt bff}. 
+A double precision variable which can be used to
+limit the kinematic range for the subtraction of final-final dipoles
+in the photon fragmentation case. In this version it is not yet operative.
 \end{itemize}
 
 \section{Nuclear collisions}
@@ -1203,17 +1307,21 @@ where {\tt procname} is a label assigned by the program corresponding to
 the calculated process; the remaining labels are as input by the user
 in the file {\tt input.DAT}.
 
-The histograms are  setup in the file {\tt src/User/nplotter.f}. The arguments of this
-subroutine are { \tt p,wt,switch}. {\tt p} contains the momenta of all the particles
+The histograms are filled via the file {\tt src/User/nplotter.f}. For some processes
+a specific routine has been written to plot relevant kinematic quantities. In that case
+a further routine is called, e.g. {\tt nplotter\_W\_only.f} for inclusive $W$ production.
+In all other cases the filling of the histograms is performed by a routine in
+{\tt src/User/nplotter\_generic.f}. The arguments of the plotting subroutines (both process-specific
+and generic) are { \tt p,wt,wt2,switch}. {\tt p} contains the momenta of all the particles
 (i.e. the four momenta of the leptons and jets). The order of the jets is not
 necessarily the  order specified in process.DAT.  However in the case that we have a 
 $b$-quark or antiquark they are labelled by {\tt bq} and {\tt ba} respectively
-in the array jetlabel. {\tt wt} is the weight of the event.  
+in the array jetlabel. {\tt wt} ({\tt wt2}) is the weight of the event (squared).  
 
 \subsection{Histograms}
 \label{sec:histos}
 
-Extra histograms may be added to the file {\tt src/User/nplotter.f} in
+Extra histograms may be added to the plotting files, e.g. {\tt nplotter\_generic.f} in
 a fairly straightforward manner. Each histogram is filled by making
 a call to the routine {\tt bookplot} and updating the histogram
 counter {\tt n} by 1. For example:
@@ -1360,24 +1468,6 @@ The calculation may be performed at NLO.
 
 When {\tt removebr} is true, the $W$ boson does not decay.
 
-\subsection{$W\gamma$ production, processes 12,17}
-\label{subsec:wgamma}
-
-These processes represent the production of a $W$ boson which subsequently
-decays leptonically, in association with a real photon.
-Since this process includes a real photon, the cross section diverges
-when the photon is very soft or in the direction of the beam.
-Thus in order to produce sensible results, the input file must set
-{\tt makecuts} to {\tt .true.} and supply values for both
-{\tt ptmin\_photon} and {\tt etamax\_photon}. This will ensure that
-the cross section is well-defined.
-
-The calculation may be performed at NLO. Note however that the contribution
-in which a jet fragments into a photon is not included, so these processes 
-are currently of limited utility.
-
-When {\tt removebr} is true, the $W$ boson does not decay.
-
 \subsection{$W+c$ production, processes 13,18}
 \label{subsec:wc}
 
@@ -1404,16 +1494,26 @@ performed at LO only.
 These processes represent the production of a $W$ boson which subsequently
 decays leptonically, in association with a $b{\bar b}$ pair. The effect of
 the bottom quark mass is included throughout the calculation.  
-The calculation may be performed at LO only.
-
+Beginning with MCFM version 6.0 this calculation may be performed at NLO, thanks to
+the incorporation of the virtual corrections from ref.~\cite{Badger:2010mg}.
 When {\tt removebr} is true, the $W$ boson does not decay.
+
+To select final states in which one of the $b$-quarks may be unobserved the
+user can employ processes 420--427 instead (see section~\ref{subsec:wbbfilter}).
+These prcoesses use the same matrix
+elements but make specific requirements on the kinematics of the $b$-quarks
+and QCD radiation. 
 
 \subsection{$W+b{\bar b}$ production ($m_b=0$), processes 21,26}
 \label{subsec:wbbmassless}
 
 These processes are identical to {\tt 20} and {\tt 25} except for the fact
 that the bottom quark mass is neglected. This allows the calculation to be
-performed up to NLO, with currently calculated virtual matrix elements.
+performed up to NLO, with currently calculated virtual matrix elements. These 
+processes run considerably faster than the corresponding processes with the mass
+for the $b$ quark, (20,25). In circumstances where both $b$ quarks are at large 
+transverse momentum, the inclusion of the mass for the $b$-quark is not mandatory
+and a good estimate of the cross section may be obtained by using these processes.
 
 When {\tt removebr} is true, the $W$ boson does not decay.
 
@@ -1447,9 +1547,9 @@ involve only one gluon.
 By specifying {\tt Gflag} and {\tt Qflag} in {\tt input.DAT} one may
 select one of these options at a time. The full result may be obtained
 by straightforward addition of the two individual pieces, with no
-meaning attached to either piece separately. In the lowest order calculation,
-both of these may be set to {\tt .true.} simultaneously - however this is
-the only case where this is possible.
+meaning attached to either piece separately. 
+Both of these may be set to {\tt .true.} simultaneously, however this
+may result in lengthy run-times for sufficient convergence of the integral.
 
 When {\tt removebr} is true, the $W$ boson does not decay.
 
@@ -1485,6 +1585,17 @@ from the bottom quarks (it is in the initial state only).
 
 When {\tt removebr} is true in process {\tt 31}, the $Z$ boson does not decay.
 
+\subsection{$Z$-boson production decaying to jets, processes 34--35}
+Radiation from the final state quarks is not included in this process.
+
+\subsection{$t \bar{t}$ production mediated by $Z/\gamma$-boson exchange, process 36}
+
+These processes represent the production of a $Z$ boson or a photon 
+which subsequently
+decays into $t \bar{t}$. The leptonic decays of the top quarks are included.
+{\tt m34min > 0} is obligatory. The calculation may be only be performed at LO.
+
+
 \subsection{$Z+$~jet production, processes 41--43}
 \label{subsec:zjet}
 
@@ -1509,12 +1620,15 @@ When {\tt removebr} is true in process {\tt 41}, the $Z$ boson does not decay.
 These processes represents the production of a $Z$ boson and $2$ jets,
 including also the effect of a virtual photon ({\tt nproc=44} only). The $Z/\gamma^*$ decays
 to an $e^+ e^-$ pair ({\tt nproc=44}) or into three species of neutrino ({\tt nproc=46}).
-The calculation may be performed up to NLO -
+The calculation may be performed up to NLO --
 please see the earlier Section~\ref{subsec:w2jets} for more details,
-especially the discussion {\tt Qflag} and {\tt Gflag}. Virtual amplitudes are
-taken from ref.~\cite{Bern:1997sc}.
+especially the discussion regarding {\tt Qflag} and {\tt Gflag}.
+As of version 6.0, both of these may be set to {\tt .true.} simultaneously but this
+may result in lengthy run-times for sufficient convergence of the integral.
+Virtual amplitudes are taken from ref.~\cite{Bern:1997sc}.
 
 When {\tt removebr} is true, the $Z$ boson does not decay.
+
 
 \subsection{$Z+3$~jets production, processes 45, 47}
 \label{subsec:z3jets}
@@ -1525,26 +1639,6 @@ to an $e^+ e^-$ pair ({\tt nproc=45}) or into three species of neutrino ({\tt np
 The calculation may be performed at LO only.
 
 When {\tt removebr} is true, the $Z$ boson does not decay.
-
-\subsection{$Z\gamma$ production, processes 48,49}
-\label{subsec:zgamma}
-
-These processes represent the production of a $Z$ boson (or virtual photon)
-in association with a real photon. The $Z/\gamma^*$ subsequently decays into 
-either an $e^+ e^-$ pair ({\tt nproc=48}) or neutrinos ({\tt nproc=49}).
-Since these processes include a real photon, the cross section diverges
-when the photon is very soft or in the direction of the beam.
-Thus in order to produce sensible results, the input file must set
-{\tt makecuts} to {\tt .true.} and supply values for both
-{\tt ptmin\_photon} and {\tt etamax\_photon}. This will ensure that
-the cross section is well-defined.
-
-The calculation may be performed at NLO. However since the contribution
-of a jet fragmenting into a photon is not included, 
-these processes are currently of limited utility.
-
-
-When {\tt removebr} is true in process {\tt 48}, the $Z$ boson does not decay.
 
 \subsection{$Z+b{\bar b}$ production, process 50}
 \label{subsec:zbb}
@@ -1625,7 +1719,7 @@ This process is only implemented for the leptonic decay modes of both $W$
 bosons and is currently limited to LO accuracy only. When {\tt removebr} is true,
 the $W$ bosons do not decay.
 
-\subsubsection{$WZ$ production, processes 71--73, 76--78}
+\subsubsection{$WZ$ production, processes 71--78}
 
 For $WZ$ production, the $W$ is chosen to decay leptonically. The $Z$ (or
 virtual photon, when appropriate) may decay into electrons
@@ -1634,6 +1728,13 @@ pair of bottom quarks ({\tt nproc=73},{\tt 78}).
 Note that, in processes
 {\tt 73} and {\tt 78}, the NLO corrections do not include radiation from the
 bottom quarks that are produced by the $Z$ decay.
+Note that, in processes
+{\tt 72}and {\tt 77}, a sum is performed over all three species of neutrinos.
+
+Note that, in processes
+{\tt 74,75,79,80}, the NLO corrections do not include radiation from the
+quarks that are produced by the $Z$ decay. These processes will be observed
+in the final state as $W$-boson + two or three jets.
 
 When {\tt removebr} is true in processes {\tt 71} and {\tt 76},
 neither the $W$ or the $Z$ boson decays.
@@ -1752,7 +1853,7 @@ bottom quarks in the decay of the Higgs (or the $Z$, for processes
 When {\tt removebr} is true in processes {\tt 101, 106}, neither the $Z$ boson
 nor the Higgs decays.
 
-\subsection{Higgs production, processes 111--116}
+\subsection{Higgs production, processes 111--117}
 \label{subsec:h}
 
 These processes represent the production of a Standard Model Higgs
@@ -1781,6 +1882,21 @@ but this is only an approximation at NLO. The output histograms are not rescaled
 
 When {\tt removebr} is true in processes {\tt 111}--{\tt 114},
 the Higgs boson does not decay.
+
+Process {\tt 117} implements the decay of the Higgs boson into two photons
+via loops of top quarks and $W$-bosons.
+The decay is implemented using the formula Eq.(11.12) from ref.\cite{Ellis:1991qj}.
+When {\tt removebr} is true in processes {\tt 117} the Higgs boson does not decay.
+
+\subsection{$W^+W^++$jets production, processes 121,122}
+These processes represent the production of two $W^+$ 
+bosons in association with two (process {\tt 121}) or three (process {\tt 122})
+jets.  The lowest order at which two positively charged $W$ bosons 
+can be produced is with two jets. 
+This process is only implemented for leptonic decays of the 
+$W$ particles. The calculation is available at LO only.
+The calculation and code are from ref.~\cite{Melia:2010bm}.
+{\tt removebr} is not implemented and has no effect.
 
 \subsection{$H+b$ production, processes 141--143}
 \label{subsec:Hb}
@@ -1811,7 +1927,7 @@ final state, one should use {\tt nproc=143} with {\tt part=real}.
 
 When {\tt removebr} is true, the Higgs boson does not decay.
 
-\subsection{$t\bar{t}$ production with decay, processes 151 and 152}
+\subsection{$t\bar{t}$ production with decay, processes 151--153}
 
 These processes describe $t \bar{t}$ production 
 including two leptonic decays $t \to b l \nu$ (process {\tt 151}) and 
@@ -1824,6 +1940,11 @@ presented in ref.~\cite{Korner:2002hy}.
 
 When {\tt removebr} is true in process {\tt 151},
 the top quarks do not decay.
+
+In the case of process 153, there are no spin correlations in the decay of the 
+top quarks. The calculation is performed by multiplying the spin summed 
+top production cross section, by the decay matrix element for the decay of the 
+$t$ and the $\bar{t}$.
 
 \subsection{$t\bar{t}$ production with decay and a gluon, process 156}
 This process describes lowest order $t \bar{t}+g$ production 
@@ -2029,13 +2150,13 @@ When {\tt removebr} is true, the Higgs boson does not decay.
 \label{subsec:tautau}
 
 This process provides predictions for the production of a tau lepton
-pair, with subsequent leptonic decays. The calculation is available at LO
+pair mediated by $\gamma^*/Z$, with subsequent leptonic decays. The calculation is available at LO
 only. The relevant matrix elements are adapted from the ones in
 ref.~\cite{Kleiss:1988xr}.
 
 When {\tt removebr} is true, the tau leptons do not decay.
 
-\subsection{$t$-channel single top with an explicit $b$-quark, processes 231, 236}
+\subsection{$t$-channel single top with an explicit $b$-quark, processes 231--237}
 \label{subsec:stopb}
 
 \begin{center}
@@ -2045,6 +2166,9 @@ When {\tt removebr} is true, the tau leptons do not decay.
 These represent calculations of the $t$-channel single top~({\tt 231}) and anti-top~({\tt 231})
 processes in a scheme with four flavours of quark in the proton, so that a $b$-quark is forbidden.
 The $b$-quark is instead explicitly included in the final state.
+
+Processes {\tt 232} and {\tt 236} represent $t$-channel single top production in association
+with a further jet and may be calculated at LO only.
 
 \subsection{$Z+Q$ production, processes 261--267}
 \label{subsec:ZQ}
@@ -2110,6 +2234,102 @@ performed at LO only.
 
 When {\tt removebr} is true, the Higgs boson does not decay.
 
+\subsection{Direct $\gamma$ production, processes 280--282}
+\label{subsec:dirphot}
+
+These processes represent the production a real photon.
+Since this process includes a real photon, the cross section diverges
+when the photon is very soft or in the direction of the beam.
+Thus in order to produce sensible results, the input file must supply values for both
+{\tt ptmin\_photon} and {\tt etamax\_photon}. This will ensure that
+the cross section is well-defined.
+
+The calculation of process {\tt 280} may be performed
+at NLO using the Frixione algorithm~\cite{Frixione:1998jh}.  Note
+however that the contribution in which a jet fragments into a photon
+is not included, so these processes are currently of limited utility.
+The calculation of process {\tt 282} is only available at leading order.
+
+\subsection{$\gamma\gamma$ production, processes 285-286}
+\label{subsec:gamgam}
+
+These processes represent the production a pair of real photons.
+Since this process includes two real photons, the cross section diverges
+when one of the photons is very soft or in the direction of the beam.
+Thus in order to produce sensible results, the input file must supply values for both
+{\tt ptmin\_photon} and {\tt etamax\_photon}. This will ensure that
+the cross section is well-defined.
+
+The calculation of process {\tt 285} may be performed at NLO using either the
+Frixione algorithm~\cite{Frixione:1998jh} or standard cone isolation.  This process also includes
+the one-loop gluon-gluon contribution as given in
+ref.~\cite{Bern:2002jx}.  The production of a photon via parton fragmentation is included at NLO and 
+can be run separately by using the {\tt frag} option in {\tt part}. This option includes the contributions from the integrated 
+photon dipole subtraction terms and the LO QCD matrix element multiplied by the fragmentation function.  
+
+Process {\tt 285} can be run using different cuts for each photon. Setting the first 9 characters of the runstring to 
+{\tt Stag\_phot} will apply the following default cuts:
+\begin{eqnarray*}
+p_T^{\gamma_1} > 40~\mbox{GeV}, \; p_T^{\gamma_2} > {\tt ptmin\_photon}~\mbox{GeV}, \; |\eta^{\gamma_i}| < {\tt etamax\_photon}
+\end{eqnarray*} 
+These values can be changed by editing the file photon\_cuts.f in src/User. 
+
+The QCD renormalisation, factorisation and fragmentation scale can be set to $ a\times m_{\gamma\gamma}$ by 
+setting {\tt dynamic\_scale} equal to {\tt .true. } $a$ is then set by the value of  {\tt scale}.  Note that other dynamic scales for this process 
+are not implemented. 
+
+\subsection{$W\gamma$ production, processes 290-297}
+\label{subsec:wgamma}
+
+These processes represent the production of a $W$ boson which subsequently
+decays leptonically, in association with a real photon.
+Since this process includes a real photon, the cross section diverges
+when the photon is very soft or in the direction of the beam.
+Thus in order to produce sensible results, the input file must supply values for both
+{\tt ptmin\_photon} and {\tt etamax\_photon}. Moreover, when the parameters {\tt zerowidth}
+and {\tt removebr} are set to {\tt .false.} the decay $W \to \ell \nu$ will include
+photon radiation from the lepton, so that a non-zero {\tt R(photon,lept)\_min} should
+also be supplied. This will ensure that the cross section is well-defined
+Virtual amplitudes are taken from ref.~\cite{Dixon:1998py}.
+
+The calculation of processes {\tt 290} and {\tt 295} may be performed
+at NLO using the Frixione algorithm~\cite{Frixione:1998jh} or standard isolation. 
+
+For processes {\tt 290} and {\tt 295} the role of {\tt mtrans34cut} changes to become a cut 
+on the transverse mass on the $M_{345}$ system, i.e. the photon is included with the leptons in the cut. 
+
+The QCD renormalisation, factorisation and fragmentation scale can be set to $ a\times \sqrt{m_{V}^2+p^2_{T,\gamma}}$ by 
+setting {\tt dynamic\_scale} equal to {\tt .true. } $a$ is then set by the value of  {\tt scale}.  Note that other dynamic scales for this process 
+are not implemented. 
+
+\subsection{$Z\gamma$ production, processes 300-305}
+\label{subsec:zgamma}
+
+These processes represent the production of a $Z$ boson (or virtual photon)
+in association with a real photon. The $Z/\gamma^*$ subsequently decays into 
+either an $e^+ e^-$ pair ({\tt nproc=300}) or neutrinos ({\tt nproc=305}).
+Since these processes include a real photon, the cross section diverges
+when the photon is very soft or in the direction of the beam.
+Thus in order to produce sensible results, the input file must supply values for both
+{\tt ptmin\_photon} and {\tt etamax\_photon}. Moreover, when the parameters {\tt zerowidth}
+and {\tt removebr} are set to {\tt .false.} the decay $Z \to e^- e^+$ ({\tt nproc=300})
+will include photon radiation from both leptons, so that a non-zero {\tt R(photon,lept)\_min}
+should also be supplied. This will ensure that the cross section is well-defined.
+Virtual amplitudes are taken from ref.~\cite{Dixon:1998py}.
+The calculation of processes {\tt 300} may be performed
+at NLO using the Frixione algorithm~\cite{Frixione:1998jh} or standard isolation. 
+
+When {\tt removebr} is true in process {\tt 300}, the $Z$ boson does not decay.
+
+For the process {\tt 300}  the role of {\tt mtrans34cut} changes to become a cut 
+on the invariant mass on the $M_{345}$ system, i.e. the photon is included with the leptons in the cut. 
+
+The QCD renormalisation, factorisation and fragmentation scale can be set to $ a\times \sqrt{m_{V}^2+p^2_{T,\gamma}}$ by 
+setting {\tt dynamic\_scale} equal to {\tt .true. } $a$ is then set by the value of  {\tt scale}.  Note that other dynamic scales for this process 
+are not implemented. 
+
+
+
 \subsection{$W+Q+$~jet production processes 311--326}
 \label{subsec:wQj}
 
@@ -2150,41 +2370,80 @@ These processes represent the production of a $Z$
 boson that decays into a pair of electrons,
 in association with a heavy quark, $Q$ and an untagged jet.
 
-For processes {\tt 341} and {\tt 351} the initial
-state at lowest order is the heavy quark and a gluon and 
-the calculation may be performed at NLO.
-Thus in these processes the quark $Q$ occurs as 
-parton PDF in the initial state. 
-As for $H+b$ and $Z+Q$ production, the matrix elements are divided into two
-sub-processes at NLO. Thus the user must sum over these after performing
-more runs than usual. At lowest order one can proceed as normal, using
-{\tt nproc=341} (for $Zbj$) or {\tt nproc=351} (for $Zcj$).
-For a NLO calculation, the sequence of runs is as follows:
+For processes {\tt 341} and {\tt 351} the initial state at lowest
+order is the heavy quark and a gluon and the calculation may be
+performed at NLO.  Thus in these processes the quark $Q$ occurs as
+parton PDF in the initial state.  As for $H+b$ and $Z+Q$ production,
+the matrix elements are divided into two sub-processes at NLO. Thus
+the user must sum over these after performing more runs than usual. At
+lowest order one can proceed as normal, using {\tt nproc=341} (for
+$Zbj$) or {\tt nproc=351} (for $Zcj$).  For a NLO calculation, the
+sequence of runs is as follows:
 \begin{itemize}
 \item Run {\tt nproc=341} (or {\tt 351}) with {\tt part=virt} and
 {\tt part=real} (or, both at the same time using {\tt part=tota});
 \item Run {\tt nproc=342} (or {\tt 352}) with {\tt part=real}.
 \end{itemize}
-The sum of these yields the cross-section with one identified heavy quark and one
-untagged jet in
-the final state when {\tt inclusive} is set to {\tt .false.} . To calculate the
-rate for at least one heavy quark and one jet (the remaining jet may be a heavy quark,
-or untagged), {\tt inclusive} should be {\tt .true.}.
+The sum of these yields the cross-section with one identified heavy
+quark and one untagged jet in the final state when {\tt inclusive} is
+set to {\tt .false.} . To calculate the rate for at least one heavy
+quark and one jet (the remaining jet may be a heavy quark, or
+untagged), {\tt inclusive} should be {\tt .true.}.
 
 Processes {\tt 346,347} and {\tt 356,357} are the lowest order processes that enter
 the above calculation in the real contribution. They can be computed only at LO.
 
 When {\tt removebr} is true, the $Z$ boson does not decay.
 
+\subsection{$c \overline s \to W^+$, processes 361--363}
+\label{subsec:csbar}
+These processes represent the production of a $W^+$ from a charm and anti-strange
+quark at LO. The $W^+$ boson decays into a neutrino and a positron.
+
+The NLO corrections to this LO process include a contribution of the form,
+$g\overline s \to W^+ \overline c$. For process {\tt 361} this contribution is
+calculated in the approximation $m_c=0$ at NLO. In order to perform the NLO calculation 
+for a non-zero value of $m_c$, one must instead sum the results of processes {\tt 362}
+and {\tt 363} for {\tt part=tota}.
+
+\subsection{$W+Q{\bar Q}$ production, processes 420--427}
+\label{subsec:wbbfilter}
+These processes represent the production of a $W$ boson and one or more jets,
+at least one of which is a $b$-quark. These processes all use the same matrix
+elements as processes 20 and 25 (see section~\ref{subsec:wbb}), but make different
+cuts on the final state. The final state is specified by the process number and
+the value of the flag {\tt inclusive}, as shown in Table~\ref{table:wbbfilter}.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|c|c|} \hline
+ Process ($W^+$/$W^-$) & {\tt inclusive=.false.} & {\tt inclusive=.true.} \\
+\hline
+{\tt 420}/{\tt 425} & $(b)$ or $(\overline b)$ & + ($b,\overline b$) or ($b,j$) or ($\overline b,j$) \\
+{\tt 421}/{\tt 426} & $(B)$ & + ($B,j$) \\
+{\tt 422}/{\tt 427} & $(b,j)$ or $(\overline b,j)$ & + ($b,\overline b,j$) \\
+\hline
+\end{tabular}
+\caption{The different final states allowed in the calculation of processes 420--427. A jet containing
+both $b$ and $\overline b$ quarks is denoted by $B$ and a light (quark or gluon) jet by $j$. The inclusive
+(right-hand) column also allows the final states in the exclusive (middle) column.}
+\label{table:wbbfilter}
+\end{center}
+\end{table}
+
+As usual, jets may be unobserved as a result of them falling outside the $p_T$
+and rapidity ranges specified in the input file. In addition, the number of jets
+may be different from the number of partons in the matrix element calculation as
+a result of merging in the jet algorithm.
+
 \begin{thebibliography}{99}
-%
-%\cite{Amsler:2008zzb}
-\bibitem{Amsler:2008zzb}
-  C.~Amsler {\it et al.}  [Particle Data Group],
-  %``Review of particle physics,''
-  Phys.\ Lett.\  B {\bf 667}, 1 (2008)
- and 2009 partial update for the 2010 edition.
-  %%CITATION = PHLTA,B667,1;%%
+%\cite{Ellis:2007qk}
+\bibitem{Ellis:2007qk}
+  R.~K.~Ellis and G.~Zanderighi,
+  %``Scalar one-loop integrals for QCD,''
+  JHEP {\bf 0802}, 002 (2008)
+  [arXiv:0712.1851 [hep-ph]].
+  %%CITATION = JHEPA,0802,002;%%
 
 %\cite{Georgi:1991ci}
 \bibitem{Georgi:1991ci}
@@ -2212,6 +2471,13 @@ Stefan Dittmaier and Markus Roth,\\
    M.~Cacciari, G.~P.~Salam and G.~Soyez,
   JHEP {\bf 0804}, 063 (2008)
   [arXiv:0802.1189 [hep-ph]].
+
+\bibitem{Bourhis:1997yu}
+  L.~Bourhis, M.~Fontannaz and J.~P.~Guillet,
+  %``Quarks and gluon fragmentation functions into photons,''
+  Eur.\ Phys.\ J.\  C {\bf 2}, 529 (1998)
+  [arXiv:hep-ph/9704447].
+  %%CITATION = EPHJA,C2,529;%%
 
 %\cite{Nagy:2003tz}
 \bibitem{Nagy:2003tz}
@@ -2248,6 +2514,14 @@ Stefan Dittmaier and Markus Roth,\\
   [arXiv:0808.1231 [hep-ph]].
   %%CITATION = NUPHA,B809,1;%%
 
+%\cite{Badger:2010mg}
+\bibitem{Badger:2010mg}
+  S.~Badger, J.~M.~Campbell and R.~K.~Ellis,
+  %``QCD corrections to the hadronic production of a heavy quark pair and a
+  %W-boson including decay correlations,''
+  arXiv:1011.6647 [hep-ph].
+  %%CITATION = ARXIV:1011.6647;%%
+
 %\cite{Bern:1997sc}
 \bibitem{Bern:1997sc}
   Z.~Bern, L.~J.~Dixon and D.~A.~Kosower,
@@ -2264,6 +2538,29 @@ Stefan Dittmaier and Markus Roth,\\
   Nucl.\ Phys.\  B {\bf 531}, 3 (1998)
   [arXiv:hep-ph/9803250].
   %%CITATION = NUPHA,B531,3;%%
+
+%\cite{Ellis:1991qj}
+\bibitem{Ellis:1991qj}
+  R.~K.~Ellis, W.~J.~Stirling and B.~R.~Webber,
+  %``QCD and collider physics,''
+  Camb.\ Monogr.\ Part.\ Phys.\ Nucl.\ Phys.\ Cosmol.\  {\bf 8}, 1 (1996).
+  %%CITATION = CMPCE,8,1;%%
+
+%\cite{Melia:2010bm}
+\bibitem{Melia:2010bm}
+  T.~Melia, K.~Melnikov, R.~Rontsch and G.~Zanderighi,
+  %``Next-to-leading order QCD predictions for W+W+jj production at the LHC,''
+  JHEP {\bf 1012}, 053 (2010)
+  [arXiv:1007.5313 [hep-ph]].
+  %%CITATION = JHEPA,1012,053;%%
+
+%\cite{Amsler:2008zzb}
+\bibitem{Amsler:2008zzb}
+  C.~Amsler {\it et al.}  [Particle Data Group],
+  %``Review of particle physics,''
+  Phys.\ Lett.\  B {\bf 667}, 1 (2008)
+ and 2009 partial update for the 2010 edition.
+  %%CITATION = PHLTA,B667,1;%%
 
 %\cite{Korner:2002hy}
 \bibitem{Korner:2002hy}
@@ -2319,6 +2616,22 @@ R.~Kleiss and W.~J.~Stirling,
 %``Top Quark Production At Hadron Colliders: Some Useful Formulae,''
 Z.\ Phys.\ C {\bf 40}, 419 (1988).
 %%CITATION = ZEPYA,C40,419;%%
+
+%\cite{Frixione:1998jh}
+\bibitem{Frixione:1998jh}
+  S.~Frixione,
+  %``Isolated photons in perturbative {QCD},''
+  Phys.\ Lett.\  B {\bf 429}, 369 (1998)
+  [arXiv:hep-ph/9801442].
+  %%CITATION = PHLTA,B429,369;%%
+
+%\cite{Bern:2002jx}
+\bibitem{Bern:2002jx}
+  Z.~Bern, L.~J.~Dixon and C.~Schmidt,
+  %``Isolating a light Higgs boson from the di-photon background at the LHC,''
+  Phys.\ Rev.\  D {\bf 66}, 074018 (2002)
+  [arXiv:hep-ph/0206194].
+  %%CITATION = PHRVA,D66,074018;%%
 
 \end{thebibliography}
 

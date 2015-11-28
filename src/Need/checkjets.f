@@ -11,6 +11,7 @@ c--- returns logical 'failed'
       include 'limits.f'
       include 'process.f'
       include 'removebr.f'
+      include 'npart.f'
       double precision qfinal(mxpart,4),m56,m57,m67
       logical failed
       integer nproc,countb,jetsfound,nbq,nba,isub
@@ -54,7 +55,8 @@ c--- check that 5 and 6 are b and b-bar (if appropriate)
       endif
 
 c--- perform m56 mass cut if there are 2 or more jets found
-      if (jetsfound .ge. 2) then
+c--- and there are at least 6 particles in the final state
+      if ((npart .gt. 3) .and. (jetsfound .ge. 2)) then
         m56=(qfinal(5,4)+qfinal(6,4))**2
      .     -(qfinal(5,1)+qfinal(6,1))**2
      .     -(qfinal(5,2)+qfinal(6,2))**2

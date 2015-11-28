@@ -10,13 +10,17 @@ c     the values of the cmass and the bmass should be set
 c     in common block qmass.
 
       IMPLICIT NONE
-      DOUBLE PRECISION Q,T,AMZ,AMZ0,AMB,AMC,ZMASS,BMASS,CMASS,AS_OUT
+c--- added by JMC: use consistent value of MZ from common block
+      include 'masses.f'
+      DOUBLE PRECISION Q,T,AMZ,AMZ0,AMB,AMC,BMASS,CMASS,AS_OUT
       INTEGER NLOOP,NLOOP0,NF3,NF4,NF5
-      PARAMETER(ZMASS=91.188D0)
+c      PARAMETER(ZMASS=91.188D0)
       PARAMETER(NF5=5,NF4=4,NF3=3)
       COMMON/QMASS/CMASS,BMASS
       SAVE AMZ0,NLOOP0,AMB,AMC
       DATA AMZ0,NLOOP0/0D0,0/
+
+          
 
       IF (Q .LE. 0D0) THEN 
          WRITE(6,*) 'q .le. 0 in alphas'

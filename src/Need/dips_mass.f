@@ -69,7 +69,9 @@ c--- if we're doing single-top, reduce # of momenta from 7 to 5
         enddo
       endif
       
-      if ((case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')) then
+      if ((case .eq. 'tt_bbl') .or.
+     &    (case .eq. 'tt_bbh') .or.
+     &    (case .eq. 'tt_bbu')) then
 c--- if we're doing ttb case, reduce # of momenta from 9 to 5 
         do nu=1,4
           p(3,nu)=pold(3,nu)+pold(4,nu)+pold(5,nu)
@@ -128,10 +130,13 @@ C---Modification so that only close to singular subtracted
 
         if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')
      .  .or.(case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')
-     .  .or.(case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')) then
+     .  .or.(case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')
+     .  .or.(case .eq. 'tt_bbu')) then
           if     ((case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')) then
             call extend_trans_wt(pold,p,ptrans,pext)
-          elseif ((case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')) then
+          elseif ((case .eq. 'tt_bbl') 
+     &       .or. (case .eq. 'tt_bbh')
+     &       .or. (case .eq. 'tt_bbu')) then
             call extend_trans_ttb(pold,p,ptrans,pext)
           else
             call extend_trans(pold,p,ptrans,pext)
@@ -192,10 +197,13 @@ C---transform the momenta so that only the first npart+1 are filled
 
         if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')
      .  .or.(case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')
-     .  .or.(case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')) then
+     .  .or.(case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')
+     .  .or.(case .eq. 'tt_bbu')) then
           if     ((case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')) then
             call extend_trans_wt(pold,p,ptrans,pext)
-          elseif ((case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')) then
+          elseif ((case .eq. 'tt_bbl') 
+     &       .or. (case .eq. 'tt_bbh')
+     &       .or. (case .eq. 'tt_bbu')) then
             call extend_trans_ttb(pold,p,ptrans,pext)
           else
             call extend_trans(pold,p,ptrans,pext)
@@ -266,10 +274,14 @@ c---Modification so that only close to singular subtracted
 
         if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')
      .  .or.(case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')
-     .  .or.(case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')) then
+     .  .or.(case .eq. 'tt_bbl') 
+     .  .or. (case .eq. 'tt_bbh')
+     .  .or. (case .eq. 'tt_bbu')) then
           if     ((case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')) then
             call extend_trans_wt(pold,p,ptrans,pext)
-          elseif ((case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')) then
+          elseif ((case .eq. 'tt_bbl') 
+     &       .or. (case .eq. 'tt_bbh')
+     &       .or. (case .eq. 'tt_bbu')) then
             call extend_trans_ttb(pold,p,ptrans,pext)
           else
             call extend_trans(pold,p,ptrans,pext)
@@ -419,10 +431,13 @@ C---calculate the ptrans-momenta
 
         if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')
      .  .or.(case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')
-     .  .or.(case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')) then
+     .  .or.(case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')
+     &  .or.(case .eq. 'tt_bbu')) then
           if     ((case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')) then
             call extend_trans_wt(pold,p,ptrans,pext)
-          elseif ((case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')) then
+          elseif ((case .eq. 'tt_bbl') 
+     &       .or. (case .eq. 'tt_bbh')
+     &       .or. (case .eq. 'tt_bbu')) then
             call extend_trans_ttb(pold,p,ptrans,pext)
           else
             call extend_trans(pold,p,ptrans,pext)

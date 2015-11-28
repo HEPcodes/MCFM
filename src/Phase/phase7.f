@@ -29,7 +29,8 @@ c---- with all 2 pi's (ie 1/(2*pi)^20)
       n3=0
       if  ((case .eq. 'qq_ttg') 
      . .or.(case .eq. 'tt_bbl') 
-     . .or.(case .eq. 'tt_bbh')) then 
+     . .or.(case .eq. 'tt_bbh') 
+     . .or.(case .eq. 'tt_bbu')) then 
         mass2=mt
         width2=twidth
         mass3=mt

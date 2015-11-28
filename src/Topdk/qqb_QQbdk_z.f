@@ -1,7 +1,5 @@
       subroutine qqb_QQbdk_z(p,z)
 ************************************************************************
-* NEEDS MAJOR CHANGES (JUST A PLACEHOLDER RIGHT NOW)                   *
-************************************************************************
 *     Author: R.K. Ellis and John Campbell                             *
 *     July, 2008.                                                      *
 *     calculate the subtraction terms for the process                  *

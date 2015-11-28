@@ -190,6 +190,11 @@ c instead of calling ampqqb_qqb(6,1,2,5,qbqb_a,qbqb_b)
       if (Gflag) then
       do j=-nf,nf
       do k=-nf,nf
+
+      do icol=0,2
+      msq_cs(icol,j,k)=zip
+      enddo
+      
       if( j .ne. 0 .and. k .ne. 0 .and. j .ne. -k) goto 19
 
       if     ((j .eq. 0) .and. (k .eq. 0)) then

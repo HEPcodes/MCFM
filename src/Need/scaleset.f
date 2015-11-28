@@ -11,6 +11,7 @@
       include 'jetlabel.f'
       include 'process.f'
       include 'npart.f'
+      include 'frag.f'
       character*52 msg,rmsg,fmsg
       character*4 prechar(7)
       character boson
@@ -22,6 +23,8 @@
       logical first
       double precision mass2,width2,mass3,width3
       double precision b1scale,q2scale,q1scale,b2scale
+      character*4 part
+      common/part/part
       common/breit/n2,n3,mass2,width2,mass3,width3
       common/nqcdjets/nqcdjets,nqcdstart
       common/couple/amz
@@ -32,8 +35,98 @@
       save first
 
 c--- FIRST CHECK FOR SPECIAL CASES
+c---    Wgamma and Zgamma: choice of de Florian and Signer
+      if       ((case .eq. 'Wgamma') .or. (case .eq. 'Zgamma'))then
+         
+         prefac=rscalestart
+         if(prefac.gt.10d0) then 
+            write(6,*) 'Invalid Dynamic scale' 
+            stop
+         endif
+         if (rescale) then
+            scale=dsqrt(mass3**2
+     &           +(z_frag**2*pt(5,p)**2))	
+         else
+            scale=dsqrt(mass3**2+(pt(5,p)**2))	
+         endif
+         scale=prefac*scale
+         facscale=scale
+         frag_scale=scale
+         if (first) then
+            write(6,*)
+        write(6,*)'************** Special scale choice ****************'             
+        write(6,*)'*                                                  *'
+        write(6,45)'*        muR = muF = ',prefac,
+     &       ' sqrt(MV^2+(pt(ga)^2))  *'
+        write(6,*)'*                                                  *'
+        write(6,*)'****************************************************'
+            first=.false.
+         endif
+         goto 77
+         
+
+!----- Gamgam choice of DIPHOX = m(gamma,gamma)
+      elseif((case .eq. 'gamgam')) then 
+         if(rescale) then ! rescale p(4)  
+            scale=z_frag*2d0*(p(4,4)*p(3,4)-p(4,1)*p(3,1)-p(4,2)*p(3,2)
+     &           -p(4,3)*p(3,3))
+            scale=dsqrt(scale)
+         else
+             scale=2d0*(p(4,4)*p(3,4)-p(4,1)*p(3,1)-p(4,2)*p(3,2)
+     &           -p(4,3)*p(3,3))
+             scale=dsqrt(scale)             
+         endif
+         prefac=rscalestart 
+        
+         if(prefac .gt. 10d0) then 
+            write(6,*) 'INVALID DYNAMIC SCALE' 
+            stop
+         endif
+	 scale=prefac*scale
+         if(scale.lt.1d0) then 
+            scale=1d0
+         endif
+         facscale=scale
+         frag_scale=scale
+         
+        if (first) then
+        write(6,*)
+        write(6,*)'************** Special scale choice ****************'
+        write(6,*)'*                                                  *'
+        write(6,45)'*         muR = muF = ',prefac,' M_(gam,gam)      *'
+        write(6,*)'*                                                  *'
+        write(6,*)'****************************************************'
+	first=.false.
+	endif
+ 45     format(1x,a21,f6.2,a25)
+	goto 77
+       
+
+
+!----- Dirgam choice of JETPHOX = pt(gamma)/2
+      elseif((case .eq. 'dirgam').or.(case.eq.'gamjfr')) then 
+         if(rescale) then 
+            scale=z_frag*pt(3,p)/two
+         else
+            scale=pt(3,p)/two
+         endif
+         facscale=scale
+         frag_scale=scale
+         
+        if (first) then
+        write(6,*)
+        write(6,*)'************** Special scale choice ****************'
+        write(6,*)'*                                                  *'
+        write(6,*)'*              muR = muF = pt(ga)/2                *'
+        write(6,*)'*                                                  *'
+        write(6,*)'****************************************************'
+	first=.false.
+	endif
+	goto 77
+     
+
 c---    single top s-channel, dynamic scale is (pt+pb)**2
-      if       (case .eq. 't_bbar') then
+      elseif   (case .eq. 't_bbar') then
         scale=dsqrt(abs(
      .       +(p(3,4)+p(4,4)+p(5,4)+p(6,4))**2
      .       -(p(3,1)+p(4,1)+p(5,1)+p(6,1))**2
@@ -155,10 +248,20 @@ c--- average jet pt
         msg='*          Dynamic scale = < pt_jet >              *'
       elseif (iset .eq. 3) then
 c--- sqrt(s-hat)      
+        if (part .ne. 'lord') then
+	  write(6,*) 'Error: this scale choice is not suitable'
+	  write(6,*) 'for a calculation beyond leading order.'
+	  stop
+	endif
         setscale=dsqrt(2d0*dot(p,1,2))
         msg='*              Scale = sqrt(s-hat)                 *'
       elseif (iset .eq. 4) then
 c--- HT      
+        if (part .ne. 'lord') then
+	  write(6,*) 'Error: this scale choice is not suitable'
+	  write(6,*) 'for a calculation beyond leading order.'
+	  stop
+	endif
         setscale=0d0
         do j=3,2*(1+n2+n3)+max(0,jets)
         setscale=setscale+getEt(ptildejet(0,j,4),ptildejet(0,j,1),

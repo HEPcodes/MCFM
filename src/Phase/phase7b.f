@@ -14,9 +14,9 @@ c---- with all 2 pi's (ie 1/(2*pi)^17)
       double precision r(mxdim)
       double precision p1(4),p2(4),p5(4),p6(4),p3(4),p4(4),p7(4),
      . p8(4),p9(4)
-      double precision p12(4),p345(4),p678(4),p349(4),p34(4),smin,
+      double precision p12(4),p349(4),p34(4),
      . p78(4),p56(4),p5678(4)
-      double precision wt,wt0,wt12,wt349,wt345,wt34,wt78,wt5678,wt56
+      double precision wt,wt0,wt12,wt349,wt34,wt78,wt5678,wt56
       double precision mass2,width2,mass3,width3
       common/breit/n2,n3,mass2,width2,mass3,width3 
       integer j
@@ -34,7 +34,6 @@ c--- written for real contribution to qq->WH(->WW)+g (and ZH) only
       do j=1,4
       p12(j)=-p1(j)-p2(j)
       enddo
-      smin=mb**2
 
 c--- In these cases, we should generate s5678 according to
 c--- a Breit-Wigner at mH

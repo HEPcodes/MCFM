@@ -5,6 +5,7 @@ C---p1+p2 --> p3+p4+p5
       include 'constants.f'
       include 'mxdim.f'
       include 'phasemin.f'
+      include 'reset.f'
       integer j,nu
       double precision r(mxdim),p(mxpart,4),xx(2),
      . sqrts,ymax,ymin,xjac,y3,y4,y5,phi,phi45,wt0,wt3,
@@ -12,7 +13,18 @@ C---p1+p2 --> p3+p4+p5
       common/energy/sqrts
       parameter(wt0=1d0/512d0/pi**3)
       common/x1x2/xx
-
+      logical first
+      double precision hmin,hmax,delh,h
+      double precision ptjetmin,etajetmin,etajetmax
+      data first/.true./
+      save first,ptjetmin,etajetmin,etajetmax
+      
+      if (first .or. reset) then
+        first=.false.
+        reset=.false.
+        call read_jetcuts(ptjetmin,etajetmin,etajetmax)
+      endif
+      
       do j=6,mxpart     
       do nu=1,4     
       p(j,nu)=0d0
@@ -26,19 +38,49 @@ C---p1+p2 --> p3+p4+p5
       cphi45=dcos(phi45)
       sphi45=dsin(phi45)
       xjac=sqrts**2
-      ymax=5d0
-      ymin=-5d0
+      ymax=10d0
+      ymin=-10d0
       Deltay=ymax-ymin    
       y3=ymin+Deltay*r(3)
       y4=ymin+Deltay*r(4)
       y5=ymin+Deltay*r(5)
-      
+ 
+c--- debug: try to get collinear 4 and 5
+c      y5=y4-r(5)*1d-6
+            
+c--- debug: try to get collinear 2 and 5
+c      y5=-8d0-r(5)*1d-6
+            
+c--- debug: try to get collinear 1 and 5
+c      y5=+8d0+r(5)*1d-6
+            
+c--- debug: try to get collinear 2 and 4
+c      y4=-8d0-r(4)*1d-6
+            
+c--- debug: try to get collinear 1 and 4
+c      y4=+8d0+r(4)*1d-6
+            
       xjac=xjac*Deltay**3
 
-      xt4=r(6)
-      xt5=r(7)
-      xjac=xjac*xt4*xt5
       rtson2=0.5d0*sqrts
+
+c--- this is the old method
+c      xt4=r(6)
+c      xt5=r(7)
+c      xjac=xjac*xt4*xt5
+
+c--- this is the new method
+      hmin=1d0/dsqrt(1d0+(ptjetmin/rtson2)**2)
+      hmax=rtson2/ptjetmin
+      delh=hmax-hmin
+      h=hmin+r(6)*delh        
+      xt4=dsqrt(1d0/h**2-(ptjetmin/rtson2)**2)
+      xjac=xjac*(delh/h**3)
+      h=hmin+r(7)*delh        
+      xt5=dsqrt(1d0/h**2-(ptjetmin/rtson2)**2)
+      xjac=xjac*(delh/h**3)
+      
+
       pt4=rtson2*xt4
       pt5=rtson2*xt5
 

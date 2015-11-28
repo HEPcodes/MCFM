@@ -7,7 +7,7 @@ c--- Also returns the energy fractions of the jets (z3,z4,z5,z6)
 c--- If there are at most 3 jets, returns <0 for y43 and for z6
 c--- If there are at most 2 jets, returns <0 for y32 and for z5
       include 'constants.f'
-      double precision p(mxpart,4),q(mxpart,4),r(mxpart,4),dot,
+      double precision p(mxpart,4),q(mxpart,4),r(mxpart,4),
      . y32,y43,z3,z4,z5,z6,yij,M
       integer npartons,i,j,imin,jmin,icount
       

@@ -5,9 +5,9 @@ c----- Note that (potentially scaled) top and W masses are now passed in
       include 'constants.f'
       include 'masses.f'
       include 'ewcouple.f'
-      double precision m,pn(4),pe(4),pb(4),pw(4),sw,snb,xmt,xmw
+      double precision pn(4),pe(4),pb(4),pw(4),sw,snb,xmt,xmw
       double complex zpe(4),zpt(4),f(4),ft(4),ifac
-      integer i,j,nu
+      integer j,nu
 
 C----setup complex momenta
       do nu=1,4

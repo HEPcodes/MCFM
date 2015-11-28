@@ -97,7 +97,7 @@ c    the subtraction terms involve the (Gflag=TRUE) matrix elements
       call spinoru(6,p,za,zb)
 
 C---exclude the photon pole, 4*mbsq choosen as a scale approx above upsilon
-      if (s(3,4) .lt. 4d0*mbsq) return
+      if (s(3,4) .lt. 4d0*mbsq) goto 999
 
       prop=s(3,4)/dcmplx((s(3,4)-zmass**2),zmass*zwidth)
 
@@ -356,6 +356,20 @@ c---Statistical factor already included above
           enddo
       elseif ((j .gt. 0) .and. (k .eq. 0)) then
           do icol=0,2
+c--- Madloop check: full Z in Born (no photon)
+c             msqx_cs(icol,j,k)=
+c     .       +abs(Q(j)*q1*0+L(j)*l1*prop)**2*qgZqg2_cs(icol,1,1)
+c     .       +abs(Q(j)*q1*0+R(j)*r1*prop)**2*qgZqg2_cs(icol,2,2)
+c     .       +abs(Q(j)*q1*0+L(j)*r1*prop)**2*qgZqg2_cs(icol,1,2)
+c     .       +abs(Q(j)*q1*0+R(j)*l1*prop)**2*qgZqg2_cs(icol,2,1)
+c--- Madloop check: axial coupling of Z only
+c             msqx_cs(icol,j,k)=
+c     .       +abs(Q(j)*q1*0+0.25d0/sin2w**2*prop)**2*qgZqg2_cs(icol,1,1)
+c     .       +abs(Q(j)*q1*0+0.25d0/sin2w**2*prop)**2*qgZqg2_cs(icol,2,2)
+c     .       +abs(Q(j)*q1*0+0.25d0/sin2w**2*prop)**2*qgZqg2_cs(icol,1,2)
+c     .       +abs(Q(j)*q1*0+0.25d0/sin2w**2*prop)**2*qgZqg2_cs(icol,2,1)
+
+c--- normal case
              msqx_cs(icol,j,k)=
      .       +abs(Q(j)*q1+L(j)*l1*prop)**2*qgZqg2_cs(icol,1,1)
      .       +abs(Q(j)*q1+R(j)*r1*prop)**2*qgZqg2_cs(icol,2,2)

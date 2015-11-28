@@ -202,9 +202,8 @@ c     we are renormalising the weights by the bin width
         XSQAVG=HIST(J,L)*X
 c--- need extra factor to account for renormalization by bin width
         XSQAVG=XSQAVG/hdel(i)
-c        XNORM=DFLOAT(IHIS(I,L))*X
 c--- Assume that grid is optimal and iterations improve statistics
-        XNORM=DFLOAT(IHIS(I,L))
+        XNORM=DFLOAT(IHIS(I,L))/X
         IF(XNORM.NE.0.d0) THEN
         HIST(K,L)=DSQRT(ABS(XSQAVG-XAVG**2)/XNORM)
         HIST(I,L)=XAVG
@@ -216,9 +215,8 @@ c--- Assume that grid is optimal and iterations improve statistics
         XSQAVG=HIST(J,L)*X
 c--- need extra factor to account for renormalization by bin width
         XSQAVG=XSQAVG/hdel(i)
-c        XNORM=DFLOAT(IHIS(I,L))*X
 c--- Assume that grid is optimal and iterations improve statistics
-        XNORM=DFLOAT(IHIS(I,L))
+        XNORM=DFLOAT(IHIS(I,L))/X
         IF(XNORM.NE.0.d0) THEN
         HIST(K,L)=DSQRT(ABS(XSQAVG-XAVG**2)/XNORM)
 c        HIST(I,L)=XAVG ! removed from 'V'
@@ -290,10 +288,13 @@ c      IF(SIG.GE.0.)HSIG(N)=SQRT(SIG/XIN)
       HINT(N)=X
       END
 
-      SUBROUTINE MPRINT(N)
+      SUBROUTINE MPRINT(N,L)
       IMPLICIT REAL*8 (A-H,O-Z)
       IMPLICIT INTEGER (I-N)
       include 'histo.f'
+      logical scaleplots                  
+      double precision scalefac
+      common/scaleplots/scalefac,scaleplots
 c      DATA INI/0/
 c      IF(INI.EQ.0) THEN
 c      CALL IDATE(IMON,IDAY,IYEAR)
@@ -307,12 +308,18 @@ c      ENDIF
 c      WRITE(98,7) N,IYEAR,IMON,IDAY,CTIME(1:5)
       WRITE(98,8) N
       WRITE(98,*) TITLE(N)
-      WRITE(98,10) (XHIS(N,I),HIST(N,I),I=1,NBIN(N))
+      DO I=1,NBIN(N)
+      if (scaleplots) then
+      WRITE(98,10) XHIS(N,I),scalefac*HIST(N,I),HIST(L,I)
+      else
+      WRITE(98,10) XHIS(N,I),HIST(N,I),HIST(L,I)
+      endif
+      ENDDO
       WRITE(98,15) HAVG(N),HSIG(N),HINT(N)
       WRITE(98,20) IENT(N),IUSCORE(N),IOSCORE(N)
 c    7 FORMAT(4X,'HIST = ',I3,'   19',I2,'-',I2,'-',I2,1X,A5/)
     8 FORMAT(4X,'HIST = ',I3)
-   10 FORMAT(4X,2G13.6)
+   10 FORMAT(3(3x,G13.6))
    15 FORMAT(/' AVG =',E10.3,4X,' RMS =',E10.3,' INTEGRAL =',E10.3,/)
    20 FORMAT('ENTRIES=',I10,1X,'U`FLOW=',I10,1X,'O`FLOW=',I10,//)
    21 FORMAT(' HISTOGRAM ',I3,' IS EMPTY')
@@ -375,7 +382,7 @@ c     &' SET ORDER X Y DY ')
       DO 1 J=1,NBIN(N)
       IF(HIST(N,J).EQ.0.) GO TO 1
       if (scaleplots) then
-      WRITE(99,'(3X,G13.6,2(2X,G13.6))')  
+      WRITE(99,'(3(2X,G13.6))')  
      & XHIS(N,J),scalefac*HIST(N,J),HIST(M,J)
       else
       WRITE(99,'(3X,G13.6,2(2X,G13.6))')  

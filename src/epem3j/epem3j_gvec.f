@@ -18,7 +18,6 @@ c---in label of gluon which is contracted with n
       include 'qcdcouple.f'
       include 'ewcouple.f'
       include 'sprods_com.f'
-      include 'ckm.f'
       integer j,k,in
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4)
       double precision w1jetn,p1p2,n(4),fac

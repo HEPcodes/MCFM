@@ -14,8 +14,6 @@ c    Calculation is fully analytic
       include 'sprods_com.f'
       include 'zprods_com.f'
       include 'scheme.f'
-      include 'epinv.f'
-      include 'scale.f'
       include 'nflav.f'
       include 'deltar.f'
       integer j,k,al,i5,i6

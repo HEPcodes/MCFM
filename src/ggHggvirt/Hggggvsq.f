@@ -3,8 +3,6 @@
       include 'epinv.f'
       include 'epinv2.f'
       include 'first_time.f' 
-      include 'scale.f' 
-      include 'masses.f' 
 C---  matrix element squared for H--g(j1)+g(j2)+g(j3)+g(j4)
       integer al,j1,j2,j3,j4
       double precision q(4,5),qswap(4,5),sqres(-2:0)

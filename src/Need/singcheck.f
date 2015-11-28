@@ -33,15 +33,19 @@
       
       if     (npart .eq. 3) then
         jmax=5
-        if (case .eq. 'dirgam') then
-          kmax=5
-        elseif (case .eq. 'twojet') then
-          kmax=9
-        elseif ((case .eq. 'tt_tot') .or. (case .eq. 'cc_tot')
+c        if (case .eq. 'dirgam') then
+c          kmax=5
+c        elseif (case .eq. 'twojet') then
+c          kmax=9
+        if ((case .eq. 'tt_tot') .or. (case .eq. 'cc_tot')
      .   .or. (case .eq. 'bb_tot')) then
           kmax=4
         else
-          kmax=2
+        jmax=1
+        kmax=1
+        xtoler=1d3
+c        smin=min(-dot(p,1,5),-dot(p,2,5))
+c	if (smin. gt. 1d-3) return
         endif
         xtoler=1d3
       elseif (npart .eq. 4) then
@@ -144,7 +148,7 @@ c             call coll5(p,k,j)
          call dotem(9,p,s)
          call genclust2(p,rcut,pjet,0)
 c         write(6,*) 'rl,pt34',0,pttwo(3,4,p)
-c         write(6,*) 'nd,jets, msq(0,-1)',0,nd,jets,msq(0,-1)
+c         write(6,*) 'nd,jets, msq(5,0)',0,nd,jets,msq(5,0)
          if (jets .eq. -1) then
            write(6,*) 'This point does not have a final state b-jet'
            do jj=-nf,nf
@@ -165,16 +169,26 @@ c           write(6,*) 'This point does not have enough jets'
          endif
 
          write(*,*) 'Point ',j,':'
+         write(6,*) '2d0*p1.p4',s(1,4)
+         write(6,*) '2d0*p2.p4',s(2,4)
+	 if (npart .gt. 2) then
          write(6,*) '2d0*p1.p5',s(1,5)
-         write(6,*) '2d0*p1.p6',s(1,6)
-         write(6,*) '2d0*p1.p7',s(1,7)
          write(6,*) '2d0*p2.p5',s(2,5)
+         write(6,*) '2d0*p3.p5',s(3,5)
+         write(6,*) '2d0*p4.p5',s(4,5)
+	 endif
+	 if (npart .gt. 3) then
+         write(6,*) '2d0*p1.p6',s(1,6)
          write(6,*) '2d0*p2.p6',s(2,6)
-         write(6,*) '2d0*p2.p7',s(2,7)
          write(6,*) '2d0*p5.p6',s(5,6)
+	 endif
+	 if (npart .gt. 4) then	 
+         write(6,*) '2d0*p1.p7',s(1,7)
+         write(6,*) '2d0*p2.p7',s(2,7)
          write(6,*) '2d0*p5.p7',s(5,7)
          write(6,*) '2d0*p6.p7',s(6,7)
-
+         endif
+	 
 c         write(6,*) '0',jets,msq(2,0),(pjet(5,4)+pjet(6,4))**2
 c     .                      -(pjet(5,1)+pjet(6,1))**2
 c     .                      -(pjet(5,2)+pjet(6,2))**2
@@ -195,17 +209,14 @@ c	    endif
 c            call genclust2(q,rcut,pjet,1)
 c            if (jets .ge. nqcdjets) then	    
 	    if (includedipole(nd,q)) then
-c            write(6,*) nd,jets,msqc(nd,2,0),(pjet(5,4)+pjet(6,4))**2
-c     .                        -(pjet(5,1)+pjet(6,1))**2
-c     .                        -(pjet(5,2)+pjet(6,2))**2
-c     .                        -(pjet(5,3)+pjet(6,3))**2
+c            write(6,*) nd,jets,msqc(nd,5,0)
                do jj=-nflav,nflav
                do kk=-nflav,nflav
                   msqs(jj,kk)=msqs(jj,kk)+msqc(nd,jj,kk)
                enddo
                enddo
             endif
-c            write(6,*) 'nd,jets,msqc(nd,1,0)',nd,jets,msqc(nd,1,0)
+c            write(6,*) 'nd,jets,msqc(nd,2,0)',nd,jets,msqc(nd,2,0)
    72    continue 
          enddo
 
@@ -280,7 +291,7 @@ c	 if ((jj .le. 0) .or. (kk .le. 0)) goto 69 ! DEBUG: QQ only
 
    68 continue
       enddo
-c      pause
+      pause
       enddo 
 
 c---c--- This block of code is useful for checking the symmetry of

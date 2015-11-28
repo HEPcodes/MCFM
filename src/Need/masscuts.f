@@ -3,6 +3,7 @@
       include 'constants.f'
       include 'npart.f'
       include 'limits.f'
+      include 'process.f'
       logical first
       double precision p(mxpart,4),s34,s56
       integer nqcdjets,nqcdstart
@@ -12,6 +13,17 @@
 
       if (first) then
       first=.false.
+c--- do not allow a cut on m56 for W/Z+gamma processes
+      if ((case .eq. 'Wgamma') .or. (case .eq. 'Zgamma')) then
+        bbsqmin=0d0
+	bbsqmax=81d8
+      endif
+
+!---- do not allow cuts on m34 if doing gamma gamma (will be done elsewhere) 
+      if(case .eq. 'gamgam') then 
+         return 
+      endif
+     
       write(6,*)
       write(6,*) '****************** Basic mass cuts *****************'
       write(6,*) '*                                                  *'
@@ -26,6 +38,7 @@
       
       s34=+(p(3,4)+p(4,4))**2-(p(3,1)+p(4,1))**2
      .    -(p(3,2)+p(4,2))**2-(p(3,3)+p(4,3))**2
+      
       if ((s34 .lt. wsqmin) .or. (s34 .gt. wsqmax)) return 1
       
       if ((npart .gt. 3) .and. (nqcdjets .lt. 2)) then

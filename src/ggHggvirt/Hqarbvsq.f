@@ -42,7 +42,7 @@ c      double complex function Lsm1_2me(s,t,m1sq,m3sq)
      . (s(i1,i2)*s(i3,i4)*(s(i1,i2)*s(i3,i4)+s(i2,i3)
      . *(s(i2,i4)+2d0*s(i2,i3)-s(i1,i4)))+s(i2,i3)**2
      . *(s(i2,i4)+s(i1,i4))**2)
-     .  /(2*s(i1,i2)**3*s(i3,i4));
+     .  /(2*s(i1,i2)**3*s(i3,i4))
 
 
       fun3(i1,i2,i3,i4) = 

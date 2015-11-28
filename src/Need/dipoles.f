@@ -656,7 +656,6 @@ c      end
       include 'scheme.f'
       include 'alfacut.f'
       include 'nflav.f'
-      include 'b0.f'
       include 'colstruc.f'
 c--- returns the integral of the subtraction term for an
 c--- final-initial gluon-gluon antenna, either

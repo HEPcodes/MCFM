@@ -311,7 +311,7 @@
      .(L1(-t(j3,j5,j6),-s(j5,j6))*za(j2,j3)**2*za(j5,j6)*zb(j3,j6)**2)/
      .(s(j5,j6)**2*za(j1,j2)*za(j3,j4)**2)+
      .((za(j2,j4)*za(j3,j5)+za(j2,j3)*za(j4,j5))*
-     .(-(Lnrat(-t(j1,j2,j4),-t(j1,j2,j3))*za(j2,j5))/2+
+     .(-(Lnrat(-t(j1,j2,j4),-t(j1,j2,j3))*za(j2,j5))/2d0+
      .(L0(-t(j1,j2,j4),-s(j1,j2))*za(j1,j2)*za(j4,j5)*zb(j1,j4))/s(j1,j2
      .)+
      .(L0(-t(j1,j2,j4),-s(j5,j6))*za(j2,j3)*za(j5,j6)*zb(j3,j6))/s(j5,j6
@@ -322,7 +322,7 @@
      .(L1(-t(j4,j5,j6),-s(j5,j6))*za(j2,j4)**2*za(j5,j6)*zb(j4,j6)**2)/
      .(s(j5,j6)**2*za(j1,j2)*za(j3,j4)**2)-
      .((za(j2,j4)*za(j3,j5)+za(j2,j3)*za(j4,j5))*
-     .(-(Lnrat(-t(j1,j2,j3),-t(j1,j2,j4))*za(j2,j5))/2+
+     .(-(Lnrat(-t(j1,j2,j3),-t(j1,j2,j4))*za(j2,j5))/2d0+
      .(L0(-t(j1,j2,j3),-s(j1,j2))*za(j1,j2)*za(j3,j5)*zb(j1,j3))/s(j1,j2
      .)+
      .(L0(-t(j1,j2,j3),-s(j5,j6))*za(j2,j4)*za(j5,j6)*zb(j4,j6))/s(j5,j6

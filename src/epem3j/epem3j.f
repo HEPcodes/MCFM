@@ -11,7 +11,6 @@ C For nwz=-1
 c     d(-p1)+ubar(-p2)--> W^-(e^-(p3)+nbar(p4))+ g(p5) 
 c---
       include 'constants.f'
-      include 'ckm.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'sprods_com.f'

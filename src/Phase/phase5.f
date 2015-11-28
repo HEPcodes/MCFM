@@ -64,6 +64,6 @@ c--- a Breit-Wigner at mH, otherwise just linearly
       return
  99   continue
       wt=0d0
-      return 1
+      return
       end
 

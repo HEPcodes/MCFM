@@ -9,17 +9,16 @@ c     q(-p1)+qbar(-p2)-->e^-(p3)+e-(p4)+gamma(p5)
       include 'zprods_decl.f'
       include 'qcdcouple.f'
       include 'ewcouple.f'
-      integer j,k,h12,h34,h5
+      integer j,h12,h34,h5
       double precision msqv(-nf:nf,-nf:nf),p(mxpart,4),
      . qbq(2),qqb(2)
       double precision fac
       double complex qbqlo(2,2,2,2),qqblo(2,2,2,2),
      .              qbqnlo(2,2,2,2),qqbnlo(2,2,2,2)
 
-      integer jj(-nf:nf),kk(-nf:nf)
+      integer jj(-nf:nf)
       data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      data kk/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      
+      save jj
 
       scheme='dred'
 
@@ -46,14 +45,13 @@ c     q(-p1)+qbar(-p2)-->e^-(p3)+e-(p4)+gamma(p5)
       enddo
 
       do j=-nf,nf
-      k=-j
-          if ((j .eq. 0) .and. (k .eq. 0)) then
-            msqv(j,k)=0d0
-          elseif ((j .gt. 0) .and. (k .lt. 0)) then
-            msqv(j,k)=qqb(jj(j))
-          elseif ((j .lt. 0) .and. (k .gt. 0)) then
-            msqv(j,k)=qbq(kk(k))
-          endif
+        if     (j .eq. 0) then
+          msqv(0,0)=0d0
+        elseif (j .gt. 0) then
+          msqv(j,-j)=qqb(jj(j))
+        elseif (j .lt. 0) then
+          msqv(j,-j)=qbq(-jj(j))
+        endif
       enddo
 
       return

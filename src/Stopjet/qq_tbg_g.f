@@ -18,12 +18,7 @@
       implicit none
       include 'constants.f'
       include 'qcdcouple.f'
-      include 'ewcouple.f'
-      include 'masses.f'
       include 'nflav.f'
-      include 'zprods_com.f'
-      include 'ckm.f'
-      include 'noglue.f'
       include 'stopscales.f'
       double precision p(mxpart,4),pp(mxpart,4),qq(mxpart,4),
      . msq_qqb_gg_lc,msq_qqb_gg_slc,msq_qbq_gg,msq_qqb_qq,msq_qbq_qq

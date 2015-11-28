@@ -9,7 +9,6 @@
       include 'scale.f'
       include 'PR_new.f'
       include 'agq.f'
-      include 'nores.f'
       integer is,n2,n3
       double precision z,xl12,xl15,xl25,p(mxpart,4),dot
       double precision mbar12,mbar15,mbar25

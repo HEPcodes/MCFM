@@ -12,6 +12,7 @@ c---  where non-jet four vectors are set equal to the incoming q
       include 'npart.f'
       include 'jetcuts.f'
       include 'jetlabel.f'
+      include 'process.f'
       double precision q(mxpart,4),qjet(mxpart,4),qfinal(mxpart,4)
       double precision Rsep,Rmin,aetarap
       integer i,j,k,l,nu,iter,maxjet,ajet,jetindex(mxpart),isub
@@ -21,7 +22,9 @@ c---  where non-jet four vectors are set equal to the incoming q
       integer maxproto,protoc(20,0:mxpart),eti,shared,
      . sharedc(20),ni
       logical jetmerge,failed,first
-      parameter (Rsep=1.3d0)  ! Default value
+c--- DEBUG
+      parameter (Rsep=1d0)  ! Default value
+c      parameter (Rsep=1.3d0)  ! Default value
 c      parameter (Rsep=2.0d0)  ! Usual (e.g. Snowmass) definition
       common/plabel/plabel
       common/jetmerge/jetmerge
@@ -225,6 +228,18 @@ c-- proto-jet does not share any partons - move it to qfinal and repeat
           if (jetlabel(protoc(eti,i)) .eq. 'bq') finallabel(jets)='bq'
           if (jetlabel(protoc(eti,i)) .eq. 'ba') finallabel(jets)='ba'
         enddo
+c--- special combination for W+heavy quarks
+        if ((case .eq. 'Wbbmas') .and. (protoc(eti,0) .eq. 2)) then
+          if ( ((jetlabel(protoc(eti,1)) .eq. 'bq') .and. 
+     &          (jetlabel(protoc(eti,2)) .eq. 'ba')) 
+     &    .or. ((jetlabel(protoc(eti,1)) .eq. 'ba') .and. 
+     &          (jetlabel(protoc(eti,2)) .eq. 'bq')) ) then
+             finallabel(jets)='bb'
+           endif 
+	endif
+        if ((case .eq. 'Wbbmas') .and. (protoc(eti,0) .eq. 3)) then
+             finallabel(jets)='bb'
+        endif
 c--- shuffle down the proto-jets
         do i=eti+1,maxproto
           do nu=1,4

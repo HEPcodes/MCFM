@@ -103,6 +103,7 @@ c--- new method - r() calculates true value of 0 < (phi-phij) < pi
       implicit none
       include 'constants.f'
       include 'jetlabel.f'
+      include 'process.f'
       integer i,j
       double precision pjet(mxpart,4)
       
@@ -112,6 +113,19 @@ c--Run II prescription
       pjet(i,3)=pjet(i,3)+pjet(j,3)
       pjet(i,4)=pjet(i,4)+pjet(j,4)
 
+c--- special combination tag for W+heavy quarks
+      if (case .eq. 'Wbbmas') then
+      if (((jetlabel(i) .eq. 'bq') .and. (jetlabel(j) .eq. 'ba'))
+     ..or.((jetlabel(j) .eq. 'bq') .and. (jetlabel(i) .eq. 'ba'))) then
+        jetlabel(i)='bb'
+        return
+      endif
+      if (((jetlabel(i) .eq. 'bb') .and. (jetlabel(j) .eq. 'pp'))
+     ..or.((jetlabel(j) .eq. 'bb') .and. (jetlabel(i) .eq. 'pp'))) then
+        jetlabel(i)='bb'
+        return
+      endif
+      endif
 
       if (((jetlabel(i) .eq. 'bq') .and. (jetlabel(j) .eq. 'pp'))
      ..or.((jetlabel(j) .eq. 'bq') .and. (jetlabel(i) .eq. 'pp'))) then

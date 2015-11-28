@@ -102,8 +102,8 @@ c        1         2         3         4         5         6         7
 
 c --- Common block to control output
 c --- (histograms or ntuple)
-      logical creatent
-      common /outputflags/creatent
+      logical creatent,dswhisto
+      common /outputflags/creatent,dswhisto
 
       integer ICYCLE,i
 c     ------------------------------------------------------------------

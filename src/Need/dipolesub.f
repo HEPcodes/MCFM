@@ -80,6 +80,14 @@ c--- if using a dynamic scale, set that scale with dipole kinematics
 	  call scaleset(initscale,initfacscale,ptrans)
 	  dipscale(nd)=facscale
 	endif
+
+c--- for "gamgam" process, gvec contribution is not written in
+c--- a canonical way; instead, pass emitted vector directly as "vec"
+        if (case .eq. 'gamgam') then
+          do nu=1,4
+            vec(nu)=p(jp,nu)
+          enddo
+	endif
 	
         call subr_born(ptrans,msq)
         call subr_corr(ptrans,vec,ip,msqv)
@@ -204,6 +212,9 @@ C ie for cases 79_i,89_i
           endif
 	endif	
         
+c--- do something special for direct photon production
+        if (case .eq. 'dirgam') ipt=4
+	
         call subr_corr(ptrans,vec,ipt,msqv)
                                 
         sub(qq)=+gsq/x/sij*(two/(omz+omx)-one-z)

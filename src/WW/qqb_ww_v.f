@@ -18,7 +18,7 @@ c     q(-p1)+qbar(-p2)-->q'(p5)+bar{q'}(p6)+n(p3)+ebar(p4)
       include 'zcouple.f'
       include 'ewcharge.f'
       include 'anomcoup.f'
-
+      include 'srdiags.f'
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),mp(nf),
      . p(mxpart,4),qdks(mxpart,4),facnlo,ave
       double complex AWWM,AWWP,BWWM,BWWP
@@ -37,7 +37,6 @@ c     q(-p1)+qbar(-p2)-->q'(p5)+bar{q'}(p6)+n(p3)+ebar(p4)
       double complex clgamz(2),crgamz(2),clz(2),crz(2)
       double precision FAC,xfac
       integer j,k,jk
-      logical srdiags
       parameter(ave=0.25d0/xn)
       data mp/-1d0,+1d0,-1d0,+1d0,-1d0/
 
@@ -51,10 +50,6 @@ c--- set msqv=0 to initalize
       msqv(j,k)=0d0
       enddo
       enddo
-
-c--- include singly resonant diagrams if zerowidth=.false. , but only
-c---  as long as anomtgc=.false. too
-      srdiags=((zerowidth .eqv. .false.) .and. (anomtgc .eqv. .false.))
       
 c--- calculate the lowest order matrix element
       call qqb_ww(p,msq)

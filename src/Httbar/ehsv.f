@@ -117,7 +117,7 @@ C     ehsv:EqnA.21
       include 'masses.f'
       double precision s,t,u,varg,rat,al,be,ga,r,theta,phi
       double precision arg1,arg2,arg3,arg4,ddilog
-      double complex li2,zth,zph
+      double complex cli2,zth,zph
       rat=4d0*mbsq/varg
       if (rat .lt. 0d0) then
            be=0.5d0*(1d0+dsqrt(1d0+4d0*t*mbsq/(u*s)))
@@ -140,7 +140,7 @@ C     ehsv:EqnA.21
            zth=r*dcmplx(cos(theta),sin(theta))
            zph=r*dcmplx(cos(phi),sin(phi))
            i3=2d0/(2d0*be-1d0)
-     .     *(2d0*dble(li2(zth))-2d0*dble(li2(zph))
+     .     *(2d0*dble(cli2(zth))-2d0*dble(cli2(zph))
      .     +(phi-theta)*(phi+theta-pi))
       else
            be=0.5d0*(1d0+dsqrt(1d0+4d0*t*mbsq/(u*s)))

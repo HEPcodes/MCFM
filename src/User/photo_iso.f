@@ -1,0 +1,166 @@
+      logical function photo_iso(p,isub,phot_dip,phot_id,nd,str,R_0,e_h) 
+      implicit none
+!----------------------------------------------------------------------------
+!-                           Photon Isolation                               -
+!- C. Williams Jan 2011                                                     - 
+!-                                                                          -
+!- This function implements isolation cuts on photons                       -
+!- The general requirement is that pt_had < e_h pt_photon                   -  
+!- Within a cone of radius R_0                                              - 
+!- z_c = 1/1+e_h corresponds to the lower cut off in z_frag                 -
+!----------------------------------------------------------------------------
+      include 'constants.f'
+      include 'frag.f'
+      include 'npart.f'
+      include 'z_dip.f'
+      include 'useet.f'
+      double precision p(mxpart,4),p_incone(4),R,pt_incone,pt 
+      double precision z_c,e_h,R_0,ope_h,z_kin,Rjga,tiny
+      integer isub,j,nu,nd
+      logical phot_dip,init_useEt
+      integer phot_id ! refers to which photon we are isolating
+      logical is_hadronic 
+      character*2 str
+      parameter(tiny=1d-8)
+
+      photo_iso = .true. 
+
+!--- determine whether we are isolating Et or Pt, UseEt controls this 
+      init_useEt=useEt
+      if(str.eq.'Et') then 
+         useEt=.true. 
+      elseif(str.eq.'pt') then 
+         useEt=.false.
+      else
+         write(6,*) 'Unrecognised photon isolation parameter'
+         stop
+      endif
+
+
+      do nu=1,4
+         p_incone(nu)=0d0
+      enddo
+      z_kin = 0d0
+      pt_incone = 0d0 
+
+      ope_h = one+e_h
+!-- use e_h to define type of isolation
+!--   e_h < 1 : e_h corresponds to a pt fraction i.e. pt(had) < e_h pt_gamma 
+!--   e_h > 1 : treat it as an E_t max in cone   i.e. pt(had) < e_h 
+
+      if(e_h.lt.0.9999d0) then
+         !-fractional isolation 
+         z_c = one/ope_h
+      else
+c--- Old version
+         if(phot_dip.eqv..true.) then 
+!---- Photon dipole need to rescale pt 
+           z_c=(z_dip(nd)*pt(phot_id,p))/(e_h+(z_dip(nd)*pt(phot_id,p)))
+        elseif(z_frag.gt.tiny) then 
+           z_c=(z_frag*pt(phot_id,p))/(e_h+(z_frag*pt(phot_id,p)))
+        else 
+           z_c=pt(phot_id,p)/(e_h+pt(phot_id,p))
+        endif
+!------   
+
+           
+c--- New version (JMC)
+!	 z_c=1d0-e_h/pt(phot_id,p)
+      endif
+         
+
+!---- Define hadronic four-momentum (and pt) in cone 
+      do j=3,npart+2-isub
+         if(is_hadronic(j)) then 
+            Rjga=R(p,j,phot_id) 
+            if(Rjga .lt. R_0) then 
+               do nu=1,4
+                  p_incone(nu)=p_incone(nu)+p(j,nu) 
+               enddo
+               pt_incone=pt_incone+pt(j,p) 
+            endif
+         endif
+      enddo
+
+!---- isub = 0 Can have (currently in MCFM - tree level Fragmentation or NLO Direct) 
+!----- for Frag z_frag > 0.001d0 use this to separate pieces
+      if((isub .eq. 0) .and. (z_frag .lt. tiny)) then 
+!---- LO/NLO Direct
+         z_kin = pt(phot_id,p)/(pt_incone+pt(phot_id,p))
+         
+         if(z_kin .lt. z_c) then 
+            photo_iso = .false. 
+            
+            return 
+         endif
+         
+      elseif((isub.eq.0) .and. (z_frag .gt. tiny)) then 
+!---- Frag, case 1 no radiation in_cone only check z  
+         if(pt_incone .lt. tiny) then 
+            if(z_frag .lt. z_c) then 
+               photo_iso = .false. 
+               return 
+            endif
+         else
+!---- Radiation in cone ! currently never used, need to check when ness
+            z_kin=z_frag*pt(phot_id,p)/(pt(phot_id,p)+z_frag*pt_incone)
+            if(z_kin .lt. z_c) then 
+               photo_iso =.false.
+               return 
+            endif
+         endif
+         
+      elseif((isub .eq. 1) .and. (phot_dip .eqv. .false.)) then 
+!---- isub = 1 phot_dip = .false. z is calculated from parton kinematics         
+         
+         z_kin = pt(phot_id,p)/(pt_incone+pt(phot_id,p))
+      
+         if(z_kin .lt. z_c) then 
+            photo_iso = .false. 
+            return 
+         endif
+         
+      elseif((isub .eq. 1) .and. (phot_dip .eqv. .true.)) then 
+!---- isub = 1 phot_dip = .true. z_frag = z
+!     case 1 no radiation in_cone only check z  
+         if(pt_incone .lt. tiny) then 
+            if(z_dip(nd) .lt. z_c) then 
+               photo_iso = .false. 
+               return 
+            endif
+         else
+!---- Radiation in cone !  
+            z_kin=z_dip(nd)*pt(phot_id,p)/(pt(phot_id,p)
+     &                                     +z_dip(nd)*pt_incone)
+            if(z_kin .lt. z_c) then 
+               photo_iso =.false.             
+               return 
+            endif
+         endif
+         
+      
+      endif
+      
+!---- Reset useEt to initial vaule
+      useEt=init_useEt
+
+      return 
+      end
+      
+      logical function is_hadronic(i)
+      implicit none
+      include 'constants.f'
+      integer i 
+      character*2 plabel(mxpart)
+      common/plabel/plabel
+      
+      if ( (plabel(i) .eq. 'pp') .or. (plabel(i) .eq. 'pj')
+     .     .or.(plabel(i) .eq. 'bq') .or. (plabel(i) .eq. 'ba')
+     .     .or.(plabel(i) .eq. 'qj') ) then
+         is_hadronic = .true. 
+      else
+         is_hadronic = .false. 
+      endif
+      
+      return 
+      end

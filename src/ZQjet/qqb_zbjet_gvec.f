@@ -15,7 +15,6 @@ c     q(-p1)+qbar(-p2)--> g(p5)+ g(p6)+Z(f(p3)+af(p4))
       include 'zprods_decl.f'
       include 'sprods_com.f'
       include 'msqv_cs.f'
-      include 'flags.f'
       include 'nflav.f'
       include 'heavyflav.f'
 

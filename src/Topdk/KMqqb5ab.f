@@ -17,11 +17,11 @@ C-----This is an implementation of KM, Eq. (4.12)
       double complex string0,string1,string2,string3
       double complex qbqQbQ(0:6),sum(0:6)
       double precision mt
+      integer j
       data z1/(1d0,0d0),(0d0,0d0),(0d0,0d0),(0d0,0d0)/
       data z2/(0d0,0d0),(1d0,0d0),(0d0,0d0),(0d0,0d0)/
       data z3/(0d0,0d0),(0d0,0d0),(1d0,0d0),(0d0,0d0)/
       data z4/(0d0,0d0),(0d0,0d0),(0d0,0d0),(1d0,0d0)/
-      integer j
 
       qbqQbQ(0)=
      & +string1(Vbl,z1,Ul)*string1(Ubm,z1,Vm)

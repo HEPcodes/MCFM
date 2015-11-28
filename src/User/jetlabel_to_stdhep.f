@@ -25,6 +25,8 @@
         jetlabel_to_stdhep=+5
       elseif (label .eq. 'ba') then
         jetlabel_to_stdhep=-5
+      elseif (label .eq. 'ga') then
+        jetlabel_to_stdhep=22
       elseif (label .eq. 'ig') then
 c--- this is a dummy value: no particle id available      
         jetlabel_to_stdhep=0

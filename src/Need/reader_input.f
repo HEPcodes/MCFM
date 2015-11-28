@@ -29,14 +29,17 @@
       include 'limits.f'
       include 'workdir.f'
       include 'jetcuts.f'
+      include 'leptcuts.f'
       include 'lhapdf.f'
       include 'alfacut.f'
+      include 'betacut.f'
       include 'pdlabel.f'
       include 'qcdcouple.f'
       include 'nlooprun.f'
       include 'initialscales.f'
       include 'stopscales.f'
       include 'vanillafiles.f'
+      include 'frag.f'
       character*72 inputfile,getinput
       character*90 line
       character*4 part
@@ -50,10 +53,6 @@
       double precision rtsmin,sqrts,factor
       double precision mbbmin,mbbmax,Mwmin,Mwmax
       double precision Rcut
-      double precision leptpt,leptrap,misspt,Rjlmin,Rllmin,delyjjmin,
-     . leptpt2,leptrap2,gammpt,gammrap,gammcone,gammcut
-      integer lbjscheme
-      logical jetsopphem
       logical technicalincluded
       double precision ran2,randummy
       double precision cmass,bmass
@@ -84,9 +83,6 @@
       
       common/Rcut/Rcut
       common/makecuts/makecuts
-      common/leptcuts/leptpt,leptrap,misspt,Rjlmin,Rllmin,delyjjmin,
-     . leptpt2,leptrap2,gammpt,gammrap,gammcone,gammcut,
-     . lbjscheme,jetsopphem
 
       common/qmass/cmass,bmass
 
@@ -124,7 +120,7 @@ c--- truncate if the directory / is included
         workdir=''
       endif
             
-      write(6,*) 'Using input file named ',inputfile
+      write(6,*) '* Using input file named ',inputfile
 
       open(unit=20,file=inputfile,status='old',err=999)
       call checkversion(20,inputfile)
@@ -135,41 +131,41 @@ c--- read-in the user inputs
       read(20,99) line
 c--- write-out comment line
       read(20,99) line
-      if (verbose) write(6,*) line
+      if (verbose) write(6,*) '* ',line
 c--- flags for the mode of MCFM   
       read(20,*) evtgen
-      if (verbose) write(6,*) 'evtgen = ',evtgen
+      if (verbose) call writeinput(6,' * ',' ','evtgen')
       read(20,*) creatent
-      if (verbose) write(6,*) 'creatent = ',creatent
+      if (verbose) call writeinput(6,' * ',' ','creatent')
       read(20,*) skipnt
-      if (verbose) write(6,*) 'skipnt = ',skipnt
+      if (verbose) call writeinput(6,' * ',' ','skipnt')
       read(20,*) dswhisto
-      if (verbose) write(6,*) 'dswhisto = ',dswhisto
+      if (verbose) call writeinput(6,' * ',' ','dswhisto')
 
       if (verbose) write(6,*)
       read(20,99) line
 c--- write-out comment line
       read(20,99) line
-      if (verbose) write(6,*) line
+      if (verbose) write(6,*) '* ',line
 c--- general options 
       read(20,*) nproc
-      if (verbose) write(6,*) 'nproc=',nproc
+      if (verbose) call writeinput(6,' * ',' ','nproc')
       read(20,*) part
-      if (verbose) write(6,*) 'part=',part
+      if (verbose) call writeinput(6,' * ',' ','part')
       read(20,*) runstring
-      if (verbose) write(6,*) 'runstring=',runstring
+      if (verbose) call writeinput(6,' * ',' ','runstring')
       read(20,*) sqrts
-      if (verbose) write(6,*) 'sqrts=',sqrts
+      if (verbose) call writeinput(6,' * ',' ','sqrts')
       read(20,*) ih1
-      if (verbose) write(6,*) 'ih1',ih1
+      if (verbose) call writeinput(6,' * ',' ','ih1')
       read(20,*) ih2
-      if (verbose) write(6,*) 'ih2',ih2
+      if (verbose) call writeinput(6,' * ',' ','ih2')
       read(20,*) hmass
-      if (verbose) write(6,*) 'hmass',hmass
+      if (verbose) call writeinput(6,' * ',' ','hmass')
       read(20,*) scale
-      if (verbose) write(6,*) 'scale',scale
+      if (verbose) call writeinput(6,' * ',' ','scale')
       read(20,*) facscale
-      if (verbose) write(6,*) 'facscale',facscale
+      if (verbose) call writeinput(6,' * ',' ','facscale')
       
       initrenscale_L=0d0
       initfacscale_L=0d0
@@ -181,164 +177,185 @@ c--- catch special scale choices for stop+b process
      . .or.(nproc .eq. 242) .or. (nproc .eq. 247)) .and.      
      .    (scale .eq. 0d0) .and. (facscale .eq. 0d0)) then
         read(20,*) initrenscale_L
-        if (verbose) write(6,*) 'renscale_L',initrenscale_L
+	renscale_L=initrenscale_L
+        if (verbose) call writeinput(6,' * ',' ','renscale_L')
         read(20,*) initfacscale_L
-        if (verbose) write(6,*) 'facscale_L',initfacscale_L
+	facscale_L=initfacscale_L
+        if (verbose) call writeinput(6,' * ',' ','facscale_L')
         read(20,*) initrenscale_H
-        if (verbose) write(6,*) 'renscale_H',initrenscale_H
+	renscale_H=initrenscale_H
+        if (verbose) call writeinput(6,' * ',' ','renscale_H')
         read(20,*) initfacscale_H
-        if (verbose) write(6,*) 'facscale_H',initfacscale_H
+	facscale_H=initfacscale_H
+        if (verbose) call writeinput(6,' * ',' ','facscale_H')
 	scale=initrenscale_H
 	facscale=initfacscale_H        
       endif
 
       read(20,*) dynamicscale
-      if (verbose) write(6,*) 'dynamicscale',dynamicscale
+      if (verbose) call writeinput(6,' * ',' ','dynamicscale')
       read(20,*) zerowidth
-      if (verbose) write(6,*) 'zerowidth',zerowidth
+      if (verbose) call writeinput(6,' * ',' ','zerowidth')
       read(20,*) removebr
-      if (verbose) write(6,*) 'removebr',removebr
+      if (verbose) call writeinput(6,' * ',' ','removebr')
       read(20,*) itmx1
-      if (verbose) write(6,*) 'itmx1',itmx1
+      if (verbose) call writeinput(6,' * ',' ','itmx1')
       read(20,*) ncall1
-      if (verbose) write(6,*) 'ncall1',ncall1
+      if (verbose) call writeinput(6,' * ',' ','ncall1')
       read(20,*) itmx2
-      if (verbose) write(6,*) 'itmx2',itmx2
+      if (verbose) call writeinput(6,' * ',' ','itmx2')
       read(20,*) ncall2
-      if (verbose) write(6,*) 'ncall2',ncall2
+      if (verbose) call writeinput(6,' * ',' ','ncall2')
       read(20,*) origij
-      if (verbose) write(6,*) 'ij',origij
+      if (verbose) call writeinput(6,' * ',' ','ij')
       read(20,*) dryrun
-      if (verbose) write(6,*) 'dryrun',dryrun
+      if (verbose) call writeinput(6,' * ',' ','dryrun')
       read(20,*) Qflag
-      if (verbose) write(6,*) 'Qflag',Qflag
+      if (verbose) call writeinput(6,' * ',' ','Qflag')
       read(20,*) Gflag
-      if (verbose) write(6,*) 'Gflag',Gflag
+      if (verbose) call writeinput(6,' * ',' ','Gflag')
       
       if (verbose) write(6,*)
       read(20,99) line
 c--- write-out comment line
       read(20,99) line
-      if (verbose) write(6,*) line
+      if (verbose) write(6,*) '* ',line
 c--- heavy quark masses 
       read(20,*) mt
-      if (verbose) write(6,*) 'mt',mt
+      if (verbose) call writeinput(6,' * ',' ','top mass')
       read(20,*) mb
-      if (verbose) write(6,*) 'mb',mb
+      if (verbose) call writeinput(6,' * ',' ','bottom mass')
       read(20,*) mc
-      if (verbose) write(6,*) 'mc',mc
+      if (verbose) call writeinput(6,' * ',' ','charm mass')
 
       if (verbose) write(6,*)
       read(20,99) line
 c--- write-out comment line
       read(20,99) line
-      if (verbose) write(6,*) line
+      if (verbose) write(6,*) '* ',line
 c--- pdf options 
       read(20,*) pdlabel
-      if (verbose) write(6,*) 'pdlabel ',pdlabel
+      if (verbose) call writeinput(6,' * ',' ','pdlabel')
       read(20,*) NGROUP
-      if (verbose) write(6,*) 'NGROUP=',NGROUP
+      if (verbose) call writeinput(6,' * ',' ','NGROUP')
       read(20,*) NSET
-      if (verbose) write(6,*) 'NSET=',NSET
+      if (verbose) call writeinput(6,' * ',' ','NSET')
       read(20,*) PDFname
-      if (verbose) write(6,*) 'PDFname=',PDFname
+      if (verbose) call writeinput(6,' * ',' ','LHAPDF group')
       read(20,*) PDFmember
-      if (verbose) write(6,*) 'PDFmember=',PDFmember
+      if (verbose) call writeinput(6,' * ',' ','LHAPDF set')
 
       if (verbose) write(6,*)
       read(20,99) line
 c--- write-out comment line
       read(20,99) line
-      if (verbose) write(6,*) line
+      if (verbose) write(6,*) '* ',line
 c--- jets and cuts options 
       read(20,*) Mwmin
-      if (verbose) write(6,*) 'm34min',Mwmin
+      if (verbose) call writeinput(6,' * ',' ','m34min')
       read(20,*) Mwmax 
-      if (verbose) write(6,*) 'm34max',Mwmax
+      if (verbose) call writeinput(6,' * ',' ','m34max')
       read(20,*) mbbmin
-      if (verbose) write(6,*) 'm56min',mbbmin
+      if (verbose) call writeinput(6,' * ',' ','m56min')
       read(20,*) mbbmax 
-      if (verbose) write(6,*) 'm56max',mbbmax
+      if (verbose) call writeinput(6,' * ',' ','m56max')
       read(20,*) inclusive
-      if (verbose) write(6,*) 'inclusive',inclusive
+      if (verbose) call writeinput(6,' * ',' ','inclusive')
       read(20,*) algorithm
-      if (verbose) write(6,*) 'algorithm',algorithm
+      if (verbose) call writeinput(6,' * ',' ','algorithm')
       read(20,*) ptjetmin
-      if (verbose) write(6,*) 'ptjetmin',ptjetmin
+      if (verbose) call writeinput(6,' * ',' ','ptjetmin')
       read(20,*) etajetmin 
-      if (verbose) write(6,*) 'etajetmin',etajetmin
+      if (verbose) call writeinput(6,' * ',' ','etajetmin')
       read(20,*) etajetmax 
-      if (verbose) write(6,*) 'etajetmax',etajetmax
+      if (verbose) call writeinput(6,' * ',' ','etajetmax')
       read(20,*) Rcut
-      if (verbose) write(6,*) 'Rcut',Rcut
+      if (verbose) call writeinput(6,' * ',' ','Rcut')
       read(20,*) makecuts
-      if (verbose) write(6,*) 'makecuts',makecuts
+      if (verbose) call writeinput(6,' * ',' ','makecuts')
       read(20,*) leptpt
-      if (verbose) write(6,*) 'leptpt',leptpt
+      if (verbose) call writeinput(6,' * ',' ','leptpt')
       read(20,*) leptrap
-      if (verbose) write(6,*) 'leptrap',leptrap
+      if (verbose) call writeinput(6,' * ',' ','leptrap')
       read(20,*) misspt
-      if (verbose) write(6,*) 'misspt',misspt
+      if (verbose) call writeinput(6,' * ',' ','misspt')
       read(20,*) leptpt2
-      if (verbose) write(6,*) 'leptpt2',leptpt2
+      if (verbose) call writeinput(6,' * ',' ','leptpt2')
       read(20,*) leptrap2
-      if (verbose) write(6,*) 'leptrap2',leptrap2
+      if (verbose) call writeinput(6,' * ',' ','leptrap2')
+      read(20,*) mtrans34cut
+      if (verbose) call writeinput(6,' * ',' ','mtrans34cut')
       read(20,*) Rjlmin
-      if (verbose) write(6,*) 'Rjlmin',Rjlmin
+      if (verbose) call writeinput(6,' * ',' ','Rjlmin')
       read(20,*) Rllmin
-      if (verbose) write(6,*) 'Rllmin',Rllmin
+      if (verbose) call writeinput(6,' * ',' ','Rllmin')
       read(20,*) delyjjmin
-      if (verbose) write(6,*) 'delyjjmin',delyjjmin
+      if (verbose) call writeinput(6,' * ',' ','delyjjmin')
       read(20,*) jetsopphem 
-      if (verbose) write(6,*) 'jetsopphem',jetsopphem
+      if (verbose) call writeinput(6,' * ',' ','jetsopphem')
       read(20,*) lbjscheme 
-      if (verbose) write(6,*) 'lbjscheme',lbjscheme
+      if (verbose) call writeinput(6,' * ',' ','lbjscheme')
       read(20,*) ptbjetmin
-      if (verbose) write(6,*) 'ptbjetmin',ptbjetmin
+      if (verbose) call writeinput(6,' * ',' ','ptbjetmin')
       read(20,*) etabjetmax
-      if (verbose) write(6,*) 'etabjetmax',etabjetmax
-      read(20,*) gammpt
-      if (verbose) write(6,*) 'gammpt',gammpt
-      read(20,*) gammrap
-      if (verbose) write(6,*) 'gammrap',gammrap
-      read(20,*) gammcone
-      if (verbose) write(6,*) 'gammcone',gammcone
-      read(20,*) gammcut
-      if (verbose) write(6,*) 'gammcut',gammcut
+      if (verbose) call writeinput(6,' * ',' ','etabjetmax')
 
       if (verbose) write(6,*)
       read(20,99) line
 c--- write-out comment line
       read(20,99) line
-      if (verbose) write(6,*) line
+      if (verbose) write(6,*) '* ',line
+c--- settings for photon processes 
+      read(20,*) frag
+      if (verbose) call writeinput(6,' * ',' ','frag')
+      read(20,*) fragset
+      if (verbose) call writeinput(6,' * ',' ','fragset')
+      read(20,*) frag_scale
+      if (verbose) call writeinput(6,' * ',' ','frag_scale')
+      read(20,*) gammpt
+      if (verbose) call writeinput(6,' * ',' ','gammpt')
+      read(20,*) gammrap
+      if (verbose) call writeinput(6,' * ',' ','gammrap')
+      read(20,*) Rgalmin 
+      if (verbose) call writeinput(6,' * ',' ','Rgalmin')
+      read(20,*) cone_ang
+      if (verbose) call writeinput(6,' * ',' ','cone_ang')
+      read(20,*) epsilon_h
+      if (verbose) call writeinput(6,' * ',' ','epsilon_h')
+
+      if (verbose) write(6,*)
+      read(20,99) line
+c--- write-out comment line
+      read(20,99) line
+      if (verbose) write(6,*) '* ',line
 c--- anomalous couplings 
       read(20,*) delg1_z
-      if (verbose) write(6,*) 'delg1_z',delg1_z
+      if (verbose) call writeinput(6,' * ',' ','delg1_z')
       read(20,*) delk_z
-      if (verbose) write(6,*) 'delk_z',delk_z
+      if (verbose) call writeinput(6,' * ',' ','delk_z')
       read(20,*) delk_g
-      if (verbose) write(6,*) 'delk_g',delk_g
+      if (verbose) call writeinput(6,' * ',' ','delk_g')
       read(20,*) lambda_z
-      if (verbose) write(6,*) 'lambda_z',lambda_z
+      if (verbose) call writeinput(6,' * ',' ','lambda_z')
       read(20,*) lambda_g
-      if (verbose) write(6,*) 'lambda_g',lambda_g
+      if (verbose) call writeinput(6,' * ',' ','lambda_g')
       read(20,*) tevscale
-      if (verbose) write(6,*) 'tevscale',tevscale
+      if (verbose) call writeinput(6,' * ',' ','tevscale')
 
       if (verbose) write(6,*)
       read(20,99) line
 c--- write-out comment line
       read(20,99) line
-      if (verbose) write(6,*) line
+      if (verbose) write(6,*) '* ',line
 c--- grid information 
       read(20,*) readin
-      if (verbose) write(6,*) 'readin',readin
+      if (verbose) call writeinput(6,' * ',' ','readin')
       read(20,*) writeout
-      if (verbose) write(6,*)'writeout',writeout
+      if (verbose) call writeinput(6,' * ',' ','writeout')
       read(20,*) ingridfile
-      if (verbose) write(6,*) 'ingridfile',ingridfile
+      if (verbose) call writeinput(6,' * ',' ','ingridfile')
       read(20,*) outgridfile
-      if (verbose) write(6,*) 'outgridfile',outgridfile
+      if (verbose) call writeinput(6,' * ',' ','outgridfile')
 
       if (verbose) write(6,*)
 
@@ -362,54 +379,58 @@ c--- file and open technical.DAT instead; otherwise continue on
         call checkversion(20,'technical.DAT')
       endif
 
-      if (verbose) write(6,*) '[Technical parameters that'//
+      if (verbose) write(6,*) '* [Technical parameters that'//
      .                        ' should not normally be changed]'
       if (verbose) write(6,*)
 
 c---- read-in the technical parameters
 
       read(20,*) debug
-      if (verbose) write(6,*) 'debug',debug
+      if (verbose) call writeinput(6,' * ',' ','debug')
       read(20,*) verbose
-      if (verbose) write(6,*) 'verbose',verbose
+      if (verbose) call writeinput(6,' * ',' ','verbose')
       read(20,*) new_pspace
-      if (verbose) write(6,*) 'new_pspace',new_pspace
+      if (verbose) call writeinput(6,' * ',' ','new_pspace')
       read(20,*) virtonly
-      if (verbose) write(6,*) 'virtonly',virtonly
+      if (verbose) call writeinput(6,' * ',' ','virtonly')
       read(20,*) realonly
-      if (verbose) write(6,*) 'realonly',realonly
+      if (verbose) call writeinput(6,' * ',' ','realonly')
       read(20,*) spira
-      if (verbose) write(6,*) 'spira',spira
+      if (verbose) call writeinput(6,' * ',' ','spira')
       read(20,*) noglue
-      if (verbose) write(6,*) 'noglue',noglue
+      if (verbose) call writeinput(6,' * ',' ','noglue')
       read(20,*) ggonly
-      if (verbose) write(6,*) 'ggonly',ggonly
+      if (verbose) call writeinput(6,' * ',' ','ggonly')
       read(20,*) gqonly
-      if (verbose) write(6,*) 'gqonly',gqonly
+      if (verbose) call writeinput(6,' * ',' ','gqonly')
       read(20,*) vanillafiles
-      if (verbose) write(6,*) 'vanillafiles',vanillafiles
+      if (verbose) call writeinput(6,' * ',' ','vanillafiles')
       read(20,*) nmin
-      if (verbose) write(6,*) 'nmin',nmin
+      if (verbose) call writeinput(6,' * ',' ','nmin')
       read(20,*) nmax
-      if (verbose) write(6,*) 'nmax',nmax
+      if (verbose) call writeinput(6,' * ',' ','nmax')
       read(20,*) clustering
-      if (verbose) write(6,*) 'clustering',clustering
+      if (verbose) call writeinput(6,' * ',' ','clustering')
       read(20,*) realwt
-      if (verbose) write(6,*) 'realwt',realwt
+      if (verbose) call writeinput(6,' * ',' ','realwt')
       read(20,*) colourchoice
-      if (verbose) write(6,*) 'colourchoice',colourchoice
+      if (verbose) call writeinput(6,' * ',' ','colourchoice')
       read(20,*) rtsmin
-      if (verbose) write(6,*) 'rtsmin',rtsmin
+      if (verbose) call writeinput(6,' * ',' ','rtsmin')
       read(20,*) cutoff
-      if (verbose) write(6,*) 'cutoff',cutoff
+      if (verbose) call writeinput(6,' * ',' ','cutoff')
       read(20,*) aii
-      if (verbose) write(6,*) 'aii',aii
+      if (verbose) call writeinput(6,' * ',' ','aii')
       read(20,*) aif
-      if (verbose) write(6,*) 'aii',aii
+      if (verbose) call writeinput(6,' * ',' ','aif')
       read(20,*) afi
-      if (verbose) write(6,*) 'aii',aii
+      if (verbose) call writeinput(6,' * ',' ','afi')
       read(20,*) aff
-      if (verbose) write(6,*) 'aii',aii
+      if (verbose) call writeinput(6,' * ',' ','aff')
+      read(20,*) bfi
+      if (verbose) call writeinput(6,' * ',' ','bfi')
+      read(20,*) bff
+      if (verbose) call writeinput(6,' * ',' ','bff')
       if (verbose) write(6,*)
       close(unit=20)
 
@@ -547,9 +568,13 @@ c--- E-M gauge invariance requires that delg1_g=0
 c--- check that we have a valid value of 'part'
       if ( (part .ne. 'lord') .and. (part .ne. 'real') .and.
      .     (part .ne. 'virt') .and. (part .ne. 'tota') ) then
-        if ( (part .eq. 'todk') .and.
-     .       ((case .eq. 'bq_tpq') .or. (case .eq. 't_bbar')
-     .   .or. (case .eq. 'W_twdk')) ) then
+        if    ( (part .eq. 'todk') .and.
+     .          ((case .eq. 'bq_tpq') .or. (case .eq. 't_bbar')
+     .      .or. (case .eq. 'W_twdk')) ) then
+c--- this is an allowed combination
+        elseif ( (part .eq. 'frag') .and.
+     .       ((case .eq. 'Wgamma') .or. (case .eq. 'Zgamma')
+     &       .or.(case.eq.'gamgam'))) then
 c--- this is an allowed combination
         else 
           write(6,*) 'part=',part,' is not a valid option'

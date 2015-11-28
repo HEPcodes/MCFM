@@ -147,33 +147,33 @@ c      return
 c      end
 
 
-      subroutine zgamps(j1,j2,j3,j4,j5,za,zb,amps)
-      implicit none
-      include 'constants.f'
-      include 'zprods_decl.f'
-      double complex amps(2,2,2)
-      integer h1,h2,j1,j2,j3,j4,j5
+c      subroutine zgamps(j1,j2,j3,j4,j5,za,zb,amps)
+c      implicit none
+c      include 'constants.f'
+c      include 'zprods_decl.f'
+c      double complex amps(2,2,2)
+c      integer h1,h2,j1,j2,j3,j4,j5
 c-- amplitude helicities are amps(quark,lepton,gluon)
       
-      amps(1,1,1)=za(j2,j3)/za(j1,j5)/za(j2,j5)
-     .             *(za(j2,j1)*zb(j4,j1)+za(j2,j5)*zb(j4,j5))
-           
-      amps(1,1,2)=zb(j4,j1)/zb(j1,j5)/zb(j2,j5)
-     .             *(za(j2,j3)*zb(j2,j1)+za(j3,j5)*zb(j1,j5))
-          
-      amps(1,2,1)=za(j2,j4)/za(j1,j5)/za(j2,j5)
-     .             *(za(j2,j1)*zb(j3,j1)+za(j2,j5)*zb(j3,j5))
-     
-      amps(1,2,2)=zb(j3,j1)/zb(j1,j5)/zb(j2,j5)
-     .             *(za(j2,j4)*zb(j2,j1)+za(j4,j5)*zb(j1,j5))
-     
-      do h1=1,2
-      do h2=1,2
-        amps(2,h1,h2)=-dconjg(amps(1,3-h1,3-h2))
-      enddo
-      enddo
-      
-      
-      return
-      end
+c      amps(1,1,1)=za(j2,j3)/za(j1,j5)/za(j2,j5)
+c     .             *(za(j2,j1)*zb(j4,j1)+za(j2,j5)*zb(j4,j5))
+c           
+c      amps(1,1,2)=zb(j4,j1)/zb(j1,j5)/zb(j2,j5)
+c     .             *(za(j2,j3)*zb(j2,j1)+za(j3,j5)*zb(j1,j5))
+c          
+c      amps(1,2,1)=za(j2,j4)/za(j1,j5)/za(j2,j5)
+c     .             *(za(j2,j1)*zb(j3,j1)+za(j2,j5)*zb(j3,j5))
+c     
+c      amps(1,2,2)=zb(j3,j1)/zb(j1,j5)/zb(j2,j5)
+c     .             *(za(j2,j4)*zb(j2,j1)+za(j4,j5)*zb(j1,j5))
+c     
+c      do h1=1,2
+c      do h2=1,2
+c        amps(2,h1,h2)=-dconjg(amps(1,3-h1,3-h2))
+c      enddo
+c      enddo
+c      
+c      
+c      return
+c      end
       

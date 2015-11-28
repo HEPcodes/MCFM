@@ -17,7 +17,7 @@ c--- note that non-leptonic W decays do not include scattering diagrams
       include 'zcouple.f'
       include 'ewcharge.f'
       include 'anomcoup.f'
-
+      include 'srdiags.f'
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),qdks(mxpart,4),ave
       double complex prop12,prop34,prop56
       double complex AWW(2),a6treea,A6b_1,A6b_2,A6b_3
@@ -30,7 +30,6 @@ c--- note that non-leptonic W decays do not include scattering diagrams
       double complex cs_z(2,2),cs_g(2,2),cgamz(2,2),cz(2,2)
       double precision fac,mp(nf),xfac
       integer j,k,jk,tjk,minus,mplus
-      logical srdiags
       parameter(ave=0.25d0/xn)
       data minus,mplus/1,2/
       data mp/-1d0,+1d0,-1d0,+1d0,-1d0/
@@ -43,10 +42,6 @@ c--set msq=0 to initalize
       enddo
       enddo
 
-c--- include singly resonant diagrams if zerowidth=.false. , but only
-c---  as long as anomtgc=.false. too
-      srdiags=((zerowidth .eqv. .false.) .and. (anomtgc .eqv. .false.))
-      
 C----Change the momenta to DKS notation 
 c   We have --- f(p1) + f'(p2)-->mu^-(p5)+nubar(p6)+e^+(p4)+nu(p3)
 c   DKS have--- ubar(q1)+u(q2)-->mu^-(q3)+nubar(q4)+e^+(q5)+nu(q6)

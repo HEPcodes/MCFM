@@ -5,7 +5,6 @@
       include 'debug.f'
       include 'process.f'
       include 'phasemin.f'
-      include 'masses.f'
       integer nu
       double precision r(mxdim)
       double precision wt4,p1(4),p2(4),p3(4),p4(4),p5(4),p6(4)

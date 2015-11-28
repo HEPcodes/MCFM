@@ -10,7 +10,6 @@ c----(p4,p5) are dummies
       include 'limits.f'
       include 'masses.f'
       include 'process.f'
-      include 'mxdim.f'
 
       integer j
       double precision r1,r2,r3,r6,r7

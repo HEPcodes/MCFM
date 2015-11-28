@@ -167,7 +167,7 @@ c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)
         ii_mgg=two*Pggreg*(two*lomx-lx+L-epinv)-two*lx/omx
         alfax=aii/omx
         if (alfax .lt. 1d0) ii_mgg=ii_mgg
-     .   +two*(one/omx+Pggreg)*dlog(alfax)
+     &   +two*(one/omx+Pggreg)*dlog(alfax)
         return
       endif
       
@@ -198,8 +198,8 @@ c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)
       if_mqq=0d0
       if (vorz .eq. 1) then
         if_mqq=(epinv+dlog(1d0+mbarsq))*(epinv-L)+half*L**2
-     .   -half*dlog(1d0+mbarsq)**2+2d0*dlog(mbarsq)*dlog(1d0+mbarsq)
-     .   +2d0*ddilog(-mbarsq)+pisqo6
+     &   -half*dlog(1d0+mbarsq)**2+2d0*dlog(mbarsq)*dlog(1d0+mbarsq)
+     &   +2d0*ddilog(-mbarsq)+pisqo6
 c--- correct form for double pole (normally zero)
         if_mqq=if_mqq-epinv**2+epinv*epinv2     
         if (scheme .eq. 'tH-V') then
@@ -219,10 +219,10 @@ c--- correct form for double pole (normally zero)
          Pqqreg=-(1d0+x)
          lx=dlog(x)
          if_mqq=Pqqreg*(-(epinv-L)+2d0*lomx-lx-dlog(x*mbarsq+omx))
-     .    +omx-2d0/omx*(lx+dlog((1d0+x*mbarsq+omx)/(1d0+mbarsq)))
+     &    +omx-2d0/omx*(lx+dlog((1d0+x*mbarsq+omx)/(1d0+mbarsq)))
          if (aif .lt. zp) then
          if_mqq=if_mqq-(two/omx*(dlog(zp*(omx+aif)/(aif*(omx+zp))))
-     .    +Pqqreg*dlog(zp/aif))
+     &    +Pqqreg*dlog(zp/aif))
          endif
       elseif (vorz .eq. 3) then
          if_mqq=2d0/omx*(-(epinv-L)+2d0*lomx-dlog(1d0+mbarsq))
@@ -246,8 +246,8 @@ c--- correct form for double pole (normally zero)
 
       if (vorz .eq. 1) then
           if_mgg=(epinv+dlog(1d0+mbarsq))*(epinv-L)+half*L**2
-     .     -half*dlog(1d0+mbarsq)**2+2d0*dlog(mbarsq)*dlog(1d0+mbarsq)
-     .     +2d0*ddilog(-mbarsq)+pisqo6
+     &     -half*dlog(1d0+mbarsq)**2+2d0*dlog(mbarsq)*dlog(1d0+mbarsq)
+     &     +2d0*ddilog(-mbarsq)+pisqo6
 c--- correct form for double pole (normally zero)
         if_mgg=if_mgg-epinv**2+epinv*epinv2     
         if (scheme .eq. 'tH-V') then
@@ -267,8 +267,8 @@ c--- correct form for double pole (normally zero)
          Pggreg=2d0*(omx/x-1d0+x*omx)
          lx=dlog(x)
          if_mgg=Pggreg*(-(epinv-L)+2d0*dlog(omx)-lx-dlog(x*mbarsq+omx))
-     .    +2d0*mbarsq*dlog(x*mbarsq/(x*mbarsq+omx))
-     .    -2d0/omx*(lx+dlog((1d0+x*mbarsq+omx)/(1d0+mbarsq)))
+     &    +2d0*mbarsq*dlog(x*mbarsq/(x*mbarsq+omx))
+     &    -2d0/omx*(lx+dlog((1d0+x*mbarsq+omx)/(1d0+mbarsq)))
          if (aif .lt. zp) then
            if (aif .eq. 1d0) then
              write(6,*) 'zp > 1 in dipoles_mass.f - this is forbidden'
@@ -276,7 +276,7 @@ c--- correct form for double pole (normally zero)
            endif  
 	   omzp=x*mbarsq/(omx+x*mbarsq)
            if_mgg=if_mgg-(two/omx*(dlog(zp*(omx+aif)/(aif*(omx+zp))))
-     .     +Pggreg*dlog(zp/aif)+2d0*mbarsq*dlog(omzp/(1d0-aif)))
+     &     +Pggreg*dlog(zp/aif)+2d0*mbarsq*dlog(omzp/(1d0-aif)))
          endif
          return
       elseif (vorz .eq. 3) then
@@ -307,7 +307,6 @@ c--- we always choose to use the initial spectator
       include 'constants.f'
       include 'epinv.f'
       include 'alfacut.f'
-      include 'scheme.f'
 c--- returns the integral of the subtraction term for an
 c--- final-initial quark-gluon antenna, either
 c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
@@ -315,12 +314,12 @@ c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)
       mbarsq=mbar**2
       if (vorz .eq. 1) then
         fi_mqq=(1d0+dlog(mbarsq/(1d0+mbarsq)))*(epinv-L)
-     .        +dlog(mbarsq)+half*dlog(mbarsq)**2
-     .        +half*dlog(1d0+mbarsq)**2
-     .        -2d0*dlog(mbarsq)*dlog(1d0+mbarsq)
-     .        -2d0*ddilog(-mbarsq)
-     .        +2d0-pisq/3d0
-     .        +2d0*dlog(afi)*(dlog((1d0+mbarsq)/mbarsq)-1d0)
+     &        +dlog(mbarsq)+half*dlog(mbarsq)**2
+     &        +half*dlog(1d0+mbarsq)**2
+     &        -2d0*dlog(mbarsq)*dlog(1d0+mbarsq)
+     &        -2d0*ddilog(-mbarsq)
+     &        +2d0-pisq/3d0
+     &        +2d0*dlog(afi)*(dlog((1d0+mbarsq)/mbarsq)-1d0)
         return
       endif
       
@@ -329,8 +328,8 @@ c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)
       if (vorz .eq. 2) then
         if (x .gt. 1d0-afi) then
           fi_mqq=+omx/2d0/(x*mbarsq+omx)**2
-     .     +2d0/omx*(dlog((1d0+x*mbarsq+omx)*mbarsq/
-     .                    ((1d0+mbarsq)*(omx+x*mbarsq))))
+     &     +2d0/omx*(dlog((1d0+x*mbarsq+omx)*mbarsq/
+     &                    ((1d0+mbarsq)*(omx+x*mbarsq))))
         else
           fi_mqq=0d0
         endif        
@@ -359,12 +358,10 @@ c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)
       double precision function ff_mqq(x,L,mbar,vorz)
       implicit none
       integer vorz
-      double precision x,L,mbar,mbarsq,Lro,ro,vtijk,arg,ddilog
+      double precision x,L,mbar,mbarsq,Lro,ro,vtijk,arg,ddilog,ff_alpha
 
       include 'constants.f'
       include 'epinv.f'
-      include 'scheme.f'
-      include 'alfacut.f'
 C     mbarsq=mass**2/Qsq
 C     L=log(Qsq/musq)
 c--- returns the integral of the subtraction term for an
@@ -381,11 +378,11 @@ c  -2*mbar/(1-2*mbarsq)*(1-2*mbar)-mbar/(1-mbar)
 c  -2*mbarsq/(1-2*mbarsq)*log(mbar/(1-mu))
 c  )-ffqq;
 
-      if (aff .lt. 1d0) then
-        write(6,*) 'Integrated dipole routine ff_mqq does not yet'
-	write(6,*) ' support values of alpha < 1.'
-	stop
-      endif
+c      if (aff .lt. 1d0) then
+c        write(6,*) 'Integrated dipole routine ff_mqq does not yet'
+c	write(6,*) ' support values of alpha < 1.'
+c	stop
+c      endif
 
       ff_mqq=0d0
       if (vorz .eq. 1) then
@@ -399,18 +396,23 @@ c  )-ffqq;
         ro=dsqrt((1d0-vtijk)/(1d0+vtijk))
         Lro=dlog(ro)
         ff_mqq=1d0/vtijk*((epinv-L)*Lro-half*Lro**2-2d0*Lro*dlog(arg)
-     .   +4d0*ddilog(-ro)-6d0*ddilog(1d0-ro)+pisq/3d0)
-     .   +epinv-L+3d0
-     .   -2d0*dlog(1d0-2d0*mbar)+dlog(1d0-mbar)+half*dlog(mbarsq)
-     .   -2d0*mbar/(1d0-2d0*mbarsq)*(1d0-2d0*mbar)-mbar/(1d0-mbar)
-     .   -2d0*mbarsq/(1d0-2d0*mbarsq)*dlog(mbar/(1d0-mbar))
+     &   +4d0*ddilog(-ro)-6d0*ddilog(1d0-ro)+pisq/3d0)
+     &   +epinv-L+3d0
+     &   -2d0*dlog(1d0-2d0*mbar)+dlog(1d0-mbar)+half*dlog(mbarsq)
+     &   -2d0*mbar/(1d0-2d0*mbarsq)*(1d0-2d0*mbar)-mbar/(1d0-mbar)
+     &   -2d0*mbarsq/(1d0-2d0*mbarsq)*dlog(mbar/(1d0-mbar))
 c        Ieik=1d0/vtijk*(half*(epinv-L)*Lro-Lro*dlog(arg)
-c     .  -dlog(roj)**2+pisq/6d0
-c     .  +2d0*ddilog(-ro)-2d0*ddilog(1d0-ro)-ddilog(1d0-roj**2))
+c     &  -dlog(roj)**2+pisq/6d0
+c     &  +2d0*ddilog(-ro)-2d0*ddilog(1d0-ro)-ddilog(1d0-roj**2))
 c        Icoll=(epinv-L)+half*Lmbarsq-2d0-2d0*dlog((1d0-mbar)**2-mbarsq)
-c     . +dlog(1d0-mbar)-2d0*mbarsq/(1d0-2d0*mbarsq)*dlog(mbar/(1d0-mbar))
-c     . +5d0-mbar/(1d0-mbar)-2d0*mbar*(1d0-2d0*mbar)/(1d0-2d0*mbarsq)
+c     & +dlog(1d0-mbar)-2d0*mbarsq/(1d0-2d0*mbarsq)*dlog(mbar/(1d0-mbar))
+c     & +5d0-mbar/(1d0-mbar)-2d0*mbar*(1d0-2d0*mbar)/(1d0-2d0*mbarsq)
 c        ff_mqq=2d0*Ieik+Icoll
+
+c--- now add on the contribution for aff < 1
+c        if (abs(aff-1d0) .gt. 1d-8) then
+	ff_mqq=ff_mqq+ff_alpha(mbar,mbar)
+c	endif 
         return
       endif
       return
@@ -424,11 +426,10 @@ c        ff_mqq=2d0*Ieik+Icoll
       implicit none
       integer vorz
       double precision x,L,mbar,mbarsq,sbar,sbarsq,
-     . Lro,ro,roj,rok,vtijk,arg,arg2,den,ddilog
+     & Lro,ro,roj,rok,vtijk,arg,arg2,den,ddilog
 
       include 'constants.f'
       include 'epinv.f'
-      include 'scheme.f'
       include 'alfacut.f'
 
       if (aff .lt. 1d0) then
@@ -455,13 +456,13 @@ c--- some redundancy here: ro=roj*rok
         ro=dsqrt((1d0-vtijk)/(1d0+vtijk))
         Lro=dlog(ro)
 	ff_2mqq=1d0/vtijk*((epinv-L)*Lro-dlog(roj)**2-dlog(rok)**2
-     .   -2d0*Lro*dlog(1d0-(mbar+sbar)**2)
-     .   +4d0*ddilog(-ro)-4d0*ddilog(1d0-ro)
-     .   -ddilog(1d0-roj**2)-ddilog(1d0-rok**2)+pisq/3d0)
-     .   +epinv-L+3d0
-     .   +dlog(1d0-sbar)+half*dlog(mbarsq)-2d0*dlog(arg2)
-     .   +(4d0*sbarsq-2d0*sbar-2d0*mbarsq*dlog(mbar/(1d0-sbar)))/den
-     .   -sbar/(1d0-sbar)
+     &   -2d0*Lro*dlog(1d0-(mbar+sbar)**2)
+     &   +4d0*ddilog(-ro)-4d0*ddilog(1d0-ro)
+     &   -ddilog(1d0-roj**2)-ddilog(1d0-rok**2)+pisq/3d0)
+     &   +epinv-L+3d0
+     &   +dlog(1d0-sbar)+half*dlog(mbarsq)-2d0*dlog(arg2)
+     &   +(4d0*sbarsq-2d0*sbar-2d0*mbarsq*dlog(mbar/(1d0-sbar)))/den
+     &   -sbar/(1d0-sbar)
         return
       endif
       
@@ -477,8 +478,8 @@ c--- some redundancy here: ro=roj*rok
       implicit none
       integer vorz
       double precision x,L,mbar,mbarsq,ddilog,afftmp
-     . ,Icolla,Ieika,Icollb,Ieikb,arg,ommsq,logm,logomm,xp,yp
-     . ,arg1,arg2,arg3,ypp,ypm
+     & ,Icolla,Ieika,Icollb,Ieikb,arg,ommsq,logm,logomm,xp,yp
+     & ,arg1,arg2,arg3,ypp,ypm
 
 
       include 'constants.f'
@@ -511,16 +512,16 @@ C----radiation from massive line with massless spectator
       afftmp=aff       
       arg=afftmp+(1d0-afftmp)*mbarsq
       Ieika=
-     . half*logm*(epinv-L)-2d0*ddilog(ommsq)
-     . -logm*logomm-0.25d0*logm**2
-     . -dlog(afftmp)*logm-ddilog(-ommsq/mbarsq)
-     . +ddilog(-afftmp*ommsq/mbarsq)
+     & half*logm*(epinv-L)-2d0*ddilog(ommsq)
+     & -logm*logomm-0.25d0*logm**2
+     & -dlog(afftmp)*logm-ddilog(-ommsq/mbarsq)
+     & +ddilog(-afftmp*ommsq/mbarsq)
       Icolla=
-     .  epinv-L+phi+2d0+(1d0+half*phi)*logm
-     . +(phi-2d0)*logm/(ommsq)-2d0*logomm
-     . +half*phi*(3d0*afftmp-2d0-(3d0-mbarsq)/ommsq*dlog(arg)
-     . -afftmp/arg)
-     . -2d0*dlog(afftmp)+2d0*dlog(arg)/ommsq
+     &  epinv-L+phi+2d0+(1d0+half*phi)*logm
+     & +(phi-2d0)*logm/(ommsq)-2d0*logomm
+     & +half*phi*(3d0*afftmp-2d0-(3d0-mbarsq)/ommsq*dlog(arg)
+     & -afftmp/arg)
+     & -2d0*dlog(afftmp)+2d0*dlog(arg)/ommsq
 
 
 C----radiation from massless line with massive spectator
@@ -534,17 +535,17 @@ C----radiation from massless line with massive spectator
       ypm=half*(1d0-yp)
 
       Ieikb=0d0
-     . +half*epinv*epinv2-half*epinv*L+0.25d0*L**2
-     . -logomm*(epinv-L)
-     . +ddilog(ommsq)-2.5d0*pisqo6+logomm**2
-     . +half*dlog(arg1/(arg2*arg3))**2-dLOG(arg2/ypp)**2
-     . +2d0*(dLOG(ypp)*dLOG(arg3/ypm)+dLOG(ypp/yp)*dLOG(arg1/(ypp*ypm))
-     . +DDILOG(ypm/ypp)-DDILOG(arg1/ypp**2)
-     . +DDILOG(arg3)-DDILOG(ypm))
+     & +half*epinv*epinv2-half*epinv*L+0.25d0*L**2
+     & -logomm*(epinv-L)
+     & +ddilog(ommsq)-2.5d0*pisqo6+logomm**2
+     & +half*dlog(arg1/(arg2*arg3))**2-dLOG(arg2/ypp)**2
+     & +2d0*(dLOG(ypp)*dLOG(arg3/ypm)+dLOG(ypp/yp)*dLOG(arg1/(ypp*ypm))
+     & +DDILOG(ypm/ypp)-DDILOG(arg1/ypp**2)
+     & +DDILOG(arg3)-DDILOG(ypm))
 
       Icollb=1.5d0*(epinv-L)-3d0*dlog(1d0-mbar)+5d0-mbar/(1d0-mbar)
-     . -2d0*mbar*(1d0-2d0*mbar)/ommsq
-     . +1.5d0*(dLOG(YP/afftmp)-YP+afftmp)
+     & -2d0*mbar*(1d0-2d0*mbar)/ommsq
+     & +1.5d0*(dLOG(YP/afftmp)-YP+afftmp)
 
 c--- Note: extra factor of half because we include this term once for each
 c---  leg, but this is the sum of both legs
@@ -571,13 +572,12 @@ c---  leg, but this is the sum of both legs (as above)
       implicit none
       integer vorz
       double precision x,L,mbar,mbarsq,ddilog,afftmp
-     . ,Icolla,Ieika,arg,ommsq,logm,logomm,xp,yp
-     . ,arg1,arg2,arg3,ypp,ypm
+     & ,Icolla,Ieika,ommsq,logm,logomm,xp,yp
+     & ,ypp,ypm
 
       include 'constants.f'
       include 'epinv.f'
       include 'epinv2.f'
-      include 'scheme.f'
       include 'alfacut.f'
 c--- returns the integral of the subtraction term for a
 c--- final-final quark-quark antenna, either
@@ -608,12 +608,12 @@ c---       that it can match with ff_mgg
 
         mbarsq=mbar**2
         ff_mqq0=epinv*epinv2/2d0
-     .         +epinv*(1d0-L/2d0+dlog(mbarsq)/2d0-dlog(1d0-mbarsq))
-     .         -L+3d0+L**2/4d0-pisq*5d0/12d0
-     .         -ddilog(1d0-mbarsq)
-     .         -dlog(mbarsq)*(dlog(mbarsq)/2d0-1d0+L)/2d0
-     .         -dlog(1d0-mbarsq)*(dlog(mbarsq/(1d0-mbarsq))-L+2d0)
-     .         -mbarsq/(1d0-mbarsq)*dlog(mbarsq)
+     &         +epinv*(1d0-L/2d0+dlog(mbarsq)/2d0-dlog(1d0-mbarsq))
+     &         -L+3d0+L**2/4d0-pisq*5d0/12d0
+     &         -ddilog(1d0-mbarsq)
+     &         -dlog(mbarsq)*(dlog(mbarsq)/2d0-1d0+L)/2d0
+     &         -dlog(1d0-mbarsq)*(dlog(mbarsq/(1d0-mbarsq))-L+2d0)
+     &         -mbarsq/(1d0-mbarsq)*dlog(mbarsq)
 	
       endif
       
@@ -632,7 +632,6 @@ c---       that it can match with ff_mgg
       include 'epinv.f'
       include 'scheme.f'
       include 'nflav.f'
-      include 'b0.f'
       include 'alfacut.f'
       include 'colstruc.f'
 c--- returns the integral of the subtraction term for a
@@ -659,26 +658,26 @@ c  )-ffgg;
       if (vorz .eq. 1) then
         mbarsq=mbar**2
 c	ff_mgg=(epinv-L)*(epinv+dlog(mbarsq)-2d0*dlog(1d0-mbarsq))
-c     .   +L**2/2d0+100d0/9d0-pisq*5d0/6d0
-c     .   +2d0*b0/xn*(epinv-L)
-c     .   -2d0*ddilog(1d0-mbarsq)-dlog(mbarsq)**2/2d0
-c     .   -2d0*dlog(1d0-mbarsq)*dlog(mbarsq/(1d0-mbarsq))
-c     .   -22d0/3d0*(dlog(1d0-mbar)+mbar/(1d0+mbar))
-c     .   +4d0/3d0*mbarsq/(1-mbarsq)*dlog(2d0*mbar/(1d0+mbar))
-c     .   -dfloat(nflav)/xn*4d0/3d0*(
-c     .       4d0/3d0-dlog(1d0-mbar)-mbar/(1d0+mbar)
-c     .      +mbarsq/(1d0-mbarsq)*dlog(2d0*mbar/(1d0+mbar)))
+c     &   +L**2/2d0+100d0/9d0-pisq*5d0/6d0
+c     &   +2d0*b0/xn*(epinv-L)
+c     &   -2d0*ddilog(1d0-mbarsq)-dlog(mbarsq)**2/2d0
+c     &   -2d0*dlog(1d0-mbarsq)*dlog(mbarsq/(1d0-mbarsq))
+c     &   -22d0/3d0*(dlog(1d0-mbar)+mbar/(1d0+mbar))
+c     &   +4d0/3d0*mbarsq/(1-mbarsq)*dlog(2d0*mbar/(1d0+mbar))
+c     &   -dfloat(nflav)/xn*4d0/3d0*(
+c     &       4d0/3d0-dlog(1d0-mbar)-mbar/(1d0+mbar)
+c     &      +mbarsq/(1d0-mbarsq)*dlog(2d0*mbar/(1d0+mbar)))
 c--- NB: last term added by JC, 6/10/08 
         if (nfonly) then
 	  ff_mgg=0d0
 	else
 	   ff_mgg=(epinv-L)*(epinv+dlog(mbarsq)-2d0*dlog(1d0-mbarsq))
-     .    +L**2/2d0+100d0/9d0-pisq*5d0/6d0
-     .    +2d0*11d0/6d0*(epinv-L)
-     .    -2d0*ddilog(1d0-mbarsq)-dlog(mbarsq)**2/2d0
-     .    -2d0*dlog(1d0-mbarsq)*dlog(mbarsq/(1d0-mbarsq))
-     .    -22d0/3d0*(dlog(1d0-mbar)+mbar/(1d0+mbar))
-     .    +4d0/3d0*mbarsq/(1d0-mbarsq)*dlog(2d0*mbar/(1d0+mbar))
+     &    +L**2/2d0+100d0/9d0-pisq*5d0/6d0
+     &    +2d0*11d0/6d0*(epinv-L)
+     &    -2d0*ddilog(1d0-mbarsq)-dlog(mbarsq)**2/2d0
+     &    -2d0*dlog(1d0-mbarsq)*dlog(mbarsq/(1d0-mbarsq))
+     &    -22d0/3d0*(dlog(1d0-mbar)+mbar/(1d0+mbar))
+     &    +4d0/3d0*mbarsq/(1d0-mbarsq)*dlog(2d0*mbar/(1d0+mbar))
           if (scheme .eq. 'tH-V') then
             continue ! the above is the CT in this scheme
           elseif (scheme .eq. 'dred') then
@@ -693,10 +692,10 @@ c--- NB: last term added by JC, 6/10/08
           continue ! nothing more to do
 	else
 	  ff_mgg=ff_mgg
-     .   -tr*4d0/3d0*dfloat(nflav)/ca*(epinv-L)
-     .   -dfloat(nflav)/ca*2d0*tr*4d0/3d0*(
-     .       4d0/3d0-dlog(1d0-mbar)-mbar/(1d0+mbar)
-     .      +mbarsq/(1d0-mbarsq)*dlog(2d0*mbar/(1d0+mbar)))
+     &   -tr*4d0/3d0*dfloat(nflav)/ca*(epinv-L)
+     &   -dfloat(nflav)/ca*2d0*tr*4d0/3d0*(
+     &       4d0/3d0-dlog(1d0-mbar)-mbar/(1d0+mbar)
+     &      +mbarsq/(1d0-mbarsq)*dlog(2d0*mbar/(1d0+mbar)))
          endif
       endif
       
@@ -741,7 +740,7 @@ c--  +2*(-2*[ln(1-x)/(1-xp)]-11/6/[1-xp])
 
       if (vorz .eq. 1) then
         fi_mgg=two*epinv*(epinv2-L)+L**2+67d0/9d0-pisq
-     .    +11d0*(epinv-L)/3d0
+     &    +11d0*(epinv-L)/3d0
       endif
       
       omx=one-x
@@ -781,7 +780,7 @@ CDTS 5.63
       JaS=-2d0/3d0*dlog(mbarsq)-10d0/9d0
 CDTS 5.64
       JaNS=10d0/9d0*(1d0-rt)-8d0/9d0*mbarsq*rt
-     . +4d0/3d0*dlog(half*(1d0+rt))
+     & +4d0/3d0*dlog(half*(1d0+rt))
       fi_mqg=JaS+JaNS
        
       elseif (vorz .eq. 2) then
@@ -828,7 +827,7 @@ c
         else
         ro=dsqrt(arg)  
         ff_mqg=-2d0/3d0*(2d0*dlog(mbarsq)
-     .   -2d0*dlog(half*(1d0+ro))+2d0/3d0*ro*(3d0+ro**2))
+     &   -2d0*dlog(half*(1d0+ro))+2d0/3d0*ro*(3d0+ro**2))
         return
         endif
       endif

@@ -13,16 +13,16 @@ c   for the moment --- radiation only from initial line
       include 'zcouple.f'
       include 'ewcharge.f'
       include 'anomcoup.f'
-
       integer j,k,jk,tjk,polg,polq,minus,mplus,jp,kp,jtype
       double precision P(mxpart,4),qdks(mxpart,4),msq(-nf:nf,-nf:nf),
      . ave,s127,fac,fac1,offsh,xfac
       double complex ct(2,2),cs_z(2,2),cs_g(2,2),
-     . cgamz(2,2),cz(2,2),mp(nf)
+     . cgamz(2,2),cz(2,2)
       double complex u_ub(5,2,2),d_db(5,2,2),ub_u(5,2,2),db_d(5,2,2),
      .               u_g(5,2,2), d_g(5,2,2), g_ub(5,2,2),g_db(5,2,2),
      .               ub_g(5,2,2),db_g(5,2,2),g_u(5,2,2),g_d(5,2,2),
      .               amp(5),propwp,propwm,propzg,prop12,cprop,A(2,2)
+      double precision mp(nf)
       common/xanomcoup/xdelg1_z,xdelg1_g,xlambda_g,xlambda_z,
      . xdelk_g,xdelk_z
       common/pchoice/j,k
@@ -38,11 +38,9 @@ c   for the moment --- radiation only from initial line
       fac=gw**4
       fac1=two*gsq*cf
 
-
 C----Change the momenta to DKS notation 
 c   We have --- f(p1) + f'(p2)-->mu^-(p5)+nubar(p6)+e^+(p4)+nu(p3)+g(p7)
 c   DKS have--- ubar(q1)+u(q2)-->mu^-(q3)+nubar(q4)+e^+(q5)+nu(q6)+g(p7)
-
       do j=1,4
       qdks(1,j)=p(1,j)
       qdks(2,j)=p(2,j)
@@ -53,8 +51,8 @@ c   DKS have--- ubar(q1)+u(q2)-->mu^-(q3)+nubar(q4)+e^+(q5)+nu(q6)+g(p7)
       qdks(7,j)=p(7,j)
       enddo
 
-      call spinoru(7,qdks,za,zb)
 c--   s returned from sprodx (common block) is 2*dot product
+      call spinoru(7,qdks,za,zb)
 
 c--   calculate propagators
       s127=s(1,2)+s(1,7)+s(2,7)

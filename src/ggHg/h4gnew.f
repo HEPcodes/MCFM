@@ -2,7 +2,6 @@
      .                  Hgggg,Hgggg_1256,Hgggg_1265,Hgggg_1625)
       implicit none
       include 'constants.f'
-      include 'zprods_com.f'
       integer j,p1,p2,p3,p4,h1,h2,h3,h4
       double precision Hgggg,Hgggg_1256,Hgggg_1265,Hgggg_1625
       double complex amp(3,2,2,2,2)

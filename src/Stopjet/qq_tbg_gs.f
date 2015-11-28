@@ -21,7 +21,6 @@
       include 'ptilde.f'
       include 'qcdcouple.f'
       include 'qqgg.f'
-      include 'noglue.f'
       include 'nflav.f'
       include 'stopscales.f'
       double precision dot,e15,e23,e24,e34,e25,e13,e14,corrL,corrH

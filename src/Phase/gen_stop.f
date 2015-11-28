@@ -7,6 +7,7 @@
       include 'xmin.f'
       include 'zerowidth.f'
       include 'process.f'
+      include 'reset.f'
 c---- Generate phase space for 2-->2+n process
 c---- with (345) being a top and 6,..,5+n the jets
 c---- r(mxdim),p1(4),p2(4) are inputs reversed in sign 
@@ -39,8 +40,6 @@ c---- larger than the value of 'njets' passed
       common/energy/sqrts
       common/x1x2/xx
       common/notag/notag
-      common/reset/reset,scalereset
-      logical reset,scalereset
       data first/.true./,xxerror/.false./
       save first,ptjetmin,etajetmin,etajetmax,pbreak,xxerror
 

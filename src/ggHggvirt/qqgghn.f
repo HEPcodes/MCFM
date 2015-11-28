@@ -7,8 +7,6 @@ c   separated into colour orderings AB, BA and the sum
 c     calculated by the program qqgghn.frm
       include 'constants.f'
       include 'sprods_com.f'
-      include 'qcdcouple.f'
-      include 'ewcouple.f'
       integer p1,p2,p3,p4
       double precision p(mxpart,4),n(4),nDn,nDp1,nDp2,nDp3,nDp4
       double precision s123,s124,qqgghn_ab,qqgghn_ba,qqgghn_sym

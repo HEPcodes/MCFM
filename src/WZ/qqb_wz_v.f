@@ -21,8 +21,8 @@ c---  averaged(summed) over initial(final) colours and spins
       include 'zerowidth.f'
       include 'ewcharge.f'
       include 'anomcoup.f'
+      include 'srdiags.f'
       include 'nwz.f'
-
       integer j,k
       double precision p(mxpart,4),qdks(mxpart,4)
       double precision msqv(-nf:nf,-nf:nf),msq(-nf:nf,-nf:nf)
@@ -47,15 +47,9 @@ c---  averaged(summed) over initial(final) colours and spins
 c      double complex Fa561243,Fa562143
       double precision v2(2),cl1,cl2,en1,en2,xfac
       double complex ZgL(-nf:nf),ZgR(-nf:nf)
-      logical srdiags
-
       parameter(ave=0.25d0/xn)
       data cl1,cl2,en1,en2/4*1d0/
 
-c--- include singly resonant diagrams if zerowidth=.false. , but only
-c---  as long as anomtgc=.false. too
-      srdiags=((zerowidth .eqv. .false.) .and. (anomtgc .eqv. .false.))
-      
       scheme='dred'
       FAC=-2D0*gwsq*esq
       FACNLO=ason2pi*cf

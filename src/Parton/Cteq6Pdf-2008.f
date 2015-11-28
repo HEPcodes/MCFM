@@ -253,6 +253,7 @@ C                             ********************
       Character Flnm(Isetmax0)*6, nn*3, Tablefile*40
       character*72 filename,checkpath
       Logical fmtpds
+      Common /Setchange/ Isetch
       Data (Flnm(I), I=1,Isetmax0)
      > / 'cteq6m', 'cteq6d', 'cteq6l', 'cteq6l','ctq61.','cteq6s'
      >  ,'ctq65.', 'ctq66.' /
@@ -268,7 +269,6 @@ C                             ********************
       Data IsetmnAS08,IsetmxAS08 /460,463/
 
       Data IsetHQ /21/
-      Common /Setchange/ Isetch
       save
 
 C             If data file not initialized, do so.

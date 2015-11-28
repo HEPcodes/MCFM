@@ -16,11 +16,15 @@ c     q(-p1)+qbar(-p2)-->e^-(p3)+nu(p4)+gamma(p5)
       double complex agamtree,agamvirt
 
       call spinoru(5,p,za,zb)
+    
+     
 
       fac=ason2pi*cf*aveqq*2d0*xn*gwsq**2*esq
+    
       scheme='dred'
       if (nwz .eq. -1) then
 C ie ub-d
+         
       qbq=+fac*2d0*dble(
      .Dconjg(agamtree(1,2,3,4,5,za,zb,+1))*agamvirt(1,2,3,4,5,za,zb,+1))
      .    +fac*2d0*dble(
@@ -33,15 +37,18 @@ C ie d-ub
 
       elseif (nwz .eq. +1) then 
 C ie db-u
+          
       qbq=+fac*2d0*dble(
      .Dconjg(agamtree(2,1,4,3,5,zb,za,+1))*agamvirt(2,1,4,3,5,zb,za,+1))
      .    +fac*2d0*dble(
      .Dconjg(agamtree(2,1,4,3,5,zb,za,-1))*agamvirt(2,1,4,3,5,zb,za,-1))
 C ie u-db
+   
       qqb=+fac*2d0*dble(
      .Dconjg(agamtree(1,2,4,3,5,zb,za,+1))*agamvirt(1,2,4,3,5,zb,za,+1))
      .    +fac*2d0*dble(
      .Dconjg(agamtree(1,2,4,3,5,zb,za,-1))*agamvirt(1,2,4,3,5,zb,za,-1))
+       
       endif
 
       do j=-nf,nf
@@ -73,6 +80,7 @@ c     q(-p1)+qbar(-p2)-->e^-(p3)+nu(p4)+gamma(p5)
       double precision s34,s12
       integer p1,p2,p3,p4,p5,hgamma
 
+      
       s34=dble(za(p3,p4)*zb(p4,p3))
       s12=dble(za(p1,p2)*zb(p2,p1))
       prop=s34/dcmplx(s34-wmass**2,wmass*wwidth)

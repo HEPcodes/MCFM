@@ -14,7 +14,6 @@ c--- all momenta are incoming
       include 'masses.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
-      include 'ckm.f'
       include 'sprods_com.f'
       include 'zprods_com.f'
       include 'nflav.f'

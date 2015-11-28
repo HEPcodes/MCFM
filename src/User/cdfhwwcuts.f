@@ -4,13 +4,10 @@ c--- performs H->WW search cuts along the lines of CDF Note 9887;
 c--- a point that fails the cuts returns passed=.false.
       implicit none
       include 'constants.f'
-      include 'jetlabel.f'
-      include 'masses.f'
-      include 'process.f'
       integer ilept(2),ile,ineut(2),inu,i,j,maxparts
       logical passed
-      double precision pt,etarap,p(mxpart,4),etvec(2),plept(4),
-     . missinget,m_ll,cosdphi,R,pt1,pt2,eta1,eta2,phi,phimin
+      double precision pt,etarap,p(mxpart,4),etvec(2),
+     . missinget,m_ll,R,pt1,pt2,eta1,eta2,phi,phimin
 c--- pt and eta thresholds for trigger lepton
       double precision trigpt,trigeta
 c--- pt and eta thresholds for second lepton (should be looser)

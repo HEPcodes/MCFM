@@ -20,7 +20,7 @@ c--- add temporay histograms to the cumulative ones
       IMPLICIT INTEGER (I-N)
       include 'histo.f'
       double precision wgt
-      integer nplotmax,j
+      integer nplotmax
       common/nplotmax/nplotmax
 
 c--- loop over plots      

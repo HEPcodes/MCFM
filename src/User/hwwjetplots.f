@@ -3,11 +3,10 @@ c--- given the event momenta in p (with eventparts entries),
 c--- makes some plots for the H->WW + jet search 
       implicit none
       include 'constants.f'
-      include 'masses.f'
       include 'jetlabel.f'
-      integer ilept(2),ic,ijet(3),jc,j,eventpart,n,nplotmax,i1,i2,i3
+      integer ilept(2),ic,ijet(3),jc,j,eventpart,n,nplotmax,i1,i2
       double precision pt,etarap,p(mxpart,4),etvec(2),plept(4),
-     . dphi_ll,m_ll,cosdphi,missinget,R,wt,wt2,etajet,etajet2,mtrans,
+     . dphi_ll,m_ll,missinget,wt,wt2,etajet,etajet2,mtrans,
      . ptjet,ptjet2,Etll,Etmiss,ptH,pt1,pt2,pt3
       character*2 plabel(mxpart)
       character*4 tag
@@ -106,30 +105,30 @@ c--- sort for 3 jets
           i1=1
           if (pt2 .gt. pt3) then
             i2=2
-            i3=3
+c            i3=3
           else
             i2=3
-            i3=2
+c            i3=2
           endif
         endif
         if ((pt2 .gt. pt1) .and. (pt2 .gt. pt3)) then
           i1=2
           if (pt1 .gt. pt3) then
             i2=1
-            i3=3
+c            i3=3
           else
             i2=3
-            i3=1
+c            i3=1
           endif
         endif
         if ((pt3 .gt. pt1) .and. (pt3 .gt. pt2)) then
            i1=3
           if (pt1 .gt. pt2) then
             i2=1
-            i3=2
+c            i3=2
           else
             i2=2
-            i3=1
+c            i3=1
           endif
         endif
         ptjet=pt(ijet(i1),p)

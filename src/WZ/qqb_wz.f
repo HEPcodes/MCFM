@@ -21,8 +21,8 @@ c     Notation to allow room for p3 --- gluon emission.
       include 'zerowidth.f'
       include 'ewcharge.f'
       include 'anomcoup.f'
+      include 'srdiags.f'
       include 'nwz.f'
-
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),qdks(mxpart,4)     
       double complex AWZM,AWZP,propw,propz,props,cprop,a6treea
       double complex prop34,prop56,prop12
@@ -38,17 +38,12 @@ c     Notation to allow room for p3 --- gluon emission.
       double precision v2(2),cl1,cl2,en1,en2
       double precision ave,cotw,wwflag,xfac
       character*2 plabel(mxpart)
-      logical srdiags
       common/plabel/plabel
       double precision FAC,FACM
       integer j,k
       parameter(ave=0.25d0/xn)
       data cl1,cl2,en1,en2/4*1d0/
 
-c--- include singly resonant diagrams if zerowidth=.false. , but only
-c---  as long as anomtgc=.false. too
-      srdiags=((zerowidth .eqv. .false.) .and. (anomtgc .eqv. .false.))
-      
       FAC=-two*gwsq*esq
       if ((nwz.eq.1) .or. (nwz .eq. -1)) then
       FACM=nwz*FAC

@@ -103,7 +103,8 @@ c--- reorder jets for some special cases, to preserve identities of
 c--- particles for use in the plotting routines
       if (    (case .eq. 'qq_ttg')
      &   .or. (case .eq. 'tt_bbl') 
-     &   .or. (case .eq. 'tt_bbh')) then
+     &   .or. (case .eq. 'tt_bbh')
+     &   .or. (case .eq. 'tt_bbu')) then
 	call jetreorder(qfinal,qreorder,isub)
 	do i=1,mxpart
 	  do nu=1,4

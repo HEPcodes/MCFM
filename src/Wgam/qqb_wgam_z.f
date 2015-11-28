@@ -11,8 +11,11 @@ c     q(-p1)+qbar(-p2) -->  W^-(e-(p3)+nubar(p4))+a(p5)+g(p6)
       include 'agq.f'
       integer is
       double precision z,xl12,p(mxpart,4),dot,ii_qq,ii_qg,tempqq,tempqg
+      
 
-      xl12=log(two*dot(p,1,2)/musq)
+      xl12=dlog(two*dot(p,1,2)/musq)
+      
+    
 c----contributions for one leg
 
       do is=1,3

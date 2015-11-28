@@ -5,6 +5,7 @@
       include 'limits.f'
       include 'xmin.f'
       include 'nodecay.f'
+      include 'reset.f'
 c---- generate phase space for 2-->2+n process
 c---- with (34) being a vector boson and 5,..,4+n the jets
 c---- r(mxdim),p1(4),p2(4) are inputs reversed in sign 
@@ -34,8 +35,6 @@ c---- are required
       common/energy/sqrts
       common/breit/n2,n3,mass2,width2,mass3,width3
       common/x1x2/xx
-      common/reset/reset,scalereset
-      logical reset,scalereset
       parameter(flatreal=.false.)
       data first/.true./,xxerror/.false./
       save first,ptjetmin,etajetmin,etajetmax,pbreak,xxerror
