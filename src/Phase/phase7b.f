@@ -76,7 +76,6 @@ c--- a Breit-Wigner at mH
       wt=wt0*wt12*wt5678*wt56*wt78*wt349*wt34
       return
       
-      return
  99   wt=0d0
       zerowidth=oldzerowidth
       return 1

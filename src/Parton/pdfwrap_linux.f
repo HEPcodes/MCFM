@@ -303,6 +303,12 @@ C   10     CTEQ4LQ  Low Q0                  0.114        0.7      cteq4lq.tbl
       Call SetCtq6(4)
       nlooprun=1
 
+      elseif (pdlabel .eq. 'CT10.00') then
+      amz=0.118d0
+      call SetCT10(100)
+      nlooprun=2
+
+
 c--- NEW ATTEMPT
       elseif (pdlabel .eq. 'mtungb1') then
 c--- need a value here: Lambda = 200 MeV
@@ -328,6 +334,7 @@ c--- need a value here: Lambda = 200 MeV
      .'cteq5f3,','cteq5f4,','cteq5m1,','ctq5hq1,','cteq5l1,',
      .'cteq6_m,','cteq6_d,','cteq6_l,','cteq6l1,',
      .'cteq61m,','cteq66m,',
+     .'CT10.00,',
      .'mtungb1'
 
       stop

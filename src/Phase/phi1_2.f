@@ -63,12 +63,21 @@ c      s2max=min(s1,bbsqmax)
         s2min=4d0*mc**2
       elseif (case .eq. 'W_cjet') then
         s2min=mc**2
+      elseif (case .eq. 'Wbfrmc') then
+        s2min=mb**2
       elseif (case .eq. 'W_tndk')  then
         s2min=mt**2
       elseif (case .eq. 'Wtbndk') then
         s2min=(mt+mb)**2
       elseif ((case .eq. 'qq_tbg') .or. (case .eq. 'qqtbgg')) then
         s2min=mt**2
+      elseif ((case .eq. 'tt_ldk') .or. (case .eq. 'tt_hdk')
+     &   .or. (case .eq. 'tthWdk')
+     &   .or. (case .eq. 'ttdkay') .or. (case .eq. 'tdecay')) then
+        s2min=mb**2
+      elseif ((case .eq. '4ftwdk') .or. (case .eq. '4ftjet')
+     &   .or. (case .eq. 'dk_4ft')) then
+        s2min=(mt+mb)**2
       elseif ((case .eq. 'W_twdk') .or. (case .eq. 'Wtdkay')
      .   .or. (case .eq. 'W_cwdk') .or. (case .eq. 'Wtbwdk')
      .   .or. (case .eq. 'qq_tth') .or. (case .eq. 'qq_ttz')) then

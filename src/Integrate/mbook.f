@@ -373,7 +373,7 @@ c     &' SET ORDER X Y DY ')
      &' SET WINDOW Y 2.5 TO 7.'/,1X,
      &' SET WINDOW X 2.5 TO 10.'/,1X,
      &' SET SYMBOL 5O SIZE 1.8'/,1X,
-     &' TITLE TOP ','"',A,' distribution"',/1X,
+     &' TITLE TOP SIZE=3','"',A,/1X,
      &' TITLE BOTTOM ','"',A,'"',/1X,
      &' TITLE LEFT ','"dS/d',A,' [fb]"',/1X,
      &' CASE       ','" G"',/1X,
@@ -525,8 +525,14 @@ c--- added these variables to scale plots at intermediate steps
       WRITE(97,'(3(2X,G13.6))')  
      & XHIS(N,J),scalefac*HIST(N,J),HIST(M,J)
       else
-         write(96,*) ' ', histoid(1:idlength), ' -> Fill(', 
-     &        XHIS(N,J), ', ', HIST(N,J), ');'
+C         write(96,*) ' ', histoid(1:idlength), ' -> Fill(', 
+C     &        XHIS(N,J), ', ', HIST(N,J), ');'
+         write(96,*) '  int xbin = ', histoid(1:idlength),'->FindBin(',
+     & XHIS(n,j),');' 
+         write(96,*) ' ', histoid(1:idlength), ' -> SetBinContent(', 
+     &       ' xbin', ', ', HIST(N,J), ');'
+         write(96,*) ' ', histoid(1:idlength), ' -> SetBinError(', 
+     &       ' xbin', ', ', HIST(M,J), ');'
       endif
     1 CONTINUE
 

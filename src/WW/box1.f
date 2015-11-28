@@ -12,16 +12,13 @@
       zab2(k1,k2,k3,k4)=za(k1,k2)*zb(k2,k4)+za(k1,k3)*zb(k3,k4)
 c--- end statement functions
 
-      apm=czip
-      amp=czip
-
       mtsq=mt**2
 
 c--- Box 1
       app=czip
       amm=czip
-      apm=czip
-      amp=czip
+c      apm=czip
+c      amp=czip
 
       if (Higgsint) return
 

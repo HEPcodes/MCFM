@@ -23,6 +23,7 @@ c---  averaged(summed) over initial(final) colours and spins
       include 'anomcoup.f'
       include 'srdiags.f'
       include 'nwz.f'
+      include 'plabel.f'
       integer j,k
       double precision p(mxpart,4),qdks(mxpart,4)
       double precision msqv(-nf:nf,-nf:nf),msq(-nf:nf,-nf:nf)
@@ -47,8 +48,6 @@ c---  averaged(summed) over initial(final) colours and spins
 c      double complex Fa561243,Fa562143
       double precision v2(2),cl1,cl2,en1,en2,xfac
       double complex ZgL(-nf:nf),ZgR(-nf:nf)
-      character*2 plabel(mxpart)
-      common/plabel/plabel
       parameter(ave=0.25d0/xn)
       data cl1,cl2,en1,en2/4*1d0/
 
@@ -123,8 +122,12 @@ c--   calculate propagators
       cprop=props*propw*propz
       endif
 
-c--- apply a dipole form factor to anomalous couplings
-      xfac=1d0/(1d0+s(1,2)/(tevscale*1d3)**2)**2
+c--- apply a dipole form factor to anomalous couplings (only if tevscale > 0)
+      if (tevscale .gt. 0d0) then
+        xfac=1d0/(1d0+s(1,2)/(tevscale*1d3)**2)**2
+      else
+        xfac=1d0
+      endif
       xdelg1_z=xfac*delg1_z
       xdelg1_g=xfac*delg1_g
       xdelk_z=xfac*delk_z

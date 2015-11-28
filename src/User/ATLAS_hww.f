@@ -1,18 +1,15 @@
-
-
 !---- Subroutine which calculates the ATLAS Higgs search cuts of 1106.2748 
 !---- C. Williams July 11 
       subroutine ATLAS_hww(p,failed_cuts) 
       implicit none 
       include 'constants.f' 
-      include 'process.f'
       include 'masses.f'
       double precision p(mxpart,4)
       logical failed_cuts 
       double precision pt,etarap,m45
       double precision pt_l_hard,pt_l_soft,pttwo
       double precision pts,pth,phimax,mllmax,etmiss,etmiss_min
-      double precision et_vec(4),eta_max,r2,delphi,eta_max_h
+      double precision et_vec(4),r2,delphi,eta_max_h
       double precision eta_max_s,eta_hard,eta_soft
       double precision mtmin,mtmax,mt45,ptsq,p3456(2)
       integer i 
@@ -24,12 +21,11 @@
       tiny=1d-4
 
 !------- ETA DOESNT CHANGE ------------- 
-      etmiss_min=20d0
       eta_max_h=2.5d0
       eta_max_s=2.5d0
 !----------------------------------------   
 
-!------- PT of leptons doesnt change either 
+!------- PT of leptons doesn't change either 
       
       pts=15d0 
       pth=20d0 

@@ -4,14 +4,13 @@ c--- makes some plots for the H->WW + jet search
       implicit none
       include 'constants.f'
       include 'jetlabel.f'
+      include 'plabel.f'
       integer ilept(2),ic,ijet(3),jc,j,eventpart,n,nplotmax,i1,i2
       double precision pt,etarap,p(mxpart,4),etvec(2),plept(4),
      . dphi_ll,m_ll,missinget,wt,wt2,etajet,etajet2,mtrans,
      . ptjet,ptjet2,Etll,Etmiss,ptH,pt1,pt2,pt3
-      character*2 plabel(mxpart)
       character*4 tag
       logical first
-      common/plabel/plabel
       common/nplotmax/nplotmax
       data first/.true./
       save first,ic,jc,ilept,ijet

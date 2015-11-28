@@ -17,9 +17,6 @@ c---- are required
       double precision r(mxdim),sqrts,wt3,rdk1,rdk2,
      . p(mxpart,4),p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4)
       double precision pswt,xjac,xx(2),tau,y
-      character*30 runstring
-
-      common/runstring/runstring
       common/energy/sqrts
       common/x1x2/xx
       data p6/0d0,0d0,0d0,0d0/

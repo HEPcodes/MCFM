@@ -7,9 +7,10 @@
       include 'qcdcouple.f'
       include 'sprods_com.f'
       include 'zprods_com.f'
+      include 'process.f'
 C  in is the label of the momentum contracted with n
       integer j,k,in
-      double precision msq(-nf:nf,-nf:nf)
+      double precision msq(-nf:nf,-nf:nf),msqgamgam
       double precision n(4),p(mxpart,4),hdecay,s34,fac,
      . qqgghn_ab,qqgghn_ba,qqgghn_sym,ab,ba,sym,
      . c1234,c1243,c1423,p1p2(-1:1,-1:1),Asq
@@ -24,9 +25,17 @@ C---fill dot products
       call spinoru(6,p,za,zb)  
 
 C   Deal with Higgs decay to b-bbar
+      if (case .eq. 'ggfus2') then
       s34=s(3,4)+2d0*mb**2
       hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s34-4d0*mb**2) 
       hdecay=hdecay/((s34-hmass**2)**2+(hmass*hwidth)**2)
+      elseif (case .eq. 'gagajj') then
+      hdecay=msqgamgam(hmass)/((s(3,4)-hmass**2)**2+(hmass*hwidth)**2)
+      else
+      write(6,*) 'Unimplemented process in gg_hgg_gvec'
+      stop
+      endif
+
       Asq=(as/(3d0*pi))**2/vevsq
       fac=gsq**2*Asq*hdecay
 

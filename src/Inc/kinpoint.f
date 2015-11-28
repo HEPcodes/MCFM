@@ -122,13 +122,13 @@ c      write(6,39) 'p(5,',nu,')=',p5true(nu)
 c      write(6,39) 'p(6,',nu,')=',p6true(nu)
 c      enddo
       
-   39 format(a4,i2,a2,g25.16)   
+c   39 format(a4,i2,a2,g25.16)   
       
 c--- now form the momenta that will be used in the Kirill routines
-      do nu=1,4
-      p1(nu)=p1true(nu)
-      p2(nu)=p2true(nu)
-      p3(nu)=p3true(nu)+p4true(nu)
-      p4(nu)=p5true(nu)+p6true(nu)
-      enddo
+c      do nu=1,4
+c      p1(nu)=p1true(nu)
+c      p2(nu)=p2true(nu)
+c      p3(nu)=p3true(nu)+p4true(nu)
+c      p4(nu)=p5true(nu)+p6true(nu)
+c      enddo
       

@@ -24,8 +24,9 @@ c--- %%CITATION = PHRVA,D66,054023;%%
       include 'epinv.f'
       include 'eplog.f'
       include 'spinorsw.f'
+      include 'process.f'
       integer j,k,nu
-      double precision msq(-nf:nf,-nf:nf),q(mxpart,4)
+      double precision msq(-nf:nf,-nf:nf),q(mxpart,4),fac
       double precision q1(4),q2(4),q3(4),q4(4),q5(4),q6(4),q7(4),q8(4)
       double precision resqqb0,resqbq0,resgg0,resqqb1,resqbq1,resgg1
 c      double complex  zk1(4),zk2(4),zk3(4),zk4(4)
@@ -67,17 +68,20 @@ C----set all elements to zero
       msq(j,k)=0d0
       enddo
       enddo
+      fac=ason2pi*gsq**2
+C--include factor for hadronic decays
+      if (case .eq. 'tt_bbh') fac=2d0*xn
 
 C---fill qb-q, gg and q-qb elements
       do j=-nf,nf
       if (j .lt. 0) then
-          msq(j,-j)=ason2pi*gsq**2*aveqq*resqbq1
+          msq(j,-j)=fac*aveqq*resqbq1
 c          msq(j,-j)=gsq**2*aveqq*resqbq0
       elseif (j .eq. 0) then
-          msq(j,j)=ason2pi*gsq**2*avegg*resgg1
+          msq(j,j)=fac*avegg*resgg1
 c          msq(j,j)=gsq**2*avegg*resgg0
       elseif (j .gt. 0) then
-          msq(j,-j)=ason2pi*gsq**2*aveqq*resqqb1
+          msq(j,-j)=fac*aveqq*resqqb1
 c          msq(j,-j)=gsq**2*aveqq*resqqb0
       endif
       enddo

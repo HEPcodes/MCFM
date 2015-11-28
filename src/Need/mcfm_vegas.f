@@ -37,10 +37,11 @@
       include 'frag.f'
       include 'reset.f'
       include 'masses.f'
+      include 'process.f'
       integer myitmx,myncall,myinit,i,j,k,nproc,mynproc
       logical mybin,bin
       double precision sig,sd,chi,sigr,sdr,sigdk,sddk,chidk,
-     & sigfrag,sdfrag,chifrag,
+     & sigfrag,sdfrag,chifrag,sigWdk,sdWdk,chiWdk,
      & xreal,xreal2,xinteg,xerr,adjust,myscale,myfacscale,
      & mymb,sumsig,sumsigr,sumsd,sumsdr
       character*4 part,mypart
@@ -62,10 +63,12 @@ c--- total of virt and real may be combined at the end for 'tota'
       sig=0d0
       sigr=0d0
       sigdk=0d0
+      sigWdk=0d0
       sigfrag=0d0
       sd=0d0
       sdr=0d0
       sddk=0d0
+      sdWdk=0d0
       sdfrag=0d0
       xreal=0d0
       xreal2=0d0
@@ -318,6 +321,59 @@ c-- special input name for real grid
         endif
       endif      
 
+c--- If we're doing the todk integration for ttbar production with
+c--- a hadronic W decay, then set up the grid info
+      if ((mypart .eq. 'todk') .and. (case .eq. 'tt_bbh')) then
+        if (first .and. (myinit .eq. 1)) then
+c-- special input name for real grid
+          ingridfile(8:11)='rWdk'
+          readin=myreadin
+        else
+          if (first .eqv. .true.) then
+            readin=.false.
+            writeout=.true.
+            outgridfile='dvegas_rWdk.grid'          
+          else
+            readin=.true.
+            writeout=.false.
+            ingridfile='dvegas_rWdk.grid'
+          endif
+        endif        
+      endif 
+      
+      if ((mypart .eq. 'todk') .and. (case .eq. 'tt_bbh')) then
+        scale=myscale
+        nproc=nproc+2
+        call chooser
+        part='real'
+        reset=.true.
+        if (realwt) then
+          nprn=0
+        endif
+        xreal=0d0
+        xreal2=0d0
+        adjust=(dfloat(ndim+3))/(dfloat(ndim+1))
+        ncall=int(dfloat(myncall)**adjust)/2
+        write(6,*) 'Adjusting number of points for real to',ncall
+        ndim=ndim+3
+        call boundregion(ndim,region)
+        call vegasnr(region,ndim,realint,myinit,ncall,myitmx,
+     .              0,sigWdk,sdWdk,chiWdk)
+        ndim=ndim-3
+        write(6,*) 
+        ncall=myncall
+        nproc=nproc-2
+        call chooser
+
+        if (realwt) then
+          sigWdk=xreal
+          sdWdk=dsqrt(abs((xreal2-xreal**2)/dfloat(ncall)))
+          write(6,*) itmx,' iterations of ',ncall,' calls'
+          write(6,*) 'Value of subtracted integral',sigdk
+          write(6,*) 'Error on subtracted integral',sddk
+        endif
+      endif      
+
 c--- Fragmentation contribution: only if frag is set to .true.
 c--- If we're doing the tota integration and , then set up the grid info
       if ((mypart .eq. 'tota') .and. (frag)) then
@@ -380,8 +436,8 @@ c--- return nproc to the value from the input file
       endif
       
 c--- calculate integration variables to be returned
-      xinteg=sig+sigr+sigdk+sigfrag
-      xerr=dsqrt(sd**2+sdr**2+sddk**2+sdfrag**2)      
+      xinteg=sig+sigr+sigdk+sigWdk+sigfrag
+      xerr=dsqrt(sd**2+sdr**2+sddk**2+sdWdk**2+sdfrag**2)      
       
 c--- return part and scale to their real values
       part=mypart

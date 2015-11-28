@@ -104,7 +104,12 @@ c--- particles for use in the plotting routines
       if (    (case .eq. 'qq_ttg')
      &   .or. (case .eq. 'tt_bbl') 
      &   .or. (case .eq. 'tt_bbh')
-     &   .or. (case .eq. 'tt_bbu')) then
+     &   .or. (case .eq. 'tt_ldk') 
+     &   .or. (case .eq. 'tt_hdk')
+     &   .or. (case .eq. 'tthWdk')
+     &   .or. (case .eq. 'tt_bbu')
+     &   .or. (case .eq. '4ftwdk')
+     &   .or. (case .eq. 'dk_4ft')) then
 	call jetreorder(qfinal,qreorder,isub)
 	do i=1,mxpart
 	  do nu=1,4

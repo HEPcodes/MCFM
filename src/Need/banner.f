@@ -1,7 +1,7 @@
       block data codeversion_data
       implicit none
       include 'codeversion.f'
-      data codeversion/'6.1'/      
+      data codeversion/'6.2'/      
       data      prelim/.false./      ! if true, print warning message
       end
 
@@ -44,7 +44,7 @@ c--- warning message, if necessary
 
       write(6,*) '*                                                *'
       write(6,*) '* MCFM, v'//codeversion//
-     .                          '              October 17th, 2011  *'
+     .                          '                 April 9th, 2012  *'
       write(6,*) '*                                                *'
       write(6,*) '* Authors: John Campbell, Keith Ellis,           *'
       write(6,*) '*          Ciaran Williams                       *'
@@ -53,10 +53,13 @@ c--- warning message, if necessary
       write(6,*) '*                                                *'
       write(6,*) '* For details see:                               *'
       write(6,*) '*                                                *'
-      write(6,*) '*  arXiv:1107.5569 [hep-ph]  (gg->WW,Higgs intf) *'
-      write(6,*) '*  arXiv:1105.0020 [hep-ph]  (diboson update)    *'
-      write(6,*) '*  JHEP 1103:027(2011), arXiv:1011.6647 (Wbb)    *'
-      write(6,*) '*       (with S. Badger)                         *'
+      write(6,*) '*  arXiv:1204.1513 (top production+decay)        *'
+      write(6,*) '*  JHEP 1110:005(2011), arXiv:1107.5569          *'
+      write(6,*) '*         (gg->WW,Higgs intference)              *'
+      write(6,*) '*  JHEP 1107:018(2011), arXiv:1105.0020          *'
+      write(6,*) '*         (diboson update)                       *'
+      write(6,*) '*  JHEP 1103:027(2011), arXiv:1011.6647          *'
+      write(6,*) '*         (Wbb for mb>0, with S. Badger)         *'
       write(6,*) '*  Phys.Rev.D81:074023, arXiv:1001.4495 (H+2jet) *'
       write(6,*) '*                                                *'
       write(6,*) '*  P.R.L. 102:142001, arXiv:0903.0005 [hep-ph]   *'

@@ -1,7 +1,9 @@
 \documentclass[12pt]{article}
+\usepackage{hyperref}
 
 \begin{document}
 \def\GeV{\mbox{GeV}}
+\def\cteqten{\mbox{1007.2241 [hep-ph]}}
 \def\cteqsixsixm{\mbox{0802.0007 [hep-ph]}}
 \def\cteqsixonem{\mbox{hep-ph/0303013}}
 \def\cteqsix{\mbox{hep-ph/0201195}}
@@ -23,7 +25,7 @@
 \thispagestyle{empty}
 \vspace*{3cm}
 \begin{center}
-{\Huge MCFM v6.1} \\
+{\Huge MCFM v6.2} \\
 \vspace*{0.5cm}
 \Large{A Monte Carlo for FeMtobarn} \\
 \Large{processes at Hadron Colliders} \\
@@ -36,7 +38,7 @@ John M. Campbell ({\tt johnmc@fnal.gov}) \\
 R. Keith Ellis ({\tt ellis@fnal.gov}) \\
 Ciaran Williams ({\tt ciaran@fnal.gov}) \\
 \vspace*{2cm}
-{\it \small Updated: October 17th, 2011}
+{\it \small Updated: April 9th, 2012}
 \end{center}
 
 \newpage
@@ -190,7 +192,7 @@ the number of loops that should be used in the running of $\alpha_S$.
 The default mode of operation is to choose from a
 collection of modern parton distribution functions that are included with
 MCFM.  The distributions, together with their associated $\alpha_S(M_Z)$
-values, are given in Table~\ref{pdlabel}. 
+values, are given in Tables~\ref{pdlabelmrs} and~\ref{pdlabelcteq}. 
 For the older distributions, where the
 coupling was specified by $\Lambda$ this requires 
 some calculation and/or guesswork.
@@ -238,43 +240,57 @@ some calculation and/or guesswork.
 {\tt mrs95\_g} &  0.1148      & \mrsninefive \\
 {\tt hmrs90e}  &  0.09838     & \hmrs & 
 {\tt hmrs90b}  &  0.10796     & \hmrs \\
-{\tt cteq66m}  &  0.118       & \cteqsixsixm &
-{\tt cteq61m}  &  0.118       & \cteqsixonem \\
-{\tt cteq6\_m} &  0.118       & \cteqsix &
-{\tt cteq6\_d} &  0.118       & \cteqsix \\
-{\tt cteq6\_l} &  0.118       & \cteqsix &
-{\tt cteq6l1}  &  0.130       & \cteqsix \\
-{\tt cteq5hq}  &  0.118       & \cteqfive &
-{\tt cteq5f3}  &  0.106       & \cteqfive \\
-{\tt cteq5f4}  &  0.112       & \cteqfive &
-{\tt cteq5\_m} &  0.118       & \cteqfive \\
-{\tt cteq5\_d} &  0.118       & \cteqfive & 
-{\tt cteq5\_l} &  0.127       & \cteqfive \\ 
-{\tt cteq5l1}  &  0.127       & \cteqfive & 
-{\tt cteq5hj}  &  0.118       & \cteqfive \\
-{\tt cteq5m1}  &  0.118       & \cteqfive &
-{\tt ctq5hq1}  &  0.118       & \cteqfive \\
-{\tt cteq4a5}  &  0.122       & \cteqfour &
-{\tt cteq4hj}  &  0.116       & \cteqfour \\
-{\tt cteq4lq}  &  0.114       & \cteqfour &
-{\tt cteq4\_m} &  0.116       & \cteqfour \\
-{\tt cteq4\_d} &  0.116       & \cteqfour &
-{\tt cteq4\_l} &  0.132       & \cteqfour \\
-{\tt cteq4a1}  &  0.110       & \cteqfour &
-{\tt cteq4a2}  &  0.113       & \cteqfour \\
-{\tt cteq4a3}  &  0.116       & \cteqfour &
-{\tt cteq4a4}  &  0.119       & \cteqfour \\
-{\tt cteq3\_m} &  0.112       & \cteqthree &
-{\tt cteq3\_l} &  0.112       & \cteqthree \\
-{\tt cteq3\_d} &  0.112       & \cteqthree & 
 &  & \\
 \hline
 \end{tabular}
 \end{center}
-\caption{Available pdf sets, their corresponding values of
+\caption{Available MRS-type pdf sets, their corresponding values of
 $\alpha_S(M_Z)$ and a reference to the paper or preprint that
 describes their origin.
-\label{pdlabel}}
+\label{pdlabelmrs}}
+\end{table}
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c|c||c|c|c|}
+\hline
+{\tt CT10.00}  &  0.118          & \cteqten &
+{\tt cteq66m}  &  0.118       & \cteqsixsixm \\
+{\tt cteq61m}  &  0.118       & \cteqsixonem &
+{\tt cteq6\_m} &  0.118       & \cteqsix \\
+{\tt cteq6\_d} &  0.118       & \cteqsix &
+{\tt cteq6\_l} &  0.118       & \cteqsix \\
+{\tt cteq6l1}  &  0.130       & \cteqsix &
+{\tt cteq5hq}  &  0.118       & \cteqfive \\
+{\tt cteq5f3}  &  0.106       & \cteqfive &
+{\tt cteq5f4}  &  0.112       & \cteqfive \\
+{\tt cteq5\_m} &  0.118       & \cteqfive &
+{\tt cteq5\_d} &  0.118       & \cteqfive \\
+{\tt cteq5\_l} &  0.127       & \cteqfive & 
+{\tt cteq5l1}  &  0.127       & \cteqfive \\
+{\tt cteq5hj}  &  0.118       & \cteqfive &
+{\tt cteq5m1}  &  0.118       & \cteqfive \\
+{\tt ctq5hq1}  &  0.118       & \cteqfive &
+{\tt cteq4a5}  &  0.122       & \cteqfour \\
+{\tt cteq4hj}  &  0.116       & \cteqfour &
+{\tt cteq4lq}  &  0.114       & \cteqfour \\
+{\tt cteq4\_m} &  0.116       & \cteqfour &
+{\tt cteq4\_d} &  0.116       & \cteqfour \\
+{\tt cteq4\_l} &  0.132       & \cteqfour &
+{\tt cteq4a1}  &  0.110       & \cteqfour \\
+{\tt cteq4a2}  &  0.113       & \cteqfour &
+{\tt cteq4a3}  &  0.116       & \cteqfour \\
+{\tt cteq4a4}  &  0.119       & \cteqfour &
+{\tt cteq3\_m} &  0.112       & \cteqthree \\
+{\tt cteq3\_l} &  0.112       & \cteqthree &
+{\tt cteq3\_d} &  0.112       & \cteqthree \\
+&  & \\
+\hline
+\end{tabular}
+\end{center}
+\caption{Available CTEQ-type pdf sets, their corresponding values of
+$\alpha_S(M_Z)$ and a reference to the paper or preprint that
+describes their origin.
+\label{pdlabelcteq}}
 \end{table}
 
 By editing the {\tt Makefile}, it is straightforward to switch to
@@ -298,16 +314,29 @@ Particularly when compiling against both LHAPDF and CERNLIB, it may
 be useful to link only LHAPDF in a static manner. This can be achieved
 using g77, for instance, by replacing
  ``{\tt -lLHAPDF}'' with ``{\tt -Wl,-Bstatic -lLHAPDF -Wl,-Bdynamic}''
- in the makefile. This version of {\tt MCFM} has been explicitly tested
- against {\tt LHAPDF-5.5.0}.
- 
+in the makefile. This version of {\tt MCFM} has been explicitly tested
+against {\tt LHAPDF-5.5.0}.
+
+If at the first execution of mcfm the following error appears:
+\begin{verbatim}
+./mcfm: error while loading shared libraries: libLHAPDF.so.0: cannot open
+shared object file: No such file or directory
+\end{verbatim}
+
+you should add the following lines to the shell (bash) login script :
+\begin{verbatim}
+export LHAPDFSYS=/yourpath/LHAPDF-X.Y.Z
+export PATH=${PATH}:${LHAPDFSYS}/bin
+export LD_LIBRARY PATH=${LD_LIBRARY PATH}:${LHAPDFSYS}/lib
+\end{verbatim}
+
 The parameters to choose the
 pdf set are then provided in {\tt Bin/input.DAT} - 
 the name of the group and the integer specifying 
 the set.
-{\tt MCFM} expects to find the sets in a sub-directory of {\tt Bin} called
-{\tt PDFsets}, as in the {\tt LHAPDF} distribution. It is easiest to
-simply create a symbolic link appropriately.
+{\tt MCFM} expects to find the LHAPDF grids in a sub-directory of {\tt Bin} called
+{\tt PDFsets}. It is easiest to simply create a symbolic link of the directory where the
+grids actually reside to a subdirectory of {\tt Bin} called {\tt PDFsets}.
 
 One may always return to the built-in distributions by resetting
 {\tt PDFROUTINES} to take the value {\tt NATIVE}  in the makefile,
@@ -423,7 +452,7 @@ it may be more efficient to do run the pieces separately by hand,
 {\tt tota} also includes the calculation of the fragmentation ({\tt frag})
 contributions.
 \item {\tt todk}
-Processes 161,166,171,176,181,186 only, see sections~\ref{subsec:stop} and
+Processes 161, 166, 171, 176, 181, 186, 141, 146, 149, 233, 238 only, see sections~\ref{subsec:stop} and
 \ref{subsec:wt} below.
 \item {\tt frag}.
 Processes 280, 285, 290, 295 and 300 only, see sections~\ref{subsec:gamgam}, \ref{subsec:wgamma} and
@@ -566,8 +595,9 @@ below.
 \end{center}
 
 \item {\tt pdlabel}. The choice of parton distribution is made by
-inserting the appropriate 7-character code from Table~{\ref{pdlabel}}
-here. As mentioned above, this also sets the value of $\alpha_S(M_Z)$.
+inserting the appropriate 7-character code from Table~\ref{pdlabelmrs}
+or~\ref{pdlabelcteq} here.
+As mentioned above, this also sets the value of $\alpha_S(M_Z)$.
 
 \item {\tt NGROUP, NSET}. These integers choose the parton distribution
 functions to be used when using the PDFLIB package.
@@ -771,7 +801,8 @@ Frixione isolation prescription (see above, Eq.~(\ref{frixeq})).
 \item {\tt h3(gamma)}. {\it See section~\ref{subsec:zgamma}.}
 \item {\tt h4(Z)}. {\it See section~\ref{subsec:zgamma}.}
 \item {\tt h4(gamma)}. {\it See section~\ref{subsec:zgamma}.}
-\item {\tt Form-factor scale, in TeV}. {\it See section~\ref{subsec:diboson}.}
+\item {\tt Form-factor scale, in TeV}. {\it See section~\ref{subsec:diboson}.} \\
+No form-factors are applied to the anomalous couplings if this value is negative.
 
 \begin{center}
 \{blank line\} \\
@@ -1158,6 +1189,25 @@ The calculation may be performed at NLO.
 
 When {\tt removebr} is true, the $W$ boson does not decay.
 
+\subsection{$W+b$ production, processes 12,17}
+\label{subsec:wb}
+
+These processes represent the production of a $W$ boson which
+subsequently decays leptonically, in association with a single bottom
+quark, exploiting the weak transitions $c \to b$ and $u \to b$.
+This is produced at leading order by an initial state which
+contains a charm quark (or the CKM  suppressed $u$ quark) and a
+gluon.  The effect of the bottom quark mass is included throughout the
+calculation.  
+For this case the CKM matrix elements $V_{cb}$ and $V_{ub}$,
+(if they are equal to zero in the input data file, {\tt mdata.f})
+are set equal to $0.041$ and $0.00347$ respectively. 
+Otherwise the non-zero values specified in {\tt mdata.f} are used. 
+The calculation of this process may
+be performed at NLO.
+
+When {\tt removebr} is true, the $W$ boson does not decay.
+
 \subsection{$W+c$ production, processes 13,18}
 \label{subsec:wc}
 
@@ -1441,7 +1491,7 @@ In processes {\tt 72} and {\tt 77}, a sum is performed over all three species of
 When {\tt removebr} is true in processes {\tt 71} and {\tt 76},
 neither the $W$ or the $Z$ boson decays.
 
-\subsubsection{$ZZ$ production, processes 81--84, 86--89}
+\subsubsection{$ZZ$ production, processes 81--84, 86--90}
 
 For $ZZ$ production, there are two sets of processes corresponding to the
 inclusion of a virtual photon when appropriate ({\tt nproc=81}--{\tt 84})
@@ -1460,6 +1510,9 @@ radiation from the bottom quarks that are produced by the $Z$ decay.
 When {\tt removebr} is true in processes {\tt 81} and {\tt 86},
 neither of the $Z$ bosons decays.
 
+In process {\tt 90} interference effects between the decay products of the two $Z$ bosons
+are included. This process may be calculated at LO only.
+
 \subsubsection{$ZZ$+jet production, process 85}
 
 This process is only implemented for the case when one $Z$ boson decays to
@@ -1469,6 +1522,7 @@ do not decay.
 
 \subsubsection{Anomalous couplings}
 
+\label{sec:anomalous}
 As of version 3.0, it is possible to specify anomalous trilinear
 couplings for the $W^+W^-Z$ and $W^+W^-\gamma$ vertices that are
 relevant for $WW$ and $WZ$ production. To run in this mode, one
@@ -1499,8 +1553,8 @@ This is the most general Lagrangian that conserves $C$ and $P$
 separately and electromagnetic gauge invariance requires that there
 is no equivalent of the $\Delta g_1^Z$ term for the photon coupling.
 
-In order to avoid a violation of unitarity, these couplings are included
-in {\tt MCFM} only after suppression by dipole form factors,
+In order to avoid a violation of unitarity, these couplings are often
+included only after suppression by dipole form factors,
 \begin{displaymath}
 \Delta g_1^Z \rightarrow \frac{\Delta g_1^Z}{(1+\hat{s}/\Lambda^2)^2}, \qquad
 \Delta \kappa^{Z/\gamma} \rightarrow
@@ -1512,7 +1566,8 @@ where $\hat{s}$ is the vector boson pair invariant mass and $\Lambda$
 is an additional parameter giving the scale of new physics, which should
 be in the TeV range.
 These form factors should be produced by the new physics associated with the
-anomalous couplings and this choice is somewhat arbitrary.
+anomalous couplings and this choice is somewhat arbitrary. The use of the form
+factors can be disabled as described below.
 
 The file {\tt input.DAT} contains the values of the $6$ parameters
 which specify the anomalous couplings:
@@ -1528,6 +1583,8 @@ with the lines representing $\Delta g_1^Z$, $\Delta \kappa^Z$,
 $\Delta \kappa^\gamma$, $\lambda^Z$, $\lambda^\gamma$ and
 $\Lambda$~[TeV] respectively. By setting the first 5 parameters to zero,
 as above, one recovers the Standard Model result.
+If the input file contains a negative value for the form-factor scale
+then the suppression factors described above are not applied.
 
 \subsection{$WH$ production, processes 91-94, 96-99}
 \label{subsec:wh}
@@ -1623,17 +1680,7 @@ values of these cutoffs can be changed by editing ${\tt src/HWW/gg\_WW\_int.f}$ 
 
 When {\tt removebr} is true the Higgs boson does not decay.
 
-\subsection{$W^+W^++$jets production, processes 131,132}
-These processes represent the production of two $W^+$ 
-bosons in association with two (process {\tt 131}) or three (process {\tt 132})
-jets.  The lowest order at which two positively charged $W$ bosons 
-can be produced is with two jets. 
-This process is only implemented for leptonic decays of the 
-$W$ particles. The calculation is available at LO only.
-The calculation and code are from ref.~\cite{Melia:2010bm}.
-{\tt removebr} is not implemented and has no effect.
-
-\subsection{$H+b$ production, processes 141--143}
+\subsection{$H+b$ production, processes 131--133}
 \label{subsec:Hb}
 
 \begin{center}
@@ -1650,48 +1697,106 @@ bottom quarks in the Higgs decay is not included.
 For this process, the matrix elements are divided up into a number of
 different sub-processes, so the user must sum over these after performing
 more runs than usual. At lowest order one can proceed as normal, using
-{\tt nproc=141}. For a NLO calculation, the sequence of runs is as follows:
+{\tt nproc=131}. For a NLO calculation, the sequence of runs is as follows:
 \begin{itemize}
-\item Run {\tt nproc=141} with {\tt part=virt} and {\tt part=real} (or, both
+\item Run {\tt nproc=131} with {\tt part=virt} and {\tt part=real} (or, both
 at the same time using {\tt part=tota});
-\item Run {\tt nproc=142} with {\tt part=real}.
+\item Run {\tt nproc=132} with {\tt part=real}.
 \end{itemize}
 The sum of these yields the cross-section with one identified $b$-quark in
 the final state. To calculate the contribution with two $b$-quarks in the
-final state, one should use {\tt nproc=143} with {\tt part=real}.
+final state, one should use {\tt nproc=133} with {\tt part=real}.
 
 When {\tt removebr} is true, the Higgs boson does not decay.
 
-\subsection{$t\bar{t}$ production with decay, processes 151--153}
+\subsection{$t\bar{t}$ production with 2 semi-leptonic decays, processes 141--145}
 
-These processes describe $t \bar{t}$ production 
-including two leptonic decays $t \to b l \nu$ (process {\tt 151}) and 
-one leptonic and one hadronic decay ({\tt 152}).
-The computation may be performed at NLO, using the virtual amplitudes
-presented in ref.~\cite{Korner:2002hy}.
+These processes describe $t \bar{t}$ production including semi-leptonic
+decays for both the top and the anti-top. 
+In version 6.2 we have updated this to use the one-loop amplitudes of
+ref.~\cite{Badger:2011yu}. The code for the virtual amplitudes now runs
+about three times faster than earlier versions where the virtual
+amplitudes of ref.~\cite{Korner:2002hy} were used.  
+Switching {\tt zerowidth} from {\tt .true.} to {\tt .false.} only affects 
+the $W$ bosons from the top quark decay, because our method of including spin
+correlations requires the top quark to be on shell.
 
-%In the case of process 152, there is no radiation off the decay products
-%of the $W$ which decays hadronically.
-
-Switching {\tt zerowidth} from {\tt .true.} to {\tt .false.} only affects
-the $W$ bosons from the top quark decay.
-When {\tt removebr} is true in process {\tt 151},
+Process {\tt 141} includes all corrections, i.e.\ both radiative corrections
+to the decay and to the production. This process is therefore the
+basic process for the description of top production where both quarks
+decay semi-leptonically.  When {\tt removebr} is true in process {\tt 141},
 the top quarks do not decay.
+When one wishes to calculate observables related to the decay of the top
+quark, {\tt removebr} should be false in process {\tt 141}.
+The LO calculation proceeds as normal. At NLO, there are two options:
+\begin{itemize}
+\item {\tt part=virt, real} or {\tt tota} : final state radiation is included
+in the production stage only
+\item {\tt part = todk} : radiation is included in the decay of the top
+quark also and the final result corresponds to the sum of real and virtual
+diagrams. 
+Note that these runs automatically perform an extra integration, so
+will take a little longer.
+\end{itemize}
 
-In the case of process 153, there are no spin correlations in the decay of the 
-top quarks. The calculation is performed by multiplying the spin summed 
-top production cross section, by the decay matrix element for the decay of the 
-$t$ and the $\bar{t}$. These processes may be used as a diagnostic test 
-for the importance of the spin correlation.
+Process {\tt 142} includes only the corrections in
+the semileptonic decay of the top quark. Thus it is of primary
+interest for theoretical studies rather than for physics applications.  
+Because of the method that we have used to include the radiation in the decay,
+the inclusion of the corrections in the decay does not change the
+total cross section.
 
 
-\subsection{$t\bar{t}$ production with decay and a gluon, process 156}
+In the case of process {\tt 145}, there are no spin correlations in
+the decay of the top quarks. The calculation is performed by
+multiplying the spin summed top production cross section, by the decay
+matrix element for the decay of the $t$ and the $\bar{t}$. These
+processes may be used as a diagnostic test for the importance of the
+spin correlation.
+
+
+
+\subsection{$t\bar{t}$ production with decay and a gluon, process 143}
 This process describes lowest order $t \bar{t}+g$ production 
-including two leptonic decays $t \to b l \nu$. The input flag 
-{\tt zerowidth} must be set to true for 
-this case.
-
+including two leptonic decays $t \to b l \nu$. 
 When {\tt removebr} is true, the top quarks do not decay.
+This LO process only includes radiation only includes radiation in production.
+
+\subsection{$t\bar{t}$ production with one hadronic decay, processes 146--151}
+
+These processes describe the hadronic production of a pair of top
+quarks, with one quark decaying hadronically and one quark decaying
+semileptonics.  For processes {\tt 146--148}, the top quark decays
+semileptonically whereas the anti-top quark decays hadronically.  For
+processes {\tt 149--151}, the top quark decays hadronically whereas the
+anti-top quark decays semi-leptonically.  The base processes for
+physics are process {\tt 146} and {\tt 149} which include
+radiative corrections in both production and decay.  Switching {\tt zerowidth} from 
+{\tt .true.} to {\tt .false.} only affects the $W$ bosons from the top
+quark decay, because our method of including spin correlations
+requires the top quark to be on shell.
+When one wishes to calculate observables related to the decay of the top
+quark, {\tt removebr} should be false in processes {\tt 146} and {\tt 149}.
+The LO calculation proceeds as normal. At NLO, there are two options:
+\begin{itemize}
+\item {\tt part=virt, real} or {\tt tota} : final state radiation is included
+in the production stage only
+\item {\tt part = todk} : radiation is included in the decay of the top
+quark also and the final result corresponds to the sum of real and virtual
+diagrams. 
+Note that these runs automatically perform an extra integration, so
+will take a little longer.
+\end{itemize}
+
+
+Processes {\tt 147} and {\tt 150} include only the radiative 
+corrections in the decay of the top quark without including 
+the radiative corrections in the hadronic decay of the $W$-boson.
+Process {\tt 148} ({\tt 151}) includes only the radiative corrections
+in the hadronic decay of the $W$-boson coming from the anti-top (top).
+Because of the method that we have used to include the radiation in the decay,
+the inclusion of the corrections in the decay does not change the
+total cross section.
 
 \subsection{$Q\overline{Q}$ production, processes 157--159}
 These processes calculate the production of heavy quarks
@@ -1919,7 +2024,7 @@ ref.~\cite{Kleiss:1988xr}.
 
 When {\tt removebr} is true, the tau leptons do not decay.
 
-\subsection{$t$-channel single top with an explicit $b$-quark, processes 231--237}
+\subsection{$t$-channel single top with an explicit $b$-quark, processes 231--240}
 \label{subsec:stopb}
 
 \begin{center}
@@ -1932,6 +2037,38 @@ The $b$-quark is instead explicitly included in the final state.
 
 Processes {\tt 232} and {\tt 236} represent $t$-channel single top production in association
 with a further jet and may be calculated at LO only.
+
+Processes {\tt 233} and {\tt 238} are the complete four-flavour scheme $t$-channel single top production processes.
+These are therefore the processes that should be used for most physics applications.
+When one wishes to calculate observables related to the decay of the top
+quark, {\tt removebr} should be false in processes {\tt 233} and {\tt 236}.
+The LO calculation proceeds as normal. At NLO, there are two options:
+\begin{itemize}
+\item {\tt part=virt, real} or {\tt tota} : final state radiation is included
+in the production stage only
+\item {\tt part = todk} : radiation is included in the decay of the top
+quark also and the final result corresponds to the sum of real and virtual
+diagrams. 
+Note that these runs automatically perform an extra integration, so
+will take a little longer.
+\end{itemize}
+
+
+Processes {\tt 234} and {\tt 239} give the extra contribution due to radiation 
+in top decay. These processes are mainly of theoretical interest. 
+
+Processes {\tt 235} and {\tt 240} are the leading order single top processes with an 
+extra radiated parton. These processes do not includes jets produced in the decay process.
+
+\subsection{$W^+W^++$jets production, processes 251,252}
+These processes represent the production of two $W^+$ 
+bosons in association with two (process {\tt 251}) or three (process {\tt 252})
+jets.  The lowest order at which two positively charged $W$ bosons 
+can be produced is with two jets. 
+This process is only implemented for leptonic decays of the 
+$W$ particles. The calculation is available at LO only.
+The calculation and code are from ref.~\cite{Melia:2010bm}.
+{\tt removebr} is not implemented and has no effect.
 
 \subsection{$Z+Q$ production, processes 261--267}
 \label{subsec:ZQ}
@@ -1971,11 +2108,11 @@ dependence on the heavy quark mass), this can only be computed at LO.
 
 When {\tt removebr} is true, the $Z$ boson does not decay.
 
-\subsection{$H + 2$~jet production, processes 271--274}
+\subsection{$H + 2$~jet production, processes 270--274}
 
 These processes represent the production of a Standard Model Higgs boson
 in association with two jets. The Higgs boson
-subsequently decays to either a bottom quark pair ({\tt nproc=271}), 
+subsequently decays to either a pair of photons ({\tt nproc=270}), a bottom quark pair ({\tt nproc=271}), 
 a pair of tau's ({\tt nproc=272}), a pair of leptonically decaying $W$'s ({\tt nproc=273}) 
 or a pair of leptonically decaying $Z$'s ({\tt nproc=274}).
 
@@ -1984,13 +2121,14 @@ using the effective Lagrangian approach.
 
 When {\tt removebr} is true, the Higgs boson does not decay.
 
-\subsection{$H + 3$~jet production, processes 275, 276}
+\subsection{$H + 3$~jet production, processes 275-278}
 
 These processes represent the production of a Standard Model Higgs boson
 in association with three jets. The Higgs boson
 subsequently decays to either a bottom quark pair ({\tt nproc=275}), 
-or a pair of tau's ({\tt nproc=276}).
-
+or a pair of tau's ({\tt nproc=276})
+or a pair of $W$'s that decay leptonically into a single generation of leptons ({\tt nproc=278})
+or a pair of $Z$'s that decay leptonically into a single generation of leptons ({\tt nproc=279}).
 The matrix elements are included in the infinite top mass limit
 using an effective Lagrangian approach. These calculations can be
 performed at LO only.
@@ -2073,17 +2211,17 @@ or less and demanding gauge, $C$ and $CP$ invariance gives the general form of t
 where the overall coupling has been chosen to be $-|e|$. The parameters that
 specify the anomalous couplings, $\Delta\kappa^\gamma$ and $\lambda^\gamma$, are
 specified in the input file as already discussed in Section~\ref{subsec:diboson}.
-In particular, these couplings are included
+If the input file contains a negative value for the form-factor scale $\Lambda$
+then no suppression factors are applied to the anomalous couplings.
+Otherwise, the couplings are included
 in {\tt MCFM} only after suppression by dipole form factors,
 \begin{displaymath}
 \Delta \kappa^{\gamma} \rightarrow
  \frac{\Delta \kappa_1^{\gamma}}{(1+\hat{s}/\Lambda^2)^2}, \qquad
 \lambda^{\gamma} \rightarrow
- \frac{\Delta \lambda^{\gamma}}{(1+\hat{s}/\Lambda^2)^2} \;.
+ \frac{\Delta \lambda^{\gamma}}{(1+\hat{s}/\Lambda^2)^2} \;,
 \end{displaymath}
-In these formulae, $\hat{s}$ is the $W\gamma$ pair invariant mass and $\Lambda$
-is an additional parameter giving the scale of new physics that should also
-be provided in the input file.
+where $\hat{s}$ is the $W\gamma$ pair invariant mass.
 
 The Standard Model cross section is obtained by setting $\Delta\kappa^\gamma = \lambda^\gamma = 0$.
 
@@ -2138,7 +2276,9 @@ h_i^\gamma$.
 The parameters that
 specify the anomalous couplings, $h_i^Z$ and $h_i^\gamma$ (for $i=1\ldots 4$), are
 specified in the input file as, e.g. {\tt h1(Z)} and {\tt h1(gamma)}.
-Moreover, these couplings are included
+If the input file contains a negative value for the form-factor scale $\Lambda$
+then no suppression factors are applied to these anomalous couplings.
+Otherwise, the couplings are included
 in {\tt MCFM} only after suppression by dipole form factors,
 \begin{displaymath}
 h_{1,3}^{Z/\gamma} \rightarrow
@@ -2146,9 +2286,7 @@ h_{1,3}^{Z/\gamma} \rightarrow
 h_{2,4}^{Z/\gamma} \rightarrow
  \frac{h_{2,4}^{Z/\gamma}}{(1+\hat{s}/\Lambda^2)^4}, \qquad
 \end{displaymath}
-In these formulae, $\hat{s}$ is the $Z\gamma$ pair invariant mass and $\Lambda$
-is an additional parameter giving the scale of new physics that should also
-be provided in the input file. Note that these form factors are slightly
+where $\hat{s}$ is the $Z\gamma$ pair invariant mass. Note that these form factors are slightly
 different from those discussed in Sections~\ref{subsec:diboson} and~\ref{subsec:wgamma}.
 
 The Standard Model cross section is obtained by setting $h_i^Z = h_i^\gamma = 0$ for $i=1\ldots 4$.
@@ -2386,7 +2524,7 @@ The preferred reference to the program depends upon the process under study. The
   [arXiv:1011.6647 [hep-ph]].
 \item J.~M.~Campbell, R.~K.~Ellis and C.~Williams, \\
   {\it ``Vector boson pair production at the LHC,''} \\
- FERMILAB-PUB-11-182-T,
+  JHEP {\bf 1107}, 018 (2011)
   [arXiv:1105.0020 [hep-ph]]. 
 \item F.~Caola, J.~M.~Campbell, F.~Febres Cordero, L.~Reina and D.~Wackeroth, \\
   {\it ``NLO QCD predictions for W+1 jet and W+2 jet production with at least one b
@@ -2395,7 +2533,11 @@ The preferred reference to the program depends upon the process under study. The
 \item J.~M.~Campbell, R.~K.~Ellis and C.~Williams, \\
   {\it ``Gluon-gluon contributions to W+ W- production and Higgs interference
   effects,''} \\
+  JHEP {\bf 1110}, 005 (2011)
   arXiv:1107.5569 [hep-ph].
+\item J.~M.~Campbell and R.~K.~Ellis, \\
+  {\it ``Top-quark processes at NLO in production and decay,''} \\
+  arXiv:1204.1513 [hep-ph], FERMILAB-PUB-12-078-T.
 \end{itemize}
 
 The following publications have also made use of calculations
@@ -2429,9 +2571,11 @@ released in the future.
 6  & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))$   & NLO \\
 \hline 
 11 & $ W^+(\to \nu(p_{3})+e^+(p_{4}))+f(p_{5})$    & NLO \\
+12 & $ W^+(\to \nu(p_{3})+e^+(p_{4}))+\bar{b}(p_{5})$   & NLO \\
 13 & $ W^+(\to \nu(p_{3})+e^+(p_{4}))+\bar{c}(p_{5})$   & NLO \\
 14 & $ W^+(\to \nu(p_{3})+e^+(p_{4}))+\bar{c}(p_{5}) [\mbox{massless}]$   & LO \\
 16 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+f(p_{5})$   & NLO \\
+17 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+b(p_{5})$   & NLO \\
 18 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+c(p_{5})$   & NLO \\
 19 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+c(p_{5}) [\mbox{massless}]$   & LO \\
 \hline 
@@ -2491,7 +2635,7 @@ released in the future.
 75 & $ W^+(\to \nu(p_{3})+\mu^+(p_{4}))+Z^0(\to 2\times(u(p_{5})+\bar{u}(p_{6})))$   & NLO \\
 \hline 
 76 & $ W^-(\to \mu^-(p_{3})+\bar{\nu}(p_{4}))+Z^0(\to e^-(p_{5})+e^+(p_{6}))$   & NLO \\
-77 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+Z^0(\to 3\times(\nu(p_{5})+\bar{\nu}(p_{6})))$   & NLO \\
+77 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+Z^0(\to 3\times(\nu_e(p_{5})+\bar{\nu}_e(p_{6})))$   & NLO \\
 78 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+Z^0(\to b(p_{5})+\bar{b}(p_{6}))$   & NLO \\
 79 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+Z^0(\to 3\times(d(p_{5})+\bar{d}(p_{6})))$   & NLO \\
 80 & $ W^-(\to e^-(p_{3})+\bar{\nu}(p_{4}))+Z^0(\to 2\times(u(p_{5})+\bar{u}(p_{6})))$   & NLO \\
@@ -2506,6 +2650,7 @@ released in the future.
 87 & $ Z^0(\to e^-(p_{3})+e^+(p_{4})) + Z^0(\to 3\times(\nu(p_{5})+\bar{\nu}(p_{6}))) [\mbox{no gamma*}]$   & NLO \\
 88 & $ Z^0(\to e^-(p_{3})+e^+(p_{4}))+Z^0(\to b(p_{5})+\bar{b}(p_{6})) [\mbox{no gamma*}]$   & NLO \\
 89 & $ Z^0(\to b(p_{3})+\bar{b}(p_{4})) + Z^0(\to 3\times(\nu(p_{5})+\bar{\nu}(p_{6}))) [\mbox{no gamma*}]$   & NLO \\
+90 & $ Z^0(\to e^-(p_{3})+e^+(p_{4})) + Z^0(\to e^-(p_{5})+e^+(p_{6}))$   & NLO \\
 \hline 
 91 & $ W^+(\to \nu(p_{3})+e^+(p_{4})) + H(\to b(p_{5})+\bar{b}(p_{6}))$   & NLO \\
 92 & $ W^+(\to \nu(p_{3})+e^+(p_{4})) + H(\to W^+(\nu(p_{5}),e^+(p_{6}))W^-(e^-(p_{7}),\bar{\nu}(p_{8})))$   & NLO \\
@@ -2546,16 +2691,20 @@ released in the future.
 121 & $ H(\to  W^+(\nu(p_3)+e^+(p_{4})) + W^-(e^-(p_{5})+\bar{\nu}(p_{6}))) [\mbox{top, bottom loops, exact}]$ & LO \\
 122 & $ H(\to  W^+(\nu(p_3)+e^+(p_{4})) + W^-(e^-(p_{5})+\bar{\nu}(p_{6}))) [\mbox{ + interf. with}~gg \to WW]$ & LO \\
 \hline 
-131 & $ W^+(\to \nu(p_{3})+e^+(p_{4})) + W^+(\to \nu(p_{5})+e^+(p_{6}))+f(p_{7})+f(p_{8})$   & LO \\
-132 & $ W^+(\to \nu(p_{3})+e^+(p_{4})) + W^+(\to \nu(p_{5})+e^+(p_{6}))+f(p_{7})+f(p_{8})+f(p_{9})$   & LO \\
+131 & $ H(\to b(p_{3})+\bar{b}(p_{4})) + b(p_{5}) (+g(p_{6}))$   & NLO \\
+132 & $ H(\to b(p_{3})+\bar{b}(p_{4})) + \bar{b}(p_{5}) (+b(p_{6}))$   & (REAL) \\
+133 & $ H(\to b(p_{3})+\bar{b}(p_{4})) + b(p_{5}) + \bar{b}(p_{6}) [\mbox{both observed}]$   & (REAL) \\
 \hline 
-141 & $ H(\to b(p_{3})+\bar{b}(p_{4})) + b(p_{5}) (+g(p_{6}))$   & NLO \\
-142 & $ H(\to b(p_{3})+\bar{b}(p_{4})) + \bar{b}(p_{5}) (+b(p_{6}))$   & (REAL) \\
-143 & $ H(\to b(p_{3})+\bar{b}(p_{4})) + b(p_{5}) + \bar{b}(p_{6}) [\mbox{both observed}]$   & (REAL) \\
-\hline 
-151 & $ t(\to \nu(p_{3})+e^+(p_{4})+b(p_{5}))+\bar{t}(\to \bar{b}(p_{6})+e^-(p_{7})+\bar{\nu}(p_{8}))$   & NLO \\
-152 & $ t(\to \nu(p_{3})+e^+(p_{4})+b(p_{5}))+\bar{t}(\to \bar{b}(p_{6})+q(p_{7})+\bar{q}(p_{8}))$   & NLO \\
-153 & $ t(\to \nu(p_{3})+e^+(p_{4})+b(p_{5}))+\bar{t}(\to \bar{b}(p_{6})+e^-(p_{7})+\bar{\nu}(p_{8})) (uncorr)$   & NLO \\
+141 & $ t(\to \nu(p_{3})+e^+(p_{4})+b(p_{5}))+\bar{t}(\to b~(p_{6})+e^-(p_{7})+\bar{\nu}(p_{8}))$ & NLO \\
+142 & $ t(\to \nu(p_{3})+e^+(p_{4})+b(p_{5}))+\bar{t}(\to b~(p_{6})+e^-(p_{7})+\bar{\nu}(p_{8}))$ \mbox{\small [gluon in top decay]}& NLO \\
+143 & $ t(\to \nu(p_{3})+e^+(p_{4})+b(p_{5}))+\bar{t}(\to b~(p_{6})+e^-(p_{7})+\bar{\nu}(p_{8}))+f(p_{9})$ & LO \\
+145 & $ t(\to \nu(p_{3})+e^+(p_{4})+b(p_{5}))+\bar{t}(\to b~(p_{6})+e^-(p_{7})+\bar{\nu}(p_{8}))$ \mbox{(uncorr)} & NLO \\
+146 & $ t(\to \nu(p_{3})+e^+(p_{4})+b(p_{5}))+\bar{t}(\to b~(p_{6})+q(p_{7})+\bar{q}(p_{8})) $ & NLO \\
+147 & $ t(\to \nu(p_{3})+e^+(p_{4})+b(p_{5}))+\bar{t}(\to b~(p_{6})+q(p_{7})+\bar{q}(p_{8})) $ \mbox{\small [gluon in top decay]}& NLO \\
+148 & $ t(\to \nu(p_{3})+e^+(p_{4})+b(p_{5}))+\bar{t}(\to b~(p_{6})+q(p_{7})+\bar{q}(p_{8})) $ \mbox{\small [gluon in $W$ decay]}& NLO \\
+149 & $ t(\to q(p_{3})+\bar{q}(p_{4})+b(p_{5}))+\bar{t}(\to b~(p_{6})+e^-(p_{7})+\bar{\nu}(p_{8})) $ & NLO \\
+150 & $ t(\to q(p_{3})+\bar{q}(p_{4})+b(p_{5}))+\bar{t}(\to b~(p_{6})+e^-(p_{7})+\bar{\nu}(p_{8})) $ \mbox{\small [gluon in top decay]}& NLO \\
+151 & $ t(\to q(p_{3})+\bar{q}(p_{4})+b(p_{5}))+\bar{t}(\to b~(p_{6})+e^-(p_{7})+\bar{\nu}(p_{8})) $ \mbox{\small [gluon in $W$ decay]}& NLO \\
 \hline 
 \end{tabular}
 \end{center}
@@ -2564,8 +2713,7 @@ released in the future.
 \begin{table}
 \begin{center}
 \begin{tabular}{|l|l|l|}
-\hline156 & $ t(\to \nu(p_{3})+e^+(p_{4})+b(p_{5}))+\bar{t}(\to \bar{b}(p_{6})+e^-(p_{7})+\bar{\nu}(p_{8}))+f(p_{9})$   & LO \\
-\hline 
+\hline
 157 & $ t \bar{t} [\mbox{for total Xsect}]$   & NLO \\
 158 & $ b \bar{b} [\mbox{for total Xsect}]$   & NLO \\
 159 & $ c \bar{c} [\mbox{for total Xsect}]$   & NLO \\
@@ -2630,10 +2778,19 @@ released in the future.
 \hline 
 221 & $ \tau^-(\to e^-(p_{3})+\bar{\nu}_e(p_{4})+\nu_\tau(p_{5}))+\tau^+(\to \bar{\nu}_\tau(p_{6})+\nu_e(p_{7})+e^+(p_{8}))$   & LO \\
 \hline 
-231 & $ t(p_{3})+\bar{b}(p_{4})+q(p_{5}) [\mbox{t-channel}]$   & NLO \\
-232 & $ t(p_{3})+\bar{b}(p_{4})+q(p_{5})+q(p_{6}) [\mbox{t-channel}]$   & LO \\
-236 & $ \bar{t}(p_{3})+b(p_{4})+q(p_{5}) [\mbox{t-channel}]$   & NLO \\
-237 & $ \bar{t}(p_{3})+b(p_{4})+q(p_{5})+q(p_{6}) [\mbox{t-channel}]$   & LO \\
+231 & $t(p_3)+\bar{b}(p_4)+q(p_5)$ [\mbox{t-channel]} & NLO \\
+232 & $t(p_3)+\bar{b}(p_4)+q(p_5)+q(p_6)$ [\mbox{t-channel]} & LO \\
+233 & $t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{b}(p_6)+q(p_7)$ [\mbox{t-channel]} & NLO \\
+234 & $t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{b}(p_6)+q(p_7)$ [\mbox{t-channel, rad. in decay]} & NLO \\
+235 & $t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{b}(p_6)+q(p_7)+f(p_8)$ [\mbox{t-channel]} & LO \\
+236 & $\bar{t}(p_3)+b(p_4)+q(p_5)$ [\mbox{t-channel]} & NLO \\
+237 & $\bar{t}(p_3)+b(p_4)+q(p_5)+q(p_6)$ [\mbox{t-channel]} & LO \\
+238 & $\bar{t}(\to e^-(p_3)+\bar{\nu}(p_4)+\bar{b}(p_5))+b(p_6)+q(p_7)$ [\mbox{t-channel]} & NLO \\
+239 & $\bar{t}(\to e^-(p_3)+\bar{\nu}(p_4)+\bar{b}(p_5))+b(p_6)+q(p_7)$ [\mbox{t-channel, rad. in decay]} & NLO \\
+240 & $\bar{t}(\to e^-(p_3)+\bar{\nu}(p_4)+\bar{b}(p_5))+b(p_6)+q(p_7)+f(p_8)$ [\mbox{t-channel]} & L0 \\
+\hline 
+251 & $ W^+(\to \nu(p_{3})+e^+(p_{4})) + W^+(\to \nu(p_{5})+e^+(p_{6}))+f(p_{7})+f(p_{8})$   & LO \\
+252 & $ W^+(\to \nu(p_{3})+e^+(p_{4})) + W^+(\to \nu(p_{5})+e^+(p_{6}))+f(p_{7})+f(p_{8})+f(p_{9})$   & LO \\
 \hline 
 261 & $ Z^0(\to e^-(p_{3})+e^+(p_{4}))+b(p_{5})$   & NLO \\
 262 & $ Z^0(\to e^-(p_{3})+e^+(p_{4}))+c(p_{5})$   & NLO \\
@@ -2650,12 +2807,15 @@ released in the future.
 \begin{center}
 \begin{tabular}{|l|l|l|}
 \hline
+270 & $ H(\gamma(p_{3})+\gamma(p_{4}))+f(p_{5})+f(p_{6}) [\mbox{in heavy top limit}]$   & NLO \\
 271 & $ H(b(p_{3})+\bar{b}(p_{4}))+f(p_{5})+f(p_{6}) [\mbox{in heavy top limit}]$   & NLO \\
 272 & $ H(\tau^-(p_{3})+\tau^+(p_{4}))+f(p_{5})+f(p_{6}) [\mbox{in heavy top limit}]$   & NLO \\
 273 & $ H(\to W^+(\nu(p_{3}),e^+(p_{4}))W^-(e^-(p_{5}),\bar{\nu}(p_{6})))+f(p_{7})+f(p_{8})$   & NLO \\
 274 & $ H(\to Z^+(e^-(p_{3}),e^+(p_{4}))Z(\mu^-(p_{5}),\mu^+(p_{6})))+f(p_{7})+f(p_{8})$   & NLO \\
 275 & $ H(b(p_{3})+\bar{b}(p_{4}))+f(p_{5})+f(p_{6})+f(p_{7}) [\mbox{in heavy top limit}]$   & LO \\
 276 & $ H(\tau^-(p_{3})+\tau^+(p_{4}))+f(p_{5})+f(p_{6})+f(p_{7}) [\mbox{in heavy top limit}]$   & LO \\
+278 & $ H(\to W^+(\nu(p_3),e^+(p_4))W^-(e^-(p_5),\nu~(p_6)))+f(p_7)+f(p_8)+f(p_9)$ & LO \\
+279 & $ H(\to Z^+(e^-(p_3),e^+(p_4))Z(\mu^-(p_5),\mu^+(p_6)))+f(p_7)+f(p_8)+f(p_9)$ & LO \\
 \hline 
 280 & $ \gamma(p_3)+f(p_{4})$ & NLO+F \\
 282 & $ f(p_{1})+f(p_{2})\to  \gamma(p_{3})+f(p_{4})+f(p_{5})$   & LO \\
@@ -2746,6 +2906,74 @@ released in the future.
 \end{table}
 \clearpage
 
+\section{Version 6.2 changelog}
+\label{changelog6.2}
+
+A number of changes to the code and input files have been implemented
+between v6.1 and v6.2. These are listed below.
+
+\subsection{Input file changes}
+\begin{itemize}
+\item Implementation of new processes:
+\begin{itemize}
+\item 
+Added process {\tt 233-235} and {\tt 238-240} that give results in the four-flavour scheme
+      with top decay.
+\item 
+Added process {\tt 270} (Higgs + 2 jets, with Higgs decaying to $\gamma \gamma$).
+\item 
+Added LO processes {\tt 278} and {\tt 279} (Higgs + 3 jets with Higgs decaying to $WW$ or $ZZ$).
+\item 
+Adding process {\tt 90} for identical fermions in $ZZ$ decay.
+\item
+Added processes {\tt 12} and {\tt 17}, $Wb$ production from charm quarks
+\end{itemize}
+\end{itemize}
+
+
+\subsection{Code changes}
+\begin{itemize}
+\item
+Included new plotting routines for s-channel single top, 4F t-channel single top and
+top pair production,
+\begin{verbatim} nplotter_tbbar.f, nplotter_4ftwdk.f,  nplotter_ttbar.f
+\end{verbatim}
+\item
+Corrected all nplotter files to ensure ntuple output.
+\item
+Added CT10 parton distributions.
+\item
+Upgraded treatment of $t \bar{t}$ one-loop matrix elements for processes {\tt 141-150} to use results of 
+ref.~\cite{Badger:2011yu} rather than ref.~\cite{Korner:2002hy} with consequent improvement in speed.
+\item
+Updated check on whether non-zero $m_{56}$ cut is applied to exclude $Z \to$~neutrino processes (for which is is not needed). 
+\item
+Removed overcounting of neutrinos for non-resonant diagrams in the $ZZ$ process.
+\item
+Removed effect of $m_{34}$ for dirgam process {\tt 280}. 
+Therefore for this process $m_{34}$ cut is not operative.
+\item
+Corrected $ZZ$ processes {\tt 80-90} where the Z's decayed differently
+to different final states. 
+There was a bug in the gluon-gluon contribution since \begin{verbatim} gg_ZZ.f \end{verbatim} did not handle the 
+different couplings for Z(3+4) and Z(5+6) correctly.
+\item
+Removed dependence on path in \begin{verbatim} ffinit_mine.f \end{verbatim} and modified Install script 
+to create symbolic links.
+\item
+Updated handling of anomalous couplings to allow for no form-factors if tevscale $< 0$, see section \ref{sec:anomalous}.
+\item
+Moved processes ({\tt 151-156} to {\tt 141-151}), ({\tt 131,132} to {\tt 251,252}) and ({\tt 141-143} to {\tt 131-133}).
+\item
+Improved implementation of $p_T$ cut in 
+\begin{verbatim} gg_WW.f, gg_ZZ.f \end{verbatim}
+\item
+Added improvements to mbook.f for Root histogram errors
+\item
+Corrected masscuts.f to avoid problems with $m_{56}$ cut.
+\end{itemize}
+
+
 \section{Version 6.1 changelog}
 \label{changelog}
 
@@ -2810,11 +3038,12 @@ masses do not correspond to electroweak bosons.
  {\tt 151}, {\tt 152} and {\tt 153}.
 \end{itemize}
 
+
 \begin{thebibliography}{99}
 %\cite{Ellis:2007qk}
 \bibitem{Ellis:2007qk}
   R.~K.~Ellis and G.~Zanderighi,
-  %``Scalar one-loop integrals for QCD,''
+  %``Scalar one-loop integrals for QCD''
   JHEP {\bf 0802}, 002 (2008)
   [arXiv:0712.1851 [hep-ph]].
   %%CITATION = JHEPA,0802,002;%%
@@ -3052,6 +3281,15 @@ Z.\ Phys.\ C {\bf 40}, 419 (1988).
   %jet at the 7 TeV LHC,''
   arXiv:1107.3714 [hep-ph].
   %%CITATION = ARXIV:1107.3714;%%
+
+%\cite{Badger:2011yu}
+\bibitem{Badger:2011yu}
+  S.~Badger, R.~Sattler and V.~Yundin,
+  %``One-Loop Helicity Amplitudes for $t\bar{t}$ Production at Hadron
+  %Colliders,''
+  Phys.\ Rev.\  D {\bf 83}, 074020 (2011)
+  [arXiv:1101.5947 [hep-ph]].
+  %%CITATION = PHRVA,D83,074020;%%
 
 \end{thebibliography}
 

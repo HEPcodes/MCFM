@@ -31,6 +31,7 @@ c      endif
      .    .or. (case .eq. 'ZHbbar')
      .    .or. (case .eq. 'qq_tth')
      .    .or. (case .eq. 'tottth')
+     .    .or. (case .eq. 'gagajj')
      .    .or. (case .eq. 'ggfus0')
      .    .or. (case .eq. 'ggfus1')
      .    .or. (case .eq. 'ggfus2')

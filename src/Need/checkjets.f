@@ -23,10 +23,10 @@ c--- check that particle 5 is a b for H+b, W+c, Z+Q and W+b+jet processes
 c--- also check for t-channel single top when the BR is not removed
       if ( (case .eq. 'H_1jet')
      . .or.(case .eq. 'W_cjet') .or. (case .eq. 'Wcjet0')
-     . .or.(case .eq. 'ttdkay')
      . .or.(case .eq. 'gQ__ZQ') .or. (case .eq. 'W_bjet')
      . .or.(case .eq. 'Z_bjet')
      . .or.((case.eq. 'bq_tpq') .and. (removebr .eqv. .false.))
+     . .or.((case.eq. 'ttdkay') .and. (removebr .eqv. .false.))
      . .or.((case.eq. 'W_twdk') .and. (removebr .eqv. .false.))
      . .or.((case.eq. 'Wtdkay') .and. (removebr .eqv. .false.)) ) then
         countb=0
@@ -40,9 +40,9 @@ c--- also check for t-channel single top when the BR is not removed
         if (   (     (case .eq. 'bq_tpq') .or. (case .eq. 'ttdkay')
      .          .or. (case .eq. 'W_bjet') .or. (case .eq. 'Z_bjet') )
      .   .and. (countb .lt. 1) ) failed=.true.
-        if ((nproc .eq. 142) .and. (jetsfound .eq. 2)
+        if ((nproc .eq. 132) .and. (jetsfound .eq. 2)
      .      .and. (countb .ne. 1)) failed=.true.
-        if ((nproc .eq. 143) .and. (jetsfound .eq. 2)
+        if ((nproc .eq. 133) .and. (jetsfound .eq. 2)
      .      .and. (countb .ne. 2)) failed=.true.
         if ((nproc .eq. 342) .and. (jetsfound .eq. 2)
      .      .and. (countb .ne. 1) .and. (isub .eq. 0)) failed=.true.

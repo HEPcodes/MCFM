@@ -11,9 +11,10 @@ c--- Using the results of Frizzo and Company
       include 'qcdcouple.f'
       include 'zprods_com.f'
       include 'nflav.f'
+      include 'process.f'
       integer j,k,nu
       double precision p(mxpart,4),Asq,fac,q(mxpart,4)
-      double precision Hggggg,
+      double precision Hggggg,msqgamgam,
      . Hqaggg,Haqggg,Hgqqgg,Hgaagg,Hqgqgg,Hagagg,Hggqag
       double precision qr_qrg,ar_arg,ab_abg,qa_rbg,
      .                 gr_rqa,gb_baq,rg_rqa,bg_baq,aq_brg
@@ -28,13 +29,20 @@ c--- Using the results of Frizzo and Company
       double precision f0q,f2q,f4q
       common/bitflags/f0q,f2q,f4q
       
+
 C   Deal with Higgs decay to b-bbar
       s34=2d0*(p(3,4)*p(4,4)-p(3,1)*p(4,1)-p(3,2)*p(4,2)-p(3,3)*p(4,3))
+      if (case .eq. 'ggfus2') then
       s34=s34+2d0*mb**2
       hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s34-4d0*mb**2) 
       hdecay=hdecay/((s34-hmass**2)**2+(hmass*hwidth)**2)
+      elseif (case .eq. 'gagajj') then
+      hdecay=msqgamgam(hmass)/((s34-hmass**2)**2+(hmass*hwidth)**2)
+      else
+      write(6,*) 'Unimplemented process in gg_hggg'
+      stop
+      endif
       Asq=(as/(3d0*pi))**2/vevsq
-
 
 C---swap momenta so that Higgs decay products are last
       do nu=1,4

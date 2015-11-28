@@ -30,6 +30,10 @@
      .   dsqrt(2d0*dot(p,3,4)+2d0*dot(p,3,8)+2d0*dot(p,4,8))
       write(6,*) 'sqrt(s678)', 
      .   dsqrt(2d0*dot(p,6,7)+2d0*dot(p,6,8)+2d0*dot(p,7,8))
+      write(6,*) 'sqrt(s349)', 
+     .   dsqrt(2d0*dot(p,3,4)+2d0*dot(p,3,9)+2d0*dot(p,4,9))
+      write(6,*) 'sqrt(s789)', 
+     .   dsqrt(2d0*dot(p,7,8)+2d0*dot(p,7,9)+2d0*dot(p,8,9))
       write(6,*) 'sqrt(s3456)',
      .   dsqrt(2d0*dot(p,3,4)+2d0*dot(p,3,5)+2d0*dot(p,3,6)
      .                                 +2d0*dot(p,4,5)+2d0*dot(p,4,6)
@@ -38,10 +42,23 @@
      .   dsqrt(2d0*dot(p,3,4)+2d0*dot(p,3,5)+2d0*dot(p,3,7)
      .                                 +2d0*dot(p,4,5)+2d0*dot(p,4,7)
      .                                                +2d0*dot(p,5,7))
+      write(6,*) 'sqrt(s3458)',
+     .   dsqrt(2d0*dot(p,3,4)+2d0*dot(p,3,5)+2d0*dot(p,3,8)
+     .                                 +2d0*dot(p,4,5)+2d0*dot(p,4,8)
+     .                                                +2d0*dot(p,5,8))
       write(6,*) 'sqrt(s5678)',
      .   dsqrt(2d0*dot(p,5,6)+2d0*dot(p,5,7)+2d0*dot(p,5,8)
      .                                 +2d0*dot(p,6,7)+2d0*dot(p,6,8)
      .                                                +2d0*dot(p,7,8))
+      write(6,*) 'sqrt(s3459)',
+     .   dsqrt(2d0*dot(p,3,4)+2d0*dot(p,3,5)+2d0*dot(p,3,9)
+     .                                 +2d0*dot(p,4,5)+2d0*dot(p,4,9)
+     .                                                +2d0*dot(p,5,9))
+
+      write(6,*) 'sqrt(s6789)',
+     .   dsqrt(2d0*dot(p,6,7)+2d0*dot(p,6,8)+2d0*dot(p,6,9)
+     .                                 +2d0*dot(p,7,8)+2d0*dot(p,7,9)
+     .                                                +2d0*dot(p,8,9))
 
       do j=1,4
       sum(j)=p(1,j)+p(2,j)

@@ -8,7 +8,7 @@ c--- routine to compute all scalar integrals used in the Wbbm calculation
       logical first,writescalars
       integer k1,k2,k3,k4,k5,k6,nu,iep
       double precision p2(4),p3(4),p23(4),p123(4),p234(4),p1234(4),
-     & p12(4),p34(4),p14(4),s23,s123,s234,s34,s12,s1234,msq
+     & p12(4),p34(4),s23,s123,s234,s34,s12,s1234,msq
       double complex qlI4,qlI3,qlI2,qlI1
       common/writescalars/writescalars
       data first/.true./
@@ -30,7 +30,6 @@ c--- initialize QCDLoop, if necessary
       p12(nu)=mom(k1,nu)+p2(nu)
       p34(nu)=p3(nu)+mom(k4,nu)
       p23(nu)=p2(nu)+p3(nu)
-      p14(nu)=mom(k1,nu)+mom(k4,nu)
       p123(nu)=p23(nu)+mom(k1,nu)
       p234(nu)=p23(nu)+mom(k4,nu)
       p1234(nu)=p123(nu)+mom(k4,nu)

@@ -12,8 +12,9 @@ c     g(-p1)+g(-p2) -->  H(p3)+g(p_iglue1=5)+g(p_iglue2=6)
       include 'zprods_com.f'
       include 'msq_struc.f'
       include 'nflav.f'
+      include 'process.f'
       integer j,k,iglue1,iglue2
-      double precision p(mxpart,4),Asq,fac
+      double precision p(mxpart,4),Asq,fac,msqgamgam
       double precision Hgggg,Hgggg_1256,Hgggg_1265,Hgggg_1625
 c     .                     ,Hgggg_1652,Hgggg_1562,Hgggg_1526
       double precision Hqagg,Haqgg,Hgqqg,Hgaag,Hqgqg,Hagag,Hggqa
@@ -43,9 +44,17 @@ C---fill spinor products up to maximum number
       call spinoru(iglue2,p,za,zb)  
 
 C   Deal with Higgs decay to b-bbar
+      if (case .eq. 'ggfus2') then
       s34=s(3,4)+2d0*mb**2
       hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s34-4d0*mb**2) 
       hdecay=hdecay/((s34-hmass**2)**2+(hmass*hwidth)**2)
+      elseif (case .eq. 'gagajj') then
+      hdecay=msqgamgam(hmass)/((s(3,4)-hmass**2)**2+(hmass*hwidth)**2)
+      else
+      write(6,*) 'Unimplemented process in gg_hgg'
+      stop
+      endif
+
       Asq=(as/(3d0*pi))**2/vevsq
       fac=gsq**2*Asq*hdecay
 

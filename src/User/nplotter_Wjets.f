@@ -22,12 +22,14 @@ c---                1  --> counterterm for real radiation
       double precision etarap,pt,
      & etaj1,ptj1,etaj2,ptj2,etaj3,ptj3,mjj,delr,getet,
      & rar,deleta,delfi,pt5,pt6,pt7,tmp5(4),tmp6(4),tmp7(4),oldpt(5:7),
-     & sumeta,etastar
-      integer switch,n,nplotmax
+     & sumeta,etastar,y34,eta34,pt34,y3,pt3,y4,pt4,yrap,yraptwo,
+     & etaraptwo,pttwo
+      integer switch,n,nplotmax,nproc
       character*4 tag
       logical first,creatent,dswhisto
       common/outputflags/creatent,dswhisto
       common/nplotmax/nplotmax
+      common/nproc/nproc
       data first/.true./
       save first
   
@@ -57,6 +59,26 @@ c--- set them to dummy values
       else
 c--- Add event in histograms
         tag='plot'
+      endif
+
+************************************************************************
+*                                                                      *
+*     DEFINITIONS OF QUANTITIES TO PLOT                                *
+*                                                                      *
+************************************************************************
+
+c--- W rapidity and pseudorapidity
+      y34=yraptwo(3,4,p)
+      eta34=etaraptwo(3,4,p)
+      pt34=pttwo(3,4,p)
+
+c--- If nproc=11, plot e^+(4). If nproc=16, plot e^-(3).
+      if(nproc .eq. 11) then
+         y4=yrap(4,p)
+         pt4=pt(4,p)
+      else
+         y3=yrap(3,p)
+         pt3=pt(3,p)
       endif
 
 c--- BEGIN: order jets according to pt
@@ -206,6 +228,29 @@ c---     xmax:  highest value to bin
 c---       dx:  bin width
 c---   llplot:  equal to "lin"/"log" for linear/log scale
 
+      call bookplot(n,tag,'W rapidity',y34,wt,wt2,-5d0,5d0,0.4d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'W ps-rap',eta34,wt,wt2,-5d0,5d0,0.4d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'W pt',pt34,wt,wt2,0d0,100d0,2.5d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'W pt',pt34,wt,wt2,0d0,1200d0,50d0,'log')
+      n=n+1
+      if(nproc .eq. 11) then
+	 call bookplot(n,tag,'y(lep)',y4,wt,wt2,-5d0,5d0,0.4d0,'lin')
+	 n=n+1
+	 call bookplot(n,tag,'pt(lep)',pt4,wt,wt2,0d0,200,4d0,'lin')
+	 n=n+1
+      else	    
+	 call bookplot(n,tag,'y(lep)',y3,wt,wt2,-5d0,5d0,0.4d0,'lin')
+	 n=n+1
+	 call bookplot(n,tag,'pt(lep)',pt3,wt,wt2,0d0,200d0,4d0,'lin')
+	 n=n+1
+      endif
+
+      call bookplot(n,tag,'Jet 1 pt',ptj1,wt,wt2,
+     &              0d0,1200d0,50d0,'log')
+      n=n+1
       call bookplot(n,tag,'Jet 1 pt log',ptj1,wt,wt2,
      &              20d0,430d0,5d0,'log')
       n=n+1

@@ -13,10 +13,11 @@ c---  where non-jet four vectors are set equal to the incoming q
       include 'jetcuts.f'
       include 'jetlabel.f'
       include 'process.f'
+      include 'plabel.f'
       double precision q(mxpart,4),qjet(mxpart,4),qfinal(mxpart,4)
       double precision Rsep,Rmin,aetarap
       integer i,j,k,l,nu,iter,maxjet,ajet,jetindex(mxpart),isub
-      character*2 plabel(mxpart),finallabel(mxpart)
+      character*2 finallabel(mxpart)
       double precision protoq(20,4),deltarq,deltarj,et,etmax,net,
      . qshared(4),sharedet,getet
       integer maxproto,protoc(20,0:mxpart),eti,shared,
@@ -26,7 +27,6 @@ c--- DEBUG
       parameter (Rsep=1d0)  ! Default value
 c      parameter (Rsep=1.3d0)  ! Default value
 c      parameter (Rsep=2.0d0)  ! Usual (e.g. Snowmass) definition
-      common/plabel/plabel
       common/jetmerge/jetmerge
       data first/.true./
       save first

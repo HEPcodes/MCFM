@@ -5,12 +5,11 @@ c---  a point that fails the cuts returns passed=.false.
 c--- Note: implements Eq. (3.2) of CEZ paper
       implicit none
       include 'constants.f'
+      include 'plabel.f'
       logical passed
       integer j,maxparts,found,j1,j2
       double precision pt,etarap,p(mxpart,4),ptj,ptj1,ptj2,
      . etaj1,etaj2,mj1j2
-      character*2 plabel(mxpart)
-      common/plabel/plabel
       
       passed=.false.
       

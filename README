@@ -1,6 +1,6 @@
- ************** MCFM - version 6.1 ****************
+ ************** MCFM - version 6.2 ****************
  *                                                *
- * MCFM, v6.1                 October 17th, 2011  *
+ * MCFM, v6.2                    April 9th, 2012  *
  *                                                *
  * Authors: John Campbell, Keith Ellis,           *
  *          Ciaran Williams                       *
@@ -9,10 +9,13 @@
  *                                                *
  * For details see:                               *
  *                                                *
- *  arXiv:1107.5569 [hep-ph]  (gg->WW,Higgs intf) *
- *  arXiv:1105.0020 [hep-ph]  (diboson update)    *
- *  JHEP 1103:027(2011), arXiv:1011.6647 (Wbb)    *
- *       (with S. Badger)                         *
+ *  arXiv:1204.1513 (top production+decay)        *
+ *  JHEP 1110:005(2011), arXiv:1107.5569          *
+ *         (gg->WW,Higgs intference)              *
+ *  JHEP 1107:018(2011), arXiv:1105.0020          *
+ *         (diboson update)                       *
+ *  JHEP 1103:027(2011), arXiv:1011.6647          *
+ *         (Wbb for mb>0, with S. Badger)         *
  *  Phys.Rev.D81:074023, arXiv:1001.4495 (H+2jet) *
  *                                                *
  *  P.R.L. 102:142001, arXiv:0903.0005 [hep-ph]   *

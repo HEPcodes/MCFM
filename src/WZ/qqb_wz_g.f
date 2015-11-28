@@ -22,11 +22,10 @@ c   for the moment --- radiation only from initial line
       include 'ewcharge.f'
       include 'anomcoup.f'
       include 'nwz.f'
+      include 'plabel.f'
       integer j,k,polg,polz,minus,mplus,jp,kp
       double precision FAC,FACM,FAC1
       double complex prop12,prop34,prop56
-      character*2 plabel(mxpart)
-      common/plabel/plabel
       common/pchoice/j,k
       double precision P(mxpart,4),qdks(mxpart,4),msq(-nf:nf,-nf:nf)
       double precision ave,cotw,s127,wwflag
@@ -124,8 +123,12 @@ c      prop56=s(5,6)/dcmplx(s(5,6)-zmass**2,zmass*zwidth)
 c      cprop=dcmplx(1d0)
 c--- DEBUG to compare with Madgraph
 
-c--- apply a dipole form factor to anomalous couplings
-      xfac=1d0/(1d0+s127/(tevscale*1d3)**2)**2
+c--- apply a dipole form factor to anomalous couplings (only if tevscale > 0)
+      if (tevscale .gt. 0d0) then
+        xfac=1d0/(1d0+s127/(tevscale*1d3)**2)**2
+      else
+        xfac=1d0
+      endif
       xdelg1_z=xfac*delg1_z
       xdelg1_g=xfac*delg1_g
       xdelk_z=xfac*delk_z

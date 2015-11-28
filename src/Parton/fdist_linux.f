@@ -4,7 +4,7 @@
       include 'vanillafiles.f'
       double precision fx(-5:5),x,xmu,xZ,xA,eks98r,xmu_safe
       double precision u_val,d_val,u_sea,d_sea,s_sea,c_sea,b_sea,gluon
-      double precision Ctq3df,Ctq4Fn,Ctq5Pdf,Ctq6Pdf,Ctq5L
+      double precision Ctq3df,Ctq4Fn,Ctq5Pdf,Ctq6Pdf,Ctq5L,CT10Pdf
       integer mode,Iprtn,ih,ih_call,iZ,iA,Irt
       logical first,nucleon
 c--- extra variables for MSTW08 implementation
@@ -453,6 +453,30 @@ C   10     CTEQ4LQ  Low Q0                  0.114        0.7      cteq4lq.tbl
                fx(-2)=Ctq6Pdf(+1,x,xmu)
              endif
 
+      elseif (pdlabel(1:4) .eq. 'CT10') then
+
+             fx(-5)=CT10Pdf(-5,x,xmu)
+             fx(-4)=CT10Pdf(-4,x,xmu)
+             fx(-3)=CT10Pdf(-3,x,xmu)
+ 
+             fx(0)=CT10Pdf(0,x,xmu)
+
+             fx(+3)=CT10Pdf(+3,x,xmu)
+             fx(+4)=CT10Pdf(+4,x,xmu)
+             fx(+5)=CT10Pdf(+5,x,xmu)
+
+             if (ih.eq.1) then      
+               fx(1)=CT10Pdf(+2,x,xmu)
+               fx(2)=CT10Pdf(+1,x,xmu)
+               fx(-1)=CT10Pdf(-2,x,xmu)
+               fx(-2)=CT10Pdf(-1,x,xmu)
+             elseif(ih.eq.-1) then      
+               fx(1)=CT10Pdf(-2,x,xmu)
+               fx(2)=CT10Pdf(-1,x,xmu)
+               fx(-1)=CT10Pdf(+2,x,xmu)
+               fx(-2)=CT10Pdf(+1,x,xmu)
+             endif
+
 c--- NEW ATTEMPT
       elseif (pdlabel(1:5) .eq. 'mtung') then
             if     (pdlabel .eq. 'mtungs1') then
@@ -490,7 +514,7 @@ c-----assign to standard grid
             endif
  
       else
-          write(6,*) 'Unimplemented mrs distribution' 
+          write(6,*) 'Unimplemented pdf distribution' 
           write(6,*) 'pdlabel= ',pdlabel
           write(6,*) 'Implemented are: ',
      . 'mrs4nf3,mrs4lf3,mrs4nf4,mrs4lf4,',
@@ -518,6 +542,13 @@ c-----assign to standard grid
      . 'cteq5hq,',
      . 'cteq5f3,',
      . 'cteq5f4,',
+     . 'cteq6l1,',
+     . 'cteq6_l,',
+     . 'cteq6_d,',
+     . 'cteq6_m,',
+     . 'cteq6l1,',
+     . 'cteq61m,',
+     . 'cteq66m,',
      . 'mtungs1,',
      . 'mtunge1,',
      . 'mtungb1,',

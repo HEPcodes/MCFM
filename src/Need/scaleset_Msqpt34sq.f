@@ -17,10 +17,14 @@ c---  sqrt(M^2+pt34^2), where M is the mass of the particle (34)
      &   (case .eq. 'Z_1jet') .or.
      &   (case .eq. 'Z_2jet') .or.
      &   (case .eq. 'Z_3jet') .or.
+     &   (case .eq. 'Wbbbar') .or.
+     &   (case .eq. 'Wbbmas') .or.
+     &   (case .eq. 'Zbbbar') .or.
      &   (case .eq. 'ggfus0') .or.
      &   (case .eq. 'ggfus1') .or.
      &   (case .eq. 'ggfus2') .or.
      &   (case .eq. 'ggfus3') .or.
+     &   (case .eq. 'gagajj') .or.
      &   (case .eq. 'httjet') .or.
      &   (case .eq. 'Higaga') .or.
      &   (case .eq. 'Hgagaj')) then

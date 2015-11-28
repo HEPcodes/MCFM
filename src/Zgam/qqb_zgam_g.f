@@ -295,11 +295,15 @@ c--- note that af=0 when zerowidth=.true.
       z6453=zazb(p6,p4,p5,p3)
       z6253=zazb(p6,p2,p5,p3)
 
-c--- apply a dipole form factor to anomalous couplings
+c--- apply a dipole form factor to anomalous couplings (only if tevscale > 0)
 c--- and also rescaling by factors of MZ, c.f. Eqs. (5),(18) of hep-ph/0002138
 c--- note that dipole form factors use the third power for h1,h3 (dim. 6)
 c--- and the fourth power for h2,h4 (dim. 8)
-      xfac=1d0/(1d0+s126/(tevscale*1d3)**2)
+      if (tevscale .gt. 0d0) then
+        xfac=1d0/(1d0+s126/(tevscale*1d3)**2)
+      else
+        xfac=1d0
+      endif
  
       h1tZ=xfac**3*h1Z/zmass**2
       h2tZ=xfac**4*h2Z/zmass**4

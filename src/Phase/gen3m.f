@@ -14,8 +14,6 @@ c----p(6,i) and p(7,i) are set equal to zero
       double precision p(mxpart,4),
      . p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4),m3,m4,m5
       double precision pswt,xjac,xx(2),tau,y
-      character*30 runstring
-      common/runstring/runstring
       common/energy/sqrts
       common/x1x2/xx
 
@@ -56,7 +54,7 @@ c---if x's out of normal range alternative return
       p2(2)=zip
       p2(3)=+xx(2)*sqrts*half
 
-       if (case .eq. 'tottth') then
+      if (case .eq. 'tottth') then
       m3=mt
       m4=mt
       m5=hmass

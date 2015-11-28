@@ -11,8 +11,10 @@ c--- g(p7) represents a gluon
       include 'masses.f'
       include 'ptilde.f'
       include 'qcdcouple.f'
+      include 'alfacut.f'
       double precision msq(-nf:nf,-nf:nf),msqc(maxd,-nf:nf,-nf:nf),
-     . p(mxpart,4),q(mxpart,4),omz,z,fac,ptDpg,pbDpg,ptDpb
+     . p(mxpart,4),q(mxpart,4),omz,z,fac,ptDpg,pbDpg,ptDpb,pwsq,xr,
+     . y,ymax
       integer j,k
       logical incldip(0:maxd)
       common/incldip/incldip
@@ -29,10 +31,17 @@ c--- g(p7) represents a gluon
       call wtransform(p,q,pbDpg,ptDpg,ptDpb)
       omz=ptDpg/(ptDpb+ptDpg-pbDpg)
       z=1d0-omz
-      call bq_tpq(q,msq) 
-      fac=gsq*cf
-     . *(1d0/pbDpg*(2d0/omz-1d0-z)-(mt/ptDpg)**2)
+      pwsq=2d0*(q(3,4)*q(4,4)-q(3,1)*q(4,1)-q(3,2)*q(4,2)-q(3,3)*q(4,3))
+      xr=dsqrt(pwsq/mt**2)
+      ymax=(1d0+xr)**2*z*omz/(z+xr**2*omz)
+      y=2d0*pbDpg/mt**2/(1d0-xr)**2
+      if ((z .lt. 1d0-aff) .and. (y .gt. aff*ymax)) then
+        incldip(1)=.false.
+	return
+      endif
 
+      call bq_tpq(q,msq) 
+      fac=gsq*cf*(1d0/pbDpg*(2d0/omz-1d0-z)-(mt/ptDpg)**2)
 
       do j=-nf,nf
       do k=-nf,nf

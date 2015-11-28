@@ -128,10 +128,20 @@ c--- set up spinor products (including for flat vectors, for 3rd gen)
 
 c--- fill amplitudes used for generations 1 and 2
       if (includegens1and2) then
-        Avec(2,2)=a64v('q+qb-g-g-',3,4,1,2,6,5,zb,za)*(-im)
-        Avec(2,1)=a64v('q+qb-g-g+',3,4,1,2,6,5,zb,za)*(-im)
-        Avec(1,2)=a64v('q+qb-g+g-',3,4,1,2,6,5,zb,za)*(-im)
-        Avec(1,1)=a64v('q+qb-g+g+',3,4,1,2,6,5,zb,za)*(-im)
+c--- ensure numerical stability: set massless loops to zero
+c--- for pt(W) < "ptWsafetycut_massless" GeV
+        if (pttwo(3,4,p) .lt. ptWsafetycut_massless) then
+          do h1=1,2
+          do h2=1,2
+            Avec(h1,h2)=czip
+          enddo
+          enddo
+	else
+          Avec(2,2)=a64v('q+qb-g-g-',3,4,1,2,6,5,zb,za)*(-im)
+          Avec(2,1)=a64v('q+qb-g-g+',3,4,1,2,6,5,zb,za)*(-im)
+          Avec(1,2)=a64v('q+qb-g+g-',3,4,1,2,6,5,zb,za)*(-im)
+          Avec(1,1)=a64v('q+qb-g+g+',3,4,1,2,6,5,zb,za)*(-im)
+        endif
       else
         do h1=1,2
 	do h2=1,2
@@ -142,55 +152,44 @@ c--- fill amplitudes used for generations 1 and 2
       
 c--- fill amplitudes used for 3rd generation
       if (includegen3) then
-        Higgsint=.false.
-        do h1=1,2
-        do h2=1,2
-        do e=-2,0
-        box(h1,h2,e)=czip
-        triang(h1,h2,e)=czip
-        bub(h1,h2,e)=czip
-        enddo
-        enddo
-        enddo
+c--- ensure numerical stability: set massive loops to zero
+c--- for pt(W) < "ptWsafetycut_massive" GeV
+        if (pttwo(3,4,p) .lt. ptWsafetycut_massive) then
+          do h1=1,2
+          do h2=1,2
+            Agen3(h1,h2)=czip
+          enddo
+          enddo
+        else
+          Higgsint=.false.
+          do h1=1,2
+          do h2=1,2
+          do e=-2,0
+          box(h1,h2,e)=czip
+          triang(h1,h2,e)=czip
+          bub(h1,h2,e)=czip
+          enddo
+          enddo
+          enddo
 c---    compute integrals and their coefficients
-        call massivebox6(1,2,3,4,5,6,za,zb,box)
-        call massivetri6(1,2,3,4,5,6,za,zb,triang)
-        call massivebub(1,2,3,4,5,6,za,zb,bub)
+          call massivebox6(1,2,3,4,5,6,za,zb,box)
+          call massivetri6(1,2,3,4,5,6,za,zb,triang)
+          call massivebub(1,2,3,4,5,6,za,zb,bub)
 c---    this contribution is finite, so we only retain "0" piece
-        e=0 
-        do h1=1,2
-        do h2=1,2
+          e=0 
+          do h1=1,2
+          do h2=1,2
            sum(h1,h2,e)=box(h1,h2,e)+triang(h1,h2,e)+bub(h1,h2,e)
-           Agen3(h1,h2)=sum(h1,h2,0)
-          
-        enddo
-        enddo
+           Agen3(h1,h2)=sum(h1,h2,0)          
+          enddo
+          enddo
+	endif
       else
         do h1=1,2
 	do h2=1,2
 	Agen3(h1,h2)=czip
 	enddo
 	enddo
-      endif
-
-c--- ensure numerical stability: set massive loops to zero
-c--- for pt(W) < "ptWsafetycut_massive" GeV
-      if (pttwo(3,4,p) .lt. ptWsafetycut_massive) then
-        do h1=1,2
-        do h2=1,2
-          Agen3(h1,h2)=czip
-        enddo
-        enddo
-      endif
-
-c--- ensure numerical stability: set massless loops to zero
-c--- for pt(W) < "ptWsafetycut_massless" GeV
-      if (pttwo(3,4,p) .lt. ptWsafetycut_massless) then
-        do h1=1,2
-        do h2=1,2
-          Avec(h1,h2)=czip
-        enddo
-        enddo
       endif
 
 c--- factor two for complete massless isodoublets

@@ -53,8 +53,8 @@
      .                 qbqb_ijkk,qbqb_iikl,qbqb_ijkj,qbqb_ijik,
      .                 qbqb_ijii,qbqb_ijjj,qbqb_iiij,qbqb_iiji
       logical first
-      character*30 runstring
-      common/runstring/runstring
+c      character*30 runstring
+c      common/runstring/runstring
       common/mqq/mqq
       common/rvcolourchoice/rvcolourchoice
       data first/.true./

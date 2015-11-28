@@ -7,11 +7,10 @@ c---       paper, where any pair of three jets can satisy the criteria
 c---       (as proposed by J. Andersen)
       implicit none
       include 'constants.f'
+      include 'plabel.f'
       logical passed
       integer j,k,maxparts,j1,j2
       double precision etarap,p(mxpart,4),etaj1,etaj2
-      character*2 plabel(mxpart)
-      common/plabel/plabel
       
       passed=.true.
       

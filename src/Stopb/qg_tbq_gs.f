@@ -16,6 +16,7 @@
       implicit none
       include 'constants.f'
       include 'masses.f'
+      include 'ckm.f'
       include 'ptilde.f'
       include 'qcdcouple.f'
       include 'qqgg.f'
@@ -52,6 +53,8 @@ c     . msq25_1v(-nf:nf,-nf:nf),sub25_1v,
      . msq26_5v(-nf:nf,-nf:nf),sub26_5v,
      . msq15_6(-nf:nf,-nf:nf),sub15_6(4),
      . msq25_6(-nf:nf,-nf:nf),sub25_6(4),
+     . msq25_6v(-nf:nf,-nf:nf),sub25_6v,
+     . msq15_6v(-nf:nf,-nf:nf),sub15_6v,
      . dummyv(-nf:nf,-nf:nf),dsubv
       integer j,k,nd
       double precision mass2,width2,mass3,width3,oldmass2
@@ -83,19 +86,14 @@ c--- subtractions for massless line
      . qg_tbq,qg_tbq_gvec)
       call      dips(2,p,5,6,2,sub56_2,dsubv,msq56_2,dummyv,
      . qg_tbq,donothing_gvec)
-      
-c--- implement shortcuts for checking                  
-      if (noglue) then
-      ndmax=2 ! only need the first two dipoles
-      else
-      
-      call      dips( 3,p,1,5,6,sub15_6,dsubv,msq15_6,dummyv,
+      call      dips( 3,p,1,5,6,sub15_6,sub15_6v,msq15_6,msq15_6v,
      . qg_tbq,qg_tbq_gvec)
-      call      dips( 4,p,2,5,6,sub25_6,dsubv,msq25_6,dummyv,
+      call      dips( 4,p,2,5,6,sub25_6,sub25_6v,msq25_6,msq25_6v,
      . qg_tbq,qg_tbq_gvec)
 
   
-      if (ggonly) then
+c--- implement shortcuts for checking                  
+      if ((noglue) .or. (ggonly)) then
       ndmax=4 ! only need the first four dipoles
       else
        
@@ -135,7 +133,6 @@ c---  final-final dipoles is passed in (clumsily) via mass2
       call dips_mass(14,p,3,6,1,sub36_1,dsubv,msq36_1,dummyv,
      . qg_tbq,donothing_gvec)
 
-      endif
       endif
       
 c--- reset mass2 to original value
@@ -193,12 +190,22 @@ c--- subtractions for gg
      .                   +msq15_6(-2,k)+msq15_6(-1,k))*sub15_6(qg)*corrL
        msq(4,j,k)=2d0*tr*(msq25_6(j,-4)+msq25_6(j,-3)
      .                   +msq25_6(j,-2)+msq25_6(j,-1))*sub25_6(qg)*corrL
-      else
-c--- subtractions for qq/qbarqbar/qqbar/qbarq
+      elseif (j*k .lt. 0) then
+c--- subtractions for qqbar/qbarq
        msq(1,j,k)=2d0*cf*(msq16_5(0,k)*sub16_5(gq)
      .                   +msq16_5v(0,k)*sub16_5v)*corrH
        msq(2,j,k)=2d0*cf*(msq26_5(j,0)*sub26_5(gq)
      .                   +msq26_5v(j,0)*sub26_5v)*corrH 
+      elseif (j*k .gt. 0) then
+c--- subtractions for qq/qbarqbar
+       msq(1,j,k)=(2d0*Vsum(k)-Vsq(-j,k))*cf*(
+     &       msq16_5(0,k)*sub16_5(gq)+msq16_5v(0,k)*sub16_5v)*corrH
+       msq(2,j,k)=(2d0*Vsum(j)-Vsq(j,-k))*cf*(
+     &       msq26_5(j,0)*sub26_5(gq)+msq26_5v(j,0)*sub26_5v)*corrH 
+       msq(3,j,k)=Vsq(-j,k)*cf*(
+     &       msq15_6(0,k)*sub15_6(gq)+msq15_6v(0,k)*sub15_6v)*corrH
+       msq(4,j,k)=Vsq(j,-k)*cf*(
+     &       msq25_6(j,0)*sub25_6(gq)+msq25_6v(j,0)*sub25_6v)*corrH 
       endif
   
    99 continue

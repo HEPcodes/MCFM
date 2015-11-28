@@ -46,7 +46,7 @@ c      integer idum
 c      COMMON/ranno/idum
       character*30 runstring
       double precision b1scale,q2scale,q1scale,b2scale
-      external qg_tbq
+      external qg_tbq,BSYqqb_QQbdk_gvec,qqb_QQbdk,qg_tbqdk,qg_tbqdk_gvec
       common/runstring/runstring
       common/density/ih1,ih2
       common/energy/sqrts
@@ -105,6 +105,7 @@ c--- processes that use "gen2m"
           
 c--- processes that use "gen3"     
       elseif ( (case .eq. 'W_cjet') 
+     .   .or.  (case .eq. 'Wbfrmc')
      .   .or.  (case .eq. 'W_tndk')
      .   .or.  (case .eq. 'vlchwn')
      .   .or.  (case .eq. 'epem3j') ) then
@@ -170,12 +171,12 @@ c--- processes that use "gen3m"
         call gen3m(r,p,m3,m4,m5,pswt,*999)
 	
 c--- processes that use gen3mdk
-c      elseif ( (case .eq. '4ftwdk') ) then
-c        m3=mt
-c        m4=mb
-c        m5=0d0
-c        npart=5
-c        call gen3mdk(r,p,m3,m4,m5,pswt,*999)
+      elseif ( (case .eq. '4ftwdk') ) then
+        m3=mt
+        m4=mb
+        m5=0d0
+        npart=5
+        call gen3mdk(r,p,m3,m4,m5,pswt,*999)
         
 c--- processes that use "gen3m_rap"     
       elseif ( (case .eq. 'vlchm3') ) then
@@ -198,6 +199,11 @@ c--- processes that use "gen4h"
         npart=4
         call gen4h(r,p,pswt,*999)
          
+c--- processes that use "gen4mdk"     
+      elseif (case .eq. '4ftjet') then
+        npart=6
+        call gen4mdk(r,p,pswt,*999)
+                  
 c--- processes that use "gen5" 
       elseif ( (case .eq. 'W_twdk') 
      . .or.    (case .eq. 'HWWjet') 
@@ -242,7 +248,9 @@ c        npart=7
 c        call gen7_rap(r,p,pswt,*999)
 c	call writeout(p)
 
-      elseif (case.eq.'WpWp3j') then
+      elseif ( (case.eq.'WpWp3j')
+     &     .or.(case.eq.'HWW3jt')
+     &     .or.(case.eq.'HZZ3jt') )  then
         npart=7
 	call gen7(r,p,pswt,*999)
 
@@ -275,6 +283,7 @@ c--- processes that use "gen_njets" with an argument of "2"
      .    .or. (case .eq. 'qq_Hqq')
      .    .or. (case .eq. 'qq_Hgg')
      .    .or. (case .eq. 'ggfus2')
+     .    .or. (case .eq. 'gagajj')
      .    .or. (case .eq. 'W_bjet')
      .    .or. (case .eq. 'Wcjetg')
      .    .or. (case .eq. 'Z_bjet') ) then
@@ -300,7 +309,7 @@ c--- processes that use "gen_stop" with an argument of "1" (number of extra jets
      .    .or. (case .eq. 'tdecay') ) then
         npart=4
         call gen_stop(r,1,p,pswt,*999)
-
+	
 c--- DEFAULT: processes that use "gen4"
       else
         if ((case .eq. 'vlchk4') .or. (case .eq. 'vlchkm')) then
@@ -310,7 +319,7 @@ c--- DEFAULT: processes that use "gen4"
         npart=4
         call gen4(r,p,pswt,*999)      
       endif
-     
+
       nvec=npart+2
       call dotem(nvec,p,s)
       
@@ -345,6 +354,8 @@ c        call compare_madgraph(p,qqb_wgam,qqb_wgam_mad) ! Checked: JC, 12/29/10
         call qqb_wgam(p,msq)
       elseif (case .eq. 'Wgajet') then
          call qqb_wgam_g(p,msq)
+      elseif (case .eq. 'Wbfrmc') then
+        call qqb_wbfromc(p,msq)
       elseif (case .eq. 'W_cjet') then
         call qqb_w_cjet(p,msq)
       elseif (case .eq. 'Wcjet0') then
@@ -462,7 +473,7 @@ c        pause
         write(6,*) 'This process is not a leading order contribution'
         stop
       elseif (case .eq. 't_bbar') then
-        call qqb_tbb(p,msq)
+	call qqb_tbbdk(p,msq)
       elseif (case .eq. 'tdecay') then
         write(6,*) 'This process is not a leading order contribution'
         stop
@@ -496,6 +507,10 @@ c        pause
         call gg_hWWgg(p,msq)
       elseif (case .eq. 'HZZ2jt') then
         call gg_hZZgg(p,msq)
+      elseif (case .eq. 'HWW3jt') then
+        call gg_hWWggg(p,msq)
+      elseif (case .eq. 'HZZ3jt') then
+        call gg_hZZggg(p,msq)
       elseif (case .eq. 'attjet') then
         call qqb_higgs_odd(p,msq)
       elseif (case .eq. 'qq_Hqq') then
@@ -517,8 +532,10 @@ c      call checkgvec(+2,0,2,p,qg_tbq,qg_tbq_gvec)
 c      call checkgvec(-1,0,2,p,qg_tbq,qg_tbq_gvec)
       elseif (case .eq. 'qgtbqq') then
         call qg_tbq_g(p,msq)
-c      elseif (case .eq. '4ftwdk') then
-c        call qg_tbqdk(p,msq)
+      elseif (case .eq. '4ftwdk') then
+	call qg_tbqdk(p,msq)
+      elseif (case .eq. '4ftjet') then
+        call qg_tbqdk_g(p,msq)
       elseif (case .eq. 'qq_tbg') then
         call qq_tbg(p,msq)
 c--- Check of gvec routines
@@ -533,6 +550,8 @@ c      call checkgvec(-1,2,5,p,qq_tbg,qq_tbg_gvec)
       elseif (case .eq. 'Zccmas') then
         call qqb_zccm(p,msq)
       elseif (case .eq. 'ggfus2') then
+        call gg_hgg(p,msq)
+      elseif (case .eq. 'gagajj') then
         call gg_hgg(p,msq)
       elseif (case .eq. 'ggfus3') then
         call gg_hggg(p,msq)
@@ -671,7 +690,8 @@ c--- initialize a PDF set here, if calculating errors
       endif
       
 c--- calculate PDF's  
-      if ((case .eq. 'qg_tbq') .and. (dynamicscale .eqv. .false.)) then
+      if (((case .eq. 'qg_tbq') .or. (case .eq. '4ftwdk'))
+     &     .and. (dynamicscale .eqv. .false.)) then
 c--- for single top + b, make sure to use two different scales
         call fdist(ih1,xx(1),facscale_H,fx1_H)
         call fdist(ih2,xx(2),facscale_H,fx2_H)
@@ -721,7 +741,7 @@ c--- usual case
 
       do j=-nflav,nflav
       do k=-nflav,nflav    
-      
+
       if (ggonly) then
       if ((j.ne.0) .or. (k.ne.0)) goto 20
       endif

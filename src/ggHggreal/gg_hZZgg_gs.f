@@ -1238,8 +1238,6 @@ c--- f0q subtractions above
 
       endif
       
-   55 continue   
-      
       enddo
       enddo
 

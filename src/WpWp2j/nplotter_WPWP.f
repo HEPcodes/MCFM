@@ -15,7 +15,8 @@
       double precision PT,WT,WT2,p(mxpart,4),fphi,etarap,etaraptwo
       double precision tmp7(4),tmp8(4),tmp9(4)
       integer eventpart,nqcdjets,nqcdstart
-      logical first,jetmerge
+      logical first,jetmerge,creatent,dswhisto
+      common/outputflags/creatent,dswhisto
       common/nplotmax/nplotmax
       common/nqcdjets/nqcdjets,nqcdstart
       common/jetmerge/jetmerge
@@ -214,13 +215,15 @@ c         endif
          tomHTTOT = tomHTTOT + tompt9
          endif
 
-
-
   99  continue
 
+c--- Book and fill ntuple if that option is set, remembering to divide
+c--- by # of iterations now that is handled at end for regular histograms
+      if (creatent .eqv. .true.) then
+        call bookfill(tag,p,wt/dfloat(itmx))  
+      endif
 
-      n=1                  
-      
+      n=1                        
 
       !these histograms are for no jet210 cuts appied to jets
       call bookplot(n,tag,'HTTOT',tomHTTOT,

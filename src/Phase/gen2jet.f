@@ -3,14 +3,11 @@ C---generate two particle phase space and x1,x2 integration
 C---p1+p2 --> p3+p4
       implicit none
       include 'constants.f'
-      include 'cutoff.f'
       include 'mxdim.f'
       include 'jetcuts.f'
       include 'phasemin.f'
       include 'leptcuts.f'
 !--- Modified July 11 by CW to switch between photons and jets appropriately 
-      character*4 part
-      common/part/part
       integer j,nu
 
       double precision r(mxdim),p(mxpart,4),xx(2),zmin,zmax,z

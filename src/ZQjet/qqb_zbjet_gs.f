@@ -40,37 +40,22 @@ c--- slightly obtuse notation, fn=-nf, to simplify declaration lines
      & msq16_2(fn:nf,fn:nf),msq26_1(fn:nf,fn:nf),
      & msq17_6(fn:nf,fn:nf),
      & msq26_1v(fn:nf,fn:nf),
-     & msq15_2v(fn:nf,fn:nf),msq16_2v(fn:nf,fn:nf),
-     & msq25_6(fn:nf,fn:nf),
-     & msq57_1v(fn:nf,fn:nf),msq67_1v(fn:nf,fn:nf),
-     & msq57_2v(fn:nf,fn:nf),msq67_2v(fn:nf,fn:nf),
-     & msq25_1v(fn:nf,fn:nf),
+     & msq16_2v(fn:nf,fn:nf),
+     & msq67_1v(fn:nf,fn:nf),
      & dummy(fn:nf,fn:nf),dummyv(fn:nf,fn:nf),
      & sub17_2(4),sub27_1(4),sub15_2(4),sub25_1(4),
      & sub16_2(4),sub26_1(4),
      & sub17_5(4),sub57_1(4),sub27_5(4),sub57_2(4),
      & sub17_6(4),sub67_1(4),sub27_6(4),sub67_2(4),
      & sub57_6(4),sub67_5(4),dsubv,dsub(4),
-     & sub57_6v,sub57_1v,sub57_2v,sub67_1v,sub67_2v,
-     & sub26_1v,sub25_1v,sub15_2v,sub16_2v,
-     & sub27_5v,sub27_6v,sub17_6v,sub17_5v,sub67_5v
+     & sub67_1v,sub26_1v,sub16_2v
       double precision
      & m17_2(0:2,fn:nf,fn:nf),m27_1(0:2,fn:nf,fn:nf),
      & m57_6(0:2,fn:nf,fn:nf),m67_5(0:2,fn:nf,fn:nf),
      & m17_5(0:2,fn:nf,fn:nf),
      & m17_6(0:2,fn:nf,fn:nf),
      & m27_5(0:2,fn:nf,fn:nf),
-     & m27_6(0:2,fn:nf,fn:nf),
-     & m17_2v(0:2,fn:nf,fn:nf),m27_1v(0:2,fn:nf,fn:nf),
-     & m16_2v(0:2,fn:nf,fn:nf),m26_1v(0:2,fn:nf,fn:nf),
-     & m15_2v(0:2,fn:nf,fn:nf),m25_1v(0:2,fn:nf,fn:nf),
-     & m57_6v(0:2,fn:nf,fn:nf),m67_5v(0:2,fn:nf,fn:nf),
-     & m17_5v(0:2,fn:nf,fn:nf),
-     & m17_6v(0:2,fn:nf,fn:nf),
-     & m27_5v(0:2,fn:nf,fn:nf),
-     & m27_6v(0:2,fn:nf,fn:nf),
-     & m15_6v(0:2,fn:nf,fn:nf),
-     & m25_6v(0:2,fn:nf,fn:nf)
+     & m27_6(0:2,fn:nf,fn:nf)
            
       double precision 
      . msq1a_b(6,0:2,fn:nf,fn:nf),msqba_1(6,0:2,fn:nf,fn:nf),
@@ -658,12 +643,8 @@ c--- construct the aliased matrix elements
       do k=-nf,nf      
       msq15_2(j,k)=
      . msq1b_2(3,0,j,k)+msq1b_2(3,1,j,k)+msq1b_2(3,2,j,k)
-      msq15_2v(j,k)=
-     . msq1b_2v(3,0,j,k)+msq1b_2v(3,1,j,k)+msq1b_2v(3,2,j,k)
       msq25_1(j,k)=
      . msq2b_1(3,0,j,k)+msq2b_1(3,1,j,k)+msq2b_1(3,2,j,k)
-      msq25_1v(j,k)=
-     . msq2b_1v(3,0,j,k)+msq2b_1v(3,1,j,k)+msq2b_1v(3,2,j,k)
       msq16_2(j,k)=
      . msq1b_2(1,0,j,k)+msq1b_2(1,1,j,k)+msq1b_2(1,2,j,k)
       msq16_2v(j,k)=
@@ -672,29 +653,17 @@ c--- construct the aliased matrix elements
      . msq2b_1(1,0,j,k)+msq2b_1(1,1,j,k)+msq2b_1(1,2,j,k)
       msq26_1v(j,k)=
      . msq2b_1v(1,0,j,k)+msq2b_1v(1,1,j,k)+msq2b_1v(1,2,j,k)
-      msq57_1v(j,k)=
-     . msqba_1v(3,0,j,k)+msqba_1v(3,1,j,k)+msqba_1v(3,2,j,k)
       msq67_1v(j,k)=
      . msqba_1v(6,0,j,k)+msqba_1v(6,1,j,k)+msqba_1v(6,2,j,k)
-      msq57_2v(j,k)=
-     . msqbc_2v(5,0,j,k)+msqbc_2v(5,1,j,k)+msqbc_2v(5,2,j,k)
-      msq67_2v(j,k)=
-     . msqbc_2v(1,0,j,k)+msqbc_2v(1,1,j,k)+msqbc_2v(1,2,j,k)
       do i=0,2
       m57_6(i,j,k)=msqab_c(2,i,j,k)
-      m57_6v(i,j,k)=msqab_cv(2,i,j,k)
       m67_5(i,j,k)=msqab_c(4,i,j,k)
-      m67_5v(i,j,k)=msqab_cv(4,i,j,k)
       m17_2(i,j,k)=msq1b_2(2,i,j,k)
       m17_5(i,j,k)=msq1a_b(3,i,j,k)
-      m17_5v(i,j,k)=msq1a_bv(3,i,j,k)
       m17_6(i,j,k)=msq1a_b(6,i,j,k)
-      m17_6v(i,j,k)=msq1a_bv(6,i,j,k)
       m27_1(i,j,k)=msq2b_1(2,i,j,k)
       m27_5(i,j,k)=msq2c_b(5,i,j,k)
-      m27_5v(i,j,k)=msq2c_bv(5,i,j,k)
       m27_6(i,j,k)=msq2c_b(1,i,j,k)
-      m27_6v(i,j,k)=msq2c_bv(1,i,j,k)
       enddo
       msq17_6(j,k)=m17_6(0,j,k)+m17_6(1,j,k)+m17_6(2,j,k)
       msq17_2(j,k)=m17_2(0,j,k)+m17_2(1,j,k)+m17_2(2,j,k)
@@ -720,20 +689,9 @@ c--- construct the aliased subtraction terms
       sub27_6(i)=sub2c_b(1,i)
       sub67_2(i)=subbc_2(1,i)
       enddo
-      sub15_2v=sub1b_2v(3)
-      sub25_1v=sub2b_1v(3)
       sub16_2v=sub1b_2v(1)
       sub26_1v=sub2b_1v(1)
-      sub57_6v=subab_cv(2)
-      sub67_5v=subab_cv(4)
-      sub17_5v=sub1a_bv(3)
-      sub57_1v=subba_1v(3)
-      sub17_6v=sub1a_bv(6)
       sub67_1v=subba_1v(6)
-      sub27_5v=sub2c_bv(5)
-      sub57_2v=subbc_2v(5)
-      sub27_6v=sub2c_bv(1)
-      sub67_2v=subbc_2v(1)
 c--- end construct     
       
 

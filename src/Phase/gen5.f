@@ -4,13 +4,16 @@
       include 'mxdim.f'
       include 'process.f'
       include 'phasemin.f'
-      integer nu
+      integer nu,icount,nproc
       double precision r(mxdim),sqrts,wt5,
      . p(mxpart,4),p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4)
       double precision pswt,xjac
       double precision xx(2),tau,y
       common/energy/sqrts
       common/x1x2/xx
+      common/nproc/nproc
+      data icount/1/
+      save icount
 
       wt5=0d0
       tau=dexp(dlog(taumin)*r(9))
@@ -63,6 +66,19 @@ c---if x's out of normal range alternative return
       p(6,nu)=p6(nu)
       p(7,nu)=p7(nu)
       enddo 
+
+      if (nproc .eq. 90) then
+      if (icount .eq. 1) then
+      icount=icount-1
+      else
+      icount=icount+1
+      do nu=1,4
+      p(4,nu)=p6(nu)
+      p(6,nu)=p4(nu)
+      enddo 
+      endif
+      endif
+
       wt5=xjac*pswt
 
       if (wt5 .eq. 0d0) return 1

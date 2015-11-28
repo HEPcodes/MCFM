@@ -42,6 +42,7 @@ c     . -3d0*y**2*dlog(y))
 c      write(6,*) F1/F0
      
       topwidth=1d0-cf*ason2pi*F1/F0
+      
 c      write(6,*) 'dQCD ',-cf/2d0*F1/F0
       return       
       end

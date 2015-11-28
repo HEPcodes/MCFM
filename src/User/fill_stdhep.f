@@ -10,10 +10,9 @@
       include 'npart.f'
       include 'stdhep.f'
       include 'masses.f'
+      include 'plabel.f'
       integer ij,ik,n,nu,eventnumber,jetlabel_to_stdhep
       double precision p(mxpart,4),wgt_jk,mass
-      character*2 plabel(mxpart)
-      common/plabel/plabel
       data eventnumber/0/
       save eventnumber
 

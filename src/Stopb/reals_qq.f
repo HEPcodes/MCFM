@@ -29,7 +29,7 @@ c--- bottom quark.
       tDg =s(q1,q2)/2d0+s(q1,t1)/2d0+s(q1,p)*mq2/2d0/s(p,t1)+tDq2
  
       amp(1,1,1)=
-     .        (-2*mq*(ma2*tDg*za(d,p)*za(q2,p)*za(t1,p)*zb(t1,p)*
+     .        (-2d0*mq*(ma2*tDg*za(d,p)*za(q2,p)*za(t1,p)*zb(t1,p)*
      .      (zb(q1,b1)*zb(u,p) + zb(b1,p)*zb(u,q1)) + 
      .     za(b1,p)*zb(b1,p)*
      .      (bDg*za(t1,p)*(za(d,t1)*za(q2,p)*zb(q1,t1) + 
@@ -41,7 +41,7 @@ c--- bottom quark.
      . (za(b1,p)*za(q1,q2)*za(t1,p)**2*zb(b1,p)*zb(q1,q2)*
      .   zb(t1,p))
       amp(1,1,2)=
-     .        (2*ma*mq*(ma2*tDg*za(d,p)*za(q2,p)*za(t1,p)*zb(q1,p)*
+     .        (2d0*ma*mq*(ma2*tDg*za(d,p)*za(q2,p)*za(t1,p)*zb(q1,p)*
      .      zb(t1,p)*zb(u,p) + 
      .     za(b1,p)*zb(b1,p)*
      .      (bDg*za(t1,p)*(za(d,t1)*za(q2,p)*zb(q1,t1) + 
@@ -55,7 +55,7 @@ c--- bottom quark.
      . (za(b1,p)*za(q1,q2)*za(t1,p)**2*zb(b1,p)**2*zb(q1,q2)*
      .   zb(t1,p))
       amp(1,2,1)=
-     .        (2*(ma2*tDg*za(d,t1)*za(q2,p)*za(t1,p)*zb(t1,p)*
+     .        (2d0*(ma2*tDg*za(d,t1)*za(q2,p)*za(t1,p)*zb(t1,p)*
      .      (zb(q1,b1)*zb(u,p) + zb(b1,p)*zb(u,q1)) + 
      .     za(b1,p)*zb(b1,p)*
      .      (bDg*mq2*za(d,p)*za(t1,q2)*zb(q1,p)*zb(u,b1) - 
@@ -67,7 +67,7 @@ c--- bottom quark.
      .           tDg*za(q1,q2)*zb(q1,b1)*zb(u,q1)))))/
      . (za(b1,p)*za(q1,q2)*za(t1,p)*zb(b1,p)*zb(q1,q2)*zb(t1,p))
       amp(1,2,2)=
-     .        (-2*ma*(ma2*tDg*za(d,t1)*za(q2,p)*za(t1,p)*zb(q1,p)*
+     .        (-2d0*ma*(ma2*tDg*za(d,t1)*za(q2,p)*za(t1,p)*zb(q1,p)*
      .      zb(t1,p)*zb(u,p) - 
      .     za(b1,p)*zb(b1,p)*
      .      (-(bDg*mq2*za(d,p)*za(t1,q2)*zb(q1,p)*zb(u,p)) + 
@@ -81,7 +81,7 @@ c--- bottom quark.
      . (za(b1,p)*za(q1,q2)*za(t1,p)*zb(b1,p)**2*zb(q1,q2)*
      .   zb(t1,p))
       amp(2,1,1)=
-     .        (2*mq*(ma2*tDg*za(d,p)*za(q1,p)*za(t1,p)*zb(t1,p)*
+     .        (2d0*mq*(ma2*tDg*za(d,p)*za(q1,p)*za(t1,p)*zb(t1,p)*
      .      (zb(b1,q2)*zb(u,p) - zb(b1,p)*zb(u,q2)) + 
      .     za(b1,p)*zb(b1,p)*
      .      (bDg*za(t1,p)*zb(t1,p)*
@@ -94,7 +94,7 @@ c--- bottom quark.
      . (za(b1,p)*za(q1,q2)*za(t1,p)**2*zb(b1,p)*zb(q1,q2)*
      .   zb(t1,p))
       amp(2,1,2)=
-     .        (-2*ma*mq*(-(ma2*tDg*za(d,p)*za(q1,p)*za(t1,p)*zb(q2,p)*
+     .        (-2d0*ma*mq*(-(ma2*tDg*za(d,p)*za(q1,p)*za(t1,p)*zb(q2,p)*
      .        zb(t1,p)*zb(u,p)) + 
      .     za(b1,p)*zb(b1,p)*
      .      (bDg*za(t1,p)*zb(t1,p)*
@@ -108,7 +108,7 @@ c--- bottom quark.
      . (za(b1,p)*za(q1,q2)*za(t1,p)**2*zb(b1,p)**2*zb(q1,q2)*
      .   zb(t1,p))
       amp(2,2,1)=
-     .        (-2*(ma2*tDg*za(d,t1)*za(q1,p)*za(t1,p)*zb(t1,p)*
+     .        (-2d0*(ma2*tDg*za(d,t1)*za(q1,p)*za(t1,p)*zb(t1,p)*
      .      (zb(b1,q2)*zb(u,p) - zb(b1,p)*zb(u,q2)) + 
      .     za(b1,p)*zb(b1,p)*
      .      (bDg*mq2*za(d,p)*za(q1,t1)*zb(q2,p)*zb(u,b1) + 
@@ -121,7 +121,7 @@ c--- bottom quark.
      .              tDg*za(q1,q2)*zb(b1,q2)*zb(u,q2))))))/
      . (za(b1,p)*za(q1,q2)*za(t1,p)*zb(b1,p)*zb(q1,q2)*zb(t1,p))
       amp(2,2,2)=
-     .        (2*ma*(-(ma2*tDg*za(d,t1)*za(q1,p)*za(t1,p)*zb(q2,p)*
+     .        (2d0*ma*(-(ma2*tDg*za(d,t1)*za(q1,p)*za(t1,p)*zb(q2,p)*
      .        zb(t1,p)*zb(u,p)) + 
      .     za(b1,p)*zb(b1,p)*
      .      (bDg*(mq2*za(d,p)*za(q1,t1)*zb(q2,p) + 

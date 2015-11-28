@@ -6,13 +6,12 @@ c--- plotting routine; a point that fails the cuts returns mtrans=-1d0
       implicit none
       include 'constants.f'
       include 'jetlabel.f'
+      include 'plabel.f'
       include 'masses.f'
       include 'process.f'
       integer ilept(2),ic,j,maxparts
       double precision pt,etarap,p(mxpart,4),etvec(2),plept(4),
      . missinget,dphi_ll,m_ll,mtrans,scut1,scut2,cosdphi,R,maxpt,minpt
-      character*2 plabel(mxpart)
-      common/plabel/plabel
             
 c--- initialize all variables  
       dphi_ll=-1d0

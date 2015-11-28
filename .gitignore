@@ -2,7 +2,9 @@
 /makefile.orig
 /obj
 /Bin/mcfm
-/QCDLoop/ff/ffinit_mine.f
+/Bin/fferr.dat
+/Bin/ffperm5.dat
+/Bin/ffwarn.dat
 /QCDLoop/ff/libff.a
 /QCDLoop/ql/libqcdloop.a
 /QCDLoop/test

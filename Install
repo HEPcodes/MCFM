@@ -39,8 +39,12 @@ latex mcfm > latex.out
 latex mcfm > latex.out
 cd ..
 
-# Manually adjust path in ff directory
-sed -e "s|REPLACEPATH|${PWD}|" QCDLoop/ff/ffinit_mine_orig.f > QCDLoop/ff/ffinit_mine.f
+# Link FF data files into Bin directory
+if [ ! -h Bin/ffwarn.dat ]; then
+  ln -s ../QCDLoop/ff/fferr.dat Bin
+  ln -s ../QCDLoop/ff/ffperm5.dat Bin
+  ln -s ../QCDLoop/ff/ffwarn.dat Bin
+fi
 
 # Compile QCDLoop libraries if necessary
 if [ ! -e QCDLoop/ql/libqcdloop.a ]; then

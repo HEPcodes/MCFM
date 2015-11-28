@@ -8,6 +8,7 @@ c--- should be included
       include 'npart.f'
       include 'ptilde.f'
       include 'jetlabel.f'
+      include 'plabel.f'
       include 'process.f'
       include 'frag.f'
       double precision ptrans(mxpart,4),pjet(mxpart,4),rcut
@@ -20,7 +21,6 @@ c--- should be included
       double precision dphizj,pt5sq,pt6sq,pt7sq
       logical passed_frix,iso
       logical phot_dip(mxpart)
-      character*2 plabel(mxpart)
 
       common/phot_dip/phot_dip     
       common/runstring/runstring
@@ -28,7 +28,6 @@ c--- should be included
       common/rcut/rcut
       common/makecuts/makecuts
       common/notag/notag
-      common/plabel/plabel
 
 c--- default: include this contribution
       includedipole=.true.
@@ -138,7 +137,6 @@ c--- if the number of jets is not correct, then do not include dipole
      &    (clustering .and. (jets .lt. nqcdjets-notag)
      &       .and. (inclusive .eqv. .true.))) then
           includedipole=.false.
-
           return
       else
 c--- otherwise, if it is correct, check the photon cuts if appropriate

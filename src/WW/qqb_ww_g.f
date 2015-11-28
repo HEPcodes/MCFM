@@ -96,8 +96,12 @@ c      le=(-1d0-two*(-1d0)*xw)/sin2w ; re=(-two*(-1d0)*xw)/sin2w
 c      ln=(+1d0-two*(+0d0)*xw)/sin2w ; rn=0d0
 c---
 
-c--- apply a dipole form factor to anomalous couplings
-      xfac=1d0/(1d0+s127/(tevscale*1d3)**2)**2
+c--- apply a dipole form factor to anomalous couplings (only if tevscale > 0)
+      if (tevscale .gt. 0d0) then
+        xfac=1d0/(1d0+s127/(tevscale*1d3)**2)**2
+      else
+        xfac=1d0
+      endif
       xdelg1_z=xfac*delg1_z
       xdelg1_g=xfac*delg1_g
       xdelk_z=xfac*delk_z

@@ -9,9 +9,10 @@
 c sqrt(2d0/pi)
       parameter(rt2onpi=0.797884560802865d0)
 c-----------------------------------------------------
-      double precision cf,ca,xn,xnsq,xn4,v,tr,qu,qd,qe,aem,Von4,ninth,Nc
+      double precision cf,ca,xn,xnsq,xn4,v,tr,qu,qd,qe,aem,Von4,ninth,
+     & Nc,Ncinv
       parameter(cf=4d0/3d0,ca=3d0,xn=3d0,Nc=3d0,xnsq=9d0,v=8d0,tr=0.5d0)
-      parameter(Von4=2d0,ninth=1d0/9d0,xn4=xnsq-4d0)
+      parameter(Von4=2d0,ninth=1d0/9d0,xn4=xnsq-4d0,Ncinv=1d0/3d0)
       parameter(qu=2d0/3d0,qd=-1d0/3d0,qe=-1d0)
       parameter(aem=1d0/137.035989d0)
       double precision spinave,aveqq,aveqg,avegg

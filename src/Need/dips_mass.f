@@ -94,6 +94,19 @@ c--- if we're doing W+t, reduce # of momenta from 8 to 6
         enddo
       endif
       
+      if (case .eq. '4ftwdk') then
+c--- if we're doing (4F) t-channel single top with decay,
+c--- reduce # of momenta from 8 to 6 
+        do nu=1,4
+          p(3,nu)=pold(3,nu)+pold(4,nu)+pold(5,nu)
+          p(4,nu)=pold(6,nu)
+          p(5,nu)=pold(7,nu)
+          p(6,nu)=pold(8,nu)
+          p(7,nu)=0d0
+          p(8,nu)=0d0
+        enddo
+      endif
+      
 C---Initialize the dipoles to zero
       do j=1,4
       sub(j)=0d0
@@ -131,13 +144,15 @@ C---Modification so that only close to singular subtracted
         if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')
      .  .or.(case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')
      .  .or.(case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')
-     .  .or.(case .eq. 'tt_bbu')) then
+     &  .or.(case .eq. 'tt_bbu') .or. (case .eq. '4ftwdk')) then
           if     ((case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')) then
             call extend_trans_wt(pold,p,ptrans,pext)
           elseif ((case .eq. 'tt_bbl') 
      &       .or. (case .eq. 'tt_bbh')
      &       .or. (case .eq. 'tt_bbu')) then
             call extend_trans_ttb(pold,p,ptrans,pext)
+          elseif (case .eq. '4ftwdk') then
+            call extend_trans_stopb(pold,p,ptrans,pext)
           else
             call extend_trans(pold,p,ptrans,pext)
           endif
@@ -188,9 +203,6 @@ C---determine mass of spectator
           zp=1d0
         endif     
       
-C---Modification so that only close to singular subtracted
-        if (u .gt. aif) goto 99
-        
 C---npart is the number of particles in the final state
 C---transform the momenta so that only the first npart+1 are filled
         call transform_mass(p,ptrans,x,ip,jp,kp,misq,mjsq,mksq,mijsq)
@@ -198,13 +210,15 @@ C---transform the momenta so that only the first npart+1 are filled
         if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')
      .  .or.(case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')
      .  .or.(case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')
-     .  .or.(case .eq. 'tt_bbu')) then
+     &  .or.(case .eq. 'tt_bbu') .or. (case .eq. '4ftwdk')) then
           if     ((case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')) then
             call extend_trans_wt(pold,p,ptrans,pext)
           elseif ((case .eq. 'tt_bbl') 
      &       .or. (case .eq. 'tt_bbh')
      &       .or. (case .eq. 'tt_bbu')) then
             call extend_trans_ttb(pold,p,ptrans,pext)
+          elseif (case .eq. '4ftwdk') then
+            call extend_trans_stopb(pold,p,ptrans,pext)
           else
             call extend_trans(pold,p,ptrans,pext)
           endif
@@ -216,9 +230,6 @@ C---transform the momenta so that only the first npart+1 are filled
         endif
 
         call storeptilde(nd,ptrans)
-        do nu=1,4
-           vec(nu)=(p(jp,nu)/u-p(kp,nu)/omu)/dsqrt(pjk)
-        enddo
 
 c--- if using a dynamic scale, set that scale with dipole kinematics	
 	if (dynamicscale) then
@@ -226,7 +237,24 @@ c--- if using a dynamic scale, set that scale with dipole kinematics
 	  dipscale(nd)=facscale
 	endif
 	
+c--- Calculate the matrix element now because it might be needed
+c--- in the final-initial segment, regardless of whether or not the
+c--- alfa cut fails here
         call subr_born(ptrans,msq)
+C---Modification so that only close to singular subtracted
+C---Do not set incldip because initial-final can fail 
+C---but final initial still needs to be tested
+c--- [note: for massive dipoles initial-final =/= final-initial,
+c---        but for the case 4ftwdk we call this routine with all
+c---        masses = 0, so the special case is handled gracefully]
+
+C---Modification so that only close to singular subtracted
+        if (u .gt. aif) goto 99
+        
+        do nu=1,4
+           vec(nu)=(p(jp,nu)/u-p(kp,nu)/omu)/dsqrt(pjk)
+        enddo
+
         call subr_corr(ptrans,vec,ip,msqv)        
         sub(qq)=-gsq/x/pij*(two/(omx+u)-one-x)
         sub(gq)=-gsq/pij
@@ -261,9 +289,6 @@ c--- the masses of i and j have been switched
         omx=(mijsq-misq-mjsq-pij)/(pjk+pik)
         x=one-omx
 
-c---Modification so that only close to singular subtracted
-        if (omx .gt. afi) goto 99
-
         do nu=1,4
           qij(nu)=p(ip,nu)+p(jp,nu)
           q(nu)=qij(nu)+p(kp,nu)
@@ -274,15 +299,16 @@ c---Modification so that only close to singular subtracted
 
         if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')
      .  .or.(case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')
-     .  .or.(case .eq. 'tt_bbl') 
-     .  .or. (case .eq. 'tt_bbh')
-     .  .or. (case .eq. 'tt_bbu')) then
+     .  .or.(case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')
+     &  .or.(case .eq. 'tt_bbu') .or. (case .eq. '4ftwdk')) then
           if     ((case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')) then
             call extend_trans_wt(pold,p,ptrans,pext)
           elseif ((case .eq. 'tt_bbl') 
      &       .or. (case .eq. 'tt_bbh')
      &       .or. (case .eq. 'tt_bbu')) then
             call extend_trans_ttb(pold,p,ptrans,pext)
+          elseif (case .eq. '4ftwdk') then
+            call extend_trans_stopb(pold,p,ptrans,pext)
           else
             call extend_trans(pold,p,ptrans,pext)
           endif
@@ -311,6 +337,9 @@ c--- if using a dynamic scale, set that scale with dipole kinematics
 	endif	
 
         call subr_born(ptrans,msq)
+
+c---Modification so that only close to singular subtracted
+        if (omx .gt. afi) goto 99
 
         do nu=1,4
           vec(nu)=z*p(ip,nu)-omz*p(jp,nu)
@@ -432,13 +461,15 @@ C---calculate the ptrans-momenta
         if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')
      .  .or.(case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')
      .  .or.(case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')
-     &  .or.(case .eq. 'tt_bbu')) then
+     &  .or.(case .eq. 'tt_bbu') .or. (case .eq. '4ftwdk')) then
           if     ((case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')) then
             call extend_trans_wt(pold,p,ptrans,pext)
           elseif ((case .eq. 'tt_bbl') 
      &       .or. (case .eq. 'tt_bbh')
      &       .or. (case .eq. 'tt_bbu')) then
             call extend_trans_ttb(pold,p,ptrans,pext)
+          elseif (case .eq. '4ftwdk') then
+            call extend_trans_stopb(pold,p,ptrans,pext)
           else
             call extend_trans(pold,p,ptrans,pext)
           endif

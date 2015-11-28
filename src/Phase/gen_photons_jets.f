@@ -19,6 +19,7 @@ c----
       include 'mxdim.f'
       include 'leptcuts.f'
       include 'reset.f'
+      include 'xmin.f'
       double precision r(mxdim),p(mxpart,4),psumjet(4),wt
       double precision hmin,hmax,delh,h,sqrts,pt,etamax,xx(2)
       double precision y,sinhy,coshy,phi
@@ -183,6 +184,12 @@ c--- favour small pt region
 c--- now make the initial state momenta
       xx(1)=(psumjet(4)+psumjet(3))/sqrts
       xx(2)=(psumjet(4)-psumjet(3))/sqrts
+      
+      if   ((xx(1) .gt. 1d0) .or. (xx(2) .gt. 1d0)
+     & .or. (xx(1) .lt. xmin).or. (xx(2) .lt. xmin)) then
+         wt=0d0
+         return 1
+      endif 
       
       p(1,4)=-0.5d0*xx(1)*sqrts
       p(1,1)=0d0

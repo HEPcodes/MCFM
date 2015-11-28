@@ -12,31 +12,25 @@ c--- Triangle (axial) pieces cancel for massless isodoublets
       include 'masses.f'
       include 'sprods_com.f'
       include 'zprods_decl.f'
-      include 'blabels.f'
       include 'Higgsint.f'
       include 'scale.f'
       include 'noglue.f'
       integer h1,h2,nu,i,j,k,om,del1,del2,k12h,k34h,k56h11,k34h11,e
-      integer k1,k2,k3,k4,k5,k6
-      parameter(k1=1,k2=2,k3=3,k4=4,k5=5,k6=6)
       double precision p(mxpart,4),msq(fn:nf,fn:nf),msqgg,fac
-      double precision mfsq,tau,tauinv,rt,p1(4),p2(4),p3(4),p4(4),pttwo
-      double complex a64v,Avec(2,2),Ahiggs(2,2),Agen3(2,2),Atot(2,2),
-     & faccont,fachiggs,amphiggs,f,e3De4,ppbox(6),pmbox(6),bcoeff(8),
-     & mpgg_bb,pptri(12),pmtri(12),sum(2,2,-2:0)
+      double precision mfsq,tau,tauinv,rt,pttwo
+      double complex Avec(2,2),Ahiggs(2,2),Agen3(2,2),Atot(2,2),
+     & faccont,fachiggs,amphiggs,f,e3De4,sum(2,2,-2:0)
 
       double precision phi,muk,rho,ssig,csig,theta,
      & p1true(4),p2true(4),p3true(4),p4true(4),p5true(4),p6true(4),
-     & s134,s234,sign,dot,s12,s34,s56,dot1256,afac,bfac,gden,delta,
+     & dot,s12,s34,s56,dot1256,afac,bfac,gden,delta,
      & dot1234,dot3456,pmax,ptWsafetycut_massive,ptWsafetycut_massless
-      double complex a,b,c,al,ga,de,boxamp1,boxamp2,boxamp3,boxamp4,
-     & triamp1,tsum,A134,fvs,fvf,box(2,2,-2:0),triang(2,2,-2:0),
+      double complex fvs,fvf,box(2,2,-2:0),triang(2,2,-2:0),
      & bub(2,2,-2:0)
-      character*9 pp,pm,mp,mm
+      character*9 pp,pm
       logical includegens1and2,includegen3,docheck,first
       common/docheck/docheck
-      parameter(pp='q+qb-g+g+',mm='q+qb-g-g-')
-      parameter(pm='q+qb-g+g-',mp='q+qb-g-g+')
+      parameter(pp='q+qb-g+g+',pm='q+qb-g+g-')
       parameter(del1=7,del2=8)
       parameter(k12h=9,k34h=10,k56h11=11,k34h11=12)
       data first/.true./ 

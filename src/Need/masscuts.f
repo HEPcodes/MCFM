@@ -5,9 +5,10 @@
       include 'limits.f'
       include 'process.f'
       logical first
-      double precision p(mxpart,4),s34,s56
-      integer nqcdjets,nqcdstart
-      common/nqcdjets/nqcdjets,nqcdstart
+      double precision p(mxpart,4),s34,s56,s36,s45
+      integer nqcdjets,nqcdstart,nproc
+      common/nqcdjets/nqcdjets,nqcdstart 
+      common/nproc/nproc
       data first/.true./
       save first
 
@@ -54,6 +55,19 @@ c--- only apply cuts on s56 if vectors 5 and 6 are defined
         if ((s56 .lt. bbsqmin) .or. (s56 .gt. bbsqmax)) return 1
       endif
      
+      if (nproc .eq. 90) then
+      s45=+(p(4,4)+p(5,4))**2-(p(4,1)+p(5,1))**2
+     .    -(p(4,2)+p(5,2))**2-(p(4,3)+p(5,3))**2
+      s36=+(p(3,4)+p(6,4))**2-(p(3,1)+p(6,1))**2
+     .    -(p(3,2)+p(6,2))**2-(p(3,3)+p(6,3))**2
+      If (wsqmin .ne. bbsqmin) then
+      write(6,*) 'mascuts:minimum cuts must be the same for process 90' 
+      stop
+      endif
+        if ((s45 .lt. bbsqmin) .or. (s45 .gt. bbsqmax)) return 1
+        if ((s36 .lt. bbsqmin) .or. (s36 .gt. bbsqmax)) return 1
+      endif
+
    98 format(' *      ',f8.2,'  <   ',a12,'  < ',f8.2,'      *')
    99 format(' *          ',f8.2,'  <   ',a3,'  < ',f8.2,'           *')
      

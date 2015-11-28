@@ -61,7 +61,7 @@ DIRS	=	$(MCFMHOME):\
 		$(SOURCEDIR)/Httbar:\
 		$(SOURCEDIR)/W:$(SOURCEDIR)/Z:\
 		$(SOURCEDIR)/W1jet:$(SOURCEDIR)/Z1jet:\
-		$(SOURCEDIR)/Wcjet:$(SOURCEDIR)/Wbjet:\
+		$(SOURCEDIR)/Wcjet:$(SOURCEDIR)/Wbfrmc:$(SOURCEDIR)/Wbjet:\
 		$(SOURCEDIR)/W2jet:$(SOURCEDIR)/W2jetvirt:\
 		$(SOURCEDIR)/Wbbm:$(SOURCEDIR)/Zbbm:\
 		$(SOURCEDIR)/Wgam:$(SOURCEDIR)/Zgam:\
@@ -80,11 +80,141 @@ DIRS	=	$(MCFMHOME):\
 		$(SOURCEDIR)/WpWp2j:$(SOURCEDIR)/F90\
 		$(SOURCEDIR)/qqZtt:$(SOURCEDIR)/ggHgaga:\
 		$(SOURCEDIR)/Gamgam:$(SOURCEDIR)/Dirgam:\
+		$(SOURCEDIR)/TopdkBSY:\
+		$(SOURCEDIR)/Topdecay:$(SOURCEDIR)/Newtpair:\
+		$(SOURCEDIR)/Newtchan:$(SOURCEDIR)/Newschan:\
 		$(SOURCEDIR)/Frag
-		
 
 # -----------------------------------------------------------------------------
 # Specify the object files. 
+
+TOPDKBSYFILES = \
+A1Hggppmp.o \
+A1Hggpppp.o \
+A1Hqqppmp.o \
+A1fggppmp.o \
+A1fggpppp.o \
+A1fqqppmp.o \
+A1lcqqppmp.o \
+A1slcqqppmp.o \
+A41ggppmp.o \
+A41ggpppp.o \
+A41qqppmp.o \
+A43ggppmp.o \
+A43ggpppp.o \
+ALggppmp.o \
+ALggpppp.o \
+ALslcggpppm.o \
+ALslcggpppp.o \
+ARggppmp.o \
+ARggpppp.o \
+BSYA0ggppmp.o \
+BSYA0ggpppp.o \
+BSYA0qedpppm.o \
+BSYA0qedpppp.o \
+BSYA0qqppmp.o \
+BSYA1Hggppmp.o \
+BSYA1Hggpppp.o \
+BSYA1Hqqppmp.o \
+BSYA1fggppmp.o \
+BSYA1fggpppp.o \
+BSYA1fqqppmp.o \
+BSYA1lcqqppmp.o \
+BSYA1slcqqppmp.o \
+BSYALggppmp.o \
+BSYALggppmphp.o \
+BSYALggpppp.o \
+BSYALggpppphp.o \
+BSYALslggpppm.o \
+BSYALslggpppp.o \
+BSYARggppmp.o \
+BSYARggppmphp.o \
+BSYARggpppp.o \
+BSYARggpppphp.o \
+gluegen.o \
+integralfill.o \
+qqb_QQbdkBSY.o \
+qqb_QQbdkBSY_v.o \
+qqbgen.o \
+spinorextend.o
+
+TOPDECAYFILES = \
+tdecay.o \
+adecay.o \
+tdecay_v.o \
+adecay_v.o \
+tdecayg.o \
+adecayg.o \
+tdecayW_v.o \
+adecayW_v.o \
+tdecayWg.o \
+adecayWg.o \
+coefsdkmass.o \
+coefswdk.o \
+lotopdecaywidth.o \
+nloratiotopdecay.o \
+Gamma0.o \
+Gamma0int.o \
+asGamma1.o \
+asGamma1int.o \
+wtransform_generic.o
+
+NEWTPAIRFILES = \
+dk1qqb_QQb_g.o \
+dk1qqb_QQb_gs.o \
+dk2qqb_QQb_g.o \
+dk2qqb_QQb_gs.o \
+dkqqb_QQb_v.o \
+dkW1qqb_QQb_g.o \
+dkW1qqb_QQb_gs.o \
+dkW2qqb_QQb_g.o \
+dkW2qqb_QQb_gs.o \
+dkWqqb_QQb_v.o \
+qqb_QQbdk.o \
+toppaironshell.o \
+
+NEWTCHANFILES = \
+amp_dkqg_tbqdk_g.o \
+dkqg_tbqdk_g.o \
+dkqg_tbqdk_gs.o \
+dkqg_tbqdk_v.o \
+interdk.o \
+interdk_gg.o \
+interdk_qq.o \
+qg_tbqdk.o \
+qg_tbqdk_g.o \
+qg_tbqdk_gs.o \
+qg_tbqdk_gvec.o \
+qg_tbqdk_v.o \
+qg_tbqdk_z.o \
+qg_tbqndk_amp.o \
+qg_tbqndk_ampanti.o \
+singleatoponshell.o \
+singletoponshell.o
+
+NEWSCHANFILES = \
+dkqqb_tbbdk_v.o \
+dkqqb_tbbdk_g.o \
+dkqqb_tbbdk_gs.o \
+qqb_tbbdk.o \
+qqb_tbbdk_g.o \
+qqb_tbbdk_gs.o \
+qqb_tbbdk_v.o \
+qqb_tbbdk_z.o \
+schantoponshell.o \
+schantoponshellv.o \
+schanatoponshellv.o \
+schantoponshellg.o \
+schanatoponshellg.o \
+schanatoponshell.o
+
+WBFROMCFILES = \
+qqb_wbfromc.o \
+qqb_wbfromc_v.o \
+qqb_wbfromc_z.o \
+qqb_wbfromc_g.o \
+qqb_wbfromc_gvec.o \
+qqb_wbfromc_gs.o 
 
 FRAGFILES = \
 GGdR_frag.o \
@@ -114,6 +244,7 @@ recurrenceC.o \
 recurrence.o 
 
 STOPBFILES = \
+extend_trans_stopb.o \
 qg_tbq.o \
 qg_tbq_g.o \
 qg_tbq_gs.o \
@@ -404,6 +535,7 @@ ehsv.o \
 ehsv_odd.o
 
 INTEGRATEFILES = \
+dgauss.o \
 vegas.o \
 ebook.o \
 mbook.o \
@@ -421,6 +553,7 @@ Li4.o \
 WGPLG.o
 
 NEEDFILES = \
+arraysort.o \
 aveptjet.o \
 banner.o \
 basic_di_frix.o \
@@ -477,6 +610,7 @@ scaleset_m345.o \
 scaleset_m3456.o \
 scaleset_Msqpt34sq.o \
 scaleset_Msqpt5sq.o \
+scaleset_Msqptj1sq.o \
 scaleset_ptphoton.o \
 scaleset_HT.o \
 scaleset_ddis.o \
@@ -518,11 +652,14 @@ gen3jet.o \
 gen3jetgaga.o \
 gen3m.o \
 gen3m_rap.o \
+gen3mdk.o \
 gen3from2.o \
 gen4.o \
 gen4a.o \
 gen4from3.o \
 gen4h.o \
+gen4mdk.o \
+gen4mdkrad.o \
 gen5.o \
 gen5a.o \
 gen5from4.o \
@@ -560,6 +697,7 @@ phase6b.o \
 phase7.o \
 phase7a.o \
 phase7b.o \
+phase7dk.o \
 phase7m.o \
 phase8.o \
 phi1_2.o \
@@ -672,7 +810,6 @@ qqb_QQb_z.o
 
 TOPDKFILES = \
 ggttww1.o \
-qqb_QQbdk.o \
 qqb_QQbdk_g.o \
 qqb_QQbdk_gs.o \
 qqb_QQbdk_gvec.o \
@@ -792,6 +929,7 @@ genclust_kt.o \
 genclust_cone.o \
 genclustphotons.o \
 gencuts.o \
+genplots.o \
 getet.o \
 hwwcuts.o \
 hwwjetplots.o \
@@ -801,9 +939,12 @@ jetreorder.o \
 mdata.o \
 miscclust.o \
 nplotter.o \
+nplotter_4ftwdk.o \
 nplotter_dirgam.o \
 nplotter_generic.o \
 nplotter_gamgam.o \
+nplotter_tbbar.o \
+nplotter_ttbar.o \
 nplotter_Vgamma.o \
 nplotter_VV.o \
 nplotter_W_only.o \
@@ -815,7 +956,9 @@ photo_iso.o \
 photgenclust.o \
 photoncuts.o \
 plots_stop_cfmt.o \
+singletopreconstruct.o \
 stopcuts.o \
+topreconstruct.o \
 wbfcuts.o \
 wbfcuts_jeppe.o \
 wconstruct.o 
@@ -1299,6 +1442,8 @@ else
 ifeq ($(PDFROUTINES),NATIVE)
    PARTONFILES += \
    alfamz.o \
+   CT10Pdf.o \
+   POLINT4F.o \
    Ctq4Fn.o \
    Ctq5Par.o \
    Ctq5Pdf.o \
@@ -1339,7 +1484,7 @@ OURCODE = $(LIBFILES) $(NEEDFILES)  $(PROCDEPFILES) \
           $(PHASEFILES) $(SINGLETOPFILES) \
           $(TOPHFILES) $(TOPZFILES) $(TOPWFILES) $(TOPDKFILES) \
           $(USERFILES) $(VOLFILES) $(WFILES) $(W2JETFILES) \
-          $(WCJETFILES) $(WBJETFILES) \
+          $(WCJETFILES) $(WBFROMCFILES) $(WBJETFILES) \
 	  $(W2JETVIRTFILES) $(WHBBARFILES) $(WGAMFILES) $(ZGAMFILES) \
           $(WWFILES) $(WZFILES) $(ZFILES) $(ZHBBARFILES) \
           $(ZZFILES) $(ZGFILES) $(W1JETFILES) $(Z2JETFILES) \
@@ -1352,12 +1497,14 @@ OURCODE = $(LIBFILES) $(NEEDFILES)  $(PROCDEPFILES) \
 	  $(WHWWFILES) $(ZHWWFILES) $(WHZZFILES) $(ZHZZFILES) \
 	  $(WHGAGAFILES) $(ZHGAGAFILES) $(QQHGAGAHFILES) \
 	  $(STOPBFILES) $(STOPJETFILES) $(EPEM3JFILES) $(QQZTTFILES) \
-	  $(WPWP2JFILES) $(F90FILES) \
 	  $(GAMGAMFILES) $(DIRGAMFILES) \
-	  $(WBBMFILES) $(ZBBMFILES) $(FRAGFILES)\
+	  $(WBBMFILES) $(ZBBMFILES) $(FRAGFILES) \
+	  $(TOPDKBSYFILES) $(TOPDECAYFILES) $(NEWTPAIRFILES) \
+	  $(NEWTCHANFILES) $(NEWSCHANFILES) \
 	  $(CHECKINGFILES)
           
-OTHER = $(INTEGRATEFILES) $(PARTONFILES) 
+OTHER = $(INTEGRATEFILES) $(PARTONFILES) $(WPWP2JFILES) $(F90FILES) 
+
 ALLMCFM = $(OTHER) $(OURCODE)
 
           

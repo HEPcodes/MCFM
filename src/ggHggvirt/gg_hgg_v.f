@@ -14,9 +14,10 @@ c    Calculation is fully analytic
       include 'scheme.f'
       include 'nflav.f'
       include 'deltar.f'
+      include 'process.f'
       integer j,k
       double precision p(mxpart,4),msq(fn:nf,fn:nf),s34
-      double precision hdecay,Asq,fac
+      double precision hdecay,Asq,fac,msqgamgam
       double precision qrqr,qarb,aqbr,abab,qbra,bqar
       double precision qaqa,aqaq,qqqq,aaaa
       double precision qagg,aqgg,qgqg,gqqg,agag,gaag,ggqa
@@ -50,9 +51,18 @@ c--- Set up spinor products
       Asq=(as/(3d0*pi))**2/vevsq
 
 C   Deal with Higgs decay to b-bbar
+      if (case .eq. 'ggfus2') then
       s34=s(3,4)+2d0*mb**2
-      hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s34-4d0*mb**2)
+      hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s34-4d0*mb**2) 
       hdecay=hdecay/((s34-hmass**2)**2+(hmass*hwidth)**2)
+      elseif (case .eq. 'gagajj') then
+      hdecay=msqgamgam(hmass)/((s(3,4)-hmass**2)**2+(hmass*hwidth)**2)
+      else
+      write(6,*) 'Unimplemented process in gg_hgg'
+      stop
+      endif
+
+
 
       fac=ason2pi*Asq*gsq**2*hdecay
 

@@ -93,32 +93,8 @@ C      parameter(p1=1,p2=2,q4=3,p4=4,a7=5,p9=6,p7=7,p10=8)
       p(p9,nu)=pin(9,nu)
       p(p10,nu)=pin(10,nu)
       enddo
-      mqbq=czip
-      mqqb=czip
       
       call spinoru(8,p,za,zb)
-c      mqbq=mqbq + denwp1**(-1) * ( za(p1,p9)*za(p1,q4)*za(p7,a7)*zb(p1,
-c     &    p10)*zb(p2,a7)*zb(p4,q4) + za(p1,p9)*za(p7,a7)*za(p9,q4)*zb(
-c     &    p2,a7)*zb(p4,q4)*zb(p9,p10) )
-c      mqbq = mqbq + denwp2**(-1) * (  - za(p1,q4)*za(p2,p9)*za(p7,a7)*
-c     &    zb(p2,p10)*zb(p2,a7)*zb(p4,q4) + za(p1,q4)*za(p7,a7)*za(p9,
-c     &    p10)*zb(p2,p10)*zb(p4,q4)*zb(p10,a7) )
-c      mqbq = mqbq + mt2*denwp1**(-1) * (  - za(p1,p7)*za(p1,p9)*zb(p1,
-c     &    p10)*zb(p2,p4) + za(p1,p9)*za(p7,p9)*zb(p2,p4)*zb(p9,p10) )
-c      mqbq = mqbq + mt2*denwp2**(-1) * ( za(p1,p7)*za(p2,p9)*zb(p2,p4)*
-c     &    zb(p2,p10) + za(p1,p7)*za(p9,p10)*zb(p2,p10)*zb(p4,p10) )
-c      write(6,*) 'mqbq',mqbq
-c      mqqb=mqqb + denwp1**(-1) * (  - za(p1,p9)*za(p2,q4)*za(p7,a7)*zb(
-c     &    p1,p10)*zb(p1,a7)*zb(p4,q4) + za(p2,q4)*za(p7,a7)*za(p9,p10)*
-c     &    zb(p1,p10)*zb(p4,q4)*zb(p10,a7) )
-c      mqqb = mqqb + denwp2**(-1) * ( za(p2,p9)*za(p2,q4)*za(p7,a7)*zb(
-c     &    p1,a7)*zb(p2,p10)*zb(p4,q4) + za(p2,p9)*za(p7,a7)*za(p9,q4)*
-c     &    zb(p1,a7)*zb(p4,q4)*zb(p9,p10) )
-c      mqqb = mqqb + mt2*denwp1**(-1) * ( za(p1,p9)*za(p2,p7)*zb(p1,p4)*
-c     &    zb(p1,p10) + za(p2,p7)*za(p9,p10)*zb(p1,p10)*zb(p4,p10) )
-c      mqqb = mqqb + mt2*denwp2**(-1) * (  - za(p2,p7)*za(p2,p9)*zb(p1,
-c     &    p4)*zb(p2,p10) + za(p2,p9)*za(p7,p9)*zb(p1,p4)*zb(p9,p10) )
-c      write(6,*) 'mqqb',mqqb
 
 
       mqbq=-za(p1,p9)*za(a7,p7)*zb(a7,p2)*zb(p4,q4)/denwp1
@@ -129,7 +105,6 @@ c      write(6,*) 'mqqb',mqqb
      &  *(za(p7,p1)*zb(p1,p10)+za(p7,p9)*zb(p9,p10))
       mqbq = mqbq+mt2*za(p1,p7)*zb(p10,p2)/denwp2
      &  *(za(p9,p2)*zb(p2,p4)+za(p9,p10)*zb(p10,p4))
-c      write(6,*) 'mqbq',mqbq
      
       mqqb=-za(p2,p9)*za(a7,p7)*zb(a7,p1)*zb(p4,q4)/denwp2
      &  * (za(q4,p2)*zb(p2,p10)+za(q4,p9)*zb(p9,p10))
@@ -139,8 +114,7 @@ c      write(6,*) 'mqbq',mqbq
      &  *(za(p7,p2)*zb(p2,p10)+za(p7,p9)*zb(p9,p10))
       mqqb = mqqb+mt2*za(p2,p7)*zb(p10,p1)/denwp1
      &  *(za(p9,p1)*zb(p1,p4)+za(p9,p10)*zb(p10,p4))
-c      write(6,*) 'mqqb',mqqb
-c      pause
+
       wtqqb=aveqq*facqqb*cdabs(mqqb)**2
       wtqbq=aveqq*facqqb*cdabs(mqbq)**2
      

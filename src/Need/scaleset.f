@@ -26,6 +26,8 @@ c--- routines for exact definitions of the scales.
         call scaleset_Msqpt34sq(p,mu0)
       elseif (dynstring .eq. 'sqrt(M^2+pt5^2)') then
         call scaleset_Msqpt5sq(p,mu0)
+      elseif (dynstring .eq. 'sqrt(M^2+ptj1^2)') then
+        call scaleset_Msqptj1sq(p,mu0)
       elseif (dynstring .eq. 'pt(photon)') then
         call scaleset_ptphoton(p,mu0)
       elseif (dynstring .eq. 'HT') then

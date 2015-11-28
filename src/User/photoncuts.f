@@ -17,10 +17,10 @@
       include 'process.f'
       include 'leptcuts.f'
       include 'z_dip.f'
+      include 'plabel.f'
       logical first
       logical photo_dip
       integer nd,isub
-      character*2 plabel(mxpart)
       integer j,k
       integer countlept,leptindex(mxpart),countgamm,gammindex(mxpart)
       double precision pjet(mxpart,4),pt,etarap,R,pth,pts,s34
@@ -28,7 +28,6 @@
      &,etas
       character*30 runstring
       common/runstring/runstring
-      common/plabel/plabel
       data first/.true./
       
       photoncuts=.false.

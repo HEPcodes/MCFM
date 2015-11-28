@@ -5,18 +5,18 @@
       include 'debug.f'
       include 'process.f'
       include 'phasemin.f'
-      integer nu
+      integer nu,icount,nproc
       double precision r(mxdim)
       double precision wt4,p1(4),p2(4),p3(4),p4(4),p5(4),p6(4)
       double precision p(mxpart,4)
       double precision pswt,xjac,p1ext(4),p2ext(4)
       double precision xx(2),tau,x1mx2,surd
       double precision lntaum
-      character*30 runstring
-      common/runstring/runstring
       common/pext/p1ext,p2ext
       common/x1x2/xx
-
+      common/nproc/nproc
+      data icount/1/
+      save icount
       wt4=0d0
 
       lntaum=dlog(taumin)
@@ -50,7 +50,6 @@ c      endif
       p1(nu)=xx(1)*p1ext(nu)
       p2(nu)=xx(2)*p2ext(nu)
       enddo
-
       if  ((case .eq. 't_bbar')
      . .or.(case .eq. 'bq_tpq')) then
       call phase41(r,p1,p2,p3,p4,p5,p6,pswt,*999)
@@ -72,8 +71,19 @@ c      endif
       p(5,nu)=p5(nu)
       p(6,nu)=p6(nu)
       p(7,nu)=0d0
-
       enddo 
+
+      if (nproc .eq. 90) then
+      if (icount .eq. 1) then
+      icount=icount-1
+      else
+      icount=icount+1
+      do nu=1,4
+      p(4,nu)=p6(nu)
+      p(6,nu)=p4(nu)
+      enddo 
+      endif
+      endif
 
       wt4=xjac*pswt
       

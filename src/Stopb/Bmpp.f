@@ -12,8 +12,8 @@ c--- u + g  ->  c + s + d  (t-channel single-charm)
       include 'epinv.f'
       include 'stopf1inc.f'
       double precision q(mxpart,4),dot,cDs,gDs,cDg,mc,ms,
-     . mc2,ms2,qsq,s,t,u,xsn,xsd,xs
-      double complex trc,trg,trs,trsgc,zmpp,Bmpp,old
+     . mc2,ms2,u,xsn,xsd,xs
+      double complex trc,trg,trs,trsgc,zmpp,Bmpp
 
       mc2=mc**2
       ms2=ms**2
@@ -22,9 +22,6 @@ c--- u + g  ->  c + s + d  (t-channel single-charm)
      . +ms2*dot(q,3,2)/2d0/dot(q,4,2)
       cDg=dot(q,3,2)
       gDs=dot(q,4,2)
-      qsq=mc2+ms2+2d0*cDs+2d0*cDg+2d0*gDs
-      s=ms2+2d0*gDs
-      t=mc2+2d0*cDg
       u=mc2+ms2+2d0*cDs
 
       xsn=(1d0-dsqrt(1d0-4d0*ms*mc/(u-(ms-mc)**2)))

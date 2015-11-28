@@ -23,12 +23,11 @@ c---  Z->e+e-(31) or b bbar(33): both measured, rapidities and momenta of 3 and 
 c---  be calculated, also the invariant mass m34
       double precision y3,y4,y5,y34,pt3,pt4,pt5,pt34,m34,r35
       double precision ylep, yjet, ptlep, ptjet
-      integer switch,n,nplotmax,nqcdjets,nqcdstart
+      integer switch,n,nplotmax
       character*4 tag
       logical first,creatent,dswhisto
       common/outputflags/creatent,dswhisto
       common/nplotmax/nplotmax
-      common/nqcdjets/nqcdjets,nqcdstart
       data first/.true./
       save first    
 

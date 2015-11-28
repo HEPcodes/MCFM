@@ -262,7 +262,7 @@ c--- if using a dynamic scale, set that scale with dipole kinematics
         call subr_born(ptrans,msq)
         if (case .eq. 'epem3j') then
           ipt=5
- 	  else
+ 	else
           if (ip .lt. kp) then
             ipt=5
           else

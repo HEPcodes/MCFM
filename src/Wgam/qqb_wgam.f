@@ -69,8 +69,12 @@ c--set msq=0 to initalize
       integer p1,p2,p3,p4,p5,hgamma
       prp34=s(p3,p4)/dcmplx((s(p3,p4)-wmass**2),wmass*wwidth)
 
-c--- apply a dipole form factor to anomalous couplings, with power two
-      xfac=1d0/(1d0+s(p1,p2)/(tevscale*1d3)**2)**2
+c--- apply a dipole form factor to anomalous couplings, with power two (only if tevscale > 0)
+      if (tevscale .gt. 0d0) then
+        xfac=1d0/(1d0+s(p1,p2)/(tevscale*1d3)**2)**2
+      else
+        xfac=1d0
+      endif
       xdelk_g=xfac*delk_g
       xlambda_g=xfac*lambda_g
       

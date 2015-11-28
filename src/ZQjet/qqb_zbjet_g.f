@@ -57,9 +57,6 @@ C---call spinor routine and load common block twopij
 
       prop=s(3,4)/dcmplx((s(3,4)-zmass**2),zmass*zwidth)
 
-c--- skip the QQGGG contributions
-c      goto 66
-
 ************************************************************************
 *     Calculate contributions from the QQGGG matrix elements            *
 ************************************************************************
@@ -129,12 +126,6 @@ c--- G-G contribution (isub=2 only)
       enddo
       enddo
 
-c--- DEBUG
-c--- do not include the 4-quark contributions for now
-c      return
-c--- DEBUG
-
-   66 continue
 
 ************************************************************************
 *     Calculate contributions from the QQqqG matrix elements            *

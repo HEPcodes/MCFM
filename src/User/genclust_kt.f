@@ -17,13 +17,12 @@ c---                    ipow = +1 (normal kt), ipow = -1 ("anti-kt")
       include 'npart.f'
       include 'jetcuts.f'
       include 'jetlabel.f'
+      include 'plabel.f'
       double precision q(mxpart,4),qjet(mxpart,4),qfinal(mxpart,4)
       double precision pt,Rmin,dijmin,dkmin,ayrap
       integer i,nu,iter,nmin1,nmin2,maxjet,nk,
      . ajet,jetindex(mxpart),isub,ipow
-      character*2 plabel(mxpart)
       logical jetmerge,failed
-      common/plabel/plabel
       common/jetmerge/jetmerge
 
       jets=0

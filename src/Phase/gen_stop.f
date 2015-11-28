@@ -30,7 +30,7 @@ c---- larger than the value of 'njets' passed
       double precision y,sinhy,coshy,phi,mv2,wtbw,mjets
       double precision ybar,ptsumjet2,ycm,sumpst,q0st,rshat,dely
       double precision ptjetmin,etajetmin,etajetmax,pbreak
-      double precision plstar,estar,plstarsq,y5starmax,y5starmin
+      double precision plstar,estar,plstarsq,y5starmax,y5starmin,mtrans
       double precision bm(4),wp(4),nn(4),ep(4),pbg(4),g(4),wtwp,wtepnn
       integer j,nu,njets,ijet,in,notag
       logical first,oldzerowidth,xxerror
@@ -122,6 +122,14 @@ c        xmax=1d0/ptjetmin
         p(5+ijet,1)=pt*dcos(phi)
         p(5+ijet,2)=pt*dsin(phi)
         p(5+ijet,3)=pt*sinhy
+
+c--- generate a b-quark as particle 6 for s-channel processes
+        if (((case .eq. 't_bbar') .or. (case .eq. 'tdecay'))
+     &   .and. (ijet .eq. 1)) then
+          mtrans=dsqrt(pt**2+mb**2)
+          p(5+ijet,4)=mtrans*coshy
+          p(5+ijet,3)=mtrans*sinhy	
+	endif
         
         do nu=1,4
           psumjet(nu)=psumjet(nu)+p(5+ijet,nu)
@@ -199,14 +207,14 @@ c--- for the real contribution here, after the decay
         in=3*njets+2
         call phi1_2(r(in),r(in+1),r(in+2),r(in+3),Q,pbg,wp,wtwp,*999)
         in=in+4
-          call phi3m0(r(in),r(in+1),pbg,bm,g,wtbg,*999)
+          call phi3m(r(in),r(in+1),pbg,bm,g,mb,zip,wtbg,*999)
           call phi3m0(r(in+2),r(in+3),wp,nn,ep,wtepnn,*999)
             wt=wt0*wt*wtwp*wtbg*wtepnn/twopi
         do nu=1,4
           p(7,nu)=g(nu)
         enddo
       else
-        call phi1_2m(zip,r(3*njets+2),r(3*njets+3),r(3*njets+4),zip,
+        call phi1_2m(mb,r(3*njets+2),r(3*njets+3),r(3*njets+4),zip,
      .  Q,bm,wp,wtwp,*999)
         call phi3m0(r(3*njets+5),r(3*njets+6),wp,nn,ep,wtepnn,*999)
         wt=wt0*wt*wtwp*wtepnn

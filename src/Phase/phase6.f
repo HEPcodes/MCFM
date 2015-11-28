@@ -35,11 +35,13 @@ c---- calculate momenta of top and bbbar
       if (
      .        (case .eq. 'tt_bbh')
      .   .or. (case .eq. 'tt_bbl')
+     .   .or. (case .eq. 'tt_ldk')
+     .   .or. (case .eq. 'tt_hdk')
+     .   .or. (case .eq. 'tthWdk')
      .   .or. (case .eq. 'ttZbbl')
      .   .or. (case .eq. 'tt_bbu')
      .   .or. (case .eq. 'ttbdkl')
      .   .or. (case .eq. 'ttbdkh')
-     .   .or. (case .eq. 'Httbar')
      .   .or. (case .eq. 'vlchk6')) then
         mass2=mt
         width2=twidth
@@ -188,11 +190,13 @@ c      write(6,*) '678',(p678(4)**2-p678(3)**2-p678(2)**2-p678(1)**2)
       width3=wwidth
       if (   (case .eq. 'tt_bbh')  
      .  .or. (case .eq. 'tt_bbl')
+     .  .or. (case .eq. 'tt_ldk')
+     .  .or. (case .eq. 'tt_hdk')
+     .  .or. (case .eq. 'tthWdk')
      .  .or. (case .eq. 'ttZbbl')
      .  .or. (case .eq. 'tt_bbu')
      .  .or. (case .eq. 'ttbdkl')
      .  .or. (case .eq. 'ttbdkh')
-     .  .or. (case .eq. 'Httbar')
      .  .or. (case .eq. 'vlchk6')) then
         n3=1
         call phi1_2m(mb,r(5),r(6),r(7),smin,p345,p5,p34,wt345,*99)

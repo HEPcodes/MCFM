@@ -15,6 +15,8 @@ C***********************************************************************
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'masses.f'
+      include 'nwz.f'
+      include 'process.f'
       include 'zprods_com.f'
       integer j,k,h1,h2,h3,nu
       double precision t(4),r(4),
@@ -264,8 +266,10 @@ c--- include W decays
 c--- correct normalization for p4 and p7     
       fac=fac
      . /(0.5d0*mt**2/tDp4)
-     . /(0.5d0*mt**2/rDp7)
-     
+     . /(0.5d0*mt**2/rDp7)     
+C--include factor for hadronic decays
+      if (case .eq. 'tt_bbh') fac=2d0*xn*fac
+
 C---fill qb-q, gg and q-qb elements
       do j=-nf,nf
       if     (j .gt. 0) then

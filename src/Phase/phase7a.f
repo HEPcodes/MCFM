@@ -24,6 +24,7 @@ c---- with all 2 pi's (ie 1/(2*pi)^17)
 c--- written for real contribution to qq->H(->WW)+qq only
       if  ((case .eq. 'qq_HWW') .or. (case .eq. 'qq_HZZ')
      ..or. (case .eq. 'HWW2jt') .or. (case .eq. 'HZZ2jt')
+     ..or. (case .eq. 'HWW3jt') .or. (case .eq. 'HZZ3jt')
      ..or. (case .eq. 'WpWp3j')) then
         continue
       else 
@@ -43,27 +44,29 @@ c--- In the case of HWW/HZZ+2jets, we should generate s3456 according
 c--- to a Breit-Wigner at mH
 
       if (case.eq.'WpWp3j') then
-      n2=0
-      mass2=0
-      width2=0
-      n3=0
+        n2=0
+        mass2=0
+        width2=0
+        n3=0
       else
-      n2=1
-      mass2=hmass
-      width2=hwidth
-      n3=0
+        n2=1
+        mass2=hmass
+        width2=hwidth
+        n3=0
       endif
 
       call phi1_2(r(1),r(2),r(3),r(4),p12,p3456,p789,wt12,*99)
 
-      if     ((case .eq. 'HWW2jt') .or. (case .eq. 'qq_HWW')) then
+      if     ((case .eq. 'HWW2jt') .or. (case .eq. 'qq_HWW')
+     &   .or. (case .eq. 'HWW3jt')) then
         n2=1
         mass2=wmass
         width2=wwidth
         n3=1
         mass3=wmass
         width3=wwidth
-      elseif ((case .eq. 'HZZ2jt') .or. (case .eq. 'qq_HZZ')) then
+      elseif ((case .eq. 'HZZ2jt') .or. (case .eq. 'qq_HZZ')
+     &   .or. (case .eq. 'HZZ3jt')) then
         n2=1
         mass2=zmass
         width2=zwidth
@@ -87,7 +90,6 @@ c--- to a Breit-Wigner at mH
       wt=wt0*wt12*wt3456*wt34*wt56*wt789*wt78
       return
       
-      return
  99   wt=0d0
       zerowidth=oldzerowidth
       return 1

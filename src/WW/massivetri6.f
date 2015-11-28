@@ -1,24 +1,18 @@
       subroutine massivetri6(k1,k2,k3,k4,k5,k6,za,zb,triang)
       implicit none
       include 'constants.f'
-      include 'ewcouple.f'
-      include 'qcdcouple.f'
       include 'scale.f'
       include 'masses.f'
       include 'sprods_com.f'
       include 'zprods_decl.f'
       double complex c(2,2,12),d(2,2,6),Cint(12,-2:0),triang(2,2,-2:0),
-     & qlI3,cold(2,2,12)
+     & qlI3,tmp
       double precision s12,s34,s56,s134,s156,mtsq,Delta,shift,
      & cred13,cred23
-      integer j,k1,k2,k3,k4,k5,k6,i1,i2,e,h1,h2
-      double complex triamp,tsum,tprod,A134,ga,de,tmp,
-     & t2sum,t2prod,t1234sum,t1234prod
+      integer j,k1,k2,k3,k4,k5,k6,e,h1,h2
       common/transferbox/d
       common/docheck/docheck
-      logical first,docheck
-      data first/.true./ 
-      save first
+      logical docheck
 
       mtsq=mt**2
 

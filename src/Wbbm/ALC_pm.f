@@ -8,19 +8,17 @@ c--- This is the leading colour amplitude in the notation
 c---  (q1, Qb2, Q3, qb4)						
       implicit none						
       include 'constants.f'					
-      include 'nflav.f'						
       include 'momwbbm.f'					
       include 'zprods_com.f'					
       include 'Wbbmlabels.f'					
       integer k1,k2,k3,k4,k5,k6,v1,v2,nu,j,eta,k34f,k56f 		
       double complex ampALC(2,2)					
       double precision p2(4),p3(4),p23(4),p123(4),p234(4),p1234(4),
-     & p12(4),p34(4),p56(4),s23,s123,s234,s34,s12,s1234,msq,mb	
+     & p12(4),p34(4),p56(4),s23,s123,s234,s34,s12,s1234,msq
       double complex zab,zaba,zbab,zabab,zba,ampLO 	
-      double precision K1f(4),K2f(4),p1Dp2,p1Dp3,p1Dp4,p2Dp3,p2Dp4,
-     & p3Dp4,a0,nlf						
+      double precision K1f(4),K2f(4),p1Dp3,p1Dp4,p2Dp3,p2Dp4						
       double precision n1(4),n2(4),p3DP,etaDp3,etaDP,al1,al2,kappa 
-      double complex S1,S2,K1DK2,gamma,den,a01,a02,a11,a12,a21,a22 
+      double complex S1,S2,K1DK2,gamma,den,a11,a12,a21,a22 
       double complex gam,be,besq		 
       double complex zaP2b,zaP3b,zaP12b,zaP23b,zaP34b,zaP123b,     
      & zaP234b,zaP1234b     
@@ -98,8 +96,6 @@ c--- zero out all integral coefficients
       s34=p34(4)**2-p34(1)**2-p34(2)**2-p34(3)**2			
       s12=p12(4)**2-p12(1)**2-p12(2)**2-p12(3)**2			
       s1234=p1234(4)**2-p1234(1)**2-p1234(2)**2-p1234(3)**2	
-      p1Dp2=mom(k1,4)*p2(4)-mom(k1,1)*p2(1)			
-     &	-mom(k1,2)*p2(2)-mom(k1,3)*p2(3)			
       p1Dp3=mom(k1,4)*p3(4)-mom(k1,1)*p3(1)			
      &	-mom(k1,2)*p3(2)-mom(k1,3)*p3(3)			
       p2Dp4=mom(k4,4)*p2(4)-mom(k4,1)*p2(1)			
@@ -108,13 +104,9 @@ c--- zero out all integral coefficients
      &	-p2(2)*p3(2)-p2(3)*p3(3)				
       p1Dp4=mom(k1,4)*mom(k4,4)-mom(k1,1)*mom(k4,1)		
      &	-mom(k1,2)*mom(k4,2)-mom(k1,3)*mom(k4,3)		
-      p3Dp4=mom(k4,4)*p3(4)-mom(k4,1)*p3(1)			
-     &	-mom(k4,2)*p3(2)-mom(k4,3)*p3(3)			
       msq=p2(4)**2-p2(1)**2-p2(2)**2-p2(3)**2			
-      mb=dsqrt(msq)						
       besq=1d0-4d0*bm*bp						
       be=sqrt(besq)						
-      nlf=dfloat(nflav)						
 
       amplo=(za(k1,k2)*zb(k4,k5)                                   
      &     *(za(k6,k1)*zb(k1,k3)+za(k6,k2)*zb(k2,k3))/s123         

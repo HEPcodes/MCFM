@@ -67,6 +67,14 @@ c--- photon processes also need to know the dipole number
         call nplotter_gamgam(p,wt,wt2,switch,nd)
       elseif (case.eq.'dirgam') then 
         call nplotter_dirgam(p,wt,wt2,switch,nd)
+      elseif ((case.eq.'tt_bbl') .or. (case.eq.'tt_ldk')
+     &   .or. (case.eq.'tt_bbh') .or. (case.eq.'tt_bbu')
+     &   .or. (case.eq.'tt_hdk') .or. (case.eq.'tthWdk')) then
+        call nplotter_ttbar(p,wt,wt2,switch)
+      elseif ((case.eq.'4ftwdk') .or. (case.eq.'dk_4ft')) then
+        call nplotter_4ftwdk(p,wt,wt2,switch)
+      elseif ((case.eq.'t_bbar') .or. (case.eq.'tdecay')) then
+        call nplotter_tbbar(p,wt,wt2,switch)
       else
         call nplotter_generic(p,wt,wt2,switch)
       endif

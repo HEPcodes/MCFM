@@ -5,13 +5,12 @@ c--- values of HT, Q*eta and M(l+b+nu) for the plotting routine
       implicit none
       include 'constants.f'
       include 'jetlabel.f'
+      include 'plabel.f'
       include 'process.f'
       integer j,ilept,ibjet,ispect,maxparts,countjet,jetindex(mxpart)
       double precision pt,etarap,p(mxpart,4),ran2,
      . etvec(2),plept(4),etmissing(4),
      . mlbnu,ht,qeta,missinget,merecon,reconcorr
-      character*2 plabel(mxpart)
-      common/plabel/plabel
             
 c--- initialize all variables      
       ilept=-1

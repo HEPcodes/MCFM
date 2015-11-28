@@ -3,10 +3,9 @@
       include 'constants.f'
       include 'npart.f'
       include 'jetlabel.f'
+      include 'plabel.f'
       integer j,countjet,isub,oldjets
-      character*2 plabel(mxpart)
       double precision p(mxpart,4),pjet(mxpart,4),pt,rcut
-      common/plabel/plabel
       common/rcut/rcut
       
       aveptjet=0d0

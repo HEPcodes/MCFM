@@ -53,7 +53,6 @@ c      endif
       m3=dsqrt(s3)
       if (m1-m2-m3.lt. 0d0) return 1
 
-
       if (jbranch .eq. 1) then
         jbranch=2
         rtxth=xth**xexp 
@@ -63,8 +62,6 @@ c      endif
         rtxth=1d0-xth**xexp
         xjac=1d0/(xexp*xth**(xexp-1d0))
       endif
-
-
 
       costh=two*rtxth-one      
       phi=twopi*xphi
@@ -113,7 +110,6 @@ c      pause
       p3cm(1)=m1/two*lambda/s1*sinth*sphi
       p3cm(2)=m1/two*lambda/s1*sinth*cphi
       p3cm(3)=m1/two*lambda/s1*costh
-
 
       call boost(m1,p1,p3cm,p3)
       do j=1,4

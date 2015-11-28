@@ -21,17 +21,15 @@ c---                1  --> counterterm for real radiation
       include 'jetlabel.f'
       include 'frag.f'
       double precision p(mxpart,4),wt,wt2
-      double precision yrap,pt,r,yraptwo
-      double precision y3,y4,y34,y5,pt3,pt4,pt5,r45,r35,r34,s34,m34
-      double precision yphot, yjet,ptphot,mjj
-      integer switch,n,nplotmax,nqcdjets,nqcdstart
-      character*4 tag,part
+      double precision yrap,pt,r
+      double precision y3,y4,y5,pt3,pt4,pt5,r45,r35,r34,s34,m34
+      double precision yjet,ptphot,mjj
+      integer switch,n,nplotmax
+      character*4 tag
       integer nd
       logical first,creatent,dswhisto
       common/outputflags/creatent,dswhisto
       common/nplotmax/nplotmax
-      common/nqcdjets/nqcdjets,nqcdstart
-      common/part/part
       data first/.true./
       save first
   
@@ -60,7 +58,6 @@ c--- set them to dummy values
         y4=1d3
         pt3=1d3
         pt4=1d3
-        y34=1d3
 c---Intiailise jet 
         y5=1d3
         pt5=1d3
@@ -73,19 +70,12 @@ c--- the plotting range
         jets=2
 
 c--- (Upper) limits for the plots
-        yphot=6d0
         yjet=3d0
         ptphot=200d0
         goto 99
       else
 c--- Add event in histograms
         tag='plot'
-      endif
-
-c--- Book and fill ntuple if that option is set, remembering to divide
-c--- by # of iterations now that is handled at end for regular histograms
-      if (creatent .eqv. .true.) then
-        call bookfill(tag,p,wt/dfloat(itmx))  
       endif
 
 ************************************************************************
@@ -146,6 +136,12 @@ c--- Photons order based on pt
 
 c--- Call histogram routines
    99 continue
+
+c--- Book and fill ntuple if that option is set, remembering to divide
+c--- by # of iterations now that is handled at end for regular histograms
+      if (creatent .eqv. .true.) then
+        call bookfill(tag,p,wt/dfloat(itmx))  
+      endif
 
 c--- "n" will count the number of histograms
       n=1              

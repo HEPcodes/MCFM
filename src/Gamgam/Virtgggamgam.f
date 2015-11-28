@@ -8,8 +8,7 @@
       integer h1,h2,h3,h4
       double precision temp,s,t,u
       double complex m1(2,2,2,2),m2fin(2,2,2,2),lnrat,
-     & I1ggtogamgam,xlog,FL(2,2,2,2),FSL(2,2,2,2),
-     & IxM1ep(2,2,2,2)
+     & I1ggtogamgam,xlog,FL(2,2,2,2),FSL(2,2,2,2)
 
       xlog=lnrat(musq,-s)
 c--- This is taken from hep-ph/0109078 Eq.(2.11); note however that the log

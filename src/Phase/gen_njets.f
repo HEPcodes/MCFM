@@ -28,8 +28,6 @@ c---- are required
       double precision mass2,width2,mass3,width3
       integer j,nu,njets,ijet,n2,n3,notag
       logical first,xxerror,flatreal
-      character*30 runstring
-      common/runstring/runstring
       character*4 part
       common/part/part
       common/energy/sqrts

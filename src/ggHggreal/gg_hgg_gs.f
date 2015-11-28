@@ -22,7 +22,7 @@
       double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf),
      . sub2q3g_ii,sub2q3g_iffi,sub2q3g_if,sub2q3g_fi,sub2q3g_ff,
      . msq_ab,msq_ba,msq_sym,msqv_ab,msqv_ba,msqv_sym,subgg,subqq,subv 
-      double precision f0q,f2q,f4q,porig(7,4),nfactor
+      double precision f0q,f2q,f4q,nfactor
       common/bitflags/f0q,f2q,f4q
       external gg_hgg,gg_hgg_gvec
 
@@ -1236,8 +1236,6 @@ c--- f0q subtractions above
      . +msq_struc15_2(igg_sym,-1,k))*sub15_2(qg)
 
       endif
-      
-   55 continue   
       
       enddo
       enddo

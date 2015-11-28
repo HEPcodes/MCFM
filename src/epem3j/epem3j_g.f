@@ -19,36 +19,11 @@ c--- all momenta are incoming
       include 'nflav.f'
       include 'mmsq_cs.f'
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),
-     .                 facgg,facqq,prop,Vfac
-      double precision qqbWgg2,qbqWgg2,qgWqg2,qbgWqbg2,
-     .                 gqbWqbg2,gqWqg2,ggWqbq2,qqbWgg2_lc,qqbWgg2_slc
-      double precision qqbWgg2_cs(0:2),qbqWgg2_cs(0:2),qgWqg2_cs(0:2),
-     .                 qbgWqbg2_cs(0:2),gqbWqbg2_cs(0:2),
-     .                 gqWqg2_cs(0:2),ggWqbq2_cs(0:2)
-      double precision 
-     . qqb_ijkk(0:2),qqb_ijii(0:2),qqb_ijjj(0:2),qqb_ijkj(0:2),
-     . qqb_ijik(0:2),qqb_ijkl(0:2),qqb_iiij(0:2),qqb_iiji(0:2),
-     . qbq_ijkk(0:2),qbq_ijii(0:2),qbq_ijjj(0:2),qbq_ijkj(0:2),
-     . qbq_ijik(0:2),qbq_ijkl(0:2),qbq_iiij(0:2),qbq_iiji(0:2),
-     . qq_iiji(0:2),qq_ijkj(0:2),qq_ijik(0:2),
-     . qq_ijjj(0:2),qq_ijii(0:2),
-     . qbqb_iiji(0:2),qbqb_ijkj(0:2),qbqb_ijik(0:2),
-     . qbqb_ijjj(0:2),qbqb_ijii(0:2)
-      double precision mqq(0:2,fn:nf,fn:nf)
-      double complex qqb1(3),qqb2(3),qqb3(3),qqb4(3),
-     .               qq1(4),qq2(4),qq3(4),qq4(4),
-     .               qbq1(3),qbq2(3),qbq3(3),qbq4(3),
-     .               qbqb1(4),qbqb2(4),qbqb3(4),qbqb4(4)
-      integer rcolourchoice
-      character*4 part
-      common/part/part
-      common/mqq/mqq
+     . facgg,facqq,prop,qqbWgg2_slc,qqbWgg2_lc,qqbWgg2,qqb_ijkk(0:2)
+      double complex qqb1(3),qqb2(3),qqb3(3),qqb4(3)
 c--- we label the amplitudes by helicity (qqb1 ... qqb4)
 c--- and by type of contribution qqb(1) ... qqb(n)
-      integer i,j,k,n1,n2
-      logical first
-      data first/.true./
-      save first
+      integer j,k
 
 c--- initialize matrix elements
       do j=-nf,nf

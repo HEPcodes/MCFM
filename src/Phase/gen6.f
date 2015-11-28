@@ -5,23 +5,43 @@
       include 'debug.f'
       include 'phasemin.f'
       include 'process.f'
+      include 'masses.f'
+      include 'jetcuts.f'
       integer nu
       double precision r(mxdim)
       double precision wt6,q(mxpart,4)
       double precision p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4),p8(4)
-      double precision sqrts,y,pswt,xjac,xx(2),tau
+      double precision sqrts,y,pswt,xjac,xx(2),tau,vs,vsqmax,vsqmin,
+     & s34,rtshat,ymax,yave
       common/energy/sqrts
       common/x1x2/xx
       data p3/0d0,0d0,0d0,0d0/
 
       wt6=0d0
 
-      tau=dexp(dlog(taumin)*r(9))
-      y=0.5d0*dlog(tau)*(1d0-2d0*r(10))
-      xjac=dlog(taumin)*tau*dlog(tau)
-
-      xx(1)=dsqrt(tau)*dexp(+y)
-      xx(2)=dsqrt(tau)*dexp(-y)
+      if (((case .eq. 'HWW2jt') .or. (case .eq. 'HZZ2jt'))
+     &  .and. (hmass .lt. 201d0)) then
+c--- Higgs production with WW or ZZ decay, small Higgs width
+c--- (small error induced if zerowidth false, of order (hwidth/hmass))
+        vsqmax=1d0/(hmass*(hmass+4d0*ptjetmin))
+        vsqmin=1d0/sqrts**2
+        xmin=vsqmin/vsqmax
+        vs=(vsqmax-vsqmin)*r(9)+vsqmin
+        s34=1d0/vs
+        rtshat=dsqrt(s34)
+        ymax=dlog(sqrts/rtshat)
+        yave=ymax*(two*r(10)-1d0)     	 
+        xx(1)=rtshat/sqrts*exp(+yave)
+        xx(2)=rtshat/sqrts*exp(-yave)
+	xjac=(vsqmax-vsqmin)*s34**2/sqrts**2*two*ymax
+      else
+c--- generic process
+        tau=dexp(dlog(taumin)*r(9))
+        y=0.5d0*dlog(tau)*(1d0-2d0*r(10))
+        xx(1)=dsqrt(tau)*dexp(+y)
+        xx(2)=dsqrt(tau)*dexp(-y)
+        xjac=dlog(taumin)*tau*dlog(tau)
+      endif
 
 c--- phase space volume only checked for x1=x2=1
       if ((case .eq. 'vlchwg') .or. (case .eq. 'vlchwh')) then

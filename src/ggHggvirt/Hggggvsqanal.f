@@ -2,11 +2,9 @@
       implicit none
       include 'constants.f'
 C---  matrix element squared for 0 --> H + g(j1)+g(j2)+g(j3)+g(j4)
-      integer j1,j2,j3,j4,j,k,h1,h2,h3,h4
+      integer j1,j2,j3,j4,j,h1,h2,h3,h4
       double complex Avirt(3,2,2,2,2),Alo(3,2,2,2,2)
-      double precision p(mxpart,4),temp,ren,H4prenorm
-      logical CheckEGZ
-      common/CheckEGZ/CheckEGZ
+      double precision temp,ren,H4prenorm
       
       call   Amplo(j1,j2,j3,j4,Alo)
       call Ampvirt_gggg(j1,j2,j3,j4,Avirt)

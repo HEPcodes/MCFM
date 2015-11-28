@@ -22,134 +22,171 @@ c----No statistical factor of 1/2 included.
       include 'sprods_com.f'
       include 'zprods_decl.f'
       include 'ewcharge.f'
-      include 'zerowidth.f'
       include 'srdiags.f'
+      include 'interference.f'
+
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),qdks(mxpart,4),
-     & ave,v34(2),v56(2),q34,q56     
+     & ave,v1(2),v2(2),rescale
+     
       double complex qqb(2,2,2),qbq(2,2,2),q_qb,qb_q
-      double complex aq12(2,2,2),qa12(2,2,2),
-     & aq34(2,2,2),qa34(2,2,2),aq56(2,2,2),qa56(2,2,2)
-      double complex propz1,propz2,props,a6trees,cprop
-      double complex prop12,prop34,prop56
+      double complex qqb1(2,2,2),qbq1(2,2,2),qqb2(2,2,2),qbq2(2,2,2)
+      double complex a6trees,prop12,prop34,prop56
+      double complex Uncrossed(-nf:nf,-nf:nf,2,2,2)
+
       double precision FAC
-      integer j,k,polq,pol34,pol56
-      integer h1,h2,h3
-      parameter(ave=0.25d0/xn)
+      integer j,k,polq,pol1,pol2,i4(2),i5(2),jkswitch(-nf:nf)
+      integer ii,nmax
+      data i4/4,5/,i5/5,4/,jkswitch/-1,-2,-1,-2,-1,0,1,2,1,2,1/
+      save i4,i5,jkswitch
 
+c     vsymfact=symmetry factor
       fac=-4D0*esq**2
+      ave=aveqq*xn*vsymfact
+      v1(1)=l1
+      v1(2)=r1
+      v2(1)=l2
+      v2(2)=r2
 
-      v34(1)=l1
-      v34(2)=r1
-      q34=q1
-      v56(1)=l2
-      v56(2)=r2
-      q56=q2
+C----setup factor to avoid summing over too many neutrinos
+C----if coupling enters twice    
+      if (q2 .eq. 0d0) then   
+      rescale=1d0/sqrt(3d0)    
+      else 
+      rescale=1d0    
+      endif          
+                                                                                                                                            
 c--set msq=0 to initalize
       do j=-nf,nf
       do k=-nf,nf
       msq(j,k)=0d0
+      Uncrossed(j,k,:,:,:)=0d0
       enddo
       enddo
+
+C----Change the momenta to DKS notation 
+c   We have --- q(-p1)+qbar(-p2)-->l(p3)+lbar(p4) + l'(p5)+lbar'(p6)
+c   DKS have--- q(q2) +qbar(q1) -->mu^-(q3)+mu^+(q4)+e^-(q6)+e^+(q5)
+
+
+         do j=1,4
+            qdks(1,j)=p(1,j)
+            qdks(2,j)=p(2,j)
+            qdks(3,j)=p(3,j)
+            qdks(4,j)=p(4,j)
+            qdks(5,j)=p(6,j)
+            qdks(6,j)=p(5,j)
+         enddo
+
+      call spinoru(6,qdks,za,zb)
+
+
+      if (interference) then
+         nmax=2
+      else
+         nmax=1
+      endif
+
+      do ii=1,nmax
+
 
 c--   s returned from sprod (common block) is 2*dot product
-      call spinoru(6,p,za,zb)
-
 c--   calculate propagators
-      if (zerowidth) then
       prop12=s(1,2)/dcmplx(s(1,2)-zmass**2,zmass*zwidth)
-      prop34=s(3,4)/dcmplx(s(3,4)-zmass**2,zmass*zwidth)
-      prop56=s(5,6)/dcmplx(s(5,6)-zmass**2,zmass*zwidth)
-      cprop=dcmplx(1d0)
-      else
-      prop12=dcmplx(s(1,2)/(s(1,2)-zmass**2))
-      prop34=dcmplx(s(3,4)/(s(3,4)-zmass**2))
-      prop56=dcmplx(s(5,6)/(s(5,6)-zmass**2))
-      propz1=(s(3,4)-zmass**2)/dcmplx(s(3,4)-zmass**2,zmass*zwidth)
-      propz2=(s(5,6)-zmass**2)/dcmplx(s(5,6)-zmass**2,zmass*zwidth)
-      props=(s(1,2)-zmass**2)/dcmplx(s(1,2)-zmass**2,zmass*zwidth)
-      cprop=propz1*propz2*props
-      endif
+      prop34=s(3,i4(ii))/dcmplx(s(3,i4(ii))-zmass**2,zmass*zwidth)
+      prop56=s(i5(ii),6)/dcmplx(s(i5(ii),6)-zmass**2,zmass*zwidth)
             
 c-- here the labels correspond to the polarizations of the
-c-- quark, outgoing lepton 3 and outgoing lepton 5 respectively
-      call zzamp(1,2,3,4,5,6,za,zb,aq12,aq34,aq56)
-      call zzamp(2,1,3,4,5,6,za,zb,qa12,qa34,qa56)
+c-- quark, lepton 4 and lepton 6 respectively
+
+      qbq(1,1,1)=A6trees(1,2,6,i5(ii),i4(ii),3,za,zb) 
+      qbq(1,1,2)=A6trees(1,2,6,i5(ii),3,i4(ii),za,zb) 
+      qbq(1,2,1)=A6trees(1,2,i5(ii),6,i4(ii),3,za,zb) 
+      qbq(1,2,2)=A6trees(1,2,i5(ii),6,3,i4(ii),za,zb) 
+
+      qqb(1,1,1)=A6trees(2,1,6,i5(ii),i4(ii),3,za,zb)
+      qqb(1,1,2)=A6trees(2,1,6,i5(ii),3,i4(ii),za,zb) 
+      qqb(1,2,1)=A6trees(2,1,i5(ii),6,i4(ii),3,za,zb) 
+      qqb(1,2,2)=A6trees(2,1,i5(ii),6,3,i4(ii),za,zb)
       
-c      aq12(1,1,1)=A6trees(1,2,6,5,4,3,za,zb) 
-c      aq12(1,1,2)=A6trees(1,2,6,5,3,4,za,zb) 
-c      aq12(1,2,1)=A6trees(1,2,5,6,4,3,za,zb) 
-c      aq12(1,2,2)=A6trees(1,2,5,6,3,4,za,zb) 
+      if (srdiags) then
+c---for supplementary diagrams.
+      qbq1(1,1,1)=+A6trees(3,i4(ii),1,2,i5(ii),6,za,zb)
+      qbq2(1,1,1)=+A6trees(6,i5(ii),1,2,i4(ii),3,za,zb)
+      qbq1(1,1,2)=-A6trees(i4(ii),3,1,2,i5(ii),6,za,zb)
+      qbq2(1,1,2)=+A6trees(6,i5(ii),1,2,3,i4(ii),za,zb)      
+      qbq1(1,2,1)=+A6trees(3,i4(ii),1,2,6,i5(ii),za,zb)
+      qbq2(1,2,1)=-A6trees(i5(ii),6,1,2,i4(ii),3,za,zb)
+      qbq1(1,2,2)=-A6trees(i4(ii),3,1,2,6,i5(ii),za,zb)
+      qbq2(1,2,2)=-A6trees(i5(ii),6,1,2,3,i4(ii),za,zb)
 
-c      qa12(1,1,1)=A6trees(2,1,6,5,4,3,za,zb)
-c      qa12(1,1,2)=A6trees(2,1,6,5,3,4,za,zb) 
-c      qa12(1,2,1)=A6trees(2,1,5,6,4,3,za,zb) 
-c      qa12(1,2,2)=A6trees(2,1,5,6,3,4,za,zb)
-      
-c      if (srdiags) then
-cc---for supplementary diagrams.
-c      aq56(1,1,1)=+A6trees(3,4,1,2,5,6,za,zb)
-c      aq34(1,1,1)=+A6trees(6,5,1,2,4,3,za,zb)
-c      aq56(1,1,2)=-A6trees(4,3,1,2,5,6,za,zb)
-c      aq34(1,1,2)=+A6trees(6,5,1,2,3,4,za,zb)      
-c      aq56(1,2,1)=+A6trees(3,4,1,2,6,5,za,zb)
-c      aq34(1,2,1)=-A6trees(5,6,1,2,4,3,za,zb)
-c      aq56(1,2,2)=-A6trees(4,3,1,2,6,5,za,zb)
-c      aq34(1,2,2)=-A6trees(5,6,1,2,3,4,za,zb)
+      qqb1(1,1,1)=-A6trees(3,i4(ii),2,1,i5(ii),6,za,zb)
+      qqb2(1,1,1)=-A6trees(6,i5(ii),2,1,i4(ii),3,za,zb)
+      qqb1(1,1,2)=+A6trees(i4(ii),3,2,1,i5(ii),6,za,zb)
+      qqb2(1,1,2)=-A6trees(6,i5(ii),2,1,3,i4(ii),za,zb)      
+      qqb1(1,2,1)=-A6trees(3,i4(ii),2,1,6,i5(ii),za,zb)
+      qqb2(1,2,1)=+A6trees(i5(ii),6,2,1,i4(ii),3,za,zb)
+      qqb1(1,2,2)=+A6trees(i4(ii),3,2,1,6,i5(ii),za,zb)
+      qqb2(1,2,2)=+A6trees(i5(ii),6,2,1,3,i4(ii),za,zb)
+      endif
 
-c      qa56(1,1,1)=+A6trees(3,4,2,1,5,6,za,zb)
-c      qa34(1,1,1)=+A6trees(6,5,2,1,4,3,za,zb)
-c      qa56(1,1,2)=-A6trees(4,3,2,1,5,6,za,zb)
-c      qa34(1,1,2)=+A6trees(6,5,2,1,3,4,za,zb)      
-c      qa56(1,2,1)=+A6trees(3,4,2,1,6,5,za,zb)
-c      qa34(1,2,1)=-A6trees(5,6,2,1,4,3,za,zb)
-c      qa56(1,2,2)=-A6trees(4,3,2,1,6,5,za,zb)
-c      qa34(1,2,2)=-A6trees(5,6,2,1,3,4,za,zb)
-c      endif
+      do j=1,2
+      do k=1,2
+      qbq(2,j,k)=-qqb(1,j,k)
+      qqb(2,j,k)=-qbq(1,j,k)
+      qbq1(2,j,k)=-qqb1(1,j,k)
+      qqb1(2,j,k)=-qbq1(1,j,k)
+      qbq2(2,j,k)=-qqb2(1,j,k)
+      qqb2(2,j,k)=-qbq2(1,j,k)
+      enddo
+      enddo
 
-c      do j=1,2
-c      do k=1,2
-c      aq12(2,j,k)=-qa12(1,j,k)
-c      qa12(2,j,k)=-aq12(1,j,k)
-c      aq56(2,j,k)=qa56(1,j,k)
-c      qa56(2,j,k)=aq56(1,j,k)
-c      aq34(2,j,k)=qa34(1,j,k)
-c      qa34(2,j,k)=aq34(1,j,k)
-c      enddo
-c      enddo
-
-      do j=-nf,nf
+      do j=-2,2
       k=-j
-      msq(j,k)=0d0
 
       if (j.eq.0) go to 20
+
       if ((j .gt. 0).and.(k .lt. 0)) then
       do polq=1,2
-      do pol56=1,2
-      do pol34=1,2
+      do pol1=1,2
+      do pol2=1,2
       if     (polq .eq. 1) then
-       q_qb=(prop56*v56(pol56)*l(j)+q56*q(j))
-     &     *(prop34*v34(pol34)*l(j)+q34*q(j))*qa12(polq,pol34,pol56)
+       q_qb=(prop56*v2(pol1)*l(j)+q2*q(j))
+     &     *(prop34*v1(pol2)*l(j)+q1*q(j))*qqb(polq,pol1,pol2)
         if (srdiags) then
-          q_qb=q_qb
-     &       +(prop56*v34(pol34)*v56(pol56)+q34*q56)
-     &       *(prop12*v34(pol34)*l(j)+q34*q(j))*qa56(polq,pol34,pol56)
-     &       +(prop34*v34(pol34)*v56(pol56)+q34*q56)
-     &       *(prop12*v56(pol56)*l(j)+q56*q(j))*qa34(polq,pol34,pol56)
+          q_qb=q_qb-(
+     &       +(prop56*v1(pol2)*v2(pol1)+q1*q2)
+     &       *(prop12*v1(pol2)*l(j)+q1*q(j))*qqb1(polq,pol1,pol2)
+     &       +(prop34*v1(pol2)*v2(pol1)+q1*q2)*rescale
+     &       *(prop12*v2(pol1)*l(j)+q2*q(j))*qqb2(polq,pol1,pol2))
+
         endif
       elseif (polq .eq. 2) then
-       q_qb=(prop56*v56(pol56)*r(j)+q56*q(j))
-     &     *(prop34*v34(pol34)*r(j)+q34*q(j))*qa12(polq,pol34,pol56)
+       q_qb=(prop56*v2(pol1)*r(j)+q2*q(j))
+     &     *(prop34*v1(pol2)*r(j)+q1*q(j))*qqb(polq,pol1,pol2)
         if (srdiags) then
-         q_qb=q_qb
-     &       +(prop56*v34(pol34)*v56(pol56)+q34*q56)
-     &       *(prop12*v34(pol34)*r(j)+q34*q(j))*qa56(polq,pol34,pol56)
-     &       +(prop34*v34(pol34)*v56(pol56)+q34*q56)
-     &       *(prop12*v56(pol56)*r(j)+q56*q(j))*qa34(polq,pol34,pol56)
+         q_qb=q_qb-(
+     &       +(prop56*v1(pol2)*v2(pol1)+q1*q2)
+     &       *(prop12*v1(pol2)*r(j)+q1*q(j))*qqb1(polq,pol1,pol2)
+     &       +(prop34*v1(pol2)*v2(pol1)+q1*q2)*rescale
+     &       *(prop12*v2(pol1)*r(j)+q2*q(j))*qqb2(polq,pol1,pol2))
+
         endif
       endif
-C-- Inclusion of width a la Baur and Zeppenfeld
-      q_qb=fac*q_qb*cprop
+      q_qb=FAC*q_qb
       msq(j,k)=msq(j,k)+ave*abs(q_qb)**2
+
+
+      !interference terms
+      if ((ii.eq.1).and.(interference)) then
+         Uncrossed(j,k,polq,pol1,pol2)=q_qb
+      elseif (ii.eq.2) then
+         if (pol1.eq.pol2) then
+      msq(j,k)=msq(j,k)
+     &   -2d0*ave*dble(dconjg(q_qb)*Uncrossed(j,k,polq,pol1,pol2))
+         endif
+      endif
+
+
       enddo
       enddo
       enddo
@@ -157,41 +194,62 @@ C-- Inclusion of width a la Baur and Zeppenfeld
       elseif ((j .lt. 0).and.(k .gt. 0)) then
 
       do polq=1,2
-      do pol34=1,2
-      do pol56=1,2
+      do pol1=1,2
+      do pol2=1,2
       if     (polq .eq. 1) then
-       qb_q=(prop56*v56(pol56)*l(k)+q56*q(k))
-     &     *(prop34*v34(pol34)*l(k)+q34*q(k))*aq12(polq,pol34,pol56)
+       qb_q=(prop56*v2(pol1)*l(k)+q2*q(k))
+     &     *(prop34*v1(pol2)*l(k)+q1*q(k))*qbq(polq,pol1,pol2)
         if (srdiags) then
          qb_q=qb_q
-     &       +(prop56*v34(pol34)*v56(pol56)+q34*q56)
-     &       *(prop12*v34(pol34)*l(k)+q34*q(k))*aq56(polq,pol34,pol56)
-     &       +(prop34*v34(pol34)*v56(pol56)+q34*q56)
-     &       *(prop12*v56(pol56)*l(k)+q56*q(k))*aq34(polq,pol34,pol56)
+     &       +(prop56*v1(pol2)*v2(pol1)+q1*q2)
+     &       *(prop12*v1(pol2)*l(k)+q1*q(k))*qbq1(polq,pol1,pol2)
+     &       +(prop34*v1(pol2)*v2(pol1)+q1*q2)*rescale
+     &       *(prop12*v2(pol1)*l(k)+q2*q(k))*qbq2(polq,pol1,pol2)
+
         endif
       elseif (polq .eq. 2) then
-       qb_q=(prop56*v56(pol56)*r(k)+q56*q(k))
-     &     *(prop34*v34(pol34)*r(k)+q34*q(k))*aq12(polq,pol34,pol56)
+       qb_q=(prop56*v2(pol1)*r(k)+q2*q(k))
+     &     *(prop34*v1(pol2)*r(k)+q1*q(k))*qbq(polq,pol1,pol2)
         if (srdiags) then
          qb_q=qb_q
-     &       +(prop56*v34(pol34)*v56(pol56)+q34*q56)
-     &       *(prop12*v34(pol34)*r(k)+q34*q(k))*aq56(polq,pol34,pol56)
-     &       +(prop34*v34(pol34)*v56(pol56)+q34*q56)
-     &       *(prop12*v56(pol56)*r(k)+q56*q(k))*aq34(polq,pol34,pol56)
+     &       +(prop56*v1(pol2)*v2(pol1)+q1*q2)
+     &       *(prop12*v1(pol2)*r(k)+q1*q(k))*qbq1(polq,pol1,pol2)
+     &       +(prop34*v1(pol2)*v2(pol1)+q1*q2)*rescale
+     &       *(prop12*v2(pol1)*r(k)+q2*q(k))*qbq2(polq,pol1,pol2)
+
         endif
       endif
-C-- Inclusion of width a la Baur and Zeppenfeld
-      qb_q=fac*qb_q*cprop
+      qb_q=FAC*qb_q
       msq(j,k)=msq(j,k)+ave*abs(qb_q)**2
 
-      enddo
-      enddo
-      enddo
-
+      !set-up interference terms
+      if ((interference).and.(ii.eq.1)) then
+         Uncrossed(j,k,polq,pol1,pol2)=qb_q
+      elseif (ii.eq.2) then
+         if (pol1.eq.pol2) then
+         msq(j,k)=msq(j,k)
+     &    -2d0*ave*dble(dconjg(qb_q)*Uncrossed(j,k,polq,pol1,pol2))
+         endif
       endif
 
 
+
+      enddo !end pol2 loop
+      enddo !end pol1 loop
+      enddo !end polq loop
+
+      endif
+
  20   continue
+      enddo !end j-loop
+      enddo   ! end ii loop 
+
+C----extend matrix element to full flavor range
+      do j=-nf,nf
+      k=-j
+      if (j.eq.0) go to 21
+      msq(j,k)=msq(jkswitch(j),jkswitch(k))
+ 21   continue
       enddo
 
       return

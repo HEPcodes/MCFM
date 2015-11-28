@@ -17,7 +17,8 @@ c--- Traditional MCFM histograms
 c--- also book the errors now (in maxhisto+n,2*maxhisto+n)
           call mbook(maxhisto+n,titlex,dx,xmin,xmax)
           call mbook(2*maxhisto+n,titlex,dx,xmin,xmax)
-	  if ((part .eq. 'real') .or. (part .eq. 'tota')) then
+          if ( (part .eq. 'real') .or. (part .eq. 'tota')
+     &     .or.(part .eq. 'todk')) then
             call mbook(3*maxhisto+n,titlex,dx,xmin,xmax)
 	  endif
         else
@@ -85,13 +86,12 @@ c--- Traditional MCFM histograms
       include 'removebr.f'
       include 'nodecay.f'
       include 'useet.f'
+      include 'plabel.f'
 
 cz Add single-top b fraction, Z. Sullivan 1/25/05
       double precision bwgt
       common/btagging/ bwgt
 
-      character*2 plabel(mxpart)
-      common/plabel/plabel
 cz //
 
       integer n,switch,i5,i6,i7,nu,nplotmax
@@ -291,10 +291,11 @@ c---  are handled with reference to nproc
      .    .or.(case .eq. 'HWWjet') .or. (case .eq. 'qq_HWW')
      .    .or.(case .eq. 'WW_jet') .or. (case .eq. 'ZZ_jet')
      .    .or.(case .eq. 'HWWjet') .or. (case .eq. 'HZZjet')
-     .    .or.(case .eq. 'HWW2jt') .or. (case .eq. 'HZZ2jt')) then
+     .    .or.(case .eq. 'HWW2jt') .or. (case .eq. 'HZZ2jt')
+     .    .or.(case .eq. 'HWW3jt') .or. (case .eq. 'HZZ3jt')) then
         eventpart=6+jets
       elseif ((case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')
-     .   .or. (case .eq. 'tt_bbu')) then
+     .   .or. (case .eq. 'tt_bbu') .or. (case .eq. 'tt_ldk')) then
         eventpart=min(8+jets,9)
       elseif (case .eq. 'qq_ttg') then
         eventpart=9
@@ -316,7 +317,8 @@ c--- re-order jets according to pt, for a W/Z/H+jet event
      .    (case .eq. 'W_3jet') .or. (case .eq. 'Z_3jet') .or.
      .    (case .eq. 'ggfus1') .or. (case .eq. 'ggfus2') .or.
      .    (case .eq. 'ggfus3') .or. (case .eq. 'qq_Hqq') .or.
-     .    (case .eq. 'qqHqqg') .or. (case .eq. 'qg_tbq')) then
+     .    (case .eq. 'qqHqqg') .or. (case .eq. 'qg_tbq') .or.
+     .    (case .eq. 'gagajj')) then
         jetevent=.true.
         if (algorithm .eq. 'cone') then
           if (jets .gt. 0) pt5=getet(p(5,4),p(5,1),p(5,2),p(5,3))
@@ -545,7 +547,7 @@ c--- set-up variables to catch b's
             endif
             rbb=r(p,ib1,ib2)
           else
-            if     (nproc .eq. 152) then
+            if     (nproc .eq. 146) then
               call getbs(p,ib1,ib2)
               ptb1=pt(ib1,p)
               ptb2=pt(ib2,p)
@@ -1066,7 +1068,25 @@ c	endif
         call bookplot(n,tag,'Et_c',etcharm,wt,wt2,0d0,100d0,10d0,'log')
         n=n+1
       endif
-        
+
+c--- special plots for computing ttbar asymmetry 
+
+c--- inclusive case
+      call bookplot(n,tag,'y(t)-y(tbar)',y3-y4,wt,wt2,
+     & -4d0,4d0,4d0,'lin')
+      n=n+1
+
+c--- for bins of |y(t)-y(tbar)| of (0,0.5), (0.5,1), (1,1.5)
+      call bookplot(n,tag,'y(t)-y(tbar)',y3-y4,wt,wt2,
+     & -1.5d0,1.5d0,0.5d0,'lin')
+      n=n+1
+
+c--- for bins of |y(t)-y(tbar)| of (1.5,4.5)
+      call bookplot(n,tag,'y(t)-y(tbar)',y3-y4,wt,wt2,
+     & -4.5d0,4.5d0,3d0,'lin')
+      n=n+1
+
+    
 c--- added extra plot here, for the angle analysis of G. Hesketh et al.
       if ((case .eq. 'Z_1jet') .or. (case .eq. 'Z_2jet')) then
       dphizj=atan2(p(3,1)+p(4,1),p(3,2)+p(4,2))-atan2(p(5,1),p(5,2))

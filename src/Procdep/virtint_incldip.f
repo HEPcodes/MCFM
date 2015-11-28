@@ -49,9 +49,10 @@
      . fx1z_H(-nf:nf),fx2z_H(-nf:nf),fx1z_L(-nf:nf),fx2z_L(-nf:nf)
       double precision pswt,xjac,rscalestart,fscalestart,m3,m4,m5,
      . wgt,msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),msqvdk(-nf:nf,-nf:nf),
-     . msq_qq,msq_aa,msq_aq,msq_qa,msq_qg,msq_gq,epcorr
-      double precision xx(2),z,x1onz,x2onz,flux,omz,
-     . BrnRat,xmsq_old,tmp
+     . msqvdkW(-nf:nf,-nf:nf),
+     . msq_qq,msq_aa,msq_aq,msq_qa,msq_qg,msq_gq,epcorr,topwidth
+      double precision xx(2),z,x1onz,x2onz,flux,omz,nloratiotopdecay,JK,
+     . BrnRat,xmsq_old,tmp,hup
       double precision xmsq_bypart(-1:1,-1:1),lord_bypart(-1:1,-1:1)
       integer nshot,rvcolourchoice,sgnj,sgnk
       logical bin,first,includedipole
@@ -125,6 +126,7 @@ c--- processes that use "gen2jet"
           
 c--- processes that use "gen3"     
       elseif ( (case .eq. 'W_cjet') 
+     .   .or.  (case .eq. 'Wbfrmc')
      .   .or.  (case .eq. 'W_tndk')
      .   .or.  (case .eq. 'epem3j')  ) then
         npart=3
@@ -150,6 +152,14 @@ c--- processes that use "gen3m"
         npart=3
         call gen3m(r,p,m3,m4,m5,pswt,*999)
 	
+c--- processes that use gen3mdk
+      elseif ((case .eq. '4ftwdk') .or. (case .eq. 'dk_4ft')) then
+        m3=mt
+        m4=mb
+        m5=0d0
+        npart=5
+        call gen3mdk(r,p,m3,m4,m5,pswt,*999)
+        
 c--- processes that use "gen4h"     
       elseif ( (case .eq. 'HWW_4l')
      .    .or. (case .eq. 'HZZ_4l') ) then
@@ -168,6 +178,9 @@ c--- processes that use "gen6"
       elseif ( (case .eq. 'tt_bbl')
      .    .or. (case .eq. 'tt_bbh')
      .    .or. (case .eq. 'tt_bbu')
+     .    .or. (case .eq. 'tt_ldk')
+     .    .or. (case .eq. 'tt_hdk')
+     .    .or. (case .eq. 'tthWdk')
      .    .or. (case .eq. 'tautau')
      .    .or. (case .eq. 'HWW2jt') 
      .    .or. (case .eq. 'HZZ2jt') 
@@ -217,6 +230,7 @@ c--- processes that use "gen_njets" with an argument of "2"
      .    .or. (case .eq. 'qq_Hqq')
      .    .or. (case .eq. 'qq_Hgg')
      .    .or. (case .eq. 'ggfus2')
+     .    .or. (case .eq. 'gagajj')
      .    .or. (case .eq. 'W_bjet')
      .    .or. (case .eq. 'Wcjetg')
      .    .or. (case .eq. 'Z_bjet') ) then
@@ -251,7 +265,7 @@ c--- DEFAULT: processes that use "gen4"
         npart=4
         call gen4(r,p,pswt,*999)      
       endif
-      
+
       nvec=npart+2
       call dotem(nvec,p,s)
 
@@ -294,14 +308,19 @@ c--- correction to epinv from AP subtraction when mu_FAC != mu_REN,
 c--- corresponding to subtracting -1/epinv*Pab*log(musq_REN/musq_FAC)
       epcorr=epinv+2d0*dlog(scale/facscale)
       
-c--- for the case of virtual correction in the top quark decayy,
+c--- for the case of virtual correction in the top quark decay,
 c--- ('tdecay','ttdkay','Wtdkay') there are no extra initial-state
 c--- contributions, so all these should be set to zero
       if  ( (case .eq. 'tdecay') .or. (case .eq. 'ttdkay') 
-     . .or. (case .eq. 'Wtdkay') ) epcorr=0d0      
+     . .or. (case .eq. 'Wtdkay') .or. (case .eq. 'tt_ldk')
+     . .or. (case .eq. 'tt_hdk') .or. (case .eq. 'tthWdk')
+     . .or. (case .eq. 'dk_4ft') ) then
+        epcorr=0d0
+      endif      
 
 c--- for stop+b, splittings on light quark line produce a quark
-      if (case .eq. 'qg_tbq') then
+      if ( (case .eq. 'qg_tbq') .or. (case .eq. '4ftwdk')
+     & .or.(case .eq. 'dk_4ft')) then
         epcorr=epinv+2d0*dlog(renscale_L/facscale_L)
       endif
 
@@ -333,7 +352,8 @@ c--- modifications for running with mb>0
       endif
       
 c--- for stop+b, splittings on heavy quark line produce a gluon
-      if (case .eq. 'qg_tbq') then
+      if ( (case .eq. 'qg_tbq') .or. (case .eq. '4ftwdk')
+     & .or.(case .eq. 'dk_4ft')) then
         epcorr=epinv+2d0*dlog(renscale_H/facscale_H)
       endif
 
@@ -349,7 +369,8 @@ c--- for stop+b, splittings on heavy quark line produce a gluon
       AP(g,g,3)=+ason2pi*xn*2d0/omz*epcorr
 
 c--- for single top+b, make sure factors of alphas are correct
-      if (case .eq. 'qg_tbq') then
+      if ( (case .eq. 'qg_tbq') .or. (case .eq. '4ftwdk')
+     & .or.(case .eq. 'dk_4ft')) then
         do is=1,3
 c--- splittings on the light quark line make a (anti-)quark init. state
           AP(q,q,is)=AP(q,q,is)*(as_L/as)
@@ -431,6 +452,10 @@ c--- Calculate the required matrix elements
         call qqb_w_cjet(p,msq)
         call qqb_w_cjet_v(p,msqv)
         call qqb_w_cjet_z(p,z)
+      elseif (case .eq. 'Wbfrmc') then
+        call qqb_wbfromc(p,msq)
+        call qqb_wbfromc_v(p,msqv)
+        call qqb_wbfromc_z(p,z)
       elseif (case .eq. 'Wbbmas') then
         call qqb_wbbm(p,msq)
         call qqb_wbbm_v(p,msqv)
@@ -556,9 +581,58 @@ c--- Calculate the required matrix elements
         call qqb_gamgam_v(p,msqv)
         call qqb_gamgam_z(p,z)
       elseif ((case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')) then
+c        call qqb_QQbdk(p,msq)
+c        call qqb_QQbdk_v(p,msqv)
         call qqb_QQbdk(p,msq)
-        call qqb_QQbdk_v(p,msqv)
+        call qqb_QQbdkBSY_v(p,msqv)
         call qqb_QQbdk_z(p,z)
+        if (mypart .eq. 'todk') then
+          call dkqqb_QQb_v(p,msqvdk)
+          call dkWqqb_QQb_v(p,msqvdkW)
+          do j=-nf,nf
+          do k=-nf,nf
+            msqv(j,k)=msqv(j,k)+msqvdk(j,k)+msqvdkW(j,k)
+c--- extra term to ensure top cross section is unchanged by decay in top
+            msqv(j,k)=msqv(j,k)
+     &          -2d0*(nloratiotopdecay(mt,mb,wmass,wwidth)-1d0)*msq(j,k)
+c--- extra term to ensure top cross section is unchanged by decay in W
+            if (case .eq. 'tt_bbh') then
+              msqv(j,k)=msqv(j,k)-2d0*ason2pi*msq(j,k)
+            endif
+          enddo
+          enddo     
+        endif
+      elseif ((case .eq. 'tt_ldk') .or. (case .eq. 'tt_hdk')) then
+        call qqb_QQbdk(p,msq)
+        call dkqqb_QQb_v(p,msqv)
+        do j=-nf,nf
+        do k=-nf,nf
+c--- extra term to ensure top cross section is unchanged by decay in top
+          msqv(j,k)=msqv(j,k)
+     &        -2d0*(nloratiotopdecay(mt,mb,wmass,wwidth)-1d0)*msq(j,k)
+        enddo
+        enddo   	  
+c--- set LO matrix elements to zero
+        do j=-nf,nf
+        do k=-nf,nf
+          msq(j,k)=0d0
+        enddo
+        enddo
+      elseif (case .eq. 'tthWdk') then
+        call qqb_QQbdk(p,msq)
+        call dkWqqb_QQb_v(p,msqv)
+c--- extra term to ensure top cross section is unchanged by decay in W
+        do j=-nf,nf
+        do k=-nf,nf
+	  msqv(j,k)=msqv(j,k)-2d0*ason2pi*msq(j,k)
+        enddo
+        enddo   	  
+c--- set LO matrix elements to zero
+        do j=-nf,nf
+        do k=-nf,nf
+          msq(j,k)=0d0
+        enddo
+        enddo
       elseif (case .eq. 'tt_bbu') then
         call qqb_QQbdku(p,msq)
         call qqb_QQbdku_v(p,msqv)
@@ -578,35 +652,57 @@ c--- Calculate the required matrix elements
           do j=-nf,nf
           do k=-nf,nf
             msqv(j,k)=msqv(j,k)+msqvdk(j,k)
+c--- extra term to ensure single top cross section is unchanged by decay in top
+            msqv(j,k)=msqv(j,k)
+     &          -(nloratiotopdecay(mt,mb,wmass,wwidth)-1d0)*msq(j,k)
           enddo
           enddo
         endif
       elseif (case .eq. 'ttdkay') then
+        call bq_tpq(p,msq)
+        call bq_tpq_vdk(p,msqv)
+        do j=-nf,nf
+        do k=-nf,nf
+c--- extra term to ensure single top cross section is unchanged by decay in top
+          msqv(j,k)=msqv(j,k)
+     &        -(nloratiotopdecay(mt,mb,wmass,wwidth)-1d0)*msq(j,k)
+        enddo
+        enddo
         do j=-nf,nf
         do k=-nf,nf
           msq(j,k)=0d0
         enddo
         enddo
-        call bq_tpq_vdk(p,msqv)
       elseif (case .eq. 't_bbar') then
-        call qqb_tbb(p,msq)
-        call qqb_tbb_v(p,msqv)
-        call qqb_tbb_z(p,z)
+        call qqb_tbbdk(p,msq)
+        call qqb_tbbdk_v(p,msqv)
+        call qqb_tbbdk_z(p,z)
         if (mypart .eq. 'todk') then
-          call qqb_tbb_vdk(p,msqvdk)
+          call dkqqb_tbbdk_v(p,msqvdk)
           do j=-nf,nf
           do k=-nf,nf
             msqv(j,k)=msqv(j,k)+msqvdk(j,k)
+c--- extra term to ensure single top cross section is unchanged by decay in top
+            msqv(j,k)=msqv(j,k)
+     &          -(nloratiotopdecay(mt,mb,wmass,wwidth)-1d0)*msq(j,k)
           enddo
           enddo
         endif
       elseif (case .eq. 'tdecay') then
+        call qqb_tbbdk(p,msq)    
+        call dkqqb_tbbdk_v(p,msqv)
+        do j=-nf,nf
+        do k=-nf,nf
+c--- extra term to ensure single top cross section is unchanged by decay in top
+          msqv(j,k)=msqv(j,k)
+     &        -(nloratiotopdecay(mt,mb,wmass,wwidth)-1d0)*msq(j,k)
+        enddo
+        enddo
         do j=-nf,nf
         do k=-nf,nf
           msq(j,k)=0d0
         enddo
         enddo
-        call qqb_tbb_vdk(p,msqv)    
       elseif (case .eq. 'W_tndk') then
         call qqb_w_tndk(p,msq)    
         call qqb_w_tndk_v(p,msqv)    
@@ -620,16 +716,27 @@ c--- Calculate the required matrix elements
           do j=-nf,nf
           do k=-nf,nf
             msqv(j,k)=msqv(j,k)+msqvdk(j,k)
+c--- extra term to ensure single top cross section is unchanged by decay in top
+          msqv(j,k)=msqv(j,k)
+     &             -(nloratiotopdecay(mt,mb,wmass,wwidth)-1d0)*msq(j,k)
           enddo
           enddo
         endif
       elseif (case .eq. 'Wtdkay') then
+        call qqb_w_twdk(p,msq)
+        call qqb_w_twdk_vdk(p,msqv)
+        do j=-nf,nf
+        do k=-nf,nf
+c--- extra term to ensure single top cross section is unchanged by decay in top
+          msqv(j,k)=msqv(j,k)
+     &             -(nloratiotopdecay(mt,mb,wmass,wwidth)-1d0)*msq(j,k)
+        enddo
+        enddo
         do j=-nf,nf
         do k=-nf,nf
           msq(j,k)=0d0
         enddo
         enddo
-        call qqb_w_twdk_vdk(p,msqv)
       elseif (case .eq. 'ggfus1') then
         call gg_hg(p,msq)
         call gg_hg_v(p,msqv)
@@ -639,6 +746,10 @@ c--- Calculate the required matrix elements
         call gg_hgagag_v(p,msqv)
         call gg_hg_z(p,z) ! nb: the same as above
       elseif (case .eq. 'ggfus2') then
+        call gg_hgg(p,msq)
+        call gg_hgg_v(p,msqv)
+        call gg_hgg_z(p,z)
+      elseif (case .eq. 'gagajj') then
         call gg_hgg(p,msq)
         call gg_hgg_v(p,msqv)
         call gg_hgg_z(p,z)
@@ -670,6 +781,37 @@ c--- Calculate the required matrix elements
         call qg_tbq(p,msq)
         call qg_tbq_v(p,msqv)
         call qg_tbq_z(p,z)
+      elseif (case .eq. '4ftwdk') then
+        call qg_tbqdk(p,msq)
+        call qg_tbqdk_v(p,msqv)
+        call qg_tbqdk_z(p,z)
+        if (mypart .eq. 'todk') then
+          call dkqg_tbqdk_v(p,msqvdk)
+          do j=-nf,nf
+          do k=-nf,nf
+            msqv(j,k)=msqv(j,k)+msqvdk(j,k)
+c--- extra term to ensure single top cross section is unchanged by decay in top
+            msqv(j,k)=msqv(j,k)
+     &          -(nloratiotopdecay(mt,mb,wmass,wwidth)-1d0)*msq(j,k)
+          enddo
+          enddo
+        endif
+      elseif (case .eq. 'dk_4ft') then
+        call qg_tbqdk(p,msq)
+        call dkqg_tbqdk_v(p,msqv)
+        do j=-nf,nf
+        do k=-nf,nf
+c--- extra term to ensure top cross section is unchanged by decay in top
+          msqv(j,k)=msqv(j,k)
+     &        -(nloratiotopdecay(mt,mb,wmass,wwidth)-1d0)*msq(j,k)
+        enddo
+        enddo   	  
+c--- set LO matrix elements to zero
+        do j=-nf,nf
+        do k=-nf,nf
+          msq(j,k)=0d0
+        enddo
+        enddo
       elseif (case .eq. 'qq_tbg') then
 c--- do not include initial-state subtractions since we are only
 c--- calculating corrections on the heavy quark line (for now)
@@ -747,7 +889,8 @@ c--- initialize a PDF set here, if calculating errors
         call InitPDF(currentPDF)
       endif
 c--- calculate PDF's  
-      if (case .eq. 'qg_tbq') then
+      if ( (case .eq. 'qg_tbq') .or. (case .eq. '4ftwdk')
+     & .or.(case .eq. 'dk_4ft')) then
 c--- for single top + b, make sure to use two different scales
         call fdist(ih1,xx(1),facscale_H,fx1_H)
         call fdist(ih2,xx(2),facscale_H,fx2_H)
@@ -789,7 +932,8 @@ c	endif
       if (z .gt. xx(1)) then
         x1onz=xx(1)/z
 c--- for single top + b, make sure to use two different scales
-        if (case .eq. 'qg_tbq') then
+        if ((case .eq. 'qg_tbq') .or. (case .eq. '4ftwdk')
+     &  .or.(case .eq. 'dk_4ft')) then
           call fdist(ih1,x1onz,facscale_H,fx1z_H)
           call fdist(ih1,x1onz,facscale_L,fx1z_L)
         else
@@ -807,7 +951,8 @@ c          endif
       if (z .gt. xx(2)) then
         x2onz=xx(2)/z
 c--- for single top + b, make sure to use two different scales
-        if (case .eq. 'qg_tbq') then
+        if ((case .eq. 'qg_tbq') .or. (case .eq. '4ftwdk')
+     &  .or.(case .eq. 'dk_4ft')) then
           call fdist(ih2,x2onz,facscale_H,fx2z_H)
           call fdist(ih2,x2onz,facscale_L,fx2z_L)
         else
@@ -859,6 +1004,7 @@ c--- dipole contributions
 
 c--- SUM BY COLOUR STRUCTURES: H+2jets only
       if  ( (case .eq. 'ggfus2') 
+     . .or. (case .eq. 'gagajj')
      . .or. (case .eq. 'HWW2jt')
      . .or. (case .eq. 'HZZ2jt')) then
        xmsq=xmsq+fx1(j)*fx2(k)*(
@@ -1290,7 +1436,8 @@ c--- special case for W+bj - remove b-PDF contribution
       endif
 
 
-      elseif (case .eq. 'qg_tbq') then
+      elseif ((case .eq. 'qg_tbq') .or. (case .eq. '4ftwdk')
+     &    .or.(case .eq. 'dk_4ft')) then
 
 c--- SPECIAL SUM FOR SINGLE TOP + B CASE
 C--QQ

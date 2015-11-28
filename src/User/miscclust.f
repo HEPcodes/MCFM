@@ -139,7 +139,7 @@ c--- special combination tag for W+heavy quarks
       endif
       if (((jetlabel(i) .eq. 'bq') .and. (jetlabel(j) .eq. 'ba'))
      ..or.((jetlabel(j) .eq. 'bq') .and. (jetlabel(i) .eq. 'ba'))) then
-        jetlabel(i)='bq'
+        jetlabel(i)='pp'
         return
       endif
       if (((jetlabel(i) .eq. 'bq') .and. (jetlabel(j) .eq. 'qj'))

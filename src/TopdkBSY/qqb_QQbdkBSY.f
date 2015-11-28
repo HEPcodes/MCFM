@@ -1,8 +1,8 @@
-      subroutine qqb_QQbdk(p,msq)
+      subroutine qqb_QQbdkBSY(p,msq)
       implicit none
 ************************************************************************
 *     Author: R.K. Ellis                                               *
-*     July, 2008.                                                      *
+*     October, 2011.                                                   *
 *     calculate the element squared and subtraction terms              *
 *     for the process                                                  *
 *                                                                      *
@@ -16,14 +16,28 @@
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'masses.f'
+      include 'process.f'
+      include 'sprods_com.f'
       include 'zprods_com.f'
+      include 'zabprods_decl.f'
       include 'msq_cs.f'
-      integer j,k,nu,cs
+      include 'etadef.f'
+      include 'qdef.f'
+      integer j,k,nu,cs,j1,j3
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),q(mxpart,4)
-      double precision s,c1,c2,c6,c8,s1t,s2t,s12,mt2,fac,qqb
-      double complex  sprod,amp(2),prop,loab(2,2),loba(2,2),loqed(2,2)
-      s(j,k)=2d0
+      double precision fac,qqb,c1,c4,ss,s34,s35,s45,s67,s68,s78
+      double complex  amp(2),prop,loab(2,2),loba(2,2),loqed(2,2)
+      double complex  BSYA0qqppmp,BSYA0ggpppp,BSYA0ggppmp
+      external BSYA0qqppmp,BSYA0ggpppp,BSYA0ggppmp
+      ss(j,k)=2d0
      . *(p(j,4)*p(k,4)-p(j,1)*p(k,1)-p(j,2)*p(k,2)-p(j,3)*p(k,3))
+
+      s34=ss(3,4)
+      s35=ss(3,5)
+      s45=ss(4,5)
+      s67=ss(6,7)
+      s68=ss(6,8)
+      s78=ss(7,8)
 
 C----set all elements to zero
       do j=-nf,nf
@@ -35,36 +49,59 @@ C----set all elements to zero
       enddo
       enddo
 
-      s1t=s(1,3)+s(1,4)+s(1,5)
-      s2t=s(2,3)+s(2,4)+s(2,5)
-      s12=s(1,2)
-      prop=dcmplx(s(3,4)-wmass**2,wmass*wwidth)
-     .    *dcmplx(s(7,8)-wmass**2,wmass*wwidth)
+      prop=dcmplx(s34-wmass**2,wmass*wwidth)
+     .    *dcmplx(s78-wmass**2,wmass*wwidth)
      .    *dcmplx(zip,mt*twidth)**2
-      fac=V*gwsq**4*gsq**2/abs(prop)**2*s(5,3)*s(6,8)
-      mt2=mt**2
-      c1=mt2/(s(3,4)+s(4,5))
-      c2=mt2/(s(6,7)+s(7,8))
-      c6=mt2/s1t
-      c8=mt2/s2t
-      do nu=1,4
-      q(1,nu)=p(1,nu)    
-      q(2,nu)=p(2,nu)    
-      q(3,nu)=+(p(3,nu)+(1d0-c1)*p(4,nu)+p(5,nu))
-      q(4,nu)=p(4,nu)    
-      q(5,nu)=-(p(6,nu)+(1d0-c2)*p(7,nu)+p(8,nu))
-      q(6,nu)=p(3,nu)+p(4,nu)+p(5,nu)-c6*p(1,nu)    
-      q(7,nu)=p(7,nu)    
-      q(8,nu)=p(3,nu)+p(4,nu)+p(5,nu)-c8*p(2,nu)    
-      enddo
-      call spinoru(8,q,za,zb)
+      fac=V*gwsq**4*gsq**2/abs(prop)**2*s35*s68
+C--include factor for hadronic decays
+      if ((case .eq. 'tt_bbh') .or. (case .eq. 'tt_hdk')) fac=2d0*xn*fac
 
-      sprod=zb(4,3)*za(5,7)
-      amp(1)=(sprod*za(3,2)*zb(1,5)+mt2*zb(4,1)*za(2,7))/s12
-      amp(2)=(sprod*za(3,1)*zb(2,5)+mt2*zb(4,2)*za(1,7))/s12
+C-----make top and topb massless wrt e+(4) and e-(7) momentum
+      c1=mt**2/(s34+s45)
+      c4=mt**2/(s67+s78)
+      
+      do nu=1,4
+      q(1,nu)=p(3,nu)+p(4,nu)+p(5,nu)-c1*p(4,nu)
+      q(2,nu)=p(1,nu)    
+      q(3,nu)=p(2,nu)    
+      q(4,nu)=p(6,nu)+p(7,nu)+p(8,nu)-c4*p(7,nu)
+      q(e1,nu)=p(4,nu)
+      q(e4,nu)=p(7,nu)
+      enddo
+
+      call spinoru(6,q,za,zb)
+      call spinorextend(za,zb)
+      do j1=1,8
+      do j3=1,8
+      zab(j1,q1,j3)=+za(j1,1)*zb(1,j3)+c1*za(j1,e1)*zb(e1,j3)
+      zba(j3,q1,j1)=zab(j1,q1,j3)
+      enddo
+      enddo
+
+C---currently s(1,2) and s(1,3) are given as s(1f,2) and s(1f,3)      
+C---but we want the full s(1,2) and s(1,3)
+C---hence restore them
+
+      s(1,2)=dble(zab(2,q1,2))
+      s(1,3)=dble(zab(3,q1,3))
+      s(2,1)=s(1,2)
+      s(3,1)=s(1,3)
+
+      call qqbgen(e1,2,3,e4,za,zb,zab,zba,
+     & BSYA0qqppmp,amp)
       qqb=fac*aveqq*(abs(amp(1))**2+abs(amp(2))**2)
 
-      call ggttww1(s1t,s2t,s12,loab,loba)
+      call gluegen(e1,2,3,e4,za,zb,zab,zba,
+     & BSYA0ggpppp,BSYA0ggppmp,loab,loba,.true.)
+
+      do j=1,2
+      do k=1,2
+      enddo
+      enddo
+      do j=1,2
+      do k=1,2
+      enddo
+      enddo
 
 c--- note that filling of colour structures here looks unnatural:
 c---    1 <--> loba , 2 <--> loab

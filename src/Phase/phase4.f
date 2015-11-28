@@ -72,6 +72,8 @@ c        r(1)=r(1)*1d-5 ! to check small s35
         call phi3m(r(5),r(6),p56,p5,p6,mc,mc,wt56,*99)
       elseif (case .eq. 'W_cjet') then
         call phi3m(r(5),r(6),p56,p5,p6,mc,zip,wt56,*99)
+      elseif (case .eq. 'Wbfrmc') then
+        call phi3m(r(5),r(6),p56,p5,p6,mb,zip,wt56,*99)
       elseif (case .eq. 'W_tndk') then
         call phi3m(r(5),r(6),p56,p5,p6,mt,zip,wt56,*99)
       elseif (case .eq. 'Wtbndk') then

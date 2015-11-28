@@ -4,12 +4,12 @@ C-----Matrix element for f(-p1)+f(-p2)->gamma(p3)+gamma(p4)
       implicit none
       include 'constants.f'
       include 'qcdcouple.f'
-      include 'ewcouple.f'
       include 'ewcharge.f'
+      include 'ewcouple.f'
       include 'sprods_com.f'
       integer j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac,
-     .  qa,aq,qg,gq,ag,ga,gg,statfac,facgg,msqgggaga,Qsum
+     .  qa,aq,gg,statfac,facgg,msqgggaga,Qsum
       parameter(statfac=0.5d0)
 
       do j=-nf,nf
@@ -26,8 +26,6 @@ c--set msq=0 to initalize
       Qsum=+Q(1)**2+Q(2)**2+Q(3)**2+Q(4)**2+Q(5)**2 
       facgg=4d0*esq*gsq/(16d0*pisq)*Qsum
 
-      gg=0d0
-c--- Comment out the following line to remove gg contribution
       gg=avegg*V*facgg**2*msqgggaga(s(1,2),s(1,3),s(2,3))*statfac
 
       qa=fac*aveqq*(s(1,3)/s(2,3)+s(2,3)/s(1,3))
@@ -56,8 +54,6 @@ C--gg
 C---amplitudes taken from Eqs. 2,3 of Bern,Dixon,Schmidt
 C---hep-ph/0206194
       implicit none
-      include 'constants.f'
-      include 'ewcharge.f'
       double precision s,t,u
       double complex m1(2,2,2,2)
       integer h1,h2,h3,h4
@@ -80,7 +76,7 @@ C---hep-ph/0206194
       subroutine m1fill(s,t,u,m1)
       implicit none
       include 'constants.f'
-      double precision s,t,u,Qsum
+      double precision s,t,u
       double complex m1(2,2,2,2)
       integer h1,h2,h3,h4
 

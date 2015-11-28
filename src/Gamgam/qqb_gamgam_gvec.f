@@ -10,7 +10,7 @@ c--- see Bern, Dixon and Schmidt, hep-ph/0206194, Eqs.(9)-(11).
 C  in is the label of the momentum contracted with n
       integer j,k,in,h1,h2,h3,h4,i1,i2
       double precision msq(-nf:nf,-nf:nf)
-      double precision n(4),nDn,p(mxpart,4),statfac,facgg,gg,Qsum
+      double precision n(4),p(mxpart,4),statfac,facgg,gg,Qsum
       double complex amp(2,2,2,2),phase,phasec
       parameter(statfac=0.5d0)
 

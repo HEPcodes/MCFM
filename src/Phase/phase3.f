@@ -21,6 +21,8 @@ c----(p4,p5) are dummies
       m5=0d0
       if     ((case .eq. 'W_cjet') .or. (case .eq. 'Wcs_ms')) then 
          m5=mc
+      elseif  (case .eq. 'Wbfrmc') then
+         m5=mb
       elseif ((case .eq. 'W_tndk') .or. (case .eq. 'vlchwn')) then 
          m5=mt
       endif

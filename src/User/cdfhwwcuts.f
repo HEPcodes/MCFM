@@ -5,6 +5,7 @@ c--- a point that fails the cuts returns passed=.false.
       implicit none
       include 'constants.f'
       include 'masses.f'
+      include 'plabel.f'
       integer ilept(2),ile,ineut(2),inu,i,j,maxparts
       logical passed
       double precision pt,etarap,p(mxpart,4),etvec(2),
@@ -22,8 +23,6 @@ c--- size of cone for lepton isolation
 c--- fractional pt threshold for lepton isolation
       double precision threshisol
       double precision mtmax,mtmin,mt45,m45,et_vec(4),etmiss,pttwo
-      character*2 plabel(mxpart)
-      common/plabel/plabel
       data trigpt,trigeta/20d0,0.8d0/
       data scndpt,scndeta/10d0,1.1d0/
       data m_llcut/16d0/

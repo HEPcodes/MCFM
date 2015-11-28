@@ -143,9 +143,7 @@ c--- f99 floating point format
       endif
 
 c--- catch special scale choices for stop+b process
-      if ( (nproc .eq. 231) .or. (nproc .eq. 236)      
-     . .or.(nproc .eq. 241) .or. (nproc .eq. 246)      
-     . .or.(nproc .eq. 242) .or. (nproc .eq. 247) ) then
+      if ((nproc .ge. 231) .and. (nproc .le. 240)) then
          if ((tag .eq. 'renscale_L') .or. (writeall)) then
          write(unitno,fmt=f99) renscale_L,'renscale_L'
          endif

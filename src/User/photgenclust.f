@@ -9,6 +9,7 @@ c---- any partons lie in cone Rij < delta_0
       include 'constants.f'
       include 'jetcuts.f'
       include 'jetlabel.f'
+      include 'plabel.f'
       include 'npart.f'
       include 'frag.f'
       double precision pin(mxpart,4),Rmin,pjet(mxpart,4),
@@ -16,12 +17,10 @@ c---- any partons lie in cone Rij < delta_0
       double precision dijmin,dkmin,aetarap,pt,Rgen
       integer isub,i,nu,iter,ipow,nmin1,nmin2,maxjet,jetindex(mxpart) 
       integer nk,ajet
-      character*2 plabel(mxpart)
       logical jetmerge,insideacone
       integer photindex(npart),nphotons,j
       integer softjet
       common/jetmerge/jetmerge
-      common/plabel/plabel
 
 c--- debug - need to generalise to arb photon 
       jets=0

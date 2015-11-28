@@ -1,10 +1,9 @@
       double precision function etmiss(p,etvec)
       implicit none
       include 'constants.f'
-      character*2 plabel(mxpart)
+      include 'plabel.f'
       integer j,k
       double precision etvec(4),p(mxpart,4)
-      common/plabel/plabel
       
       do k=1,4
         etvec(k)=0d0

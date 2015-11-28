@@ -17,8 +17,9 @@ c--- alpha-s will be determined again (in coupling2).
       common/part/part
       integer i
       double precision aemmz,alphas,amz,cmass,bmass
-      double precision xsq,topwidth
+      double precision xwsq,xbsq,root,lotopdecaywidth
       character*3 inlabel(10)
+      character*5 tworder
       common/qmass/cmass,bmass
       common/em/aemmz
       common/couple/amz
@@ -160,12 +161,16 @@ c--- initialize alpha_s
       ason4pi=as/fourpi
       gsq=fourpi*as
 
-c--- Set-up twidth, using LO formula except when including radiation in decay
-      xsq=(wmass/mt)**2
-      twidth=(gw/wmass)**2*mt**3/(64d0*pi)*(1d0-xsq)**2*(1d0+2d0*xsq)
-      if ( (part .eq. 'todk') .or. (mypart .eq. 'todk') ) then
-        twidth=twidth*topwidth(mt,wmass)
-      endif
+c--- Set-up twidth, using LO formula everywhere
+      twidth=lotopdecaywidth(mt,mb,wmass,wwidth)     
+      tworder='(LO) '
+c      if ( (part .eq. 'todk') .or. (mypart .eq. 'todk') ) then
+c        twidth=twidth*nlotopdecaywidth(mt,mb,wmass)
+c        tworder='(NLO) '
+c      endif
+c      write(6,*) 'twidth LO',twidth
+c      write(6,*) 'twidth NLO',twidth*topwidth(mt,wmass)
+c      write(6,*) 'twidth (NLO-LO)/LO = ',topwidth(mt,wmass)-1d0
 
       write(6,*) '************** Electroweak parameters **************'
       write(6,*) '*                                                  *'
@@ -174,7 +179,7 @@ c--- Set-up twidth, using LO formula except when including radiation in decay
       write(6,76) 'Gf',inlabel(5),gf,'1/aemmz',inlabel(6),1d0/aemmz
       write(6,75) 'xw',inlabel(7),xw,'mtop',inlabel(8),mt
       write(6,75) 'gwsq',inlabel(9),gwsq,'esq',inlabel(10),esq
-      write(6,77) 'top width',twidth
+      write(6,77) 'top width',twidth,tworder
       write(6,78) 'mb',mb,'mc',mc
       write(6,*) '*                                                  *'
       write(6,*) '* Parameters marked (+) are input, others derived  *'
@@ -182,7 +187,7 @@ c--- Set-up twidth, using LO formula except when including radiation in decay
 
    75 format(' * ',a6,a3,f13.7,3x,a7,a3,f12.7,'  *')
    76 format(' * ',a6,a3,d13.6,3x,a7,a3,f12.7,'  *')
-   77 format(' * ',a9,f13.7,25x,'  *')
+   77 format(' * ',a9,f13.7,1x,a5,19x,'  *')
    78 format(' * ',a5,4x,f13.7,6x,a4,2x,f13.7,'  *')
       
       return

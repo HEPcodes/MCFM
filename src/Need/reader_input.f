@@ -183,10 +183,8 @@ c--- general options
       initrenscale_H=0d0
       initfacscale_H=0d0
 c--- catch special scale choices for stop+b process
-      if (((nproc .eq. 231) .or. (nproc .eq. 236)      
-     . .or.(nproc .eq. 241) .or. (nproc .eq. 246)      
-     . .or.(nproc .eq. 242) .or. (nproc .eq. 247)) .and.      
-     .    (scale .eq. 0d0) .and. (facscale .eq. 0d0)) then
+      if (((nproc .ge. 231) .and. (nproc .le. 240)) .and.      
+     .     (scale .eq. 0d0) .and. (facscale .eq. 0d0)) then
         read(20,*) initrenscale_L
 	renscale_L=initrenscale_L
         if (verbose) call writeinput(6,' * ',' ','renscale_L')
@@ -263,12 +261,16 @@ c--- write-out comment line
       if (verbose) write(6,*) '* ',line
 c--- jets and cuts options 
       read(20,*) Mwmin
+      wsqmin=Mwmin**2
       if (verbose) call writeinput(6,' * ',' ','m34min')
       read(20,*) Mwmax 
+      wsqmax=Mwmax**2
       if (verbose) call writeinput(6,' * ',' ','m34max')
       read(20,*) mbbmin
+      bbsqmin=mbbmin**2
       if (verbose) call writeinput(6,' * ',' ','m56min')
       read(20,*) mbbmax 
+      bbsqmax=mbbmax**2
       if (verbose) call writeinput(6,' * ',' ','m56max')
       read(20,*) inclusive
       if (verbose) call writeinput(6,' * ',' ','inclusive')
@@ -523,13 +525,6 @@ c--- assign squared masses for b- and c-quarks
         mcsq=1.5d0**2
       endif
       
-c--- set-up mass window cuts
-      bbsqmin=mbbmin**2
-      bbsqmax=mbbmax**2
-
-      wsqmin=Mwmin**2
-      wsqmax=Mwmax**2
-
 c--- set-up the variables for the process we wish to consider
       call chooser
 
@@ -549,7 +544,8 @@ c--- check that we have a valid value of 'part'
      .     (part .ne. 'virt') .and. (part .ne. 'tota') ) then
         if    ( (part .eq. 'todk') .and.
      .          ((case .eq. 'bq_tpq') .or. (case .eq. 't_bbar')
-     .      .or. (case .eq. 'W_twdk')) ) then
+     .      .or. (case .eq. 'W_twdk') .or. (case .eq. 'tt_bbl')
+     .      .or. (case .eq. 'tt_bbh') .or. (case .eq. '4ftwdk')) ) then
 c--- this is an allowed combination
         elseif ( (part .eq. 'frag') .and.
      .          ((case .eq. 'Wgamma') .or. (case .eq. 'Zgamma')

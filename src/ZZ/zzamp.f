@@ -6,22 +6,13 @@
       include 'srdiags.f'
       double precision tinv,s12,s34,s56
       double complex zaa(2,2,2),z34(2,2,2),z56(2,2,2),zab2
-      double complex iza(6,6),izb(6,6)
-      integer p1,p2,p3,p4,p5,p6,i,j
+      integer p1,p2,p3,p4,p5,p6
 C--   order of indices is gluon helicity 
       tinv(p1,p2,p3)=1d0/(s(p1,p2)+s(p2,p3)+s(p1,p3))
       zab2(p1,p2,p3,p4)=za(p1,p2)*zb(p2,p4)+za(p1,p3)*zb(p3,p4)
       s12=s(p1,p2)
       s34=s(p3,p4)
       s56=s(p5,p6)
-      do i=1,6
-      do j=i+1,6
-         iza(i,j)=cone/za(i,j)
-         izb(i,j)=cone/zb(i,j)
-         iza(j,i)=-iza(i,j)
-         izb(j,i)=-izb(i,j)
-      enddo
-      enddo
       zaa(2,2,2)= + s34**(-1)*s56**(-1) * (  - za(p2,p4)*zb(p1,p5)*
      &    zab2(p6,p1,p5,p3)*tinv(p1,p5,p6) - za(p2,p6)*zb(p1,p3)*zab2(
      &    p4,p1,p3,p5)*tinv(p1,p3,p4) )

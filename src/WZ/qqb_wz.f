@@ -22,6 +22,7 @@ c     Notation to allow room for p3 --- gluon emission.
       include 'ewcharge.f'
       include 'anomcoup.f'
       include 'srdiags.f'
+      include 'plabel.f'
       include 'nwz.f'
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),qdks(mxpart,4)     
       double complex AWZM,AWZP,propw,propz,props,cprop,a6treea
@@ -37,8 +38,6 @@ c     Notation to allow room for p3 --- gluon emission.
       double complex ZgL(-nf:nf),ZgR(-nf:nf),A6b_1,A6b_2,A6b_3,A6b_4
       double precision v2(2),cl1,cl2,en1,en2
       double precision ave,cotw,wwflag,xfac
-      character*2 plabel(mxpart)
-      common/plabel/plabel
       double precision FAC,FACM
       integer j,k
       parameter(ave=0.25d0/xn)
@@ -127,8 +126,12 @@ c      prop56=s(5,6)/dcmplx(s(5,6)-zmass**2,zmass*zwidth)
 c      cprop=dcmplx(1d0)
 c--- DEBUG to compare with Madgraph
 
-c--- apply a dipole form factor to anomalous couplings
-      xfac=1d0/(1d0+s(1,2)/(tevscale*1d3)**2)**2
+c--- apply a dipole form factor to anomalous couplings (only if tevscale > 0)
+      if (tevscale .gt. 0d0) then
+        xfac=1d0/(1d0+s(1,2)/(tevscale*1d3)**2)**2
+      else
+        xfac=1d0
+      endif
       xdelg1_z=xfac*delg1_z
       xdelg1_g=xfac*delg1_g
       xdelk_z=xfac*delk_z

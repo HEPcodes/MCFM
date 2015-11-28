@@ -9,16 +9,15 @@ c--- To reject an event, return jets=-1
       include 'npart.f'
       include 'jetcuts.f'
       include 'jetlabel.f'
+      include 'plabel.f'
       double precision q(mxpart,4),qjet(mxpart,4),qfinal(mxpart,4)
       double precision pt,Rmin,R,Ry,Rbbmin,aetarap,ayrap
       double precision rtest,rab,raptest
       integer isub,i,j,k,nu,icandj,maxjet,jetindex(mxpart),ia,ib
       integer nproc
       logical jetmerge,verbalg,first,pseudo,bjetmerge
-      character*2 plabel(mxpart)
       common/nproc/nproc
       common/Rbbmin/Rbbmin
-      common/plabel/plabel
       common/jetmerge/jetmerge
       data first/.true./
       save first

@@ -29,8 +29,8 @@
       include 'jetcuts.f'
       include 'leptcuts.f'
       include 'process.f'
+      include 'plabel.f'
       logical first,passedlept
-      character*2 plabel(mxpart)
       integer njets,j,k,countb,bindex(mxpart),jindex,kindex,ib1,ib2
       integer countlept,leptindex(mxpart),countgamm,
      & countjet,jetindex(mxpart),pntr,maxparts,notag
@@ -48,7 +48,6 @@
       common/runstring/runstring
       common/stopvars/ht,qeta,mlbnu,merecon,reconcorr
       common/hwwvars/dphi_ll,m_ll,mtrans,scut1,scut2
-      common/plabel/plabel
       common/rcut/Rcut
       common/notag/notag
 ************************************************************************

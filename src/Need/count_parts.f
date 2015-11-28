@@ -3,10 +3,9 @@
       integer function count_photo(p)
       implicit none
       include 'constants.f'
-      character*2 plabel(mxpart)
+      include 'plabel.f'
       double precision p(mxpart,4) 
       integer j
-      common/plabel/plabel
 
       count_photo=0
       do j=1,mxpart
@@ -23,10 +22,9 @@
       implicit none
       include 'constants.f'
       include 'npart.f'
-      character*2 plabel(mxpart)
+      include 'plabel.f'
       double precision p(mxpart,4) 
       integer j
-      common/plabel/plabel
 
 c---- Count final state jets only pp included initially
       count_jets=0

@@ -14,8 +14,7 @@ c---- with all 2 pi's (ie 1/(2*pi)^20)
      . ,p9(4),p10(4),p12(4),pa(4),pb(4),
      . p345(4),p678(4),p34(4),p78(4),
      . ph(4),smin,wt,wt0,wt12,wtxh,wt345,wt678,wt34,wt78,wth,
-     . mass2,width2,mass3,width3
-      logical oldzerowidth
+     . mass2,width2,mass3,width3,dkmass
       common/breit/n2,n3,mass2,width2,mass3,width3 
       parameter(wt0=1d0/twopi**6)
       data iflip/0/
@@ -39,12 +38,15 @@ c---- with all 2 pi's (ie 1/(2*pi)^20)
       if     (case .eq. 'qq_tth') then
         mass3=hmass
         width3=hwidth
+        dkmass=mb
       elseif (case .eq. 'qq_ttz') then
         mass3=zmass
         width3=zwidth
+        dkmass=0d0
       elseif (case .eq. 'qq_ttw') then
         mass3=wmass
         width3=wwidth
+        dkmass=0d0
       else
         write(6,*) 'Process not supported in phase8.f: ',case
 	stop
@@ -76,7 +78,7 @@ c---- with all 2 pi's (ie 1/(2*pi)^20)
       call phi3m0(r(17),r(18),p78,p7,p8,wt78,*99)
       if ((p7(4).le.0d0).or.(p8(4).le.0d0)) goto 99
 
-      call phi3m(r(19),r(20),ph,p10,p9,mb,mb,wth,*99)
+      call phi3m(r(19),r(20),ph,p10,p9,dkmass,dkmass,wth,*99)
       if ((p9(4).le.0d0).or.(p10(4).le.0d0)) goto 99
 
       wt=wt0*wt12*wtxh*wt345*wt678*wt34*wt78*wth

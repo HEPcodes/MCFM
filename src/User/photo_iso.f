@@ -131,9 +131,8 @@
       logical function is_hadronic(i)
       implicit none
       include 'constants.f'
+      include 'plabel.f'
       integer i 
-      character*2 plabel(mxpart)
-      common/plabel/plabel
       
       if ( (plabel(i) .eq. 'pp') .or. (plabel(i) .eq. 'pj')
      .     .or.(plabel(i) .eq. 'bq') .or. (plabel(i) .eq. 'ba')

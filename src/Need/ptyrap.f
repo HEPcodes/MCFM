@@ -39,6 +39,38 @@ c--- computes either pt or et, depending on the value of useEt
       return
       end
 
+      double precision function ptfour(j,k,m,n,p)
+c--- This routine is now just a wrapper to getet, which
+c--- computes either pt or et, depending on the value of useEt      
+      implicit none
+      include 'constants.f'
+      integer j,k,m,n
+      double precision p(mxpart,4),getet
+           
+      ptfour=getet(p(j,4)+p(k,4)+p(m,4)+p(n,4),
+     &             p(j,1)+p(k,1)+p(m,1)+p(n,1),
+     &             p(j,2)+p(k,2)+p(m,2)+p(n,2),
+     &             p(j,3)+p(k,3)+p(m,3)+p(n,3))
+
+      return
+      end
+
+      double precision function ptsix(j1,k1,m1,j2,k2,m2,p)
+c--- This routine is now just a wrapper to getet, which
+c--- computes either pt or et, depending on the value of useEt      
+      implicit none
+      include 'constants.f'
+      integer j1,k1,m1,j2,k2,m2
+      double precision p(mxpart,4),getet
+           
+      ptsix=getet(p(j1,4)+p(k1,4)+p(m1,4)+p(j2,4)+p(k2,4)+p(m2,4),
+     &            p(j1,1)+p(k1,1)+p(m1,1)+p(j2,1)+p(k2,1)+p(m2,1),
+     &            p(j1,2)+p(k1,2)+p(m1,2)+p(j2,2)+p(k2,2)+p(m2,2),
+     &            p(j1,3)+p(k1,3)+p(m1,3)+p(j2,3)+p(k2,3)+p(m2,3))
+
+      return
+      end
+
       double precision function etarap(j,p)
       implicit none
 C---returns the value of the pseudorapidity
@@ -190,6 +222,67 @@ c-- rapidities of 100 will be rejected by any sensible cuts
       etarapthree=0.5d0*dlog(etarapthree)
       endif
       
+      return
+      end
+
+      double precision function yrapfour(j,k,m,n,p)
+c--- this is the rapidity of the combination j+k+m+n
+      implicit none
+      include 'constants.f'
+      integer j,k,m,n
+      double precision p(mxpart,4)
+      yrapfour=(p(j,4)+p(k,4)+p(m,4)+p(n,4)+p(j,3)+p(k,3)+p(m,3)+p(n,3))
+     &        /(p(j,4)+p(k,4)+p(m,4)+p(n,4)-p(j,3)-p(k,3)-p(m,3)-p(n,3))
+      if (yrapfour .lt. 1d-13) then
+C-- set to 100 if this is very close to or less than zero
+c-- rapidities of 100 will be rejected by any sensible cuts
+      yrapfour=100d0
+      else 
+      yrapfour=0.5d0*dlog(yrapfour)
+      endif
+            
+      return
+      end
+
+      double precision function yrapsix(j1,k1,m1,j2,k2,m2,p)
+c--- this is the rapidity of the combination j1+k1+m1+j2+k2+m2
+      implicit none
+      include 'constants.f'
+      integer j1,k1,m1,j2,k2,m2
+      double precision p(mxpart,4)
+      yrapsix=(p(j1,4)+p(k1,4)+p(m1,4)+p(j1,3)+p(k1,3)+p(m1,3)
+     &        +p(j2,4)+p(k2,4)+p(m2,4)+p(j2,3)+p(k2,3)+p(m2,3))
+     &       /(p(j1,4)+p(k1,4)+p(m1,4)-p(j1,3)-p(k1,3)-p(m1,3)
+     &        +p(j2,4)+p(k2,4)+p(m2,4)-p(j2,3)-p(k2,3)-p(m2,3))
+      if (yrapsix .lt. 1d-13) then
+C-- set to 100 if this is very close to or less than zero
+c-- rapidities of 100 will be rejected by any sensible cuts
+      yrapsix=100d0
+      else 
+      yrapsix=0.5d0*dlog(yrapsix)
+      endif
+            
+      return
+      end
+
+      double precision function yrapseven(j1,k1,m1,j2,k2,m2,n,p)
+c--- this is the rapidity of the combination j1+k1+m1+j2+k2+m2+n
+      implicit none
+      include 'constants.f'
+      integer j1,k1,m1,j2,k2,m2,n
+      double precision p(mxpart,4)
+      yrapseven=(p(j1,4)+p(k1,4)+p(m1,4)+p(j1,3)+p(k1,3)+p(m1,3)+p(n,4)
+     &          +p(j2,4)+p(k2,4)+p(m2,4)+p(j2,3)+p(k2,3)+p(m2,3)+p(n,3))
+     &         /(p(j1,4)+p(k1,4)+p(m1,4)-p(j1,3)-p(k1,3)-p(m1,3)+p(n,4)
+     &          +p(j2,4)+p(k2,4)+p(m2,4)-p(j2,3)-p(k2,3)-p(m2,3)-p(n,3))
+      if (yrapseven .lt. 1d-13) then
+C-- set to 100 if this is very close to or less than zero
+c-- rapidities of 100 will be rejected by any sensible cuts
+      yrapseven=100d0
+      else 
+      yrapseven=0.5d0*dlog(yrapseven)
+      endif
+            
       return
       end
 
