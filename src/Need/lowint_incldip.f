@@ -288,6 +288,8 @@ c      call comparewz(p)
       call qqb_ZZ(p,msq)
       elseif (case .eq. 'WWqqbr') then
       call qqb_WW(p,msq)
+      elseif (case .eq. 'WWnpol') then
+      call qqb_WW_unpol(p,msq)
       elseif (case .eq. 'WHbbar') then
       call qqb_WH(p,msq)
       elseif (case .eq. 'ZHbbar') then

@@ -15,6 +15,7 @@ c---- total cross-section comes out correctly when the BR is removed
       include 'lc.f'
       include 'nwz.f'
       include 'process.f'
+      include 'flags.f'
       include 'heavyflav.f'
       character*4 part
       common/part/part
@@ -115,7 +116,7 @@ c---total cross-section
              plabel(4)='ig'
              endif
 
-      elseif ((nproc .ge. 10) .and. (nproc .le. 16)) then
+      elseif ((nproc .ge. 10) .and. (nproc .le. 17)) then
              nqcdjets=1
              BrnRat=1d0
              case='W_1jet'
@@ -138,10 +139,22 @@ c---total cross-section
              nwz=1
              plabel(3)='nl'
              plabel(4)='ea'
+             elseif (nproc .eq. 12) then
+             nwz=1
+             plabel(3)='nl'
+             plabel(4)='ea'
+             case='W_cjet'
+             mass2=mc
              elseif (nproc .eq. 16) then
              plabel(3)='el'
              plabel(4)='na'
              nwz=-1
+             elseif (nproc .eq. 17) then
+             plabel(3)='el'
+             plabel(4)='na'
+             nwz=-1
+             case='W_cjet'
+             mass2=mc
              endif
       elseif ((nproc .eq. 18) .or. (nproc .eq. 19)) then
              nqcdjets=0
@@ -545,6 +558,20 @@ c---total cross-section
                q1=Q(5)*sqrt(xn)
                l1=l(5)*sqrt(xn)
                r1=r(5)*sqrt(xn)
+             elseif (nproc .eq. 56) then
+               case='Zbbjet'
+               ndim=13
+               bbproc=.true.
+               mb=0d0
+               nqcdjets=3
+               plabel(3)='el'
+               plabel(4)='ea'
+               plabel(5)='bq'
+               plabel(6)='ba'
+               plabel(7)='pp'
+               q1=-1d0
+               l1=le
+               r1=re
              else
              write(6,*) 'z+2jet'
              write(6,*) 'not implemented yet'
@@ -594,6 +621,8 @@ c--- note: scattering diagrams are NOT included, only couplings change
                plabel(6)='na'
                plabel(7)='pp'
                l1=dsqrt(xn*2d0)
+             elseif (nproc .eq. 64) then
+             case='WWnpol'
              endif
 c---case WZ
       elseif (nproc/10 .eq. 7) then
@@ -1794,8 +1823,8 @@ C mb=0, keeps mbsq in the coupling but ignores it in the phase space)
              n3=1
              mass3=zmass
              width3=zwidth
-             plabel(3)='el'
-             plabel(4)='ea'
+             plabel(3)='ig'
+             plabel(4)='ig'
              plabel(5)='bq'
              isub=1+(nproc-261)/5
              if (nproc .eq. 261) then
@@ -1806,6 +1835,8 @@ C mb=0, keeps mbsq in the coupling but ignores it in the phase space)
              q1=-1d0
              l1=le
              r1=re
+             call branch(brwen,brzee,brtau,brtop)
+             BrnRat=brzee
       elseif ((nproc .eq. 262) .or. (nproc .eq. 267)) then
              nqcdjets=1
              case='gQ__ZQ'
@@ -1829,6 +1860,8 @@ C mb=0, keeps mbsq in the coupling but ignores it in the phase space)
              q1=-1d0
              l1=le
              r1=re
+             call branch(brwen,brzee,brtau,brtop)
+             BrnRat=brzee
       elseif (nproc .eq. 263) then
              notag=1
              ndim=10
@@ -1847,6 +1880,8 @@ C mb=0, keeps mbsq in the coupling but ignores it in the phase space)
              q1=-1d0
              l1=le
              r1=re
+             call branch(brwen,brzee,brtau,brtop)
+             BrnRat=brzee
       elseif (nproc .eq. 264) then
              notag=1
              ndim=10
@@ -1866,6 +1901,8 @@ C mb=0, keeps mbsq in the coupling but ignores it in the phase space)
              q1=-1d0
              l1=le
              r1=re
+             call branch(brwen,brzee,brtau,brtop)
+             BrnRat=brzee
       elseif (nproc .eq. 270) then
 C  gluon-gluon fusion
              case='ggfus0'
@@ -2080,6 +2117,12 @@ C mb=0, keeps mbsq in the coupling but ignores it in the phase space)
 
       call ckmfill(nwz)
 
+c--- set flags to true unless we're doing W+2 jet or Z+2 jet
+      if ((case .ne. 'W_2jet') .and. (case .ne. 'Z_2jet')) then
+        Qflag=.true.
+        Gflag=.true.
+      endif
+      
       return
 
  43   write(6,*) 'problems opening process.DAT'

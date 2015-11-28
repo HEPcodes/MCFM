@@ -440,6 +440,8 @@ amps_anom.o \
 b7tree.o \
 fa.o \
 qqb_ww.o \
+qqb_ww_unpol.o \
+susana.o \
 qqb_ww_g.o \
 qqb_ww_gs.o \
 qqb_ww_v.o \
