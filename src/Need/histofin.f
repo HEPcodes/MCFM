@@ -119,7 +119,12 @@ c--- write out run info to top of files
      & ' {', /1x,
      & ' mcfmhisto = new TFile("', A, '", "recreate");',/1x,
      & ' mcfmhisto -> cd();',/1x,
-     & ' histos = new TObjArray(0);',/1x)
+     & ' int xbin;',/1x)
+c  121 FORMAT (/1x,
+c     & ' {', /1x,
+c     & ' mcfmhisto = new TFile("', A, '", "recreate");',/1x,
+c     & ' mcfmhisto -> cd();',/1x,
+c     & ' histos = new TObjArray(0);',/1x)
 
 
 c--- make sure to scale results by the maximum number of iterations
@@ -202,12 +207,14 @@ c        write(6,*) 'Writing .top for plot ',j
 
       if (writeroot) then
 c--F  closing statements for root file
-        write(96,*) ' mcfmhisto -> cd();'
-        write(96,*) ' if (histos -> GetEntries() > 0 ) then  {'
-        write(96,*) '  histos->Write();'
-        write(96,*) '  mcfmhisto -> Close();'
-        write(96,*) ' }'
+        write(96,*) ' mcfmhisto -> Write();'
         write(96,*) '}'
+c        write(96,*) ' mcfmhisto -> cd();'
+c        write(96,*) ' if (histos -> GetEntries() > 0 ) then  {'
+c        write(96,*) '  histos->Write();'
+c        write(96,*) '  mcfmhisto -> Close();'
+c        write(96,*) ' }'
+c        write(96,*) '}'
         close(unit=96)
       endif
       

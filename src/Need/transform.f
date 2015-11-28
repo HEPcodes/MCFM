@@ -18,11 +18,7 @@
      . k(4),kt(4),ks(4),kDk,ksDks,kDp(3:mxpart),ksDp(3:mxpart)
       integer ip,kp,j,nu,jp,ipart,inp,fip
 
-      do j=1,npart+2
-      do nu=1,4
-        q(j,nu)=0d0
-      enddo
-      enddo
+      q(:,:)=zip
 
       if ((ip .le. 2) .and. (kp .le. 2)) then
 c---initial-initial

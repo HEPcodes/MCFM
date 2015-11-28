@@ -1,7 +1,7 @@
       block data codeversion_data
       implicit none
       include 'codeversion.f'
-      data codeversion/'7.0'/      
+      data codeversion/'7.0.1'/      
       data      prelim/.false./      ! if true, print warning message
       end
 

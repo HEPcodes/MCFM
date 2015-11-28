@@ -458,7 +458,7 @@ c--- added these variables to scale plots at intermediate steps
 
 c--F  Add root output
       
-      SUBROUTINE MROOTPLOT(N,M,BTIT,LTIT)
+      SUBROUTINE MROOTPLOT5(N,M,BTIT,LTIT)
       IMPLICIT REAL*8 (A-H,O-Z)
       IMPLICIT INTEGER (I-N)
       CHARACTER*(*) LTIT,BTIT
@@ -520,6 +520,76 @@ C     &        XHIS(N,J), ', ', HIST(N,J), ');'
     1 CONTINUE
 
       WRITE (96, *) ' histos -> Add(hist); '
+      WRITE (96, *) ''
+      WRITE (96, *) ''
+
+      END
+
+
+c-- Root output (works in versions >=5)
+      SUBROUTINE MROOTPLOT(N,M,BTIT,LTIT)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT INTEGER (I-N)
+      CHARACTER*(*) LTIT,BTIT
+      CHARACTER*5 histoid
+      include 'histo.f'
+c--- added these variables to scale plots at intermediate steps
+      logical scaleplots                  
+      double precision scalefac
+      common/scaleplots/scalefac,scaleplots
+
+      istring=LEN_TRIM(TITLE(N))
+
+      if (N.lt.10) then
+         write(histoid, '(A2,I1,A2)') 'id', N, '  '
+      elseif ((N.ge.10).and.(N.lt.100)) then
+         write(histoid, '(A2,I2,A1)') 'id', N, ' '
+      elseif (N.ge.100) then
+         write(histoid, '(A2,I3)') 'id', N
+      endif
+
+      idlength=LEN_TRIM(histoid)
+
+      IF(BOOK(N).NE.'YES') RETURN
+
+      WRITE(96,141) histoid(3:idlength), histoid(1:idlength),
+     &  TITLE(N)(1:istring), NBIN(N), HMIN(N), HMAX(N)
+ 141  FORMAT ( /1X,
+     & ' mcfmhisto -> cd();', /1X,
+     & ' TH1F *hist', A, ' = new TH1F( "', A, '", "', A, '", ',
+     & I0, ', ', F12.4, ', ', F12.4, ');')
+
+      WRITE(96, 142) histoid(1:idlength), TITLE(N)(1:istring),
+     & histoid(1:idlength), TITLE(N)(1:istring)
+ 142  FORMAT ( /1X, 
+     & ' ', A, ' -> GetXaxis() -> SetTitle("', A, '");', /1X,
+     & ' ', A, ' -> GetYaxis() -> SetTitle(" d#sigma/d', A, 
+     & ' [fb]");', /1X)
+
+      WRITE (96,*) ' ', histoid(1:idlength), ' -> GetYaxis() -> ',
+     & 'SetTitleOffset(1.2);'
+
+      WRITE(96,*) ' ', histoid(1:idlength), ' -> SetStats(false);'
+
+      DO 1 J=1,NBIN(N)
+      IF(HIST(N,J).EQ.0.) GO TO 1
+      if (scaleplots) then
+      WRITE(96,'(3(2X,G13.6))')  
+     & XHIS(N,J),scalefac*HIST(N,J),HIST(M,J)
+      else
+C         write(96,*) ' ', histoid(1:idlength), ' -> Fill(', 
+C     &        XHIS(N,J), ', ', HIST(N,J), ');'
+         write(96,*) '  xbin = ', histoid(1:idlength),'->FindBin(',
+     & XHIS(n,j),');' 
+         write(96,*) ' ', histoid(1:idlength), ' -> SetBinContent(', 
+     &       ' xbin', ', ', HIST(N,J), ');'
+         write(96,*) ' ', histoid(1:idlength), ' -> SetBinError(', 
+     &       ' xbin', ', ', HIST(M,J), ');'
+      endif
+    1 CONTINUE
+
+      WRITE (96, 143) histoid(3:idlength)
+ 143  FORMAT ('//  hist', A, ' -> Draw("hist");')
       WRITE (96, *) ''
       WRITE (96, *) ''
 
