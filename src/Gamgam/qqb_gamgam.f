@@ -7,6 +7,7 @@ C-----Matrix element for f(-p1)+f(-p2)->gamma(p3)+gamma(p4)
       include 'ewcharge.f'
       include 'ewcouple.f'
       include 'sprods_com.f'
+      include 'noglue.f'
       integer j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac,
      .  qa,aq,gg,statfac,facgg,msqgggaga,Qsum
@@ -26,8 +27,12 @@ c--set msq=0 to initalize
       Qsum=+Q(1)**2+Q(2)**2+Q(3)**2+Q(4)**2+Q(5)**2 
       facgg=4d0*esq*gsq/(16d0*pisq)*Qsum
 
-      gg=avegg*V*facgg**2*msqgggaga(s(1,2),s(1,3),s(2,3))*statfac
-
+      if (omitgg) then
+        gg=0d0
+      else
+        gg=avegg*V*facgg**2*msqgggaga(s(1,2),s(1,3),s(2,3))*statfac
+      endif
+      
       qa=fac*aveqq*(s(1,3)/s(2,3)+s(2,3)/s(1,3))
       aq=qa
 

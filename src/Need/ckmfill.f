@@ -72,6 +72,7 @@ C case W+
       flsq=gwsq/2d0
       fl=dsqrt(flsq)
 
+  
 C case W-
       elseif (nwz .eq. -1) then 
 

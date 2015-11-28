@@ -7,6 +7,8 @@ c---   br,wwbr,zzbr,tautaubr : the LO calculated values
       include 'constants.f'
       include 'ewcouple.f'
       include 'masses.f'
+      include 'anom_higgs.f' 
+      include 'process.f' 
       double precision br,gamgambr,zgambr,wwbr,zzbr,tautaubr,x_w,x_z,
      & msqgamgam,hzgamwidth,msqhbb,msqhtautau,
      & pw_bb,pw_tautau,pw_gamgam,pw_ww,pw_zz,pw_zgam,
@@ -67,6 +69,50 @@ c--- are not actually used in our calculations
         hwidth=pw_bb+pw_tautau+pw_ww+pw_zz+pw_gamgam+pw_zgam
       endif 
 
+c--- Set up anomalous width of the Higgs boson if required
+      if (abs(hwidth_ratio-1d0) .lt. 1d-6) then
+        anom_Higgs=.false.
+      else
+        if ( (case .eq. 'HZZ_tb') .or. (case .eq. 'HZZint')
+     &   .or.(case .eq. 'HZZH+i') .or. (case .eq. 'ggZZ4l')
+     &   .or.(case .eq. 'HZZqgI') .or. (case .eq. 'HWW_tb')
+     &   .or.(case .eq. 'HWWint') .or. (case .eq. 'HWWH+i')
+     &   .or.(case .eq. 'ggWW4l') ) then
+          anom_Higgs=.true.
+          keep_SMhiggs_norm=.true.
+          hwidth=hwidth*hwidth_ratio
+          chi_higgs=hwidth_ratio**(0.25d0)
+          pw_bb=pw_bb*chi_higgs**2
+          pw_tautau=pw_tautau*chi_higgs**2
+          pw_ww=pw_ww*chi_higgs**2
+          pw_gamgam=pw_gamgam*chi_higgs**2
+          pw_zgam=pw_zgam*chi_higgs**2
+          pw_zz=pw_zz*chi_higgs**2
+        else
+          write(6,*) 'Anomalous Higgs width not supported for'
+          write(6,*) 'this process.'
+          stop
+        endif
+      endif
+      
+c---- This code now deprecated 
+c!===== read in anom_higgs.DAT 
+c      call read_anom_higgsp
+c!========= read in anomalous higgs couplings for width studies 
+c      if(anom_Higgs) then 
+c         chi_higgs=hwidth_ratio**(0.25d0)
+c         hwidth=hwidth*chi_higgs**4 
+c         if(keep_smhiggs_norm) then 
+c            pw_bb=pw_bb*chi_higgs**2 
+c            pw_tautau=pw_tautau*chi_higgs**2 
+c            pw_ww=pw_ww*chi_higgs**2 
+c            pw_gamgam=pw_gamgam*chi_higgs**2 
+c            pw_zgam=pw_zgam*chi_higgs**2 
+c            pw_zz=pw_zz*chi_higgs**2 
+c         endif
+c      endif
+
+
 c      call higgsp(br_sp,tautaubr,gamgambr_sp,zgambr_sp,wwbr_sp,zzbr_sp)
 c      write(6,*) 'sethparam:Spira bb     BR',br_sp
 c      write(6,*) 'sethparam:MCFM  bb     BR',pw_bb/hwidth
@@ -95,6 +141,7 @@ c--- Branching ratio H -> Zgam
       zgambr=pw_zgam/hwidth
 
 *************************** WRITE OUT BRANCHING RATIOS *************************
+
 
       write(6,99) hmass,hwidth,br,tautaubr,wwbr,zzbr,gamgambr,zgambr
       if (spira) then

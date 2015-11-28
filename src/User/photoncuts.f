@@ -1,4 +1,4 @@
-      logical function photoncuts(pjet,isub,photo_dip,nd)
+      logical function photoncuts(pjet)
 ************************************************************************
 *   Author: J.M. Campbell, 24th January 2011                           *
 *       and C. Williams                                                *
@@ -17,21 +17,22 @@
       include 'process.f'
       include 'leptcuts.f'
       include 'z_dip.f'
-      include 'plabel.f'
-      logical first
-      logical photo_dip
-      integer nd,isub
+      include 'jetlabel.f'
+      logical first,is_lepton,is_photon,is_hadronic
       integer j,k
-      integer countlept,leptindex(mxpart),countgamm,gammindex(mxpart)
+      double precision ptm,pt3
+      integer countlept,leptindex(mxpart),countgamm,gammindex(mxpart),
+     & countjet,jetindex(mxpart)
       double precision pjet(mxpart,4),pt,etarap,R,pt1,pt2,pth,pts,s34
       data first/.true./
+      save first,countlept,countgamm,countjet,
+     & leptindex,gammindex,jetindex
       
       photoncuts=.false.
 
-c--- write-out the cuts we are using
       if (first) then
-      first=.false.
-      
+      first=.false.      
+c--- write-out the cuts we are using
       write(6,*)
       write(6,*)  '****************** Photon cuts *********************'
       write(6,*)  '*                                                  *'
@@ -39,38 +40,46 @@ c--- write-out the cuts we are using
      &                '                *'
       write(6,99) '*   pt(photon 2)         >   ',gammpt2,
      &                '                *'
+      if(case.eq.'trigam') then 
+         write(6,99) '*   pt(photon 3)         >   ',gammpt3,
+     &        '                *'
+      endif
       write(6,99) '*   eta(photon)          <   ',gammrap,
      &                '                *'
       write(6,99) '*   R(photon,lepton)     >   ',Rgalmin,
      &                '                *'
       write(6,99) '*   R(photon,photon)     >   ',Rgagamin,
      &                '                *'
+      write(6,99) '*   R(photon,jet)        >   ',Rgajetmin,
+     &                '                *'
       write(6,*)  '*                                                  *'
       write(6,*)  '****************************************************'
       if(case.eq.'gamgam') then 
-         write(6,*)
+       write(6,*)
        write(6,*) '************* M(gam,gam) mass cuts *****************'
        write(6,*) '*                                                  *'
        write(6,98) dsqrt(wsqmin),'m34',dsqrt(wsqmax)
        write(6,*) '****************************************************'
-       endif
       endif
-
+c--- initialize counters and arrays that will be used to perform cuts      
       countlept=0
       countgamm=0
-c--- count leptons and photons
+      countjet=0
       do j=3,mxpart
-        if (     (plabel(j) .eq. 'el') .or. (plabel(j) .eq. 'ea')
-     &      .or. (plabel(j) .eq. 'ml') .or. (plabel(j) .eq. 'ma')
-     &      .or. (plabel(j) .eq. 'tl') .or. (plabel(j) .eq. 'ta')) then
+        if (is_lepton(j)) then
           countlept=countlept+1
           leptindex(countlept)=j
         endif
-        if (plabel(j) .eq. 'ga') then
+        if (is_photon(j)) then
           countgamm=countgamm+1
           gammindex(countgamm)=j
         endif
+        if (is_hadronic(j)) then
+          countjet=countjet+1
+          jetindex(countjet)=j
+        endif
       enddo
+      endif      
       
 C     Basic pt and rapidity cuts for photon
       if (countgamm .eq. 1) then
@@ -94,6 +103,25 @@ C     Basic pt and rapidity cuts for photon
         endif
       endif
 
+      if (countgamm .eq. 3) then
+        pt1=pt(gammindex(1),pjet) 
+        pt2=pt(gammindex(2),pjet)
+        pt3=pt(gammindex(3),pjet)
+        pth=max(pt1,pt2,pt3)
+        pts=min(pt1,pt2,pt3)
+        ptm=pt1+pt2+pt3-pts-pth
+        if ( ( pth .lt. gammpt) .or.
+     &       ( ptm .lt. gammpt2) .or.
+     &       ( pts .lt. gammpt3) .or.
+     &       (abs(etarap(gammindex(1),pjet)) .gt. gammrap) .or.
+     &       (abs(etarap(gammindex(2),pjet)) .gt. gammrap) .or.
+     &       (abs(etarap(gammindex(3),pjet)) .gt. gammrap) ) then
+          photoncuts=.true.
+          return
+        endif
+      endif
+
+
 c--- lepton-photon separation 
       if ((countlept .ge. 1) .and. (countgamm .ge. 1)) then
         do j=1,countgamm
@@ -109,35 +137,34 @@ c--- lepton-photon separation
 c--- photon-photon separation 
       if (countgamm .ge. 2) then
         do j=1,countgamm
-        do k=1,countgamm
-          if (gammindex(j).lt.gammindex(k)) then
+        do k=j+1,countgamm
           if (R(pjet,gammindex(j),gammindex(k)) .lt. Rgagamin) then
             photoncuts=.true.
             return
-          endif
           endif
         enddo
         enddo
       endif
 
-      !--- Apply mass cuts here (gamgam only)
+c--- jet-photon separation (if there are 1 or more jets and photons)
+      if ((jets .ge. 1) .and. (countgamm .ge. 1)) then
+        do j=1,countgamm
+        do k=1,jets
+          if (R(pjet,gammindex(j),jetindex(k)) .lt. Rgajetmin) then
+            photoncuts=.true.
+            return
+          endif
+        enddo
+        enddo
+      endif
+
+!--- Apply mass cuts here (gamgam only)
       if(case.eq.'gamgam') then 
-         if((photo_dip.eqv..false.)) then 
-            s34=+(pjet(3,4)+pjet(4,4))**2-(pjet(3,1)+pjet(4,1))**2
-     &           -(pjet(3,2)+pjet(4,2))**2-(pjet(3,3)+pjet(4,3))**2
-         elseif(photo_dip.and.(isub.eq.1)) then
-           
-            s34=+(pjet(3,4)+z_dip(nd)*pjet(4,4))**2
-     &           -(pjet(3,1)+z_dip(nd)*pjet(4,1))**2
-     &           -(pjet(3,2)+z_dip(nd)*pjet(4,2))**2
-     &           -(pjet(3,3)+z_dip(nd)*pjet(4,3))**2
-           
-         endif
-         if ((s34 .lt. wsqmin) .or. (s34 .gt. wsqmax)) then 
-        
+         s34=+(pjet(3,4)+pjet(4,4))**2-(pjet(3,1)+pjet(4,1))**2
+     &       -(pjet(3,2)+pjet(4,2))**2-(pjet(3,3)+pjet(4,3))**2
+         if ((s34 .lt. wsqmin) .or. (s34 .gt. wsqmax)) then         
             photoncuts=.true. 
-            return 
-         
+            return          
          endif
       endif
      
@@ -145,6 +172,8 @@ c--- photon-photon separation
 
 
       return
+
+
 
 
 c--- Lines below here are commented out for now;

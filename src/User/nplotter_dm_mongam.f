@@ -19,12 +19,9 @@ c---                1  --> counterterm for real radiation
       include 'histo.f'
       include 'jetlabel.f'
       include 'outputflags.f'
-      include 'phot_dip.f'
-      include 'frag.f'
       integer i,nd
       double precision p(mxpart,4),wt,wt2
-      double precision etarap,pt,etaj1,ptj1,etaj2,ptj2,etaj3,mjj,delr,
-     & deleta,etastar,pt34,pttwo,m34,m345
+      double precision etarap,pt,etaj1,ptj1,pt34,pttwo,m34,m345
       double precision ptga,etaga
       integer switch,n,nplotmax
       character*4 tag
@@ -38,29 +35,13 @@ c---                1  --> counterterm for real radiation
 *     INITIAL BOOKKEEPING                                              *
 *                                                                      *
 ************************************************************************
-c-- Determine if we need to rescale p for fragmenation and integrated dipole pieces
-c--- This corresponds to the logical variable rescale set in chooser
-      if(rescale) then 
-         call rescale_pjet(p) 
-      endif
-c----- This corresponds to p(5)->z_frag*p(5) = pt(photon) we want to plot      
-!----- Also if photon comes from dipole (ie .nd =3 or 4) then we also need to rescale
-      if(phot_dip(nd)) then 
-         call rescale_z_dip(p,nd,5) 
-      endif
+
 
 c--- Initialize dummy values for all quantities that could be plotted
       ptj1=-1d0
-      ptj2=-1d0
       ptga=-1d0 
       etaga=99d0
       etaj1=99d0
-      etaj2=99d0
-      etaj3=99d0
-       mjj=-1d0
-      delr=-1d0
-      deleta=-1d0
-      etastar=99d0
       m34=-1d0 
       m345=-1d0 
       
@@ -189,17 +170,6 @@ c--- Set the maximum number of plots, on the first call
         nplotmax=n
       endif
    
-c--- If rescaling occured above, return to original value
-      if(rescale) then 
-         call return_pjet(p) 
-      endif
-c----- This corresponds to p(5)->z_frag*p(5) = pt(photon) we want to plot      
-!-----Also if photon comes from dipole (ie .nd =3 or 4) then we also need to rescale
-      if(phot_dip(nd)) then
-         call return_z_dip(p,nd,5) 
-      endif
-
-
       
       return 
       end

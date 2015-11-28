@@ -37,7 +37,10 @@ c---- total cross-section comes out correctly when the BR is removed
       include 'hdecaymode.f'
       include 'breit.f'
       include 'mcfmplotinfo.f' 
+      include 'lastphot.f' 
+      include 'new_pspace.f' 
       include 'dm_params.f' 
+      include 'swapxz.f' 
       double precision wwbr,zzbr,tautaubr,gamgambr,zgambr,Rcut,Rbbmin,
      . alphas,cmass,bmass
       double precision br,BrnRat,brwen,brzee,brznn,brtau,brtop,brcharm
@@ -47,6 +50,8 @@ c---- total cross-section comes out correctly when the BR is removed
       character*72 string
       double precision f0q,f2q,f4q
       double precision Vud,Vus,Vub,Vcd,Vcs,Vcb
+      character*30 runstring
+      common/runstring/runstring
       common/cabib/Vud,Vus,Vub,Vcd,Vcs,Vcb
       common/bitflags/f0q,f2q,f4q
       common/Rbbmin/Rbbmin
@@ -258,6 +263,9 @@ c-----------------------------------------------------------------------
 
       elseif ((nproc .eq. 13) .or. (nproc .eq. 18)) then
         case='W_cjet'
+c--- this process works best using the new PS generation
+        new_pspace=.true.
+c--- this process works best using the new PS generation
         nqcdjets=1
         ndim=7
         mb=0
@@ -283,7 +291,7 @@ c--    '  f(p1)+f(p2) --> W^- (no BR) + c(p5)' (removebr=.true.)
           plabel(4)='na'
         endif
 
-c--- total cross-section             
+c--- total cross-section
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
@@ -360,6 +368,7 @@ c-----------------------------------------------------------------------
 
       elseif ((nproc .eq. 20) .or. (nproc .eq. 25)) then
         case='Wbbmas'
+        swapxz=.true.
         write(6,*) 'mb=',mb
         nqcdjets=2
         flav=5
@@ -1275,7 +1284,6 @@ c-----------------------------------------------------------------------
         nqcdjets=0
         nwz=0
         ndim=10
-        mb=0
         n2=1
         n3=1
         mass2=zmass
@@ -1287,7 +1295,7 @@ c-----------------------------------------------------------------------
         r1=re
         interference=.false.
 
-        mcfmplotinfo= (/ 34, 56, (0,j=1,48) /)
+        mcfmplotinfo= (/ 34, 56, 3456, (0,j=1,47) /)
         
 c--- only include singly-resonant diagrams when not in zerowidth approx.        
       if (zerowidth) then
@@ -1297,7 +1305,7 @@ c--- only include singly-resonant diagrams when not in zerowidth approx.
       endif
       
         if (nproc .eq. 81 .or. nproc .eq. 86) then
-c--  81 '  f(p1)+f(p2) --> Z^0(-->mu^-(p3)+mu^+(p4)) + Z^0(-->e^-(p5)+e^+(p6))'
+c--  81 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4)) + Z^0(-->mu^-(p5)+mu^+(p6))'
 c--     '  f(p1)+f(p2) --> Z^0 + Z^0 (for total Xsect)' (removebr=.true.)
 c--  86 '  f(p1)+f(p2) --> Z^0(-->e^-(p5)+e^+(p6))+Z^0(-->mu^-(p3)+mu^+(p4)) (NO GAMMA*)'
 c--     '  f(p1)+f(p2) --> Z^0 + Z^0 (for total Xsect) (NO GAMMA*)' (removebr=.true.)
@@ -1328,7 +1336,10 @@ c--  87 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4)) + Z^0(-->3*(nu(p5)+nu~(p6))) 
           r2=rn*dsqrt(3d0)
         elseif (nproc .eq. 83 .or. nproc .eq. 88) then
 c--  83 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4)) + Z^0(-->b(p5)+b~(p6))'
-c--  88 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4))+Z^0(-->b(p5)+b~(p6)) [no gamma^*]'
+c--  88 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4)) + Z^0(-->b(p5)+b~(p6)) [no gamma^*]'
+          mb=0
+          bbproc=.true.
+          nqcdjets=2
           plabel(3)='el'
           plabel(4)='ea'
           plabel(5)='bq'
@@ -1339,6 +1350,7 @@ c--  88 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4))+Z^0(-->b(p5)+b~(p6)) [no gamm
         elseif ((nproc .eq. 84) .or. (nproc .eq. 89))  then
 c--  84 '  f(p1)+f(p2) --> Z^0(-->b(p3)+b~(p4)) + Z^0(-->3*(nu(p5)+nu~(p6)))'
 c--  89 '  f(p1)+f(p2) --> Z^0(-->b(p3)+b~(p4)) + Z^0(-->3*(nu(p5)+nu~(p6))) [no gamma^*]'
+          mb=0
           bbproc=.true.
           nqcdjets=2
           plabel(3)='bq'
@@ -1450,7 +1462,7 @@ c--     '  f(p1)+f(p2) --> W- + H (for total Xsect)' (removebr=.true.)
             plabel(3)='ig'
             plabel(4)='ig'
             plabel(5)='ig'
-            plabel(6)='ig'               
+            plabel(6)='ig'
             call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
             BrnRat=brwen*br
             bbproc=.false.
@@ -1498,9 +1510,9 @@ c--- 92 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4)) + H(-->W^+(nu(p3),e^+(p4))W^-(
           plabel(3)='ig'
           plabel(4)='ig'
           plabel(5)='ig'
-          plabel(6)='ig'             
+          plabel(6)='ig'
           plabel(7)='ig'
-          plabel(8)='ig'             
+          plabel(8)='ig'
           call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
           BrnRat=brwen**3*wwbr
         endif
@@ -1567,9 +1579,9 @@ C--98  '  f(p1)+f(p2) --> W^-(-->e^-(p3)+nu~(p4)) + H(-->Z(e^-(p5),e^+(p6))+Z(mu
           plabel(3)='ig'
           plabel(4)='ig'
           plabel(5)='ig'
-          plabel(6)='ig'             
+          plabel(6)='ig'
           plabel(7)='ig'
-          plabel(8)='ig'             
+          plabel(8)='ig'
           call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
           BrnRat=2d0*brwen*brzee**2*zzbr  ! factor of 2 for identical particles
         endif
@@ -1713,7 +1725,7 @@ c--  104 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4)) + H(-->gamma(p5)+gamma(p6))'
           hdecaymode='gaga'
            if (removebr) then
             call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
-            BrnRat=brzee*gamgambr          
+            BrnRat=brzee*gamgambr
             plabel(3)='ig'
             plabel(4)='ig'
             plabel(5)='ig'
@@ -1727,7 +1739,7 @@ c--  105 '  f(p1)+f(p2) --> Z^0(-->-->3*(nu(p3)+nu~(p4))) + H(-->gamma(p5)+gamma
           plabel(3)='nl'
           plabel(4)='na'
           plabel(5)='ga'
-          plabel(6)='ga'          
+          plabel(6)='ga'
           hdecaymode='gaga'
           q1=0d0
           l1=ln*dsqrt(3d0)
@@ -1926,17 +1938,22 @@ c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)
           endif
         endif
 
-      elseif ((nproc .eq. 113) .or. (nproc .eq. 126)
-     &   .or. (nproc .eq. 127)) then
+      elseif ((nproc .eq. 113) .or. (nproc .eq. 123)
+     &   .or. (nproc .eq. 124) .or. (nproc .eq. 125)
+     &   .or. (nproc .eq. 126)) then
 c--  113 '  f(p1)+f(p2) --> H (--> W^+(nu(p3)+e^+(p4)) + W^-(e^-(p5)+nu~(p6)))'
 c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)
         if     (nproc .eq. 113) then
           case='HWW_4l'  
-      elseif (nproc .eq. 126) then
+        elseif (nproc .eq. 123) then
           case='HWW_tb'  
-      elseif (nproc .eq. 127) then
-        case='HWWint'
-      endif           
+        elseif (nproc .eq. 124) then
+          case='HWWint'
+        elseif (nproc .eq. 125) then
+          case='HWWH+i'
+        elseif (nproc .eq. 126) then
+          case='ggWW4l'
+        endif           
         call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
 c--- widths according to Kauer et al., for comparison with gg2WW
 c        if (abs(hmass-140d0) .lt. 1d-4) hwidth=0.008235d0
@@ -2031,8 +2048,8 @@ c        if (part .eq. 'todk') BrnRat=BrnRat*(1d0+as/pi)
           plabel(3)='ig'
           plabel(4)='ig'
           plabel(5)='ig'
-          plabel(6)='ig'        
-        nqcdjets=0       
+          plabel(6)='ig'
+          nqcdjets=0
         endif
         
       elseif (nproc .eq. 115) then
@@ -2061,8 +2078,8 @@ c        if (part .eq. 'todk') BrnRat=BrnRat*(1d0+as/pi)
           plabel(3)='ig'
           plabel(4)='ig'
           plabel(5)='ig'
-          plabel(6)='ig'   
-        nqcdjets=0            
+          plabel(6)='ig'
+          nqcdjets=0
         endif
         
 c--- print warning if we're below threshold
@@ -2071,23 +2088,49 @@ c--- print warning if we're below threshold
         write(6,*) 'WARNING: Higgs decay H->WW is below threshold and'
         write(6,*) 'may not yield sensible results - check the number'
         write(6,*) 'of integration points'
-      if (removebr) then
-      write(6,*)
-      write(6,*) 'Cannot remove H->WW BR, not defined below threshold'
+        if (removebr) then
+        write(6,*)
+        write(6,*) 'Cannot remove H->WW BR, not defined below threshold'
         stop
-      endif
+        endif
         if (zerowidth) then
         write(6,*) 'zerowidth=.true. and higgs decay below threshold'
         stop
         endif
         endif
         
-      elseif ((nproc .ge. 116) .and. (nproc .le. 118)) then
-        case='HZZ_4l'
+c-----------------------------------------------------------------------
+
+      elseif (((nproc .ge. 116) .and. (nproc .le. 118))
+     &    .or. (nproc .eq. 128)  .or. (nproc .eq. 129)
+     &    .or. (nproc .eq. 130)  .or. (nproc .eq. 131)
+     &    .or. (nproc .eq. 132)  .or. (nproc .eq. 133) ) then
+        if     (nproc .le. 118) then
+          case='HZZ_4l'  
+        elseif (nproc .eq. 128) then
+          case='HZZ_tb'  
+        elseif (nproc .eq. 129) then
+          case='HZZint'
+        elseif (nproc .eq. 130) then
+          case='HZZH+i'
+        elseif (nproc .eq. 131) then
+          case='ggZZ4l'
+        elseif (nproc .eq. 132) then
+          case='ggZZbx'
+          interference=.false.
+        elseif (nproc .eq. 133) then
+          case='HZZqgI'
+        endif
         call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
         plabel(7)='pp'
         nqcdjets=0
+        nwz=0
         ndim=10
+        if(nproc.eq.133) then 
+           ndim=13
+           nqcdjets=1 
+           notag=1
+        endif
         n2=1
         n3=1
         mass2=zmass
@@ -2103,28 +2146,49 @@ c--- print warning if we're below threshold
           write(6,*) 'WARNING: Higgs decay H->ZZ is below threshold and'
           write(6,*) 'may not yield sensible results - check the number'
           write(6,*) 'of integration points'
-      if (removebr) then
-      write(6,*)
-      write(6,*) 'Cannot remove H->ZZ BR, not defined below threshold'
+          if (removebr) then
+        write(6,*)
+        write(6,*) 'Cannot remove H->ZZ BR, not defined below threshold'
         stop
-      endif
+          endif
           if (zerowidth) then
           write(6,*) 'zerowidth=.true. and higgs decay below threshold'
           stop
           endif
         endif
         
-        if     (nproc .eq. 116) then
-c--  116 '  f(p1)+f(p2) --> H(-->Z^0(mu^-(p3)+mu^+(p4)) + Z^0(e^-(p5)+e^+(p6))'
+        if (   (nproc .eq. 116)  .or. (nproc .eq. 128)
+     &    .or. (nproc .eq. 129)  .or. (nproc .eq. 130)
+     &    .or. (nproc .eq. 131)  .or. (nproc .eq. 132)
+     &    .or. (nproc .eq. 133) ) then
+c--  116 '  f(p1)+f(p2) --> H(-->Z^0(e^-(p3)+e^+(p4)) + Z^0(mu^-(p5)+mu^+(p6))'
 c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)
+c--- 128 '  f(p1)+f(p2) --> H(--> Z^0(e^-(p3)+e^+(p4)) + Z^0(mu^-(p5)+mu^+(p6)) [top, bottom loops, exact]' 'L'
+c--- 129 '  f(p1)+f(p2) --> H(--> Z^0(e^-(p3)+e^+(p4)) + Z^0(mu^-(p5)+mu^+(p6)) [only H, gg->ZZ intf.]' 'L'
+c--- 130 '  f(p1)+f(p2) --> H(--> Z^0(e^-(p3)+e^+(p4)) + Z^0(mu^-(p5)+mu^+(p6)) [H squared and H, gg->ZZ intf.]' 'L'
+c--- 131 '  f(p1)+f(p2) --> Z^0(e^-(p3)+e^+(p4)) + Z^0(mu^-(p5)+mu^+(p6) [gg only, (H + gg->ZZ) squared]' 'L'
+c--- 132 '  f(p1)+f(p2) --> Z^0(e^-(p3)+e^+(p4)) + Z^0(mu^-(p5)+mu^+(p6) [(gg->ZZ) squared]' 'L'
+c--- 133 '  f(p1)+f(p2) --> H(--> Z^0(mu^-(p3)+mu^+(p4)) + Z^0(e^-(p5)+e^+(p6) + f(p7)) [intf with SM, no cut on p7]' 'L'
           plabel(3)='el'
           plabel(4)='ea'
           plabel(5)='ml'
           plabel(6)='ma'
+c--- check runstring to change from (e,mu) Z decays to (e,e) or (mu,mu)
+c--- NOTE: no interference effects are included at present          
+          if     (index(runstring,'ELEL') .gt. 0) then
+            plabel(5)='el'
+            plabel(6)='ea'
+          elseif (index(runstring,'MUMU') .gt. 0) then
+            plabel(3)='ml'
+            plabel(4)='ma'
+          endif
+           
           l1=le
           r1=re
           l2=le
           r2=re
+          q1=-1d0
+          q2=-1d0
           if (removebr) then
             call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
             BrnRat=2d0*brzee**2*zzbr  ! factor of 2 for identical particles
@@ -2133,8 +2197,9 @@ c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)
             plabel(5)='ig'
             plabel(6)='ig'             
           endif
+
         elseif (nproc .eq. 117) then
-c--  117 '  f(p1)+f(p2) --> H(-->Z^0(3*(nu(p3)+nu~(p4)))+ Z^0(e^-(p5)+e^+(p6))'
+c--  117 '  f(p1)+f(p2) --> H(-->Z^0(3*(nu(p3)+nu~(p4)))+ Z^0(mu^-(p5)+mu^+(p6))'
           plabel(3)='nl'
           plabel(4)='na'
           plabel(5)='ml'
@@ -2253,11 +2318,11 @@ c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)
 
 c-----------------------------------------------------------------------
 
-      elseif ((nproc .ge. 131) .and. (nproc .le. 133)) then
+      elseif ((nproc .ge. 136) .and. (nproc .le. 138)) then
         case='H_1jet'
         call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
         call setmb_msbar
-      mb=0d0
+        mb=0d0
         ndim=7
         plabel(3)='qb'
         plabel(4)='ab'
@@ -2272,30 +2337,30 @@ c-----------------------------------------------------------------------
         
         mcfmplotinfo= (/ 34, (0,j=1,49) /)
         
-        if ( (nproc .eq. 132) .and.  
+        if ( (nproc .eq. 137) .and.  
      .       ((part .eq. 'virt') .or. (part .eq. 'tota')) ) then
           write(6,*) 'This process number is not suitable for the'
           write(6,*) 'NLO calculation. Please run processes'
-          write(6,*) '131 (virtual+real) and 132 (real) separately.'
+          write(6,*) '136 (virtual+real) and 137 (real) separately.'
           stop
         endif
-        if ( (nproc .eq. 133) .and. (part .ne. 'real') ) then
+        if ( (nproc .eq. 138) .and. (part .ne. 'real') ) then
           write(6,*) 'This process number is not suitable for such a'
-          write(6,*) 'calculation. Please run process 133 (real) only.'
+          write(6,*) 'calculation. Please run process 138 (real) only.'
           stop
         endif
              
-        if     (nproc .eq. 131) then
-c--  131 '  f(p1)+f(p2) --> H (no BR) + b(p5) [+g(p6)]'
+        if     (nproc .eq. 136) then
+c--  136 '  f(p1)+f(p2) --> H (no BR) + b(p5) [+g(p6)]'
           isub=1
           plabel(6)='pp'
-        elseif (nproc .eq. 132) then
-c--  132 '(p1)+f(p2) --> H (no BR) + b~(p5) [+b(p6)]'
+        elseif (nproc .eq. 137) then
+c--  137 '(p1)+f(p2) --> H (no BR) + b~(p5) [+b(p6)]'
           isub=2
           plabel(5)='ba'
           plabel(6)='bq'
-        elseif (nproc .eq. 133) then
-c--  133 '  f(p1)+f(p2) --> H (no BR) + b(p5) + b~(p6) [both observed]'
+        elseif (nproc .eq. 138) then
+c--  138 '  f(p1)+f(p2) --> H (no BR) + b(p5) + b~(p6) [both observed]'
           isub=2
           plabel(5)='ba'
           plabel(6)='bq'
@@ -2372,7 +2437,7 @@ c--  142 '  f(p1)+f(p2) --> t(-->nu(p3)+e^+(p4)+b(p5))+b~(p6))+e^-(p7)+nu~(p8) [
             plabel(3)='ig'
             plabel(4)='ig'
             plabel(5)='ig'
-            plabel(6)='ig'               
+            plabel(6)='ig'
             plabel(7)='ig'
             plabel(8)='ig'
             nqcdjets=0
@@ -2396,7 +2461,7 @@ c--           (uncorrelated)'
             plabel(3)='ig'
             plabel(4)='ig'
             plabel(5)='ig'
-            plabel(6)='ig'               
+            plabel(6)='ig'
             plabel(7)='ig'
             plabel(8)='ig'
             nqcdjets=0
@@ -2420,7 +2485,7 @@ c--           (uncorrelated) [rad.in.top.dk]'
             plabel(3)='ig'
             plabel(4)='ig'
             plabel(5)='ig'
-            plabel(6)='ig'               
+            plabel(6)='ig'
             plabel(7)='ig'
             plabel(8)='ig'
             nqcdjets=0
@@ -2599,7 +2664,7 @@ c--      '  f(p1)+f(p2) --> t(no BR) + q(p6)' (removebr=.true.)
       
       if (nproc .eq. 161) then ! usual approach, mb=0 
 c--- extra b that can appear at NLO is massless
-          masslessb=.true.      
+          masslessb=.true.
       else                     ! proper ACOT, mb>0 (must run 231 LO)
         masslessb=.false.
       endif
@@ -2679,7 +2744,7 @@ c--      '  f(p1)+f(p2) --> t~(no BR) + q(p6)' (removebr=.true.)
 
       if (nproc .eq. 166) then ! usual approach, mb=0 
 c--- extra b that can appear at NLO is massless
-          masslessb=.true.      
+          masslessb=.true.
       else                     ! proper ACOT, mb>0 (must run 236 LO)
         masslessb=.false.
       endif
@@ -2844,7 +2909,7 @@ c--- ndim is one less than usual, since the top is always on-shell
           plabel(3)='ig'
           plabel(4)='ig'
           plabel(5)='ig'
-          nqcdjets=1           
+          nqcdjets=1
         endif
              
       elseif (nproc .eq. 177) then
@@ -2881,7 +2946,7 @@ c--- ndim is one less than usual, since the top is always on-shell
           plabel(3)='ig'
           plabel(4)='ig'
           plabel(5)='ig'
-          nqcdjets=1           
+          nqcdjets=1
         endif
         
 c-----------------------------------------------------------------------
@@ -3107,7 +3172,7 @@ c--  186 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4))+t~(e^-(p5)+nu~(p6)+bbar(p7))'
           plabel(5)='ig'
           plabel(6)='ig'
           plabel(7)='ig'
-          nqcdjets=0           
+          nqcdjets=0
         endif
              
       elseif (nproc .eq. 187) then
@@ -3148,7 +3213,7 @@ c--  182 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4))+t~(e^-(p5)+nu~(p6)+bbar(p7)) 
           plabel(5)='ig'
           plabel(6)='ig'
           plabel(7)='ig'
-          nqcdjets=0           
+          nqcdjets=0
         endif
              
       elseif ((nproc .ge. 200) .and. (nproc .le. 210)) then
@@ -3171,9 +3236,9 @@ c--      '  f(p1)+f(p2)--> H(p3+p4) + f(p5) (for total Xsect)' (removebr=.true.)
           plabel(4)='ba'  
           nqcdjets=3
 
-          mcfmplotinfo= (/ 34, (0,j=1,49) /)        
+          mcfmplotinfo= (/ 34, (0,j=1,49) /)
 
-          if (removebr) then        
+          if (removebr) then
             BrnRat=br
             plabel(3)='ig'
             plabel(4)='ig'
@@ -3186,9 +3251,9 @@ c--  202 '  f(p1)+f(p2)--> H (-> tau(p3) tau~(p4)) + f(p5) [full mt dep.]'
           plabel(3)='tl'
           plabel(4)='ta'
 
-          mcfmplotinfo= (/ 34, (0,j=1,49) /)        
+          mcfmplotinfo= (/ 34, (0,j=1,49) /)
 
-          if (removebr) then        
+          if (removebr) then
             BrnRat=tautaubr
             plabel(3)='ig'
             plabel(4)='ig'
@@ -3213,9 +3278,9 @@ c--  203 '  f(p1)+f(p2) -->H(-->b(p3)+b~(p4)) + f(p5)'
 c--      '  f(p1)+f(p2)--> H(p3+p4) + f(p5) (for total Xsect)' (removebr=.true.)
             hdecaymode='bqba'
             plabel(3)='bq'
-            plabel(4)='ba'  
+            plabel(4)='ba'
             nqcdjets=3
-            if (removebr) then        
+            if (removebr) then
               BrnRat=br
               plabel(3)='ig'
               plabel(4)='ig'
@@ -3227,7 +3292,7 @@ c--  204 '  f(p1)+f(p2) -->H(-->tau^-(p3)+tau^+(p4)) + f(p5)'
             plabel(3)='tl'
             plabel(4)='ta'
             nqcdjets=1
-            if (removebr) then        
+            if (removebr) then
               plabel(3)='ig'
               plabel(4)='ig'
               Brnrat=tautaubr
@@ -3243,9 +3308,9 @@ c--      '  f(p1)+f(p2)--> A(p3+p4) + f(p5) (for total Xsect)' (removebr=.true.)
           plabel(4)='ba'  
           nqcdjets=3
 
-          mcfmplotinfo= (/ 34, (0,j=1,49) /)        
+          mcfmplotinfo= (/ 34, (0,j=1,49) /)
 
-          if (removebr) then        
+          if (removebr) then
             BrnRat=br
             plabel(3)='ig'
             plabel(4)='ig'
@@ -3259,9 +3324,9 @@ c--  207 '  f(p1)+f(p2)--> A (--> tau(p3) tau~(p4)) + f(p5) [full mt dep.]'
           plabel(3)='tl'
           plabel(4)='ta'
 
-          mcfmplotinfo= (/ 34, (0,j=1,49) /)        
+          mcfmplotinfo= (/ 34, (0,j=1,49) /)
 
-          if (removebr) then        
+          if (removebr) then
             BrnRat=tautaubr
             plabel(3)='ig'
             plabel(4)='ig'
@@ -3338,7 +3403,7 @@ c--- print warning if we're below threshold
           width3=zwidth
           call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
 
-          mcfmplotinfo= (/ 34, 56, 3456, (0,j=1,47) /)        
+          mcfmplotinfo= (/ 34, 56, 3456, (0,j=1,47) /)
 
 c--- print warning if we're below threshold
         if (hmass .lt. 2d0*zmass) then
@@ -3362,7 +3427,7 @@ c--- print warning if we're below threshold
             plabel(3)='ig'
             plabel(4)='ig'
             plabel(5)='ig'
-            plabel(6)='ig'             
+            plabel(6)='ig'
           endif
 
         elseif     (nproc .eq. 210) then
@@ -3374,9 +3439,9 @@ c--  210 '  f(p1)+f(p2) -->H(-->gamma(p3)+gamma(p4)) + f(p5)'
             plabel(6)='pp'  
             hdecaymode='gaga'
             nqcdjets=1
-            mcfmplotinfo= (/ 34, (0,j=1,49) /)        
+            mcfmplotinfo= (/ 34, (0,j=1,49) /)
 
-            if (removebr) then        
+            if (removebr) then
               BrnRat=gamgambr
               plabel(3)='ig'
               plabel(4)='ig'
@@ -3399,7 +3464,7 @@ c-----------------------------------------------------------------------
         mass3=hmass
         width3=hwidth
 
-        mcfmplotinfo= (/ 34, (0,j=1,49) /)        
+        mcfmplotinfo= (/ 34, 56, (0,j=1,48) /)
 
         if     (nproc .eq. 211) then
 c--  211 '  f(p1)+f(p2)--> H(-->b(p3)+b~(p4))+f(p5)+f(p6) [WBF]'
@@ -3506,7 +3571,7 @@ c--- print warning if we're below threshold
         mass3=zmass
         width3=zwidth
 
-        mcfmplotinfo= (/ 34, 56, 3456, (0,j=1,47) /)        
+        mcfmplotinfo= (/ 34, 56, 3456, (0,j=1,47) /)
 
 c--- print warning if we're below threshold
         if (hmass .lt. 2d0*zmass) then
@@ -3668,7 +3733,7 @@ c---   5 flavours should be used in the PDF and alpha-s
       if (fourthgen) then
 c--- BSM: full 5 light flavours
           nflav=5
-        bmass=4.7d0  !  set b-mass to its usual value
+          bmass=4.7d0  !  set b-mass to its usual value
       else
 c--- SM: only 4 light flavours
           nflav=4
@@ -3870,7 +3935,7 @@ c--- ndim is one less than usual, since the top is always on-shell
           plabel(3)='ig'
           plabel(4)='ig'
           plabel(5)='ig'
-          nqcdjets=3   
+          nqcdjets=3
         endif
 
 c---  in the SM, the logical fourthgen should be false
@@ -3894,7 +3959,7 @@ c--- set up correct scales and as on heavy and light quark lines
         renscale_H=initrenscale_H
         renscale_L=initrenscale_L
 c--- make sure it works even if not specifying separate scales
-        if (initrenscale_L .eq. 0d0) then 
+        if (initrenscale_L .eq. 0d0) then
         facscale_H=facscale
         facscale_L=facscale
         renscale_H=scale
@@ -4428,7 +4493,7 @@ c--- parameters to turn off various pieces, for checking
         mass3=hmass
         width3=hwidth
         
-        mcfmplotinfo= (/ 34, (0,j=1,49) /)
+        mcfmplotinfo= (/ 34, 56, (0,j=1,48) /)
         
         if     (nproc .eq. 270) then
 c-- 270 '  f(p1)+f(p2) --> H(gamma(p3)+gamma(p4))+f(p5)+f(p6)[in heavy top limit]'
@@ -4767,6 +4832,7 @@ c-----------------------------------------------------------------------
              plabel(3)='ga'
              plabel(4)='pp'
              plabel(5)='pp'
+             lastphot=3
              nqcdjets=1
              n3=0
              inclusive=.true.
@@ -4781,37 +4847,33 @@ c-----------------------------------------------------------------------
              plabel(4)='pp'
              plabel(5)='pp'
              plabel(6)='pp'
+             lastphot=3
              nqcdjets=2
              n3=0
                 
       elseif (nproc .eq. 283) then
              ndim=4 
              case='hflgam'
-           flav=5
+             flav=5
              plabel(3)='ga'
-             plabel(4)='pp'
+             plabel(4)='bq'
              plabel(5)='pp'
+             lastphot=3
              nqcdjets=1
              n3=0
              inclusive=.true.
-           write(6,*)
-           write(6,*) 'Setting inclusive = .true. '//
-     &                  'for photon+b production.'
            
       elseif (nproc .eq. 284) then
              ndim=4 
              case='hflgam'
            flav=4
              plabel(3)='ga'
-             plabel(4)='pp'
+             plabel(4)='bq'
              plabel(5)='pp'
+             lastphot=3
              nqcdjets=1
              n3=0
-             inclusive=.true.
-           write(6,*)
-           write(6,*) 'Setting inclusive = .true. '//
-     &                  'for photon+c production.'
-           
+             inclusive=.true.           
                 
       elseif (nproc .eq. 285) then
              ndim=4 
@@ -4819,17 +4881,30 @@ c-----------------------------------------------------------------------
              plabel(3)='ga'
              plabel(4)='ga'
              plabel(5)='pp'
+             lastphot=4
              nqcdjets=0
              n3=0
 
-      elseif (nproc .eq. 286) then
+          elseif (nproc .eq. 286) then
              ndim=7 
              case='gmgmjt'
              plabel(3)='ga'
              plabel(4)='ga'
              plabel(5)='pp'
              plabel(6)='pp'
+             lastphot=4
              nqcdjets=1
+             n3=0
+             
+          elseif (nproc .eq. 287) then
+             ndim=7 
+             case='trigam'
+             plabel(3)='ga'
+             plabel(4)='ga'
+             plabel(5)='ga'
+             plabel(6)='pp'
+             lastphot=5
+             nqcdjets=0
              n3=0
                 
 c-----------------------------------------------------------------------
@@ -4869,6 +4944,7 @@ c-----------------------------------------------------------------------
         width3=wwidth
         plabel(5)='ga'
         plabel(6)='pp'
+        lastphot=5
 
         mcfmplotinfo= (/ 34, (0,j=1,49) /)
         
@@ -4893,7 +4969,7 @@ c--     '  f(p1)+f(p2) --> W^- (no BR) + gamma(p5)' (removebr=.true.)
         removebr=.false.
       endif
       
-c--- total cross-section             
+c--- total cross-section
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
@@ -4916,6 +4992,7 @@ c-----------------------------------------------------------------------
          width3=wwidth
          plabel(5)='ga'
          plabel(6)='pp'
+         lastphot=5
         
          mcfmplotinfo= (/ 34, (0,j=1,49) /)
                  
@@ -4963,6 +5040,7 @@ c-------------------------------------------------------------------------------
           nwz=0
           plabel(5)='ga'
           plabel(6)='pp'
+          lastphot=5
           
           mcfmplotinfo= (/ 34, (0,j=1,49) /)
         
@@ -5010,6 +5088,7 @@ c-----------------------------------------------------------------------
           plabel(5)='ga'
           plabel(6)='pp'
           plabel(7)='pp'
+          lastphot=5
           
           mcfmplotinfo= (/ 34, (0,j=1,49) /)
         
@@ -5090,6 +5169,7 @@ c--- total cross-section
         plabel(5)='ga'
         plabel(6)='ga'
         plabel(7)='pp'
+        lastphot=6
         nwz=0   
         mass3=zmass
         width3=zwidth
@@ -5137,6 +5217,7 @@ c--- total cross-section
         plabel(5)='ga'
         plabel(6)='ga'
         plabel(7)='pp'
+        lastphot=6
         nwz=0   
         mass3=zmass
         width3=zwidth
@@ -5184,6 +5265,7 @@ c--- total cross-section
         plabel(5)='ga'
         plabel(6)='pp'
         plabel(7)='pp'
+        lastphot=5
         nwz=0   
         mass3=zmass
         width3=zwidth
@@ -5498,6 +5580,58 @@ c---  consisting of the logarithm convolution
         endif
 
 c-----------------------------------------------------------------------
+      elseif ((nproc .eq. 370) .or. (nproc .eq. 371)) then
+c-- 370 '  f(p1)+f(p2) --> W^+(nu(p3)+e^+(p4))+gamma(p5)+gamma(p6)'
+c-- 371 '  f(p1)+f(p2) --> W^-(e^-(p3)+nu~(p4))+gamma(p5)+gamma(p6)'
+        case='W_2gam'
+        ndim=10
+        n2=0
+        n3=0
+        lastphot=6
+        mcfmplotinfo= (/ 34, 345, 346, 3456, 56, (0,j=1,45) /)
+        
+        if (nproc .eq. 370) then
+           nwz=1
+           plabel(3)='nl'
+           plabel(4)='ea'
+           if (zerowidth .eqv. .false.) then
+           write(6,*)
+           write(6,*)'Setting removebr to .false. in order to ensure'
+           write(6,*)'lepton-photon singularity can be removed'
+           removebr=.false.
+           endif
+c--- total cross-section             
+           if (removebr) then
+             plabel(3)='ig'
+             plabel(4)='ig'
+             call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
+             BrnRat=brwen
+           endif
+        elseif (nproc .eq. 371) then
+           plabel(3)='el'
+           plabel(4)='na'
+           nwz=-1
+           if (zerowidth .eqv. .false.) then
+           write(6,*)
+           write(6,*)'Setting removebr to .false. in order to ensure'
+           write(6,*)'lepton-photon singularity can be removed'
+           removebr=.false.
+           endif  
+           if (removebr) then
+             plabel(3)='ig'
+             plabel(4)='ig'
+             call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
+             BrnRat=brwen
+           endif
+        endif
+        plabel(5)='ga'
+        plabel(6)='ga'
+        plabel(7)='pp'
+        mass3=wmass
+        width3=wwidth
+        
+c-----------------------------------------------------------------------
+
 
       elseif ((nproc .ge. 401) .and. (nproc .le. 408)) then
         case='Wbbmas'
@@ -5834,6 +5968,7 @@ c-----------------------------------------------------------------------
 
       elseif (nproc .eq. 529) then
         case='Zbbmas'
+        swapxz=.true.
         call checkminzmass(1)
         plabel(3)='el'
         plabel(4)='ea'
@@ -5991,6 +6126,7 @@ c-----------------------------------------------------------------------
         elseif ((nproc .eq. 540) .or. (nproc .eq. 541)) then
         case='H_tjet'
         mb=0
+        swapxz=.true.
         call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
         nqcdjets=3
         ndim=10
@@ -6015,7 +6151,7 @@ c-- 541        '  f(p1)+f(p2) --> H(b(p3)+b(p4))+t~(p5)+q(p6)'
           nwz=-1          
         endif
 
-c--- total cross-section             
+c--- total cross-section
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
@@ -6026,6 +6162,7 @@ c--- total cross-section
         elseif ((nproc .eq. 544) .or. (nproc .eq. 547)) then
         case='H_tdkj'
         call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
+        swapxz=.true.
         nqcdjets=3
         ndim=16
         hdecaymode='bqba'
@@ -6041,7 +6178,8 @@ c--- total cross-section
         
         if     (nproc .eq. 544) then
 c--- 544   f(p1)+f(p2) --> H(b(p3)+b~(p4))+t(nu(p5)+e^+(p6)+b(p7))+q(p9)' 
-        nwz=+1          
+        nwz=+1
+        swapxz=.true.
         plabel(3)='bq'
         plabel(4)='ba'
         plabel(5)='nu'
@@ -6051,7 +6189,8 @@ c--- 544   f(p1)+f(p2) --> H(b(p3)+b~(p4))+t(nu(p5)+e^+(p6)+b(p7))+q(p9)'
         plabel(9)='pp'
         elseif (nproc .eq. 547) then
 c-- 547  f(p1)+f(p2) --> H(b(p3)+b~(p4))+t~(e-(p5)+nu(p6)+b~(p7))+q(p8)'
-        nwz=-1          
+        nwz=-1
+        swapxz=.true.
         plabel(3)='bq'
         plabel(4)='ba'
         plabel(5)='el'
@@ -6078,6 +6217,7 @@ c--- total cross-section
         call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
         nqcdjets=1
         ndim=10
+        swapxz=.true.
         mb=0
         n2=0
         n3=0
@@ -6100,7 +6240,7 @@ c-- 552        '  f(p1)+f(p2) --> H(ga(p3)+ga(p4))+t~(p5)+q(p6)'
           nwz=-1          
         endif
 
-c--- total cross-section             
+c--- total cross-section
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
@@ -6112,6 +6252,7 @@ c--- total cross-section
         call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
         nqcdjets=2
         ndim=16
+        swapxz=.true.
         hdecaymode='gaga'
         isub=1
         mb=0
@@ -6125,7 +6266,7 @@ c--- total cross-section
         
         if     (nproc .eq. 554) then
 c--- 554   f(p1)+f(p2) --> H(ga(p3)+ga(p4))+t(nu(p5)+e^+(p6)+b(p7))+q(p9)' 
-        nwz=+1          
+        nwz=+1
         plabel(3)='ga'
         plabel(4)='ga'
         plabel(5)='nu'
@@ -6145,7 +6286,7 @@ c-- 557  f(p1)+f(p2) --> H(ga(p3)+ga(p4))+t~(e-(p5)+nu(p6)+b~(p7))+q(p8)'
         plabel(9)='pp'
         endif
 
-c--- total cross-section             
+c--- total cross-section
         if (removebr) then
           call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
           nqcdjets=0
@@ -6162,6 +6303,7 @@ c-----------------------------------------------------------------------
         elseif ((nproc .eq. 560) .or. (nproc .eq. 561)) then
         case='Z_tjet'
         call checkminzmass(1)
+        swapxz=.true.
         nqcdjets=1
         ndim=10
         mb=0
@@ -6183,13 +6325,13 @@ c-----------------------------------------------------------------------
         
         if     (nproc .eq. 560) then
 c-- 560        '  f(p1)+f(p2) --> Z(e-(p3)+e+(p4))+t(p5)+q(p6)' 
-          nwz=+1          
+          nwz=+1
         elseif (nproc .eq. 561) then
 c-- 561        '  f(p1)+f(p2) --> Z(e-(p3)+ep(p4))+t~(p5)+q(p6)' 
-          nwz=-1          
+          nwz=-1
         endif
 
-c--- total cross-section             
+c--- total cross-section
         if (removebr) then
           call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
           plabel(3)='ig'
@@ -6201,6 +6343,7 @@ c--- 562 and 563
         elseif ((nproc .eq. 562) .or. (nproc .eq. 563)) then
         case='Zt2jet'
         call checkminzmass(1)
+        swapxz=.true.
         nqcdjets=2
         ndim=13
         mb=0
@@ -6228,7 +6371,7 @@ c-- 563        '  f(p1)+f(p2) --> Z(e-(p3)+ep(p4))+t~(p5)+q(p6)+f(p7)'
           nwz=-1          
         endif
 
-c--- total cross-section             
+c--- total cross-section
         if (removebr) then
           call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
           plabel(3)='ig'
@@ -6241,6 +6384,7 @@ c--- total cross-section
         call checkminzmass(1)
         nqcdjets=2
         ndim=15
+        swapxz=.true.
         mb=0d0
         n2=0
         n3=0
@@ -6254,7 +6398,7 @@ c--- total cross-section
         mcfmplotinfo= (/ 34, 56, 567, (0,j=1,47) /)
         
         if     (nproc .eq. 564) then
-c--- 564 '  f(p1)+f(p2) --> Z(e-(p3)+e+(p4))+t(-->nu(p5)+e^+(p6)+b(p7))+q(p8)'      'N'
+c--- 564 '  f(p1)+f(p2) --> Z(e-(p3)+e+(p4))+t(-->nu(p5)+e^+(p6)+b(p7))+q(p8)''N'
         nwz=+1          
         plabel(3)='el'
         plabel(4)='ea'
@@ -6264,7 +6408,7 @@ c--- 564 '  f(p1)+f(p2) --> Z(e-(p3)+e+(p4))+t(-->nu(p5)+e^+(p6)+b(p7))+q(p8)'  
         plabel(8)='pp'
         plabel(9)='pp'
         elseif (nproc .eq. 567) then
-c-- 567 '  f(p1)+f(p2) --> Z(e-(p3)+e+(p4))+t~(-->e-(p5)+nu(p6)+b~(p7))+q(p8)'      'N'
+c-- 567 '  f(p1)+f(p2) --> Z(e-(p3)+e+(p4))+t~(-->e-(p5)+nu(p6)+b~(p7))+q(p8)''N'
         nwz=-1          
         plabel(3)='el'
         plabel(4)='ea'
@@ -6292,6 +6436,7 @@ c--- total cross-section
         call checkminzmass(1)
         nqcdjets=3
         ndim=18
+        swapxz=.true.
         mb=0d0
         n2=0
         n3=0
@@ -6306,7 +6451,7 @@ c--- total cross-section
         
         if     (nproc .eq. 566) then
 c--- 566 '  f(p1)+f(p2) --> Z(e-(p3)+e+(p4))+t(-->nu(p5)+e^+(p6)+b(p7))+q(p8)+f(p9)'  'L'
-        nwz=+1          
+        nwz=+1
         plabel(3)='el'
         plabel(4)='ea'
         plabel(5)='nl'
@@ -6326,7 +6471,7 @@ c-- 569 '  f(p1)+f(p2) --> Z(e-(p3)+e+(p4))+t~(-->e-(p5)+nu(p6)+b~(p7))+q(p8)+f(
         plabel(9)='pp'
         endif
 
-c--- total cross-section             
+c--- total cross-section
         if (removebr) then
           call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
           nqcdjets=2
@@ -6340,16 +6485,72 @@ c--- total cross-section
 
 c-----------------------------------------------------------------------
 
+        elseif ((nproc .ge. 601) .and. (nproc .le. 602)) then
+        case='HHpair'
+        mb=0
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
+        nqcdjets=0
+        ndim=10
+        n2=1
+        n3=1
+        nflav=5
+        mass2=hmass
+        width2=hwidth
+        mass3=hmass
+        width3=hwidth
+
+        mcfmplotinfo= (/ 34, 56, (0,j=1,48) /)
+        
+        if     (nproc .eq. 601) then
+c-- 601 '  f(p1)+f(p2) --> H(b(p3)+b~(p4))+H(tau^-(p5)+tau^+(p6))' 'L'
+          hdecaymode='bqba'
+          plabel(3)='bq'
+          plabel(4)='ba'
+          hdecaymode2='tlta'
+          plabel(5)='tl'
+          plabel(6)='ta'
+c--- total cross-section
+          if (removebr) then
+            plabel(3)='ig'
+            plabel(4)='ig'
+            plabel(5)='ig'
+            plabel(6)='ig'
+            BrnRat=2d0*br*tautaubr      ! factor of 2 for identical particles
+
+          endif
+        elseif     (nproc .eq. 602) then
+c-- 602 '  f(p1)+f(p2) --> H(b(p3)+b~(p4))+H(gamma(p5)+gamma(p6))' 'L'
+          hdecaymode='bqba'
+          plabel(3)='bq'
+          plabel(4)='ba'
+          hdecaymode2='gaga'
+          plabel(5)='ga'
+          plabel(6)='ga'
+c--- total cross-section
+          if (removebr) then
+            plabel(3)='ig'
+            plabel(4)='ig'
+            plabel(5)='ig'
+            plabel(6)='ig'
+            BrnRat=2d0*br*gamgambr      ! factor of 2 for identical particles
+          endif
+        endif
+
+c-----------------------------------------------------------------------
+
       elseif (nproc .eq. 640) then
 c--  640 '  f(p1)+f(p2)-->t(p3)+t~(p4)+H(p5)'
         case='tottth'
+        swapxz=.true.
         plabel(3)='ig'
         plabel(4)='ig'
         plabel(5)='ig'
+        plabel(6)='pp'
         nwz=1
         n2=0
         n3=0
         ndim=7
+        mass2=mt
         
       elseif ((nproc .ge. 641) .and. (nproc .le. 649)) then
 c--  641 '  f(p1)+f(p2)-->t(-->nu(p3)+e^+(p4)+b(p5))
@@ -6369,6 +6570,7 @@ c--      '  f(p1)+f(p2)-->t(p3+p4+p5)+t~(p6+p7+p8)+H(p9+p10)' (removebr=.true.)
         nqcdjets=4
 
         nwz=1
+        swapxz=.true.
         ndim=22
         n2=1
         n3=1
@@ -6529,7 +6731,7 @@ c--- print warning if we're below threshold
         endif
 
 
-      elseif((nproc.ge.800).and.(nproc.le.805)) then              
+      elseif((nproc.ge.800).and.(nproc.le.805)) then
 !     800 '  f(p1)+f(p2) --> V-->(X(p3)+X~(p4)) +f(p5) [Vector Mediator] ' 'N '
 !     801 '  f(p1)+f(p2) --> A-->(X(p3)+X~(p4)) +f(p5) [Axial Vector Mediator] ' 'N '
 !     802 '  f(p1)+f(p2) --> S-->(X(p3)+X~(p4)) +f(p5) [Scalar Mediator] ' 'N '
@@ -6555,7 +6757,7 @@ c--- print warning if we're below threshold
          elseif(nproc.eq.804) then 
             dm_mediator='gluonO'
          elseif(nproc.eq.805) then
-            dm_mediator='scalmt'            
+            dm_mediator='scalmt'
          endif
 !------- phase space setup
          n3=0
@@ -6564,7 +6766,7 @@ c--- print warning if we're below threshold
          width3=medwidth 
 
          
-      elseif((nproc.ge.820).and.(nproc.le.823)) then          
+      elseif((nproc.ge.820).and.(nproc.le.823)) then
 !     820 '  f(p1)+f(p2) --> V-->(X(p3)+X~(p4)) +gamma(p5) [Vector Mediator] ' 'F '
 !     821 '  f(p1)+f(p2) --> A-->(X(p3)+X~(p4)) +gamma(p5) [Axial Vector Mediator] ' 'F '
 !     822 '  f(p1)+f(p2) --> S-->(X(p3)+X~(p4)) +gamma(p5) [Scalar Mediator] ' 'F '
@@ -6575,15 +6777,16 @@ c--- print warning if we're below threshold
          plabel(4)='xa' 
          plabel(5)='ga'
          plabel(6)='pp'
+         lastphot=5
          ndim=7
          nqcdjets=0
          if(nproc.eq.820) then 
             dm_mediator='vector'
          elseif(nproc.eq.821) then 
             dm_mediator='axvect'
-         elseif(nproc.eq.822) then 
+         elseif(nproc.eq.822) then
             dm_mediator='scalar'
-         elseif(nproc.eq.823) then 
+         elseif(nproc.eq.823) then
             dm_mediator='pseudo'
          endif
 !------- phase space setup
@@ -6592,7 +6795,7 @@ c--- print warning if we're below threshold
          mass3=medmass
          mass2=xmass
 
-      elseif((nproc.ge.840).and.(nproc.le.844)) then              
+      elseif((nproc.ge.840).and.(nproc.le.844)) then
 !     840 '  f(p1)+f(p2) --> V-->(X(p3)+X~(p4)) +f(p5)+f(p6) [Vector Mediator] ' 'L '
 !     841 '  f(p1)+f(p2) --> A-->(X(p3)+X~(p4)) +f(p5)+f(p6) [Axial Vector Mediator] ' 'L '
 !     842 '  f(p1)+f(p2) --> S-->(X(p3)+X~(p4)) +f(p5)+f(p6) [Scalar Mediator] ' 'L '
@@ -6625,7 +6828,7 @@ c--- print warning if we're below threshold
          mass3=medmass
          mass2=xmass
 
-      elseif((nproc.ge.845).and.(nproc.le.848)) then          
+      elseif((nproc.ge.845).and.(nproc.le.848)) then
 !     845 '  f(p1)+f(p2) --> V-->(X(p3)+X~(p4)) +gamma(p5)+f(p6) [Vector Mediator] ' 'L '
 !     846 '  f(p1)+f(p2) --> A-->(X(p3)+X~(p4)) +gamma(p5)+f(p6) [Axial Vector Mediator] ' 'L '
 !     847 '  f(p1)+f(p2) --> S-->(X(p3)+X~(p4)) +gamma(p5)+f(p6) [Scalar Mediator] ' 'L '
@@ -6637,6 +6840,7 @@ c--- print warning if we're below threshold
          plabel(5)='ga'
          plabel(6)='pp'
          plabel(7)='pp'
+         lastphot=5
          ndim=10
          nqcdjets=1
          if(nproc.eq.845) then 
@@ -6752,7 +6956,7 @@ c-----------------------------------------------------------------------
           mass2=mt
           width2=twidth
           mass3=wmass
-          width3=wwidth             
+          width3=wwidth
         elseif (nproc .eq. 912) then
           case='vlchwn'
           write(6,*) 'mt=',mt
@@ -6796,7 +7000,7 @@ c-----------------------------------------------------------------------
           mass2=mt
           width2=twidth
           mass3=wmass
-          width3=wwidth             
+          width3=wwidth
           
         endif
       else 
@@ -6821,6 +7025,9 @@ c--- report on the removed BR, if necessary
 
 c--- check that calculation can be performed
       call checkorder(order)
+
+c--- initialize arrays that are used in is_functions
+      call init_is_functions()
 
 c--- fill up CKM matrix
       call ckmfill(nwz)
@@ -6865,7 +7072,7 @@ c--- file is not zero for boson 34 (i=1) or boson 56 (i=2)
       include 'zerowidth.f'
       integer i
 
-c--- if generating exactly on-shell, there's nothing to worry about      
+c--- if generating exactly on-shell, there's nothing to worry about
       if (zerowidth) return
       
       if ((i .eq. 1) .and. (wsqmin .eq. 0d0)) then

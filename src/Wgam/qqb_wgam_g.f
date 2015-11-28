@@ -87,6 +87,7 @@ C     ub(-p1)+d(-p2)=e-(p3)+nu~(p4)+gamma(p5)+g(p6)
       s345=s(p3,p4)+s(p3,p5)+s(p4,p5)
       prp34=s(p3,p4)/dcmplx(s(p3,p4)-wmass**2,wmass*wwidth)
 
+    
 c--- apply a dipole form factor to anomalous couplings, with power two (only if tevscale > 0)
       if (tevscale .gt. 0d0) then
         xfac=1d0/(1d0+s345/(tevscale*1d3)**2)**2

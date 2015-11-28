@@ -1,18 +1,19 @@
 !--- This is a driver function for photon isolation, the relevant photon isolation 
 !--- critera are selected and applied 
 
-      logical function iso(p,isub,phot_dip,phot_id,nd)
+      logical function iso(p,phot_id,isub,nd)
       implicit none
       include 'constants.f'
       include 'frag.f'
       include 'useet.f'
+      include 'phot_dip.f'
+      include 'z_dip.f'
+      include 'lastphot.f'
       double precision p(mxpart,4)
       integer isub,nd,imode
-      logical phot_dip,photo_iso
       integer phot_id ! refers to which photon we are isolating
-      character*2 str
       logical first 
-      
+      logical photo_iso_phys,photo_iso_z!,photo_iso,iso_old
       data first/.true./
       save first
 
@@ -37,39 +38,6 @@ c---   imode=2 : fixed cut for all epsilon_h
         return
       endif
 
-!---- Check runstring for special isolation conditions 
-
-!      if    (runstring(1:3).eq.'cdf') then 
-!------ CDF isolation (to be written) 
-!        write(6,*) 'CDF isolation routine not yet implemented.'
-!      stop
-!      elseif(runstring(1:2).eq.'D0') then 
-!------ D0 isolation (to be written) 
-!        write(6,*) 'D0 isolation routine not yet implemented.'
-!      stop
-!      elseif(runstring(1:5).eq.'atlas') then 
-!------ Atlas isolation (to be written) 
-!        write(6,*) 'ATLAS isolation routine not yet implemented.'
-!      stop
-!      elseif(runstring(1:3).eq.'CMS') then 
-!------ CMS isolation (to be written) 
-!        write(6,*) 'CMS isolation routine not yet implemented.'
-!      stop
-!      else
-!------ standard isolation routine      
-!       if(runstring(1:2).eq.'Et') then 
-!------ cut on Et rather than Pt 
-!         str='Et'
-!       else
-!         str='pt'
-!       endif
-
-       if (useet) then
-         str='Et'
-       else
-         str='pt'
-       endif
-
 c--- for imode=0, decide which cut to use depending on epsilon_h
 !--   epsilon_h < 1 : epsilon_h corresponds to a pt fraction i.e. pt(had) < epsilon_h pt_gamma 
 !--   epsilon_h > 1 : treat it as an E_t max in cone   i.e. pt(had) < epsilon_h 
@@ -81,13 +49,35 @@ c--- for imode=0, decide which cut to use depending on epsilon_h
          endif
        endif
 
-       iso=photo_iso(p,isub,phot_dip,phot_id,nd,imode)
+!===== NEW ISOLATION : WORK OUT WHICH ROUTINE TO CALL 
+ 
+!========== are we doing fragmentation and is this the
+!========== photon produced by fragmentation? 
+       if((fragint_mode) .and. (phot_id .eq. lastphot)) then 
+          iso=photo_iso_z(p,phot_id,z_frag,imode,isub) 
+!========== are we doing a photon dipole and is this the
+!========== photon produced by fragmentation? 
+       elseif(phot_dip(nd) .and. (phot_id .eq. lastphot)) then 
+          iso=photo_iso_z(p,phot_id,z_dip(nd),imode,isub) 
+!========== we are in default mode, BORN, virt, real, non-photon dipole 
+       else
+          iso=photo_iso_phys(p,phot_id,imode,isub) 
+       endif
+
+!===== OLD ISOLATION 
+c       iso_old=photo_iso(p,isub,phot_dip(nd),phot_id,nd,imode)       
+c       if (iso .neqv. iso_old) then
+c         write(6,*)'WARNING:',iso,'(new) vs',iso_old,' (old) for nd=',nd
+c       else
+c         write(6,*) 'OKAY'
+c       endif
+       
 c--- write out isolation parameters
        if    (first .and. (imode .eq. 1)) then 
         write(6,*)'************** Photons Isolated     ****************'
         write(6,*)'*                                                  *'
-        write(6,99)'* ',str,'(had) in cone',cone_ang,' < ',epsilon_h,
-     &   ' ',str,'(phot)      *'
+        write(6,99)'*    E_t(had) in cone',cone_ang,' < ',epsilon_h,
+     &   ' E_t(phot)     *'
         write(6,*)'*                                                  *'
         write(6,*)'****************************************************'
         first=.false.
@@ -105,6 +95,6 @@ c--- write out isolation parameters
 
       return 
 
- 99   format(1x,a2,a2,a13,f6.2,a4,f6.2,a1,a2,a16)
+ 99   format(1x,a21,f6.2,a3,f6.2,a16)
  96   format(1x,a19,f6.2,a4,f6.2,a17)
       end

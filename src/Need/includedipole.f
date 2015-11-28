@@ -32,14 +32,17 @@ c--- should be included
       include 'npart.f'
       include 'ptilde.f'
       include 'jetlabel.f'
-      include 'plabel.f'
       include 'process.f'
       include 'frag.f'
       include 'phot_dip.f'
+c---- SSbegin                                                                                                        
+      include 'reweight.f'
+c---- SSend  
+
       double precision ptrans(mxpart,4),pjet(mxpart,4),rcut
       integer j,nd,nqcdjets,nqcdstart,notag,isub,nproc
       logical gencuts,failedgencuts,photoncuts,makecuts,filterWbbmas,
-     & photonfailed,filterW_bjet
+     & photonfailed,filterW_bjet,is_photon
       integer count_photo,nphotons
       logical passed_frix,iso
 c      integer ij
@@ -53,10 +56,13 @@ c      common/runstring/runstring
       common/makecuts/makecuts
       common/notag/notag
       common/nproc/nproc
+c---- SSbegin                                                                                                        
+c---- set default reweight to 1 (hence no reweighting)                                                                
+      reweight = 1.0d0
+c---- SSend  
 
 c--- default: include this contribution
       mcfmincdipole=.true.
-
 c--- isub=1 for dipole subtractions, isub=0 for real radiation
       if (nd .gt. 0) then
         isub=1
@@ -69,7 +75,7 @@ c--- isub=1 for dipole subtractions, isub=0 for real radiation
 c--- Photons: Frixione isolation cuts if no fragmentation included 
          if (frag .eqv. .false.) then
             do j=3,mxpart 
-               if(plabel(j).eq.'ga') then 
+               if(is_photon(j)) then 
                   call frix(ptrans,passed_frix,j,isub)
                   if(passed_frix.eqv..false.) then 
                      mcfmincdipole=.false.
@@ -78,55 +84,30 @@ c--- Photons: Frixione isolation cuts if no fragmentation included
                endif
             enddo
             call genclustphotons(ptrans,rcut,pjet,isub)
-c--- The block of code commented out below is now deprecated in favour
-c--- of the single routine genclustphotons() called above
-c          if    ((case .eq. 'dirgam') .or. (case .eq. 'gamjet'))then 
-c            call basic_frix(ptrans,passed_frix,isub)
-c          elseif((case .eq. 'Wgamma') .or. (case .eq. 'Zgamma')
-c     &       .or.(case .eq. 'Wgajet') .or. (case .eq. 'Zgajet')) then
-c            call basic_Vfrix(ptrans,passed_frix,isub)
-c          elseif((case .eq. 'gamgam') .or. (case .eq. 'Higaga')
-c     &     .or.  (case .eq. 'gmgmjt')) then 
-c            call basic_di_frix(ptrans,passed_frix,isub)
-c         elseif((case.eq.'WHgaga').or.(case.eq.'ZHgaga')) then 
-c            call basic_VHgaga_frix(ptrans,passed_frix,isub)
-c         elseif(case.eq.'qq_Hgg') then 
-c            call basic_2jet_frix(ptrans,passed_frix,isub)
-c        else
-c          write(6,*) 'Unforeseen photon process in mcfmincdipole.f'
-c          write(6,*) 'Needs a new Frixione routine.'
-c          stop
-c         endif
-c             if (passed_frix .eqv. .false.) then 
-c                mcfmincdipole=.false.
-c                return
-c          else
-c            call genclustphotons(ptrans,rcut,pjet,isub)
-c         endif
-        else 
+         else 
 c--- Photons: not Frixione, need fragmentation and isolation
-          call genclust2(ptrans,rcut,pjet,isub)
+            call genclust2(ptrans,rcut,pjet,isub)
 c---  Isolate photon
-          do j=3,mxpart
-            if (plabel(j).eq.'ga') then 
-               if(nd.eq.0) then 
-                  if (iso(ptrans,isub,.false.,j,nd) .eqv. .false.) then
-                     mcfmincdipole=.false.
-                     return 
-                  endif
-               else
-             if (iso(ptrans,isub,phot_dip(nd),j,nd) .eqv. .false.) then
-                     mcfmincdipole=.false.
-                     return 
-                  endif
+            do j=3,mxpart
+            if (is_photon(j)) then 
+               if (iso(ptrans,j,isub,nd) .eqv. .false.)then
+                  mcfmincdipole=.false.
+                  return 
                endif
             endif
-          enddo
-        endif
+            enddo
+         endif
+c--- check the photon cuts 
+         photonfailed=photoncuts(pjet)
+         if (photonfailed) then
+            mcfmincdipole=.false.
+            return
+         endif 
       else
 c--- No photons: the usual case
          call genclust2(ptrans,rcut,pjet,isub)
       endif
+
 
 c--- perform mass cuts
       call masscuts(pjet,*999)
@@ -175,20 +156,7 @@ c--- if the number of jets is not correct, then do not include dipole
           mcfmincdipole=.false.
           return
       else
-c--- otherwise, if it is correct, check the photon cuts if appropriate
-c--- rescale photons for fragmentation processes
-c        if (rescale) call rescale_pjet(pjet)
-        if (nphotons .gt. 0) then 
-        if (rescale) call rescale_pjet(pjet)
-          photonfailed=photoncuts(pjet,isub,phot_dip(nd),nd)
-c--- return photons to original values
-        if (rescale) call return_pjet(pjet)
-        if (photonfailed) then
-          mcfmincdipole=.false.
-          return
-        endif
-      endif
-c--- ... and then the lepton cuts, if necessary
+c--- otherwise check the lepton cuts, if necessary
         if (makecuts) then
           failedgencuts=gencuts(pjet,jets)        
           if (failedgencuts) then

@@ -15,7 +15,7 @@ c--- To reject an event, return jets=-1
       double precision rtest,rab,raptest
       integer isub,i,j,k,nu,icandj,maxjet,jetindex(mxpart),ia,ib
       integer nproc
-      logical jetmerge,verbalg,first,pseudo,bjetmerge
+      logical jetmerge,verbalg,first,pseudo,bjetmerge,is_hadronic
       common/nproc/nproc
       common/Rbbmin/Rbbmin
       common/jetmerge/jetmerge
@@ -51,8 +51,7 @@ c--- pick out jets: note that we search to npart+2-isub, to get the
 c--- number of particles right. Note that isub=0 for all calls except
 c--- the dipole contributions, where isub=1.
       do i=3,npart+2-isub
-      if ( (plabel(i) .eq. 'pp') 
-     . .or.(plabel(i) .eq. 'bq') .or. (plabel(i) .eq. 'ba') ) then
+      if (is_hadronic(i)) then
         maxjet=maxjet+1
         jetindex(maxjet)=i
         jetlabel(maxjet)=plabel(i)

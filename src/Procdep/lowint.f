@@ -23,30 +23,43 @@
       include 'ipsgen.f'
       include 'outputoptions.f'
       include 'outputflags.f'
+c      include 'ewcorr.f'
       include 'dm_params.f'
+c---- SSbegin                                                                                                                      
+      include 'reweight.f'
+c---- SSend                                                                                                                        
 c --- DSW. To store flavour information :
       include 'nflav.f'
 c      include 'b0.f'
 c --- DSW.
+c--- APPLgrid - to use grids
+      include 'ptilde.f'
+      include 'APPLinclude.f'
+      include 'qcdcouple.f'
+      double precision psCR
+c--- APPLgrid - end
       integer pflav,pbarflav
-c --- To use VEGAS random number sequence :
+c--- To use VEGAS random number sequence :
       double precision ran2
       integer ih1,ih2,j,k,nvec,sgnj,sgnk,ii
       double precision r(mxdim),W,sqrts,xmsq,val,val2,ptmp,
      . fx1(-nf:nf),fx2(-nf:nf),p(mxpart,4),pjet(mxpart,4),
      . pswt,rscalestart,fscalestart,
      . fx1_H(-nf:nf),fx2_H(-nf:nf),fx1_L(-nf:nf),fx2_L(-nf:nf),
-     . fxb1(-nf:nf),fxb2(-nf:nf)
+     . fxb1(-nf:nf),fxb2(-nf:nf),xmsq_array(-nf:nf,-nf:nf)
       double precision wgt,msq(-nf:nf,-nf:nf),m3,m4,m5,xmsqjk
+      double precision msq1(-nf:nf,-nf:nf)
       double precision xx(2),flux,vol,vol_mass,vol3_mass,vol_wt,BrnRat
       double precision xmsq_bypart(-1:1,-1:1),lord_bypart(-1:1,-1:1)
-      logical bin,first,includedipole
+      logical bin,first,includedipole,checkpiDpjk
 c      double precision gx1(-nf:nf),gx2(-nf:nf)
 c      integer idum
 c      COMMON/ranno/idum
       character*30 runstring
       double precision b1scale,q2scale,q1scale,b2scale
-      external qg_tbq,BSYqqb_QQbdk_gvec,qqb_QQbdk,qg_tbqdk,qg_tbqdk_gvec
+      external qg_tbq,BSYqqb_QQbdk_gvec,qqb_QQbdk,qg_tbqdk,qg_tbqdk_gvec,
+     & qqb_Waa,qqb_Waa_mad
+     & qqb_Zbbmas,qqb_Zbbmas,qqb_totttZ,qqb_totttZ_mad
       common/runstring/runstring
       common/density/ih1,ih2
       common/energy/sqrts
@@ -60,6 +73,7 @@ c      COMMON/ranno/idum
       save first,rscalestart,fscalestart
       external qq_tchan_ztq,qq_tchan_ztq_mad
       external qq_tchan_htq,qq_tchan_htq_mad,qq_tchan_htq_amp
+      external qqb_gamgam_g,qqb_gmgmjt_gvec
       
       if (first) then
          first=.false.
@@ -75,378 +89,9 @@ c--- ensure isolation code does not think this is fragmentation piece
       W=sqrts**2
       p(:,:)=0d0
 
-c--- processes that use "gen2"     
-      if     ( (case .eq. 'W_only')
-     .    .or. (case .eq. 'Z_only')
-     .    .or. (case .eq. 'Higaga')
-     .    .or. (case .eq. 'vlchk2') ) then
-        if (case .eq. 'vlchk2') then
-          wsqmin=0d0
-          wsqmax=sqrts**2
-        endif
-        npart=2
-        if (new_pspace) then
-          call gen2a(r,p,pswt,*999)
-        else
-          call gen2(r,p,pswt,*999)
-        endif
-
-c--- processes that use "gen2jet"     
-      elseif ((case .eq. 'twojet') 
-     .   .or. (case .eq. 'dirgam')
-     .   .or. (case .eq. 'hflgam')
-     .   .or. (case .eq. 'gamgam')) then
-        npart=2
-        call gen2jet(r,p,pswt,*999)
-
-c--- processes that use "gen2m"     
-      elseif ( (case .eq. 'ggfus0')
-     .    .or. (case .eq. 'tt_tot')
-     .    .or. (case .eq. 'bb_tot')
-     .    .or. (case .eq. 'cc_tot') ) then
-        npart=2
-        call gen2m(r,p,pswt,*999)
-          
-c--- processes that use "gen3"     
-      elseif ( (case .eq. 'W_cjet') 
-     .   .or.  (case .eq. 'Wbfrmc')
-     .   .or.  (case .eq. 'W_tndk')
-     .   .or.  (case .eq. 'vlchwn')
-     .   .or.  (case .eq. 'epem3j') ) then
-        npart=3
-        call gen3(r,p,pswt,*999)
-
-      elseif((case.eq.'dm_jet').or.(case.eq.'dm_gam')) then 
-         m3=xmass
-         m4=m3
-         m5=0d0
-         npart=3     
-         call gen3m(r,p,m3,m4,m5,pswt,*999)
-
-c--- processes that use "gen3h"     
-      elseif (case .eq. 'Hi_Zga') then
-        npart=3
-        call gen3h(r,p,pswt,*999)
-
-c---  processes that use "gen3jet"     
-      elseif ( (case .eq. 'Wgamma') 
-     .   .or.  (case .eq. 'Zgamma')
-     .   .or.  (case .eq. 'W_frag') 
-     .   .or.  (case .eq. 'Z_frag')
-     .   .or.  (case .eq. 'vlchk3') ) then
-        if (case .eq. 'vlchk3') then
-          wsqmin=0d0
-          wsqmax=sqrts**2
-        endif
-        npart=3
-        call gen_phots_jets(r,1,0,p,pswt,*999)
-        
-c--- processes that use "gen3jetgaga"     
-      elseif (case .eq. 'gmgmjt') then
-        npart=3
-        call gen3jetgaga(r,p,pswt,*999)
-
-c--- processes that use "gen_phots_jets"     
-c--- special treatment for W+gamma+jet and Z+gamma+jet 
-      elseif ( (case .eq. 'Wgajet') .or. (case .eq. 'Zgajet') ) then
-        npart=4
-      if (new_pspace) then
-          call gen_vgamj(r,p,pswt,*999) ! New PS routine
-      else
-        if     (ipsgen .eq. 1) then
-          call gen_phots_jets(r,1,1,p,pswt,*999)
-        elseif (ipsgen .eq. 2) then
-          call gen_phots_jets_dkrad(r,1,1,p,pswt,*999)
-      else
-        write(6,*) 'Parameter ipsgen should be 1 or 2'
-        write(6,*) 'ipsgen = ',ipsgen
-        stop
-        endif
-      endif
-       
-c--- special treatment for Z+gamma+gamma 
-      elseif ( (case .eq. 'Z_2gam') ) then
-        npart=4
-        if  (ipsgen .eq. 1) then
-            call gen_phots_jets(r,2,0,p,pswt,*999) !AA+AB
-        elseif  (ipsgen .eq. 2) then
-            call gen_phots_jets_dkrad2(r,2,0,p,pswt,*999) !BB+BC
-        elseif  (ipsgen .eq. 3) then
-           call gen_phots_jets_dkrad(r,2,0,p,pswt,*999) !CC+AC+CD
-        elseif  (ipsgen .eq. 4) then
-           call gen_phots_jets_dkrad(r,2,0,p,pswt,*999) !DD+AD+BD
-           do ii=1,4                
-              ptmp=p(5,ii)
-              p(5,ii)=p(6,ii)
-              p(6,ii)=ptmp
-           enddo
-        else
-           write(6,*) 'Parameter ipsgen should be 1 or 2 or 3 or 4'
-           write(6,*) 'ipsgen = ',ipsgen
-           stop
-        endif
-
-c--- special treatment for Z+gamma+gamma+jet 
-      elseif ( (case .eq. 'Z2gajt') ) then
-        npart=5
-        if (ipsgen .eq. 1) then
-           call gen_phots_jets(r,2,1,p,pswt,*999)  !AA+AB
-        elseif (ipsgen .eq. 2) then
-           call gen_phots_jets_dkrad2(r,2,1,p,pswt,*999)  !BB+BC
-        elseif (ipsgen .eq. 3) then
-           call gen_phots_jets_dkrad(r,2,1,p,pswt,*999)  !CC+AC+CD 
-        elseif (ipsgen .eq. 4) then
-           call gen_phots_jets_dkrad(r,2,1,p,pswt,*999)  !DD+AD+BD
-           do ii=1,4               
-              ptmp=p(5,ii)
-              p(5,ii)=p(6,ii)
-              p(6,ii)=ptmp
-           enddo
-        else
-           write(6,*) 'Parameter ipsgen should be 1 or 2 or 3 or 4'
-           write(6,*) 'ipsgen = ',ipsgen
-           stop
-        endif
-
-c--- special treatment for Z+gamma+jet+jet 
-      elseif ( (case .eq. 'Zga2jt') ) then
-        npart=5
-        if (ipsgen .eq. 1) then
-          call gen_phots_jets(r,1,2,p,pswt,*999)
-        elseif (ipsgen .eq. 2) then
-          call gen_phots_jets_dkrad(r,1,2,p,pswt,*999)
-        else
-          write(6,*) 'Parameter ipsgen should be 1 or 2'
-          write(6,*) 'ipsgen = ',ipsgen
-          stop
-        endif
-
-      elseif ((case .eq. 'thrjet') .or. (case .eq. 'gamjet')) then
-!        call gen3jet(r,p,pswt,*999)
-        call gen_photons_jets(r,1,2,p,pswt,*999)
-        npart=3
-c--- processes that use "gen3m"
-      elseif ( (case .eq. 'tottth') ) then
-        m3=mt
-        m4=mt
-        m5=hmass
-        npart=3
-        call gen3m(r,p,m3,m4,m5,pswt,*999)
-          
-      elseif ( (case .eq. 'totttz') ) then
-        m3=mt
-        m4=mt
-        m5=zmass
-        npart=3
-        call gen3m(r,p,m3,m4,m5,pswt,*999)
-        
-c--- processes that use "gen3m"
-      elseif (case .eq. 'tt_glu') then
-        m3=mt
-        m4=mt
-        m5=0d0
-        npart=3
-        call gen3m(r,p,m3,m4,m5,pswt,*999)
-      
-c--- processes that use "gen3m"
-      elseif ((case .eq. 'qg_tbq') .or. (case .eq. 'qq_tbg')) then
-        m3=mt
-        m4=mb
-        m5=0d0
-        npart=3
-        call gen3m(r,p,m3,m4,m5,pswt,*999)
-      
-c--- processes that use gen3mdk
-      elseif ( (case .eq. '4ftwdk') ) then
-        m3=mt
-        m4=mb
-        m5=0d0
-        npart=5
-        call gen3mdk(r,p,m3,m4,m5,pswt,*999)
-        
-c--- processes that use "gen3m_rap"     
-      elseif ( (case .eq. 'vlchm3') ) then
-        taumin=(2d0*mt/sqrts)**2
-        m3=mt
-        m4=mt
-        npart=3
-        call gen3m_rap(r,p,m3,m4,pswt,*999)
-          
-c--- processes that use "gen4"     
-      elseif (case .eq. 'qgtbqq') then
-        npart=4
-        call gen4(r,p,pswt,*999)
-                  
-      elseif (case .eq. 'H_tjet') then
-        npart=4
-        taumin=((mt+hmass)/sqrts)**2
-        call gen4(r,p,pswt,*999)
-
-      elseif (case .eq. 'Z_tjet') then
-        npart=4
-        taumin=((mt+zmass)/sqrts)**2
-        call gen4(r,p,pswt,*999)
-      elseif((case.eq.'dm_gaj').or.(case.eq.'dm2jet')) then 
-         m3=xmass
-         m4=xmass
-         npart=4
-         call gen4m(r,p,m3,m4,0d0,0d0,pswt,*999)
-c--- processes that use "gen4h"     
-      elseif ( (case .eq. 'HWW_4l')
-     .    .or. (case .eq. 'HWW2lq')
-     .    .or. (case .eq. 'HWW_tb')
-     .    .or. (case .eq. 'HWWint')
-     .    .or. (case .eq. 'HZZ_4l') ) then
-        npart=4
-        call gen4h(r,p,pswt,*999)
-         
-c--- processes that use "gen4mdk"     
-      elseif ((case .eq. '4ftjet') 
-     .   .or. (case .eq. 'Z_tdkj')
-     .   .or. (case .eq. 'H_tdkj')) then
-        npart=6
-        call gen4mdk(r,p,pswt,*999)
-      
-c--- processes that use "gen5mdk"     
-      elseif  (case .eq. 'Ztdk2j') then
-        npart=7
-        call gen5mdk(r,p,pswt,*999)
-      
-c--- processes that use "gen5" 
-      elseif ( (case .eq. 'W_twdk') 
-     . .or.    (case .eq. 'HWWjet') 
-     . .or.    (case .eq. 'HZZjet') 
-     . .or.    (case .eq. 'WW_jet') 
-     . .or.    (case .eq. 'ZZ_jet') 
-     . .or.    (case .eq. 'Zt2jet') 
-     . .or.    (case .eq. 'Wbbjem') 
-     . .or.    (case .eq. 'vlchwt') 
-     . ) then 
-        npart=5 
-        call gen5(r,p,pswt,*999)
-
-c--- processes that use "gen6"     
-      elseif ( (case .eq. 'tt_bbl')
-     .    .or. (case .eq. 'ttZbbl')
-     .    .or. (case .eq. 'tt_bbh')
-     .    .or. (case .eq. 'tt_bbu')
-     .    .or. (case .eq. 'tautau')
-     .    .or. (case .eq. 'Wtbwdk')
-     .    .or. (case .eq. 'vlchk6')
-     .    .or. (case .eq. 'vlchwg')
-     .    .or. (case .eq. 'vlchwh')
-     .    .or. (case .eq. 'qq_HWW')
-     .    .or. (case .eq. 'qq_HZZ')
-     .    .or. (case .eq. 'HWW2jt')
-     .    .or. (case .eq. 'HZZ2jt')
-     .    .or. (case .eq. 'WH__ZZ')
-     .    .or. (case .eq. 'WH__WW')  
-     .    .or. (case .eq. 'ZH__WW')
-     .    .or. (case .eq. 'ZH__ZZ')
-     .    .or. (case .eq. 'WpWp2j')
-     .    .or. (case .eq. 'WpmZjj')
-     .    .or. (case .eq. 'WpmZbj')
-     .    .or. (case .eq. 'WpmZbb')) then
-        npart=6
-        call gen6(r,p,pswt,*999)
-
-c--- processes that use "gen7"     
-      elseif ( (case .eq. 'qq_ttg') ) then
-        m3=mt
-        m4=mt
-        m5=0d0
-        npart=7
-        call gen7m(r,p,m3,m4,m5,pswt,*999)
-c        npart=7
-c        call gen7_rap(r,p,pswt,*999)
-c      call writeout(p)
-
-      elseif ( (case.eq.'WpWp3j')
-     &     .or.(case.eq.'HWW3jt')
-     &     .or.(case.eq.'HZZ3jt') )  then
-        npart=7
-      call gen7(r,p,pswt,*999)
-
-c--- processes that use "gen8"     
-      elseif ( (case .eq. 'qq_tth') 
-     .    .or. (case .eq. 'vlchk8') ) then
-        npart=8
-        call gen8(r,p,pswt,*999)
-  
-c--- processes that use "gen8"     
-      elseif ( (case .eq. 'qq_ttz') 
-     .    .or. (case .eq. 'qqtthz') ) then
-        npart=8
-c        call gen8(r,p,pswt,*999)
-        call genttvdk(r,p,pswt,*999)
-  
-      elseif ( (case .eq. 'qq_ttw')  ) then
-        npart=8
-        taumin=(2d0*mt/sqrts)**2
-        call gen8_rap(r,p,pswt,*999)
-          
-      elseif (case .eq. 'tth_ww') then 
-        npart=10
-        call gen10(r,p,pswt,*999)
-c--- processes that use "gen_njets" with an argument of "1"     
-      elseif ( (case .eq. 'W_1jet')
-     .    .or. (case .eq. 'Wcjet0')
-     .    .or. (case .eq. 'Z_1jet')
-     .    .or. (case .eq. 'H_1jet')
-     .    .or. (case .eq. 'httjet')
-     .    .or. (case .eq. 'attjet')
-     .    .or. (case .eq. 'ggfus1')
-     .    .or. (case .eq. 'Hgagaj')
-     .    .or. (case .eq. 'gQ__ZQ') ) then
-        npart=3
-        call gen_njets(r,1,p,pswt,*999)
-         
-c--- processes that use "gen_njets" with an argument of "2"
-      elseif ( (case .eq. 'Wbbbar')
-     .    .or. (case .eq. 'W_2jet')
-     .    .or. (case .eq. 'Z_2jet')
-     .    .or. (case .eq. 'Zbbbar')
-     .    .or. (case .eq. 'qq_Hqq')
-     .    .or. (case .eq. 'qq_Hgg')
-     .    .or. (case .eq. 'ggfus2')
-     .    .or. (case .eq. 'gagajj')
-     .    .or. (case .eq. 'W_bjet')
-     .    .or. (case .eq. 'Wcjetg')
-     .    .or. (case .eq. 'Z_bjet') ) then
-        npart=4
-        call gen_njets(r,2,p,pswt,*999)         
-        
-c--- processes that use "gen_njets" with an argument of "3"
-      elseif ( (case .eq. 'W_3jet') 
-     .    .or. (case .eq. 'Wbbjet') 
-     .    .or. (case .eq. 'Z_3jet') 
-     .    .or. (case .eq. 'Zbbjet') 
-     .    .or. (case .eq. 'Wb2jet') 
-     .    .or. (case .eq. 'qqHqqg')
-     .    .or. (case .eq. 'ggfus3')
-     .    .or. (case .eq. 'Zbjetg')
-     .    .or. (case .eq. 'vlchk5') ) then
-        npart=5
-        call gen_njets(r,3,p,pswt,*999)      
-c--- processes that use "gen_stop" with an argument of "1" (number of extra jets)
-      elseif ( (case .eq. 'bq_tpq')
-     .    .or. (case .eq. 'ttdkay')
-     .    .or. (case .eq. 't_bbar')
-     .    .or. (case .eq. 'tdecay') ) then
-        npart=4
-        call gen_stop(r,1,p,pswt,*999)
-      
-c--- DEFAULT: processes that use "gen4"
-      else
-        if ((case .eq. 'vlchk4') .or. (case .eq. 'vlchkm')) then
-          wsqmin=0d0
-          wsqmax=sqrts**2
-        endif
-        npart=4
-        call gen4(r,p,pswt,*999)      
-      endif
-
+      call gen_lops(r,p,pswt,*999)
       nvec=npart+2
+
       call dotem(nvec,p,s)
       
 c--- (moved to includedipole) impose cuts on final state
@@ -456,12 +101,12 @@ c      endif
 
 c---- reject event if any s(i,j) is too small
       call smalls(s,npart,*999)
-
 c--- see whether this point will pass cuts - if it will not, do not
 c--- bother calculating the matrix elements for it, instead bail out
       if (includedipole(0,p) .eqv. .false.) then
         goto 999
       endif
+
 c      call writeout(p)
 c      stop
       if (dynamicscale) call scaleset(rscalestart,fscalestart,p)
@@ -477,7 +122,6 @@ c--- Calculate the required matrix elements
       elseif (case .eq. 'W_1jet') then
         call qqb_w_g(p,msq)
       elseif (case .eq. 'Wgamma') then
-c        call compare_madgraph(p,qqb_wgam,qqb_wgam_mad) ! Checked: JC, 12/29/10
         call qqb_wgam(p,msq)
       elseif (case .eq. 'Wgajet') then
          call qqb_wgam_g(p,msq)
@@ -502,7 +146,11 @@ c        call compare_madgraph(p,qqb_wgam,qqb_wgam_mad) ! Checked: JC, 12/29/10
       elseif (case .eq. 'Wbbjet') then
         call qqb_wbb_g(p,msq)
       elseif (case .eq. 'Z_only') then
-        call qqb_z(p,msq)
+c        if (ewcorr) then
+c          call qqb_z_ew(p,msq)
+c        else
+          call qqb_z(p,msq)
+c        endif
       elseif (case .eq. 'Z_1jet') then
         call qqb_z1jet(p,msq)
       elseif (case .eq. 'Z_2jet') then
@@ -510,10 +158,12 @@ c        call compare_madgraph(p,qqb_wgam,qqb_wgam_mad) ! Checked: JC, 12/29/10
       elseif (case .eq. 'Z_3jet') then
         call qqb_z2jet_g(p,msq)
       elseif (case .eq. 'Zgamma') then
-c        call compare_madgraph(p,qqb_zgam,qqb_zgam_mad) ! Checked: JC, 01/03/11
         call qqb_zgam(p,msq)
       elseif (case .eq. 'Z_2gam') then
         call qqb_zaa(p,msq)
+      elseif (case .eq. 'W_2gam') then
+c        if (checkpiDpjk(p)) goto 999
+        call qqb_Waa(p,msq)
       elseif (case .eq. 'Zgajet') then
         call qqb_zaj(p,msq)
 c        call qqb_zgam_g(p,msq)      ! Old routine
@@ -566,7 +216,16 @@ c        call qqb_gamgam_mad(p,msq)
 c        write(6,*) 'gamgam',msq(1,-1),msq(2,-2),msq(-1,1),msq(-2,2) 
 c        pause
       elseif (case .eq. 'gmgmjt') then
-        call qqb_gamgam_g(p,msq)
+c      call checkgvec(+2, 0,2,p,qqb_gamgam_g,qqb_gmgmjt_gvec)
+c      call checkgvec(-1, 0,2,p,qqb_gamgam_g,qqb_gmgmjt_gvec)
+c      call checkgvec( 0,-1,1,p,qqb_gamgam_g,qqb_gmgmjt_gvec)
+c      call checkgvec( 0, 2,1,p,qqb_gamgam_g,qqb_gmgmjt_gvec)
+c      call checkgvec( 1,-1,5,p,qqb_gamgam_g,qqb_gmgmjt_gvec)
+c      call checkgvec(-1, 1,5,p,qqb_gamgam_g,qqb_gmgmjt_gvec)
+!        call qqb_gamgam_g(p,msq)
+         call qqb_gmgmjt(p,msq)
+      elseif (case .eq. 'trigam') then
+        call qqb_trigam(p,msq)
       elseif (case .eq. 'gamjet') then
         call qqb_dirgam_g(p,msq)
       elseif (case .eq. 'WH__WW') then
@@ -595,10 +254,24 @@ c        pause
         call qqb_hww(p,msq)
       elseif (case .eq. 'HWW_tb') then
         call qqb_hww_tb(p,msq)
-      elseif (case .eq. 'HWWint') then
+      elseif ((case .eq. 'HWWint') .or. (case .eq. 'HWWH+i')
+     &   .or. (case .eq. 'ggWW4l')) then
         call gg_ww_int(p,msq)
       elseif (case .eq. 'HZZ_4l') then
         call qqb_hzz(p,msq)
+      elseif (case .eq. 'HZZ_tb') then
+        call gg_hzz_tb(p,msq)
+      elseif (case .eq. 'HZZint') then
+        call gg_zz_int(p,msq)
+      elseif (case .eq. 'HZZH+i') then
+        call gg_zz_Hpi(p,msq)
+      elseif (case .eq. 'ggZZ4l') then
+        call gg_zz_all(p,msq)
+      elseif (case .eq. 'ggZZbx') then
+        msq(:,:)=0d0
+        call gg_ZZ(p,msq(0,0))
+      elseif (case .eq. 'HZZqgI') then 
+         call qg_Hint_ZZ(p,msq)
       elseif (case .eq. 'H_1jet') then
         call qqb_hg(p,msq)
       elseif (case .eq. 'ttZbbl') then
@@ -729,6 +402,8 @@ c      call checkgvec(-1,2,5,p,qq_tbg,qq_tbg_gvec)
          call qq_tchan_ztqg_dk(p,msq)
       elseif (case .eq. 'Zt2jet') then
         call qq_tchan_ztqg(p,msq)
+      elseif (case .eq. 'HHpair') then
+        call gg_HH(p,msq)
       elseif (case .eq. 'dm_jet') then 
          call qqb_dm_monojet(p,msq)
       elseif (case .eq. 'dm_gam') then 
@@ -844,6 +519,16 @@ c      call checkgvec(-1,2,5,p,qq_tbg,qq_tbg_gvec)
       enddo
       enddo 
 
+c--- APPLgrid - initialize array
+      if (creategrid.and.bin) then
+         do j=-nf,nf
+            do k=-nf,nf
+               weightb(j,k) = 0d0
+            enddo
+         enddo
+         weightfactor = 1d0
+      endif
+c--- APPLgrid - end
 
       currentPDF=0
 
@@ -956,6 +641,7 @@ c--- DEFAULT
       endif
 
       xmsq=xmsq+xmsqjk
+      xmsq_array(j,k)=xmsqjk
       
       if     (j .gt. 0) then
         sgnj=+1
@@ -974,6 +660,12 @@ c--- DEFAULT
 
       if (currentPDF .eq. 0) then
         xmsq_bypart(sgnj,sgnk)=xmsq_bypart(sgnj,sgnk)+xmsqjk
+c--- APPLgrid - save weight
+        if(creategrid.and.bin)then
+c---- print*,j,k,msq(j,k)
+           weightb(j,k) =  weightb(j,k) + msq(j,k)
+        endif
+c--- APPLgrid - end
       endif
       
  20   continue
@@ -993,7 +685,7 @@ c--- loop over all PDF error sets, if necessary
         if (currentPDF .le. maxPDFsets) goto 777
       endif    
 
-      if (creatent) then
+c      if (creatent) then
         wt_gg=xmsq_bypart(0,0)*wgt*flux*pswt/BrnRat/dfloat(itmx)
         wt_gq=(xmsq_bypart(+1,0)+xmsq_bypart(-1,0)
      .        +xmsq_bypart(0,+1)+xmsq_bypart(0,-1)
@@ -1002,7 +694,7 @@ c--- loop over all PDF error sets, if necessary
      .        )*wgt*flux*pswt/BrnRat/dfloat(itmx)
         wt_qqb=(xmsq_bypart(+1,-1)+xmsq_bypart(-1,+1)
      .        )*wgt*flux*pswt/BrnRat/dfloat(itmx)
-      endif
+c      endif
 
       call getptildejet(0,pjet)
       
@@ -1016,7 +708,10 @@ c--- loop over all PDF error sets, if necessary
       enddo
 
       val=lowint*wgt
-      val2=lowint**2*wgt
+      val2=val**2
+c---  SSbegin                                                                                                                      
+      lowint = lowint*reweight
+c---  SSend                                                                                                                        
 c--- update the maximum weight so far, if necessary
 c---  but not if we are already unweighting ...
       if ((.not.unweight) .and. (dabs(val) .gt. wtmax)) then
@@ -1028,17 +723,56 @@ c         call rescale_pjet(pjet)
 c      endif
 
       if (bin) then
-c ---   DSW. If the user has not selected to generate
-c ---   events, still call nplotter here in order to
-c ---   fill histograms/ntuples with weighted events :
-        if (.not.evtgen) then
-          call nplotter(pjet,val,val2,0)
+c     APPLgrid - multiply by totalFactor
+            if (creategrid) then ! P.S. scale with factor
+               psCR = 1d0
+               if ( (case .eq. 'tt_tot')
+     &         .or. (case .eq. 'bb_tot')
+     &         .or. (case .eq. 'cc_tot') 
+     &         .or. (case .eq. 'tt_bbl')
+     &         .or. (case .eq. 'tt_ldk')
+     &         .or. (case .eq. 'tt_bbu')
+     &         .or. (case .eq. 'tt_udk')
+     &         .or. (case .eq. 'tt_bbh')
+     &         .or. (case .eq. 'tt_hdk')
+     &         .or. (case .eq. 'tthWdk')
+     &         .or. (case .eq. 'qq_ttg') ) then
+                  psCR = (1d0/ason2pi)**2
+               elseif ( (case .eq. 'W_cjet')) then
+                  psCR = (1d0/ason2pi)
+               endif
+               do j=-nflav,nflav
+                  do k=-nflav,nflav
+                    weightb(j,k)=weightb(j,k)*psCR
+                 enddo
+              enddo           
+              contrib      = 100
+              weightfactor = flux*pswt*wgt/BrnRat/dfloat(itmx)
+              ag_xx1       = xx(1)
+              ag_xx2       = xx(2)
+              ag_scale     = facscale
+              refwt        = val/dfloat(itmx)
+              refwt2       = val2/dfloat(itmx)
+C     print*,"  *******************************************"
+C     print*, "meWeightFactor = ", weightfactor,
+C     *             " me(2,-1) = " ,  weightb(2 ,-1) ," ", msq(2,-1),
+C     *             " me(-1,2) = " ,  weightb(-1 ,2) ," ", msq(-1,2),
+C     *             " me(1,-1) = " ,  weightb(1 ,-1) ," ", msq(1,-1),
+C     *             " me(-2,2) = " ,  weightb(-2 ,2) ," ", msq(-2,2)
+C     print*, " x1 = ",xx(1)," x2 = ",xx(2)," sca = ",facscale
+C     print *, "rewt = ", refwt
+C     print*,"  *********************************************"
+C     flush(6)
+              
+           endif
+c---  APPLgrid - end
+
+        call nplotter(pjet,val,val2,0)
 c--- POWHEG-style output if requested
         if (writepwg) then
             call pwhgplotter(p,pjet,val,0)
         endif
-        endif
-      endif
+       endif
 
 c --- Check weights :
       if (unweight) then
@@ -1053,16 +787,24 @@ c         write(6,*) 'Keep event with weight',val
           endif
           if (newwt .gt. 1.0d0) then
             write(6,*) 'WARNING : lowint : event with |weight| > 1.',
-     +            ' |weight| = ',newwt
+     &                 ' |weight| = ',newwt
           endif
 c ---     just in case the weight was negative :
           newwt = newwt*dsign(1d0,val)
-          call nplotter(pjet,newwt,newwt,0)
+c          call nplotter(pjet,newwt,newwt,0)
+
+c--- APPLgrid
+c          if (creategrid) then
+c            print*,"@@@@@@@@@@@@@@@@@@@@############################"
+c          endif
+c--- APPLgrid - end
 c ---     DSW. If I'm storing the event, I need to make a decision
 c ---     about the flavours :
-          call decide_flavour(pflav,pbarflav)
-          call storeevent(pjet,newwt,pflav,pbarflav)
-        endif
+c          call decide_flavour(pflav,pbarflav)
+c          call storeevent(pjet,newwt,pflav,pbarflav)
+c          call write_gg_lhe(pjet,newwt)
+          call mcfm_writelhe(pjet,xmsq_array,newwt)
+          endif
       endif
 
       return

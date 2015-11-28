@@ -7,6 +7,7 @@ C---p1+p2 --> p3+p4
       include 'jetcuts.f'
       include 'phasemin.f'
       include 'leptcuts.f'
+      include 'part.f'
 !--- Modified July 11 by CW to switch between photons and jets appropriately 
       integer j,nu
 
@@ -28,6 +29,7 @@ c--- for dirgam, hflgam and gamgam, generate using photon pt as cutoff
         if ((nproc.eq.280) .or. (nproc.eq.285)
      &  .or.(nproc.eq.283) .or. (nproc.eq.284)) then 
            ptjetmin=gammpt 
+           if ((part .eq. 'real').and.(nproc .eq. 285)) ptjetmin=gammpt2
         else
            call read_jetcuts(ptjetmin,etajetmin,etajetmax)
         endif
@@ -46,15 +48,26 @@ C    PS = 1/(16 pi) dxt^2 d phi/(2 pi) dyave dystar
 c      xtsqmin=(2d0*ptjetmin/sqrts)**2
 c      xjac=1d0-xtsqmin
 c      xtsq=xtsqmin+xjac*r(3)
-      
-      zmax=(0.5d0*sqrts/ptjetmin)**2
-      zmin=1d0
-      z=zmin+(zmax-zmin)*r(3)
-      xtsq=1d0/z
-      xjac=xtsq**2*(zmax-zmin)
 
-      xt=dsqrt(xtsq)
-      pt=0.5d0*sqrts*xt
+      
+c      zmax=(0.5d0*sqrts/ptjetmin)**2
+c      zmin=1d0
+c      z=zmin+(zmax-zmin)*r(3)
+c      xtsq=1d0/z
+c      xjac=xtsq**2*(zmax-zmin)
+
+c      xt=dsqrt(xtsq)
+c      pt=0.5d0*sqrts*xt
+      
+      if (part .eq. 'real') then
+        call genpt(r(3),ptjetmin,.false.,pt,xjac)
+      else
+        call genpt(r(3),ptjetmin,.true.,pt,xjac)
+      endif
+      xjac=xjac*8d0/sqrts**2
+      xt=2d0*pt/sqrts
+      xtsq=xt**2
+      
       ydifmax=0.5d0*log((2d0-xtsq+2d0*dsqrt(1d0-xtsq))/xtsq)
       ydifmin=-ydifmax
 

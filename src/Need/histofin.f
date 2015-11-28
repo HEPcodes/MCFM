@@ -14,6 +14,7 @@ c--- For itno>0, this is an intermediate result only
       include 'ehisto.f'
       include 'outputoptions.f'
       include 'vanillafiles.f'
+      include 'irregbins_incl.f'
       integer j,nlength,itno,itmx,nplotmax,nempty
       character*255 runname,outfiledat,outfiletop,outfileerr
 c--F  Add gnuplot output and root output
@@ -32,6 +33,9 @@ c      character*255 outfilepwg
       common/nplotmax/nplotmax
       common/scaleplots/scalefac,scaleplots
 
+c---- SSbegin                                                                                                        
+      call userhistofin(xsec,xsec_err,itno,itmx)
+c---- SSend                                                                                                          
 c--- call to POWHEG-style histofin if requested    
       if (writepwg) then
         call pwhghistofin(itno,itmx)
@@ -154,6 +158,15 @@ c--- ensure that MFINAL doesn't turn off booking for intermediate results
       endif
       enddo
 
+c--- Perform integrals on plots if required (at end of run only)
+      if (itno .eq. 0) then
+        do j=1,nplotmax
+          if (index(title(j),'+INTEGRAL+') .gt. 0) then
+          call integratehisto(j)
+          endif
+        enddo
+      endif
+      
       nempty=0
       do j=1,nplotmax
       if (verbose) then
@@ -177,6 +190,7 @@ c        write(6,*) 'Writing .top for plot ',j
       endif
       if (writetop) then
         call mtop(j,2*maxhisto+j,'x','y',linlog(j))
+        if (irregbin(j)) call getirregbins(j)
       endif
       if (writegnu) then
         call mgnuplot(j,2*maxhisto+j,'x','y',linlog(j))

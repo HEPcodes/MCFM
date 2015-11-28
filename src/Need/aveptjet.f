@@ -5,6 +5,7 @@
       include 'jetlabel.f'
       include 'plabel.f'
       integer j,countjet,isub,oldjets
+      logical is_hadronic
       double precision p(mxpart,4),pjet(mxpart,4),pt,rcut
       common/rcut/rcut
       
@@ -23,8 +24,7 @@ c-- cluster jets but make sure recorded number of jets is not changed
       countjet=0
       do j=3,npart+2
         if (countjet .eq. jets) goto 99
-        if (     (plabel(j) .eq. 'pp') .or. (plabel(j) .eq. 'pj')
-     .      .or. (plabel(j) .eq. 'bq') .or. (plabel(j) .eq. 'ba')) then
+        if (is_hadronic(j)) then
           countjet=countjet+1
           aveptjet=aveptjet+pt(j,pjet)
         endif

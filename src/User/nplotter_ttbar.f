@@ -65,7 +65,7 @@ c--- Add event in histograms
 ************************************************************************
 
        ijet=0
-       do j=2,9
+       do j=3,9
          if ((plabel(j) .eq. 'pp') .or. (plabel(j) .eq. 'bq')
      &   .or.(plabel(j) .eq. 'ba')) then
            if (p(j,4) .gt. tiny) then
@@ -77,6 +77,7 @@ c--- Add event in histograms
        enddo   
        call arraysort(ijet,ptjet,iorder)
 
+       if (ijet .ge. 2) then
 c--- Two hardest jets are now indexed by
 c--- jetindex(iorder(1)) and jetindex(iorder(2))
        mj1j2=((p(jetindex(iorder(1)),4)+p(jetindex(iorder(2)),4))**2
@@ -84,6 +85,9 @@ c--- jetindex(iorder(1)) and jetindex(iorder(2))
      &       -(p(jetindex(iorder(1)),2)+p(jetindex(iorder(2)),2))**2
      &       -(p(jetindex(iorder(1)),3)+p(jetindex(iorder(2)),3))**2)
        mj1j2=dsqrt(max(mj1j2,0d0))
+       else
+       mj1j2=-1d0
+       endif
        
 ************************************************************************
 *                                                                      *

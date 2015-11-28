@@ -103,7 +103,6 @@ C--- define flattened vectors (k12 and k56)
       gden=dot1256+sqrt(delta)
       afac=s12/gden
       bfac=s56/gden
-
       do nu=1,4
       p(del2,nu)=one/(one-afac*bfac)
      & *(p(1,nu)+p(2,nu)-afac*(p(5,nu)+p(6,nu)))
@@ -177,7 +176,8 @@ c--- fill amplitudes used for 3rd generation
       if (includegen3) then
 c--- ensure numerical stability: set massive loops to zero
 c--- for pt(W) < "ptWsafetycut_massive" GeV
-        if (pttwo(3,4,p) .lt. ptWsafetycut_massive) then
+        if ((pttwo(3,4,p)/sqrt(s(1,2)) .lt. 1d-2) 
+     &  .or.(pttwo(3,4,p) .lt. ptWsafetycut_massive)) then
           do h1=1,2
           do h2=1,2
             Agen3(h1,h2)=czip
@@ -203,7 +203,7 @@ c---    this contribution is finite, so we only retain "0" piece
           do h1=1,2
           do h2=1,2
            sum(h1,h2,e)=box(h1,h2,e)+triang(h1,h2,e)+bub(h1,h2,e)
-           Agen3(h1,h2)=sum(h1,h2,0)          
+           Agen3(h1,h2)=sum(h1,h2,0) 
           enddo
           enddo
       endif

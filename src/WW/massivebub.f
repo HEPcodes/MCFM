@@ -7,13 +7,13 @@ c----Bubble coefficients extracted from BDK 11.5, 11.8
       include 'masses.f'
       include 'scale.f'
       include 'blabels.f'
+      include 'docheck.f'
       character*9 st,st1
       integer j,k1,k2,k3,k4,k5,k6,h1,h2,e
       double complex b(2,2,7),bcoeff(8),bub(2,2,-2:0),Bint(7,-2:0),
      & qlI2,tmp
       double precision mtsq,s12,s34,s56,s134,s156
-      logical docheck
-      common/docheck/docheck
+
       mtsq=mt**2
 
 c--- QCDLoop already initialized from call to massivebox

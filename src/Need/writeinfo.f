@@ -67,7 +67,8 @@ c--- for gg->H+X processes, also write out the cross section
 c---  normalized by sigma(gg->H, finite mt)/sigma(gg->H, mt-> infinity)
       if (((case(1:5) .eq. 'ggfus') .or. (case(1:3) .eq. 'HWW')
      & .or.(case(1:3) .eq. 'HZZ')) .and. (case .ne. 'HWWint')
-     &  .and. (case .ne. 'HWW_tb') .and. (case .ne. 'HZZint')
+     &  .and. (case .ne. 'HWW_tb') .and. (case .ne. 'HWWH+i')
+     &  .and. (case .ne. 'HZZint') .and. (case .ne. 'HZZH+i') 
      &  .and. (case .ne. 'HZZ_tb') ) then
         call finitemtcorr(rescale)
         write(unitno,55) commchars//'Rescaled x-sec is:',
@@ -101,6 +102,9 @@ c--- new routine for writing out contents of input file
       else
         call writeinput(unitno,commchars,'  ','WRITEALL')
       endif
+c---  SSbegin                                                                                                        
+      call userwriteinfo(unitno,'()',xsec,xsec_err,itno)
+c---  SSend                                                                                                          
 
 c--- old lines for writing out inputs
 

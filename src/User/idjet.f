@@ -13,7 +13,8 @@
          if (jetlabel(j) .eq. 'pp' .or. jetlabel(j) .eq. 'qj') then 
             numljets=numljets+1
             pljet(numljets,:)=pjet(jetindex(j),:)
-         elseif (jetlabel(j) .eq. 'bq' .or. jetlabel(j) .eq. 'ba') then
+         elseif (jetlabel(j) .eq. 'bq' .or. jetlabel(j) .eq. 'ba'
+     &      .or. jetlabel(j) .eq. 'bb') then
             numbjets=numbjets+1
             pbjet(numbjets,:)=pjet(jetindex(j),:)
          else

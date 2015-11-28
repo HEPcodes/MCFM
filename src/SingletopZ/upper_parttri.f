@@ -77,47 +77,9 @@ c      write(*,*) 'epmin in upper_tri', epmin
      & vert25x1,vert25x2,vert25x3,vert16x2,vert16x3,vert16x4,
      & vert16x5,vert16x6,vert16x7,vert16x8,vert16x9,vert16x10,
      & vert16x11,vert16x12,vert16x13)
-      upper_tri(j3,1,ep)= + prW(s25)*s134**(-1) * (  - 2.D0*za(p1,p3)*
-     &    za(p6,k5)*zb(p1,p2)*zb(p1,p4)*vert16x10 - 2.D0*za(p3,p4)*za(
-     &    p6,k5)*zb(p1,p4)*zb(p2,p4)*vert16x10 )
-      upper_tri(j3,1,ep) = upper_tri(j3,1,ep) + prW(s25)*facuLl*
-     & s134**(-1) * (  - 2.D0*za(p1,p3)*za(p6,k5)*zb(p1,p2)*zb(p1,p4)*
-     &    vert16x13 - 2.D0*za(p3,p4)*za(p6,k5)*zb(p1,p4)*zb(p2,p4)*
-     &    vert16x13 )
-      upper_tri(j3,1,ep) = upper_tri(j3,1,ep) + prW(s25)*facuLl * ( za(
-     &    p1,k5)*za(p3,p6)*zb(p1,p2)*zb(p1,p4)*vert16x12 - za(p3,p6)*
-     &    za(p3,k5)*zb(p1,p4)*zb(p2,p3)*vert16x12 - za(p3,p6)*za(p4,k5)
-     &    *zb(p1,p4)*zb(p2,p4)*vert16x12 - za(p3,p6)*za(p6,k5)*zb(p1,p4
-     &    )*zb(p2,p6)*vert16x11 )
-      upper_tri(j3,1,ep) = upper_tri(j3,1,ep) + prW(s25)*omal*
-     & mwsq**(-1)*s134**(-1) * ( za(p1,p3)*za(p6,p2)*za(k5,e5)*zb(p1,p4
-     &    )*zb(p2,p1)*zb(p2,e5)*vert16x10 + za(p1,p3)*za(p6,k5)*za(k5,
-     &    e5)*zb(p1,p4)*zb(p2,e5)*zb(k5,p1)*vert16x10 + za(p1,p3)*za(p6
-     &    ,e5)*za(k5,e5)*zb(p1,p4)*zb(p2,e5)*zb(e5,p1)*vert16x10 - za(
-     &    p3,p4)*za(p6,p2)*za(k5,e5)*zb(p1,p4)*zb(p2,p4)*zb(p2,e5)*
-     &    vert16x10 - za(p3,p4)*za(p6,k5)*za(k5,e5)*zb(p1,p4)*zb(p2,e5)
-     &    *zb(k5,p4)*vert16x10 - za(p3,p4)*za(p6,e5)*za(k5,e5)*zb(p1,p4
-     &    )*zb(p2,e5)*zb(e5,p4)*vert16x10 )
-      upper_tri(j3,1,ep) = upper_tri(j3,1,ep) + prW(s25)*omal*
-     & mwsq**(-1)*facuLl*s134**(-1) * ( za(p1,p3)*za(p6,p2)*za(k5,e5)*
-     &    zb(p1,p4)*zb(p2,p1)*zb(p2,e5)*vert16x13 + za(p1,p3)*za(p6,k5)
-     &    *za(k5,e5)*zb(p1,p4)*zb(p2,e5)*zb(k5,p1)*vert16x13 + za(p1,p3
-     &    )*za(p6,e5)*za(k5,e5)*zb(p1,p4)*zb(p2,e5)*zb(e5,p1)*vert16x13
-     &     - za(p3,p4)*za(p6,p2)*za(k5,e5)*zb(p1,p4)*zb(p2,p4)*zb(p2,e5
-     &    )*vert16x13 - za(p3,p4)*za(p6,k5)*za(k5,e5)*zb(p1,p4)*zb(p2,
-     &    e5)*zb(k5,p4)*vert16x13 - za(p3,p4)*za(p6,e5)*za(k5,e5)*zb(p1
-     &    ,p4)*zb(p2,e5)*zb(e5,p4)*vert16x13 )
-      upper_tri(j3,1,ep) = upper_tri(j3,1,ep) + prW(s25)*omal*
-     & mwsq**(-1)*facuLl * ( 1.D0/2.D0*za(p3,p6)*za(k5,e5)*zb(p1,p4)*
-     &    zb(p2,e5)*vert16x11*s25 + 1.D0/2.D0*za(p3,p6)*za(k5,e5)*zb(p1
-     &    ,p4)*zb(p2,e5)*vert16x12*s25 )
-      upper_tri(j3,1,ep) = upper_tri(j3,1,ep) + prW(s25)*omal*
-     & mwsq**(-1)*facuLl*s134 * (  - 1.D0/2.D0*za(p3,p6)*za(k5,e5)*zb(
-     &    p1,p4)*zb(p2,e5)*vert16x11 + 1.D0/2.D0*za(p3,p6)*za(k5,e5)*
-     &    zb(p1,p4)*zb(p2,e5)*vert16x12 )
-      upper_tri(j3,1,ep) = upper_tri(j3,1,ep) + prW(s25)*vert25x1*
-     & facdLl*s346**(-1) * (  - 2.D0*za(p3,p6)*za(p3,k5)*zb(p1,p2)*zb(
-     &    p3,p4) + 2.D0*za(p3,p6)*za(p6,k5)*zb(p1,p2)*zb(p4,p6) )
+      upper_tri(j3,1,ep)= + prW(s25)*vert25x1*facdLl*s346**(-1) * (  - 
+     &    2.D0*za(p3,p6)*za(p3,k5)*zb(p1,p2)*zb(p3,p4) + 2.D0*za(p3,p6)
+     &    *za(p6,k5)*zb(p1,p2)*zb(p4,p6) )
       upper_tri(j3,1,ep) = upper_tri(j3,1,ep) + prW(s25)*vert25x1*
      & facuLl*s134**(-1) * (  - 2.D0*za(p1,p3)*za(p6,k5)*zb(p1,p2)*zb(
      &    p1,p4) - 2.D0*za(p3,p4)*za(p6,k5)*zb(p1,p4)*zb(p2,p4) )
@@ -244,48 +206,50 @@ c      write(*,*) 'epmin in upper_tri', epmin
      &    )*za(k5,e5)*zb(p1,p3)*zb(p1,p4)*zb(p2,e5)*zb(e5,p4) - 1.D0/2.D
      &    0*za(p1,p3)*za(p3,p4)*za(p6,e5)*za(k5,e5)*zb(p1,p4)**2*zb(p2,
      &    e5)*zb(e5,p3) )
+      upper_tri(j3,1,ep) = upper_tri(j3,1,ep) + prW(s25)*vert16x10*
+     & s134**(-1) * (  - 2.D0*za(p1,p3)*za(p6,k5)*zb(p1,p2)*zb(p1,p4)
+     &     - 2.D0*za(p3,p4)*za(p6,k5)*zb(p1,p4)*zb(p2,p4) )
+      upper_tri(j3,1,ep) = upper_tri(j3,1,ep) + prW(s25)*vert16x10*omal
+     & *mwsq**(-1)*s134**(-1) * ( za(p1,p3)*za(p6,p2)*za(k5,e5)*zb(p1,
+     &    p4)*zb(p2,p1)*zb(p2,e5) + za(p1,p3)*za(p6,k5)*za(k5,e5)*zb(p1
+     &    ,p4)*zb(p2,e5)*zb(k5,p1) + za(p1,p3)*za(p6,e5)*za(k5,e5)*zb(
+     &    p1,p4)*zb(p2,e5)*zb(e5,p1) - za(p3,p4)*za(p6,p2)*za(k5,e5)*
+     &    zb(p1,p4)*zb(p2,p4)*zb(p2,e5) - za(p3,p4)*za(p6,k5)*za(k5,e5)
+     &    *zb(p1,p4)*zb(p2,e5)*zb(k5,p4) - za(p3,p4)*za(p6,e5)*za(k5,e5
+     &    )*zb(p1,p4)*zb(p2,e5)*zb(e5,p4) )
+      upper_tri(j3,1,ep) = upper_tri(j3,1,ep) + prW(s25)*vert16x11*
+     & facuLl * (  - za(p3,p6)*za(p6,k5)*zb(p1,p4)*zb(p2,p6) )
+      upper_tri(j3,1,ep) = upper_tri(j3,1,ep) + prW(s25)*vert16x11*omal
+     & *mwsq**(-1)*facuLl * ( 1.D0/2.D0*za(p3,p6)*za(k5,e5)*zb(p1,p4)*
+     &    zb(p2,e5)*s25 )
+      upper_tri(j3,1,ep) = upper_tri(j3,1,ep) + prW(s25)*vert16x11*omal
+     & *mwsq**(-1)*facuLl*s134 * (  - 1.D0/2.D0*za(p3,p6)*za(k5,e5)*zb(
+     &    p1,p4)*zb(p2,e5) )
+      upper_tri(j3,1,ep) = upper_tri(j3,1,ep) + prW(s25)*vert16x12*
+     & facuLl * ( za(p1,k5)*za(p3,p6)*zb(p1,p2)*zb(p1,p4) - za(p3,p6)*
+     &    za(p3,k5)*zb(p1,p4)*zb(p2,p3) - za(p3,p6)*za(p4,k5)*zb(p1,p4)
+     &    *zb(p2,p4) )
+      upper_tri(j3,1,ep) = upper_tri(j3,1,ep) + prW(s25)*vert16x12*omal
+     & *mwsq**(-1)*facuLl * ( 1.D0/2.D0*za(p3,p6)*za(k5,e5)*zb(p1,p4)*
+     &    zb(p2,e5)*s25 )
+      upper_tri(j3,1,ep) = upper_tri(j3,1,ep) + prW(s25)*vert16x12*omal
+     & *mwsq**(-1)*facuLl*s134 * ( 1.D0/2.D0*za(p3,p6)*za(k5,e5)*zb(p1,
+     &    p4)*zb(p2,e5) )
+      upper_tri(j3,1,ep) = upper_tri(j3,1,ep) + prW(s25)*vert16x13*
+     & facuLl*s134**(-1) * (  - 2.D0*za(p1,p3)*za(p6,k5)*zb(p1,p2)*zb(
+     &    p1,p4) - 2.D0*za(p3,p4)*za(p6,k5)*zb(p1,p4)*zb(p2,p4) )
+      upper_tri(j3,1,ep) = upper_tri(j3,1,ep) + prW(s25)*vert16x13*omal
+     & *mwsq**(-1)*facuLl*s134**(-1) * ( za(p1,p3)*za(p6,p2)*za(k5,e5)*
+     &    zb(p1,p4)*zb(p2,p1)*zb(p2,e5) + za(p1,p3)*za(p6,k5)*za(k5,e5)
+     &    *zb(p1,p4)*zb(p2,e5)*zb(k5,p1) + za(p1,p3)*za(p6,e5)*za(k5,e5
+     &    )*zb(p1,p4)*zb(p2,e5)*zb(e5,p1) - za(p3,p4)*za(p6,p2)*za(k5,
+     &    e5)*zb(p1,p4)*zb(p2,p4)*zb(p2,e5) - za(p3,p4)*za(p6,k5)*za(k5
+     &    ,e5)*zb(p1,p4)*zb(p2,e5)*zb(k5,p4) - za(p3,p4)*za(p6,e5)*za(
+     &    k5,e5)*zb(p1,p4)*zb(p2,e5)*zb(e5,p4) )
 
-      upper_tri(j3,2,ep)= + prW(s25)*mt*s134**(-1) * ( 2.D0*za(p1,p3)*
-     &    za(p6,e5)*zb(p1,p2)*zb(p1,p4)*iza(k5,e5)*vert16x10 + 2.D0*za(
-     &    p3,p4)*za(p6,e5)*zb(p1,p4)*zb(p2,p4)*iza(k5,e5)*vert16x10 )
-      upper_tri(j3,2,ep) = upper_tri(j3,2,ep) + prW(s25)*facuLl*mt*
-     & s134**(-1) * ( 2.D0*za(p1,p3)*za(p6,e5)*zb(p1,p2)*zb(p1,p4)*iza(
-     &    k5,e5)*vert16x13 + 2.D0*za(p3,p4)*za(p6,e5)*zb(p1,p4)*zb(p2,
-     &    p4)*iza(k5,e5)*vert16x13 )
-      upper_tri(j3,2,ep) = upper_tri(j3,2,ep) + prW(s25)*facuLl*mt * ( 
-     &     - za(p1,e5)*za(p3,p6)*zb(p1,p2)*zb(p1,p4)*iza(k5,e5)*
-     &    vert16x12 + za(p3,p6)*za(p3,e5)*zb(p1,p4)*zb(p2,p3)*iza(k5,e5
-     &    )*vert16x12 + za(p3,p6)*za(p4,e5)*zb(p1,p4)*zb(p2,p4)*iza(k5,
-     &    e5)*vert16x12 + za(p3,p6)*za(p6,e5)*zb(p1,p4)*zb(p2,p6)*iza(
-     &    k5,e5)*vert16x11 )
-      upper_tri(j3,2,ep) = upper_tri(j3,2,ep) + prW(s25)*omal*
-     & mwsq**(-1)*mt*s134**(-1) * ( za(p1,p3)*za(p6,p2)*zb(p1,p4)*zb(p2
-     &    ,p1)*zb(p2,k5)*vert16x10 + za(p1,p3)*za(p6,k5)*zb(p1,p4)*zb(
-     &    p2,k5)*zb(k5,p1)*vert16x10 + za(p1,p3)*za(p6,e5)*zb(p1,p4)*
-     &    zb(p2,k5)*zb(e5,p1)*vert16x10 - za(p3,p4)*za(p6,p2)*zb(p1,p4)
-     &    *zb(p2,p4)*zb(p2,k5)*vert16x10 - za(p3,p4)*za(p6,k5)*zb(p1,p4
-     &    )*zb(p2,k5)*zb(k5,p4)*vert16x10 - za(p3,p4)*za(p6,e5)*zb(p1,
-     &    p4)*zb(p2,k5)*zb(e5,p4)*vert16x10 )
-      upper_tri(j3,2,ep) = upper_tri(j3,2,ep) + prW(s25)*omal*
-     & mwsq**(-1)*facuLl*mt*s134**(-1) * ( za(p1,p3)*za(p6,p2)*zb(p1,p4
-     &    )*zb(p2,p1)*zb(p2,k5)*vert16x13 + za(p1,p3)*za(p6,k5)*zb(p1,
-     &    p4)*zb(p2,k5)*zb(k5,p1)*vert16x13 + za(p1,p3)*za(p6,e5)*zb(p1
-     &    ,p4)*zb(p2,k5)*zb(e5,p1)*vert16x13 - za(p3,p4)*za(p6,p2)*zb(
-     &    p1,p4)*zb(p2,p4)*zb(p2,k5)*vert16x13 - za(p3,p4)*za(p6,k5)*
-     &    zb(p1,p4)*zb(p2,k5)*zb(k5,p4)*vert16x13 - za(p3,p4)*za(p6,e5)
-     &    *zb(p1,p4)*zb(p2,k5)*zb(e5,p4)*vert16x13 )
-      upper_tri(j3,2,ep) = upper_tri(j3,2,ep) + prW(s25)*omal*
-     & mwsq**(-1)*facuLl*mt * ( 1.D0/2.D0*za(p3,p6)*zb(p1,p4)*zb(p2,k5)
-     &    *vert16x11*s25 + 1.D0/2.D0*za(p3,p6)*zb(p1,p4)*zb(p2,k5)*
-     &    vert16x12*s25 )
-      upper_tri(j3,2,ep) = upper_tri(j3,2,ep) + prW(s25)*omal*
-     & mwsq**(-1)*facuLl*mt*s134 * (  - 1.D0/2.D0*za(p3,p6)*zb(p1,p4)*
-     &    zb(p2,k5)*vert16x11 + 1.D0/2.D0*za(p3,p6)*zb(p1,p4)*zb(p2,k5)
-     &    *vert16x12 )
-      upper_tri(j3,2,ep) = upper_tri(j3,2,ep) + prW(s25)*vert25x1*
-     & facdLl*mt*s346**(-1) * ( 2.D0*za(p3,p6)*za(p3,e5)*zb(p1,p2)*zb(
-     &    p3,p4)*iza(k5,e5) - 2.D0*za(p3,p6)*za(p6,e5)*zb(p1,p2)*zb(p4,
-     &    p6)*iza(k5,e5) )
+      upper_tri(j3,2,ep)= + prW(s25)*vert25x1*facdLl*mt*s346**(-1) * ( 
+     &    2.D0*za(p3,p6)*za(p3,e5)*zb(p1,p2)*zb(p3,p4)*iza(k5,e5) - 2.D0
+     &    *za(p3,p6)*za(p6,e5)*zb(p1,p2)*zb(p4,p6)*iza(k5,e5) )
       upper_tri(j3,2,ep) = upper_tri(j3,2,ep) + prW(s25)*vert25x1*
      & facuLl*mt*s134**(-1) * ( 2.D0*za(p1,p3)*za(p6,e5)*zb(p1,p2)*zb(
      &    p1,p4)*iza(k5,e5) + 2.D0*za(p3,p4)*za(p6,e5)*zb(p1,p4)*zb(p2,
@@ -406,6 +370,47 @@ c      write(*,*) 'epmin in upper_tri', epmin
       upper_tri(j3,2,ep) = upper_tri(j3,2,ep) + prW(s25)*vert16x8*omal*
      & mwsq**(-1)*mt*s134**(-1) * (  - 1.D0/2.D0*za(p1,p3)*za(p3,p4)*
      &    za(p6,e5)*zb(p1,p4)**2*zb(p2,k5)*zb(e5,p3) )
+      upper_tri(j3,2,ep) = upper_tri(j3,2,ep) + prW(s25)*vert16x10*mt*
+     & s134**(-1) * ( 2.D0*za(p1,p3)*za(p6,e5)*zb(p1,p2)*zb(p1,p4)*iza(
+     &    k5,e5) + 2.D0*za(p3,p4)*za(p6,e5)*zb(p1,p4)*zb(p2,p4)*iza(k5,
+     &    e5) )
+      upper_tri(j3,2,ep) = upper_tri(j3,2,ep) + prW(s25)*vert16x10*omal
+     & *mwsq**(-1)*mt*s134**(-1) * ( za(p1,p3)*za(p6,p2)*zb(p1,p4)*zb(
+     &    p2,p1)*zb(p2,k5) + za(p1,p3)*za(p6,k5)*zb(p1,p4)*zb(p2,k5)*
+     &    zb(k5,p1) + za(p1,p3)*za(p6,e5)*zb(p1,p4)*zb(p2,k5)*zb(e5,p1)
+     &     - za(p3,p4)*za(p6,p2)*zb(p1,p4)*zb(p2,p4)*zb(p2,k5) - za(p3,
+     &    p4)*za(p6,k5)*zb(p1,p4)*zb(p2,k5)*zb(k5,p4) - za(p3,p4)*za(p6
+     &    ,e5)*zb(p1,p4)*zb(p2,k5)*zb(e5,p4) )
+      upper_tri(j3,2,ep) = upper_tri(j3,2,ep) + prW(s25)*vert16x11*
+     & facuLl*mt * ( za(p3,p6)*za(p6,e5)*zb(p1,p4)*zb(p2,p6)*iza(k5,e5)
+     &     )
+      upper_tri(j3,2,ep) = upper_tri(j3,2,ep) + prW(s25)*vert16x11*omal
+     & *mwsq**(-1)*facuLl*mt * ( 1.D0/2.D0*za(p3,p6)*zb(p1,p4)*zb(p2,k5
+     &    )*s25 )
+      upper_tri(j3,2,ep) = upper_tri(j3,2,ep) + prW(s25)*vert16x11*omal
+     & *mwsq**(-1)*facuLl*mt*s134 * (  - 1.D0/2.D0*za(p3,p6)*zb(p1,p4)*
+     &    zb(p2,k5) )
+      upper_tri(j3,2,ep) = upper_tri(j3,2,ep) + prW(s25)*vert16x12*
+     & facuLl*mt * (  - za(p1,e5)*za(p3,p6)*zb(p1,p2)*zb(p1,p4)*iza(k5,
+     &    e5) + za(p3,p6)*za(p3,e5)*zb(p1,p4)*zb(p2,p3)*iza(k5,e5) + 
+     &    za(p3,p6)*za(p4,e5)*zb(p1,p4)*zb(p2,p4)*iza(k5,e5) )
+      upper_tri(j3,2,ep) = upper_tri(j3,2,ep) + prW(s25)*vert16x12*omal
+     & *mwsq**(-1)*facuLl*mt * ( 1.D0/2.D0*za(p3,p6)*zb(p1,p4)*zb(p2,k5
+     &    )*s25 )
+      upper_tri(j3,2,ep) = upper_tri(j3,2,ep) + prW(s25)*vert16x12*omal
+     & *mwsq**(-1)*facuLl*mt*s134 * ( 1.D0/2.D0*za(p3,p6)*zb(p1,p4)*zb(
+     &    p2,k5) )
+      upper_tri(j3,2,ep) = upper_tri(j3,2,ep) + prW(s25)*vert16x13*
+     & facuLl*mt*s134**(-1) * ( 2.D0*za(p1,p3)*za(p6,e5)*zb(p1,p2)*zb(
+     &    p1,p4)*iza(k5,e5) + 2.D0*za(p3,p4)*za(p6,e5)*zb(p1,p4)*zb(p2,
+     &    p4)*iza(k5,e5) )
+      upper_tri(j3,2,ep) = upper_tri(j3,2,ep) + prW(s25)*vert16x13*omal
+     & *mwsq**(-1)*facuLl*mt*s134**(-1) * ( za(p1,p3)*za(p6,p2)*zb(p1,
+     &    p4)*zb(p2,p1)*zb(p2,k5) + za(p1,p3)*za(p6,k5)*zb(p1,p4)*zb(p2
+     &    ,k5)*zb(k5,p1) + za(p1,p3)*za(p6,e5)*zb(p1,p4)*zb(p2,k5)*zb(
+     &    e5,p1) - za(p3,p4)*za(p6,p2)*zb(p1,p4)*zb(p2,p4)*zb(p2,k5) - 
+     &    za(p3,p4)*za(p6,k5)*zb(p1,p4)*zb(p2,k5)*zb(k5,p4) - za(p3,p4)
+     &    *za(p6,e5)*zb(p1,p4)*zb(p2,k5)*zb(e5,p4) )
 
 
       enddo

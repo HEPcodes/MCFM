@@ -7,7 +7,8 @@
 *    and spins                                                         *
 *     f(-p1) + f(-p2) -->  gamma(p3) + gamma(p4) + parton(p5)          *
 ************************************************************************
-
+!======= C. Williams edited March 2013 to be more efficient in dipoles 
+!======= for fragmentation pieces. 
       implicit none 
       include 'constants.f'
       include 'ptilde.f'
@@ -29,15 +30,11 @@
 
 
       if(frag) then 
-         ndmax=6
+         ndmax=4
       else
          ndmax=2
       endif
 
-!---- Intialise Photon dipoles 
-      do j=1,mxpart
-        phot_dip(j)=.false.
-      enddo
 
 c---- calculate both initial-initial dipoles
 c---- note that we do not require the gg dipoles, so the v-type
@@ -49,13 +46,9 @@ c---- entries are left as dummies
 
 !---- Extra photon dipoles 
       if (frag) then 
-!---- gamma(3) dipoles
-         call dipsfrag(3,p,3,5,1,sub35_1,msq35_1,qqb_dirgam_swap)
-         call dipsfrag(4,p,3,5,2,sub35_2,msq35_2,qqb_dirgam_swap)         
-!----- gamma(4) dipoles 
-         call dipsfrag(5,p,4,5,1,sub45_1,msq45_1,qqb_dirgam) 
-         call dipsfrag(6,p,4,5,2,sub45_2,msq45_2,qqb_dirgam)
-         do j=3,6 
+         call dipsfrag(3,p,3,5,2,sub35_2,msq35_2,qqb_dirgam)
+         call dipsfrag(4,p,4,5,2,sub45_2,msq45_2,qqb_dirgam)         
+         do j=3,4
            phot_dip(j)=.true. 
          enddo
       endif
@@ -69,22 +62,12 @@ c---- entries are left as dummies
       enddo
       
       if(frag) then 
-!      g-q frag dipoles 
-         if((j.eq.0) .and. (k.gt.0)) then            
-            msq(4,j,k)=Q(k)**2*msq35_2(j,k)*sub35_2*half
-            msq(6,j,k)=Q(k)**2*msq45_2(j,k)*sub45_2*half
-         elseif((j.eq.0).and.(k.lt.0)) then 
-!     g-qbar frag dipoles
-            msq(4,j,k)=Q(abs(k))**2*msq35_2(j,k)*sub35_2*half 
-            msq(6,j,k)=Q(abs(k))**2*msq45_2(j,k)*sub45_2*half
-          elseif((j.gt.0).and.(k.eq.0)) then 
-!     q-g frag dipoles 
-             msq(3,j,k)=Q(j)**2*msq35_1(j,k)*sub35_1*half
-             msq(5,j,k)=Q(j)**2*msq45_1(j,k)*sub45_1*half
-          elseif((j.lt.0).and.(k.eq.0)) then 
-!     qbar-g frag dipoles
-             msq(3,j,k)=Q(abs(j))**2*msq35_1(j,k)*sub35_1*half
-             msq(5,j,k)=Q(abs(j))**2*msq45_1(j,k)*sub45_1*half
+         if((j.ne.0) .and. (k.eq.0)) then            
+            msq(3,j,k)=Q(j)**2*msq35_2(j,k)*sub35_2*half
+            msq(4,j,k)=Q(j)**2*msq45_2(j,k)*sub45_2*half
+         elseif((j.eq.0).and.(k.ne.0)) then 
+            msq(3,j,k)=Q(k)**2*msq35_2(j,k)*sub35_2*half
+            msq(4,j,k)=Q(k)**2*msq45_2(j,k)*sub45_2*half
           endif
        endif
           

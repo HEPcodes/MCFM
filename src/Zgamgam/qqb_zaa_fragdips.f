@@ -5,19 +5,19 @@
 !--------------------------------------------------------------- 
 !--- Author C. Williams April 2012 
 !-----------------------------------------------------------------
+!---- modified March 2013 during frag re-write
 
 
-
-      subroutine qqb_zaa_fragdips(p,qcd_tree,msq_out) 
+      subroutine qqb_zaa_fragdips(p,p_phys,qcd_tree,msq_out) 
       implicit none
       include 'constants.f'
       include 'ewcouple.f'
       include 'ewcharge.f'
       include 'frag.f'
-      double precision p(mxpart,4)
+      double precision p(mxpart,4),p_phys(mxpart,4)
       double precision msq_qcd(-nf:nf,-nf:nf),msq_out(-nf:nf,-nf:nf)
       integer j,k
-      double precision virt_dips(2),xl(2),dot,fsq 
+      double precision virt_dips,xl,dot,fsq 
       double precision aewo2pi,fi_gaq
       external qcd_tree
             
@@ -27,29 +27,10 @@
       fsq=frag_scale**2
      
       
-!---- Integrated dipoles are functions of p_gamma = z * pjet so need to rescale pjet
-
      
-      call rescale_pjet(p) 
+      xl=dlog(-two*dot(p_phys,2,6)/fsq)
+      virt_dips=+aewo2pi*(fi_gaq(z_frag,p_phys,xl,6,2,2))
       
-     
-
-      do j=1,2
-         xl(j)=dlog(-two*dot(p,j,6)/fsq)
-      enddo
-      
-      do j=1,2
-         virt_dips(j)=+aewo2pi*(fi_gaq(z_frag,p,xl(j),6,j,2))
-      enddo
-      
-
-!---- Matrix elements conserve momenta thro pjet = sum of rest so return orignal pjet
-
-      call return_pjet(p)
-     
-     
-
-
 
       do j=-nf,nf
          do k=-nf,nf
@@ -67,15 +48,10 @@
          do k=-nf,nf
             
 !   factor of two cancelled by statistical factor because two photons
-            if((j.eq.0).and.(k.gt.0)) then
-                  msq_out(j,k)=msq_qcd(j,k)*Q(k)**2*virt_dips(2)
-            elseif((j.eq.0).and.(k.lt.0)) then 
-                 msq_out(j,k)=msq_qcd(j,k)*Q(abs(k))**2*virt_dips(2)
-            elseif((j.gt.0).and.(k.eq.0)) then
-                  msq_out(j,k)=msq_qcd(j,k)*Q(j)**2*virt_dips(1)              
-            elseif((j.lt.0).and.(k.eq.0)) then          
-                 msq_out(j,k)=msq_qcd(j,k)*Q(abs(j))**2*virt_dips(1)
-            
+            if((j.eq.0).and.(k.ne.0)) then
+                  msq_out(j,k)=msq_qcd(j,k)*Q(k)**2*virt_dips
+            elseif((j.ne.0).and.(k.eq.0)) then
+                  msq_out(j,k)=msq_qcd(j,k)*Q(j)**2*virt_dips                    
             endif
             
          enddo

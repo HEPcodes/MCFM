@@ -18,7 +18,7 @@ c     q(-p1)+qbar(-p2) -->  e-(p3)+e+(p4))+a(p5)+g(p6)
       external qqb_z1jet
 
       if(frag) then
-         ndmax=4
+         ndmax=3
       else
          ndmax=2
       endif
@@ -36,10 +36,8 @@ c---- entries are left as dummies
      . qqb_zgam,donothing_gvec)
       
       if (frag) then 
-         call dipsfrag(3,p,5,6,1,sub56_1,msq56_1,qqb_z1jet)
+         call dipsfrag(3,p,5,6,2,sub56_2,msq56_2,qqb_z1jet)
          phot_dip(3)=.true.
-         call dipsfrag(4,p,5,6,2,sub56_2,msq56_2,qqb_z1jet)
-         phot_dip(4)=.true.
       endif
     
 
@@ -60,12 +58,12 @@ c---- entries are left as dummies
       elseif ((j .ne. 0) .and. (k .eq. 0)) then
          msq(2,j,k)=2d0*tr*sub26_1(qg)*msq26_1(j,-j)
          if(frag) then 
-            msq(3,j,k)=Q(j)**2*sub56_1*msq56_1(j,k) 
+            msq(3,j,k)=Q(j)**2*sub56_2*msq56_2(j,k) 
          endif
       elseif ((j .eq. 0) .and. (k .ne. 0)) then
          msq(1,j,k)=2d0*tr*sub16_2(qg)*msq16_2(-k,k)         
          if(frag) then 
-            msq(4,j,k)=Q(k)**2*sub56_2*msq56_2(j,k) 
+            msq(3,j,k)=Q(k)**2*sub56_2*msq56_2(j,k) 
          endif
          
       endif

@@ -20,7 +20,7 @@
       
       integer j,k,nu
       double precision msq(-nf:nf,-nf:nf),pin(mxpart,4),p(mxpart,4)
-      double precision pw1(4),pw2(4),p12(4),q(4),a(4),u(4),b(4),z(4),
+      double precision pw1(4),pw2(4),q(4),a(4),u(4),b(4),z(4),
      & q1(4),q2(4),a1(4),a2(4),z1(4),z2(4)
       double precision sz,sw1,sw2,qDq,aDa,uDu,bDb,densq,
      . p3Dp5,p6Dp8,q1Dq1,q2Dq2,a1Da1,a2Da2
@@ -52,7 +52,6 @@ c      p(j,nu)=scalefac*pin(j,nu)
       enddo      
 
       z(nu)=p(9,nu)+p(10,nu)
-      p12(nu)=p(1,nu)+p(2,nu)
       pw1(nu)=p(3,nu)+p(4,nu)
       pw2(nu)=p(7,nu)+p(8,nu)
 

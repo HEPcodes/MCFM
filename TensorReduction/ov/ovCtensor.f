@@ -4,7 +4,8 @@
 C     p1,p2 are the external momenta,
 C     m1s,m2s,m3s are the squares of the internal masses
 C     FC0...FC3 are the rank 0,...3 triangle functions
-C     Lorentz indices are stored as linear array, thus FD2(y2(n1,n2),ep)
+C     Lorentz indices are stored as linear array, 
+C     thus FC2(y2(n1,n2),ep), etc
 C     Author: R.K.Ellis (January 2013)
       include 'TRconstants.f'
       include 'TRydef.f'
@@ -23,7 +24,7 @@ C     Author: R.K.Ellis (January 2013)
      & FB0_1(-2:0),FB1_1(y1max,-2:0),FB2_1(y2max,-2:0),
      & FB0_2(-2:0),FB1_2(y1max,-2:0),FB2_2(y2max,-2:0),
      & FB0_3(-2:0),FB1_3(y1max,-2:0),FB2_3(y2max,-2:0),
-     & C00(-2:0),B00_1(-2:0),B00_2(-2:0),B00_3(-2:0),qlI3,
+     & C00(-2:0),B00_1(-2:0),B00_2(-2:0),B00_3(-2:0),trI3,
      & tau3(4,-2:0),RHS(2),inRHS(2)
       integer n1,n2,n3,ep,indx(2)
       logical first,failed,iterate,dosvd
@@ -165,7 +166,7 @@ c--- point to restart from, if necessary
       endif
       
       do ep=-2,0
-      FC0(ep)=qlI3(p1Dp1,p2Dp2,p3Dp3,m1s,m2s,m3s,musq,ep)     
+      FC0(ep)=trI3(p1Dp1,p2Dp2,p3Dp3,m1s,m2s,m3s,musq,ep)     
       inRHS(1)=s1Dp1*FC0(ep)+half*FB0_2(ep)-half*FB0_1(ep)
       inRHS(2)=s1Dp2*FC0(ep)+half*FB0_3(ep)-half*FB0_2(ep)
       if (dosvd) then

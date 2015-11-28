@@ -13,6 +13,7 @@
 ************************************************************************
       include 'constants.f'
       include 'sprods_com.f'
+      include 'msqbits.f'
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),
      .  Bigagam,Bigbgam,Bigcgam,
      . qr_qr(2,2),ab_ab(2,2),ra_ra(2,2),ar_ra(2,2),
@@ -53,6 +54,20 @@
       gg_qa(j)=+avegg*Bigcgam(4,5,2,1,3,j)
       enddo
 
+c--- fill ancillary array that is used for fragmentation
+c--- contributions in gmgmjt process
+      msqbits(ddb_ddb)=qa_qa(1)
+      msqbits(ddb_ssb)=qa_rb(1,1)
+      msqbits(ddb_uub)=qa_rb(1,2)
+      msqbits(uub_uub)=qa_qa(2)
+      msqbits(uub_ccb)=qa_rb(2,2)
+      msqbits(uub_ddb)=qa_rb(2,1)
+      msqbits(dbd_ddb)=aq_qa(1)
+      msqbits(dbd_ssb)=aq_rb(1,1)
+      msqbits(dbd_uub)=aq_rb(1,2)
+      msqbits(ubu_uub)=aq_qa(2)
+      msqbits(ubu_ccb)=aq_rb(2,2)
+      msqbits(ubu_ddb)=aq_rb(2,1)
 
       do j=-nf,nf
       do k=-nf,nf

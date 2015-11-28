@@ -7,6 +7,7 @@ c--- see Bern, Dixon and Schmidt, hep-ph/0206194, Eqs.(9)-(11).
       include 'ewcouple.f'
       include 'ewcharge.f'
       include 'zprods_com.f'
+      include 'noglue.f'
 C  in is the label of the momentum contracted with n
       integer j,k,in,h1,h2,h3,h4,i1,i2
       double precision msq(-nf:nf,-nf:nf)
@@ -19,6 +20,9 @@ C  in is the label of the momentum contracted with n
       msq(j,k)=0d0
       enddo
       enddo
+
+c--- no contribution if we are omitting gg piece
+      if (omitgg) return
 
 c--- this amplitude doesn't contain any n dependence
 c--- (it has been explicitly written out), and the emitted momentum

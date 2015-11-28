@@ -34,13 +34,10 @@ c--- loop over plots
 c--- add weights      
       HIST(I,L)=HIST(I,L) + HIST(3*maxhisto+I,L)
 c--- add errors
-      if (abs(wgt) .gt. 1d-15) then         ! for safety
       HIST(maxhisto+I,L)=HIST(maxhisto+I,L)
-     . + HIST(3*maxhisto+I,L)**2*HDEL(I)/wgt
-c--- we want (f**2*wgt), so we do (f*wgt)**2/wgt ; the extra
-c--- factor of HDEL(I) is to account for the normalization by the
-c--- bin width (c.f. MFILL in mbook.f)
-      endif
+     . + HIST(3*maxhisto+I,L)**2*HDEL(I)
+c--- the extra factor of HDEL(I) is to account for the normalization
+c--- by the bin width (c.f. MFILL in mbook.f)
       
 c--- count entries
       if (IHIS(3*maxhisto+I,L) .GT. 0) then
@@ -50,6 +47,8 @@ c--- count entries
       endif
 
       ENDDO
+
+      added=.true.
 
 c--- if any bin has been filled, increment histogram counter
       if (added) then

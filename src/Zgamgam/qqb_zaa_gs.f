@@ -19,7 +19,7 @@ c     q(-p1)+qbar(-p2) -->  e-(p3)+e+(p4))+a(p5)+g(p6)
      & msq67_1(-nf:nf,-nf:nf),msq67_2(-nf:nf,-nf:nf),
      & sub57_1,sub57_2,sub67_1,sub67_2
       external qqb_zaa,donothing_gvec
-      external qqb_zaj,qqb_zaj_swap
+      external qqb_zaj
 
 c---ipsgen=1: photons 5 and 6 radiated from initial quark line 
 c---ipsgen=2: photons 5 and 6 radiated in Z decay 
@@ -27,7 +27,7 @@ c---ipsgen=3: photon 5 in Z decay, photon 6 radiated from initial quark line
 c---ipsgen=4: photon 6 in Z decay, photon 5 radiated from initial quark line
 
       if ((frag) .and. (ipsgen .ne. 2)) then
-         ndmax=6
+         ndmax=4
       else
          ndmax=2
       endif
@@ -48,15 +48,13 @@ c-----extra photon dipoles
       if (frag) then 
 c--------gamma(5) dipoles: only if 5 is radiated from initial state
          if ((ipsgen .eq. 1) .or. (ipsgen .eq. 4)) then
-         call dipsfrag(3,p,5,7,1,sub57_1,msq57_1,qqb_zaj_swap)
-         call dipsfrag(4,p,5,7,2,sub57_2,msq57_2,qqb_zaj_swap)
+         call dipsfrag(3,p,5,7,2,sub57_2,msq57_2,qqb_zaj)
          endif
 c--------gamma(6) dipoles: only if 6 is radiated from initial state
          if ((ipsgen .eq. 1) .or. (ipsgen .eq. 3)) then
-         call dipsfrag(5,p,6,7,1,sub67_1,msq67_1,qqb_zaj)
-         call dipsfrag(6,p,6,7,2,sub67_2,msq67_2,qqb_zaj)
+         call dipsfrag(4,p,6,7,2,sub67_2,msq67_2,qqb_zaj)
          endif
-         do j=3,6
+         do j=3,4
             phot_dip(j)=.true.
          enddo
       endif  
@@ -80,10 +78,10 @@ c--------gamma(6) dipoles: only if 6 is radiated from initial state
          msq(2,j,k)=2d0*tr*sub27_1(qg)*msq27_1(j,-j)
          if (frag) then 
             if ((ipsgen .eq. 1) .or. (ipsgen .eq. 4)) then
-              msq(3,j,k)=Q(j)**2*msq57_1(j,k)*sub57_1*half
+              msq(3,j,k)=Q(j)**2*msq57_2(j,k)*sub57_2*half
             endif
             if ((ipsgen .eq. 1) .or. (ipsgen .eq. 3)) then
-              msq(5,j,k)=Q(j)**2*msq67_1(j,k)*sub67_1*half
+              msq(4,j,k)=Q(j)**2*msq67_2(j,k)*sub67_2*half
             endif
          endif
 
@@ -91,10 +89,10 @@ c--------gamma(6) dipoles: only if 6 is radiated from initial state
          msq(1,j,k)=2d0*tr*sub17_2(qg)*msq17_2(-k,k)         
          if (frag) then 
             if ((ipsgen .eq. 1) .or. (ipsgen .eq. 4)) then
-              msq(4,j,k)=Q(k)**2*msq57_2(j,k)*sub57_2*half
+              msq(3,j,k)=Q(k)**2*msq57_2(j,k)*sub57_2*half
             endif
             if ((ipsgen .eq. 1) .or. (ipsgen .eq. 3)) then
-              msq(6,j,k)=Q(k)**2*msq67_2(j,k)*sub67_2*half
+              msq(4,j,k)=Q(k)**2*msq67_2(j,k)*sub67_2*half
             endif
          endif
          

@@ -13,6 +13,7 @@ c    (6-->6)
       include 'zprods_decl.f'
       include 'sprods_com.f'
       include 'blabels.f'
+      include 'process.f'
       character*9 st
       double complex bcoeff(8),zab2,izab2,bub6
       double complex iza(6,6),izb(6,6)
@@ -31,6 +32,7 @@ c    (6-->6)
       izb(k,j)=-izb(j,k)
       enddo
       enddo
+
       IDelta=s(j1,j2)**2+s(j3,j4)**2+s(j5,j6)**2
      & -2d0*s(j1,j2)*s(j3,j4)
      & -2d0*s(j3,j4)*s(j5,j6)
@@ -48,9 +50,6 @@ c    (6-->6)
       
       if     (st.eq.'q+qb-g+g+') then
 
-      bcoeff(b12)=czip
-      bcoeff(b12zm)=czip
-      bcoeff(b12m)=czip
       bcoeff(b34)= + t134ms34**(-2) * (  - za(j4,j3)*za(j1,j5)**2*zb(j4
      &    ,j1)**2*iza(j1,j2)**2*iza(j5,j6) )
       bcoeff(b34) = bcoeff(b34) + t134ms34**(-1) * ( za(j3,j1)*za(j1,j5
@@ -119,6 +118,23 @@ c    (6-->6)
      &    ,j6)*zb(j2,j6)**2*iza(j4,j3)*iza(j1,j2)**2*is(j5,j6) )
       bcoeff(rat) = bcoeff(rat) + za(j3,j5)**2*iza(j4,j3)*iza(j1,j2)**2
      & *iza(j5,j6) - zb(j4,j6)**2*iza(j1,j2)**2*izb(j4,j3)*izb(j5,j6)
+
+      if     ((case .eq. 'HWWint') .or. (case .eq. 'WWqqbr')
+     &   .or. (case .eq. 'HWWH+i') .or. (case .eq. 'ggWW4l')) then
+      bcoeff(b12)=czip
+      bcoeff(b12zm)=czip
+      bcoeff(b12m)=czip
+      elseif ((case .eq. 'HZZint') .or. (case .eq. 'ZZlept')
+     &   .or. (case .eq. 'HZZH+i') .or. (case .eq. 'ggZZ4l')
+     &   .or. (case .eq. 'ggZZbx')) then
+      bcoeff(b12zm)=czip
+      bcoeff(b12)=bcoeff(b12zm)
+      bcoeff(b1)=-bcoeff(b12)-bcoeff(b34)-bcoeff(b56)
+     & -bcoeff(b134)-bcoeff(b234)
+      else
+      write(6,*) 'Unimplemented case in mbc.f'
+      stop
+      endif
 
       elseif (st.eq.'q+qb-g+g-') then
 
@@ -437,9 +453,20 @@ c    (6-->6)
      &    izb(j5,j6)*zab2(j3,j4,j2,j6)**2*izab2(j1,j4,j3,j2)**2 + iza(
      &    j5,j6)*izb(j4,j3)*zab2(j5,j3,j1,j4)**2*izab2(j1,j3,j4,j2)**2
 
-
+      if     ((case .eq. 'HWWint') .or. (case .eq. 'WWqqbr')
+     &   .or. (case .eq. 'HWWH+i') .or. (case .eq. 'ggWW4l')) then
       bcoeff(b12)=bub6(j2,j1,j4,j3,j6,j5,zb,za)
       bcoeff(b12m)=bcoeff(b12zm)-bcoeff(b12)
+      elseif ((case .eq. 'HZZint') .or. (case .eq. 'ZZlept')
+     &   .or. (case .eq. 'HZZH+i') .or. (case .eq. 'ggZZ4l')
+     &   .or. (case .eq. 'ggZZbx')) then
+      bcoeff(b12)=bcoeff(b12zm)
+      bcoeff(b1)=-bcoeff(b12)-bcoeff(b34)-bcoeff(b56)
+     & -bcoeff(b134)-bcoeff(b234)
+      else
+      write(6,*) 'Unimplemented case in mbc.f'
+      stop
+      endif
 
       endif
       

@@ -3,8 +3,14 @@ VPATH		= $(PWD)/obj
 INCPATH  	= $(PWD)/../Include
 OUTPUT_OPTION	= -o $(PWD)/obj/$@
 
+OLODIR          = /Users/johnmc/Research/OneLOop-3.3.1
+
 FC = gfortran
+# For linking against OneLOop
+FFLAGS 	= -O2 -g -I$(INCPATH) -Iobj -Jobj -I$(OLODIR)
+# no linking
 FFLAGS 	= -O2 -g -I$(INCPATH) -Iobj -Jobj
+
 
 LIBRARY = libov.a
 
@@ -12,6 +18,10 @@ LIBRARY = libov.a
 # Specify the object files. 
 
 OBJS = \
+trI1.o \
+trI2.o \
+trI3.o \
+trI4.o \
 TRsettensorcontrol.o \
 del2.o \
 del3.o \
@@ -19,6 +29,7 @@ del4.o \
 doBtensor.o \
 doCtensor.o \
 doDtensor.o \
+doEtensor.o \
 ludcmp.o \
 mprove.o \
 ovArraysetup.o \
@@ -29,6 +40,7 @@ ovDcheck.o \
 ovDtensor.o \
 ovE0scalar.o \
 ovEtensor.o \
+ovEcheck.o \
 ovIpiksrt.o \
 ovdot.o \
 ovdsvdcmp.o \
@@ -41,8 +53,9 @@ pvfndd.o \
 zlubksb.o \
 zsvbksb.o
       
+
       
-$(LIBRARY):	$(OBJS) 
+$(LIBRARY):	$(OBJS)
 		ar cru $(LIBRARY) $(patsubst %,obj/%,$(OBJS))
 		ranlib $(LIBRARY)
  

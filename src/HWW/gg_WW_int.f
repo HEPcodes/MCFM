@@ -15,9 +15,11 @@ c--- Triangle (axial) pieces cancel for massless isodoublets
       include 'Higgsint.f'
       include 'scale.f'
       include 'noglue.f'
+      include 'anom_higgs.f' 
+      include 'process.f'
       integer h1,h2,nu,i,j,k,om,del1,del2,k12h,k34h,k56h11,k34h11,e
       double precision p(mxpart,4),msq(fn:nf,fn:nf),msqgg,fac
-      double precision mfsq,tau,tauinv,rt,pttwo
+      double precision mfsq,tau,tauinv,rt,pttwo,rescale
       double complex Avec(2,2),Ahiggs(2,2),Agen3(2,2),Atot(2,2),
      & faccont,fachiggs,amphiggs,f,e3De4,sum(2,2,-2:0)
 
@@ -28,13 +30,14 @@ c--- Triangle (axial) pieces cancel for massless isodoublets
       double complex fvs,fvf,box(2,2,-2:0),triang(2,2,-2:0),
      & bub(2,2,-2:0)
       character*9 pp,pm
-      logical includegens1and2,includegen3,docheck,first
+      logical includegens1and2,includegen3,docheck,first,
+     & caseggWW4l,caseHWWHpI,caseHWWint
       common/docheck/docheck
       parameter(pp='q+qb-g+g+',pm='q+qb-g+g-')
       parameter(del1=7,del2=8)
       parameter(k12h=9,k34h=10,k56h11=11,k34h11=12)
       data first/.true./ 
-      save first
+      save first,caseggWW4l,caseHWWHpI,caseHWWint
 
 c--- set this to true to include generations 1 and 2 of (light) quarks
       includegens1and2=.true.      
@@ -64,6 +67,12 @@ c--- omit massless loops for pt(W) < "ptWsafetycut_massless" (for num. stability
         write(6,*)'****************************************************'
         first=.false. 
         if (includegen3) call qlinit
+        caseggWW4l=.false.
+        caseHWWHpI=.false.
+        caseHWWint=.false.
+        if (case .eq. 'ggWW4l') caseggWW4l=.true.
+        if (case .eq. 'HWWH+i') caseHWWHpI=.true.
+        if (case .eq. 'HWWint') caseHWWint=.true.
       endif
 
 c--- if neither contribution is included print warning message and stop
@@ -83,8 +92,16 @@ c---   .true .  --> print out coefficients of integrals at special point
 c---   .false.  --> run as normal
       docheck=.false.
       
-c--- set flag to signal calculation of Higgs interference only
-      Higgsint=.true.
+c--- set flag to signal calculation of Higgs related contributions only,
+c---  e.g. entering interference
+      if     (caseggWW4l) then
+        Higgsint=.false.
+      elseif ((caseHWWHpi) .or. (caseHWWint)) then
+        Higgsint=.true.
+      else
+        write(6,*) 'Unexpected case in gg_WW_int: ',case
+        stop
+      endif
       
       do j=-nf,nf
       do k=-nf,nf
@@ -357,16 +374,35 @@ c--- for pt(W) < "ptWsafetycut_massless" GeV
         enddo
       endif
 
+c--- Rescale for width study
+      if((keep_smhiggs_norm).and.(anom_higgs)) then 
+         rescale=chi_higgs**2 
+         Ahiggs(:,:)=Ahiggs(:,:)*rescale
+      endif
+
       msqgg=0d0
       do h1=1,2
       do h2=1,2
       Atot(h1,h2)=faccont*Avec(h1,h2)+Agen3(h1,h2)+Ahiggs(h1,h2)
 
+      if     (caseggWW4l) then
+c--- This accumulates total contributions
+        msqgg=msqgg+cdabs(Atot(h1,h2))**2
+      elseif (caseHWWHpi) then
 c--- This only accumulates contributions containing the Higgs diagram,
 c---  i.e. the Higgs diagrams squared and the interference
-      msqgg=msqgg+cdabs(Atot(h1,h2))**2
-     &           -cdabs(faccont*Avec(h1,h2)+Agen3(h1,h2))**2
-
+        msqgg=msqgg+cdabs(Atot(h1,h2))**2
+     &             -cdabs(faccont*Avec(h1,h2)+Agen3(h1,h2))**2
+      elseif (caseHWWint) then
+c--- This only accumulates the interference
+        msqgg=msqgg+cdabs(Atot(h1,h2))**2
+     &             -cdabs(faccont*Avec(h1,h2)+Agen3(h1,h2))**2
+     &             -cdabs(Ahiggs(h1,h2))**2
+      else
+        write(6,*) 'Unexpected case in gg_WW_int: ',case
+        stop
+      endif
+      
       enddo
       enddo
 

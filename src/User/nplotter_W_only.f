@@ -126,6 +126,7 @@ c---       dx:  bin width
 c---   llplot:  equal to "lin"/"log" for linear/log scale
 
        call bookplot(n,tag,'W rapidity',y34,wt,wt2,-5d0,5d0,0.2d0,'lin')
+       call ebookplot(n,tag,y34,wt)
        n=n+1
        call bookplot(n,tag,'W ps-rap',eta34,wt,wt2,-5d0,5d0,0.2d0,'lin')
        n=n+1

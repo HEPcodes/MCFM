@@ -21,13 +21,13 @@ c      double precision pwidth_u,pwidth_d,width
       facz=esq/4d0*zmass/(6d0*pi)
       facw=gwsq/8d0*wmass/(6d0*pi)
       factau=gwsq**2/32d0/wmass**4*mtau**5/192d0/pi**3
-      xwsq=(wmass/mt)**2
-      xbsq=(mb/mt)**2
-      write(6,*) '(mb/mt)**2',xbsq
-      root=sqrt((1d0+xbsq-xwsq)**2-4d0*xbsq)
+c      xwsq=(wmass/mt)**2
+c      xbsq=(mb/mt)**2
+c      write(6,*) '(mb/mt)**2',xbsq
+c      root=sqrt((1d0+xbsq-xwsq)**2-4d0*xbsq)
 c      factop=(gw/wmass)**2*mt**3/(64d0*pi)(1d0-xwsq)**2*(1d0+2d0*xwsq)
-      factop=(gw/wmass)**2*mt**3/(64d0*pi)*root
-     & *(1d0+xwsq-2d0*xwsq**2-2d0*xbsq+xbsq*xwsq+xbsq**2)   
+c      factop=(gw/wmass)**2*mt**3/(64d0*pi)*root
+c     & *(1d0+xwsq-2d0*xwsq**2-2d0*xbsq+xbsq*xwsq+xbsq**2)   
       faccharm=(gwsq/wmass**2)**2/32d0*mc**5/192d0/pi**3
 
       pwidth_e=facz*(le**2+re**2)
@@ -39,8 +39,10 @@ c calculated zwidth=3*pwidth_d+2*pwidth_u+3*pwidth_e+3*pwidth_n
       brznn=pwidth_n/zwidth
       brwen=facw/wwidth
       brtau=factau/tauwidth
-      brtop=factop/twidth
-      brcharm=faccharm/1d-2  ! For checking
+c      brtop=factop/twidth
+      brcharm=faccharm
+      
+      brtop=1d0
       
       return
       end

@@ -2,8 +2,7 @@
       implicit none
 C-----calculates the matrix element squared
 C-----for q(p1)+q~(p2)-->g(p3)+g(p4)+g(p5)+H
-c----- using the results of:
-C-----has to be preceded by a call to spinoru to set up the za,zb
+c----- using the results of S. Badger and
 C----   V.~Del Duca, A.~Frizzo and F.~Maltoni,
 C----   %``Higgs boson production in association with three jets,''
 C----   JHEP {\bf 0405}, 064 (2004)
@@ -13,7 +12,11 @@ C-----has to be preceded by a call to spinoru to set up the za,zb
       include 'zprods_com.f'
       double precision Hqaggg,sign,factor
       double complex qamp(6,2,2,2,2),temp(6,2,2,2,2)
-      double complex A2q3g_mpppp,A2q3g_mmmpp, A2q3g_mmpmp, A2q3g_mpmmp
+c      double complex otmp(6,2,2,2,2)
+      double complex A2q3g_mpppp,A2q3g_mmmpp, A2q3g_mmpmp, A2q3g_mpmmp,
+     & na2q3g_mmmpp,na2q3g_mmpmp,na2q3g_mpmmp,na2q3g_mpppp
+      double complex a0hqbqggg_mp_ppp,a0hqbqggg_mp_mpp,a0hqbqggg_mpppm,
+     & a0hqbqggg_mp_pmp
 
 
       double precision DJK(6,6),xa,xb,xc,xd
@@ -61,25 +64,75 @@ C     temp(j,h1,h3,h4,h5) since h2 can be obtained from h1
 
       do j=1,6
 
-      temp(j,2,2,2,2)=A2q3g_mpppp(n(1),n(2),n(i3(j)),n(i4(j)),n(i5(j)),
-     . za,zb)
-      temp(j,2,1,1,1)=A2q3g_mpppp(n(2),n(1),n(i5(j)),n(i4(j)),n(i3(j)),
-     . zb,za)
+c      otmp(j,2,2,2,2)=A2q3g_mpppp(n(1),n(2),n(i3(j)),n(i4(j)),n(i5(j)),
+c     . za,zb)
+      temp(j,2,2,2,2)=-nA2q3g_mpppp(n(1),n(2),n(i3(j)),n(i4(j)),n(i5(j))
+     & ,za,zb)
 
-      temp(j,2,2,2,1) = A2q3g_mmmpp(n(1),n(i3(j)),n(i4(j)),n(i5(j)),
-     . n(2),zb,za)
-      temp(j,2,2,1,1) = A2q3g_mmmpp(n(2),n(i5(j)),n(i4(j)),n(i3(j)),
-     . n(1),za,zb)
+C--------
+c      write(6,*) '2q3g:o:+- +++',
+c     & A2q3g_mpppp(n(1),n(2),n(i3(j)),n(i4(j)),n(i5(j)),za,zb)
+c      write(6,*) '2q3g:n:+- +++',
+c     & -nA2q3g_mpppp(n(1),n(2),n(i3(j)),n(i4(j)),n(i5(j)),za,zb)
+C--------
 
-      temp(j,2,2,1,2) = A2q3g_mmpmp(n(1),n(i3(j)),n(i4(j)),n(i5(j))
-     . ,n(2),zb,za)
-      temp(j,2,1,2,1) = A2q3g_mmpmp(n(2),n(i5(j)),n(i4(j)),n(i3(j)),
-     . n(1),za,zb)
+c      otmp(j,2,1,1,1)=A2q3g_mpppp(n(2),n(1),n(i5(j)),n(i4(j)),n(i3(j)),
+c     . zb,za)
+      temp(j,2,1,1,1)=-nA2q3g_mpppp(n(2),n(1),n(i5(j)),n(i4(j)),n(i3(j))
+     & ,zb,za)
 
-      temp(j,2,1,2,2) = A2q3g_mpmmp(n(1),n(i3(j)),n(i4(j)),n(i5(j)),
-     . n(2),zb,za)
-      temp(j,2,1,1,2) = A2q3g_mpmmp(n(2),n(i5(j)),n(i4(j)),n(i3(j)),
-     .n(1),za,zb)
+c      otmp(j,2,2,2,1) = A2q3g_mmmpp(n(1),n(i3(j)),n(i4(j)),n(i5(j)),
+c     . n(2),zb,za)
+      temp(j,2,2,2,1) =-nA2q3g_mmmpp(n(1),n(i3(j)),n(i4(j)),n(i5(j)),
+     & n(2),zb,za)
+
+C----------
+c      write(6,*) '2q3g:o:+- ++-',
+c     & A2q3g_mmmpp(n(2),n(i3(j)),n(i4(j)),n(i5(j)),n(1),zb,za)
+c      write(6,*) '2q3g:n:+- ++-',
+c     & -nA2q3g_mmmpp(n(2),n(i3(j)),n(i4(j)),n(i5(j)),n(1),zb,za)
+c------------
+
+c      otmp(j,2,2,1,1) = A2q3g_mmmpp(n(2),n(i5(j)),n(i4(j)),n(i3(j)),
+c     . n(1),za,zb)
+      temp(j,2,2,1,1) =-nA2q3g_mmmpp(n(2),n(i5(j)),n(i4(j)),n(i3(j)),
+     & n(1),za,zb)
+
+c      otmp(j,2,2,1,2) = A2q3g_mmpmp(n(1),n(i3(j)),n(i4(j)),n(i5(j))
+c     . ,n(2),zb,za)
+      temp(j,2,2,1,2) = -nA2q3g_mmpmp(n(1),n(i3(j)),n(i4(j)),n(i5(j)),
+     & n(2),zb,za)
+
+C--------
+c      write(6,*) '2q3g:o:+- +-+',
+c     & A2q3g_mmpmp(n(1),n(i3(j)),n(i4(j)),n(i5(j)),n(2),zb,za)
+c      write(6,*) '2q3g:n:+- +-+',
+c     & -nA2q3g_mmpmp(n(1),n(i3(j)),n(i4(j)),n(i5(j)),n(2),zb,za)
+C--------
+
+c      otmp(j,2,1,2,1) = A2q3g_mmpmp(n(2),n(i5(j)),n(i4(j)),n(i3(j)),
+c     . n(1),za,zb)
+      temp(j,2,1,2,1) = -nA2q3g_mmpmp(n(2),n(i5(j)),n(i4(j)),n(i3(j)),
+     & n(1),za,zb)
+
+c      otmp(j,2,1,2,2) = A2q3g_mpmmp(n(1),n(i3(j)),n(i4(j)),n(i5(j)),
+c     . n(2),zb,za)
+      temp(j,2,1,2,2) = -nA2q3g_mpmmp(n(1),n(i3(j)),n(i4(j)),n(i5(j)),
+     & n(2),zb,za)
+
+c--------
+c      write(6,*) '2q3g:o:+- -++',
+c     & A2q3g_mpmmp(n(1),n(i3(j)),n(i4(j)),n(i5(j)),n(2),zb,za)
+c      write(6,*) '2q3g:n:+- -++',
+c     & -nA2q3g_mpmmp(n(1),n(i3(j)),n(i4(j)),n(i5(j)),n(2),zb,za)
+c---------
+
+c      otmp(j,2,1,1,2) = A2q3g_mpmmp(n(2),n(i5(j)),n(i4(j)),n(i3(j)),
+c     .n(1),za,zb)
+      temp(j,2,1,1,2) = -nA2q3g_mpmmp(n(2),n(i5(j)),n(i4(j)),n(i3(j)),
+     & n(1),za,zb)
+
+c       pause
 
 c      temp(j,1,1,1,1)=A2q3g_mpppp(n(1),n(2),n(i3(j)),n(i4(j)),n(i5(j)),
 c     . zb,za) 
@@ -102,6 +155,15 @@ c      temp(j,1,2,1,2)= A2q3g_mmpmp(n(2),n(i5(j)),n(i4(j)),n(i3(j)),
 c     . n(1),zb,za)
       
 c--- fastest to obtain remaining amplitudes by symmetry
+c      otmp(j,1,1,1,1)=-sign*dconjg(otmp(j,2,2,2,2))
+c      otmp(j,1,2,2,2)=-sign*dconjg(otmp(j,2,1,1,1))
+c      otmp(j,1,2,1,1)=-sign*dconjg(otmp(j,2,1,2,2))
+c      otmp(j,1,2,2,1)=-sign*dconjg(otmp(j,2,1,1,2))
+c      otmp(j,1,1,1,2)=-sign*dconjg(otmp(j,2,2,2,1))
+c      otmp(j,1,1,2,2)=-sign*dconjg(otmp(j,2,2,1,1))
+c      otmp(j,1,1,2,1)=-sign*dconjg(otmp(j,2,2,1,2))
+c      otmp(j,1,2,1,2)=-sign*dconjg(otmp(j,2,1,2,1))
+      
       temp(j,1,1,1,1)=-sign*dconjg(temp(j,2,2,2,2))
       temp(j,1,2,2,2)=-sign*dconjg(temp(j,2,1,1,1))
       temp(j,1,2,1,1)=-sign*dconjg(temp(j,2,1,2,2))
@@ -112,6 +174,21 @@ c--- fastest to obtain remaining amplitudes by symmetry
       temp(j,1,2,1,2)=-sign*dconjg(temp(j,2,1,2,1))
       
       enddo
+      
+c      do j=1,6
+c      do h1=1,2
+c      do h3=1,2
+c      do h4=1,2
+c      do h5=1,2
+c      write(6,*) j,h1,h3,h4,h5,temp(j,h1,h3,h4,h5)/
+c     & otmp(j,h1,h3,h4,h5)
+c      enddo
+c      enddo
+c      enddo
+c      enddo
+c      enddo
+c      pause
+      
             
 C----At this stage we have setup the amplitudes but failed 
 C----to assign the helicities properly. So we now reshuffle 

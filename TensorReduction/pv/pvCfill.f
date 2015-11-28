@@ -14,7 +14,7 @@ C     N is the offset in the common block
       integer B12,B23,B13,np,ep,epmj,N,j,perm(2),pvBcache
       integer icall,irecur,irecur2,irecur3,irecur4
       parameter(np=2)
-      double complex G(np,np),in(2,-2:0),qlI3,
+      double complex G(np,np),in(2,-2:0),trI3,
      . bsum(-2:0),b0sum(-2:0),b1sum(-2:0),b11sum(-2:0),b111sum(-2:0),
      . b1111sum(-2:0),b11111sum(-2:0),
      . b00sum(-2:0),b001sum(-2:0),b0011sum(-2:0),b0000sum(-2:0)
@@ -222,7 +222,7 @@ c'B'Id,Bsum1(P?,K?,m1?,m2?)=MM(B1,P,K,m1,m2)+MM(B11,P,K,m1,m2);
 c'B'Id,Bsum0(P?,K?,m1?,m2?)=MM(B0,P,K,m1,m2)+MM(B1,P,K,m1,m2);
 
       do ep=-2,0
-      Cv(N+cc0,ep)=qlI3(p1,p2,p1p2,m1s,m2s,m3s,musq,ep)
+      Cv(N+cc0,ep)=trI3(p1,p2,p1p2,m1s,m2s,m3s,musq,ep)
       bsum(ep)=Bv(bb0+B23,ep)+Bv(bb1+B23,ep)
 
       b0sum(ep)=Bv(bb0+B23,ep)+Bv(bb1+B23,ep)

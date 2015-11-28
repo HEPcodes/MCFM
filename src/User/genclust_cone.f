@@ -22,7 +22,7 @@ c---  where non-jet four vectors are set equal to the incoming q
      . qshared(4),sharedet,getet
       integer maxproto,protoc(20,0:mxpart),eti,shared,
      . sharedc(20),ni
-      logical jetmerge,failed,first,trackdoubleb
+      logical jetmerge,failed,first,trackdoubleb,is_hadronic
 c--- DEBUG
       parameter (Rsep=1d0)  ! Default value
 c      parameter (Rsep=1.3d0)  ! Default value
@@ -65,9 +65,7 @@ c--- pick out jets: note that we search to npart+2-isub, to get the
 c--- number of particles right. Note that isub=0 for all calls except
 c--- the dipole contributions, where isub=1.   
       do i=3,npart+2-isub
-      if ( (plabel(i) .eq. 'pp') .or. (plabel(i) .eq. 'pj')
-     . .or.(plabel(i) .eq. 'bq') .or. (plabel(i) .eq. 'ba')
-     . .or.(plabel(i) .eq. 'qj') ) then
+      if (is_hadronic(i)) then
         maxjet=maxjet+1
         jetindex(maxjet)=i
         jetlabel(maxjet)=plabel(i)
@@ -388,9 +386,7 @@ c--- set all other momenta to zero and restore leptons
       do i=3,npart+2
         do nu=1,4
           qfinal(i,nu)=0d0
-          if ((plabel(i) .ne. 'pp') .and. (plabel(i) .ne. 'pj')
-     .   .and.(plabel(i) .ne. 'bq') .and. (plabel(i) .ne. 'ba')
-     .   .and.(plabel(i) .ne. 'qj')) then
+          if (.not.(is_hadronic(i))) then
             qfinal(i,nu)=q(i,nu)
           endif
         enddo

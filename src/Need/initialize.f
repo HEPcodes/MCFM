@@ -72,7 +72,8 @@ c      write(6,*) 'tmass',tmass
 c      write(6,*) 'emass',emass
 c      write(6,*) 'gw',gw
 
-      sw2=1d0-wmass**2/zmass**2
+c      sw2=1d0-wmass**2/zmass**2
+      sw2=0.2312d0 
 
       fmass(1) = emass
       fmass(2) = 0d0
@@ -118,7 +119,6 @@ c      write(6,*) 'gw',gw
          call coup4x(sw2,zmass,fmass(i),gchf(1,i))
       enddo
 
-c      write(6,*) 'gw,gwsq',gw,gw**2
 !  QCD couplings
 
       g = 1d0

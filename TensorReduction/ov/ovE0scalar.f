@@ -12,7 +12,7 @@
       equivalence (Y, Yflat)
       equivalence (Yi, Yiflat)
 
-      Double Complex pvXDet,qlI4
+      Double Complex pvXDet,trI4
       external pvXDet
 c      Double Complex Det5
 
@@ -55,20 +55,20 @@ c      Double Complex Det5
       enddo
 
         do ep=-2,0
-        D01(ep)=qlI4(p2,p3,p4,p5p1,p2p3,p3p4,m2s,m3s,m4s,m5s,musq,ep)
+        D01(ep)=trI4(p2,p3,p4,p5p1,p2p3,p3p4,m2s,m3s,m4s,m5s,musq,ep)
         enddo
 
         do ep=-2,0
-        D02(ep)=qlI4(p1p2,p3,p4,p5,p4p5,p3p4,m1s,m3s,m4s,m5s,musq,ep)
+        D02(ep)=trI4(p1p2,p3,p4,p5,p4p5,p3p4,m1s,m3s,m4s,m5s,musq,ep)
         enddo
         do ep=-2,0
-        D03(ep)=qlI4(p1,p2p3,p4,p5,p4p5,p5p1,m1s,m2s,m4s,m5s,musq,ep)
+        D03(ep)=trI4(p1,p2p3,p4,p5,p4p5,p5p1,m1s,m2s,m4s,m5s,musq,ep)
         enddo
         do ep=-2,0
-        D04(ep)=qlI4(p1,p2,p3p4,p5,p1p2,p5p1,m1s,m2s,m3s,m5s,musq,ep)
+        D04(ep)=trI4(p1,p2,p3p4,p5,p1p2,p5p1,m1s,m2s,m3s,m5s,musq,ep)
         enddo
         do ep=-2,0
-        D05(ep)=qlI4(p1,p2,p3,p4p5,p1p2,p2p3,m1s,m2s,m3s,m4s,musq,ep)
+        D05(ep)=trI4(p1,p2,p3,p4p5,p1p2,p2p3,m1s,m2s,m3s,m4s,musq,ep)
         enddo
 
       Det=pvXDet(Y,5)

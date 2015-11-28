@@ -23,12 +23,7 @@ c---- with all 2 pi's (ie 1/(2*pi)^11)
       p12(j)=-p1(j)-p2(j)
       enddo
 
-      n2=1
       n3=1
-      mass2=wmass
-      mass3=wmass
-      width2=wwidth
-      width3=wwidth
       call phi1_2(r(1),r(2),r(3),r(4),p12,p567,p34,wt34567,*99)
       n3=0
       call phi1_2m(0d0,r(5),r(6),r(7),0d0,p567,p5,p67,wt567,*99)

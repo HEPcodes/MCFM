@@ -4,15 +4,16 @@
 !--- Author C. Williams Feb 2011 
 !-----------------------------------------------------------------
 
+!==== modified Dec 13 to remove call to outdated rescale_pjet and return_pjet 
+!==== instead p_phys is now passed as in other fragmentaiton routines 
 
-
-      subroutine qqb_zaj_fragdips(p,qcd_tree,msq_out) 
+      subroutine qqb_zaj_fragdips(p,p_phys,qcd_tree,msq_out) 
       implicit none
       include 'constants.f'
       include 'ewcouple.f'
       include 'ewcharge.f'
       include 'frag.f'
-      double precision p(mxpart,4)
+      double precision p(mxpart,4),p_phys(mxpart,4)
       double precision msq_qcd(-nf:nf,-nf:nf),msq_out(-nf:nf,-nf:nf)
       double precision msq_qcd_s(-nf:nf,-nf:nf)
       integer j,k
@@ -28,27 +29,21 @@
       
       fsq=frag_scale**2
       
-
+      xl(:)=0d0 
+      virt_dips(:)=0d0
      
 !---- Integrated dipoles are functions of p_gamma = z * pjet so need to rescale pjet
 
+!==== below routine is outdated
+!      call rescale_pjet(p) 
      
-      call rescale_pjet(p) 
-      
-!----- NOTE Z + gam + j has been simplified so that only 1 is the spectator, thereofore do not 
-!----- need this richer stucture from older code    
-      j=1
-!      do j=1,2
-         xl(j)=dlog(-two*dot(p,j,5)/fsq)
-!      enddp
-!      do j=1,2
-         virt_dips(j)=+aewo2pi*(fi_gaq(z_frag,p,xl(j),5,j,2))
-!      enddo
+         xl(1)=dlog(-two*dot(p_phys,1,5)/fsq)
+         virt_dips(1)=+aewo2pi*(fi_gaq(z_frag,p_phys,xl(1),5,1,2))
 !
     
 !---- Matrix elements conserve momenta thro pjet = sum of rest so return orignal pjet
-
-      call return_pjet(p)
+!==== below routine is outdated
+!     call return_pjet(p)
      
       do j=-nf,nf
          do k=-nf,nf

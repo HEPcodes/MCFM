@@ -17,7 +17,7 @@ c---- i.e. phase space for -p1-p2 --> p3+p4+p5+p6+p7
 c---- with all 2 pi's (ie 1/(2*pi)^11)
 
       double precision r(mxdim)
-      double precision p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4)
+      double precision p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4),pswidth
       double precision p127(4),p12(4),p56(4),p34(4),p3456(4),p345(4)
       double precision wt,wt127,wt345,wt3456,wt34,wt56,wt0,smin,mtbsq
       integer j,n2save,n3save
@@ -99,6 +99,16 @@ c--- a Breit-Wigner at mH, otherwise just linearly
      . ) then
         call phi1_2m_bw(zip,r(13),r(12),r(11),smin,p12,p7,p127,
      .   hmass,hwidth,wt127,*99)
+      elseif (case .eq. 'HZZqgI') then
+c--- width to use in generation of PS: if too far from threshold, just
+c--- use a width of 10 GeV in the B.W. to sample PS adequately
+        if (hmass .lt. mass2+mass3-hwidth*5d0) then
+          pswidth=10d0
+        else
+          pswidth=hwidth
+        endif
+        call phi1_2m_bw(zip,r(13),r(12),r(11),smin,p12,p7,p127,
+     .   hmass,pswidth,wt127,*99)
       else
         call phi1_2m_nobw(zip,r(13),r(12),r(11),
      .   smin,p12,p7,p127,wt127,*99)

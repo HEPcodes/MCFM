@@ -56,7 +56,7 @@ C----self energies never contain double poles -- set to zero
 
 C----calculate B0
 c      do ep=-1,0
-c      Bv(bb0+N,ep)=qlI2(p1sq,m0sq,m1sq,musq,ep)
+c      Bv(bb0+N,ep)=trI2(p1sq,m0sq,m1sq,musq,ep)
 c      enddo
 
       if ((abs(p1sq/musq) .lt. onshellcutoff) 

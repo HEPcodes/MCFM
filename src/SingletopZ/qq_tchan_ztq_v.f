@@ -12,7 +12,7 @@ c     u(-p1)+b(p2)->e-(p3)+e+(p4)+t(p5)+d(p6)
       include 'qcdcouple.f'
       include 'masses.f'
       include 'swapxz.f'
-      include 'pvbadpoint.f'
+      include 'TRbadpoint.f'
       include 'TRtensorcontrol.f'
       include 'tensorinfo.f'
       integer nu,icross,i1(4),i2(4),i6(4),u_b,b_u,db_b,b_db

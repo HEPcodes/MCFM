@@ -20,7 +20,7 @@ c--- routine returns FALSE if event does not pass the process-specific cuts
       filterWbbmas=.true.
 
 c--F  3-jet veto to match with ATLAS analysis. In general we do not want such a veto
-      veto3jets = .true.
+      veto3jets = .false.
 
 c---  20 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4)) +b(p5)+b~(p6) [massive]'
       if ((nproc .eq. 20) .or. (nproc .eq. 25)) then

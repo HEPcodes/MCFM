@@ -26,13 +26,13 @@
       enddo
 
      
-c--- Intial-Intial not coded
+c---- Intial-Initial not coded
       if((ip .le. 2) .and. (kp .le. 2)) return 
       
-c---- Initial-final not coded
+c---- Initial-Final not coded
       if((ip .le. 2) .and. (kp .gt. 2)) return 
      
-c---- Final - Intial 
+c---- Final-Initial 
      
       if((ip .gt. 2) .and. (kp .le. 2)) then 
          
@@ -129,8 +129,7 @@ c
                   ksDp(j)=pdot_ar(ks,p,j)
                   do nu=1,4
                      q(ipart,nu)=p(j,nu)-two*ksDp(j)*ks(nu)/ksDks
-     .                 +two*kdp(j)*kt(nu)/kdk
-                     
+     .                 +two*kdp(j)*kt(nu)/kdk                     
                   enddo              
                endif
                ipart=ipart+1
@@ -138,10 +137,9 @@ c
             enddo
          endif
       
-
          return 
          
-c---  final - final 
+c---  Final-Final 
 
       elseif((ip .gt. 2) .and. (kp .gt. 2)) then 
 

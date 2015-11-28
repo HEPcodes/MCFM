@@ -204,6 +204,7 @@ c---  are handled with reference to nproc
      .    .or.(case .eq. 'HWW_4l') .or. (case .eq. 'HZZ_4l')
      .    .or.(case .eq. 'HWW2lq') 
      .    .or.(case .eq. 'HWW_tb') .or. (case .eq. 'HWWint')
+     .    .or.(case .eq. 'HWWH+i') .or. (case .eq. 'ggWW4l')
      .    .or.(case .eq. 'HZZ_tb') .or. (case .eq. 'HZZint')
      .    .or.(case .eq. 'HWWjet') .or. (case .eq. 'qq_HWW')
      .    .or.(case .eq. 'WW_jet') .or. (case .eq. 'ZZ_jet')

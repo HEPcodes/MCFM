@@ -13,10 +13,6 @@ c
       include 'vegas_common.f'
       include 'constants.f'
       include 'histo.f'
-      include 'masses.f'
-      include 'npart.f'
-      include 'plabel.f'
-      include 'process.f'
       include 'outputflags.f'
       include 'mcfmplotinfo.f'
       double precision p(mxpart,4),wt,wt2,tiny

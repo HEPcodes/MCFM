@@ -19,7 +19,7 @@ C     m1,m2,m3,m4 are the masses squared of internal lines
       parameter(np=3)
       double precision p1,p2,p3,p4,p1p2,p2p3,m1,m2,m3,m4,f1,f2,f3
       double complex G(np,np),csum(-2:0),c1sum(-2:0),c2sum(-2:0),
-     . c0sum(-2:0),in(3,-2:0),qlI4
+     . c0sum(-2:0),in(3,-2:0),trI4
       double complex c11sum(-2:0),c00sum(-2:0),c12sum(-2:0),c22sum(-2:0)
       double precision idp2(0:2),idp1(0:2),id(0:2),
      . idm1(0:2),idm2(0:2),idm3(0:2)
@@ -274,7 +274,7 @@ c      call D0scalar(D0,p1, p2, p3, p4, p1p2, p2p3, m1, m2, m3, m4)
       Dv(N+j,ep)=dcmplx(10000d0)
       enddo
 
-      Dv(N+dd0,ep) =qlI4(p1,p2,p3,p4,p1p2,p2p3,m1,m2,m3,m4,musq,ep)
+      Dv(N+dd0,ep) =trI4(p1,p2,p3,p4,p1p2,p2p3,m1,m2,m3,m4,musq,ep)
 
       in(1,ep) = f1*Dv(N+dd0,ep) - Cv(cc0+C234,ep)+Cv(cc0+C134,ep)
       in(2,ep) = f2*Dv(N+dd0,ep) - Cv(cc0+C234,ep)+Cv(cc0+C124,ep)

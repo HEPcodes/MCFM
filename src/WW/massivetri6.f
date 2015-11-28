@@ -5,14 +5,13 @@
       include 'masses.f'
       include 'sprods_com.f'
       include 'zprods_decl.f'
+      include 'docheck.f'
       double complex c(2,2,12),d(2,2,6),Cint(12,-2:0),triang(2,2,-2:0),
      & qlI3,tmp
       double precision s12,s34,s56,s134,s156,mtsq,Delta,shift,
      & cred13,cred23
       integer j,k1,k2,k3,k4,k5,k6,e,h1,h2
       common/transferbox/d
-      common/docheck/docheck
-      logical docheck
 
       mtsq=mt**2
 

@@ -34,16 +34,11 @@ c--- make call to MCFM routines
       aemmz=1d0/128d0  
       esq=fourpi*aemmz    
       ee=dsqrt(esq)
-      write(6,*) 'ee',ee
       gwsq=fourpi*aemmz/xw
       gw=sqrt(gwsq)
       gsq=1d0
       call ckmfill(nwz)
       
-      write(*,*) 'zmass, wmass',zmass,wmass
-      write(*,*) 'new xw,gw',xw,gw
-
-      write(*,*)
 
       call initialize
 

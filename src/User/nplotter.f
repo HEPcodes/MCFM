@@ -15,6 +15,13 @@ c---          (if applicable), otherwise equal to zero
       include 'constants.f'
       include 'process.f'
       include 'nplot.f'
+
+c--- APPLgrid - use of grids
+      include 'ptilde.f'
+      include 'APPLinclude.f'
+c--- APPLgrid - end
+
+
       double precision p(mxpart,4),wt,wt2
       integer switch,nproc,nd
       common/nproc/nproc
@@ -44,7 +51,7 @@ c---                1  --> counterterm for real radiation
       endif
          
 c--- Special plotting routine for WW -> leptons
-      if((nproc.eq.61)) then 
+      if((nproc.eq.61).or.(nproc.eq.126).or.(nproc.eq.127)) then 
          call nplotter_VV(p,wt,wt2,switch,0)
          return 
       endif
@@ -53,6 +60,8 @@ c--- Special plotting routine for WW -> leptons
         call nplotter_W_only(p,wt,wt2,switch)
       elseif (case .eq. 'Z_only') then
         call nplotter_Z_only(p,wt,wt2,switch)
+      elseif (case .eq. 'W_cjet') then
+        call nplotter_Wbbmas(p,wt,wt2,switch)
       elseif (case .eq. 'Wbbbar') then
         call nplotter_Wbbmas(p,wt,wt2,switch)
       elseif ((case .eq. 'Wbbmas') .or. (case .eq. 'W_bjet')) then
@@ -63,7 +72,9 @@ c--- Special plotting routine for WW -> leptons
      &   .or. (case.eq.'W_3jet')) then
         call nplotter_Wjets(p,wt,wt2,switch)
       elseif ((case.eq.'HWW_4l') .or. (case.eq.'HWW_tb') 
-     &   .or. (case.eq.'HWW2lq') .or. (case.eq.'HWWint')) then
+     &   .or. (case.eq.'HWW2lq') .or. (case.eq.'HWWint') 
+     &   .or. (case.eq.'HWWH+i') .or. (case.eq.'ggWW4l')
+     &   .or. (case.eq.'WWqqbr') ) then
         call nplotter_VV(p,wt,wt2,switch,0)
 c--- photon processes also need to know the dipole number
       elseif ((case.eq.'Wgamma') .or. (case.eq.'Zgamma')
@@ -73,6 +84,8 @@ c--- photon processes also need to know the dipole number
         call nplotter_gamgam(p,wt,wt2,switch,nd)
       elseif (case.eq.'dirgam') then 
         call nplotter_dirgam(p,wt,wt2,switch,nd)
+      elseif (case.eq.'trigam') then 
+        call nplotter_trigam(p,wt,wt2,switch)
       elseif (case.eq.'Z_2gam')  then
         call nplotter_zgamgam(p,wt,wt2,switch,nd)
       elseif (case.eq.'Zgajet')  then
@@ -98,11 +111,24 @@ c--- photon processes also need to know the dipole number
          call nplotter_dm_monj(p,wt,wt2,switch)
       elseif ((case .eq. 'dm_gam').or.(case.eq.'dm_gaj')) then 
          call nplotter_dm_mongam(p,wt,wt2,switch,nd)
+      elseif ((case .eq. 'HZZ_4l')
+     & .or.   (case .eq. 'HZZ_tb')
+     & .or.   (case .eq. 'HZZint')
+     & .or.   (case .eq. 'HZZH+i')
+     & .or.   (case .eq. 'ggZZ4l') 
+     & .or.   (case .eq. 'ggZZbx') 
+     & .or.   (case .eq. 'HZZqgI') 
+     & .or.   (case .eq. 'ZZlept')) then 
+         call nplotter_ZZlept(p,wt,wt2,switch)
       else
          call nplotter_auto(p,wt,wt2)
 c         call nplotter_generic(p,wt,wt2,switch)
       endif
       
+c--- APPLgrid - filling applgrid
+      if (creategrid) call fill_grid(p)
+c--- APPLgrid - end
+
       return
       end
       

@@ -204,7 +204,9 @@ c -- jet plots
 c -- Two particle plots
       call bookplot(n,tag,'pt(la)',ptla,wt,wt2,0d0,500d0,10d0,'log')
       n=n+1     
-      call bookplot(n,tag,'m(Z)',mla,wt,wt2,0d0,500d0,10d0,'log')
+      call bookplot(n,tag,'m(Z)',mla,wt,wt2,0d0,200d0,5d0,'log')
+      n=n+1     
+      call bookplot(n,tag,'m(Z)',mla,wt,wt2,0d0,200d0,5d0,'lin')
       n=n+1     
       call bookplot(n,tag,'m(tj)',mtj,wt,wt2,0d0,500d0,10d0,'log')
       n=n+1     

@@ -8,7 +8,7 @@ C    N is the offset in the storage
       include 'TRscale.f'
       integer N,Np,ep,j
       double precision m1sq
-      double complex qlI1
+      double complex trI1
       logical first,scaleset
       double precision id(0:2),idp2(0:2)
       data first/.true./,scaleset/.false./
@@ -49,7 +49,7 @@ c      write(6,*) 'm1sq=',m1sq
       else
 
       do ep=-2,0
-      Av(aa0+N,ep)=qlI1(m1sq,musq,ep)
+      Av(aa0+N,ep)=trI1(m1sq,musq,ep)
       enddo
       
 C Id,A00(m1?)=m1^2*A0(m1)/D;

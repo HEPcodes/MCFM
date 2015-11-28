@@ -10,6 +10,7 @@
       include 'dynamicscale.f'
       include 'sprods_com.f'
       include 'process.f'
+      include 'efficiency.f'
       include 'noglue.f'
       include 'maxwt.f'
       include 'PDFerrors.f'
@@ -18,16 +19,17 @@
       include 'ipsgen.f'
       include 'dm_params.f' 
       include 'outputflags.f' 
+      include 'lastphot.f' 
       integer ih1,ih2,j,k,sgnj,sgnk,nvec,pflav,pbarflav
       double precision r(mxdim),wgt,pswt,rscalestart,fscalestart,
      & p(mxpart,4),xx(2),flux,sqrts,xmsq_bypart(-1:1,-1:1),
      & lord_bypart(-1:1,-1:1),BrnRat,pjet(mxpart,4),val,val2,
      & xmsq,xmsqjk,W,msq(-nf:nf,-nf:nf),fx1(-nf:nf),fx2(-nf:nf),
-     & ran2,msqdips(-nf:nf,-nf:nf)
+     & ran2,msqdips(-nf:nf,-nf:nf),p_phys(mxpart,4)
       double precision m3,m4,m5
-      logical bin,first,includedipole
+      logical bin,first,includedipole,vetow_2gam
       external qqb_w_g,qqb_z1jet,qqb_dirgam,qqb_2j_t,qqb_2j_s,
-     & qqb_z2jetx,qqb_zaj,qqb_dm_monojet
+     & qqb_z2jetx,qqb_zaj,qqb_dm_monojet,qqb_gmgmjt,qqb_dirgam_g
       common/density/ih1,ih2
       common/energy/sqrts
       common/bin/bin
@@ -43,81 +45,55 @@
          fscalestart=facscale
       endif
 
-!-initialise fragmenation variables 
-
+      ntotshot=ntotshot+1
       fragint=0d0
 
       W=sqrts**2
 
 c----------------------------- GENERATE PHASE SPACE ---------------------------
 
-c---  processes that use "gen3jet"     
-      if ( (case .eq. 'Wgamma') .or.  (case .eq. 'Zgamma') ) then
-        npart=3
-        call gen_phots_jets(r,1,0,p,pswt,*999)
-         z_frag=r(8)
-         frag=.true.
-        
-      elseif( (case .eq. 'gamgam')) then 
-         npart=2
-         call gen2jet(r,p,pswt,*999)        
-         z_frag=r(5) 
-         frag=.true. 
 
-      elseif( (case .eq. 'dirgam')) then 
-         npart=2
-         call gen2jet(r,p,pswt,*999)        
-         z_frag=r(5) 
-         frag=.true. 
-
-      elseif( (case .eq. 'Z_2gam')) then 
-         npart=4
-         if  (ipsgen .eq. 1) then
-             call gen_phots_jets(r,2,0,p,pswt,*999) 
-         elseif  (ipsgen .eq. 2) then
-             call gen_phots_jets_dkrad(r,2,0,p,pswt,*999) 
-         else
-            write(6,*) 'Parameter ipsgen should be 1 or 2'
-            write(6,*) 'ipsgen = ',ipsgen
-            stop
-         endif
-         z_frag=r(11) 
-         frag=.true. 
-         
-      elseif( (case .eq. 'Zgajet')) then 
-         npart=4
-         call gen_phots_jets(r,1,1,p,pswt,*999) 
-         z_frag=r(11) 
-         frag=.true. 
-      elseif( (case.eq.'dm_gam')) then 
-         m3=xmass
-         m4=m3
-         m5=0d0
-         npart=3     
-         call gen3m(r,p,m3,m4,m5,pswt,*999)
-         z_frag=r(8) 
-         frag=.true. 
-         
+c--- need to do something special for W_2gam and Z_2gam due to ipsgen
+      if ((case .eq. 'W_2gam') .or. (case .eq. 'Z_2gam')) then
+        npart=4
+        if  (ipsgen .eq. 1) then
+            call gen_Vphotons_jets(r,2,0,p,pswt,*999) 
+        elseif (((ipsgen .eq. 2) .and. (case .eq. 'Z_2gam')) .or.
+     &          ((ipsgen .eq. 3) .and. (case .eq. 'W_2gam'))) then
+            call gen_Vphotons_jets_dkrad(r,2,0,p,pswt,*999) 
+        else
+           write(6,*) 'Parameter ipsgen not allowed'
+           write(6,*) 'ipsgen = ',ipsgen
+           stop
+        endif
+        if (case .eq. 'W_2gam') then
+          if (vetow_2gam(p)) goto 999 ! partition PS according to ipsgen
+        endif
       else
-        write(6,*) 'Fragmentation PS not available for this process.'
-      write(6,*) 'case = ',case
-      stop
+c--- otherwise, use same PS generation as at LO
+        call gen_lops(r,p,pswt,*999)
       endif
-               
+      z_frag=r(ndim)
+      frag=.true.
+                     
 c--------------------------------- PHASE SPACE CUTS ---------------------------
 
       nvec=npart+2
       call dotem(nvec,p,s)
       
-c--- (moved to includedipole) impose cuts on final state
-c      call masscuts(p,*999)
-
 c----reject event if any s(i,j) is too small
       call smalls(s,npart,*999)                                             
 
+c--- the generated phase space point is the one that should be used
+c--- in the calculation of the matrix elements;
+c--- the physical momenta (p_phys) correspond to rescaling one of the photons
+c--- "lastphot" by z_frag; this array should be used for cuts, plotting, etc.
+      p_phys(:,:)=p(:,:)
+      p_phys(lastphot,:)=z_frag*p(lastphot,:)
+
 c--- see whether this point will pass cuts - if it will not, do not
 c--- bother calculating the matrix elements for it, instead bail out
-      if (includedipole(0,p) .eqv. .false.) then
+      if (includedipole(0,p_phys) .eqv. .false.) then
         goto 999
       endif
 
@@ -125,9 +101,7 @@ c--- cut on z_frag
       if((z_frag .lt. 0.0001d0) .or. (z_frag .gt. 1d0)) goto 999
        
       if (dynamicscale) then 
-         call rescale_pjet(p)
-         call scaleset(rscalestart,fscalestart,p)
-         call return_pjet(p) 
+         call scaleset(rscalestart,fscalestart,p_phys)
       endif
 
       xx(1)=-2d0*p(1,4)/sqrts
@@ -138,27 +112,47 @@ c--- cut on z_frag
 c-------------------------- CALCULATE MATRIX ELEMENTS ---------------------------
       
 
+c--------------------------------------------------------
+c------------ NEED TO PASS P, P_PHYS TO ALL FRAGDIPS ROUTINES NOW
+c---------------------------------------------------------
+c-----------------------------------------------------------
+
       if     (case .eq. 'Wgamma') then
-         call qqb_wfrag(p,msq)
-         call qqb_wgam_fragdips(p,qqb_w_g,msqdips)       
+         call qqb_wgam_frag(p,msq)
+         call qqb_wgam_fragdips(p,p_phys,qqb_w_g,msqdips)       
       elseif (case .eq. 'Zgamma') then 
-         call qqb_zfrag(p,msq)
-         call qqb_zgam_fragdips(p,qqb_z1jet,msqdips)               
-      elseif (case .eq. 'gamgam') then 
-        call qqb_gamgam_fragdips(p,qqb_dirgam,msqdips)     
-        call qqb_gamgam_singfrag(p,msq)
+         call qqb_zgam_frag(p,msq)
+         call qqb_zgam_fragdips(p,p_phys,qqb_z1jet,msqdips)               
       elseif (case .eq. 'dirgam') then 
-         call qqb_dirgam_fragdips(p,qqb_2j_t,qqb_2j_s,msqdips)
-         call qqb_dirgam_frag(p,msq)
+!         call qqb_dirgam_frag(p,msq)
+!         call qqb_dirgam_fragdips(p,qqb_2j_t,qqb_2j_s,msqdips)
+         msqdips(:,:)=0d0 
+!======== new format
+         call qqb_dirgam_frag_combo(p,p_phys,msq) 
+      elseif (case .eq. 'gamgam') then 
+        call qqb_gamgam_frag(p,msq)
+        call qqb_gamgam_fragdips(p,p_phys,qqb_dirgam,msqdips)     
+      elseif (case .eq. 'trigam') then 
+        call qqb_trigam_frag(p,msq)
+        call qqb_trigam_fragdips(p,p_phys,qqb_gmgmjt,msqdips)     
+      elseif (case .eq. 'gmgmjt') then 
+         msqdips(:,:)=0d0 
+!====== new format 
+        call qqb_gmgmjt_frag_combo(p,p_phys,msq)     
+!        call qqb_gmgmjt_fragdips(p,p_phys,msq,qqb_dirgam_g)     
       elseif(case.eq.'Z_2gam') then 
          call qqb_zaa_frag(p,msq) 
-         call qqb_zaa_fragdips(p,qqb_zaj,msqdips) 
+         call qqb_zaa_fragdips(p,p_phys,qqb_zaj,msqdips) 
       elseif(case.eq.'Zgajet') then 
-         call qqb_zaj_frag(p,msq) 
-         call qqb_zaj_fragdips(p,qqb_z2jetx,msqdips)
+         call qqb_zaj_frag(p,msq)
+         call qqb_zaj_fragdips(p,p_phys,qqb_z2jetx,msqdips)
       elseif(case.eq.'dm_gam') then 
          call qqb_dm_monophot_frag(p,msq) 
-         call qqb_dm_monophot_fragdips(p,qqb_dm_monojet,msqdips) 
+         call qqb_dm_monophot_fragdips(p,p_phys,qqb_dm_monojet,msqdips) 
+      elseif(case.eq.'W_2gam') then 
+         stop
+c         call qqb_waa_frag_combo(p,p_phys,msq) 
+         msqdips(:,:)=0d0 
       else
         write(6,*) 'Fragmentation MEs not available for this process.'
         write(6,*) 'case = ',case
@@ -254,7 +248,7 @@ c--- loop over all PDF error sets, if necessary
         if (currentPDF .le. maxPDFsets) goto 777
       endif    
 
-      if (creatent) then
+c      if (creatent) then
         wt_gg=xmsq_bypart(0,0)*wgt*flux*pswt/BrnRat/dfloat(itmx)
         wt_gq=(xmsq_bypart(+1,0)+xmsq_bypart(-1,0)
      .        +xmsq_bypart(0,+1)+xmsq_bypart(0,-1)
@@ -263,7 +257,7 @@ c--- loop over all PDF error sets, if necessary
      .        )*wgt*flux*pswt/BrnRat/dfloat(itmx)
         wt_qqb=(xmsq_bypart(+1,-1)+xmsq_bypart(-1,+1)
      .        )*wgt*flux*pswt/BrnRat/dfloat(itmx)
-      endif
+c      endif
 
       call getptildejet(0,pjet)
       
@@ -277,7 +271,7 @@ c--- loop over all PDF error sets, if necessary
       enddo
 
       val=fragint*wgt
-      val2=fragint**2*wgt
+      val2=val**2
 c--- update the maximum weight so far, if necessary
 c---  but not if we are already unweighting ...
       if ((.not.unweight) .and. (dabs(val) .gt. wtmax)) then
@@ -320,9 +314,6 @@ c ---     about the flavours :
         endif
       endif
 
-
-!----- Return pjet 
-      call return_pjet(pjet)
       return
 
  999  continue

@@ -90,277 +90,274 @@ c      write(*,*) 'epmin in lower_tri', epmin
      & vert25x21,vert25x22,vert25x23,vert25x24,vert25x25,
      & vert25x26,vert25x27,vert25x28,vert25x29,vert25x30,
      & vert25x31,vert25x32)
-      ylower(j3,1,ep)= + prW(s16)*mt * ( prt(s345)*za(p1,p3)*za(p2,p6)*
-     &    zb(p1,p2)**2*zb(p4,e5)*izb(k5,e5)*vert25x16a*facuRl - prt(
-     &    s345)*za(p1,p3)*za(p6,p2)*zb(p1,p2)*zb(p2,p1)*zb(p4,e5)*izb(
-     &    k5,e5)*vert25x17*facuRl + 2.D0*prt(s345)*za(p1,p6)*za(p3,p4)*
-     &    zb(p1,p2)*zb(p1,p4)*zb(p4,e5)*izb(k5,e5)*vert25x24 + 2.D0*
-     &    prt(s345)*za(p1,p6)*za(p3,p4)*zb(p1,p2)*zb(p1,p4)*zb(p4,e5)*
-     &    izb(k5,e5)*vert25x23 + prt(s345)*za(p1,p6)*za(p3,k5)*zb(p1,p2
-     &    )*zb(p1,e5)*zb(k5,p4)*izb(k5,e5)*vert25x21 + prt(s345)*za(p1,
-     &    p6)*za(p3,k5)*zb(p1,p2)*zb(p1,e5)*zb(k5,p4)*izb(k5,e5)*
-     &    vert25x31 + prt(s345)*za(p1,p6)*za(p3,e5)*zb(p1,p2)*zb(p1,e5)
-     &    *zb(e5,p4)*izb(k5,e5)*vert25x21 + prt(s345)*za(p1,p6)*za(p3,
-     &    e5)*zb(p1,p2)*zb(p1,e5)*zb(e5,p4)*izb(k5,e5)*vert25x31 + 2.D0
-     &    *prt(s345)*za(p2,p6)*za(p3,p4)*zb(p1,p2)*zb(p2,p4)*zb(p4,e5)*
-     &    izb(k5,e5)*vert25x24 + 2.D0*prt(s345)*za(p2,p6)*za(p3,p4)*zb(
-     &    p1,p2)*zb(p2,p4)*zb(p4,e5)*izb(k5,e5)*vert25x23 + prt(s345)*
-     &    za(p2,p6)*za(p3,p6)*zb(p1,p2)*zb(p2,p6)*zb(p4,e5)*izb(k5,e5)*
-     &    vert25x16a*facuRl )
-      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*mt * ( prt(s345)*za(
-     &    p2,p6)*za(p3,k5)*zb(p1,p2)*zb(p2,e5)*zb(k5,p4)*izb(k5,e5)*
-     &    vert25x21 + prt(s345)*za(p2,p6)*za(p3,k5)*zb(p1,p2)*zb(p2,e5)
-     &    *zb(k5,p4)*izb(k5,e5)*vert25x31 + prt(s345)*za(p2,p6)*za(p3,
-     &    e5)*zb(p1,p2)*zb(p2,e5)*zb(e5,p4)*izb(k5,e5)*vert25x21 + prt(
-     &    s345)*za(p2,p6)*za(p3,e5)*zb(p1,p2)*zb(p2,e5)*zb(e5,p4)*izb(
-     &    k5,e5)*vert25x31 - prt(s345)*za(p3,p6)*za(p6,p2)*zb(p2,p1)*
-     &    zb(p2,p6)*zb(p4,e5)*izb(k5,e5)*vert25x17*facuRl - 2.D0*prt(
-     &    s345)*za(p3,p6)*za(k5,p3)*zb(p1,p2)*zb(p3,p4)*vert25x23 + 
-     &    prt(s345)*za(p3,k5)*za(p6,k5)*zb(p1,p2)*zb(k5,p4)*vert25x21
-     &     + prt(s345)*za(p3,e5)*za(p6,k5)*zb(p1,p2)*zb(e5,p4)*
-     &    vert25x21 )
-      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*mt**2 * ( prt(s345)*
-     &    za(p1,p3)*za(p2,p6)*zb(p1,p2)**2*zb(p4,e5)*izb(k5,e5)*
-     &    vert25x18*facuRl - prt(s345)*za(p1,p3)*za(p6,p2)*zb(p1,p2)*
-     &    zb(p2,p1)*zb(p4,e5)*izb(k5,e5)*vert25x19*facuRl + prt(s345)*
-     &    za(p2,p6)*za(p3,p6)*zb(p1,p2)*zb(p2,p6)*zb(p4,e5)*izb(k5,e5)*
-     &    vert25x18*facuRl - prt(s345)*za(p3,p6)*za(p6,p2)*zb(p2,p1)*
-     &    zb(p2,p6)*zb(p4,e5)*izb(k5,e5)*vert25x19*facuRl + 2.D0*prt(
-     &    s345)*za(p3,p6)*zb(p1,p2)*zb(p4,e5)*izb(k5,e5)*vert25x20*
-     &    facuRl - 2.D0*prt(s345)*za(p3,p6)*zb(p1,p2)*zb(p4,e5)*izb(k5,
-     &    e5)*vert25x29 + prt(s345)*za(p3,k5)*za(p6,p3)*zb(p1,p2)*zb(p3
-     &    ,e5)*zb(k5,p4)*izb(k5,e5)*vert25x25 + prt(s345)*za(p3,k5)*za(
-     &    p6,p4)*zb(p1,p2)*zb(p4,e5)*zb(k5,p4)*izb(k5,e5)*vert25x25 + 
-     &    prt(s345)*za(p3,e5)*za(p6,p3)*zb(p1,p2)*zb(p3,e5)*zb(e5,p4)*
-     &    izb(k5,e5)*vert25x25 + prt(s345)*za(p3,e5)*za(p6,p4)*zb(p1,p2
-     &    )*zb(p4,e5)*zb(e5,p4)*izb(k5,e5)*vert25x25 )
-      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*facdLl * (  - za(p1,
-     &    k5)*za(p2,p3)*za(p6,k5)*zb(p1,p2)*zb(p2,p4)*zb(k5,p1)*
-     &    vert25x9*s234**(-1) - za(p1,k5)*za(p2,p3)*za(p6,e5)*zb(p1,p2)
-     &    *zb(p2,p4)*zb(e5,p1)*vert25x9*s234**(-1) + za(p1,k5)*za(p3,p4
-     &    )*za(p6,k5)*zb(p1,p4)*zb(p2,p4)*zb(k5,p1)*vert25x9*s234**(-1)
-     &     + za(p1,k5)*za(p3,p4)*za(p6,e5)*zb(p1,p4)*zb(p2,p4)*zb(e5,p1
-     &    )*vert25x9*s234**(-1) + za(p2,p3)*za(p6,k5)**2*zb(p2,p4)*zb(
-     &    p2,p6)*zb(k5,p1)*vert25x9*s234**(-1) + za(p2,p3)*za(p6,k5)*
-     &    za(p6,e5)*zb(p2,p4)*zb(p2,p6)*zb(e5,p1)*vert25x9*s234**(-1)
-     &     - 2.D0*za(p3,p2)*za(p6,k5)*zb(p2,p1)*zb(p2,p4)*vert25x10*
-     &    s234**(-1) - za(p3,p4)*za(p6,k5)**2*zb(p2,p4)*zb(p4,p6)*zb(k5
-     &    ,p1)*vert25x9*s234**(-1) - za(p3,p4)*za(p6,k5)*za(p6,e5)*zb(
-     &    p2,p4)*zb(p4,p6)*zb(e5,p1)*vert25x9*s234**(-1) - 2.D0*za(p3,
-     &    p4)*za(p6,k5)*zb(p2,p4)*zb(p4,p1)*vert25x10*s234**(-1) )
-      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*facdLl*mt * (  - 2.D0
-     &    *za(p3,p2)*za(p6,p1)*zb(p1,e5)*zb(p2,p1)*zb(p2,p4)*izb(k5,e5)
-     &    *vert25x13*s234**(-1) - za(p3,p2)*za(p6,k5)*zb(p2,p4)*zb(p2,
-     &    e5)*zb(k5,p1)*izb(k5,e5)*vert25x12*s234**(-1) - za(p3,p2)*za(
-     &    p6,e5)*zb(p2,p4)*zb(p2,e5)*zb(e5,p1)*izb(k5,e5)*vert25x12*
-     &    s234**(-1) - 2.D0*za(p3,p4)*za(p6,p1)*zb(p1,e5)*zb(p2,p4)*zb(
-     &    p4,p1)*izb(k5,e5)*vert25x13*s234**(-1) - za(p3,p4)*za(p6,k5)*
-     &    zb(p2,p4)*zb(p4,e5)*zb(k5,p1)*izb(k5,e5)*vert25x12*s234**(-1)
-     &     - za(p3,p4)*za(p6,e5)*zb(p2,p4)*zb(p4,e5)*zb(e5,p1)*izb(k5,
-     &    e5)*vert25x12*s234**(-1) )
-      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*facuLl * (  - prt(
-     &    s345)*za(p1,p2)*za(p2,p6)*za(p3,k5)*zb(p1,p2)**2*zb(p2,p4)*
-     &    vert25x18 + prt(s345)*za(p1,p2)*za(p3,k5)*za(p6,p2)*zb(p1,p2)
-     &    *zb(p2,p1)*zb(p2,p4)*vert25x19 + prt(s345)*za(p1,p6)*za(p2,p6
-     &    )*za(p3,k5)*zb(p1,p2)**2*zb(p4,p6)*vert25x18 - prt(s345)*za(
-     &    p1,p6)*za(p2,p6)*za(p3,k5)*zb(p1,p2)*zb(p1,p4)*zb(p2,p6)*
-     &    vert25x18 - prt(s345)*za(p1,p6)*za(p3,k5)*za(p6,p2)*zb(p1,p2)
-     &    *zb(p2,p1)*zb(p4,p6)*vert25x19 + prt(s345)*za(p1,p6)*za(p3,k5
-     &    )*za(p6,p2)*zb(p1,p4)*zb(p2,p1)*zb(p2,p6)*vert25x19 - 2.D0*
-     &    prt(s345)*za(p1,p6)*za(p3,k5)*zb(p1,p2)*zb(p1,p4)*vert25x20
-     &     - prt(s345)*za(p2,p6)**2*za(p3,k5)*zb(p1,p2)*zb(p2,p4)*zb(p2
-     &    ,p6)*vert25x18 + prt(s345)*za(p2,p6)*za(p3,k5)*za(p6,p2)*zb(
-     &    p2,p1)*zb(p2,p4)*zb(p2,p6)*vert25x19 - 2.D0*prt(s345)*za(p2,
-     &    p6)*za(p3,k5)*zb(p1,p2)*zb(p2,p4)*vert25x20 )
-      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*facuLl*mt * ( prt(
-     &    s345)*za(p2,p6)*za(p3,k5)*zb(p1,p2)*zb(p2,p4)*vert25x16a - 
-     &    prt(s345)*za(p3,k5)*za(p6,p2)*zb(p2,p1)*zb(p2,p4)*vert25x17 )
-      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*vert16x1*mt**2 * ( 2.
-     &    D0*prt(s345)*za(p3,p6)*zb(p1,p2)*zb(p4,e5)*izb(k5,e5)*facuRl
-     &     )
-      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*vert16x1*facdLl * ( 
-     &     - 2.D0*za(p3,p2)*za(p6,k5)*zb(p2,p1)*zb(p2,p4)*s234**(-1) - 
-     &    2.D0*za(p3,p4)*za(p6,k5)*zb(p2,p4)*zb(p4,p1)*s234**(-1) )
-      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*vert16x1*facuLl * ( 
-     &     - 2.D0*prt(s345)*za(p1,p6)*za(p3,k5)*zb(p1,p2)*zb(p1,p4) - 2.
-     &    D0*prt(s345)*za(p2,p6)*za(p3,k5)*zb(p1,p2)*zb(p2,p4) )
-      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16) * ( prt(s345)*za(p1,
-     &    p6)*za(p3,k5)*za(k5,p3)*zb(p1,p2)*zb(p3,p1)*zb(k5,p4)*
-     &    vert25x25 + prt(s345)*za(p1,p6)*za(p3,k5)*za(k5,p3)*zb(p1,p2)
-     &    *zb(p3,p1)*zb(k5,p4)*vert25x27 + prt(s345)*za(p1,p6)*za(p3,k5
-     &    )*za(k5,p4)*zb(p1,p2)*zb(p4,p1)*zb(k5,p4)*vert25x25 + prt(
-     &    s345)*za(p1,p6)*za(p3,k5)*za(k5,p4)*zb(p1,p2)*zb(p4,p1)*zb(k5
-     &    ,p4)*vert25x27 + 2.D0*prt(s345)*za(p1,p6)*za(p3,k5)*zb(p1,p2)
-     &    *zb(p1,p4)*vert25x29 + 2.D0*prt(s345)*za(p1,p6)*za(p3,k5)*zb(
-     &    p1,p2)*zb(p1,p4)*vert25x30 + prt(s345)*za(p1,p6)*za(p3,e5)*
-     &    za(k5,p3)*zb(p1,p2)*zb(p3,p1)*zb(e5,p4)*vert25x25 + prt(s345)
-     &    *za(p1,p6)*za(p3,e5)*za(k5,p3)*zb(p1,p2)*zb(p3,p1)*zb(e5,p4)*
-     &    vert25x27 + prt(s345)*za(p1,p6)*za(p3,e5)*za(k5,p4)*zb(p1,p2)
-     &    *zb(p4,p1)*zb(e5,p4)*vert25x25 + prt(s345)*za(p1,p6)*za(p3,e5
-     &    )*za(k5,p4)*zb(p1,p2)*zb(p4,p1)*zb(e5,p4)*vert25x27 + prt(
-     &    s345)*za(p2,p6)*za(p3,k5)*za(k5,p3)*zb(p1,p2)*zb(p3,p2)*zb(k5
-     &    ,p4)*vert25x25 )
-      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16) * ( prt(s345)*za(p2,
-     &    p6)*za(p3,k5)*za(k5,p3)*zb(p1,p2)*zb(p3,p2)*zb(k5,p4)*
-     &    vert25x27 + prt(s345)*za(p2,p6)*za(p3,k5)*za(k5,p4)*zb(p1,p2)
-     &    *zb(p4,p2)*zb(k5,p4)*vert25x25 + prt(s345)*za(p2,p6)*za(p3,k5
-     &    )*za(k5,p4)*zb(p1,p2)*zb(p4,p2)*zb(k5,p4)*vert25x27 + 2.D0*
-     &    prt(s345)*za(p2,p6)*za(p3,k5)*zb(p1,p2)*zb(p2,p4)*vert25x29
-     &     + 2.D0*prt(s345)*za(p2,p6)*za(p3,k5)*zb(p1,p2)*zb(p2,p4)*
-     &    vert25x30 + prt(s345)*za(p2,p6)*za(p3,e5)*za(k5,p3)*zb(p1,p2)
-     &    *zb(p3,p2)*zb(e5,p4)*vert25x25 + prt(s345)*za(p2,p6)*za(p3,e5
-     &    )*za(k5,p3)*zb(p1,p2)*zb(p3,p2)*zb(e5,p4)*vert25x27 + prt(
-     &    s345)*za(p2,p6)*za(p3,e5)*za(k5,p4)*zb(p1,p2)*zb(p4,p2)*zb(e5
-     &    ,p4)*vert25x25 + prt(s345)*za(p2,p6)*za(p3,e5)*za(k5,p4)*zb(
-     &    p1,p2)*zb(p4,p2)*zb(e5,p4)*vert25x27 - za(p2,p3)**2*za(p6,k5)
-     &    *zb(p1,p2)*zb(p2,p3)*zb(p2,p4)*vert25x5*s234**(-1) - za(p2,p3
-     &    )*za(p2,p4)*za(p6,k5)*zb(p1,p2)*zb(p2,p4)**2*vert25x5*
-     &    s234**(-1) )
-      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16) * (  - za(p2,p3)*za(
-     &    p3,p4)*za(p6,k5)*zb(p1,p3)*zb(p2,p4)**2*vert25x5*s234**(-1)
-     &     + za(p2,p3)*za(p3,p4)*za(p6,k5)*zb(p1,p4)*zb(p2,p3)*zb(p2,p4
-     &    )*vert25x5*s234**(-1) + 2.D0*za(p3,p2)*za(p6,k5)*zb(p2,p1)*
-     &    zb(p2,p4)*vert25x7*s234**(-1) + 2.D0*za(p3,p4)*za(p6,k5)*zb(
-     &    p2,p4)*zb(p4,p1)*vert25x7*s234**(-1) )
+      ylower(j3,1,ep)= + prW(s16)*prt(s345)*facuRl*mt * ( za(p1,p3)*za(
+     &    p2,p6)*zb(p1,p2)**2*zb(p4,e5)*izb(k5,e5)*vert25x16a + za(p2,
+     &    p6)*za(p3,p6)*zb(p1,p2)*zb(p2,p6)*zb(p4,e5)*izb(k5,e5)*
+     &    vert25x16a )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*prt(s345)*facuLl*mt
+     &  * ( za(p2,p6)*za(p3,k5)*zb(p1,p2)*zb(p2,p4)*vert25x16a )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*prt(s345)*vert16x1*
+     & facuRl*mt**2 * ( 2.D0*za(p3,p6)*zb(p1,p2)*zb(p4,e5)*izb(k5,e5) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*prt(s345)*vert16x1*
+     & facuLl * (  - 2.D0*za(p1,p6)*za(p3,k5)*zb(p1,p2)*zb(p1,p4) - 2.D0
+     &    *za(p2,p6)*za(p3,k5)*zb(p1,p2)*zb(p2,p4) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*prt(s345)*vert25x17*
+     & facuRl*mt * (  - za(p1,p3)*za(p6,p2)*zb(p1,p2)*zb(p2,p1)*zb(p4,
+     &    e5)*izb(k5,e5) - za(p3,p6)*za(p6,p2)*zb(p2,p1)*zb(p2,p6)*zb(
+     &    p4,e5)*izb(k5,e5) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*prt(s345)*vert25x17*
+     & facuLl*mt * (  - za(p3,k5)*za(p6,p2)*zb(p2,p1)*zb(p2,p4) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*prt(s345)*vert25x18*
+     & facuRl*mt**2 * ( za(p1,p3)*za(p2,p6)*zb(p1,p2)**2*zb(p4,e5)*izb(
+     &    k5,e5) + za(p2,p6)*za(p3,p6)*zb(p1,p2)*zb(p2,p6)*zb(p4,e5)*
+     &    izb(k5,e5) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*prt(s345)*vert25x18*
+     & facuLl * (  - za(p1,p2)*za(p2,p6)*za(p3,k5)*zb(p1,p2)**2*zb(p2,
+     &    p4) + za(p1,p6)*za(p2,p6)*za(p3,k5)*zb(p1,p2)**2*zb(p4,p6) - 
+     &    za(p1,p6)*za(p2,p6)*za(p3,k5)*zb(p1,p2)*zb(p1,p4)*zb(p2,p6)
+     &     - za(p2,p6)**2*za(p3,k5)*zb(p1,p2)*zb(p2,p4)*zb(p2,p6) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*prt(s345)*vert25x19*
+     & facuRl*mt**2 * (  - za(p1,p3)*za(p6,p2)*zb(p1,p2)*zb(p2,p1)*zb(
+     &    p4,e5)*izb(k5,e5) - za(p3,p6)*za(p6,p2)*zb(p2,p1)*zb(p2,p6)*
+     &    zb(p4,e5)*izb(k5,e5) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*prt(s345)*vert25x19*
+     & facuLl * ( za(p1,p2)*za(p3,k5)*za(p6,p2)*zb(p1,p2)*zb(p2,p1)*zb(
+     &    p2,p4) - za(p1,p6)*za(p3,k5)*za(p6,p2)*zb(p1,p2)*zb(p2,p1)*
+     &    zb(p4,p6) + za(p1,p6)*za(p3,k5)*za(p6,p2)*zb(p1,p4)*zb(p2,p1)
+     &    *zb(p2,p6) + za(p2,p6)*za(p3,k5)*za(p6,p2)*zb(p2,p1)*zb(p2,p4
+     &    )*zb(p2,p6) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*prt(s345)*vert25x20*
+     & facuRl*mt**2 * ( 2.D0*za(p3,p6)*zb(p1,p2)*zb(p4,e5)*izb(k5,e5) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*prt(s345)*vert25x20*
+     & facuLl * (  - 2.D0*za(p1,p6)*za(p3,k5)*zb(p1,p2)*zb(p1,p4) - 2.D0
+     &    *za(p2,p6)*za(p3,k5)*zb(p1,p2)*zb(p2,p4) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*prt(s345)*vert25x21*
+     & mt * ( za(p1,p6)*za(p3,k5)*zb(p1,p2)*zb(p1,e5)*zb(k5,p4)*izb(k5,
+     &    e5) + za(p1,p6)*za(p3,e5)*zb(p1,p2)*zb(p1,e5)*zb(e5,p4)*izb(
+     &    k5,e5) + za(p2,p6)*za(p3,k5)*zb(p1,p2)*zb(p2,e5)*zb(k5,p4)*
+     &    izb(k5,e5) + za(p2,p6)*za(p3,e5)*zb(p1,p2)*zb(p2,e5)*zb(e5,p4
+     &    )*izb(k5,e5) + za(p3,k5)*za(p6,k5)*zb(p1,p2)*zb(k5,p4) + za(
+     &    p3,e5)*za(p6,k5)*zb(p1,p2)*zb(e5,p4) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*prt(s345)*vert25x24*
+     & mt * ( 2.D0*za(p1,p6)*za(p3,p4)*zb(p1,p2)*zb(p1,p4)*zb(p4,e5)*
+     &    izb(k5,e5) + 2.D0*za(p2,p6)*za(p3,p4)*zb(p1,p2)*zb(p2,p4)*zb(
+     &    p4,e5)*izb(k5,e5) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*prt(s345)*vert25x23*
+     & mt * ( 2.D0*za(p1,p6)*za(p3,p4)*zb(p1,p2)*zb(p1,p4)*zb(p4,e5)*
+     &    izb(k5,e5) + 2.D0*za(p2,p6)*za(p3,p4)*zb(p1,p2)*zb(p2,p4)*zb(
+     &    p4,e5)*izb(k5,e5) - 2.D0*za(p3,p6)*za(k5,p3)*zb(p1,p2)*zb(p3,
+     &    p4) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*prt(s345)*vert25x25*
+     & mt**2 * ( za(p3,k5)*za(p6,p3)*zb(p1,p2)*zb(p3,e5)*zb(k5,p4)*izb(
+     &    k5,e5) + za(p3,k5)*za(p6,p4)*zb(p1,p2)*zb(p4,e5)*zb(k5,p4)*
+     &    izb(k5,e5) + za(p3,e5)*za(p6,p3)*zb(p1,p2)*zb(p3,e5)*zb(e5,p4
+     &    )*izb(k5,e5) + za(p3,e5)*za(p6,p4)*zb(p1,p2)*zb(p4,e5)*zb(e5,
+     &    p4)*izb(k5,e5) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*prt(s345)*vert25x25
+     &  * ( za(p1,p6)*za(p3,k5)*za(k5,p3)*zb(p1,p2)*zb(p3,p1)*zb(k5,p4)
+     &     + za(p1,p6)*za(p3,k5)*za(k5,p4)*zb(p1,p2)*zb(p4,p1)*zb(k5,p4
+     &    ) + za(p1,p6)*za(p3,e5)*za(k5,p3)*zb(p1,p2)*zb(p3,p1)*zb(e5,
+     &    p4) + za(p1,p6)*za(p3,e5)*za(k5,p4)*zb(p1,p2)*zb(p4,p1)*zb(e5
+     &    ,p4) + za(p2,p6)*za(p3,k5)*za(k5,p3)*zb(p1,p2)*zb(p3,p2)*zb(
+     &    k5,p4) + za(p2,p6)*za(p3,k5)*za(k5,p4)*zb(p1,p2)*zb(p4,p2)*
+     &    zb(k5,p4) + za(p2,p6)*za(p3,e5)*za(k5,p3)*zb(p1,p2)*zb(p3,p2)
+     &    *zb(e5,p4) + za(p2,p6)*za(p3,e5)*za(k5,p4)*zb(p1,p2)*zb(p4,p2
+     &    )*zb(e5,p4) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*prt(s345)*vert25x27
+     &  * ( za(p1,p6)*za(p3,k5)*za(k5,p3)*zb(p1,p2)*zb(p3,p1)*zb(k5,p4)
+     &     + za(p1,p6)*za(p3,k5)*za(k5,p4)*zb(p1,p2)*zb(p4,p1)*zb(k5,p4
+     &    ) + za(p1,p6)*za(p3,e5)*za(k5,p3)*zb(p1,p2)*zb(p3,p1)*zb(e5,
+     &    p4) + za(p1,p6)*za(p3,e5)*za(k5,p4)*zb(p1,p2)*zb(p4,p1)*zb(e5
+     &    ,p4) + za(p2,p6)*za(p3,k5)*za(k5,p3)*zb(p1,p2)*zb(p3,p2)*zb(
+     &    k5,p4) + za(p2,p6)*za(p3,k5)*za(k5,p4)*zb(p1,p2)*zb(p4,p2)*
+     &    zb(k5,p4) + za(p2,p6)*za(p3,e5)*za(k5,p3)*zb(p1,p2)*zb(p3,p2)
+     &    *zb(e5,p4) + za(p2,p6)*za(p3,e5)*za(k5,p4)*zb(p1,p2)*zb(p4,p2
+     &    )*zb(e5,p4) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*prt(s345)*vert25x29*
+     & mt**2 * (  - 2.D0*za(p3,p6)*zb(p1,p2)*zb(p4,e5)*izb(k5,e5) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*prt(s345)*vert25x29
+     &  * ( 2.D0*za(p1,p6)*za(p3,k5)*zb(p1,p2)*zb(p1,p4) + 2.D0*za(p2,
+     &    p6)*za(p3,k5)*zb(p1,p2)*zb(p2,p4) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*prt(s345)*vert25x30
+     &  * ( 2.D0*za(p1,p6)*za(p3,k5)*zb(p1,p2)*zb(p1,p4) + 2.D0*za(p2,
+     &    p6)*za(p3,k5)*zb(p1,p2)*zb(p2,p4) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*prt(s345)*vert25x31*
+     & mt * ( za(p1,p6)*za(p3,k5)*zb(p1,p2)*zb(p1,e5)*zb(k5,p4)*izb(k5,
+     &    e5) + za(p1,p6)*za(p3,e5)*zb(p1,p2)*zb(p1,e5)*zb(e5,p4)*izb(
+     &    k5,e5) + za(p2,p6)*za(p3,k5)*zb(p1,p2)*zb(p2,e5)*zb(k5,p4)*
+     &    izb(k5,e5) + za(p2,p6)*za(p3,e5)*zb(p1,p2)*zb(p2,e5)*zb(e5,p4
+     &    )*izb(k5,e5) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*vert16x1*facdLl*
+     & s234**(-1) * (  - 2.D0*za(p3,p2)*za(p6,k5)*zb(p2,p1)*zb(p2,p4)
+     &     - 2.D0*za(p3,p4)*za(p6,k5)*zb(p2,p4)*zb(p4,p1) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*vert25x5*s234**(-1)
+     &  * (  - za(p2,p3)**2*za(p6,k5)*zb(p1,p2)*zb(p2,p3)*zb(p2,p4) - 
+     &    za(p2,p3)*za(p2,p4)*za(p6,k5)*zb(p1,p2)*zb(p2,p4)**2 - za(p2,
+     &    p3)*za(p3,p4)*za(p6,k5)*zb(p1,p3)*zb(p2,p4)**2 + za(p2,p3)*
+     &    za(p3,p4)*za(p6,k5)*zb(p1,p4)*zb(p2,p3)*zb(p2,p4) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*vert25x7*s234**(-1)
+     &  * ( 2.D0*za(p3,p2)*za(p6,k5)*zb(p2,p1)*zb(p2,p4) + 2.D0*za(p3,
+     &    p4)*za(p6,k5)*zb(p2,p4)*zb(p4,p1) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*vert25x9*facdLl*
+     & s234**(-1) * (  - za(p1,k5)*za(p2,p3)*za(p6,k5)*zb(p1,p2)*zb(p2,
+     &    p4)*zb(k5,p1) - za(p1,k5)*za(p2,p3)*za(p6,e5)*zb(p1,p2)*zb(p2
+     &    ,p4)*zb(e5,p1) + za(p1,k5)*za(p3,p4)*za(p6,k5)*zb(p1,p4)*zb(
+     &    p2,p4)*zb(k5,p1) + za(p1,k5)*za(p3,p4)*za(p6,e5)*zb(p1,p4)*
+     &    zb(p2,p4)*zb(e5,p1) + za(p2,p3)*za(p6,k5)**2*zb(p2,p4)*zb(p2,
+     &    p6)*zb(k5,p1) + za(p2,p3)*za(p6,k5)*za(p6,e5)*zb(p2,p4)*zb(p2
+     &    ,p6)*zb(e5,p1) - za(p3,p4)*za(p6,k5)**2*zb(p2,p4)*zb(p4,p6)*
+     &    zb(k5,p1) - za(p3,p4)*za(p6,k5)*za(p6,e5)*zb(p2,p4)*zb(p4,p6)
+     &    *zb(e5,p1) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*vert25x10*facdLl*
+     & s234**(-1) * (  - 2.D0*za(p3,p2)*za(p6,k5)*zb(p2,p1)*zb(p2,p4)
+     &     - 2.D0*za(p3,p4)*za(p6,k5)*zb(p2,p4)*zb(p4,p1) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*vert25x12*facdLl*mt*
+     & s234**(-1) * (  - za(p3,p2)*za(p6,k5)*zb(p2,p4)*zb(p2,e5)*zb(k5,
+     &    p1)*izb(k5,e5) - za(p3,p2)*za(p6,e5)*zb(p2,p4)*zb(p2,e5)*zb(
+     &    e5,p1)*izb(k5,e5) - za(p3,p4)*za(p6,k5)*zb(p2,p4)*zb(p4,e5)*
+     &    zb(k5,p1)*izb(k5,e5) - za(p3,p4)*za(p6,e5)*zb(p2,p4)*zb(p4,e5
+     &    )*zb(e5,p1)*izb(k5,e5) )
+      ylower(j3,1,ep) = ylower(j3,1,ep) + prW(s16)*vert25x13*facdLl*mt*
+     & s234**(-1) * (  - 2.D0*za(p3,p2)*za(p6,p1)*zb(p1,e5)*zb(p2,p1)*
+     &    zb(p2,p4)*izb(k5,e5) - 2.D0*za(p3,p4)*za(p6,p1)*zb(p1,e5)*zb(
+     &    p2,p4)*zb(p4,p1)*izb(k5,e5) )
 
-      ylower(j3,2,ep)= + prW(s16)*mt * (  - prt(s345)*za(p1,p3)*za(p2,
-     &    p6)*zb(p1,p2)**2*zb(p4,k5)*vert25x18*facuRl + prt(s345)*za(p1
-     &    ,p3)*za(p6,p2)*zb(p1,p2)*zb(p2,p1)*zb(p4,k5)*vert25x19*facuRl
-     &     - prt(s345)*za(p1,p6)*za(p3,k5)*za(e5,p3)*zb(p1,p2)*zb(p3,p1
-     &    )*zb(k5,p4)*iza(k5,e5)*vert25x25 - prt(s345)*za(p1,p6)*za(p3,
-     &    k5)*za(e5,p3)*zb(p1,p2)*zb(p3,p1)*zb(k5,p4)*iza(k5,e5)*
-     &    vert25x27 - prt(s345)*za(p1,p6)*za(p3,k5)*za(e5,p4)*zb(p1,p2)
-     &    *zb(p4,p1)*zb(k5,p4)*iza(k5,e5)*vert25x25 - prt(s345)*za(p1,
-     &    p6)*za(p3,k5)*za(e5,p4)*zb(p1,p2)*zb(p4,p1)*zb(k5,p4)*iza(k5,
-     &    e5)*vert25x27 - prt(s345)*za(p1,p6)*za(p3,e5)*za(e5,p3)*zb(p1
-     &    ,p2)*zb(p3,p1)*zb(e5,p4)*iza(k5,e5)*vert25x25 - prt(s345)*za(
-     &    p1,p6)*za(p3,e5)*za(e5,p3)*zb(p1,p2)*zb(p3,p1)*zb(e5,p4)*iza(
-     &    k5,e5)*vert25x27 - prt(s345)*za(p1,p6)*za(p3,e5)*za(e5,p4)*
-     &    zb(p1,p2)*zb(p4,p1)*zb(e5,p4)*iza(k5,e5)*vert25x25 - prt(s345
-     &    )*za(p1,p6)*za(p3,e5)*za(e5,p4)*zb(p1,p2)*zb(p4,p1)*zb(e5,p4)
-     &    *iza(k5,e5)*vert25x27 )
-      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*mt * (  - 2.D0*prt(
-     &    s345)*za(p1,p6)*za(p3,e5)*zb(p1,p2)*zb(p1,p4)*iza(k5,e5)*
-     &    vert25x29 - 2.D0*prt(s345)*za(p1,p6)*za(p3,e5)*zb(p1,p2)*zb(
-     &    p1,p4)*iza(k5,e5)*vert25x30 - prt(s345)*za(p2,p6)*za(p3,p6)*
-     &    zb(p1,p2)*zb(p2,p6)*zb(p4,k5)*vert25x18*facuRl - prt(s345)*
-     &    za(p2,p6)*za(p3,k5)*za(e5,p3)*zb(p1,p2)*zb(p3,p2)*zb(k5,p4)*
-     &    iza(k5,e5)*vert25x25 - prt(s345)*za(p2,p6)*za(p3,k5)*za(e5,p3
-     &    )*zb(p1,p2)*zb(p3,p2)*zb(k5,p4)*iza(k5,e5)*vert25x27 - prt(
-     &    s345)*za(p2,p6)*za(p3,k5)*za(e5,p4)*zb(p1,p2)*zb(p4,p2)*zb(k5
-     &    ,p4)*iza(k5,e5)*vert25x25 - prt(s345)*za(p2,p6)*za(p3,k5)*za(
-     &    e5,p4)*zb(p1,p2)*zb(p4,p2)*zb(k5,p4)*iza(k5,e5)*vert25x27 - 
-     &    prt(s345)*za(p2,p6)*za(p3,e5)*za(e5,p3)*zb(p1,p2)*zb(p3,p2)*
-     &    zb(e5,p4)*iza(k5,e5)*vert25x25 - prt(s345)*za(p2,p6)*za(p3,e5
-     &    )*za(e5,p3)*zb(p1,p2)*zb(p3,p2)*zb(e5,p4)*iza(k5,e5)*
-     &    vert25x27 - prt(s345)*za(p2,p6)*za(p3,e5)*za(e5,p4)*zb(p1,p2)
-     &    *zb(p4,p2)*zb(e5,p4)*iza(k5,e5)*vert25x25 )
-      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*mt * (  - prt(s345)*
-     &    za(p2,p6)*za(p3,e5)*za(e5,p4)*zb(p1,p2)*zb(p4,p2)*zb(e5,p4)*
-     &    iza(k5,e5)*vert25x27 - 2.D0*prt(s345)*za(p2,p6)*za(p3,e5)*zb(
-     &    p1,p2)*zb(p2,p4)*iza(k5,e5)*vert25x29 - 2.D0*prt(s345)*za(p2,
-     &    p6)*za(p3,e5)*zb(p1,p2)*zb(p2,p4)*iza(k5,e5)*vert25x30 + prt(
-     &    s345)*za(p3,p6)*za(p6,p2)*zb(p2,p1)*zb(p2,p6)*zb(p4,k5)*
-     &    vert25x19*facuRl - 2.D0*prt(s345)*za(p3,p6)*zb(p1,p2)*zb(p4,
-     &    k5)*vert25x20*facuRl + 2.D0*prt(s345)*za(p3,p6)*zb(p1,p2)*zb(
-     &    p4,k5)*vert25x29 - prt(s345)*za(p3,k5)*za(p6,p3)*zb(p1,p2)*
-     &    zb(p3,k5)*zb(k5,p4)*vert25x25 - prt(s345)*za(p3,k5)*za(p6,p4)
-     &    *zb(p1,p2)*zb(p4,k5)*zb(k5,p4)*vert25x25 - prt(s345)*za(p3,e5
-     &    )*za(p6,p3)*zb(p1,p2)*zb(p3,k5)*zb(e5,p4)*vert25x25 - prt(
-     &    s345)*za(p3,e5)*za(p6,p4)*zb(p1,p2)*zb(p4,k5)*zb(e5,p4)*
-     &    vert25x25 + za(p2,p3)**2*za(p6,e5)*zb(p1,p2)*zb(p2,p3)*zb(p2,
-     &    p4)*iza(k5,e5)*vert25x5*s234**(-1) + za(p2,p3)*za(p2,p4)*za(
-     &    p6,e5)*zb(p1,p2)*zb(p2,p4)**2*iza(k5,e5)*vert25x5*s234**(-1)
-     &     )
-      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*mt * ( za(p2,p3)*za(
-     &    p3,p4)*za(p6,e5)*zb(p1,p3)*zb(p2,p4)**2*iza(k5,e5)*vert25x5*
-     &    s234**(-1) - za(p2,p3)*za(p3,p4)*za(p6,e5)*zb(p1,p4)*zb(p2,p3
-     &    )*zb(p2,p4)*iza(k5,e5)*vert25x5*s234**(-1) - 2.D0*za(p3,p2)*
-     &    za(p6,e5)*zb(p2,p1)*zb(p2,p4)*iza(k5,e5)*vert25x7*s234**(-1)
-     &     - 2.D0*za(p3,p4)*za(p6,e5)*zb(p2,p4)*zb(p4,p1)*iza(k5,e5)*
-     &    vert25x7*s234**(-1) )
-      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*mt**2 * ( 2.D0*prt(
-     &    s345)*za(p3,p6)*za(e5,p3)*zb(p1,p2)*zb(p3,p4)*iza(k5,e5)*
-     &    vert25x23 - prt(s345)*za(p3,k5)*za(p6,e5)*zb(p1,p2)*zb(k5,p4)
-     &    *iza(k5,e5)*vert25x21 - prt(s345)*za(p3,e5)*za(p6,e5)*zb(p1,
-     &    p2)*zb(e5,p4)*iza(k5,e5)*vert25x21 )
-      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*facdLl * ( 2.D0*za(
-     &    p3,p2)*za(p6,p1)*zb(p1,k5)*zb(p2,p1)*zb(p2,p4)*vert25x13*
-     &    s234**(-1) + za(p3,p2)*za(p6,k5)*zb(p2,p4)*zb(p2,k5)*zb(k5,p1
-     &    )*vert25x12*s234**(-1) + za(p3,p2)*za(p6,e5)*zb(p2,p4)*zb(p2,
-     &    k5)*zb(e5,p1)*vert25x12*s234**(-1) + 2.D0*za(p3,p4)*za(p6,p1)
-     &    *zb(p1,k5)*zb(p2,p4)*zb(p4,p1)*vert25x13*s234**(-1) + za(p3,
-     &    p4)*za(p6,k5)*zb(p2,p4)*zb(p4,k5)*zb(k5,p1)*vert25x12*
-     &    s234**(-1) + za(p3,p4)*za(p6,e5)*zb(p2,p4)*zb(p4,k5)*zb(e5,p1
-     &    )*vert25x12*s234**(-1) )
-      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*facdLl*mt * ( za(p1,
-     &    e5)*za(p2,p3)*za(p6,k5)*zb(p1,p2)*zb(p2,p4)*zb(k5,p1)*iza(k5,
-     &    e5)*vert25x9*s234**(-1) + za(p1,e5)*za(p2,p3)*za(p6,e5)*zb(p1
-     &    ,p2)*zb(p2,p4)*zb(e5,p1)*iza(k5,e5)*vert25x9*s234**(-1) - za(
-     &    p1,e5)*za(p3,p4)*za(p6,k5)*zb(p1,p4)*zb(p2,p4)*zb(k5,p1)*iza(
-     &    k5,e5)*vert25x9*s234**(-1) - za(p1,e5)*za(p3,p4)*za(p6,e5)*
-     &    zb(p1,p4)*zb(p2,p4)*zb(e5,p1)*iza(k5,e5)*vert25x9*s234**(-1)
-     &     - za(p2,p3)*za(p6,k5)*za(p6,e5)*zb(p2,p4)*zb(p2,p6)*zb(k5,p1
-     &    )*iza(k5,e5)*vert25x9*s234**(-1) - za(p2,p3)*za(p6,e5)**2*zb(
-     &    p2,p4)*zb(p2,p6)*zb(e5,p1)*iza(k5,e5)*vert25x9*s234**(-1) + 2.
-     &    D0*za(p3,p2)*za(p6,e5)*zb(p2,p1)*zb(p2,p4)*iza(k5,e5)*
-     &    vert25x10*s234**(-1) + za(p3,p4)*za(p6,k5)*za(p6,e5)*zb(p2,p4
-     &    )*zb(p4,p6)*zb(k5,p1)*iza(k5,e5)*vert25x9*s234**(-1) + za(p3,
-     &    p4)*za(p6,e5)**2*zb(p2,p4)*zb(p4,p6)*zb(e5,p1)*iza(k5,e5)*
-     &    vert25x9*s234**(-1) + 2.D0*za(p3,p4)*za(p6,e5)*zb(p2,p4)*zb(
-     &    p4,p1)*iza(k5,e5)*vert25x10*s234**(-1) )
-      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*facuLl*mt * ( prt(
-     &    s345)*za(p1,p2)*za(p2,p6)*za(p3,e5)*zb(p1,p2)**2*zb(p2,p4)*
-     &    iza(k5,e5)*vert25x18 - prt(s345)*za(p1,p2)*za(p3,e5)*za(p6,p2
-     &    )*zb(p1,p2)*zb(p2,p1)*zb(p2,p4)*iza(k5,e5)*vert25x19 - prt(
-     &    s345)*za(p1,p6)*za(p2,p6)*za(p3,e5)*zb(p1,p2)**2*zb(p4,p6)*
-     &    iza(k5,e5)*vert25x18 + prt(s345)*za(p1,p6)*za(p2,p6)*za(p3,e5
-     &    )*zb(p1,p2)*zb(p1,p4)*zb(p2,p6)*iza(k5,e5)*vert25x18 + prt(
-     &    s345)*za(p1,p6)*za(p3,e5)*za(p6,p2)*zb(p1,p2)*zb(p2,p1)*zb(p4
-     &    ,p6)*iza(k5,e5)*vert25x19 - prt(s345)*za(p1,p6)*za(p3,e5)*za(
-     &    p6,p2)*zb(p1,p4)*zb(p2,p1)*zb(p2,p6)*iza(k5,e5)*vert25x19 + 2.
-     &    D0*prt(s345)*za(p1,p6)*za(p3,e5)*zb(p1,p2)*zb(p1,p4)*iza(k5,
-     &    e5)*vert25x20 + prt(s345)*za(p2,p6)**2*za(p3,e5)*zb(p1,p2)*
-     &    zb(p2,p4)*zb(p2,p6)*iza(k5,e5)*vert25x18 - prt(s345)*za(p2,p6
+      ylower(j3,2,ep)= + prW(s16)*prt(s345)*facuRl * (  - za(p1,p3)*za(
+     &    p2,p6)*zb(p1,p2)**2*zb(p4,k5)*vert25x16a - za(p2,p6)*za(p3,p6
+     &    )*zb(p1,p2)*zb(p2,p6)*zb(p4,k5)*vert25x16a )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*prt(s345)*facuLl*
+     & mt**2 * (  - za(p2,p6)*za(p3,e5)*zb(p1,p2)*zb(p2,p4)*iza(k5,e5)*
+     &    vert25x16a )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*prt(s345)*vert16x1*
+     & facuRl*mt * (  - 2.D0*za(p3,p6)*zb(p1,p2)*zb(p4,k5) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*prt(s345)*vert16x1*
+     & facuLl*mt * ( 2.D0*za(p1,p6)*za(p3,e5)*zb(p1,p2)*zb(p1,p4)*iza(
+     &    k5,e5) + 2.D0*za(p2,p6)*za(p3,e5)*zb(p1,p2)*zb(p2,p4)*iza(k5,
+     &    e5) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*prt(s345)*vert25x17*
+     & facuRl * ( za(p1,p3)*za(p6,p2)*zb(p1,p2)*zb(p2,p1)*zb(p4,k5) + 
+     &    za(p3,p6)*za(p6,p2)*zb(p2,p1)*zb(p2,p6)*zb(p4,k5) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*prt(s345)*vert25x17*
+     & facuLl*mt**2 * ( za(p3,e5)*za(p6,p2)*zb(p2,p1)*zb(p2,p4)*iza(k5,
+     &    e5) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*prt(s345)*vert25x18*
+     & facuRl*mt * (  - za(p1,p3)*za(p2,p6)*zb(p1,p2)**2*zb(p4,k5) - 
+     &    za(p2,p6)*za(p3,p6)*zb(p1,p2)*zb(p2,p6)*zb(p4,k5) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*prt(s345)*vert25x18*
+     & facuLl*mt * ( za(p1,p2)*za(p2,p6)*za(p3,e5)*zb(p1,p2)**2*zb(p2,
+     &    p4)*iza(k5,e5) - za(p1,p6)*za(p2,p6)*za(p3,e5)*zb(p1,p2)**2*
+     &    zb(p4,p6)*iza(k5,e5) + za(p1,p6)*za(p2,p6)*za(p3,e5)*zb(p1,p2
+     &    )*zb(p1,p4)*zb(p2,p6)*iza(k5,e5) + za(p2,p6)**2*za(p3,e5)*zb(
+     &    p1,p2)*zb(p2,p4)*zb(p2,p6)*iza(k5,e5) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*prt(s345)*vert25x19*
+     & facuRl*mt * ( za(p1,p3)*za(p6,p2)*zb(p1,p2)*zb(p2,p1)*zb(p4,k5)
+     &     + za(p3,p6)*za(p6,p2)*zb(p2,p1)*zb(p2,p6)*zb(p4,k5) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*prt(s345)*vert25x19*
+     & facuLl*mt * (  - za(p1,p2)*za(p3,e5)*za(p6,p2)*zb(p1,p2)*zb(p2,
+     &    p1)*zb(p2,p4)*iza(k5,e5) + za(p1,p6)*za(p3,e5)*za(p6,p2)*zb(
+     &    p1,p2)*zb(p2,p1)*zb(p4,p6)*iza(k5,e5) - za(p1,p6)*za(p3,e5)*
+     &    za(p6,p2)*zb(p1,p4)*zb(p2,p1)*zb(p2,p6)*iza(k5,e5) - za(p2,p6
      &    )*za(p3,e5)*za(p6,p2)*zb(p2,p1)*zb(p2,p4)*zb(p2,p6)*iza(k5,e5
-     &    )*vert25x19 + 2.D0*prt(s345)*za(p2,p6)*za(p3,e5)*zb(p1,p2)*
-     &    zb(p2,p4)*iza(k5,e5)*vert25x20 )
-      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*facuLl*mt**2 * (  - 
-     &    prt(s345)*za(p2,p6)*za(p3,e5)*zb(p1,p2)*zb(p2,p4)*iza(k5,e5)*
-     &    vert25x16a + prt(s345)*za(p3,e5)*za(p6,p2)*zb(p2,p1)*zb(p2,p4
-     &    )*iza(k5,e5)*vert25x17 )
-      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*vert16x1*mt * (  - 2.
-     &    D0*prt(s345)*za(p3,p6)*zb(p1,p2)*zb(p4,k5)*facuRl )
-      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*vert16x1*facdLl*mt
-     &  * ( 2.D0*za(p3,p2)*za(p6,e5)*zb(p2,p1)*zb(p2,p4)*iza(k5,e5)*
-     &    s234**(-1) + 2.D0*za(p3,p4)*za(p6,e5)*zb(p2,p4)*zb(p4,p1)*
-     &    iza(k5,e5)*s234**(-1) )
-      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*vert16x1*facuLl*mt
-     &  * ( 2.D0*prt(s345)*za(p1,p6)*za(p3,e5)*zb(p1,p2)*zb(p1,p4)*iza(
-     &    k5,e5) + 2.D0*prt(s345)*za(p2,p6)*za(p3,e5)*zb(p1,p2)*zb(p2,
-     &    p4)*iza(k5,e5) )
-      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16) * (  - prt(s345)*za(
-     &    p1,p3)*za(p2,p6)*zb(p1,p2)**2*zb(p4,k5)*vert25x16a*facuRl + 
-     &    prt(s345)*za(p1,p3)*za(p6,p2)*zb(p1,p2)*zb(p2,p1)*zb(p4,k5)*
-     &    vert25x17*facuRl - 2.D0*prt(s345)*za(p1,p6)*za(p3,p4)*zb(p1,
-     &    p2)*zb(p1,p4)*zb(p4,k5)*vert25x24 - 2.D0*prt(s345)*za(p1,p6)*
-     &    za(p3,p4)*zb(p1,p2)*zb(p1,p4)*zb(p4,k5)*vert25x23 - prt(s345)
-     &    *za(p1,p6)*za(p3,k5)*zb(p1,p2)*zb(p1,k5)*zb(k5,p4)*vert25x21
-     &     - prt(s345)*za(p1,p6)*za(p3,k5)*zb(p1,p2)*zb(p1,k5)*zb(k5,p4
-     &    )*vert25x31 - prt(s345)*za(p1,p6)*za(p3,e5)*zb(p1,p2)*zb(p1,
-     &    k5)*zb(e5,p4)*vert25x21 - prt(s345)*za(p1,p6)*za(p3,e5)*zb(p1
-     &    ,p2)*zb(p1,k5)*zb(e5,p4)*vert25x31 - 2.D0*prt(s345)*za(p2,p6)
-     &    *za(p3,p4)*zb(p1,p2)*zb(p2,p4)*zb(p4,k5)*vert25x24 - 2.D0*
-     &    prt(s345)*za(p2,p6)*za(p3,p4)*zb(p1,p2)*zb(p2,p4)*zb(p4,k5)*
-     &    vert25x23 - prt(s345)*za(p2,p6)*za(p3,p6)*zb(p1,p2)*zb(p2,p6)
-     &    *zb(p4,k5)*vert25x16a*facuRl - prt(s345)*za(p2,p6)*za(p3,k5)*
-     &    zb(p1,p2)*zb(p2,k5)*zb(k5,p4)*vert25x21 )
-      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16) * (  - prt(s345)*za(
-     &    p2,p6)*za(p3,k5)*zb(p1,p2)*zb(p2,k5)*zb(k5,p4)*vert25x31 - 
-     &    prt(s345)*za(p2,p6)*za(p3,e5)*zb(p1,p2)*zb(p2,k5)*zb(e5,p4)*
-     &    vert25x21 - prt(s345)*za(p2,p6)*za(p3,e5)*zb(p1,p2)*zb(p2,k5)
-     &    *zb(e5,p4)*vert25x31 + prt(s345)*za(p3,p6)*za(p6,p2)*zb(p2,p1
-     &    )*zb(p2,p6)*zb(p4,k5)*vert25x17*facuRl )
+     &    ) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*prt(s345)*vert25x20*
+     & facuRl*mt * (  - 2.D0*za(p3,p6)*zb(p1,p2)*zb(p4,k5) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*prt(s345)*vert25x20*
+     & facuLl*mt * ( 2.D0*za(p1,p6)*za(p3,e5)*zb(p1,p2)*zb(p1,p4)*iza(
+     &    k5,e5) + 2.D0*za(p2,p6)*za(p3,e5)*zb(p1,p2)*zb(p2,p4)*iza(k5,
+     &    e5) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*prt(s345)*vert25x21*
+     & mt**2 * (  - za(p3,k5)*za(p6,e5)*zb(p1,p2)*zb(k5,p4)*iza(k5,e5)
+     &     - za(p3,e5)*za(p6,e5)*zb(p1,p2)*zb(e5,p4)*iza(k5,e5) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*prt(s345)*vert25x21
+     &  * (  - za(p1,p6)*za(p3,k5)*zb(p1,p2)*zb(p1,k5)*zb(k5,p4) - za(
+     &    p1,p6)*za(p3,e5)*zb(p1,p2)*zb(p1,k5)*zb(e5,p4) - za(p2,p6)*
+     &    za(p3,k5)*zb(p1,p2)*zb(p2,k5)*zb(k5,p4) - za(p2,p6)*za(p3,e5)
+     &    *zb(p1,p2)*zb(p2,k5)*zb(e5,p4) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*prt(s345)*vert25x24
+     &  * (  - 2.D0*za(p1,p6)*za(p3,p4)*zb(p1,p2)*zb(p1,p4)*zb(p4,k5)
+     &     - 2.D0*za(p2,p6)*za(p3,p4)*zb(p1,p2)*zb(p2,p4)*zb(p4,k5) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*prt(s345)*vert25x23*
+     & mt**2 * ( 2.D0*za(p3,p6)*za(e5,p3)*zb(p1,p2)*zb(p3,p4)*iza(k5,e5
+     &    ) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*prt(s345)*vert25x23
+     &  * (  - 2.D0*za(p1,p6)*za(p3,p4)*zb(p1,p2)*zb(p1,p4)*zb(p4,k5)
+     &     - 2.D0*za(p2,p6)*za(p3,p4)*zb(p1,p2)*zb(p2,p4)*zb(p4,k5) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*prt(s345)*vert25x25*
+     & mt * (  - za(p1,p6)*za(p3,k5)*za(e5,p3)*zb(p1,p2)*zb(p3,p1)*zb(
+     &    k5,p4)*iza(k5,e5) - za(p1,p6)*za(p3,k5)*za(e5,p4)*zb(p1,p2)*
+     &    zb(p4,p1)*zb(k5,p4)*iza(k5,e5) - za(p1,p6)*za(p3,e5)*za(e5,p3
+     &    )*zb(p1,p2)*zb(p3,p1)*zb(e5,p4)*iza(k5,e5) - za(p1,p6)*za(p3,
+     &    e5)*za(e5,p4)*zb(p1,p2)*zb(p4,p1)*zb(e5,p4)*iza(k5,e5) - za(
+     &    p2,p6)*za(p3,k5)*za(e5,p3)*zb(p1,p2)*zb(p3,p2)*zb(k5,p4)*iza(
+     &    k5,e5) - za(p2,p6)*za(p3,k5)*za(e5,p4)*zb(p1,p2)*zb(p4,p2)*
+     &    zb(k5,p4)*iza(k5,e5) - za(p2,p6)*za(p3,e5)*za(e5,p3)*zb(p1,p2
+     &    )*zb(p3,p2)*zb(e5,p4)*iza(k5,e5) - za(p2,p6)*za(p3,e5)*za(e5,
+     &    p4)*zb(p1,p2)*zb(p4,p2)*zb(e5,p4)*iza(k5,e5) - za(p3,k5)*za(
+     &    p6,p3)*zb(p1,p2)*zb(p3,k5)*zb(k5,p4) - za(p3,k5)*za(p6,p4)*
+     &    zb(p1,p2)*zb(p4,k5)*zb(k5,p4) - za(p3,e5)*za(p6,p3)*zb(p1,p2)
+     &    *zb(p3,k5)*zb(e5,p4) - za(p3,e5)*za(p6,p4)*zb(p1,p2)*zb(p4,k5
+     &    )*zb(e5,p4) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*prt(s345)*vert25x27*
+     & mt * (  - za(p1,p6)*za(p3,k5)*za(e5,p3)*zb(p1,p2)*zb(p3,p1)*zb(
+     &    k5,p4)*iza(k5,e5) - za(p1,p6)*za(p3,k5)*za(e5,p4)*zb(p1,p2)*
+     &    zb(p4,p1)*zb(k5,p4)*iza(k5,e5) - za(p1,p6)*za(p3,e5)*za(e5,p3
+     &    )*zb(p1,p2)*zb(p3,p1)*zb(e5,p4)*iza(k5,e5) - za(p1,p6)*za(p3,
+     &    e5)*za(e5,p4)*zb(p1,p2)*zb(p4,p1)*zb(e5,p4)*iza(k5,e5) - za(
+     &    p2,p6)*za(p3,k5)*za(e5,p3)*zb(p1,p2)*zb(p3,p2)*zb(k5,p4)*iza(
+     &    k5,e5) - za(p2,p6)*za(p3,k5)*za(e5,p4)*zb(p1,p2)*zb(p4,p2)*
+     &    zb(k5,p4)*iza(k5,e5) - za(p2,p6)*za(p3,e5)*za(e5,p3)*zb(p1,p2
+     &    )*zb(p3,p2)*zb(e5,p4)*iza(k5,e5) - za(p2,p6)*za(p3,e5)*za(e5,
+     &    p4)*zb(p1,p2)*zb(p4,p2)*zb(e5,p4)*iza(k5,e5) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*prt(s345)*vert25x29*
+     & mt * (  - 2.D0*za(p1,p6)*za(p3,e5)*zb(p1,p2)*zb(p1,p4)*iza(k5,e5
+     &    ) - 2.D0*za(p2,p6)*za(p3,e5)*zb(p1,p2)*zb(p2,p4)*iza(k5,e5)
+     &     + 2.D0*za(p3,p6)*zb(p1,p2)*zb(p4,k5) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*prt(s345)*vert25x30*
+     & mt * (  - 2.D0*za(p1,p6)*za(p3,e5)*zb(p1,p2)*zb(p1,p4)*iza(k5,e5
+     &    ) - 2.D0*za(p2,p6)*za(p3,e5)*zb(p1,p2)*zb(p2,p4)*iza(k5,e5) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*prt(s345)*vert25x31
+     &  * (  - za(p1,p6)*za(p3,k5)*zb(p1,p2)*zb(p1,k5)*zb(k5,p4) - za(
+     &    p1,p6)*za(p3,e5)*zb(p1,p2)*zb(p1,k5)*zb(e5,p4) - za(p2,p6)*
+     &    za(p3,k5)*zb(p1,p2)*zb(p2,k5)*zb(k5,p4) - za(p2,p6)*za(p3,e5)
+     &    *zb(p1,p2)*zb(p2,k5)*zb(e5,p4) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*vert16x1*facdLl*mt*
+     & s234**(-1) * ( 2.D0*za(p3,p2)*za(p6,e5)*zb(p2,p1)*zb(p2,p4)*iza(
+     &    k5,e5) + 2.D0*za(p3,p4)*za(p6,e5)*zb(p2,p4)*zb(p4,p1)*iza(k5,
+     &    e5) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*vert25x5*mt*
+     & s234**(-1) * ( za(p2,p3)**2*za(p6,e5)*zb(p1,p2)*zb(p2,p3)*zb(p2,
+     &    p4)*iza(k5,e5) + za(p2,p3)*za(p2,p4)*za(p6,e5)*zb(p1,p2)*zb(
+     &    p2,p4)**2*iza(k5,e5) + za(p2,p3)*za(p3,p4)*za(p6,e5)*zb(p1,p3
+     &    )*zb(p2,p4)**2*iza(k5,e5) - za(p2,p3)*za(p3,p4)*za(p6,e5)*zb(
+     &    p1,p4)*zb(p2,p3)*zb(p2,p4)*iza(k5,e5) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*vert25x7*mt*
+     & s234**(-1) * (  - 2.D0*za(p3,p2)*za(p6,e5)*zb(p2,p1)*zb(p2,p4)*
+     &    iza(k5,e5) - 2.D0*za(p3,p4)*za(p6,e5)*zb(p2,p4)*zb(p4,p1)*
+     &    iza(k5,e5) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*vert25x9*facdLl*mt*
+     & s234**(-1) * ( za(p1,e5)*za(p2,p3)*za(p6,k5)*zb(p1,p2)*zb(p2,p4)
+     &    *zb(k5,p1)*iza(k5,e5) + za(p1,e5)*za(p2,p3)*za(p6,e5)*zb(p1,
+     &    p2)*zb(p2,p4)*zb(e5,p1)*iza(k5,e5) - za(p1,e5)*za(p3,p4)*za(
+     &    p6,k5)*zb(p1,p4)*zb(p2,p4)*zb(k5,p1)*iza(k5,e5) - za(p1,e5)*
+     &    za(p3,p4)*za(p6,e5)*zb(p1,p4)*zb(p2,p4)*zb(e5,p1)*iza(k5,e5)
+     &     - za(p2,p3)*za(p6,k5)*za(p6,e5)*zb(p2,p4)*zb(p2,p6)*zb(k5,p1
+     &    )*iza(k5,e5) - za(p2,p3)*za(p6,e5)**2*zb(p2,p4)*zb(p2,p6)*zb(
+     &    e5,p1)*iza(k5,e5) + za(p3,p4)*za(p6,k5)*za(p6,e5)*zb(p2,p4)*
+     &    zb(p4,p6)*zb(k5,p1)*iza(k5,e5) + za(p3,p4)*za(p6,e5)**2*zb(p2
+     &    ,p4)*zb(p4,p6)*zb(e5,p1)*iza(k5,e5) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*vert25x10*facdLl*mt*
+     & s234**(-1) * ( 2.D0*za(p3,p2)*za(p6,e5)*zb(p2,p1)*zb(p2,p4)*iza(
+     &    k5,e5) + 2.D0*za(p3,p4)*za(p6,e5)*zb(p2,p4)*zb(p4,p1)*iza(k5,
+     &    e5) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*vert25x12*facdLl*
+     & s234**(-1) * ( za(p3,p2)*za(p6,k5)*zb(p2,p4)*zb(p2,k5)*zb(k5,p1)
+     &     + za(p3,p2)*za(p6,e5)*zb(p2,p4)*zb(p2,k5)*zb(e5,p1) + za(p3,
+     &    p4)*za(p6,k5)*zb(p2,p4)*zb(p4,k5)*zb(k5,p1) + za(p3,p4)*za(p6
+     &    ,e5)*zb(p2,p4)*zb(p4,k5)*zb(e5,p1) )
+      ylower(j3,2,ep) = ylower(j3,2,ep) + prW(s16)*vert25x13*facdLl*
+     & s234**(-1) * ( 2.D0*za(p3,p2)*za(p6,p1)*zb(p1,k5)*zb(p2,p1)*zb(
+     &    p2,p4) + 2.D0*za(p3,p4)*za(p6,p1)*zb(p1,k5)*zb(p2,p4)*zb(p4,
+     &    p1) )
 
       enddo
       enddo

@@ -3,7 +3,7 @@
 c----Lowest order matrix element for H production
 c----in the heavy quark (mt=Infinity) limit.
 C----averaged over initial colours and spins
-c     g(-p1)+g(-p2)-->H -->  W^- (e^-(p3)+nubar(p4)) + W^+ (nu(p5)+e^+(p6))
+c     g(-p1)+g(-p2)-->H -->  Z^0 (e^-(p3)+e^+(p4)) + Z^0 (mu^-(p5)+mu^+(p6))
 c---
       include 'constants.f'
       include 'masses.f'

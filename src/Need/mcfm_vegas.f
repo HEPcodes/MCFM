@@ -20,7 +20,6 @@
 *    real -> Real + subtraction terms                                  *  
 *                [+ QED photon-quark subtractions if frag=.true.]      *
 *    frag -> Fragmentation contributions, incl. integrated QED dipoles *
-*    frag -> Fragmentation contributions, incl. integrated QED dipoles *
 *                                                                      *
 *    tota -> virt + real [frag=.false.]                                *
 *    tota -> virt + real + frag [frag=.true.]                          *
@@ -40,12 +39,13 @@
       include 'process.f'
       include 'ipsgen.f'
       include 'part.f'
-      integer myitmx,myncall,myinit,i,j,k,nproc,mynproc
+      integer myitmx,myncall,myinit,i,j,k,nproc,mynproc,myncall_save
       logical mybin,bin
       double precision sig,sd,chi,sigr,sdr,sigdk,sddk,chidk,
      & sigfrag,sdfrag,chifrag,sigWdk,sdWdk,chiWdk,
      & xreal,xreal2,xinteg,xerr,adjust,myscale,myfacscale,
-     & mymb,sumsig,sumsigr,sumsigf,sumsd,sumsdr,sumsdf
+     & mymb,sumsig,sumsigr,sumsigf,sumsd,sumsdr,sumsdf,
+     & sigips(4),sdips(4),xcallwt
       character*4 mypart
       character*3 getstr,psgen
       common/nproc/nproc
@@ -58,7 +58,7 @@
       common/bypart/lord_bypart
       external lowint,virtint,realint,fragint
       data first/.true./
-      save first
+      save first,sigips,sdips
            
 c--- Initialize all integration results to zero, so that the
 c--- total of virt and real may be combined at the end for 'tota'
@@ -108,6 +108,7 @@ c--- part and scale can be changed to make sure that the tota option works.
       myfacscale=facscale
       mynproc=nproc
       mymb=mb
+      myncall_save=myncall
 
 c--- special process: 5FNS + 4FNS: initialization
 c---   for process 421 (426) we will actually run
@@ -124,7 +125,8 @@ c--- special handling of multiple PS generation for
 c--- Z+gamma+jet and Z+gamma+gamma processes: we will loop
 c--- over ipsgen=1,..,n where n=2 for Z+gamma+jet and n=4 for  Z+gamma+gamma
       if ( (mynproc .eq. 301) .or. (mynproc .eq. 302)
-     & .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)) then
+     & .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)
+     & .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)) then
       sumsig=0d0
       sumsigr=0d0
       sumsigf=0d0
@@ -162,7 +164,8 @@ c--- special write-out/read-in for 5FNS + 4FNS process
 c--- special handling of multiple PS generation for
 c--- Z+gamma+jet and Z+gamma+gamma processes 
       if ( (mynproc .eq. 301) .or. (mynproc .eq. 302)
-     & .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)) then
+     & .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)
+     & .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)) then
         reset=.true.
         scalereset=.true.
       psgen=getstr(ipsgen)
@@ -182,7 +185,7 @@ c--- Basic lowest-order integration
       if (part .eq. 'lord') then
        call boundregion(ndim,region)
        call vegasnr(region,ndim,lowint,myinit,myncall,myitmx,
-     .               0,sig,sd,chi)
+     .               nprn,sig,sd,chi)
       endif
 
 
@@ -191,7 +194,7 @@ c---- REMOVE THIS PIECE EVENTUALLY
          ndim=ndim+1
          call boundregion(ndim,region) 
          call vegasnr(region,ndim,lowint,myinit,myncall,myitmx,
-     &                 0,sig,sd,chi)
+     &                 nprn,sig,sd,chi)
          ndim=ndim-1
       endif
 c---- REMOVE THIS PIECE EVENTUALLY
@@ -208,7 +211,8 @@ c-- special input name for virtual grid
             writeout=.true.
             outgridfile='dvegas_virt.grid'          
             if ( (mynproc .eq. 301) .or. (mynproc .eq. 302)
-     &       .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)) then
+     &       .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)
+     &       .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)) then
               outgridfile='dvegas_virt_PS'//psgen(1:1)//'.grid'
           endif
           else
@@ -216,7 +220,8 @@ c-- special input name for virtual grid
             writeout=.false.
             ingridfile='dvegas_virt.grid'
             if ( (mynproc .eq. 301) .or. (mynproc .eq. 302)
-     &       .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)) then
+     &       .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)
+     &       .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)) then
               ingridfile='dvegas_virt_PS'//psgen(1:1)//'.grid'
           endif
           endif
@@ -233,7 +238,7 @@ c--- (added and then taken away)
         ndim=ndim+1
         call boundregion(ndim,region)
         call vegasnr(region,ndim,virtint,myinit,myncall,myitmx,
-     .              0,sig,sd,chi)
+     .              nprn,sig,sd,chi)
         ndim=ndim-1
       endif
             
@@ -249,7 +254,8 @@ c-- special input name for real grid
             writeout=.true.
             outgridfile='dvegas_real.grid'          
             if ( (mynproc .eq. 301) .or. (mynproc .eq. 302)
-     &       .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)) then
+     &       .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)
+     &       .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)) then
               outgridfile='dvegas_real_PS'//psgen(1:1)//'.grid'
           endif
           else
@@ -257,7 +263,8 @@ c-- special input name for real grid
             writeout=.false.
             ingridfile='dvegas_real.grid'
             if ( (mynproc .eq. 301) .or. (mynproc .eq. 302)
-     &       .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)) then
+     &       .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)
+     &       .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)) then
               ingridfile='dvegas_real_PS'//psgen(1:1)//'.grid'
           endif
           endif
@@ -279,7 +286,7 @@ c---   unsubtracted real emission weight)
         ndim=ndim+3
         call boundregion(ndim,region)
         call vegasnr(region,ndim,realint,myinit,myncall,myitmx,
-     .              0,sigr,sdr,chi)
+     .              nprn,sigr,sdr,chi)
         ndim=ndim-3
         write(6,*) 
         ncall=myncall
@@ -313,7 +320,7 @@ c      endif
         ndim=ndim+3
         call boundregion(ndim,region)
         call vegasnr(region,ndim,realint,myinit,ncall,myitmx,
-     .              0,sigr,sdr,chi)
+     .              nprn,sigr,sdr,chi)
         ndim=ndim-3
         write(6,*) 
         ncall=myncall
@@ -363,7 +370,7 @@ c-- special input name for real grid
         ndim=ndim+3
         call boundregion(ndim,region)
         call vegasnr(region,ndim,realint,myinit,ncall,myitmx,
-     .              0,sigdk,sddk,chidk)
+     .              nprn,sigdk,sddk,chidk)
         ndim=ndim-3
         write(6,*) 
         ncall=myncall
@@ -416,7 +423,7 @@ c-- special input name for real grid
         ndim=ndim+3
         call boundregion(ndim,region)
         call vegasnr(region,ndim,realint,myinit,ncall,myitmx,
-     .              0,sigWdk,sdWdk,chiWdk)
+     .              nprn,sigWdk,sdWdk,chiWdk)
         ndim=ndim-3
         write(6,*) 
         ncall=myncall
@@ -445,7 +452,8 @@ c-- special input name for frag grid
             writeout=.true.
             outgridfile='dvegas_frag.grid'          
             if ( (mynproc .eq. 301) .or. (mynproc .eq. 302)
-     &       .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)) then
+     &       .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)
+     &       .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)) then
               outgridfile='dvegas_frag_PS'//psgen(1:1)//'.grid'
           endif
           else
@@ -453,7 +461,8 @@ c-- special input name for frag grid
             writeout=.false.
             ingridfile='dvegas_frag.grid'
             if ( (mynproc .eq. 301) .or. (mynproc .eq. 302)
-     &       .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)) then
+     &       .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)
+     &       .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)) then
               ingridfile='dvegas_frag_PS'//psgen(1:1)//'.grid'
             endif
           endif
@@ -463,9 +472,14 @@ c-- special input name for frag grid
 c--- special handling of multiple PS generation for
 c--- Z+gamma+jet and Z+gamma+gamma processes:
 c---  fragmentation pieces only contribute for
-c---   ipsgen=1 (Z+gamma+jet) and ipsgen=1,2 (Z+gamma+gamma) 
+c---   ipsgen=1 (Z+gamma+jet)
+c---   ipsgen=1,2 (Z+gamma+gamma) 
+c---   ipsgen=1,3 (W+gamma+gamma) 
       if (((mynproc .eq. 301) .and. (ipsgen .gt. 2)) .or. 
-     &    ((mynproc .eq. 302) .and. (ipsgen .gt. 1))) then
+     &    ((mynproc .eq. 302) .and. (ipsgen .gt. 1)) .or.
+     &    ((mynproc .eq. 370) .and. ((ipsgen .eq. 2).or.(ipsgen.eq.4))) 
+     & .or.((mynproc .eq. 371) .and. ((ipsgen .eq. 2).or.(ipsgen.eq.4)))
+     &     )then
         sigfrag=0d0
         sdfrag=0d0
         goto 33
@@ -481,13 +495,14 @@ c---   ipsgen=1 (Z+gamma+jet) and ipsgen=1,2 (Z+gamma+gamma)
          else
          reset=.true.
          endif
-       rescale=.true.            ! turn on rescaling for this piece
          ncall=myncall
 c         write(6,*) 'Adjusting number of points for frag to',ncall
          ndim=ndim+1
          call boundregion(ndim,region) 
+         fragint_mode=.true.            ! for isolation
          call vegasnr(region,ndim,fragint,myinit,myncall,myitmx,
-     &                 0,sigfrag,sdfrag,chifrag)
+     &                 nprn,sigfrag,sdfrag,chifrag)
+         fragint_mode=.false.            ! for isolation
          ndim=ndim-1
        rescale=.false.       ! turn rescaling off again
       endif
@@ -518,7 +533,13 @@ c--- special handling of multiple PS generation for
 c--- Z+gamma+jet and Z+gamma+gamma processes: we will loop
 c--- over ipsgen=1,..,n where n=2 for Z+gamma+jet and n=4 for  Z+gamma+gamma
       if ( (mynproc .eq. 301) .or. (mynproc .eq. 302)
-     & .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)) then
+     & .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)
+     & .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)) then
+c--- store cross section and standard deviation info for this region on first run
+        if (myinit .eq. 0) then
+          sigips(ipsgen)=sig+sigr+sigfrag
+          sdips(ipsgen)=sqrt(sd**2+sdr**2+sdfrag**2)
+        endif
         sumsig=sumsig+sig
         sumsigr=sumsigr+sigr
         sumsigf=sumsigf+sigfrag
@@ -528,9 +549,24 @@ c--- over ipsgen=1,..,n where n=2 for Z+gamma+jet and n=4 for  Z+gamma+gamma
         ipsgen=ipsgen+1
         if ((((nproc .eq. 302).or.(nproc .eq. 304)).and.(ipsgen .le. 2))
      &  .or.(((nproc .eq. 301).or.(nproc .eq. 303)).and.(ipsgen .le. 4))
+     &  .or.(((nproc .eq. 370).or.(nproc .eq. 371)).and.(ipsgen .le. 4))
      &     ) then
+c--- W+2 photons case
+          if ((nproc .eq. 370).or.(nproc .eq. 371)) then
+            if ((myinit .eq. 1) .and. (ipsgen .gt. 1)) then
+c--- dynamic scaling of points on second run according to uncertainties found in first
+              xcallwt=(sdips(ipsgen)/sdips(1))
+              if (xcallwt .lt. 0.2d0) xcallwt=0.2d0
+              if (xcallwt .gt. 5d0) xcallwt=5d0
+              myncall=int(float(myncall_save)*xcallwt)
+c              write(6,*) '>>>>>> Dynamic scaling factor = ',
+c     &                    xcallwt,' for ipsgen=',ipsgen
+            endif
+            goto 77 
+          endif
 c--- change number of PS points in different regions
-          if ((nproc.eq.301).or.(nproc.eq.303)) then
+          if ((nproc.eq.301).or.(nproc.eq.303)
+     &    .or.(nproc.eq.370).or.(nproc.eq.371)) then
              if (ipsgen.eq.2) then
                 myncall=10*myncall
              elseif (ipsgen.eq.3) then
@@ -556,9 +592,10 @@ c--- calculate integration variables to be returned
       xinteg=sig+sigr+sigdk+sigWdk+sigfrag
       xerr=dsqrt(sd**2+sdr**2+sddk**2+sdWdk**2+sdfrag**2)      
       
-c--- return part and scale to their real values
+c--- return part, scale and myncall to their real values
       part=mypart
       scale=myscale
+      myncall=myncall_save
       first=.false.
       
       return

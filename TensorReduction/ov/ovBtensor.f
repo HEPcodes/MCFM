@@ -17,7 +17,7 @@ C     Implementing the formula of Denner and Dittmaier arXiv:hep-ph/0509141
       integer N,ep,nl,in,iP,n1,n2
       double precision p1sq,m0sq,m1sq,f1,iep,p1(4)
       double complex A0(-2:0),B0(-2:0),B1(-2:0),B00(-2:0),B11(-2:0),
-     & FB0(-2:0),FB1(y1max,-2:0),FB2(y2max,-2:0),qlI1,
+     & FB0(-2:0),FB1(y1max,-2:0),FB2(y2max,-2:0),trI1,
      & xp,xm,rt,arg,arg1,pvfndd,cln,xpvfndd
       logical first,scaleset,p1sqnonzero
       double precision fac,facnp,idp1(0:2),id(0:2),idm1(0:2)
@@ -124,7 +124,7 @@ C----self energies never contain double poles -- set to zero
 
 C----calculate B0
 c      do ep=-1,0
-c      Bv(bb0+N,ep)=qlI2(p1sq,m0sq,m1sq,musq,ep)
+c      Bv(bb0+N,ep)=trI2(p1sq,m0sq,m1sq,musq,ep)
 c      enddo
 
       if ((abs(p1sq/musq) .lt. onshellcutoff) 
@@ -235,7 +235,7 @@ c---  following the formulae of DD (4.4)
       in=0
       iP=2
       do ep=-1,0
-      A0(ep)=qlI1(m1sq,musq,ep)
+      A0(ep)=trI1(m1sq,musq,ep)
       B00(ep)=-0.5d0/dfloat(iP-2*in-1)*(
      . facnp(in,iP)*A0(ep)-f1*B1(ep)
      . +2d0*p1sq*B11(ep))

@@ -22,8 +22,8 @@ c---                1  --> counterterm for real radiation
       double precision p(mxpart,4),wt,wt2
       double precision yrap,pt,r,yraptwo,pttwo
       double precision ylept,ptlept,misset,yw,ptw,mw,ybq,ptbq,yba,ptba,
-     & ylt,ptlt,yj1,ptj1,yj2,ptj2,yj3,ptj3,mbb,mjj,Rjl
-     & ,dphibqnu,dphibanu,r2,ybmax
+     & ylt,ptlt,yj1,ptj1,yj2,ptj2,ybmax,yj3,ptj3,mbb,mjj,Rjl
+     & ,dphibqnu,dphibanu,r2,binedges(30),tag2b
       double precision etaw, etabq, etaba, etaraptwo
       integer switch,n,nplotmax,nproc
       character*4 tag
@@ -65,7 +65,7 @@ c--- Initialize dummy values for all quantities that could be plotted
       etaw=99d0
       etabq=99d0
       etaba=99d0
-      ybmax=99d0
+c      ybmax=99d0
 
       if (first) then
 c--- Initialize histograms, without computing any quantities; instead
@@ -89,12 +89,14 @@ c--- Add event in histograms
 ************************************************************************
 
       if     ((nproc .eq. 20) .or. (nproc .eq. 21)
+     &   .or. (nproc .eq. 13)
      &   .or. (nproc .eq. 311) .or. (nproc .eq. 321)
      &   .or. (nproc .eq. 401) .or. (nproc .eq. 402)
      &   .or. (nproc .eq. 403) .or. (nproc .eq. 411)) then
         ilept=4
         inu=3
       elseif ((nproc .eq. 25) .or. (nproc .eq. 26)
+     &   .or. (nproc .eq. 18)
      &   .or. (nproc .eq. 316) .or. (nproc .eq. 326)
      &   .or. (nproc .eq. 406) .or. (nproc .eq. 407)
      &   .or. (nproc .eq. 408) .or. (nproc .eq. 416)) then
@@ -354,7 +356,7 @@ c---  Add pseudorapidity histograms
      & wt,wt2, -5d0,5d0,0.1d0,'lin')
       n=n+1
 
-c---   pt and rapidity for the highst pt b-quark jet
+c---   pt and rapidity for the highest pt b-quark jet
 
       call bookplot(n,tag,'b-quark harder jet rapidity',ybq,wt,wt2,
      &              -5d0,5d0,0.1d0,'lin')
@@ -363,6 +365,32 @@ c---   pt and rapidity for the highst pt b-quark jet
      &              0d0,200d0,5d0,'log')
       n=n+1
 
+      call bookplot(n,tag,'b-jet pt (b and b-bar binned)',ptbq,wt,wt2,
+     &              0d0,500d0,5d0,'log')
+      call bookplot(n,tag,'b-jet pt (b and b-bar binned)',ptba,wt,wt2,
+     &              0d0,500d0,5d0,'log')
+c-- Irregular bins: note that binedges must have 30 entries
+c      if (first) then
+c       binedges= (/ 20d0, 30d0, 40d0, 50d0, 70d0, 150d0, 500d0,
+c     &             (0d0,j=1,23) /)
+c       call initirregbins(n,binedges)
+c      endif
+      n=n+1
+
+      tag2b=0d0
+      if ((ibq .gt. 0) .and. (iba .gt. 0)) tag2b=1d0
+      call bookplot(n,tag,'b-jet pt (2b events only)',ptbq,
+     &              wt*tag2b,wt2*tag2b**2,0d0,500d0,5d0,'log')
+      call bookplot(n,tag,'b-jet pt (2b events only)',ptba,
+     &              wt*tag2b,wt2*tag2b**2,0d0,500d0,5d0,'log')
+c-- Irregular bins: note that binedges must have 30 entries
+c      if (first) then
+c       binedges= (/ 20d0, 30d0, 40d0, 50d0, 70d0, 150d0, 500d0,
+c     &             (0d0,j=1,23) /)
+c       call initirregbins(n,binedges)
+c      endif
+      n=n+1
+      
 c      call bookplot(n,tag,'DeltaRe5',re5,wt,wt2,0d0,5d0,0.1d0,'lin')
 c      n=n+1
 c      call bookplot(n,tag,'y5',y5,wt,wt2,-yjet,yjet,0.2d0,'lin')

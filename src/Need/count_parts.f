@@ -5,10 +5,11 @@
       include 'constants.f'
       include 'plabel.f'
       integer j
+      logical is_photon
 
       count_photo=0
       do j=1,mxpart
-         if (plabel(j) .eq. 'ga') then 
+         if (is_photon(j)) then 
             count_photo=count_photo+1
          endif
       enddo 
@@ -23,12 +24,13 @@
       include 'npart.f'
       include 'plabel.f'
       integer j
+      logical is_hadronic
 
-c---- Count final state jets only pp included initially
+c---- Count final state jets
       count_jets=0
 
       do j=3,npart+2
-         if (plabel(j) .eq. 'pp') then 
+         if (is_hadronic(j)) then 
             count_jets=count_jets+1
          endif
       enddo 

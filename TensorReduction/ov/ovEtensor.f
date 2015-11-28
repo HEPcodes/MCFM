@@ -6,7 +6,7 @@ C****   m1s,m2s,m3s,m4s,m5s are the internal masses squared.
 
       implicit none
       include 'TRydef.f'
-c      include 'ovbadpoint.f'
+      include 'TRbadpoint.f'
       include 'TRmaxindex.f'
       include 'TRconstants.f'
       double precision p1(4),p2(4),p3(4),p4(4),p5(4),
@@ -29,8 +29,9 @@ c      include 'ovbadpoint.f'
       double precision p1Dp1,p2Dp2,p3Dp3,p4Dp4,p5Dp5,d,
      & p1Dp2,p1Dp3,p2Dp3,p1Dp4,p2Dp4,p3Dp4,
      & m1s,m2s,m3s,m4s,m5s,s12,s23,s34,s45,s51,
-     & p12(4),p23(4),p34(4),p45(4),p51(4)
+     & p12(4),p23(4),p34(4),p45(4),p51(4),p123(4),p1234(4)
       integer nu,n1,n2,n3,n4,n5,ep,indx(4)
+      logical failed
 c      logical pvGramsing,singmat
 c      common/singmat/singmat      
       logical first
@@ -136,7 +137,7 @@ c      common/singmat/singmat
       FE1(n1,ep)=RHS(1)*p1(n1)+RHS(2)*p2(n1)+RHS(3)*p3(n1)+RHS(4)*p4(n1)
       enddo
       enddo
-      if (maxeindex .eq. 1) return
+      if (maxeindex .eq. 1) goto 99
 
 
       do ep=-2,0
@@ -152,7 +153,7 @@ c      common/singmat/singmat
       enddo
       enddo
       enddo
-      if (maxeindex .eq. 2) return
+      if (maxeindex .eq. 2) goto 99
 
       do ep=-2,0
       do n1=1,4
@@ -173,7 +174,7 @@ c      common/singmat/singmat
       enddo
       enddo
       enddo
-      if (maxeindex .eq. 3) return
+      if (maxeindex .eq. 3) goto 99
 
       do ep=-2,0
       do n1=1,4
@@ -196,7 +197,7 @@ c      common/singmat/singmat
       enddo
       enddo
       enddo
-      if (maxeindex .eq. 4) return
+      if (maxeindex .eq. 4) goto 99
 
       do ep=-2,0
       do n1=1,4
@@ -224,14 +225,16 @@ c      common/singmat/singmat
 
 
 c--- before returning, check tensor computed correctly        
-c   99 continue
+   99 continue
       
-c      call pvEcheck(4,q1,q2,q3,q4,m1s,m2s,m3s,m4s,m5s,
-c     &  FE0,FE1,FE2,FE3,FE4,FE5,failed)
-c      if (failed) then
-c        write(6,*) 'badpoint set in ovEtensor'
-c        pvbadpoint=.true.
-c      endif
+      p123=p12+p3
+      p1234=p123+p4
+      call ovEcheck(maxeindex,p1,p12,p123,p1234,m1s,m2s,m3s,m4s,m5s,
+     &  FE0,FE1,FE2,FE3,FE4,FE5,failed)
+      if (failed) then
+        write(6,*) 'badpoint set in ovEtensor'
+        pvbadpoint=.true.
+      endif
 
 
       return

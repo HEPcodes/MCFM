@@ -15,6 +15,11 @@
       include 'ewcharge.f'
       include 'frag.f'
       include 'phot_dip.f'
+      include 'msqbits.f'
+      double precision msqbits34_1(12),msqbits35_1(12)
+      double precision msqbits34_1_swap(12),msqbits35_1_swap(12)
+      double precision msq34_1_swap(-nf:nf,-nf:nf)
+     &,msq35_1_swap(-nf:nf,-nf:nf)
       integer j,k,nd
 c --- remember: nd will count the dipoles
       double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf)
@@ -42,19 +47,14 @@ c --- remember: nd will count the dipoles
      & sub24_5v,sub35_4,sub34_5,sub35_1,sub34_1,sub35_2,sub34_2 
       external qqb_dirgam,qqb_dirgam_gvec,qqb_2j_t,qqb_2j_s,
      & qqb_2jnoggswap
+      external qqb_2jet
 c      external qqb_2jnogg,qqb_2j_sqqb_2j_sswap,donothing_gvec
       if (frag) then 
-         ndmax=12
+         ndmax=8
       else
          ndmax=6
       endif
       
-!---- Intialise Photon dipoles 
-      do j=1,mxpart
-        phot_dip(j)=.false.
-      enddo
-
-
 
 c--- calculate all the initial-initial dipoles
       call dips(1,p,1,4,2,sub14_2,sub14_2v,msq14_2,msq14_2v,
@@ -87,16 +87,21 @@ c--- sub... and sub...v and msqv
 
      
       if (frag) then
-      call dipsfrag(7,p,3,4,1,sub34_1,msq34_1,qqb_2j_t) 
-      call dipsfrag(8,p,3,4,2,sub34_2,msq34_2,qqb_2j_t)
-      call dipsfrag(9,p,3,4,5,sub34_5,msq34_5,qqb_2j_s)
-      call dipsfrag(10,p,3,5,4,sub35_4,msq35_4,qqb_2j_s)
-      call dipsfrag(11,p,3,5,1,sub35_1,msq35_1,qqb_2jnoggswap) 
-      call dipsfrag(12,p,3,5,2,sub35_2,msq35_2,qqb_2jnoggswap)
-      do j=7,12
-         phot_dip(j)=.true. 
-      enddo
+         msqbits(:)=zip
+         call dipsfrag(7,p,3,4,1,sub34_1,msq34_1,qqb_2jet) 
+         msqbits34_1(:)=msqbits(:) 
+         call fill_dirgam_swap(7,msq34_1_swap)
+         msqbits34_1_swap(:)=msqbits(:) 
+         
+         msqbits(:)=zip
+         call dipsfrag(8,p,3,5,1,sub35_1,msq35_1,qqb_2jet)
+         msqbits35_1(:)=msqbits(:)
+         call fill_dirgam_swap(8,msq35_1_swap) 
+         msqbits35_1_swap(:)=msqbits(:) 
 
+         do j=7,8
+            phot_dip(j)=.true. 
+         enddo
       endif
       
      
@@ -145,7 +150,7 @@ c--- q-g and qb-g cases
      &              +msq25_4(j,k)*sub45_2(qq))
  
       if(frag) then 
-      msq(7,j,k)=Q(abs(j))**2*msq34_1(j,k)*sub34_1
+      msq(7,j,k)=Q(j)**2*msq34_1(j,k)*sub34_1
       endif
 
       elseif ((j .eq. 0).and.(k.ne.0)) then
@@ -158,7 +163,7 @@ c--- g-q and g-qb cases
       msq(6,j,k)=-(msq25_4(j,k)*sub25_4(qq)+msq25_4(j,k)*sub45_2(qq))/xn
       
       if(frag) then 
-         msq(8,j,k)=Q(abs(k))**2*msq34_2(j,k)*sub34_2
+         msq(7,j,k)=Q(k)**2*msq34_1(j,k)*sub34_1
       endif
 
       elseif ((j .eq. 0).and.(k .eq. 0)) then
@@ -175,10 +180,10 @@ c---Hence 24 split multiplies g(p1)+qb(p24) --> gamma(p3)+qb(p5)
      .           +msq25_1(k,+2)+msq25_1(k,+1))*sub25_1(qg)*2d0*tr
       
       if (frag) then 
-      msq(9,j,k)=(dfloat(nf-2)*Q(1)**2+2d0*Q(2)**2)
-     &  *msq34_5(j,k)*sub34_5
-      msq(10,j,k)=(dfloat(nf-2)*Q(1)**2+2d0*Q(2)**2)
-     &  *msq35_4(j,k)*sub35_4
+      msq(7,j,k)=(dfloat(nf-2)*Q(1)**2+2d0*Q(2)**2)
+     &  *msq34_1(j,k)*sub34_1
+      msq(8,j,k)=(dfloat(nf-2)*Q(1)**2+2d0*Q(2)**2)
+     &  *msq35_1_swap(j,k)*sub35_1
       endif
 
       endif
@@ -205,8 +210,8 @@ c---  q-q or qb-qb
      .              *(msq25_1(j,0)*sub25_1(gq)+msq25_1v(j,0)*sub25_1v)
                
                if(frag) then 
-                  msq(7,j,k)=Q(abs(j))**2*msq34_1(j,k)*sub34_1
-                  msq(12,j,k)=Q(abs(k))**2*msq35_2(j,k)*sub35_2
+                  msq(7,j,k)=Q(j)**2*msq34_1(j,k)*sub34_1
+                  msq(8,j,k)=Q(k)**2*msq35_1_swap(j,k)*sub35_1
                endif
 
             else
@@ -216,8 +221,8 @@ c---  q-q or qb-qb
      .              *(msq25_1(j,0)*sub25_1(gq)+msq25_1v(j,0)*sub25_1v)
 
                if(frag) then 
-                  msq(7,j,k)=Q(abs(j))**2*msq34_1(j,k)*sub34_1
-                  msq(12,j,k)=Q(abs(k))**2*msq35_2(j,k)*sub35_2
+                  msq(7,j,k)=Q(j)**2*msq34_1(j,k)*sub34_1
+                  msq(8,j,k)=Q(k)**2*msq35_1_swap(j,k)*sub35_1
                endif
 
                
@@ -236,16 +241,25 @@ c--- q-qbar
 
                   
                if(frag) then    
-!-----Initial-final dipoles (t channel) 
-                  msq(7,j,k)=Q(abs(j))**2*msq34_1(j,k)*sub34_1
-!                  msq(8,j,k)=0d0*Q(abs(k))**2*msq34_2(j,k)*sub34_2
-                  msq(11,j,k)=Q(abs(j))**2*msq35_1(j,k)*sub35_1
-!                  msq(12,j,k)=0d0*Q(abs(k))**2*msq35_2(j,k)*sub35_2
-!-----Final-final dipoles (nf s-channel) 
-                  msq(9,j,k)=(dfloat(nf-2)*Q(1)**2+2d0*Q(2)**2)
-     &                 *msq34_5(j,k)*sub34_5
-                  msq(10,j,k)=(dfloat(nf-2)*Q(1)**2+2d0*Q(2)**2)
-     &                 *msq35_4(j,k)*sub35_4                    
+                  if  ((abs(j) .eq. 2) .or. (abs(j) .eq. 4)) then
+                     msq(7,j,k)=sub34_1*(
+     &               Q(2)**2*(msqbits34_1(uub_uub)+msqbits34_1(uub_ccb))
+     &               +Q(1)**2*(3d0*msqbits34_1(uub_ddb)))
+                     msq(8,j,k)=sub35_1*(
+     &               Q(2)**2*(msqbits35_1_swap(uub_uub)
+     &                    +1d0*msqbits35_1_swap(uub_ccb))
+     &               +Q(1)**2*(3d0*msqbits35_1_swap(uub_ddb)))
+                  else
+                     msq(7,j,k)=sub34_1*(
+     &               Q(1)**2*(msqbits34_1(ddb_ddb)
+     &                    +2d0*msqbits34_1(ddb_ssb))
+     &               +Q(2)**2*(2d0*msqbits34_1(ddb_uub)))
+    
+                     msq(8,j,k)=sub35_1*(
+     &               Q(1)**2*(msqbits35_1_swap(ddb_ddb)
+     &                    +2d0*msqbits35_1_swap(ddb_ssb))
+     &               +Q(2)**2*(2d0*msqbits35_1_swap(ddb_uub)))
+                     endif
                endif
                
             else 
@@ -255,8 +269,8 @@ c--- q-qbar
      .              *(msq25_1(j,0)*sub25_1(gq)+msq25_1v(j,0)*sub25_1v)
                
                if(frag) then 
-                  msq(7,j,k)=Q(abs(j))**2*msq34_1(j,k)*sub34_1
-                  msq(12,j,k)=Q(abs(k))**2*msq35_2(j,k)*sub35_2
+                  msq(7,j,k)=Q(j)**2*msq34_1(j,k)*sub34_1
+                  msq(8,j,k)=Q(k)**2*msq35_1_swap(j,k)*sub35_1
                endif
             endif
             
@@ -273,23 +287,28 @@ c--- qbar-q
      .              *(msq25_4(j,k)*sub45_2(gq)-msq45_2v(j,k)*sub45_2v)
                
                if(frag) then    
-!----- Initial-final dipoles (t channel) 
-                  msq(7,j,k)=Q(abs(j))**2*msq34_1(j,k)*sub34_1
-!                  msq(8,j,k)=Q(abs(k))**2*msq34_2(j,k)*sub34_2
-                  msq(11,j,k)=Q(abs(j))**2*msq35_1(j,k)*sub35_1
-!                  msq(12,j,k)=Q(abs(k))**2*msq35_2(j,k)*sub35_2
-!-----Final-final dipoles (nf s-channel) 
-                  if(mod(abs(j),2).eq.1) then 
-                     msq(9,j,k)=(dfloat(nf-2)*Q(1)**2+2d0*Q(2)**2)
-     &                    *msq34_5(j,k)*sub34_5
-                     msq(10,j,k)=(dfloat(nf-2)*Q(1)**2+2d0*Q(2)**2)
-     &                    *msq35_4(j,k)*sub35_4      
+                  if  ((abs(j) .eq. 2) .or. (abs(j) .eq. 4)) then
+                     msq(7,j,k)=sub34_1*(
+     &               Q(2)**2*(msqbits34_1(ubu_uub)
+     &                       +msqbits34_1(ubu_ccb))
+     &               +Q(1)**2*(3d0*msqbits34_1(ubu_ddb)))
+                     msq(8,j,k)=sub35_1*(
+     &               Q(2)**2*(msqbits35_1_swap(ubu_uub)
+     &                       +msqbits35_1_swap(ubu_ccb))
+     &               +Q(1)**2*(3d0*msqbits35_1_swap(ubu_ddb)))
                   else
-                     msq(9,j,k)=(dfloat(nf-2)*Q(1)**2+2d0*Q(2)**2)
-     &                    *msq34_5(j,k)*sub34_5
-                     msq(10,j,k)=(dfloat(nf-2)*Q(1)**2+2d0*Q(2)**2)
-     &                    *msq35_4(j,k)*sub35_4 
-                  endif
+                     msq(7,j,k)=sub34_1*(
+     &               Q(1)**2*(msqbits34_1(dbd_ddb)
+     &                   +2d0*msqbits34_1(dbd_ssb))
+     &               +Q(2)**2*(2d0*msqbits34_1(dbd_uub)))
+    
+                     msq(8,j,k)=sub35_1*(
+     &               Q(1)**2*(msqbits35_1_swap(dbd_ddb)
+     &                   +2d0*msqbits35_1_swap(dbd_ssb))
+     &               +Q(2)**2*(2d0*msqbits35_1_swap(dbd_uub)))
+                     endif
+               
+               
                endif
                
             else 
@@ -298,8 +317,8 @@ c--- qbar-q
                msq(3,j,k)=msq(3,j,k)+(xn-1d0/xn)
      .              *(msq15_2(0,k)*sub15_2(gq)+msq15_2v(0,k)*sub15_2v)               
                if(frag) then      
-                  msq(8,j,k)=Q(abs(k))**2*msq34_2(j,k)*sub34_2
-                  msq(11,j,k)=Q(abs(j))**2*msq35_1(j,k)*sub35_1
+                  msq(7,j,k)=Q(k)**2*msq34_1(j,k)*sub34_1
+                  msq(8,j,k)=Q(j)**2*msq35_1_swap(j,k)*sub35_1
                endif
                               
             endif
@@ -313,3 +332,27 @@ c--- qbar-q
       return
       end
       
+
+      subroutine fill_dirgam_swap(nd,msq_swap)
+c--- routine that calls qqb_dirgam_g_swap and fills matrix elements
+c---  input: nd (dipole number)
+c--- output:msq_swap (array of matrix elements after 4<->5 swap)
+      implicit none
+      include 'constants.f'
+      include 'ptilde.f'
+      include 'z_dip.f'
+      integer nd
+      logical incldip(0:maxd)
+      double precision pdip(mxpart,4),msq_swap(-nf:nf,-nf:nf)
+      common/incldip/incldip
+      
+      if (incldip(nd)) then
+        call getptilde(nd,pdip)
+        pdip(3,:)=pdip(3,:)/z_dip(nd)
+        call qqb_2jet_swap(pdip,msq_swap)
+      else
+        msq_swap(:,:)=0d0
+      endif
+       
+      return
+      end

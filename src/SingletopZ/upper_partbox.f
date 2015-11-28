@@ -13,7 +13,7 @@
       double complex prW,prq,string,upperbox(-2:0),bit,iprZ,
      & part5,part3,part1,cprop
       double complex facuLl,facdLl,facLdiff
-       double precision p(mxpart,4),vec,mwsq,
+       double precision p(mxpart,4),mwsq,
      & omal,p1(4),p6(4)
       integer epmin
       logical first
@@ -78,50 +78,40 @@ c      write(*,*) 'epmin in upper_box', epmin
       do si=1,4
       do om=1,4
       string=g0(fi)*g0(nu)*g0(ro)*g0(si)*g0(om)*J61x5(fi,nu,ro,si,om)
-      bit= + prq(s134)**2*J34x1(om)*J52x1(fi)*facuLl * ( vec(p134,nu)*
-     &    vec(p134,si)*FB1x134(ro,ep) )
-      bit = bit + prq(s346)**2*J34x1(fi)*J52x1(om)*facdLl * ( vec(p346,
-     &    nu)*vec(p346,si)*FB1x346(ro,ep) )
-      bit = bit + J34x1(nu)*J52x1(ro)*facdLl * (  - vec(p16,fi)*vec(
-     &    p1346,om)*FD1x1x6x34(si,ep) - vec(p16,fi)*FD2x1x6x34(y2(si,om
-     &    ),ep) - vec(p1346,om)*FD2x1x6x34(y2(fi,si),ep) - FD3x1x6x34(
-     &    y3(fi,si,om),ep) )
-      bit = bit + J34x1(nu)*J52x1(si)*facdLl * ( vec(p16,fi)*vec(p1346,
-     &    ro)*FD1x1x6x34(om,ep) + vec(p16,fi)*FD2x1x6x34(y2(ro,om),ep)
-     &     + vec(p1346,ro)*FD2x1x6x34(y2(fi,om),ep) + FD3x1x6x34(y3(fi,
-     &    ro,om),ep) )
-      bit = bit + J34x1(nu)*J52x1(om)*facdLl * ( vec(p16,fi)*vec(p1346,
-     &    ro)*FD1x1x6x34(si,ep) + vec(p16,fi)*FD2x1x6x34(y2(ro,si),ep)
-     &     + vec(p1346,ro)*FD2x1x6x34(y2(fi,si),ep) + FD3x1x6x34(y3(fi,
-     &    ro,si),ep) )
-      bit = bit + J34x1(ro)*J52x1(nu)*facuLl * (  - vec(p34,si)*vec(
-     &    p1346,fi)*FD1x34x1x6(om,ep) - vec(p34,si)*FD2x34x1x6(y2(fi,om
-     &    ),ep) - vec(p1346,fi)*FD2x34x1x6(y2(si,om),ep) - FD3x34x1x6(
-     &    y3(fi,si,om),ep) )
-      bit = bit + J34x1(ro)*J52x1(fi)*facuLl * (  - vec(p34,si)*vec(
-     &    p1346,om)*FD1x34x1x6(nu,ep) - vec(p34,si)*FD2x34x1x6(y2(nu,om
-     &    ),ep) - vec(p1346,om)*FD2x34x1x6(y2(nu,si),ep) - FD3x34x1x6(
-     &    y3(nu,si,om),ep) )
-      bit = bit + J34x1(ro)*J52x1(om)*facuLl * ( vec(p34,si)*vec(p1346,
-     &    fi)*FD1x34x1x6(nu,ep) + vec(p34,si)*FD2x34x1x6(y2(fi,nu),ep)
-     &     + vec(p1346,fi)*FD2x34x1x6(y2(nu,si),ep) + FD3x34x1x6(y3(fi,
-     &    nu,si),ep) )
-      bit = bit + J34x1(si)*J52x1(nu)*facuLl * ( vec(p34,om)*vec(p1346,
-     &    fi)*FD1x34x1x6(ro,ep) + vec(p34,om)*FD2x34x1x6(y2(fi,ro),ep)
-     &     + vec(p1346,fi)*FD2x34x1x6(y2(ro,om),ep) + FD3x34x1x6(y3(fi,
-     &    ro,om),ep) )
-      bit = bit + J34x1(fi)*J52x1(ro)*facdLl * (  - vec(p16,om)*vec(
-     &    p1346,nu)*FD1x1x6x34(si,ep) - vec(p16,om)*FD2x1x6x34(y2(nu,si
-     &    ),ep) - vec(p1346,nu)*FD2x1x6x34(y2(si,om),ep) - FD3x1x6x34(
-     &    y3(nu,si,om),ep) )
-      bit = bit + J34x1(om)*J52x1(nu)*facuLl * ( vec(p34,si)*vec(p1346,
-     &    fi)*FD1x34x1x6(ro,ep) + vec(p34,si)*FD2x34x1x6(y2(fi,ro),ep)
-     &     + vec(p1346,fi)*FD2x34x1x6(y2(ro,si),ep) + FD3x34x1x6(y3(fi,
-     &    ro,si),ep) )
-      bit = bit + J34x1(om)*J52x1(ro)*facdLl * ( vec(p16,fi)*vec(p1346,
-     &    nu)*FD1x1x6x34(si,ep) + vec(p16,fi)*FD2x1x6x34(y2(nu,si),ep)
-     &     + vec(p1346,nu)*FD2x1x6x34(y2(fi,si),ep) + FD3x1x6x34(y3(fi,
-     &    nu,si),ep) )
+      bit= + prq(s134)**2*J34x1(om)*J52x1(fi)*facuLl * ( FB1x134(ro,ep)
+     &    *p134(nu)*p134(si) )
+      bit = bit + prq(s346)**2*J34x1(fi)*J52x1(om)*facdLl * ( FB1x346(
+     &    ro,ep)*p346(nu)*p346(si) )
+      bit = bit + J34x1(nu)*J52x1(ro)*facdLl * (  - FD3x1x6x34(y3(fi,si
+     &    ,om),ep) - FD2x1x6x34(y2(si,om),ep)*p16(fi) - FD2x1x6x34(y2(
+     &    fi,si),ep)*p1346(om) - FD1x1x6x34(si,ep)*p16(fi)*p1346(om) )
+      bit = bit + J34x1(nu)*J52x1(si)*facdLl * ( FD3x1x6x34(y3(fi,ro,om
+     &    ),ep) + FD2x1x6x34(y2(ro,om),ep)*p16(fi) + FD2x1x6x34(y2(fi,
+     &    om),ep)*p1346(ro) + FD1x1x6x34(om,ep)*p16(fi)*p1346(ro) )
+      bit = bit + J34x1(nu)*J52x1(om)*facdLl * ( FD3x1x6x34(y3(fi,ro,si
+     &    ),ep) + FD2x1x6x34(y2(ro,si),ep)*p16(fi) + FD2x1x6x34(y2(fi,
+     &    si),ep)*p1346(ro) + FD1x1x6x34(si,ep)*p16(fi)*p1346(ro) )
+      bit = bit + J34x1(ro)*J52x1(nu)*facuLl * (  - FD3x34x1x6(y3(fi,si
+     &    ,om),ep) - FD2x34x1x6(y2(si,om),ep)*p1346(fi) - FD2x34x1x6(
+     &    y2(fi,om),ep)*p34(si) - FD1x34x1x6(om,ep)*p34(si)*p1346(fi) )
+      bit = bit + J34x1(ro)*J52x1(fi)*facuLl * (  - FD3x34x1x6(y3(nu,si
+     &    ,om),ep) - FD2x34x1x6(y2(nu,si),ep)*p1346(om) - FD2x34x1x6(
+     &    y2(nu,om),ep)*p34(si) - FD1x34x1x6(nu,ep)*p34(si)*p1346(om) )
+      bit = bit + J34x1(ro)*J52x1(om)*facuLl * ( FD3x34x1x6(y3(fi,nu,si
+     &    ),ep) + FD2x34x1x6(y2(nu,si),ep)*p1346(fi) + FD2x34x1x6(y2(fi
+     &    ,nu),ep)*p34(si) + FD1x34x1x6(nu,ep)*p34(si)*p1346(fi) )
+      bit = bit + J34x1(si)*J52x1(nu)*facuLl * ( FD3x34x1x6(y3(fi,ro,om
+     &    ),ep) + FD2x34x1x6(y2(ro,om),ep)*p1346(fi) + FD2x34x1x6(y2(fi
+     &    ,ro),ep)*p34(om) + FD1x34x1x6(ro,ep)*p34(om)*p1346(fi) )
+      bit = bit + J34x1(fi)*J52x1(ro)*facdLl * (  - FD3x1x6x34(y3(nu,si
+     &    ,om),ep) - FD2x1x6x34(y2(nu,si),ep)*p16(om) - FD2x1x6x34(y2(
+     &    si,om),ep)*p1346(nu) - FD1x1x6x34(si,ep)*p16(om)*p1346(nu) )
+      bit = bit + J34x1(om)*J52x1(nu)*facuLl * ( FD3x34x1x6(y3(fi,ro,si
+     &    ),ep) + FD2x34x1x6(y2(ro,si),ep)*p1346(fi) + FD2x34x1x6(y2(fi
+     &    ,ro),ep)*p34(si) + FD1x34x1x6(ro,ep)*p34(si)*p1346(fi) )
+      bit = bit + J34x1(om)*J52x1(ro)*facdLl * ( FD3x1x6x34(y3(fi,nu,si
+     &    ),ep) + FD2x1x6x34(y2(nu,si),ep)*p16(fi) + FD2x1x6x34(y2(fi,
+     &    si),ep)*p1346(nu) + FD1x1x6x34(si,ep)*p16(fi)*p1346(nu) )
 
       part5=part5+bit*string
       enddo
@@ -136,22 +126,22 @@ c      write(*,*) 'epmin in upper_box', epmin
       do nu=1,4
       do ro=1,4
       string=g0(fi)*g0(nu)*g0(ro)*J61x3(fi,nu,ro)
-      bit= + prq(s134)*J34x1(ro)*J52x0*omal*mwsq**(-1)*mt * ( vec(p134,
-     &    nu)*FB1x134(fi,ep)*facLdiff )
+      bit= + prq(s134)*J34x1(ro)*J52x0*omal*mwsq**(-1)*mt * ( FB1x134(
+     &    fi,ep)*p134(nu)*facLdiff )
       bit = bit + prq(s134)*J34x1(ro)*J52x0*omal*mwsq**(-1)*facdLl*mt
-     &  * ( vec(p134,nu)*FB1x134(fi,ep) )
+     &  * ( FB1x134(fi,ep)*p134(nu) )
       bit = bit + prq(s346)*J34x1(fi)*J52x0*omal*mwsq**(-1)*facdLl*mt
-     &  * ( vec(p346,nu)*FB1x346(ro,ep) )
-      bit = bit + prq(s346)*J34x1(fi)*J52x1(ro)*facdLl * ( vec(p346,nu)
-     &    *FB0x346(ep) )
-      bit = bit + J34x1(nu)*J52x0*omal*mwsq**(-1)*mt * (  - vec(p16,ro)
-     &    *FC1x1x6(fi,ep)*facLdiff + vec(p34,fi)*FC1x34x1(ro,ep)*
-     &    facLdiff + FC2x34x1(y2(fi,ro),ep)*facLdiff - FC2x1x6(y2(fi,ro
-     &    ),ep)*facLdiff )
-      bit = bit + J34x1(nu)*J52x0*omal*mwsq**(-1)*facdLl*mt * (  - vec(
-     &    p6,ro)*vec(p346,fi)*FC0x6x34(ep) - vec(p6,ro)*FC1x6x34(fi,ep)
-     &     + vec(p34,fi)*FC1x34x1(ro,ep) - vec(p346,fi)*FC1x6x34(ro,ep)
-     &     - FC2x6x34(y2(fi,ro),ep) + FC2x34x1(y2(fi,ro),ep) )
+     &  * ( FB1x346(ro,ep)*p346(nu) )
+      bit = bit + prq(s346)*J34x1(fi)*J52x1(ro)*facdLl * ( FB0x346(ep)*
+     &    p346(nu) )
+      bit = bit + J34x1(nu)*J52x0*omal*mwsq**(-1)*mt * ( FC2x34x1(y2(fi
+     &    ,ro),ep)*facLdiff - FC2x1x6(y2(fi,ro),ep)*facLdiff + 
+     &    FC1x34x1(ro,ep)*p34(fi)*facLdiff - FC1x1x6(fi,ep)*p16(ro)*
+     &    facLdiff )
+      bit = bit + J34x1(nu)*J52x0*omal*mwsq**(-1)*facdLl*mt * (  - 
+     &    FC2x6x34(y2(fi,ro),ep) + FC2x34x1(y2(fi,ro),ep) - FC1x6x34(ro
+     &    ,ep)*p346(fi) - FC1x6x34(fi,ep)*p6(ro) + FC1x34x1(ro,ep)*
+     &    p34(fi) - FC0x6x34(ep)*p6(ro)*p346(fi) )
 
       part3=part3+bit*string
       enddo

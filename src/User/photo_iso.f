@@ -36,16 +36,18 @@
          z_c = one/opepsilon_h
       elseif (imode .eq. 2) then
 !--- isolation using fixed cut
-         if(phot_dip.eqv..true.) then 
-!---- Photon dipole need to rescale pt 
-           z_c=(z_dip(nd)*pt(phot_id,p))
-     &        /(epsilon_h+(z_dip(nd)*pt(phot_id,p)))
-        elseif(z_frag.gt.tiny) then 
-           z_c=(z_frag*pt(phot_id,p))
-     &        /(epsilon_h+(z_frag*pt(phot_id,p)))
-        else 
-           z_c=pt(phot_id,p)/(epsilon_h+pt(phot_id,p))
-        endif
+         z_c=pt(phot_id,p)/(epsilon_h+pt(phot_id,p))
+c--- This code removed pending improvements
+c        if(phot_dip.eqv..true.) then 
+c!---- Photon dipole need to rescale pt 
+c           z_c=(z_dip(nd)*pt(phot_id,p))
+c     &        /(epsilon_h+(z_dip(nd)*pt(phot_id,p)))
+c        elseif(z_frag.gt.tiny) then 
+c           z_c=(z_frag*pt(phot_id,p))
+c     &        /(epsilon_h+(z_frag*pt(phot_id,p)))
+c        else 
+c           z_c=pt(phot_id,p)/(epsilon_h+pt(phot_id,p))
+c        endif
       else
         write(6,*) 'Unknown isolation parameter: imode=',imode
         stop
@@ -64,6 +66,7 @@
             endif
          endif
       enddo
+c--- CHECK: definition of pt_incone above??????? CHECK
 
 !---- isub = 0 Can have (currently in MCFM - tree level Fragmentation or NLO Direct) 
 !----- for Frag z_frag > 0.001d0 use this to separate pieces
@@ -113,8 +116,7 @@
             endif
          else
 !---- Radiation in cone !  
-            z_kin=z_dip(nd)*pt(phot_id,p)/(pt(phot_id,p)
-     &                                     +z_dip(nd)*pt_incone)
+            z_kin=pt(phot_id,p)/(pt(phot_id,p)+pt_incone)
             if(z_kin .lt. z_c) then 
                photo_iso =.false.             
                return 
@@ -128,19 +130,3 @@
       end
 
       
-      logical function is_hadronic(i)
-      implicit none
-      include 'constants.f'
-      include 'plabel.f'
-      integer i 
-      
-      if ( (plabel(i) .eq. 'pp') .or. (plabel(i) .eq. 'pj')
-     .     .or.(plabel(i) .eq. 'bq') .or. (plabel(i) .eq. 'ba')
-     .     .or.(plabel(i) .eq. 'qj') ) then
-         is_hadronic = .true. 
-      else
-         is_hadronic = .false. 
-      endif
-      
-      return 
-      end

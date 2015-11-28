@@ -74,14 +74,14 @@ c--- New-style PS generation
       elseif ((case .eq. 'Z_tjet') .or. (case .eq. 'Z_tdkj')) then
 c--- New-style PS generation
         if (zerowidth) then
-        mtbsq=(mt+zmass)**2
-      else
-        mtbsq=(mt+dsqrt(wsqmin))**2
-      endif
+          mtbsq=(mt+zmass)**2
+        else
+          mtbsq=(mt+dsqrt(wsqmin))**2
+        endif
         call phi1_2m(0d0,r(1),r(2),r(3),mtbsq,p12,p6,p345,wt3456,*99)
         n2=0
         n3=1
-        mtbsq=(zmass-20d0*zwidth)**2
+        mtbsq=wsqmin
         call phi1_2m(mt,r(4),r(5),r(6),mtbsq,p345,p5,p34,wt56,*99)
         n2=n2save
         n3=n3save

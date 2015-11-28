@@ -202,11 +202,9 @@ c     we are renormalising the weights by the bin width
         XSQAVG=HIST(J,L)*X
 c--- need extra factor to account for renormalization by bin width
         XSQAVG=XSQAVG/hdel(i)
-c--- Assume that grid is optimal and iterations improve statistics
-c        XNORM=DFLOAT(IHIS(I,L))/X
-        XNORM=(IENT(I)+IUSCORE(I)+IOSCORE(I))/X
+        XNORM=(IENT(I)+IUSCORE(I)+IOSCORE(I))*X
         IF(XNORM.NE.0.d0) THEN
-        HIST(K,L)=DSQRT(ABS(XSQAVG-XAVG**2)/XNORM)
+        HIST(K,L)=DSQRT(X*ABS(XSQAVG-XAVG**2/XNORM))
         HIST(I,L)=XAVG
         ELSE
         HIST(K,L)=0.d0
@@ -216,11 +214,9 @@ c        XNORM=DFLOAT(IHIS(I,L))/X
         XSQAVG=HIST(J,L)*X
 c--- need extra factor to account for renormalization by bin width
         XSQAVG=XSQAVG/hdel(i)
-c--- Assume that grid is optimal and iterations improve statistics
-c        XNORM=DFLOAT(IHIS(I,L))/X
-        XNORM=(IENT(I)+IUSCORE(I)+IOSCORE(I))/X
+        XNORM=(IENT(I)+IUSCORE(I)+IOSCORE(I))*X
         IF(XNORM.NE.0.d0) THEN
-        HIST(K,L)=DSQRT(ABS(XSQAVG-XAVG**2)/XNORM)
+        HIST(K,L)=DSQRT(X*ABS(XSQAVG-XAVG**2/XNORM))
 c        HIST(I,L)=XAVG ! removed from 'V'
         ELSE
         HIST(K,L)=0.d0
@@ -368,7 +364,7 @@ c     &' SET ORDER X Y DY ')
      &' SET SCALE Y ',A5,/1X,
      &' (SET TICKS TOP OFF)   '/1x,     
      &' SET LIMITS X ',F10.5,' ',F10.5,/1X,
-     &' SET ORDER X Y')
+     &' SET ORDER X Y DY')
   101 FORMAT( /1x,                               
      &' SET WINDOW Y 2.5 TO 7.'/,1X,
      &' SET WINDOW X 2.5 TO 10.'/,1X,
@@ -380,7 +376,7 @@ c     &' SET ORDER X Y DY ')
      &' SET SCALE Y ',A5,/1X,
      &' (SET TICKS TOP OFF)   '/1x,     
      &' SET LIMITS X ',F10.5,' ',F10.5,/1X,
-     &' SET ORDER X Y')
+     &' SET ORDER X Y DY')
       DO 1 J=1,NBIN(N)
 c      IF(HIST(N,J).EQ.0.) GO TO 1
       if (scaleplots) then

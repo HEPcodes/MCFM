@@ -22,7 +22,7 @@ c---                    ipow = +1 (normal kt), ipow = -1 ("anti-kt")
       double precision pt,Rmin,dijmin,dkmin,ayrap
       integer i,nu,iter,nmin1,nmin2,maxjet,nk,
      . ajet,jetindex(mxpart),isub,ipow
-      logical jetmerge,failed
+      logical jetmerge,failed,is_hadronic
       common/jetmerge/jetmerge
 
       jets=0
@@ -39,9 +39,7 @@ c--- pick out jets: note that we search to npart+2-isub, to get the
 c--- number of particles right. Note that isub=0 for all calls except
 c--- the dipole contributions, where isub=1.   
       do i=3,npart+2-isub
-      if ( (plabel(i) .eq. 'pp') .or. (plabel(i) .eq. 'pj')
-     . .or.(plabel(i) .eq. 'bq') .or. (plabel(i) .eq. 'ba')
-     . .or.(plabel(i) .eq. 'qj') ) then
+      if (is_hadronic(i)) then
         maxjet=maxjet+1
         jetindex(maxjet)=i
         jetlabel(maxjet)=plabel(i)
@@ -130,9 +128,7 @@ c--- set all other momenta to zero and restore leptons
       do i=3,npart+2
         do nu=1,4
           qfinal(i,nu)=0d0
-          if ((plabel(i) .ne. 'pp') .and. (plabel(i) .ne. 'pj')
-     .   .and.(plabel(i) .ne. 'bq') .and. (plabel(i) .ne. 'ba')
-     .   .and.(plabel(i) .ne. 'qj')) then
+          if (.not.(is_hadronic(i))) then
             qfinal(i,nu)=q(i,nu)
           endif
         enddo

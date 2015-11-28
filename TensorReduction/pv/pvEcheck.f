@@ -34,7 +34,7 @@ c     integer n5
       
       failed=.false.
 
-      Eacc=1d-4
+      Eacc=1d-8
       
       do nu=1,4
       p2(nu)=q2(nu)-q1(nu)

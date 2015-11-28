@@ -1,6 +1,6 @@
- ************** MCFM - version 6.6 ****************
+ ************** MCFM - version 6.7 ****************
  *                                                *
- * MCFM, v6.6                    April 1st, 2013  *
+ * MCFM, v6.7                 December 6th, 2013  *
  *                                                *
  * Authors: John Campbell, Keith Ellis,           *
  *          Ciaran Williams                       *
@@ -9,7 +9,10 @@
  *                                                *
  * For details see:                               *
  *                                                *
- *  arXiv:1302.3856 (tZ, tH -- with R. Rontsch)   *
+ *  arXiv:1312.1628 (gg->WW, Higgs interference)  *
+ *  arXiv:1311.3589 (gg->ZZ, Higgs interference)  *
+ *  Phys.Rev.D87:114006, arXiv:1302.3856          *
+ *  (tZ, tH -- with R. Rontsch)                   *
  *  arXiv:1211.6390 (DM, P. Fox and C. Williams)  *
  *  JHEP 1211:162 (2012), arXiv:1208.0566         *
  *  (Z+gam+jet,Z+gam+gam -- with H. Hartanto)     *

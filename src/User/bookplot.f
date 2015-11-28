@@ -3,6 +3,7 @@
       include 'nplot.f'
       include 'part.f'
       include 'outputflags.f'
+      include 'vegas_common.f'
       integer n
       character*(*) titlex
       character*3 llplot
@@ -37,7 +38,9 @@ c--- also book the errors now (in maxhisto+n); fill temp histos for real
         endif
         else
 c--- DSW histograms - call hbook filling routine
-          call dswhfill(n,var,wt)
+c--- note that we divide by # of iterations here since it is only
+c--- handled at the end in the default MCFM histograms
+          call dswhfill(n,var,wt/dfloat(itmx))
         endif
         linlog(n)=llplot
         titlearray(n)=titlex

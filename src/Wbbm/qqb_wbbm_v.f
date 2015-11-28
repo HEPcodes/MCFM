@@ -91,7 +91,7 @@ c--- construct the massless momenta a la Rodrigo
         bp=0.5d0*(1d0+dsqrt(betasq))
         bm=1d0-bp
       else
-        write(6,*) 'betasq < 0 in qqb_wbbm.f, betasq=',betasq
+        write(6,*) 'betasq < 0 in qqb_wbbm_v.f, betasq=',betasq
         call flush(6)
         stop
       endif

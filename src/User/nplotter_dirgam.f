@@ -39,17 +39,6 @@ c---                1  --> counterterm for real radiation
 *     INITIAL BOOKKEEPING                                              *
 *                                                                      *
 ************************************************************************
-!---- Photon is always p3 
-c--- Determine if we need to rescale p for fragmenation and integrated dipole pieces
-c--- This corresponds to the logical variable rescale set in chooser
-      if(rescale) then 
-         call rescale_pjet(p) 
-      endif
-      if(phot_dip(nd)) then 
-         call rescale_z_dip(p,nd,3)      
-      endif
-
-     
 
       if (first) then
 c--- Initialize histograms, without computing any quantities; instead
@@ -208,14 +197,6 @@ c--- Set the maximum number of plots, on the first call
       endif
  
      
-c--- If rescaling occured above, return to original value
-      if(rescale) then 
-         call return_pjet(p) 
-      endif
-      if(phot_dip(nd)) then 
-         call return_z_dip(p,nd,3)
-      endif
- 
       return 
       end
       

@@ -26,9 +26,9 @@ echo 'CERNLIB     = '$CERNLIB >> makefile.new
 echo '# Replace this with the location of LHAPDF on your system (if desired)' >> makefile.new
 echo 'LHAPDFLIB   = '$LHAPDFLIB >> makefile.new
 echo '' >> makefile.new
-echo 'MCFMHOME        = '`pwd` >> makefile.new
-echo 'SOURCEDIR       = '`pwd`'/src' >> makefile.new
-tail -n +10 makefile >> makefile.new
+#echo 'MCFMHOME        = '`pwd` >> makefile.new
+#echo 'SOURCEDIR       = '`pwd`'/src' >> makefile.new
+tail -n +8 makefile >> makefile.new
 mv makefile makefile.orig
 mv makefile.new makefile
 

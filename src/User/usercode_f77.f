@@ -119,3 +119,15 @@ c      iplot = iplot + 1
 c      write(6,*) "have reached iteration number", itno
 c      write(unitno,"(a,a)") comment_string, "ht cut > 500 GeV"
       end
+
+c---- SSbegin
+c----------------------------------------------------------
+      subroutine userhistofin(xsec,xsec_err,itno,itmx)
+c     This function allows for extra user-defined operations 
+c     at the end of each iteration (itno>0) and at the end of 
+c     the run of the program (itno=0).
+      implicit none
+      integer itno,itmx
+      double precision xsec,xsec_err
+      end
+c---- SSend

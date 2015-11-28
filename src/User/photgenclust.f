@@ -13,41 +13,44 @@ c---- any partons lie in cone Rij < delta_0
       include 'npart.f'
       include 'frag.f'
       double precision pin(mxpart,4),Rmin,pjet(mxpart,4),
-     .     pfinal(mxpart,4)
+     & pfinal(mxpart,4)
       double precision dijmin,dkmin,aetarap,pt,Rgen
       integer isub,i,nu,iter,ipow,nmin1,nmin2,maxjet,jetindex(mxpart) 
       integer nk,ajet
-      logical jetmerge,insideacone
+      logical jetmerge,insideacone,inclusive_inside_cone,
+     & is_hadronic,is_photon
       integer photindex(npart),nphotons,j
       integer softjet
       common/jetmerge/jetmerge
 
-c--- debug - need to generalise to arb photon 
+c--- this flag tells the algorithm whether or not to be inclusive of jets
+c--- inside the photon isolation cone; this should be set to TRUE for an
+c--- implementation of the original Frixione algorithm
+c--- (c.f. Step 4 of hep-ph/9801442);
+c--- other implementations (e.g. VBFNLO) correspond to setting this flag FALSE
+      inclusive_inside_cone=.false.
+      
       jets=0
       nphotons=0
       maxjet=0
       jetmerge =.false.
 
-c      pjet=0d0
 
 c---- Pick out jets 
       do i=3,npart+2-isub
-         if ( (plabel(i) .eq. 'pp') .or. (plabel(i) .eq. 'pj') 
-     &    .or.(plabel(i) .eq. 'bq') .or. (plabel(i) .eq. 'ba') 
-     &    .or.(plabel(i) .eq. 'qj') )then
+         if (is_hadronic(i))then
             maxjet=maxjet+1
             jetindex(maxjet)=i
             jetlabel(maxjet)=plabel(i) 
             do nu=1,4
                pjet(maxjet,nu)=pin(i,nu)
             enddo
-         elseif (plabel(i) .eq. 'ga') then 
+         elseif (is_photon(i)) then 
             nphotons=nphotons+1
             photindex(nphotons)=i
          endif
       enddo
 
-      
       if (maxjet .eq. 0 ) then 
          do i =1,mxpart 
             do nu=1,4
@@ -97,9 +100,7 @@ c---- Pick out jets
       do i=3,npart+2
          do nu=1,4
             pfinal(i,nu)=0d0
-             if ( (plabel(i) .ne. 'pp') .and. (plabel(i) .ne. 'pj') 
-     &      .and. (plabel(i) .ne. 'bq') .and. (plabel(i) .ne. 'ba') 
-     &      .and. (plabel(i) .ne. 'qj') )then
+             if (is_hadronic(i) .eqv. .false.)then
                 pfinal(i,nu)=pin(i,nu)
              endif
           enddo
@@ -128,7 +129,7 @@ c           write(6,*) i,j,Rgen(pjet,i,pin,photindex(j)),cone_ang
            endif
          enddo
 
-         if (insideacone) then             
+         if (insideacone .and. inclusive_inside_cone) then             
 c--- if passed frix and is in isolation cone then do not apply cuts
 c--- will add to jet tally
            softjet=softjet+1

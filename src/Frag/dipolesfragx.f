@@ -1,5 +1,5 @@
 ************************************************************************ 
-*     This subroutine calculates dipoles with an  identified           *
+*     This subroutine calculates dipoles with an identified            *
 *     Final state photon                                               *
 *     C. Williams Dec 2010                                             * 
 *     Returns the dipoles in sub,subv and matrix elements in msq,msqv  *
@@ -25,7 +25,10 @@ c--- 4 dimensional array indexed by initial and final parton labels
       include 'dipolescale.f'
       include 'facscale.f'
       include 'betacut.f'
+      include 'lastphot.f'
       double precision p(mxpart,4),ptrans(mxpart,4),sub
+      double precision p_phys(mxpart,4),tmp
+      integer ipt
       double precision z,omz,sij,sik,sjk,dot,u
       double precision msq(-nf:nf,-nf:nf)
       double precision mdum1(0:2,fn:nf,fn:nf) ! mqq
@@ -80,22 +83,41 @@ c--- 4 dimensional array indexed by initial and final parton labels
             return 
          endif
          call transformfrag(p,ptrans,z,ip,jp,kp)
-         call storeptilde(nd,ptrans) 
-         call store_zdip(nd,z)
-         omz=one-z
-c----  Check that photon will still pass cuts 
-         if (phot_pass(ptrans,ip,z) .eqv. .false.) return 
-c--- if using a dynamic scale, set that scale with dipole kinematics        
+         ipt=ip
+         if (ip .lt. lastphot) then
+             do j=1,4
+             tmp=ptrans(ip,j)
+             ptrans(ip,j)=ptrans(lastphot,j)
+             ptrans(lastphot,j)=tmp
+             enddo
+             ipt=lastphot
+         endif
+
         if (dynamicscale) then
-           call rescale_z_dip(ptrans,nd,ip)
-           call scaleset(initscale,initfacscale,ptrans)
-           call return_z_dip(ptrans,nd,ip)
+c--- rescale momentum (c.f. code below) in order to obtain physical
+c--- momentum for setting dynamic scale
+           p_phys(:,:)=ptrans(:,:)
+           p_phys(lastphot,:)=z*ptrans(lastphot,:)
+           call scaleset(initscale,initfacscale,p_phys)
            dipscale(nd)=facscale
         endif
-
+        
+c-- here, ptrans contains the right momentum for evaluating
+c-- the LO matrix element with the last photon replaced by a jet 
          call subr_born(ptrans,msq,mdum1,msqx,mdum2)
-         
+         omz=one-z
          sub=two*(esq/sij)*((one+omz**2)/z)
+         
+c--- now rescale momentum of last photon entry to represent
+c--- the observed photon momentum
+c--- NB: momentum will no longer be conserved in ptrans  
+         ptrans(lastphot,:)=z*ptrans(lastphot,:)
+         
+         call storeptilde(nd,ptrans) 
+c--- store z for use in isolation routine         
+         call store_zdip(nd,z)
+
+         
         
          
 ******************************************************************************* 
@@ -103,7 +125,11 @@ c--- if using a dynamic scale, set that scale with dipole kinematics
 *******************************************************************************
          
       elseif ((ip .gt. 2) .and. (kp .gt. 2)) then 
+      
 
+        write(6,*) 'Final-final fragmentation dipole not implemented.'
+        stop
+ 
          z=(sij+sik)/(sik+sjk+sij) 
          omz=one-z
          

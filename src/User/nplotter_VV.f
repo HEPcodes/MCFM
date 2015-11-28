@@ -23,8 +23,8 @@ c---                1  --> counterterm for real radiation
       double precision etarap,pt
       double precision y4,y5,pt3,pt4,pt5,pt6
       double precision pt34,pttwo
-      double precision pt45,pt56,m45,mt45
-      double precision et_vec(4),etmiss,r2,delphi,m34,m56,m3456
+      double precision pt45,pt56,m45,mt45,mtrans,Etll,MET
+      double precision etvec(4),etmiss,r2,delphi,m34,m56,m3456
       integer switch,n,nplotmax,nqcdjets,nqcdstart,nd 
       character*4 tag
       integer i
@@ -33,7 +33,12 @@ c---                1  --> counterterm for real radiation
       common/nqcdjets/nqcdjets,nqcdstart
       data first/.true./
       save first
-  
+      double precision mthl,mthu
+
+!===== info for "peak" transverse mass plot
+      mthu=hmass*1d0
+      mthl=0.75d0*hmass
+      
 ************************************************************************
 *                                                                      *
 *     INITIAL BOOKKEEPING                                              *
@@ -91,7 +96,7 @@ c--- Add event in histograms
          if (r2 .gt. +0.9999999D0) r2=+1D0
          if (r2 .lt. -0.9999999D0) r2=-1D0
          delphi=dacos(r2)
-!--- m_ll cut 
+!--- mll cut 
          m45=0d0
       do i=1,4
          if(i.ne.4) then 
@@ -123,10 +128,27 @@ c--- Add event in histograms
       m56=dsqrt(m56)
 
       mt45=0d0 
-      mt45=(dsqrt(dsqrt(pttwo(4,5,p)**2+m45**2)+etmiss(p,et_vec))**2)
+      mt45=(dsqrt(dsqrt(pttwo(4,5,p)**2+m45**2)+etmiss(p,etvec))**2)
  !    endif
 
-
+      etvec(:)=p(3,:)+p(6,:)
+c--- transverse mass
+      Etll=dsqrt(max(0d0,(p(4,4)+p(5,4))**2-(p(4,3)+p(5,3))**2))
+      MET=dsqrt(max(0d0,etvec(1)**2+etvec(2)**2))
+      mtrans=MET+Etll
+     
+c      Etll=dsqrt(
+c     . +(p(4,4)+p(5,4))**2
+c     . -(p(4,3)+p(5,3))**2)
+c      MET=dsqrt(
+c     . +etvec(1)**2+etvec(2)**2
+c     . +(p(4,4)+p(5,4))**2
+c     . -(p(4,1)+p(5,1))**2
+c     . -(p(4,2)+p(5,2))**2
+c     . -(p(4,3)+p(5,3))**2)
+c      mtrans=dsqrt((MET+Etll)**2
+c     . -(p(4,1)+p(5,1)+etvec(1))**2
+c     . -(p(4,2)+p(5,2)+etvec(2))**2)
 
 ************************************************************************
 *                                                                      *
@@ -179,23 +201,75 @@ c---   llplot:  equal to "lin"/"log" for linear/log scale
       n=n+1
       call bookplot(n,tag,'pt_ll',pt45,wt,wt2,0d0,100d0,2.5d0,'lin')
       n=n+1
-      call bookplot(n,tag,'m_ll',m45,wt,wt2,0d0,100d0,2d0,'lin')
+      call bookplot(n,tag,'mll',m45,wt,wt2,0d0,100d0,2d0,'lin')
       n=n+1
-      call bookplot(n,tag,'m_ll',m34,wt,wt2,0d0,250d0,5d0,'lin')
+      call bookplot(n,tag,'mll',m34,wt,wt2,0d0,250d0,5d0,'lin')
       n=n+1
-      call bookplot(n,tag,'m_ll_2',m56,wt,wt2,0d0,250d0,5d0,'lin')
+      call bookplot(n,tag,'mll_2',m56,wt,wt2,0d0,250d0,5d0,'lin')
       n=n+1
-      call bookplot(n,tag,'m_4l',m3456,wt,wt2,hmass-0.5d0,hmass+0.5d0,
-     & 0.05d0,'lin')
-      n=n+1
-       call bookplot(n,tag,'m_4l',m3456,wt,wt2,0d0,2000d0,20d0
-     &,'lin')
-      n=n+1
-      call bookplot(n,tag,'mt',mt45,wt,wt2,0d0,200d0,5d0,'lin')
+c      call bookplot(n,tag,'m4l',m3456,wt,wt2,hmass-0.5d0,hmass+0.5d0,
+c     & 0.05d0,'lin')
+c      n=n+1
+c      call bookplot(n,tag,'m4l',m3456,wt,wt2,0d0,2000d0,20d0
+c     &,'log')
+c      n=n+1
+      call bookplot(n,tag,'mt',mt45,wt,wt2,0d0,1000d0,20d0,'lin')
       n=n+1
       call bookplot(n,tag,'delphi',delphi,wt,wt2,0d0,3.14d0,0.1d0,'lin')
       n=n+1
   
+      call bookplot(n,tag,'transverse mass',
+     & mtrans,wt,wt2,10d0,510d0,10d0,'log')
+      n=n+1
+
+c--- Plots of mtrans in specific regions
+      call bookplot(n,tag,'10 < m(trans) < 2010',
+     & mtrans,wt,wt2,10d0,2010d0,20d0,'log')
+      n=n+1
+      
+      call bookplot(n,tag,'130 < m(trans) < 2010',
+     & mtrans,wt,wt2,130d0,2010d0,20d0,'log')
+      n=n+1
+      
+      call bookplot(n,tag,'300 < m(trans) < 2020',
+     & mtrans,wt,wt2,300d0,2020d0,20d0,'log')
+      n=n+1
+      
+      call bookplot(n,tag,'10 < m(trans) < 130',
+     & mtrans,wt,wt2,10d0,130d0,5d0,'lin')
+      n=n+1
+
+c--- Plots of mtrans in specific regions
+      call bookplot(n,tag,'.75 m_H < m(trans) < m_H',
+     & mtrans,wt,wt2,mthl,mthu,1d0,'log')
+      n=n+1
+      
+      
+c--- Plots of m(3456) in specific regions
+      call bookplot(n,tag,'10 < m(3456) < 2010',
+     & m3456,wt,wt2,10d0,2010d0,20d0,'log')
+      n=n+1
+      
+      call bookplot(n,tag,'130 < m(3456) < 2010',
+     & m3456,wt,wt2,130d0,2010d0,20d0,'log')
+      n=n+1
+      
+      call bookplot(n,tag,'300 < m(3456) < 2020',
+     & m3456,wt,wt2,300d0,2020d0,20d0,'log')
+      n=n+1
+      
+      call bookplot(n,tag,'10 < m(3456) < 130',
+     & m3456,wt,wt2,10d0,130d0,5d0,'lin')
+      n=n+1
+      
+      call bookplot(n,tag,'pt(W)',
+     & pt34,wt,wt2,0d0,2d0,0.02d0,'lin')
+      n=n+1
+      
+      call bookplot(n,tag,'+INTEGRAL+ pt(W)',
+     & pt34,wt,wt2,0d0,10d0,0.1d0,'lin')
+      n=n+1
+      
 ************************************************************************
 *                                                                      *
 *     FINAL BOOKKEEPING                                                *

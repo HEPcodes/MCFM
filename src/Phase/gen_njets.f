@@ -26,7 +26,7 @@ c---- are required
       double precision hmin,hmax,delh,h,sqrts,pt,etamax,etamin,xx(2)
       double precision y,sinhy,coshy,phi,mv2,wtbw,mjets
       double precision ybar,ptsumjet2,ycm,sumpst,q0st,rshat
-      double precision costh,sinth,dely
+      double precision costh,sinth,dely,xjac
       double precision ptjetmin,etajetmin,etajetmax,pbreak
       double precision plstar,estar,plstarsq,y5starmax,y5starmin,mf,beta
       integer j,nu,njets,ijet,notag
@@ -51,18 +51,18 @@ c--- to produce partons spanning the whole phase space pt>0,eta<10;
 c--- in this case, pbreak=ptjetmin simply means that we
 c--- generate pt approx. 1/x for pt > pbreak and
 c--- pt approx. uniformly for pt < pbreak
-          pbreak=ptjetmin
-          ptjetmin=0d0
+c          pbreak=ptjetmin
+c          ptjetmin=0d0
           etajetmax=20d0
-        else
+c        else
 c--- for lord and virt, the partons produced here can be generated
 c--- right up to the jet cut boundaries and there is no need for pbreak
-          pbreak=0d0
+c          pbreak=0d0
         endif
 c--- in case this routine is used for very small values of ptjetmin
-        if ((ptjetmin .lt. 5d0) .and. (part .ne. 'real')) pbreak=5d0
+c        if ((ptjetmin .lt. 5d0) .and. (part .ne. 'real')) pbreak=5d0
 c--- for processes in which it is safe to jet ptmin to zero at NLO
-        if ((part .eq. 'real') .and. (pbreak .lt. 1d-8)) pbreak=5d0
+c        if ((part .eq. 'real') .and. (pbreak .lt. 1d-8)) pbreak=5d0
       endif        
 
       do nu=1,4
@@ -82,19 +82,26 @@ c--- rapidity limited by E=pT*coshy
 c        xmin=2d0/sqrts
 c        xmax=1d0/ptjetmin
 
-        if ((flatreal) .and. (part .eq. 'real')) then
-c--- generate flat pt for the real contribution
-          pt=r(ijet)*(sqrts/2d0)
-          wt=wt*(sqrts/2d0)*pt
+c        if ((flatreal) .and. (part .eq. 'real')) then
+cc--- generate flat pt for the real contribution
+c          pt=r(ijet)*(sqrts/2d0)
+c          wt=wt*(sqrts/2d0)*pt
+c        else
+cc--- favour small pt region 
+c          hmin=1d0/dsqrt((sqrts/2d0)**2+pbreak**2)
+c          hmax=1d0/dsqrt(ptjetmin**2+pbreak**2)
+c          delh=hmax-hmin
+c          h=hmin+r(ijet)*delh        
+c          pt=dsqrt(1d0/h**2-pbreak**2)
+c          wt=wt*delh/h**3
+c        endif
+
+        if (part .eq. 'real') then
+          call genpt(r(ijet),ptjetmin,.false.,pt,xjac)
         else
-c--- favour small pt region 
-          hmin=1d0/dsqrt((sqrts/2d0)**2+pbreak**2)
-          hmax=1d0/dsqrt(ptjetmin**2+pbreak**2)
-          delh=hmax-hmin
-          h=hmin+r(ijet)*delh        
-          pt=dsqrt(1d0/h**2-pbreak**2)
-          wt=wt*delh/h**3
+          call genpt(r(ijet),ptjetmin,.true.,pt,xjac)
         endif
+        wt=wt*xjac
 
         etamax=sqrts/2d0/pt
         if (etamax**2 .le. 1d0) then
@@ -141,6 +148,10 @@ c--- invariant mass of jets
       endif
       plstar=dsqrt(plstarsq)
       Estar=dsqrt(plstarsq+ptsumjet2+mjets**2)
+      if (abs(Estar/plstar-1d0) .lt. 1d-12) then
+        wt=0d0
+        return 1
+      endif
       y5starmax=0.5d0*dlog((Estar+plstar)/(Estar-plstar))
       y5starmin=-y5starmax
 
@@ -160,11 +171,13 @@ c--- now make the initial state momenta
             
       xx(1)=(pcm(4)+pcm(3))/sqrts
       xx(2)=(pcm(4)-pcm(3))/sqrts
+c      write(6,*) plstar,Estar,plstarsq,ptsumjet2,mjets**2
+c      pause
       
       if   ((xx(1)*xx(2) .gt. 1d0) .and. (xxerror .eqv. .false.)) then
         xxerror=.true.
-        write(6,*) 'gen_njets: xx(1)*xx(2),xx(1),xx(2)',
-     .   xx(1)*xx(2),xx(1),xx(2)  
+c        write(6,*) 'gen_njets: xx(1)*xx(2),xx(1),xx(2)',
+c     .   xx(1)*xx(2),xx(1),xx(2)  
       endif
 
       if   ((xx(1) .gt. 1d0) .or. (xx(2) .gt. 1d0)

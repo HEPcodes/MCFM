@@ -15,6 +15,7 @@
 ************************************************************************
       include 'constants.f'
       include 'zprods_com.f'
+      include 'noglue.f'
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),
      & Cgamgam,ggtogagag,qa_gagag(2),
      & ag_gagaa(2),qg_gagaq(2),ga_gagaa(2),gq_gagaq(2),gg_gaga
@@ -36,10 +37,11 @@ c      call dotem(5,p,s)
 
 c--- averaging factor already included in ggtogagag 
 
-      gg_gaga=ggtogagag()
-c--- Add the following line to remove gg contribution
-c      gg_gaga=0d0
-
+      if (omitgg) then
+        gg_gaga=0d0
+      else
+        gg_gaga=ggtogagag()
+      endif
       
       do j=-nf,nf
       do k=-nf,nf

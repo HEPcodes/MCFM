@@ -15,3 +15,6 @@ c                                        ! rescaled by factor of z to photons
       
       common/fraginputs/frag_scale,cone_ang,epsilon_h,frag,fragset
       common/fragvars/z_frag,rescale
+!===== logical variable to specific fragintmore 
+      logical fragint_mode 
+      common/fragint_mode/fragint_mode

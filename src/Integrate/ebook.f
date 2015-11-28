@@ -139,7 +139,7 @@ c--- histograms that may be calculated with errors is 4 and the
 c--- maximum number of PDF error sets is 1000
       include 'ehisto.f'
       double precision maxhist(100),minhist(100),
-     . PDFperror,PDFnerror
+     . PDFperror,PDFnerror,PDFarray(0:1000),PDFcentral,PDFerror
       CHARACTER*(*) LTIT,BTIT,SCALE
 
 
@@ -180,18 +180,25 @@ c---  J.Campbell, J.Huston, W.J. Stirling, Rep. Prog. Phys. 70 (2007) 89
 
 c--- loop over all PDF sets
       DO J=1,NBIN(N)
-        PDFperror=0d0
-        PDFnerror=0d0
-        DO K=1,maxPDFsets-1,2      
-        IF(EHIST(NMATCH,K,J).ne.0.) then
-          PDFperror=PDFperror+max(0d0,
-     .    EHIST(NMATCH,K,J)-HIST(N,J),EHIST(NMATCH,K+1,J)-HIST(N,J))**2
-          PDFnerror=PDFnerror+max(0d0,
-     .     HIST(N,J)-EHIST(NMATCH,K,J),HIST(N,J)-EHIST(NMATCH,K+1,J))**2
-        ENDIF
-        ENDDO
-        maxhist(J)=HIST(N,J)+dsqrt(PDFperror)
-        minhist(J)=HIST(N,J)-dsqrt(PDFnerror)
+c        PDFperror=0d0
+c        PDFnerror=0d0
+c        DO K=1,maxPDFsets-1,2      
+c        IF(EHIST(NMATCH,K,J).ne.0.) then
+c          PDFperror=PDFperror+max(0d0,
+c     .    EHIST(NMATCH,K,J)-HIST(N,J),EHIST(NMATCH,K+1,J)-HIST(N,J))**2
+c          PDFnerror=PDFnerror+max(0d0,
+c     .     HIST(N,J)-EHIST(NMATCH,K,J),HIST(N,J)-EHIST(NMATCH,K+1,J))**2
+c        ENDIF
+c        ENDDO
+c        maxhist(J)=HIST(N,J)+dsqrt(PDFperror)
+c        minhist(J)=HIST(N,J)-dsqrt(PDFnerror)
+c--- New implementation of PDF uncertainty
+        PDFarray(0)=HIST(N,J)
+        PDFarray(1:1000)=EHIST(NMATCH,1:1000,J)
+        call computepdfuncertainty(PDFarray,PDFcentral,
+     &   PDFperror,PDFnerror,PDFerror)
+        maxhist(J)=PDFcentral+PDFperror
+        minhist(J)=PDFcentral-PDFnerror        
       ENDDO
 
   201 FORMAT('  SET ORDER X Y DY')

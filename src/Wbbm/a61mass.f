@@ -17,6 +17,7 @@ c---     0 -> q(k1) + qb(k4) + W(->e(k6)+nubar(k5)) + Q(k3) + Qbar(k2)
       include 'scale.f'
       include 'Wbbmlabels.f'
       include 'zprods_com.f'
+      include 'swapxz.f'
       integer k1,k2,k3,k4,k5,k6,iep,nu
       logical checkcoeffs,numcheck,writescalars
       double precision mqsq,ren,p2(4),p3(4),p1Dp2,p3Dp4,p1Dp3,p2Dp4,
@@ -38,6 +39,7 @@ c---     0 -> q(k1) + qb(k4) + W(->e(k6)+nubar(k5)) + Q(k3) + Qbar(k2)
       common/writescalars/writescalars
 
       writescalars=.false.
+      swapxz=.true.
       
       mq=dsqrt(mqsq)
       

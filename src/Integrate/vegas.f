@@ -23,15 +23,16 @@ C     USES fxn,ran2,rebin
       DOUBLE PRECISION schi,si,swgt
       character*255 runname
       integer nlength
-      logical bin,dorebin
+      logical bin,dorebin,dryrun
       common/bin/bin
       common/runname/runname
       common/nlength/nlength
+      common/dryrun/dryrun
       COMMON /ranno/ idum
       SAVE
       dorebin=.true.  
+      mds=1
       if(init.le.0)then
-        mds=1
         ndo=1
         do 11 j=1,ndim
           xi(1,j)=1d0
@@ -74,8 +75,12 @@ c--- DEBUG
 
 c--- read-in grid if necessary
         if (readin) then
-           open(unit=11,file=runname(1:nlength)//'_'
-     .           //ingridfile,status='unknown')
+           if (dryrun) then
+             open(unit=11,file=ingridfile,status='unknown')
+           else
+             open(unit=11,file=runname(1:nlength)//'_'
+     .             //ingridfile,status='unknown')
+           endif
         write(6,*)'****************************************************'
         write(6,*)'* Reading in vegas grid from ',runname(1:nlength)//
      .   '_'//ingridfile,' *'
@@ -189,6 +194,15 @@ c          write(6,201) it,ti,tsi,tgral,sd,chi2a
 23          continue
           endif
         endif
+        if (abs(tgral) .lt. 1d-9) then
+          write(6,*) '******** Integral is zero, no more iterations '
+     &      //'required *********'
+          write(6,*)
+          tgral=0d0
+          sd=0d0
+          call flush(6)
+          exit ! bail early (28) if result is zero
+        endif
         do 25 j=1,ndim
           xo=d(1,j)
           xn=d(2,j)
@@ -230,7 +244,7 @@ c--- write-out grid if necessary
         write(6,*)'****************************************************'
            call flush(6)
            do j=1,ndim
-             write(11,203) jj,(xi(i,j),i=1,nd)
+             write(11,203) j,(xi(i,j),i=1,nd)
            enddo
            close(11)
          endif

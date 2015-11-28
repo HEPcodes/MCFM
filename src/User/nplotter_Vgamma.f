@@ -41,17 +41,6 @@ c---                1  --> counterterm for real radiation
 *                                                                      *
 ************************************************************************
 
-c--- Determine if we need to rescale p for fragmenation and integrated dipole pieces
-c--- This corresponds to the logical variable rescale set in chooser
-      if(rescale) then 
-         call rescale_pjet(p) 
-      endif
-c----- This corresponds to p(5)->z_frag*p(5) = pt(photon) we want to plot      
-!----- Also if photon comes from dipole (ie .nd =3 or 4) then we also need to rescale
-      if(phot_dip(nd)) then 
-         call rescale_z_dip(p,nd,5) 
-      endif
-
 
       if (first) then
 c--- Initialize histograms, without computing any quantities; instead
@@ -298,16 +287,6 @@ c--- Set the maximum number of plots, on the first call
         nplotmax=n
       endif
       
-c--- If rescaling occured above, return to original value
-      if(rescale) then 
-         call return_pjet(p) 
-      endif
-c----- This corresponds to p(5)->z_frag*p(5) = pt(photon) we want to plot      
-!-----Also if photon comes from dipole (ie .nd =3 or 4) then we also need to rescale
-      if(phot_dip(nd)) then
-         call return_z_dip(p,nd,5) 
-      endif
-
 
       return 
       end

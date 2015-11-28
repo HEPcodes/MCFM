@@ -14,7 +14,7 @@ c     u(-p1)+b(p2)->h(p3,p4)+t(nu(p5)+e+(p6)+b(p7))+d(p6)
       include 'swapxz.f'
       include 'nwz.f'
       include 'decl_kininv.f'
-      include 'pvbadpoint.f'
+      include 'TRbadpoint.f'
       include 'TRtensorcontrol.f'
       include 'tensorinfo.f'
       include 'anomHiggs.f'

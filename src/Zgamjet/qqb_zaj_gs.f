@@ -49,6 +49,12 @@ c --- remember: nd will count the dipoles
      &  msq57_1x(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf),
      &  msq56_7x(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf),
      &  msq57_6x(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf)
+      double precision 
+     &  msq57_1x_swap(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf),
+     &  msq57_1_swap(-nf:nf,-nf:nf)
+      double precision 
+     &  msq56_1x_swap(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf),
+     &  msq56_1_swap(-nf:nf,-nf:nf)
       external qqb_zaj,qqb_zaj_gvec
       external qqb_z2jetx
 
@@ -99,7 +105,10 @@ c--- sub... and sub...v and msqv
 
       if((frag) .and. (ipsgen .eq. 1)) then 
          call dipsfragx(7,p,5,6,1,sub56_1,msq56_1,msq56_1x,qqb_z2jetx) 
+         call fill_z2jet_swap(7,msq56_1_swap,msq56_1x_swap) 
+    
          call dipsfragx(8,p,5,7,1,sub57_1,msq57_1,msq57_1x,qqb_z2jetx) 
+         call fill_z2jet_swap(8,msq57_1_swap,msq57_1x_swap) 
          do j=7,8
             phot_dip(j)=.true. 
          enddo
@@ -297,3 +306,31 @@ c--qbar-q
       return
       end
       
+      subroutine fill_z2jet_swap(nd,msq_swap,msq_x_swap)
+c--- routine that calls qqb_dirgam_g_swap and fills matrix elements
+c---  input: nd (dipole number)
+c--- output:msq_swap (array of matrix elements after 4<->5 swap)
+      implicit none
+      include 'constants.f'
+      include 'ptilde.f'
+      include 'z_dip.f'
+      integer nd
+      logical incldip(0:maxd)
+      double precision pdip(mxpart,4),msq_swap(-nf:nf,-nf:nf)
+      double precision msq_x_swap(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf)
+      double precision mqq(0:2,fn:nf,fn:nf),msq0,msq1,msq2
+      double precision msqx(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf)
+      double precision msqx_cs(0:2,-nf:nf,-nf:nf)
+      double precision msqd1(0:2,-nf:nf,-nf:nf),msqd2(0:2,-nf:nf,-nf:nf) 
+      common/incldip/incldip
+      
+      if (incldip(nd)) then
+        call getptilde(nd,pdip)
+        pdip(5,:)=pdip(5,:)/z_dip(nd)
+        call qqb_z2jetx_swap(pdip,msq_swap,msqd1,msq_x_swap,msqd2)
+      else
+        msq_swap(:,:)=0d0
+      endif
+       
+      return
+      end

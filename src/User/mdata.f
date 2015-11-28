@@ -94,6 +94,11 @@ c--- Masses below here are currently unused
      .      Vcd  ,  Vcs  ,  Vcb
      .   /0.975d0,0.222d0,0.000d0,
      .    0.222d0,0.975d0,0.000d0/
+c      data  Vud  ,  Vus  ,  Vub  ,
+c     .      Vcd  ,  Vcs  ,  Vcb
+c     .   /1d0,0d0,0.000d0,
+c     .    0d0,1d0,0.000d0/
+
       end
 ************************************************************************
 

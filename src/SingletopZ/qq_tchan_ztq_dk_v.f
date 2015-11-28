@@ -12,7 +12,7 @@ c     u(-q1)+b(-q2)->e-(q3)+e+(q4)+t(->nu(q5) l+(q6) b(q7)) +d(q8)
       include 'qcdcouple.f'
       include 'masses.f'
       include 'swapxz.f'
-      include 'pvbadpoint.f'
+      include 'TRbadpoint.f'
       include 'TRtensorcontrol.f'
       include 'tensorinfo.f'
       integer nu,icross,i1(4),i2(4),i8(4),u_b,b_u,db_b,b_db
@@ -56,7 +56,7 @@ c--- (and for poles to cancel properly)
                       
 c--- fill strings of gamma matrices on first pass
       if (first) then
-      swapxz=.true.
+        swapxz=.true.
         call fillgam
         call TRsetmaxindex(2,3,0) ! Only need up to Cij and Dijk
         call qlinit
@@ -279,19 +279,19 @@ c -- same as dopoles, but no label for top spin
             continue
          else
             failed=.true.
-      if (first) then
-            write(6,*) 'Problem with poles in ', desc
-            write(6,*) 'double pole', virt(j3,-2)/lo(j3),
+            if (first) then
+              write(6,*) 'Problem with poles in ', desc
+              write(6,*) 'double pole', virt(j3,-2)/lo(j3),
      &           dpnum/virt(j3,-2)
-            write(6,*) 'single pole', virt(j3,-1)/lo(j3),
+              write(6,*) 'single pole', virt(j3,-1)/lo(j3),
      &           spnum/lo(j3),  spnum/virt(j3,-1)
 c     pause
-      endif
+            endif
          endif
       enddo
             
-      if (first) write(6,*) 'Poles computed correctly in: ',desc,
-     & ' with tolerance ', tol
+      if ((first) .and. (failed .eqv. .false.)) write(6,*)
+     & 'Poles computed correctly in: ',desc,' with tolerance ', tol
       
       return
       end

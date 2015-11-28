@@ -14,7 +14,7 @@ c--- Input array of momenta is p, output re-ordered array is q
       include 'npart.f'
       integer i,j,k,nu,isub,maxjet,ijet(mxpart),jetindex(mxpart)
       double precision p(mxpart,4),q(mxpart,4)
-      logical alreadyfound
+      logical alreadyfound,is_hadronic
       
 c      call writeout(p)
       
@@ -30,9 +30,7 @@ c      call writeout(p)
       maxjet=0
       do i=3,npart+2-isub
         ijet(i)=0
-        if ( (plabel(i) .eq. 'pp') .or. (plabel(i) .eq. 'pj')
-     .   .or.(plabel(i) .eq. 'bq') .or. (plabel(i) .eq. 'ba')
-     .   .or.(plabel(i) .eq. 'qj') ) then
+        if (is_hadronic(i)) then
           maxjet=maxjet+1
           jetindex(maxjet)=i
         ijet(i)=-1 ! If no match is found, this signifies a parton is lost

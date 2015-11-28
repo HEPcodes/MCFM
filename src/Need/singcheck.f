@@ -17,7 +17,7 @@
       include 'process.f'
       include 'jetlabel.f'
       include 'noglue.f'
-      integer j,k,jj,kk,jmax,kmax,nd,nqcdjets,nqcdstart,icount
+      integer j,k,jj,kk,jmax,kmax,nd,nqcdjets,nqcdstart,icount,notag
       double precision p(mxpart,4),q(mxpart,4),pjet(mxpart,4),
      . msq(-nf:nf,-nf:nf),msqs(-nf:nf,-nf:nf),msqc(maxd,-nf:nf,-nf:nf),
      . s(mxpart,mxpart),rcut,debugsmall,debuglarge,xtoler,pttwo,
@@ -28,6 +28,7 @@
       common/nqcdjets/nqcdjets,nqcdstart
       common/rcut/rcut
       common/incldip/incldip
+      common/notag/notag
       data icount/0/
       save icount,premsq,premsqs
       
@@ -95,6 +96,9 @@ c        if (smin. gt. 1d-1) return
         stop
       endif
       
+      jmax=1
+      kmax=1
+      
       do j=1,jmax
       do k=1,kmax
          if     (npart .eq. 3) then
@@ -158,7 +162,7 @@ c         write(6,*) 'nd,jets, msq(5,0)',0,nd,jets,msq(5,0)
            enddo
            goto 68
          endif
-         if (jets .lt. nqcdjets) then
+         if (jets .lt. nqcdjets-notag) then
 c           write(6,*) 'This point does not have enough jets'
            do jj=-nf,nf
            do kk=-nf,nf
@@ -174,12 +178,15 @@ c           write(6,*) 'This point does not have enough jets'
          if (npart .gt. 2) then
          write(6,*) '2d0*p1.p5',s(1,5)
          write(6,*) '2d0*p2.p5',s(2,5)
+         write(6,*) '2d0*p3.p4',s(3,4)
          write(6,*) '2d0*p3.p5',s(3,5)
          write(6,*) '2d0*p4.p5',s(4,5)
          endif
          if (npart .gt. 3) then
          write(6,*) '2d0*p1.p6',s(1,6)
          write(6,*) '2d0*p2.p6',s(2,6)
+         write(6,*) '2d0*p3.p6',s(3,6)
+         write(6,*) '2d0*p4.p6',s(4,6)
          write(6,*) '2d0*p5.p6',s(5,6)
          endif
          if (npart .gt. 4) then         
@@ -194,7 +201,7 @@ c     .                      -(pjet(5,1)+pjet(6,1))**2
 c     .                      -(pjet(5,2)+pjet(6,2))**2
 c     .                      -(pjet(5,3)+pjet(6,3))**2
          do nd=1,ndmax
-            do jj=1,7
+            do jj=1,9
             do kk=1,4
                q(jj,kk)=ptilde(nd,jj,kk)
             enddo
@@ -207,8 +214,10 @@ c            call writeout(q)
 c            endif
             call dotem(9,q,s)
 c            call genclust2(q,rcut,pjet,1)
-c            if (jets .ge. nqcdjets) then            
+c            if (jets .ge. nqcdjets) then
+        
             if (includedipole(nd,q)) then
+               write(6,*) nd
 c            write(6,*) nd,jets,msqc(nd,5,0)
                do jj=-nflav,nflav
                do kk=-nflav,nflav

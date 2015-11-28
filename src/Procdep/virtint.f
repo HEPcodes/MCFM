@@ -41,12 +41,25 @@
       include 'phasemin.f'
       include 'outputoptions.f'
       include 'outputflags.f'
-      include 'pvbadpoint.f'
+      include 'TRbadpoint.f'
       include 'dm_params.f' 
+c--- APPLgrid - grid includes
+      include 'ptilde.f'
+      include 'APPLinclude.f'
+      double precision f_X1overZ, f_X2overZ, psCR, psCR0
+c--- APPLgrid - end 
+
       double precision mqq(0:2,fn:nf,fn:nf)
       double precision msqx(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf)
       double precision msqx_cs(0:2,-nf:nf,-nf:nf)
       double precision AP(-1:1,-1:1,3),APqg_mass
+
+c---- SSbegin
+      include 'reweight.f'
+      logical purevirt
+      common/useropt/purevirt
+      data purevirt/.false./
+c---- SSend 
 
       integer ih1,ih2,j,k,m,n,cs,ics,csmax,nvec,is,iq,ia,ib,ic,ii
       double precision p(mxpart,4),pjet(mxpart,4),r(mxdim),W,sqrts,xmsq,
@@ -58,10 +71,10 @@
      . msqvdkW(-nf:nf,-nf:nf),
      . msq_qq,msq_aa,msq_aq,msq_qa,msq_qg,msq_gq,epcorr
       double precision xx(2),z,x1onz,x2onz,flux,omz,
-     . BrnRat,xmsq_old,tmp,ptmp
+     . BrnRat,xmsq_old,tmp,ptmp,pttwo
       double precision xmsq_bypart(-1:1,-1:1),lord_bypart(-1:1,-1:1)
       integer nshot,rvcolourchoice,sgnj,sgnk
-      logical bin,first,includedipole
+      logical bin,first,includedipole,checkpiDpjk
       double precision QandGint
       character*4 mypart
       character*30 runstring
@@ -75,10 +88,12 @@ c      double complex ee(mxpart,mxpart),ek(mxpart,mxpart)
       common/rvcolourchoice/rvcolourchoice
       common/bypart/lord_bypart
       common/mypart/mypart
+c      common/ggZZunstable/ggZZunstable
       data p/48*0d0/
       data nshot/1/
       data first/.true./
       save first,rscalestart,fscalestart
+      external gg_ZZ
 
       QandGflag=.false.
 
@@ -95,6 +110,8 @@ c--- ensure isolation code does not think this is fragmentation piece
 
       W=sqrts**2
 
+      if (1 .eq. 2) then ! Clumsy commenting-out !!!!!!!!!!!!!!!!!!!!!
+      
 c--- processes that use "gen2"     
       if     ( (case .eq. 'W_only')
      .    .or. (case .eq. 'Z_only')
@@ -157,19 +174,19 @@ c--- processes that use "gen3jet"
         endif
       
         npart=3
-        call gen_phots_jets(r,1,0,p,pswt,*999)      
+        call gen_Vphotons_jets(r,1,0,p,pswt,*999)      
 
 c--- special treatment for Z+gamma+gamma 
       elseif ( (case .eq. 'Z_2gam') ) then
         npart=4
         if  (ipsgen .eq. 1) then
-            call gen_phots_jets(r,2,0,p,pswt,*999) !AA+AB
+            call gen_Vphotons_jets(r,2,0,p,pswt,*999) !AA+AB
         elseif  (ipsgen .eq. 2) then
-            call gen_phots_jets_dkrad2(r,2,0,p,pswt,*999) !BB+BC
+            call gen_Vphotons_jets_dkrad2(r,2,0,p,pswt,*999) !BB+BC
         elseif  (ipsgen .eq. 3) then
-           call gen_phots_jets_dkrad(r,2,0,p,pswt,*999) !CC+AC+CD
+           call gen_Vphotons_jets_dkrad(r,2,0,p,pswt,*999) !CC+AC+CD
         elseif  (ipsgen .eq. 4) then
-           call gen_phots_jets_dkrad(r,2,0,p,pswt,*999) !DD+AD+BD
+           call gen_Vphotons_jets_dkrad(r,2,0,p,pswt,*999) !DD+AD+BD
            do ii=1,4
               ptmp=p(5,ii)
               p(5,ii)=p(6,ii)
@@ -185,9 +202,9 @@ c--- special treatment for Z+gamma+jet
       elseif ( (case .eq. 'Zgajet') ) then
         npart=4
         if     (ipsgen .eq. 1) then
-          call gen_phots_jets(r,1,1,p,pswt,*999)
+          call gen_Vphotons_jets(r,1,1,p,pswt,*999)
         elseif (ipsgen .eq. 2) then
-          call gen_phots_jets_dkrad(r,1,1,p,pswt,*999)
+          call gen_Vphotons_jets_dkrad(r,1,1,p,pswt,*999)
       else
         write(6,*) 'Parameter ipsgen should be 1 or 2'
         write(6,*) 'ipsgen = ',ipsgen
@@ -210,6 +227,10 @@ c--- processes that use gen3mdk
         npart=5
         call gen3mdk(r,p,m3,m4,m5,pswt,*999)
         
+      elseif(case.eq.'trigam') then 
+         npart=3
+         call gen3jetgaga(r,p,pswt,*999)
+
 c--- processes that use "gen4"     
       elseif (case .eq. 'H_tjet') then
         npart=4
@@ -343,6 +364,10 @@ c--- DEFAULT: processes that use "gen4"
         call gen4(r,p,pswt,*999)      
       endif
 
+      endif ! end of clumsy commenting-out !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+      call gen_lops(r,p,pswt,*999)
+      
       nvec=npart+2
       call dotem(nvec,p,s)
 
@@ -500,7 +525,7 @@ c--- splittings on the heavy quark line make a gluon init. state
       enddo
       enddo
       enddo
-
+      
 c--- test to see whether we need Gflag and Qflag together
       if ( ((case .eq. 'W_2jet') .or. (case .eq. 'Z_2jet'))
      &.and. (Qflag) .and. (Gflag) ) then
@@ -528,6 +553,11 @@ c--- Calculate the required matrix elements
         call qqb_wgam(p,msq)
         call qqb_wgam_v(p,msqv)
         call qqb_wgam_z(p,z)
+      elseif (case .eq. 'Wgajet') then       
+         call qqb_wgam_g(p,msq)
+         write(6,*) 'Not available at NLO'
+         stop
+c         call qqb_wgamjet_v(p,msqv)
       elseif (case .eq. 'W_cjet') then
         call qqb_w_cjet(p,msq)
         call qqb_w_cjet_v(p,msqv)
@@ -552,6 +582,12 @@ c--- Calculate the required matrix elements
         call qqb_w2jetx(p,msq,mqq,msqx,msqx_cs)
         call qqb_w2jet_v(p,msqv)
         call qqb_w2jet_z(p,z)
+      elseif (case .eq. 'W_2gam') then
+        stop
+c         if (checkpiDpjk(p)) goto 999
+c         call qqb_Waa(p,msq)
+c         call qqb_Waa_v(p,msqv)
+c         call qqb_Waa_z(p,z)
       elseif (case .eq. 'Z_only') then
         call qqb_z(p,msq)
         call qqb_z_v(p,msqv)
@@ -583,13 +619,9 @@ c--- Calculate the required matrix elements
         call qqb_zbb_z(p,z)
       elseif (case .eq. 'WWqqbr') then
         if (ggonly) then ! special catch for gg->WW piece only
-        do j=-nf,nf
-        do k=-nf,nf
-        msq(j,k)=0d0
-        msqv(j,k)=0d0
-        enddo
-        enddo
-      else
+          msq(:,:)=0d0
+          msqv(:,:)=0d0
+        else
           call qqb_ww(p,msq)
           call qqb_ww_v(p,msqv)
           call qqb_ww_z(p,z)
@@ -601,8 +633,10 @@ c--- Calculate the required matrix elements
             enddo
             enddo
           endif
-      endif
-        call gg_ww(p,msqv(0,0)) ! additional gluon-gluon contribution
+        endif
+        if (omitgg .eqv. .false.) then ! do not compute if omitgg true
+          call gg_ww(p,msqv(0,0)) ! additional gluon-gluon contribution
+        endif
       elseif (case .eq. 'WWqqdk') then
         call dkqqb_ww_v(p,msqv)
       elseif (case .eq. 'WZbbar') then
@@ -610,10 +644,17 @@ c--- Calculate the required matrix elements
         call qqb_wz_v(p,msqv)
         call qqb_wz_z(p,z)
       elseif (case .eq. 'ZZlept') then
-        call qqb_zz(p,msq)
-        call qqb_zz_v(p,msqv)
-        call qqb_zz_z(p,z)
-        call gg_ZZ(p,msqv(0,0)) ! additional gluon-gluon contribution
+        if (ggonly) then ! special catch for gg->ZZ piece only
+          msq(:,:)=0d0
+          msqv(:,:)=0d0
+        else
+          call qqb_zz(p,msq)
+          call qqb_zz_v(p,msqv)
+          call qqb_zz_z(p,z)
+        endif
+        if (omitgg .eqv. .false.) then ! do not compute if omitgg true
+          call gg_ZZ(p,msqv(0,0)) ! additional gluon-gluon contribution
+        endif
       elseif (case .eq. 'WHbbar') then
         call qqb_wh(p,msq)
         call qqb_wh_v(p,msqv)
@@ -692,10 +733,22 @@ c--- Calculate the required matrix elements
         call qqb_dirgam(p,msq)
         call qqb_dirgam_v(p,msqv)
         call qqb_dirgam_z(p,z)
+      elseif (case .eq. 'hflgam') then
+        call qqb_hflgam(p,msq)
+        call qqb_hflgam_v(p,msqv)
+        call qqb_hflgam_z(p,z)
       elseif (case .eq. 'gamgam') then
         call qqb_gamgam(p,msq)
         call qqb_gamgam_v(p,msqv)
         call qqb_gamgam_z(p,z)
+      elseif (case .eq. 'gmgmjt') then 
+         call qqb_gmgmjt(p,msq) 
+         call qqb_gmgmjt_v(p,msqv)
+         call qqb_gmgmjt_z(p,z)
+      elseif (case .eq. 'trigam') then
+        call qqb_trigam(p,msq)
+        call qqb_trigam_v(p,msqv)
+        call qqb_trigam_z(p,z)
       elseif ((case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')) then
         call qqb_QQbdk(p,msq)
         call qqb_QQbdk_v(p,msqv)
@@ -883,6 +936,7 @@ c--- calculating corrections on the heavy quark line (for now)
           wgt=0d0
           goto 999
         endif
+        call qq_tchan_ztq_dk_z(p,z)
 
 c -- NLO corrections to decay ME -- can include flag for this at some stage...        
 c         do j=-nf,nf
@@ -891,7 +945,6 @@ c         msqv=msqv+msqvdk
 c         enddo
 c         enddo 
 c         call qq_tchan_ztq_z(p,z)
-         call qq_tchan_ztq_dk_z(p,z)
 
       elseif (case .eq. 'epem3j') then
 c--- do not include initial-state subtractions since we are only
@@ -963,6 +1016,22 @@ C---initialize to zero
       enddo
       enddo
 
+c--- APPLgrid - initialise grids
+      if (creategrid.and.bin) then
+         do j=-nf,nf
+            do k=-nf,nf
+               weightb(j,k)  = 0d0
+               weightv(j,k)  = 0d0
+               weightv1(j,k) = 0d0
+               weightv2(j,k) = 0d0
+            enddo
+         enddo
+         weightfactor = 1d0
+         f_X1overZ = 0d0
+         f_X2overZ = 0d0
+      endif      
+c--- APPLgrid - end
+
       currentPDF=0
             
 c--- initialize a PDF set here, if calculating errors
@@ -1028,6 +1097,9 @@ c          enddo
 c          else   
 c--- usual case            
             call fdist(ih1,x1onz,facscale,fx1z)
+c--- APPLgrid - set factor
+            f_X1overZ = 1d0
+c--- APPLgrid - end
 c          endif
       endif
       endif
@@ -1047,13 +1119,16 @@ c          enddo
 c          else   
 c--- usual case            
             call fdist(ih2,x2onz,facscale,fx2z)
+c--- APPLgrid - set factor
+            f_X2overZ = 1d0
+c--- APPLgrid - end
 c          endif
       endif
       endif         
       
       do j=-nflav,nflav
       do k=-nflav,nflav
-            
+   
       if (ggonly) then
       if ((j.ne.0) .or. (k.ne.0)) goto 20
       endif
@@ -1311,6 +1386,17 @@ c      write(6,*) j,k,'-> msqv = ',fx1(j)*fx2(k)*(
 c     . msqv(j,k)+msq_cs(0,j,k)+msq_cs(1,j,k)+msq_cs(2,j,k))
 c      tmp=xmsq
 
+c--- APPLgrid - collect weights  
+      if((currentPDF.eq.0).and.creategrid.and.bin)then
+         weightb(j,k)  = weightb(j,k) 
+     &        + msq_cs(0,j,k)+msq_cs(1,j,k)+msq_cs(2,j,k)
+         weightv(j,k)  = weightv(j,k) +  
+     &     msqv(j,k)
+         weightv1(j,k) = weightv1(j,k) + 0d0
+         weightv2(j,k) = weightv2(j,k) + 0d0
+       endif
+c--- APPLgrid - end
+
       if ((j .gt. 0) .and. (k.gt.0)) then
       do cs=0,2
 c--- handle the Z+b jet case where identity of 5 and 6 are switched
@@ -1329,6 +1415,27 @@ c---   (interchange colour structures 1 and 2)
      & +(msq_cs(ics,j,k)*(AP(q,q,2)+AP(q,q,3)
      &                   +R2(q,q,q,cs,2)+R2(q,q,q,cs,3))
      & + msq_cs(ics,j,g)*(AP(g,q,2)+R2(g,q,q,cs,2)))*fx1(j)*fx2z(k)/z
+
+c--- APPLgrid - collect weights for quark-quark
+       if((currentPDF.eq.0).and.creategrid.and.bin)then
+          weightb(j,k)  = weightb(j,k) 
+     &                     + 0d0
+        weightv(j,k)  =  weightv(j,k)
+     & +msq_cs(ics,j,k)*(AP(q,q,1)-AP(q,q,3)
+     &                  +R1(q,q,q,cs,1)-R1(q,q,q,cs,3)
+     &                  +AP(q,q,1)-AP(q,q,3)
+     &                  +R2(q,q,q,cs,1)-R2(q,q,q,cs,3))!*fx1(j)*fx2(k)
+        weightv1(j,k) =  weightv1(j,k)
+     & +(msq_cs(ics,j,k)*(AP(q,q,2)+AP(q,q,3)
+     &                   +R1(q,q,q,cs,2)+R1(q,q,q,cs,3))
+     & + msq_cs(ics,g,k)*(AP(g,q,2)+R1(g,q,q,cs,2)))!*fx1z(j)/z*fx2(k)
+        weightv2(j,k) = weightv2(j,k) 
+     & +(msq_cs(ics,j,k)*(AP(q,q,2)+AP(q,q,3)
+     &                   +R2(q,q,q,cs,2)+R2(q,q,q,cs,3))
+     & + msq_cs(ics,j,g)*(AP(g,q,2)+R2(g,q,q,cs,2))) !*fx1(j)*fx2z(k)/z
+       endif
+c--- APPLgrid - end
+
       enddo
       elseif ((j .lt. 0) .and. (k.lt.0)) then
       do cs=0,2
@@ -1348,6 +1455,27 @@ c---   (interchange colour structures 1 and 2)
      & +(msq_cs(ics,j,k)*(AP(a,a,2)+AP(a,a,3)
      &                  +R2(a,a,a,cs,2)+R2(a,a,a,cs,3))
      & + msq_cs(ics,j,g)*(AP(g,a,2)+R2(g,a,a,cs,2)))*fx1(j)*fx2z(k)/z
+
+c--- APPLgrid - collect weights  for antiquark-antiquark
+       if((currentPDF.eq.0).and.creategrid.and.bin)then
+        weightb(j,k)  = weightb(j,k)
+     &                     +  0d0
+        weightv(j,k)  = weightv(j,k)
+     & +msq_cs(ics,j,k)*(AP(a,a,1)-AP(a,a,3)
+     &                 +R1(a,a,a,cs,1)-R1(a,a,a,cs,3)
+     &                 +AP(a,a,1)-AP(a,a,3)
+     &                 +R2(a,a,a,cs,1)-R2(a,a,a,cs,3))!*fx1(j)*fx2(k)
+        weightv1(j,k) = weightv1(j,k)
+     & +(msq_cs(ics,j,k)*(AP(a,a,2)+AP(a,a,3)
+     &                  +R1(a,a,a,cs,2)+R1(a,a,a,cs,3))
+     & + msq_cs(ics,g,k)*(AP(g,a,2)+R1(g,a,a,cs,2)))!*fx1z(j)/z*fx2(k)
+        weightv2(j,k) = weightv2(j,k) 
+     & +(msq_cs(ics,j,k)*(AP(a,a,2)+AP(a,a,3)
+     &                  +R2(a,a,a,cs,2)+R2(a,a,a,cs,3))
+     & + msq_cs(ics,j,g)*(AP(g,a,2)+R2(g,a,a,cs,2)))!*fx1(j)*fx2z(k)/z
+       endif
+c--- APPLgrid - end
+
       enddo
       elseif ((j .gt. 0) .and. (k.lt.0)) then
 c--- handle the Z+b jet case where identity of 5 and 6 are switched
@@ -1371,6 +1499,28 @@ c---   (interchange integrated CT's for q-qbar and qbar-q)
      & +(msq_cs(cs,j,k)*(AP(a,a,2)+AP(a,a,3)
      &                  +R2(ia,ia,iq,cs,2)+R2(ia,ia,iq,cs,3))
      & + msq_cs(cs,j,g)*(AP(g,a,2)+R2(g,a,q,cs,2)))*fx1(j)*fx2z(k)/z
+
+c--- APPLgrid - collect weights  for quark-antiquark
+       if((currentPDF.eq.0).and.creategrid.and.bin)then
+        weightb(j,k)  = weightb(j,k) 
+     &                     + 0d0
+        weightv(j,k)  = weightv(j,k)
+     & +msq_cs(cs,j,k)*(AP(q,q,1)-AP(q,q,3)
+     &                 +R1(iq,iq,ia,cs,1)-R1(iq,iq,ia,cs,3)
+     &                 +AP(a,a,1)-AP(a,a,3)
+     &                 +R2(ia,ia,iq,cs,1)-R2(ia,ia,iq,cs,3)
+     &                   )!*fx1(j)*fx2(k)
+        weightv1(j,k) = weightv1(j,k)
+     & +(msq_cs(cs,j,k)*(AP(q,q,2)+AP(q,q,3)
+     &                  +R1(iq,iq,ia,cs,2)+R1(iq,iq,ia,cs,3))
+     & + msq_cs(cs,g,k)*(AP(g,q,2)+R1(g,q,a,cs,2)))!*fx1z(j)/z*fx2(k)
+        weightv2(j,k) = weightv2(j,k) 
+     & +(msq_cs(cs,j,k)*(AP(a,a,2)+AP(a,a,3)
+     &                  +R2(ia,ia,iq,cs,2)+R2(ia,ia,iq,cs,3))
+     & + msq_cs(cs,j,g)*(AP(g,a,2)+R2(g,a,q,cs,2)))!*fx1(j)*fx2z(k)/z
+       endif
+c--- APPLgrid - end
+
       enddo
       elseif ((j .lt. 0) .and. (k.gt.0)) then
 c--- handle the Z+b jet case where identity of 5 and 6 are switched
@@ -1394,6 +1544,28 @@ c---   (interchange integrated CT's for q-qbar and qbar-q)
      & +(msq_cs(cs,j,k)*(AP(q,q,2)+AP(q,q,3)
      &                  +R2(iq,iq,ia,cs,2)+R2(iq,iq,ia,cs,3))
      & + msq_cs(cs,j,g)*(AP(g,q,2)+R2(g,q,a,cs,2)))*fx1(j)*fx2z(k)/z
+
+c--- APPLgrid - collect weights for antiquark-quark
+       if((currentPDF.eq.0).and.creategrid.and.bin)then
+        weightb(j,k)  = weightb(j,k) 
+     &                     +  0d0
+        weightv(j,k)  = weightv(j,k)
+     & +msq_cs(cs,j,k)*(AP(a,a,1)-AP(a,a,3)
+     &                 +R1(ia,ia,iq,cs,1)-R1(ia,ia,iq,cs,3)
+     &                 +AP(q,q,1)-AP(q,q,3)
+     &                 +R2(iq,iq,ia,cs,1)-R2(iq,iq,ia,cs,3)
+     &                   )!*fx1(j)*fx2(k)
+        weightv1(j,k) = weightv1(j,k)
+     & +(msq_cs(cs,j,k)*(AP(a,a,2)+AP(a,a,3)
+     &                  +R1(ia,ia,iq,cs,2)+R1(ia,ia,iq,cs,3))
+     & + msq_cs(cs,g,k)*(AP(g,a,2)+R1(g,a,q,cs,2)))!*fx1z(j)/z*fx2(k)
+        weightv2(j,k) = weightv2(j,k) 
+     & +(msq_cs(cs,j,k)*(AP(q,q,2)+AP(q,q,3)
+     &                  +R2(iq,iq,ia,cs,2)+R2(iq,iq,ia,cs,3))
+     & + msq_cs(cs,j,g)*(AP(g,q,2)+R2(g,q,a,cs,2)))!*fx1(j)*fx2z(k)/z
+       endif
+c--- APPLgrid - end
+
       enddo
       elseif ((j .eq. g) .and. (k .eq. g)) then
       do cs=0,2
@@ -1416,6 +1588,27 @@ c---   (interchange integrated CT's for q-qbar and qbar-q)
      & +(msq_cs(cs,g,g)*(AP(g,g,2)+AP(g,g,3)
      &                  +R2(g,g,g,cs,3)+R2(g,g,g,cs,2))
      & + msq_gq*(AP(q,g,2)+R2(q,g,g,cs,2)))*fx1(g)*fx2z(g)/z
+
+c--- APPLgrid - collect weights for gluon-gluon
+       if((currentPDF.eq.0).and.creategrid.and.bin)then
+        weightb(j,k)  = weightb(j,k) 
+     &                     +  0d0
+        weightv(j,k)  = weightv(j,k)
+     & +msq_cs(cs,g,g)*(AP(g,g,1)-AP(g,g,3)
+     &                 +R1(g,g,g,cs,1)-R1(g,g,g,cs,3)
+     &                 +AP(g,g,1)-AP(g,g,3)
+     &                 +R2(g,g,g,cs,1)-R2(g,g,g,cs,3))!*fx1(g)*fx2(g)
+        weightv1(j,k) = weightv1(j,k)
+     & +(msq_cs(cs,g,g)*(AP(g,g,2)+AP(g,g,3)
+     &                  +R1(g,g,g,cs,3)+R1(g,g,g,cs,2))
+     & + msq_qg*(AP(q,g,2)+R1(q,g,g,cs,2)))!*fx1z(g)/z*fx2(g)
+        weightv2(j,k) = weightv2(j,k) 
+     & +(msq_cs(cs,g,g)*(AP(g,g,2)+AP(g,g,3)
+     &                  +R2(g,g,g,cs,3)+R2(g,g,g,cs,2))
+     & + msq_gq*(AP(q,g,2)+R2(q,g,g,cs,2)))!*fx1(g)*fx2z(g)/z
+       endif
+c--- APPLgrid - end
+
       enddo
       elseif ((j .eq. g) .and. (k .gt. 0)) then
 c--- special case for W+bj - remove b-PDF contribution
@@ -1439,6 +1632,28 @@ c--- special case for W+bj - remove b-PDF contribution
      & +(msq_cs(cs,g,k)*(AP(q,q,2)+AP(q,q,3)
      &                +R2(q,q,g,cs,2)+R2(q,q,g,cs,3))
      & + msq_cs(cs,g,g)*(AP(g,q,2)+R2(g,q,g,cs,2)))*fx1(g)*fx2z(k)/z
+
+c--- APPLgrid - collect weights  for gluon-quark
+       if((currentPDF.eq.0).and.creategrid.and.bin)then
+        weightb(j,k)  = weightb(j,k) 
+     &                     +  0d0
+        weightv(j,k)  = weightv(j,k)
+     & +msq_cs(cs,g,k)*(AP(g,g,1)-AP(g,g,3)
+     &                 +R1(g,g,q,cs,1)-R1(g,g,q,cs,3)
+     &                 +AP(q,q,1)-AP(q,q,3)
+     &                 +R2(q,q,g,cs,1)-R2(q,q,g,cs,3))!*fx1(g)*fx2(k)
+        weightv1(j,k) = weightv1(j,k)
+     & +(msq_cs(cs,g,k)*(AP(g,g,2)+AP(g,g,3)
+     &                  +R1(g,g,q,cs,2)+R1(g,g,q,cs,3))
+     & + msq_aq*(AP(a,g,2)+R1(a,g,q,cs,2))
+     & + msq_qq*(AP(q,g,2)+R1(q,g,q,cs,2)))!*fx1z(g)/z*fx2(k)
+        weightv2(j,k) = weightv2(j,k) 
+     & +(msq_cs(cs,g,k)*(AP(q,q,2)+AP(q,q,3)
+     &                +R2(q,q,g,cs,2)+R2(q,q,g,cs,3))
+     & + msq_cs(cs,g,g)*(AP(g,q,2)+R2(g,q,g,cs,2)))!*fx1(g)*fx2z(k)/z
+       endif
+c--- APPLgrid - end
+
       enddo
       endif
       
@@ -1464,6 +1679,28 @@ c--- special case for W+bj - remove b-PDF contribution
      & +(msq_cs(cs,g,k)*(AP(a,a,2)+AP(a,a,3)
      &                  +R2(a,a,g,cs,2)+R2(a,a,g,cs,3))
      & + msq_cs(cs,g,g)*(AP(g,a,2)+R2(g,a,g,cs,2)))*fx1(g)*fx2z(k)/z
+
+c--- APPLgrid - collect weights for gluon-antiquark
+       if((currentPDF.eq.0).and.creategrid.and.bin)then
+        weightb(j,k)  = weightb(j,k) 
+     &                     +  0d0
+        weightv(j,k)  = weightv(j,k)
+     & +msq_cs(cs,g,k)*(AP(g,g,1)-AP(g,g,3)
+     &                 +R1(g,g,a,cs,1)-R1(g,g,a,cs,3)
+     &                 +AP(a,a,1)-AP(a,a,3)
+     &                 +R2(a,a,g,cs,1)-R2(a,a,g,cs,3))!*fx1(g)*fx2(k)
+        weightv1(j,k) = weightv1(j,k)
+     & +(msq_cs(cs,g,k)*(AP(g,g,2)+AP(g,g,3)
+     &                  +R1(g,g,a,cs,2)+R1(g,g,a,cs,3))
+     & + msq_qa*(AP(q,g,2)+R1(q,g,a,cs,2))
+     & + msq_aa*(AP(a,g,2)+R1(a,g,a,cs,2)))!*fx1z(g)/z*fx2(k)
+        weightv2(j,k) = weightv2(j,k) 
+     & +(msq_cs(cs,g,k)*(AP(a,a,2)+AP(a,a,3)
+     &                  +R2(a,a,g,cs,2)+R2(a,a,g,cs,3))
+     & + msq_cs(cs,g,g)*(AP(g,a,2)+R2(g,a,g,cs,2)))!*fx1(g)*fx2z(k)/z
+       endif
+c--- APPLgrid - end
+
       enddo
       endif
       
@@ -1489,6 +1726,28 @@ c--- special case for W+bj - remove b-PDF contribution
      &                 +R2(g,g,q,cs,2)+R2(g,g,q,cs,3))
      &+ msq_qa*(AP(a,g,2)+R2(a,g,q,cs,2))
      &+ msq_qq*(AP(q,g,2)+R2(q,g,q,cs,2)))*fx1(j)*fx2z(g)/z
+
+c--- APPLgrid - collect weights for quark-gluon
+       if((currentPDF.eq.0).and.creategrid.and.bin)then
+        weightb(j,k)  = weightb(j,k) 
+     &                     +  0d0
+        weightv(j,k)  = weightv(j,k)
+     &+ msq_cs(cs,j,g)*(AP(q,q,1)-AP(q,q,3)
+     &                 +R1(q,q,g,cs,1)-R1(q,q,g,cs,3)
+     &                 +R2(g,g,q,cs,1)-R2(g,g,q,cs,3)
+     &                 +AP(g,g,1)-AP(g,g,3))!*fx1(j)*fx2(g)
+        weightv1(j,k) = weightv1(j,k)
+     &+(msq_cs(cs,j,g)*(AP(q,q,2)+AP(q,q,3)
+     &                 +R1(q,q,g,cs,2)+R1(q,q,g,cs,3))
+     &+ msq_cs(cs,g,g)*(AP(g,q,2)+R1(g,q,g,cs,2)))!*fx1z(j)/z*fx2(g)
+        weightv2(j,k) = weightv2(j,k) 
+     &+(msq_cs(cs,j,g)*(AP(g,g,2)+AP(g,g,3)
+     &                 +R2(g,g,q,cs,2)+R2(g,g,q,cs,3))
+     &+ msq_qa*(AP(a,g,2)+R2(a,g,q,cs,2))
+     &+ msq_qq*(AP(q,g,2)+R2(q,g,q,cs,2)))!*fx1(j)*fx2z(g)/z
+       endif
+c--- APPLgrid - end 
+
       enddo
       endif
       
@@ -1514,6 +1773,28 @@ c--- special case for W+bj - remove b-PDF contribution
      &                  +R2(g,g,a,cs,2)+R2(g,g,a,cs,3))
      & + msq_aq*(AP(q,g,2)+R2(q,g,a,cs,2))
      & + msq_aa*(AP(a,g,2)+R2(a,g,a,cs,2)))*fx1(j)*fx2z(g)/z
+
+c---  APPLgrid collect weights for antiquark-gluon
+       if((currentPDF.eq.0).and.creategrid.and.bin)then
+        weightb(j,k)  = weightb(j,k) 
+     &                     +  0d0
+        weightv(j,k)  = weightv(j,k)
+     & + msq_cs(cs,j,g)*(AP(a,a,1)-AP(a,a,3)
+     &                  +R1(a,a,g,cs,1)-R1(a,a,g,cs,3)
+     &                  +AP(g,g,1)-AP(g,g,3)
+     &                  +R2(g,g,a,cs,1)-R2(g,g,a,cs,3))!*fx1(j)*fx2(g)
+        weightv1(j,k) = weightv1(j,k)
+     & +(msq_cs(cs,j,g)*(AP(a,a,2)+AP(a,a,3)
+     &                  +R1(a,a,g,cs,2)+R1(a,a,g,cs,3))
+     & + msq_cs(cs,g,g)*(AP(g,a,2)+R1(g,a,g,cs,2)))!*fx1z(j)/z*fx2(g)
+        weightv2(j,k) = weightv2(j,k) 
+     & +(msq_cs(cs,j,g)*(AP(g,g,2)+AP(g,g,3)
+     &                  +R2(g,g,a,cs,2)+R2(g,g,a,cs,3))
+     & + msq_aq*(AP(q,g,2)+R2(q,g,a,cs,2))
+     & + msq_aa*(AP(a,g,2)+R2(a,g,a,cs,2)))!*fx1(j)*fx2z(g)/z
+       endif
+c--- APPLgrid end
+
       enddo
       endif
       endif
@@ -1632,9 +1913,9 @@ c--- special code to remove the b+b(bar) -> W+t+b(bar) contribution
       endif
 C--QQ
       if     ((j .gt. 0) .and. (k.gt.0)) then
-      if (((case .eq. 'bq_tpq') .or. (case .eq. 'H_tjet')
-     & .or.(case .eq. 'Z_tjet').or. (case .eq. 'Z_tdkj')
-     &        .or. (case .eq. 'H_tdkj')) .and. (j .eq. 5)) then
+      if    ((((case .eq. 'bq_tpq') .or. (case .eq. 'H_tjet')
+     &     .or.(case .eq. 'Z_tjet') .or. (case .eq. 'Z_tdkj')
+     &     .or.(case .eq. 'H_tdkj')) .and. (j .eq. 5))) then
       xmsq=xmsq+(msqv(j,k)
      & + msq(j,k)*(one+AP(q,q,1)-AP(q,q,3)+B1(b,b,q,1)-B1(b,b,q,3)
      &                +AP(q,q,1)-AP(q,q,3)+B2(q,q,b,1)-B2(q,q,b,3)))
@@ -1643,9 +1924,9 @@ C--QQ
      & + msq(g,k)*(AP(g,q,2)+Q1(g,q,q,2)))*fx1z(j)/z*fx2(k)
      & +(msq(j,k)*(AP(q,q,2)+AP(q,q,3)+B2(q,q,b,2)+B2(q,q,b,3))
      & + msq(j,g)*(AP(g,q,2)+Q2(g,q,q,2)))*fx1(j)*fx2z(k)/z
-      elseif (((case .eq. 'bq_tpq') .or. (case .eq. 'H_tjet')
+      elseif((((case .eq. 'bq_tpq') .or. (case .eq. 'H_tjet')
      &    .or. (case .eq. 'Z_tjet').or. (case .eq. 'Z_tdkj')
-     &     .or. (case .eq. 'H_tdkj')) .and. (k .eq. 5)) then
+     &    .or. (case .eq. 'H_tdkj')) .and. (k .eq. 5))) then
       xmsq=xmsq+(msqv(j,k)
      & + msq(j,k)*(one+AP(q,q,1)-AP(q,q,3)+B1(q,q,b,1)-B1(q,q,b,3)
      &                +AP(q,q,1)-AP(q,q,3)+B2(b,b,q,1)-B2(b,b,q,3)))
@@ -1663,12 +1944,31 @@ C--QQ
      & + msq(g,k)*(AP(g,q,2)+Q1(g,q,q,2)))*fx1z(j)/z*fx2(k)
      & +(msq(j,k)*(AP(q,q,2)+AP(q,q,3)+Q2(q,q,q,2)+Q2(q,q,q,3))
      & + msq(j,g)*(AP(g,q,2)+Q2(g,q,q,2)))*fx1(j)*fx2z(k)/z
+
+c--- APPLgrid - collect weights  for Quark---Quark - Take only ELSE part here...
+      if((currentPDF.eq.0).and.creategrid.and.bin)then
+         weightb(j,k)   = weightb(j,k) +
+     &        msq(j,k)
+         weightv(j,k)   =  weightv(j,k)   +
+     & (msqv(j,k)
+     &   + msq(j,k)*(zip+AP(q,q,1)-AP(q,q,3)+Q1(q,q,q,1)-Q1(q,q,q,3)
+     &   + AP(q,q,1)-AP(q,q,3)+Q2(q,q,q,1)-Q2(q,q,q,3))) 
+     &                          !*fx1(j)*fx2(k)
+         weightv1(j,k) =  weightv1(j,k) + 
+     &  (msq(j,k)*(AP(q,q,2)+AP(q,q,3)+Q1(q,q,q,2)+Q1(q,q,q,3))
+     &    + msq(g,k)*(AP(g,q,2)+Q1(g,q,q,2)))!*fx1z(j)/z*fx2(k)
+        weightv2(j,k) = weightv2(j,k) +
+     &    (msq(j,k)*(AP(q,q,2)+AP(q,q,3)+Q2(q,q,q,2)+Q2(q,q,q,3))
+     &    + msq(j,g)*(AP(g,q,2)+Q2(g,q,q,2)))!*fx1(j)*fx2z(k)/z
+      endif
+c--- APPLgrid - end
+
       endif
 C--QbarQbar
       elseif ((j .lt. 0) .and. (k.lt.0)) then
-      if     (((case .eq. 'bq_tpq') .or. (case .eq. 'H_tjet')
+      if    ((((case .eq. 'bq_tpq') .or. (case .eq. 'H_tjet')
      &     .or.(case .eq. 'Z_tjet').or. (case .eq. 'Z_tdkj')
-     &        .or. (case .eq. 'H_tdkj')).and. (j .eq. -5)) then
+     &    .or. (case .eq. 'H_tdkj')).and. (j .eq. -5))) then
       xmsq=xmsq+(msqv(j,k)
      & + msq(j,k)*(one+AP(a,a,1)-AP(a,a,3)+B1(b,b,a,1)-B1(b,b,a,3)
      &                +AP(a,a,1)-AP(a,a,3)+B2(a,a,b,1)-B2(a,a,b,3)))
@@ -1677,9 +1977,9 @@ C--QbarQbar
      & + msq(g,k)*(AP(g,a,2)+Q1(g,a,a,2)))*fx1z(j)/z*fx2(k)
      & +(msq(j,k)*(AP(a,a,2)+AP(a,a,3)+B2(a,a,b,2)+B2(a,a,b,3))
      & + msq(j,g)*(AP(g,a,2)+Q2(g,a,a,2)))*fx1(j)*fx2z(k)/z
-      elseif (((case .eq. 'bq_tpq') .or. (case .eq. 'H_tjet')
+      elseif((((case .eq. 'bq_tpq') .or. (case .eq. 'H_tjet')
      &     .or.(case .eq. 'Z_tjet') .or. (case .eq. 'Z_tdkj')
-     &     .or. (case .eq. 'H_tdkj')) .and. (k .eq. -5)) then
+     &     .or.(case .eq. 'H_tdkj')) .and. (k .eq. -5))) then
       xmsq=xmsq+(msqv(j,k)
      & + msq(j,k)*(one+AP(a,a,1)-AP(a,a,3)+B1(a,a,b,1)-B1(a,a,b,3)
      &                +AP(a,a,1)-AP(a,a,3)+B2(b,b,a,1)-B2(b,b,a,3)))
@@ -1697,6 +1997,25 @@ C--QbarQbar
      & + msq(g,k)*(AP(g,a,2)+Q1(g,a,a,2)))*fx1z(j)/z*fx2(k)
      & +(msq(j,k)*(AP(a,a,2)+AP(a,a,3)+Q2(a,a,a,2)+Q2(a,a,a,3))
      & + msq(j,g)*(AP(g,a,2)+Q2(g,a,a,2)))*fx1(j)*fx2z(k)/z
+
+c--- APPLgrid collect weights  for QuarkBar---QuarkBar ::: Take only ELSE here
+      if((currentPDF.eq.0).and.creategrid.and.bin)then
+         weightb(j,k)  = weightb(j,k)  +
+     &        msq(j,k)
+         weightv(j,k)  = weightv(j,k)  +
+     &        (msqv(j,k)
+     &   + msq(j,k)*(zip+AP(a,a,1)-AP(a,a,3)+Q1(a,a,a,1)-Q1(a,a,a,3)
+     &   +AP(a,a,1)-AP(a,a,3)+Q2(a,a,a,1)-Q2(a,a,a,3)))
+     &                          !*fx1(j)*fx2(k)
+         weightv1(j,k) =          weightv1(j,k) +
+     &     (msq(j,k)*(AP(a,a,2)+AP(a,a,3)+Q1(a,a,a,2)+Q1(a,a,a,3))
+     &      + msq(g,k)*(AP(g,a,2)+Q1(g,a,a,2)))!*fx1z(j)/z*fx2(k)
+        weightv2(j,k) =         weightv2(j,k) +
+     &      (msq(j,k)*(AP(a,a,2)+AP(a,a,3)+Q2(a,a,a,2)+Q2(a,a,a,3))
+     &      + msq(j,g)*(AP(g,a,2)+Q2(g,a,a,2)))!*fx1(j)*fx2z(k)/z
+      endif
+c--- APPLgrid - end
+
       endif
 C--QQbar
       elseif ((j .gt. 0) .and. (k.lt.0)) then
@@ -1708,6 +2027,26 @@ C--QQbar
      & + msq(g,k)*(AP(g,q,2)+Q1(g,q,a,2)))*fx1z(j)/z*fx2(k)
      & +(msq(j,k)*(AP(a,a,2)+AP(a,a,3)+Q2(a,a,q,3)+Q2(a,a,q,2))
      & + msq(j,g)*(AP(g,a,2)+Q2(g,a,q,2)))*fx1(j)*fx2z(k)/z
+
+
+c---  APPLgrid - collect weights  for Quark---QuarkBar
+      if((currentPDF.eq.0).and.creategrid.and.bin)then
+         weightb(j,k)  = weightb(j,k)  +
+     &        msq(j,k)
+         weightv(j,k)  =  weightv(j,k)  +
+     &        (msqv(j,k)
+     & + msq(j,k)*(zip+AP(q,q,1)-AP(q,q,3)+Q1(q,q,a,1)-Q1(q,q,a,3)
+     &                +AP(a,a,1)-AP(a,a,3)+Q2(a,a,q,1)-Q2(a,a,q,3))) 
+     &        !*fx1(j)*fx2(k)
+         weightv1(j,k) =         weightv1(j,k) +
+     & (msq(j,k)*(AP(q,q,2)+AP(q,q,3)+Q1(q,q,a,3)+Q1(q,q,a,2))
+     & + msq(g,k)*(AP(g,q,2)+Q1(g,q,a,2)))!*fx1z(j)/z*fx2(k)
+         weightv2(j,k) =          weightv2(j,k) +
+     & (msq(j,k)*(AP(a,a,2)+AP(a,a,3)+Q2(a,a,q,3)+Q2(a,a,q,2))
+     & + msq(j,g)*(AP(g,a,2)+Q2(g,a,q,2)))!*fx1(j)*fx2z(k)/z
+      endif
+c--- APPLgrid - end
+
       elseif ((j .lt. 0) .and. (k.gt.0)) then
 C--QbarQ
       xmsq=xmsq+(msqv(j,k)
@@ -1718,6 +2057,24 @@ C--QbarQ
      & + msq(g,k)*(AP(g,a,2)+Q1(g,a,q,2)))*fx1z(j)/z*fx2(k)
      & +(msq(j,k)*(AP(q,q,3)+AP(q,q,2)+Q2(q,q,a,3)+Q2(q,q,a,2))
      & + msq(j,g)*(AP(g,q,2)+Q2(g,q,a,2)))*fx1(j)*fx2z(k)/z
+
+c--- APPLgrid - collect weights  for QuarkBar---Quark
+      if((currentPDF.eq.0).and.creategrid.and.bin)then
+         weightb(j,k)  = weightb(j,k)  +
+     &        msq(j,k)
+         weightv(j,k)  =   weightv(j,k)  +
+     &        (msqv(j,k)
+     & +msq(j,k)*(zip+AP(a,a,1)-AP(a,a,3)+Q1(a,a,q,1)-Q1(a,a,q,3)
+     &               +AP(q,q,1)-AP(q,q,3)+Q2(q,q,a,1)-Q2(q,q,a,3)))
+     &        ! *fx1(j)*fx2(k)
+         weightv1(j,k) =    weightv1(j,k) +
+     & (msq(j,k)*(AP(a,a,3)+AP(a,a,2)+Q1(a,a,q,3)+Q1(a,a,q,2))
+     & + msq(g,k)*(AP(g,a,2)+Q1(g,a,q,2)))!*fx1z(j)/z*fx2(k)
+         weightv2(j,k) =  weightv2(j,k) +
+     & (msq(j,k)*(AP(q,q,3)+AP(q,q,2)+Q2(q,q,a,3)+Q2(q,q,a,2))
+     & + msq(j,g)*(AP(g,q,2)+Q2(g,q,a,2)))!*fx1(j)*fx2z(k)/z
+      endif
+c--- APPLgrid - end
 
       elseif ((j .eq. g) .and. (k.eq.g)) then
 C--gg
@@ -1747,6 +2104,25 @@ C--gg
      &  +   msq_qg*(AP(q,g,2)+Q1(q,g,g,2)))*fx1z(g)/z*fx2(g)
      &  +(msq(g,g)*(AP(g,g,2)+AP(g,g,3)+Q2(g,g,g,2)+Q2(g,g,g,3))
      &  +   msq_gq*(AP(q,g,2)+Q2(q,g,g,2)))*fx1(g)*fx2z(g)/z
+
+c--- APPLgrid - collect weights  for glue-glue
+      if((currentPDF.eq.0).and.creategrid.and.bin)then
+         weightb(j,k)  =  weightb(j,k)  +
+     &        msq(j,k)
+         weightv(j,k)  =  weightv(j,k)  +
+     &        (msqv(j,k)
+     &  +msq(g,g)*(zip+AP(g,g,1)-AP(g,g,3)+Q1(g,g,g,1)-Q1(g,g,g,3)
+     &                +AP(g,g,1)-AP(g,g,3)+Q2(g,g,g,1)-Q2(g,g,g,3)))
+     &        ! *fx1(g)*fx2(g)
+         weightv1(j,k) =    weightv1(j,k) +
+     &  (msq(g,g)*(AP(g,g,2)+AP(g,g,3)+Q1(g,g,g,2)+Q1(g,g,g,3))
+     &  +   msq_qg*(AP(q,g,2)+Q1(q,g,g,2)))!*fx1z(g)/z*fx2(g)
+         weightv2(j,k) =   weightv2(j,k) +
+     & (msq(g,g)*(AP(g,g,2)+AP(g,g,3)+Q2(g,g,g,2)+Q2(g,g,g,3))
+     &  +   msq_gq*(AP(q,g,2)+Q2(q,g,g,2)))!*fx1(g)*fx2z(g)/z
+      endif
+c--- APPLgrid - end
+
       endif
 
       elseif (j .eq. g) then
@@ -1763,6 +2139,26 @@ C--gQ
      & +   msq_qq*(AP(q,g,2)+Q1(q,g,q,2)))*fx1z(g)/z*fx2(k)
      & +(msq(g,k)*(AP(q,q,2)+AP(q,q,3)+Q2(q,q,g,2)+Q2(q,q,g,3))
      & + msq(g,g)*(AP(g,q,2)+Q2(g,q,g,2)))*fx1(g)*fx2z(k)/z
+
+c--- APPLgrid - collect weights for gluon---Quark
+      if((currentPDF.eq.0).and.creategrid.and.bin)then
+         weightb(j,k)  =  weightb(j,k)  +
+     &        msq(j,k)
+         weightv(j,k)  =  weightv(j,k)  +
+     &        (msqv(j,k)
+     & +msq(g,k)*(zip+AP(g,g,1)-AP(g,g,3)+Q1(g,g,q,1)-Q1(g,g,q,3)
+     &               +AP(q,q,1)-AP(q,q,3)+Q2(q,q,g,1)-Q2(q,q,g,3)))
+     &        !*fx1(g)*fx2(k)
+         weightv1(j,k) =    weightv1(j,k) +
+     & (msq(g,k)*(AP(g,g,2)+AP(g,g,3)+Q1(g,g,q,2)+Q1(g,g,q,3))
+     & +   msq_aq*(AP(a,g,2)+Q1(a,g,q,2))
+     & +   msq_qq*(AP(q,g,2)+Q1(q,g,q,2)))!*fx1z(g)/z*fx2(k)
+         weightv2(j,k) =    weightv2(j,k) +
+     & (msq(g,k)*(AP(q,q,2)+AP(q,q,3)+Q2(q,q,g,2)+Q2(q,q,g,3))
+     & + msq(g,g)*(AP(g,q,2)+Q2(g,q,g,2)))!*fx1(g)*fx2z(k)/z
+      endif
+c--- APPLgrid - end
+
        if     ((case .eq. 'bq_tpq') .and. (k .ne. 5)
      .   .and. (masslessb .eqv. .false.)) then
 c--- replace subtraction with a b in initial state by massive sub
@@ -1786,6 +2182,26 @@ C--gQbar
      & +   msq_aa*(AP(a,g,2)+Q1(a,g,a,2)))*fx1z(g)/z*fx2(k)
      & +(msq(g,k)*(AP(a,a,2)+AP(a,a,3)+Q2(a,a,g,2)+Q2(a,a,g,3))
      & + msq(g,g)*(AP(g,a,2)+Q2(g,a,g,2)))*fx1(g)*fx2z(k)/z
+
+c--- APPLgrid - collect weights  for gluon---QuarkBar
+      if((currentPDF.eq.0).and.creategrid.and.bin)then
+         weightb(j,k)  =  weightb(j,k)  +
+     &        msq(j,k)
+         weightv(j,k)  =  weightv(j,k)  +
+     &        (msqv(j,k)
+     & +msq(g,k)*(zip+AP(g,g,1)-AP(g,g,3)+Q1(g,g,a,1)-Q1(g,g,a,3)
+     &               +AP(a,a,1)-AP(a,a,3)+Q2(a,a,g,1)-Q2(a,a,g,3)))
+     &        !*fx1(g)*fx2(k)
+         weightv1(j,k) =    weightv1(j,k) +
+     & (msq(g,k)*(AP(g,g,2)+AP(g,g,3)+Q1(g,g,a,2)+Q1(g,g,a,3))
+     & +   msq_qa*(AP(q,g,2)+Q1(q,g,a,2))
+     & +   msq_aa*(AP(a,g,2)+Q1(a,g,a,2)))!*fx1z(g)/z*fx2(k)
+         weightv2(j,k) =   weightv2(j,k) +
+     & (msq(g,k)*(AP(a,a,2)+AP(a,a,3)+Q2(a,a,g,2)+Q2(a,a,g,3))
+     & + msq(g,g)*(AP(g,a,2)+Q2(g,a,g,2)))!*fx1(g)*fx2z(k)/z
+      endif
+c--- APPLgrid - end
+
        if     ((case .eq. 'bq_tpq') .and. (k .ne. -5)
      .   .and. (masslessb .eqv. .false.)) then
 c--- replace subtraction with a b in initial state by massive sub
@@ -1812,6 +2228,27 @@ C--Qg
      & +(msq(j,g)*(AP(g,g,2)+AP(g,g,3)+Q2(g,g,q,2)+Q2(g,g,q,3))
      & +   msq_qa*(AP(a,g,2)+Q2(a,g,q,2))
      & +   msq_qq*(AP(q,g,2)+Q2(q,g,q,2)))*fx1(j)*fx2z(g)/z
+
+c--- APPLgrid - collect weights  for Quark---gluon
+      if((currentPDF.eq.0).and.creategrid.and.bin)then
+         weightb(j,k)  =  weightb(j,k)  +
+     &        msq(j,k)
+         weightv(j,k)  = weightv(j,k)  +
+     &        (msqv(j,k)
+     &        +msq(j,g)*(zip
+     &        +AP(q,q,1)-AP(q,q,3)+Q1(q,q,g,1)-Q1(q,q,g,3)
+     &        +AP(g,g,1)-AP(g,g,3)+Q2(g,g,q,1)-Q2(g,g,q,3)))
+     &        !*fx1(j)*fx2(g)
+         weightv1(j,k) =    weightv1(j,k) +
+     & (msq(j,g)*(AP(q,q,2)+AP(q,q,3)+Q1(q,q,g,2)+Q1(q,q,g,3))
+     & + msq(g,g)*(AP(g,q,2)+Q1(g,q,g,2)))!*fx1z(j)/z*fx2(g)
+         weightv2(j,k) =    weightv2(j,k) +
+     &  (msq(j,g)*(AP(g,g,2)+AP(g,g,3)+Q2(g,g,q,2)+Q2(g,g,q,3))
+     &  + msq_qa*(AP(a,g,2)+Q2(a,g,q,2))
+     &  + msq_qq*(AP(q,g,2)+Q2(q,g,q,2)))!*fx1(j)*fx2z(g)/z
+      endif
+c--- APPLgrid - end
+
        if     ((case .eq. 'bq_tpq') .and. (j .ne. 5)
      .   .and. (masslessb .eqv. .false.)) then
 c--- replace subtraction with a b in initial state by massive sub
@@ -1835,6 +2272,26 @@ C--Qbarg
      & +(msq(j,g)*(AP(g,g,2)+AP(g,g,3)+Q2(g,g,a,3)+Q2(g,g,a,2))
      & + msq_aq*(AP(q,g,2)+Q2(q,g,a,2))
      & + msq_aa*(AP(a,g,2)+Q2(a,g,a,2)))*fx1(j)*fx2z(g)/z
+
+c--- APPLgrid - collect weights  for QuarkBar---gluon
+      if((currentPDF.eq.0).and.creategrid.and.bin)then
+         weightb(j,k)  =  weightb(j,k)  +
+     &        msq(j,k)
+         weightv(j,k)  =  weightv(j,k)  +
+     &        (msqv(j,k)
+     & +msq(j,g)*(zip+AP(a,a,1)-AP(a,a,3)+Q1(a,a,g,1)-Q1(a,a,g,3)
+     &               +AP(g,g,1)-AP(g,g,3)+Q2(g,g,a,1)-Q2(g,g,a,3)))
+     &        !*fx1(j)*fx2(g)
+         weightv1(j,k) =   weightv1(j,k) +
+     & (msq(j,g)*(AP(a,a,2)+AP(a,a,3)+Q1(a,a,g,2)+Q1(a,a,g,3))
+     & + msq(g,g)*(AP(g,a,2)+Q1(g,a,g,2))) !*fx1z(j)/z*fx2(g)
+         weightv2(j,k) =   weightv2(j,k) +
+     & (msq(j,g)*(AP(g,g,2)+AP(g,g,3)+Q2(g,g,a,3)+Q2(g,g,a,2))
+     & + msq_aq*(AP(q,g,2)+Q2(q,g,a,2))
+     & + msq_aa*(AP(a,g,2)+Q2(a,g,a,2)))!*fx1(j)*fx2z(g)/z
+      endif
+c--- APPLgrid - end
+
        if     ((case .eq. 'bq_tpq') .and. (j .ne. -5)
      .   .and. (masslessb .eqv. .false.)) then
 c--- replace subtraction with a b in initial state by massive sub
@@ -1855,7 +2312,10 @@ c      if (xmsq-tmp .ne. 0d0) write(6,*) j,k,'-> msqc = ',xmsq-tmp
 c--- subtract off LO (we don't want it) for Wcs_ms case and for
 c--- the comparison with C. Oleari's e+e- --> QQbg calculation
 c      if ((case .eq. 'Wcs_ms') .or. (runstring(1:5) .eq. 'carlo')) then
-      if (case .eq. 'Wcs_ms') then
+c--- (MCFM_original)  if (case .eq. 'Wcs_ms') then                                                                                          
+c---  SSbegin                                                                                                                      
+      if ((case .eq. 'Wcs_ms') .or. (purevirt)) then
+c---  SSend                                                                                                                        
         xmsq=xmsq-msq(j,k)*fx1(j)*fx2(k)
       endif  
            
@@ -1922,7 +2382,7 @@ c          pause
         endif
       endif
       
-      if (creatent) then
+c      if (creatent) then
         wt_gg=xmsq_bypart(0,0)*wgt*flux*xjac*pswt/BrnRat/dfloat(itmx)
         wt_gq=(xmsq_bypart(+1,0)+xmsq_bypart(-1,0)
      .        +xmsq_bypart(0,+1)+xmsq_bypart(0,-1)
@@ -1931,7 +2391,7 @@ c          pause
      .        )*wgt*flux*xjac*pswt/BrnRat/dfloat(itmx)
         wt_qqb=(xmsq_bypart(+1,-1)+xmsq_bypart(-1,+1)
      .        )*wgt*flux*xjac*pswt/BrnRat/dfloat(itmx)
-      endif
+c      endif
 
       call getptildejet(0,pjet)
       
@@ -1945,18 +2405,64 @@ c          pause
       enddo
 
       val=virtint*wgt 
-      val2=virtint**2*wgt 
+      val2=val**2 
+c---  SSbegin                                                                                                                      
+      virtint = virtint*reweight
+c---  SSend                                                                                                                        
 c--- update the maximum weight so far, if necessary
-      if (val .gt. wtmax) then
-        wtmax=val
+      if (abs(val) .gt. wtmax) then
+        wtmax=abs(val)
       endif
 
       if (bin) then
+
+c--- APPLgrid - storing virt weight to common block
+         if (creategrid) then
+            psCR  = 1d0/ason2pi
+            psCR0 = 1d0
+            if ( (case .eq. 'tt_tot')
+     &      .or. (case .eq. 'bb_tot')
+     &      .or. (case .eq. 'cc_tot') 
+     &      .or. (case .eq. 'tt_bbl')
+     &      .or. (case .eq. 'tt_ldk')
+     &      .or. (case .eq. 'tt_bbu')
+     &      .or. (case .eq. 'tt_udk')
+     &      .or. (case .eq. 'tt_bbh')
+     &      .or. (case .eq. 'tt_hdk')
+     &      .or. (case .eq. 'tthWdk')
+     &      .or. (case .eq. 'qq_ttg') ) then
+               psCR  = (1d0/ason2pi)**3
+               psCR0 = (1d0/ason2pi)**2
+            elseif ( (case .eq. 'W_cjet')) then
+               psCR  = (1d0/ason2pi)**2
+               psCR0 = (1d0/ason2pi)
+            endif
+            do j=-nflav,nflav
+               do k=-nflav,nflav
+                  weightb (j,k) = weightb(j,k)*psCR0
+                  weightv (j,k) = weightv(j,k)*psCR
+                  weightv1(j,k) = weightv1(j,k)*psCR*f_X1overZ/z
+                  weightv2(j,k) = weightv2(j,k)*psCR*f_X2overZ/z
+               enddo
+            enddo
+            contrib = 300
+            weightfactor = flux*xjac*pswt*wgt/BrnRat/dfloat(itmx)
+c   
+            ag_xx1   = xx(1)
+            ag_xx2   = xx(2)
+            ag_x1z   = x1onz
+            ag_x2z   = x2onz
+            ag_scale = facscale
+            refwt    = val/dfloat(itmx)
+            refwt2   = val2/dfloat(itmx)
+         endif
+c--- APPLgrid - end
+
         call nplotter(pjet,val,val2,0)
 c--- POWHEG-style output if requested
-      if (writepwg) then
+        if (writepwg) then
           call pwhgplotter(p,pjet,val,0)
-      endif
+        endif
       endif
 
 c--- handle special caase of Qflag and Gflag

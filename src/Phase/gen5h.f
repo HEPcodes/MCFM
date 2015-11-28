@@ -7,6 +7,8 @@ c--- the Higgs mass
       include 'debug.f'
       include 'masses.f'
       include 'phasemin.f'
+      include 'process.f'
+      include 'breit.f'
       integer nu
       double precision r(mxdim)
       double precision wt5,p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4)
@@ -18,7 +20,17 @@ c--- the Higgs mass
 
       wt5=0d0
 
-      call breitw(r(12),0d0,sqrts**2,hmass,hwidth,s12,wt12)
+      if (case .ne. 'HZZqgI') then
+c--- this is the usual case      
+        call breitw(r(12),0d0,sqrts**2,hmass,hwidth,s12,wt12)
+      else
+c--- this is the HZZqgI case (cf. gen4handc.f)     
+        if (hmass .lt. mass2+mass3-hwidth*5d0) then
+          call breitw(r(12),0d0,sqrts**2,hmass,10d0,s12,wt12)
+        else
+          call breitw(r(12),0d0,sqrts**2,hmass,hwidth,s12,wt12)
+        endif
+      endif
             
       rtshat=dsqrt(s12)
       ymax=dlog(sqrts/rtshat)

@@ -32,7 +32,9 @@ c        1         2         3         4         5         6         7
 
       character*255 runname
       integer lenocc
+      double precision savedx(200)
       common/runname/runname
+      common/dswsavedx/savedx
 c     ------------------------------------------------------------------
       
       if (first) then
@@ -58,6 +60,7 @@ c --- Book the histogram :
       call hbook1(n,titlex,int(sngl((xmax-xmin)/dx)),
      +            sngl(xmin),sngl(xmax),0.)
       BOOKED(n)=1
+      savedx(n)=dx
 
       return
       end
@@ -74,11 +77,13 @@ c        1         2         3         4         5         6         7
       parameter(NWPAWC=10000000)
       real         HMEMOR(NWPAWC)
       common/PAWC/ HMEMOR
+      double precision savedx(200)
+      common/dswsavedx/savedx
 c     ------------------------------------------------------------------
 
 c --- Fill the histogram :
       call hcdir('//HISTOS',' ')
-      call hf1(n,sngl(var),sngl(wgt))
+      call hf1(n,sngl(var),sngl(wgt/savedx(n)))
 
       return
       end

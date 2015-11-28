@@ -141,8 +141,6 @@ c -- define observables
        ptep=pt(6,pbl)
        ptmiss=pt(5,pbl)
        ptj1=pt(8,pbl)
-c --  for NLO, second light jet
-       ptj2=pt(9,pbl)
        ptb=pt(7,pbl)
        
        yl=etarap(3,pbl)
@@ -155,13 +153,20 @@ c --  for NLO, second light jet
        yjep=yraptwo(6,8,pbl)
        ybep=yraptwo(6,7,pbl)
        etaj1=etarap(8,pbl)
-c --  for NLO, second light jet
-       etaj2=etarap(9,pbl)
        etab=etarap(7,pbl)
        etala=etaraptwo(3,4,pbl)
        etaW=etaraptwo(5,6,pbl)
        etaWb=etarapthree(5,6,7,pbl)
        etaWj=etarapthree(5,6,8,pbl)
+
+c --  for NLO, second light jet
+       if (ijet .eq .3) then       
+         ptj2=pt(9,pbl)
+         etaj2=etarap(9,pbl)
+       else
+         ptj2=-1d0
+         etaj2=1d5
+       endif
 
        mla=twomass(3,4,pbl)
        mlaj=threemass(3,4,8,pbl)

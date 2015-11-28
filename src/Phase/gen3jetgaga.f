@@ -8,7 +8,7 @@ C---p1+p2 --> p3+p4+p5
       include 'phasemin.f'
       include 'leptcuts.f'
       include 'reset.f'
-      integer j,nu
+      integer j,nu,iswap
       double precision r(mxdim),p(mxpart,4),xx(2),
      . sqrts,xjac,y3,y4,y5,phi,phi34,wt0,wt3,etamax,
      . pt3,pt4,pt5,rtson2,cphi,sphi,cphi34,sphi34
@@ -16,7 +16,7 @@ C---p1+p2 --> p3+p4+p5
       parameter(wt0=1d0/512d0/pi**3)
       common/x1x2/xx
       logical first
-      double precision hmin,hmax,delh,h
+      double precision hmin,hmax,delh,h,tmp
       double precision ptjetmin,etajetmin,etajetmax
       data first/.true./
       save first,ptjetmin,etajetmin,etajetmax
@@ -24,6 +24,7 @@ C---p1+p2 --> p3+p4+p5
       wt3=0d0
       
       if (first .or. reset) then
+        iswap=1
         first=.false.
         reset=.false.
         call read_jetcuts(ptjetmin,etajetmin,etajetmax)
@@ -42,39 +43,10 @@ C---p1+p2 --> p3+p4+p5
       cphi34=dcos(phi34)
       sphi34=dsin(phi34)
       xjac=sqrts**2
-c      ymax=10d0
-c      ymin=-10d0
-c      Deltay=ymax-ymin    
-c      y3=ymin+Deltay*r(3)
-c      y4=ymin+Deltay*r(4)
-c      y5=ymin+Deltay*r(5)
- 
-c--- debug: try to get collinear 4 and 5
-c      y5=y4-r(5)*1d-6
-            
-c--- debug: try to get collinear 2 and 5
-c      y5=-8d0-r(5)*1d-6
-            
-c--- debug: try to get collinear 1 and 5
-c      y5=+8d0+r(5)*1d-6
-            
-c--- debug: try to get collinear 2 and 4
-c      y4=-8d0-r(4)*1d-6
-            
-c--- debug: try to get collinear 1 and 4
-c      y4=+8d0+r(4)*1d-6
-            
-c      xjac=xjac*Deltay**2
 
       rtson2=0.5d0*sqrts
 
-c--- this is the old method
-c      xt4=r(6)
-c      xt5=r(7)
-c      xjac=xjac*xt4*xt5
-
      
-c--- this is the new method
       hmin=1d0/dsqrt(rtson2**2+gammpt**2)
       hmax=1d0/gammpt
       delh=hmax-hmin
@@ -92,9 +64,12 @@ c        write(6,*) 'etamax**2 .le. 1d0 in gen3jetgaga.f',etamax**2
       y3=etamax*(2d0*r(3)-1d0)
       xjac=xjac*2d0*etamax
       
+      hmin=1d0/dsqrt(rtson2**2+gammpt2**2)
+      hmax=1d0/gammpt2
+      delh=hmax-hmin
 
       h=hmin+r(7)*delh  
-      pt4=dsqrt(1d0/h**2-gammpt**2)
+      pt4=dsqrt(1d0/h**2-gammpt2**2)
       xjac=xjac*delh/h**3/rtson2**2
       etamax=sqrts/2d0/pt4
       if (etamax**2 .le. 1d0) then
@@ -158,6 +133,17 @@ c      write(6,*) 'problems with xx(1),xx(2) in gen3',xx(1),xx(2)
       p(5,4)=+pt5*cosh(y5)
       p(5,3)=+pt5*sinh(y5)
 
+
+c--- randomize which of p3 and p4 is softest photon      
+      if (iswap .eq. 2) then
+        do nu=1,4
+        tmp=p(3,nu)
+        p(3,nu)=p(4,nu)
+        p(4,nu)=tmp
+        enddo
+      endif
+      iswap=3-iswap
+      
       
 
       wt3=wt0*xjac

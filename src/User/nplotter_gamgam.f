@@ -41,23 +41,6 @@ c---                1  --> counterterm for real radiation
 *                                                                      *
 ************************************************************************
 
-c--- Determine if we need to rescale p for fragmenation and integrated dipole pieces
-c--- This corresponds to the logical variable rescale set in chooser
-      if(rescale) then 
-         call rescale_pjet(p) 
-      endif
-
-      if(phot_dip(nd)) then 
-         if((nd.eq.3).or.(nd.eq.4)) then 
-            call rescale_z_dip(p,nd,3)
-!     nd=3 or nd=4 corresponds to p_3 photon dipoles
-         elseif((nd.eq.5).or.(nd.eq.6)) then 
-            call rescale_z_dip(p,nd,4) 
-!     nd =5 or nd=6 corresponds to p_4 phtoon dipoles       
-         endif
-      endif
-     
-
       if (first) then
 c--- Initialize histograms, without computing any quantities; instead
 c--- set them to dummy values
@@ -221,20 +204,6 @@ c--- Set the maximum number of plots, on the first call
       endif
  
      
-c--- If rescaling occured above, return to original value
-      if(rescale) then 
-         call return_pjet(p) 
-      endif
-      if(phot_dip(nd)) then 
-         if((nd.eq.3).or.(nd.eq.4)) then 
-            call return_z_dip(p,nd,3)
-!     nd=3 or nd=4 corresponds to p_3 photon dipoles
-         elseif((nd.eq.5).or.(nd.eq.6)) then 
-            call return_z_dip(p,nd,4) 
-!     nd =5 or nd=6 corresponds to p_4 photon dipoles       
-         endif
-      endif
-         
       return 
       end
       

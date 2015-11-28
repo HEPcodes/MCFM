@@ -10,9 +10,17 @@
       include 'PDFerrors.f'
       include 'part.f'
       include 'outputflags.f'
-      integer j,k,itmx
+
+c--- APPLgrid - to use grids
+      include 'constants.f'
+      include 'ptilde.f'
+      include 'APPLinclude.f'
+c--- APPLgrid -end
+
+      integer j,k,itmx,iu
       double precision xinteg,xinteg_err,minPDFxsec,maxPDFxsec
-      double precision PDFerror,PDFperror,PDFnerror
+      double precision PDFarray(0:1000),PDFcentral,PDFerror,PDFperror,
+     & PDFnerror
       double precision lord_bypart(-1:1,-1:1),lordnorm,rescale
       double precision ggpart,gqpart,qgpart,qqpart,qqbpart,
      . gqbpart,qbgpart,qbqbpart,qbqpart
@@ -36,8 +44,9 @@ c--- for gg->H+X processes, also write out the cross section
 c---  normalized by sigma(gg->H, finite mt)/sigma(gg->H, mt-> infinity)
       if (((case(1:5) .eq. 'ggfus') .or. (case(1:3) .eq. 'HWW')
      & .or.(case(1:3) .eq. 'HZZ')) .and. (case .ne. 'HWWint')
-     &  .and. (case .ne. 'HWW_tb') .and. (case .ne. 'HZZint')
-     &  .and. (case .ne. 'HZZ_tb') ) then
+     &  .and. (case .ne. 'HWW_tb') .and. (case .ne. 'HWWH+i')
+     &  .and. (case .ne. 'HZZint') .and. (case .ne. 'HZZ_tb') 
+     &  .and. (case .ne. 'HZZH+i') ) then
         call finitemtcorr(rescale)
         write(6,*)
       write(6,*) 'Cross section normalized by the ratio'
@@ -104,118 +113,41 @@ c--- through the jet and cut routines
    54 format(a20,f6.2,'%')
    55 format(4x,a9,' |',f18.5,f8.2,'%')
 
-c--- If we've calculated PDF errors, present results.   
-c--- Note that asymmetric errors are calculated according to
-c--- Eq. (43) of "Hard Interactions of Quarks and Gluons",
-c---  J.Campbell, J.Huston, W.J. Stirling, Rep. Prog. Phys. 70 (2007) 89
-c--- (called "HEPDATA" method below)
+c--- If we've calculated PDF errors, present results using   
+c--- new implementation of PDF uncertainty (9/2013)
       if (PDFerrors) then
-        open(unit=91,status='unknown',file='pdferrors.res')
-        write(6,*)
-        write(6,58) '************ PDF error analysis ************'
-        write(6,58) '*                                          *'
-!     Compute PDF errors for sets which provide eigenvectors
-        minPDFxsec=PDFxsec(0)
-        maxPDFxsec=PDFxsec(0)
-        PDFerror=0d0
-        do j=0,maxPDFsets
-          write(6,56) j,PDFxsec(j)
-          if     (PDFxsec(j) .lt. minPDFxsec) then
-            minPDFxsec=PDFxsec(j)
-          elseif (PDFxsec(j) .gt. maxPDFxsec) then
-            maxPDFxsec=PDFxsec(j)
-          endif
-          if ( (j .gt. 0) .and. (j/2 .eq. (j-1)/2) ) then
-            PDFerror=PDFerror+(PDFxsec(j)-PDFxsec(j+1))**2
-          endif
-        enddo
-      PDFperror=0d0
-      PDFnerror=0d0
-      do j=1,maxPDFsets-1,2
-        PDFperror=PDFperror+max(
-     .     PDFxsec(j)-PDFxsec(0),PDFxsec(j+1)-PDFxsec(0),0d0)**2
-        PDFnerror=PDFnerror+max(
-     .     PDFxsec(0)-PDFxsec(j),PDFxsec(0)-PDFxsec(j+1),0d0)**2
-        enddo
-        PDFerror=0.5d0*dsqrt(PDFerror)
-        PDFperror=dsqrt(PDFperror)
-        PDFnerror=dsqrt(PDFnerror)
-
-c--- Compute PDF errors with the MC prescription
-c---  (see Appendix B of arXiv:0808.1231 [hep-ph])
-        sum1=0d0
-        sum2=0d0
-
-        do j=1,maxPDFsets
-           sum1=sum1+PDFxsec(j)
-           sum2=sum2+PDFxsec(j)**2d0
-        enddo
-
-        PDFMCav = sum1/maxPDFsets
-        PDFMCer =dsqrt( sum2/maxPDFsets -  PDFMCav**2d0 )
-
-        write(6,58) '*                                          *'
-        write(6,58) '* --------------- SUMMARY ---------------- *'
-        write(6,58) '*                                          *'
-        write(6,58) '*            HEPDATA prescription          *'
-      write(6,58) '*     (see, for example Eqn. (43) of       *'
-      write(6,58) '*      J.Campbell, J.Huston, W.J.Stirling, *'
-      write(6,58) '*      Rep. Prog. Phys. 70 (2007) 89)      *'
-        write(6,58) '*                                          *'
-        write(6,57) 'Minimum value',minPDFxsec
-        write(6,57) 'Central value',PDFxsec(0)
-        write(6,57) 'Maximum value',maxPDFxsec
-        write(6,58) '*                                          *'
-        write(6,57) 'Err estimate +/-',PDFerror
-        write(6,57) '   +ve direction',PDFperror
-        write(6,57) '   -ve direction',PDFnerror
-        write(6,59) 'Fractional error',PDFerror/PDFxsec(0)
-        write(6,58) '*                                          *'
-        write(6,58) '*              MC prescription             *'
-        write(6,58) '*       (for details and references,       *'
-        write(6,58) '*        see Eqn. (158) in Appendix B      *'
-        write(6,58) '*        of arXiv:0808.1231 [hep-ph])      *'
-        write(6,58) '*                                          *'
-        write(6,57) 'Central value',PDFMCav
-        write(6,57) 'Err estimate +/-',PDFMCer
-        write(6,59) 'Fractional error',PDFMCer/PDFMCav
-        write(6,58) '********************************************'
-
-        write(91,58) '* --------------- SUMMARY ---------------- *'
-        write(91,58) '*                                          *'
-        write(91,58) '*            HEPDATA prescription          *'
-      write(91,58) '*     (see, for example Eqn. (43) of       *'
-      write(91,58) '*      J.Campbell, J.Huston, W.J.Stirling, *'
-      write(91,58) '*      Rep. Prog. Phys. 70 (2007) 89)      *'
-        write(91,58) '*                                          *'
-        write(91,57) 'Minimum value',minPDFxsec
-        write(91,57) 'Central value',PDFxsec(0)
-        write(91,57) 'Maximum value',maxPDFxsec
-        write(91,58) '*                                          *'
-        write(91,57) 'Err estimate +/-',PDFerror
-        write(91,57) '   +ve direction',PDFperror
-        write(91,57) '   -ve direction',PDFnerror
-        write(91,59) 'Fractional error',PDFerror/PDFxsec(0)
-        write(91,58) '*                                          *'
-        write(91,58) '*              MC prescription             *'
-        write(91,58) '*       (for details and references,       *'
-        write(91,58) '*        see Eqn. (158) in Appendix B      *'
-        write(91,58) '*        of arXiv:0808.1231 [hep-ph])      *'
-        write(91,58) '*                                          *'
-        write(91,57) 'Central value',PDFMCav
-        write(91,57) 'Err estimate +/-',PDFMCer
-        write(91,59) 'Fractional error',PDFMCer/PDFMCav
-        write(91,58) '********************************************'
-
-   
+        PDFarray(:)=PDFxsec(:)
+        call computepdfuncertainty(PDFarray,PDFcentral,
+     &   PDFperror,PDFnerror,PDFerror)
+c------ loop over output units 
+        open(unit=91,status='unknown',file='pdfuncertainty.res')
+        do iu=6,91,85
+        write(iu,*)
+        write(iu,58) '********* PDF uncertainty analysis *********'
+        write(iu,58) '*                                          *'
+        write(iu,57) 'Central value',PDFcentral
+        write(iu,58) '*                                          *'
+        write(iu,58) '*        Absolute PDF uncertainties        *'
+        write(iu,57) '   Symmetric +/-',PDFerror
+        write(iu,57) '   +ve direction',PDFperror
+        write(iu,57) '   -ve direction',PDFnerror
+        write(iu,58) '*                                          *'
+        write(iu,58) '*        Relative PDF uncertainties        *'
+        write(iu,60) '   Symmetric +/-',PDFerror/PDFcentral*100d0
+        write(iu,60) '   +ve direction',PDFperror/PDFcentral*100d0
+        write(iu,60) '   -ve direction',PDFnerror/PDFcentral*100d0
+        write(iu,58) '*                                          *'
+        write(iu,58) '********************************************'
+        enddo  
+        close(91)
       endif
-      close(91)
       
 
    56 format('* PDF error set ',i3,' -->',f15.3,' fb  *')
    57 format('*   ',a16,f14.3,' fb      *')
    58 format(a44)
    59 format('*   ',a16,f14.3,'         *')
+   60 format('*   ',a16,f14.2,' %       *')
  
 c--- Finalize the histograms, if we're not filling ntuples instead
       if (creatent .eqv. .false.) then
@@ -235,6 +167,12 @@ c--- ADDED - to produce normal histograms as well
         call histofin(xinteg,xinteg_err,0,itmx)
         call NTfinalize
       endif
+
+c--- APPLgrid - creating grid
+      if (creategrid)then
+       call write_grid(xinteg)
+      endif
+c--- APPLgrid - end
 
       return
       

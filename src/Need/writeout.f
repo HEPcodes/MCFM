@@ -4,6 +4,12 @@
       integer j,n
       double precision p(mxpart,4),dot,sum(4)
       write(6,*) 'In writeout'
+      do n=1,8
+      do j=1,4
+      write(6,'(a8,i3,a,i3,a3,g24.15,a2)')
+     & '      p(',n,',',j,') =',p(n,j),'d0'
+      enddo
+      enddo
       write(6,'(a3,4e24.16)') 'p1',p(1,1),p(1,2),p(1,3),p(1,4)
       write(6,'(a3,4e24.16)') 'p2',p(2,1),p(2,2),p(2,3),p(2,4)
       write(6,'(a3,4e24.16)') 'p3',p(3,1),p(3,2),p(3,3),p(3,4)
@@ -27,6 +33,8 @@
       write(6,*) 'sqrt(s11,12)',dsqrt(2d0*dot(p,11,12))
       write(6,*) 'sqrt(s345)', 
      .   dsqrt(2d0*dot(p,3,4)+2d0*dot(p,3,5)+2d0*dot(p,4,5))
+      write(6,*) 'sqrt(s346)', 
+     .   dsqrt(2d0*dot(p,3,4)+2d0*dot(p,3,6)+2d0*dot(p,4,6))
       write(6,*) 'sqrt(s347)', 
      .   dsqrt(2d0*dot(p,3,4)+2d0*dot(p,3,7)+2d0*dot(p,4,7))
       write(6,*) 'sqrt(s567)', 

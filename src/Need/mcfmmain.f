@@ -16,6 +16,9 @@
       include 'maxwt.f'
       include 'eventbuffer.f'
       include 'gridinfo.f'
+      include 'part.f'
+      include 'xs_store_info.f'
+      include 'vegas_common.f'
       integer itmx1,ncall1,itmx2,ncall2,itmxplots
       double precision integ,integ_err
       logical dryrun
@@ -28,6 +31,9 @@
 * basic variable initialization, print-out
       call mcfm_init(inputfile,workdir)
 
+* tell VEGAS to write out pertinent information
+      nprn=0
+      
 * in initial phases, we don't want any unweighting to take place.
 * this will be set true in the first call to getevent.
       unweight = .false.
@@ -75,13 +81,24 @@
 * Make sure future calls to "getevent" are aware of this :
       numstored = 0
 
-      if (evtgen) then
+c--- nevtrequested is the number of unweighted events to produce
+c--- (so this stage is skipped if nevtrequested <= 0)
+      if (nevtrequested .gt. 0) then
+        if (part .ne. 'lord') then
+          write(6,*) 'LHE events not available beyond LO'
+          stop
+        endif
+        evtgen=.true.
+        xs_store_val=integ
+        xs_err_store_val=integ_err
         write(6,*) 'Generate events :'
-        do i=1,500
-          call mcfm_getevent(p,wt,pflav,pbarflav)
-          call fill_stdhep(p,0,0,wt)
+        call mcfm_getunweighted
+        call lhefwritefooter(84)
+c        do i=1,500
+c          call mcfm_getevent(p,wt,pflav,pbarflav)
+c          call fill_stdhep(p,0,0,wt)
 c         call write_stdhep(6)
-        enddo
+c        enddo
       endif
 
 * final processing and print-out

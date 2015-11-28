@@ -17,8 +17,15 @@
       include 'phot_dip.f'
       include 'includect.f'
       include 'TRtensorcontrol.f'
+      include 'qlfirst.f'
+      include 'frag.f'
+      include 'histo.f'
+      include 'irregbins_incl.f'
 C -- GZ
       include 'first_time.f'
+c--- for APPLgrid
+      include 'ptilde.f'
+      include 'APPLinclude.f'
       double precision rtsmin,sqrts,p1ext(4),p2ext(4),
      . p(mxpart,4),val
       integer j,k
@@ -67,6 +74,10 @@ c--- Note: version 6.4 onwards, scale cutoff with c.o.m. energy
       call setrunname(scale,facscale)
 
 * Initialize all histograms
+* Setup for histograms with irregular bins
+      nirreg=0
+      irregbin= (/ (.false.,j=1,maxhisto) /)
+                 
 * npart=9 is a dummy value, to ensure that all histograms are included
       npart=9
       val=1d-15   
@@ -80,9 +91,13 @@ c--- Note: version 6.4 onwards, scale cutoff with c.o.m. energy
 
 * Initialize flag for photon fragmentation dipoles
       phot_dip(:)=.false.
+      fragint_mode=.false. 
 * Initialize integer used in TensorReduction to zero
       TRtensorcontrol=0
-      
+
+* Flag to control whether QCDLoop needs to be called yet, if appropriate
+      qlfirst=.true.
+
       return
       end
             

@@ -14,6 +14,7 @@ c---  ('none') to perform no clustering at all
       include 'bbproc.f'
       include 'process.f'
       include 'part.f'
+      character*4 mypart
       double precision q(mxpart,4),qfinal(mxpart,4),
      & qreorder(mxpart,4),R,Rbbmin
       integer nqcdjets,nqcdstart,notag,isub,i,nu,njetsmin,njetsmax
@@ -21,6 +22,7 @@ c---  ('none') to perform no clustering at all
       common/nqcdjets/nqcdjets,nqcdstart
       common/notag/notag
       common/Rbbmin/Rbbmin
+      common/mypart/mypart
       data first/.true./
       save first
       
@@ -69,7 +71,8 @@ c---  ('none') to perform no clustering at all
       endif
       njetsmin=nqcdjets-notag
       if (inclusive) then
-        if(part.eq.'real')then
+        if( (part.eq.'real') .or. (mypart.eq.'tota')
+     &  .or.(mypart.eq.'todk') )then
           njetsmax=nqcdjets+1
         else
           njetsmax=nqcdjets

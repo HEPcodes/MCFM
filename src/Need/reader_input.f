@@ -46,6 +46,11 @@
       include 'outputflags.f'
       include 'breit.f'
       include 'anomHiggs.f'
+      include 'anom_higgs.f'
+c--- APPLgrid - flag using grid
+      include 'ptilde.f'
+      include 'APPLinclude.f'
+c--- APPLgrid - end
       character*72 workdir,inputfile
       character*90 line
       character*30 runstring
@@ -61,13 +66,10 @@
       double precision cmass,bmass
       double precision alphas
       
-      
-      
       common/spira/spira
       common/nmin/nmin
       common/nmax/nmax
-      common/rtsmin/rtsmin
- 
+      common/rtsmin/rtsmin 
 
       common/nproc/nproc
       common/runstring/runstring
@@ -110,14 +112,18 @@ c--- write-out comment line
       read(20,99) line
       if (verbose) write(6,*) '* ',line
 c--- flags for the mode of MCFM   
-      read(20,*) evtgen
-      if (verbose) call writeinput(6,' * ',' ','evtgen')
+      read(20,*) nevtrequested
+      if (verbose) call writeinput(6,' * ',' ','nevtrequested')
       read(20,*) creatent
       if (verbose) call writeinput(6,' * ',' ','creatent')
       read(20,*) skipnt
       if (verbose) call writeinput(6,' * ',' ','skipnt')
       read(20,*) dswhisto
       if (verbose) call writeinput(6,' * ',' ','dswhisto')
+c--- APPLgrid - added to read flag for grids
+       read(20,*) creategrid
+       if (verbose) call writeinput(6,' * ',' ','creategrid')
+c--- APPLgrid - end
       read(20,*) writetop
       if (verbose) call writeinput(6,' * ',' ','writetop')
       read(20,*) writedat
@@ -242,12 +248,14 @@ c--- jets and cuts options
       wsqmin=Mwmin**2
       if (verbose) call writeinput(6,' * ',' ','m34min')
       read(20,*) Mwmax 
+      if (Mwmax .gt. sqrts) Mwmax=sqrts ! physical cap on m34max
       wsqmax=Mwmax**2
       if (verbose) call writeinput(6,' * ',' ','m34max')
       read(20,*) mbbmin
       bbsqmin=mbbmin**2
       if (verbose) call writeinput(6,' * ',' ','m56min')
       read(20,*) mbbmax 
+      if (mbbmax .gt. sqrts) Mbbmax=sqrts ! physical cap on m56max
       bbsqmax=mbbmax**2
       if (verbose) call writeinput(6,' * ',' ','m56max')
       read(20,*) inclusive
@@ -268,12 +276,16 @@ c--- jets and cuts options
       if (verbose) call writeinput(6,' * ',' ','leptpt')
       read(20,*) leptrap
       if (verbose) call writeinput(6,' * ',' ','leptrap')
+      read(20,*) leptveto1min,leptveto1max
+      if (verbose) call writeinput(6,' * ',' ','leptveto')
       read(20,*) misspt
       if (verbose) call writeinput(6,' * ',' ','misspt')
       read(20,*) leptpt2
       if (verbose) call writeinput(6,' * ',' ','leptpt2')
       read(20,*) leptrap2
       if (verbose) call writeinput(6,' * ',' ','leptrap2')
+      read(20,*) leptveto2min,leptveto2max
+      if (verbose) call writeinput(6,' * ',' ','leptveto2')
       read(20,*) mtrans34cut
       if (verbose) call writeinput(6,' * ',' ','mtrans34cut')
       read(20,*) Rjlmin
@@ -309,10 +321,14 @@ c--- settings for photon processes
       if (verbose) call writeinput(6,' * ',' ','gammrap')
       read(20,*) gammpt2
       if (verbose) call writeinput(6,' * ',' ','gammpt2')
+      read(20,*) gammpt3
+      if (verbose) call writeinput(6,' * ',' ','gammpt3')
       read(20,*) Rgalmin 
       if (verbose) call writeinput(6,' * ',' ','Rgalmin')
       read(20,*) Rgagamin 
       if (verbose) call writeinput(6,' * ',' ','Rgagamin')
+      read(20,*) Rgajetmin
+      if (verbose) call writeinput(6,' * ',' ','Rgajetmin')
       read(20,*) cone_ang
       if (verbose) call writeinput(6,' * ',' ','cone_ang')
       read(20,*) epsilon_h
@@ -357,6 +373,16 @@ c--- anomalous couplings
          if (verbose) call writeinput(6,' * ',' ','cttH')
          if (verbose) call writeinput(6,' * ',' ','cWWH')
       endif
+      
+      if (verbose) write(6,*)
+      read(20,99) line
+c--- write-out comment line
+      read(20,99) line
+      if (verbose) write(6,*) '* ',line
+c--- width of the Higgs 
+      read(20,*) hwidth_ratio
+      if (verbose) call writeinput(6,' * ',' ','hwidth_ratio')
+      
       if (verbose) write(6,*)
       read(20,99) line
 c--- write-out comment line
@@ -537,9 +563,11 @@ c--- check that we have a valid value of 'part'
 c--- this is an allowed combination
         elseif ( (part .eq. 'frag') .and.
      .          ((case .eq. 'Wgamma') .or. (case .eq. 'Zgamma')
-     &      .or .(case .eq. 'gamgam') .or. (case .eq. 'dirgam')
-     &      .or .(case .eq. 'dm_gam')
-     &      .or .(case .eq. 'Z_2gam') .or. (case .eq. 'Zgajet')) ) then
+     &      .or. (case .eq. 'gamgam') .or. (case .eq. 'dirgam')
+     &      .or. (case .eq. 'dm_gam')
+     &      .or. (case .eq. 'gmgmjt') .or .(case .eq. 'trigam')
+     &      .or. (case .eq. 'Z_2gam') .or. (case .eq. 'Zgajet')
+     &      .or. (case .eq. 'W_2gam')) ) then
 c--- this is an allowed combination
         else 
           write(6,*) 'part=',part,' is not a valid option'
@@ -547,6 +575,7 @@ c--- this is an allowed combination
           stop     
         endif
       endif      
+
 
 c--- check that we are not trying to calculate radiation in decay at LO
       if    ( (part .eq. 'lord') .and.
@@ -577,14 +606,16 @@ c--- set up the default choices of static scale, if required
         factor=1d0
       endif        
         if ((n2+n3 .ne. 0) .or. (case .eq. 'tt_tot')) then
-        scale=factor*(dfloat(n2)*mass2+dfloat(n3)*mass3)/dfloat(n2+n3)
-c--- special cases where Higgs mass is neither mass2 nor mass3
-        if ((case(1:1) .eq. 'H') .or. (case .eq. 'WHbbar')
-     . .or. (case .eq. 'ZHbbar') .or. (case .eq. 'qq_Hqq')) then
-          scale=factor*hmass
-      endif
 c--- special case for t-tbar production
-        if (case .eq. 'tt_tot') scale=factor*mt      
+        if (case .eq. 'tt_tot') then
+          scale=factor*mt
+c--- special cases where Higgs mass is neither mass2 nor mass3
+        elseif ((case(1:1) .eq. 'H') .or. (case .eq. 'WHbbar')
+     &     .or. (case .eq. 'ZHbbar') .or. (case .eq. 'qq_Hqq')) then
+          scale=factor*hmass
+        else     
+          scale=factor*(dfloat(n2)*mass2+dfloat(n3)*mass3)/dfloat(n2+n3)
+        endif
         as=alphas(scale,amz,nlooprun)
         ason2pi=as/twopi
         ason4pi=as/fourpi
@@ -623,15 +654,17 @@ c--- special case for t-tbar production
         factor=1d0
       endif        
         if ((n2+n3 .ne. 0) .or. (case .eq. 'tt_tot')) then
-        facscale=factor*
-     .           (dfloat(n2)*mass2+dfloat(n3)*mass3)/dfloat(n2+n3)
-c--- special cases where Higgs mass is neither mass2 nor mass3
-        if ((case(1:1) .eq. 'H') .or. (case .eq. 'WHbbar')
-     . .or. (case .eq. 'ZHbbar') .or. (case .eq. 'qq_Hqq')) then
-          facscale=factor*hmass
-      endif
 c--- special case for t-tbar production
-        if (case .eq. 'tt_tot') facscale=factor*mt      
+        if (case .eq. 'tt_tot') then
+          facscale=factor*mt
+c--- special cases where Higgs mass is neither mass2 nor mass3
+        elseif ((case(1:1) .eq. 'H') .or. (case .eq. 'WHbbar')
+     &     .or. (case .eq. 'ZHbbar') .or. (case .eq. 'qq_Hqq')) then
+          facscale=factor*hmass
+        else     
+          facscale=factor*
+     &             (dfloat(n2)*mass2+dfloat(n3)*mass3)/dfloat(n2+n3)
+        endif
         write(6,*)
         write(6,*)'****************************************************'
         write(6,77) facscale

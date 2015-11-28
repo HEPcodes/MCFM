@@ -21,7 +21,7 @@ c     q(-p1)+qbar(-p2) -->  W^-(e-(p3)+nubar(p4))+a(p5)+g(p6)
 c--- this flag controls whether or not to include dipoles that
 c--- subtract the photon-quark divergence   
       if (frag) then 
-        ndmax=4               
+        ndmax=3              
       else
         ndmax=2
       endif
@@ -40,10 +40,8 @@ c---- entries are left as dummies
 
 c--- additional fragmentation dipoles, if necessary      
       if (frag) then 
-      call dipsfrag(3,p,5,6,1,sub56_1,msq56_1,qqb_w_g)
+      call dipsfrag(3,p,5,6,2,sub56_2,msq56_2,qqb_w_g)
       phot_dip(3)=.true.
-      call dipsfrag(4,p,5,6,2,sub56_2,msq56_2,qqb_w_g)
-      phot_dip(4)=.true.
       endif
     
       do j=-nf,nf
@@ -70,9 +68,9 @@ c--- additional fragmentation dipoles, if necessary
 c--- additional fragmentation dipole         
          if (frag) then
            if(mod(abs(j),2) .eq. 1) then 
-             msq(3,j,k)=Q(2)**2*msq56_1(j,k)*sub56_1
+             msq(3,j,k)=Q(2)**2*msq56_2(j,k)*sub56_2
            else
-             msq(3,j,k)=Q(1)**2*msq56_1(j,k)*sub56_1
+             msq(3,j,k)=Q(1)**2*msq56_2(j,k)*sub56_2
            endif            
          endif
 
@@ -85,9 +83,9 @@ c--- additional fragmentation dipole
 c--- additional fragmentation dipole         
          if (frag) then 
            if(mod(abs(k),2) .eq. 1) then  
-             msq(4,j,k)=Q(2)**2*msq56_2(j,k)*sub56_2              
+             msq(3,j,k)=Q(2)**2*msq56_2(j,k)*sub56_2              
            else
-             msq(4,j,k)=Q(1)**2*msq56_2(j,k)*sub56_2              
+             msq(3,j,k)=Q(1)**2*msq56_2(j,k)*sub56_2              
            endif
          endif
 

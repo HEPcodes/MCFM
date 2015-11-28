@@ -22,7 +22,10 @@ c------------ SET-UP NUMBER OF PARTICLES TO APPEAR IN EVENT RECORD
 c This is trick to communicate the number of jets
 c to the histogram booking section
 c JC/RKE - what's the purpose of setting these twice?
-         if(nproc.eq.44) then
+         if    (nproc.eq.31) then
+            nhep=4
+            call init_hist_Z
+         elseif(nproc.eq.44) then
             nhep=6
             call init_hist_KN
          elseif(nproc.eq.203) then
@@ -47,7 +50,9 @@ c JC/RKE - what's the purpose of setting these twice?
          first = .false. 
       else
 c put partons in the hephep interface
-         if(nproc.eq.44) then
+         if    (nproc.eq.31) then
+            nhep=4
+         elseif(nproc.eq.44) then
             nhep=6
          elseif(nproc.eq.203) then
             nhep=5
@@ -82,6 +87,15 @@ c--- JC/RKE: should leptons be properly defined for all the processes below?
 
 c------------ PROCESS-SPECIFIC FILLING OF EVENT RECORD
 
+c------ Z
+         if(nproc.eq.31) then
+            idhep(3)=11
+            idhep(4)=-11
+            do j=1,nhep
+               phep(1:4,j)=p(j,:)
+            enddo
+         endif
+         
 c------ W/Z + jets
          if(nproc.eq.11.or.nproc.eq.22.or.nproc.eq.44) then
             idhep(3)=11
@@ -269,6 +283,8 @@ c------------ FILL HISTOGRAMS
          elseif(nproc.eq.203) then
             write(6,*) 'No analysis routine written for nproc=',nproc
             stop
+         elseif(nproc.ge.31) then
+            call analysis_Z(wt)
          elseif(nproc.ge.141.and.nproc.le.151) then
             call analysis_KN(wt)
          elseif(nproc.ge.171.and.nproc.le.177) then

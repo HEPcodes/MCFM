@@ -4,7 +4,8 @@ c --- if unweighting is selected :
       logical evtgen
       logical unweight
       logical skipnt
-      common/maxwt/wtmax,newwt,evtgen,skipnt,unweight
+      integer nevtrequested
+      common/maxwt/wtmax,newwt,nevtrequested,evtgen,skipnt,unweight
 
 c --- Useful local variables where weights are being checked :
       double precision wtabs

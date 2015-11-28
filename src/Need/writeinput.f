@@ -39,8 +39,13 @@ c--- by the strings 'lstring' and 'rstring'
       include 'outputflags.f'
       include 'part.f'
       include 'anomHiggs.f'
+      include 'anom_higgs.f'
+c--- APPLgrid - flag using grid
+      include 'ptilde.f'
+      include 'APPLinclude.f'
+c--- APPLgrid - end
       character*(*) tag,lstring,rstring
-      character*72 f96,f97,f98,f99
+      character*72 f95,f96,f97,f98,f99
       character*30 runstring
       logical dryrun,makecuts,writeall,spira
       integer unitno, nmin,nmax
@@ -68,6 +73,9 @@ c--- by the strings 'lstring' and 'rstring'
 
       common/origij/origij
       
+c--- f95 2xfloating point format
+      f95='('''//lstring//''',f8.3,'','',f8.3,16x,''['',a,'']'','''
+     & //rstring//''')' 
 c--- f96 character format            
       f96='('''//lstring//''',a20,12x,''['',a,'']'','''//rstring//''')' 
 c--- f97 integer format      
@@ -88,8 +96,8 @@ c--- f99 floating point format
      . lstring//' [Flags to specify the mode in which MCFM is run] )'
       endif
       
-      if ((tag .eq. 'evtgen') .or. (writeall)) then
-      write(unitno,fmt=f98) evtgen,'evtgen'
+      if ((tag .eq. 'nevtrequested') .or. (writeall)) then
+      write(unitno,fmt=f97) nevtrequested,'nevtrequested'
       endif
       if ((tag .eq. 'creatent') .or. (writeall)) then
       write(unitno,fmt=f98) creatent,'creatent'
@@ -99,6 +107,9 @@ c--- f99 floating point format
       endif
       if ((tag .eq. 'dswhisto') .or. (writeall)) then
       write(unitno,fmt=f98) dswhisto,'dswhisto'
+      endif
+      if ((tag .eq. 'creategrid') .or. (writeall)) then
+      write(unitno,fmt=f98) creategrid,'creategrid'
       endif
       if ((tag .eq. 'writetop') .or. (writeall)) then
       write(unitno,fmt=f98) writetop,'writetop'
@@ -281,6 +292,9 @@ c--- catch special scale choices for stop+b process
       if ((tag .eq. 'leptrap') .or. (writeall)) then
       write(unitno,fmt=f99) leptrap,'leptrap'
       endif
+      if ((tag .eq. 'leptveto') .or. (writeall)) then
+      write(unitno,fmt=f95) leptveto1min,leptveto1max,'leptveto'
+      endif
       if ((tag .eq. 'misspt') .or. (writeall)) then
       write(unitno,fmt=f99) misspt,'misspt'
       endif
@@ -289,6 +303,9 @@ c--- catch special scale choices for stop+b process
       endif
       if ((tag .eq. 'leptrap2') .or. (writeall)) then
       write(unitno,fmt=f99) leptrap2,'leptrap2'
+      endif
+      if ((tag .eq. 'leptveto2') .or. (writeall)) then
+      write(unitno,fmt=f95) leptveto2min,leptveto2max,'leptveto2'
       endif
       if ((tag .eq. 'mtrans34cut') .or. (writeall)) then
       write(unitno,fmt=f99) mtrans34cut,'mtrans34cut'
@@ -338,11 +355,17 @@ c--- catch special scale choices for stop+b process
       if ((tag .eq. 'gammpt2') .or. (writeall)) then
       write(unitno,fmt=f99) gammpt2,'gammpt2'
       endif
+      if ((tag .eq. 'gammpt3') .or. (writeall)) then
+      write(unitno,fmt=f99) gammpt2,'gammpt3'
+      endif
       if ((tag .eq. 'Rgalmin') .or. (writeall)) then
       write(unitno,fmt=f99) Rgalmin,'Rgalmin'
       endif
       if ((tag .eq. 'Rgagamin') .or. (writeall)) then
       write(unitno,fmt=f99) Rgagamin,'Rgagamin'
+      endif
+      if ((tag .eq. 'Rgajetmin') .or. (writeall)) then
+      write(unitno,fmt=f99) Rgajetmin,'Rgajetmin'
       endif
       if ((tag .eq. 'cone_ang') .or. (writeall)) then
       write(unitno,fmt=f99) cone_ang,'cone_ang'
@@ -403,6 +426,9 @@ c--- catch special scale choices for stop+b process
       endif
       if ((tag .eq. 'cWWH') .or. (writeall)) then
       write(unitno,fmt=f99) cWWH,'cWWH'
+      endif
+      if ((tag .eq. 'hwidth_ratio') .or. (writeall)) then
+      write(unitno,fmt=f99) hwidth_ratio,'Gamma_H/Gamma_H(SM)'
       endif
       
 

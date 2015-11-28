@@ -27,7 +27,7 @@ C     Author: R.K.Ellis (January 2013)
      &FC0_3(-2:0),FC1_3(y1max,-2:0),FC2_3(y2max,-2:0),FC3_3(y3max,-2:0),
      &FC0_4(-2:0),FC1_4(y1max,-2:0),FC2_4(y2max,-2:0),FC3_4(y3max,-2:0),
      &D00(-2:0),C00_1(-2:0),C00_2(-2:0),C00_3(-2:0),C00_4(-2:0),
-     &D0000(-2:0),qlI4,tau4(4,-2:0),
+     &D0000(-2:0),trI4,tau4(4,-2:0),
      &tau3_1(4,-2:0),tau3_2(4,-2:0),tau3_3(4,-2:0),tau3_4(4,-2:0),
      &tmp(4,-2:0),RHS(3),inRHS(3),tmpRHS(3,y3max)
       integer n1,n2,n3,n4,ep,indx(3)
@@ -53,7 +53,7 @@ c---  resulting tensor fails the consistency check)
 
       if (Nstore .gt. Ndmax) then
       print * 
-      print *, 'ovDtensor: Nstore .gt. Ncmax'
+      print *, 'ovDtensor: Nstore .gt. Ndmax'
       print *, 'Nstore,Ndmax',Nstore,Ndmax
       print *, 'Either adjust Ndmax in Dnames.f and recompile'
       print *, 'or call clearcache to clear the cache.'
@@ -173,7 +173,7 @@ C----calculate triangle tensor integrals
       s1Dp3=s2Dp3-p1Dp3
 
       do ep=-2,0
-      FD0(ep)=qlI4(p1Dp1,p2Dp2,p3Dp3,p4Dp4,s12,s23,
+      FD0(ep)=trI4(p1Dp1,p2Dp2,p3Dp3,p4Dp4,s12,s23,
      & m1s,m2s,m3s,m4s,musq,ep)     
       enddo
 

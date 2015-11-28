@@ -23,9 +23,9 @@ c--- initalize to zero
       ga=gq
 
       msq( flav,0)=Q(flav)**2*qg
-      msq(-flav,0)=Q(flav)**2*ag
+c      msq(-flav,0)=Q(flav)**2*ag
       msq(0, flav)=Q(flav)**2*gq
-      msq(0,-flav)=Q(flav)**2*ga
+c      msq(0,-flav)=Q(flav)**2*ga
       
       return
       end
