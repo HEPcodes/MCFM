@@ -53,6 +53,8 @@ c---if x's out of normal range alternative return
         call phase5a(r,p1,p2,p3,p4,p5,p6,p7,pswt)
       elseif (case .eq. 'vlchk5')  then  
         call phase5(r,p1,p2,p3,p4,p5,p6,p7,pswt)
+      elseif (case .eq. 'WWqqdk')  then  
+        call phase5h(r,p1,p2,p3,p4,p5,p6,p7,pswt)
       else
         call phase5(r,p1,p2,p3,p4,p5,p6,p7,pswt)
       endif

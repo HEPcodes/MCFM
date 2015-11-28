@@ -20,15 +20,13 @@
       include 'PR_new.f'
       include 'colstruc.f'
       include 'stopscales.f'
+      include 'breit.f'
       double precision z,p(mxpart,4),metric,Q34sq,Q35sq,Q45sq,
      & xl34,xl35,xl45,
      & mbar35,mbar45,mbar34a,mbar34b,
      . ff_2mqq,ff_mqq0,ff_mgg,
      . ason4pi_H
-      integer is,n2,n3,nu
-      double precision mass2,width2,mass3,width3
-      common/breit/n2,n3,mass2,width2,mass3,width3
-
+      integer is,nu
           
       Q34sq=0d0
       Q35sq=0d0

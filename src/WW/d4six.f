@@ -8,7 +8,7 @@ C----- multiplied by a factor of -C(0)/2
       include 'masses.f'
       include 'scale.f'
       double complex qlI4,qlI3,IntC(4),IntD
-      double precision s12,s34,s56,s134,s156,C(0:4),mtsq,mu2,Delta
+      double precision s12,s34,s56,s134,s156,C(0:4),mtsq,Delta
       integer e,k1,k2,k3,k4,k5,k6
       mtsq=mt**2
       s12=s(k1,k2)

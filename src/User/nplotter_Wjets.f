@@ -239,7 +239,7 @@ c---   llplot:  equal to "lin"/"log" for linear/log scale
       if(nproc .eq. 11) then
 	 call bookplot(n,tag,'y(lep)',y4,wt,wt2,-5d0,5d0,0.4d0,'lin')
 	 n=n+1
-	 call bookplot(n,tag,'pt(lep)',pt4,wt,wt2,0d0,200,4d0,'lin')
+	 call bookplot(n,tag,'pt(lep)',pt4,wt,wt2,0d0,200d0,4d0,'lin')
 	 n=n+1
       else	    
 	 call bookplot(n,tag,'y(lep)',y3,wt,wt2,-5d0,5d0,0.4d0,'lin')

@@ -18,10 +18,12 @@
       include 'ptilde.f'
       include 'qqgg.f'
       include 'masses.f'
+      include 'heavyflav.f'
+      include 'breit.f'
       integer j,k,nd
 c --- remember: nd will count the dipoles
       
-      double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf)
+      double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf),mq
       double precision 
      & msq17_2(-nf:nf,-nf:nf),msq27_1(-nf:nf,-nf:nf),
      & msq57_6(-nf:nf,-nf:nf),msq67_5(-nf:nf,-nf:nf),
@@ -33,10 +35,20 @@ c --- remember: nd will count the dipoles
      & sub17_2(4),sub27_1(4),sub57_6(4),sub67_5(4),
      & sub17_5(4),sub57_1(4),sub27_5(4),sub57_2(4),
      & sub17_6(4),sub67_1(4),sub27_6(4),sub67_2(4),dsubv
-      double precision mass2,width2,mass3,width3,oldmass2
-      integer n2,n3
-      common/breit/n2,n3,mass2,width2,mass3,width3
+      double precision oldmass2
       external qqb_wbbm,donothing_gvec
+
+C--- Set up the correct mass, according to 'flav'
+      if     (flav .eq. 6) then
+        mq=mt
+      elseif (flav .eq. 5) then
+        mq=mb
+      elseif (flav .eq. 4) then
+        mq=mc
+      else
+        write(6,*) 'Wrong flavour in qqb_wbbm_gs.f: flav=',flav
+        stop
+      endif
 
 c--- Note that, compared with the massless case, the subtractions here
 c--- must separate the initial-final and final-initial dipoles
@@ -59,7 +71,7 @@ c--- calculate all the initial-initial dipoles
      . qqb_wbbm,donothing_gvec)
 
 c--- final-final
-      mass2=mb   
+      mass2=mq  
       call dips_mass( 3,p,5,7,6,sub57_6,dsubv,msq57_6,dummyv,
      . qqb_wbbm,donothing_gvec)
       call dips_mass( 4,p,6,7,5,sub67_5,dsubv,msq67_5,dummyv,
@@ -97,8 +109,8 @@ c--- reset mass2 to original value
       enddo
       enddo
 
-      do j=-(nf-1),(nf-1)
-      do k=-(nf-1),(nf-1)
+      do j=-(flav-1),(flav-1)
+      do k=-(flav-1),(flav-1)
       
       if     ((j.gt.0) .and. (k.lt.0)) then
 c--- quark-antiquark

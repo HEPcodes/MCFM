@@ -7,13 +7,12 @@ c---- routine frixione.f C Williams 9th Nov 2010
       include 'constants.f' 
       include 'frag.f'
       include 'process.f'
+      include 'part.f'
       double precision pin(mxpart,4)
       integer isub
       logical passed,in_cone
       double precision ret_ET,R
       double precision R56,ET6,ET5,alpha
-      character*4 part
-      common/part/part
       
       passed=.true.
 

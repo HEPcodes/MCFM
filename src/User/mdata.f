@@ -99,17 +99,28 @@ c--- Masses below here are currently unused
 
 
 ************************************************************************
+*     MS-bar quark massses, mQ_MS(mQ_MS)                               *
+*     computed using 1-loop running from pole masses of                *
+*     mb=4.75, mt=173.5                                                *
+************************************************************************
+      block data block_msbarmasses
+      implicit none
+      include 'msbarmasses.f'
+      data mc_msbar/1.275d0/
+      data mb_msbar/4.37d0/
+      data mt_msbar/166d0/
+      end
+************************************************************************
+
+
+************************************************************************
 *     Relevant for the H+b process only :                              *
-*       mb_msbar: the value of the running b-mass, evaluated at the    * 
-*                 pole mass. For negative values, calculated from mb   *
 *       susycoup: the deviation of the Higgs coupling from the         *
 *                 Standard Model value (S.M. = 1d0)                    *
 ************************************************************************
       block data block_bH
       implicit none
-      include 'mb_msbar.f'
       include 'susycoup.f'
-      data mb_msbar/4.25d0/
       data susycoup/1d0/
       end
 ************************************************************************

@@ -27,6 +27,8 @@ c---                1  --> counterterm for real radiation
       character*4 tag
       integer j,ilep,igam,inu
       logical first,creatent,dswhisto
+      logical phot_dip(mxpart) 
+      common/phot_dip/phot_dip
       common/outputflags/creatent,dswhisto
       common/nplotmax/nplotmax
       common/nproc/nproc
@@ -44,9 +46,10 @@ c--- Determine if we need to rescale p for fragmenation and integrated dipole pi
 c--- This corresponds to the logical variable rescale set in chooser
       if(rescale) then 
          call rescale_pjet(p) 
+      endif
 c----- This corresponds to p(5)->z_frag*p(5) = pt(photon) we want to plot      
 !----- Also if photon comes from dipole (ie .nd =3 or 4) then we also need to rescale
-      elseif((nd.eq.3).or.(nd.eq.4)) then 
+      if(phot_dip(nd)) then 
          call rescale_z_dip(p,nd,5) 
       endif
 
@@ -299,9 +302,10 @@ c--- Set the maximum number of plots, on the first call
 c--- If rescaling occured above, return to original value
       if(rescale) then 
          call return_pjet(p) 
+      endif
 c----- This corresponds to p(5)->z_frag*p(5) = pt(photon) we want to plot      
-!----- Also if photon comes from dipole (ie .nd =3 or 4) then we also need to rescale
-      elseif((nd.eq.3).or.(nd.eq.4)) then 
+!-----Also if photon comes from dipole (ie .nd =3 or 4) then we also need to rescale
+      if(phot_dip(nd)) then
          call return_z_dip(p,nd,5) 
       endif
 

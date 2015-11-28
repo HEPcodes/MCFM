@@ -4,18 +4,17 @@
       include 'masses.f'
       include 'mxdim.f'
       include 'process.f'
+      include 'breit.f'
 c******* generate phase space for 2-->4 process
 c******* r(mxdim),p1(4),p2(4) are inputs reversed in sign from physical values 
 c---- phase space for -p1-p2 --> p3+p4+p5+p6+p7+p8+p9+p10
 c---- with all 2 pi's (ie 1/(2*pi)^20)
-      integer n2,n3,nu,iflip,j
+      integer nu,iflip,j
       double precision r(mxdim)
       double precision p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4),p8(4),
      . p9(4),p12(4),pa(4),pb(4),
      . p345(4),p678(4),p34(4),p78(4),
-     . smin,wt,wt0,wt12,wt345,wt678,wt34,wt78,wt9,
-     . mass2,width2,mass3,width3
-      common/breit/n2,n3,mass2,width2,mass3,width3 
+     . smin,wt,wt0,wt12,wt345,wt678,wt34,wt78,wt9
       parameter(wt0=1d0/twopi**5)
       data iflip/0/
       save iflip

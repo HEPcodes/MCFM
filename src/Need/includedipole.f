@@ -84,10 +84,17 @@ c--- Photons: not Frixione, need fragmentation and isolation
 c---  Isolate photon
           do j=3,mxpart
             if (plabel(j).eq.'ga') then 
-              if (iso(ptrans,isub,phot_dip(nd),j,nd) .eqv. .false.) then
-                includedipole=.false.
-                return 
-              endif
+               if(nd.eq.0) then 
+                  if (iso(ptrans,isub,.false.,j,nd) .eqv. .false.) then
+                     includedipole=.false.
+                     return 
+                  endif
+               else
+             if (iso(ptrans,isub,phot_dip(nd),j,nd) .eqv. .false.) then
+                     includedipole=.false.
+                     return 
+                  endif
+               endif
             endif
           enddo
         endif

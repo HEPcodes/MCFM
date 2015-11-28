@@ -16,6 +16,7 @@ c--all momenta incoming
       include 'zprods_com.f'
       include 'flags.f'
       include 'lc.f'
+      include 'part.f'
       integer i,j,k,f,pq,pl,nquark,swap(2),swap1(0:2),nup,ndo,
      .   j1,j2,j3,icol
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac,faclo,
@@ -62,8 +63,6 @@ c     .   qbqZgg2(2,2)
       double precision msqx_cs(0:2,-nf:nf,-nf:nf)
 
       integer rcolourchoice
-      character*4 part
-      common/part/part
 
       logical rGflag
 
@@ -93,14 +92,9 @@ c    the subtraction terms involve the (Gflag=TRUE) matrix elements
       enddo
       enddo
 
-
       call spinoru(6,p,za,zb)
 
-C---exclude the photon pole, 4*mbsq choosen as a scale approx above upsilon
-      if (s(3,4) .lt. 4d0*mbsq) goto 999
-
       prop=s(3,4)/dcmplx((s(3,4)-zmass**2),zmass*zwidth)
-
 
 c--- calculate 2-quark, 2-gluon amplitudes
       if (Gflag) then

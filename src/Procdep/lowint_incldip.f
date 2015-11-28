@@ -13,15 +13,15 @@
       include 'dynamicscale.f'
       include 'noglue.f'
       include 'process.f'
-      include 'qcdcouple.f'
       include 'efficiency.f'
       include 'maxwt.f'
       include 'phasemin.f'
       include 'PDFerrors.f'
       include 'wts_bypart.f'
       include 'stopscales.f'
-      include 'ewcouple.f'
       include 'frag.f'
+      include 'ipsgen.f'
+      include 'outputoptions.f'
 c --- DSW. To store flavour information :
       include 'nflav.f'
 c      include 'b0.f'
@@ -29,14 +29,14 @@ c --- DSW.
       integer pflav,pbarflav
 c --- To use VEGAS random number sequence :
       double precision ran2
-      integer ih1,ih2,j,k,nvec,sgnj,sgnk
-      double precision r(mxdim),W,sqrts,xmsq,val,val2,
+      integer ih1,ih2,j,k,nvec,sgnj,sgnk,ii
+      double precision r(mxdim),W,sqrts,xmsq,val,val2,ptmp,
      . fx1(-nf:nf),fx2(-nf:nf),p(mxpart,4),pjet(mxpart,4),
      . pswt,rscalestart,fscalestart,
      . fx1_H(-nf:nf),fx2_H(-nf:nf),fx1_L(-nf:nf),fx2_L(-nf:nf),
      . fxb1(-nf:nf),fxb2(-nf:nf)
       double precision wgt,msq(-nf:nf,-nf:nf),m3,m4,m5,xmsqjk
-c     & ,msq1(-nf:nf,-nf:nf),msq2(-nf:nf,-nf:nf)
+     & ,msq1(-nf:nf,-nf:nf),msq2(-nf:nf,-nf:nf)
       double precision xx(2),flux,vol,vol_mass,vol3_mass,vol_wt,BrnRat
       double precision xmsq_bypart(-1:1,-1:1),lord_bypart(-1:1,-1:1)
       logical bin,first,includedipole
@@ -65,7 +65,7 @@ c      COMMON/ranno/idum
          rscalestart=scale
          fscalestart=facscale
       endif
-
+      
       ntotshot=ntotshot+1
       lowint=0d0
 c--- ensure isolation code does not think this is fragmentation piece
@@ -75,7 +75,6 @@ c--- ensure isolation code does not think this is fragmentation piece
 c--- processes that use "gen2"     
       if     ( (case .eq. 'W_only')
      .    .or. (case .eq. 'Z_only')
-     .    .or. (case .eq. 'ggfus0')
      .    .or. (case .eq. 'Higaga')
      .    .or. (case .eq. 'vlchk2') ) then
         if (case .eq. 'vlchk2') then
@@ -97,7 +96,8 @@ c--- processes that use "gen2jet"
         call gen2jet(r,p,pswt,*999)
 
 c--- processes that use "gen2m"     
-      elseif ( (case .eq. 'tt_tot')
+      elseif ( (case .eq. 'ggfus0')
+     .    .or. (case .eq. 'tt_tot')
      .    .or. (case .eq. 'bb_tot')
      .    .or. (case .eq. 'cc_tot') ) then
         npart=2
@@ -111,6 +111,11 @@ c--- processes that use "gen3"
      .   .or.  (case .eq. 'epem3j') ) then
         npart=3
         call gen3(r,p,pswt,*999)
+
+c--- processes that use "gen3h"     
+      elseif (case .eq. 'Hi_Zga') then
+        npart=3
+        call gen3h(r,p,pswt,*999)
 
 c---  processes that use "gen3jet"     
       elseif ( (case .eq. 'Wgamma') 
@@ -131,10 +136,80 @@ c--- processes that use "gen3jetgaga"
         call gen3jetgaga(r,p,pswt,*999)
 
 c--- processes that use "gen_phots_jets"     
+c--- special treatment for W+gamma+jet and Z+gamma+jet 
       elseif ( (case .eq. 'Wgajet') .or. (case .eq. 'Zgajet') ) then
         npart=4
-        call gen_phots_jets(r,1,1,p,pswt,*999)
-                  
+	if (new_pspace) then
+          call gen_vgamj(r,p,pswt,*999) ! New PS routine
+	else
+        if     (ipsgen .eq. 1) then
+          call gen_phots_jets(r,1,1,p,pswt,*999)
+        elseif (ipsgen .eq. 2) then
+          call gen_phots_jets_dkrad(r,1,1,p,pswt,*999)
+	else
+	  write(6,*) 'Parameter ipsgen should be 1 or 2'
+	  write(6,*) 'ipsgen = ',ipsgen
+	  stop
+        endif
+	endif
+	 
+c--- special treatment for Z+gamma+gamma 
+      elseif ( (case .eq. 'Z_2gam') ) then
+        npart=4
+        if  (ipsgen .eq. 1) then
+            call gen_phots_jets(r,2,0,p,pswt,*999) !AA+AB
+        elseif  (ipsgen .eq. 2) then
+            call gen_phots_jets_dkrad2(r,2,0,p,pswt,*999) !BB+BC
+        elseif  (ipsgen .eq. 3) then
+           call gen_phots_jets_dkrad(r,2,0,p,pswt,*999) !CC+AC+CD
+        elseif  (ipsgen .eq. 4) then
+           call gen_phots_jets_dkrad(r,2,0,p,pswt,*999) !DD+AD+BD
+           do ii=1,4                
+              ptmp=p(5,ii)
+              p(5,ii)=p(6,ii)
+              p(6,ii)=ptmp
+           enddo
+        else
+           write(6,*) 'Parameter ipsgen should be 1 or 2 or 3 or 4'
+           write(6,*) 'ipsgen = ',ipsgen
+           stop
+        endif
+
+c--- special treatment for Z+gamma+gamma+jet 
+      elseif ( (case .eq. 'Z2gajt') ) then
+        npart=5
+        if (ipsgen .eq. 1) then
+           call gen_phots_jets(r,2,1,p,pswt,*999)  !AA+AB
+        elseif (ipsgen .eq. 2) then
+           call gen_phots_jets_dkrad2(r,2,1,p,pswt,*999)  !BB+BC
+        elseif (ipsgen .eq. 3) then
+           call gen_phots_jets_dkrad(r,2,1,p,pswt,*999)  !CC+AC+CD 
+        elseif (ipsgen .eq. 4) then
+           call gen_phots_jets_dkrad(r,2,1,p,pswt,*999)  !DD+AD+BD
+           do ii=1,4               
+              ptmp=p(5,ii)
+              p(5,ii)=p(6,ii)
+              p(6,ii)=ptmp
+           enddo
+        else
+           write(6,*) 'Parameter ipsgen should be 1 or 2 or 3 or 4'
+           write(6,*) 'ipsgen = ',ipsgen
+           stop
+        endif
+
+c--- special treatment for Z+gamma+jet+jet 
+      elseif ( (case .eq. 'Zga2jt') ) then
+        npart=5
+        if (ipsgen .eq. 1) then
+          call gen_phots_jets(r,1,2,p,pswt,*999)
+        elseif (ipsgen .eq. 2) then
+          call gen_phots_jets_dkrad(r,1,2,p,pswt,*999)
+        else
+          write(6,*) 'Parameter ipsgen should be 1 or 2'
+          write(6,*) 'ipsgen = ',ipsgen
+          stop
+        endif
+
       elseif ((case .eq. 'thrjet') .or. (case .eq. 'gamjet')) then
 !        call gen3jet(r,p,pswt,*999)
         call gen_photons_jets(r,1,2,p,pswt,*999)
@@ -193,6 +268,7 @@ c--- processes that use "gen4"
                   
 c--- processes that use "gen4h"     
       elseif ( (case .eq. 'HWW_4l')
+     .    .or. (case .eq. 'HWW2lq')
      .    .or. (case .eq. 'HWW_tb')
      .    .or. (case .eq. 'HWWint')
      .    .or. (case .eq. 'HZZ_4l') ) then
@@ -257,10 +333,14 @@ c	call writeout(p)
 c--- processes that use "gen8"     
       elseif ( (case .eq. 'qq_tth') 
      .    .or. (case .eq. 'qq_ttz') 
-     .    .or. (case .eq. 'qq_ttw') 
      .    .or. (case .eq. 'vlchk8') ) then
         npart=8
         call gen8(r,p,pswt,*999)
+          
+      elseif ( (case .eq. 'qq_ttw')  ) then
+        npart=8
+        taumin=(2d0*mt/sqrts)**2
+        call gen8_rap(r,p,pswt,*999)
           
 c--- processes that use "gen_njets" with an argument of "1"     
       elseif ( (case .eq. 'W_1jet')
@@ -268,9 +348,9 @@ c--- processes that use "gen_njets" with an argument of "1"
      .    .or. (case .eq. 'Z_1jet')
      .    .or. (case .eq. 'H_1jet')
      .    .or. (case .eq. 'httjet')
+     .    .or. (case .eq. 'attjet')
      .    .or. (case .eq. 'ggfus1')
      .    .or. (case .eq. 'Hgagaj')
-     .    .or. (case .eq. 'attjet')
      .    .or. (case .eq. 'gQ__ZQ') ) then
         npart=3
         call gen_njets(r,1,p,pswt,*999)
@@ -362,6 +442,8 @@ c        call compare_madgraph(p,qqb_wgam,qqb_wgam_mad) ! Checked: JC, 12/29/10
         call qqb_w_cjet_massless(p,msq)
       elseif (case .eq. 'Wbbmas') then
         call qqb_wbbm(p,msq)
+      elseif (case .eq. 'Wttmas') then
+        call qqb_wbbm(p,msq)
       elseif (case .eq. 'Wbbbar') then
         call qqb_wbb(p,msq)
       elseif (case .eq. 'W_2jet') then
@@ -381,8 +463,15 @@ c        call compare_madgraph(p,qqb_wgam,qqb_wgam_mad) ! Checked: JC, 12/29/10
       elseif (case .eq. 'Zgamma') then
 c        call compare_madgraph(p,qqb_zgam,qqb_zgam_mad) ! Checked: JC, 01/03/11
         call qqb_zgam(p,msq)
+      elseif (case .eq. 'Z_2gam') then
+        call qqb_zaa(p,msq)
       elseif (case .eq. 'Zgajet') then
-        call qqb_zgam_g(p,msq)
+        call qqb_zaj(p,msq)
+c        call qqb_zgam_g(p,msq)	! Old routine
+      elseif (case .eq. 'Z2gajt') then
+        call qqb_zaa_g(p,msq)
+      elseif (case .eq. 'Zga2jt') then
+        call qqb_zaj_g(p,msq)
       elseif (case .eq. 'Zbbmas') then
         call qqb_zbbm(p,msq)
       elseif (case .eq. 'Zbbbar') then
@@ -441,7 +530,11 @@ c        pause
         call gg_h(p,msq)
       elseif (case .eq. 'Higaga') then
         call gg_hgamgam(p,msq)
+      elseif (case .eq. 'Hi_Zga') then
+        call gg_hzgam(p,msq)
       elseif (case .eq. 'HWW_4l') then
+        call qqb_hww(p,msq)
+      elseif (case .eq. 'HWW2lq') then
         call qqb_hww(p,msq)
       elseif (case .eq. 'HWW_tb') then
         call qqb_hww_tb(p,msq)
@@ -859,6 +952,10 @@ c ---   events, still call nplotter here in order to
 c ---   fill histograms/ntuples with weighted events :
         if (.not.evtgen) then
           call nplotter(pjet,val,val2,0)
+c--- POWHEG-style output if requested
+	  if (writepwg) then
+            call pwhgplotter(p,pjet,val,0)
+	  endif
         endif
       endif
 

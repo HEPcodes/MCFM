@@ -2,24 +2,17 @@
       implicit none
       
       include 'constants.f'
-      include 'zerowidth.f'
       include 'masses.f'
       include 'qcdcouple.f'
       include 'ewcouple.f'
-      include 'ckm.f'
-      include 'flags.f'
-      double precision msqx(-nf:nf,-nf:nf,-nf:nf,-nf:nf),
+      include 'nwz.f'
+      double precision 
      . p(mxpart,4),msq(-nf:nf,-nf:nf),msqc(-nf:nf,-nf:nf)
-      integer i,j,k,l,m
-      double precision aemmz,ans,Vfac,ee,xmsqLL,xmsqLR,xmsq1LR,xmsqud,
-     . xmsquu,xmsqRL
+      integer i,j,k
+      double precision aemmz,ee
       real*8 P1(0:3),P2(0:3),P3(0:3),P4(0:3),P5(0:3),P6(0:3),P7(0:3)                 
-      integer nwz,n1,n2
-      double precision mqq(0:2,fn:nf,fn:nf)
       common/madmom/p1,p2,p3,p4,p5,p6,p7
       external mcfmroutine,madroutine
-      common/nwz/nwz
-      common/msqx/msqx
 
 c--- implement the momentum exchange      
       do i=1,4
@@ -79,7 +72,7 @@ c      if (abs(msq(j,k)/msqc(j,k)-1d0) .gt.1d-6)
       if ((msq(j,k).gt.0d0) .or. (msqc(j,k).gt.0d0) ) then
       write(6,99) j,k,msq(j,k),msqc(j,k),msq(j,k)/msqc(j,k)
       endif
-   20 enddo
+      enddo
       enddo
       pause
 

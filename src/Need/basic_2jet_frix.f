@@ -10,8 +10,6 @@ c---- f(p1)+f(p2) --> gamma(p3)+gamma(p4)+f(p5)+f(p6)
       double precision ret_ET,R
       double precision R45,R35,R36,R46,ET3,ET4,ET5,ET6,
      & alpha_3,alpha_4
-c      character*4 part
-c      common/part/part
 
       passed=.true.
    

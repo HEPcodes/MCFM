@@ -5,8 +5,6 @@ c--- structure from a common block into separate arrays for
 c--- each parton configuration
       implicit none
       include 'constants.f'
-      include 'msq_cs.f'
-      include 'msqv_cs.f'
       integer i,j,k,l,m,n
       double precision 
      . msqx_st(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf),

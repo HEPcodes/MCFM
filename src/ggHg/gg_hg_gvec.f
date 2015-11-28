@@ -2,12 +2,12 @@
       implicit none
       include 'constants.f'
       include 'masses.f'
-      include 'ewcouple.f'
+      include 'hdecaymode.f'
 C  in is the label of the momentum contracted with n
       integer j,k,in
       double precision msq(-nf:nf,-nf:nf)
       double precision n(4),p(mxpart,4),dot,hdecay,s34,fac,
-     . qqghn,ggghn,p1p2(-1:1,-1:1)
+     . qqghn,ggghn,p1p2(-1:1,-1:1),msqgamgam
 
       do j=-nf,nf
       do k=-nf,nf
@@ -15,9 +15,20 @@ C  in is the label of the momentum contracted with n
       enddo
       enddo
 
-C   Deal with Higgs decay to b-bbar
-      s34=2d0*Dot(p,3,4)+2d0*mb**2
-      hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s34-4d0*mb**2) 
+      s34=(p(3,4)+p(4,4))**2
+     & -(p(3,1)+p(4,1))**2-(p(3,2)+p(4,2))**2-(p(3,3)+p(4,3))**2
+
+C   Deal with Higgs decay
+      if (hdecaymode == 'tlta') then
+          call htautaudecay(p,3,4,hdecay)
+      elseif (hdecaymode == 'bqba') then
+          call hbbdecay(p,3,4,hdecay)
+      elseif (hdecaymode == 'gaga') then
+           hdecay=msqgamgam(hmass)
+      else
+      write(6,*) 'Unimplemented process in gg_hgg_gvec'
+      stop
+      endif
       hdecay=hdecay/((s34-hmass**2)**2+(hmass*hwidth)**2)
 
       fac=hdecay

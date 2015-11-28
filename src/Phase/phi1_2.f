@@ -13,14 +13,14 @@ c     delta(p2^2-s2) delta(p3^2-s3)
       include 'process.f'
       include 'zerowidth.f'
       include 'verbose.f'
+      include 'breit.f'
       double precision p1(4),p2(4),p3(4),p3cm(4)
       double precision x1,x2,x3,x4,costh,sinth,phi,cphi,sphi
       double precision wt,wt0,w2,w3
       double precision s2max,s2min,s3max,s3min
-      double precision m1,m2,s1,s2,s3,lambda,mass2,width2,mass3,width3
-      integer j,n2,n3
+      double precision m1,m2,s1,s2,s3,lambda
+      integer j
       logical first,oldzerowidth
-      common/breit/n2,n3,mass2,width2,mass3,width3
       common/lambda/lambda,s1,s2,s3
       parameter(wt0=one/8d0/pi)
       data first/.true./
@@ -45,15 +45,22 @@ c--- if both particles are produced on-shell, reject if m1 too small
      .    ) return 1
 
 c--- top is on-shell for W+t processes, so reject if m1 too small
-      if ( ((case .eq. 'W_twdk') .or. (case .eq. 'Wtdkay')
-     .  .or.(case .eq. 'W_cwdk') .or. (case .eq. 'Wtbwdk')
-     .  .or.(case .eq. 'qq_tth') .or. (case .eq. 'qq_ttz'))
+      if ( ((case .eq. 'W_twdk')
+     &  .or.(case .eq. 'W_cwdk') .or. (case .eq. 'Wtbwdk')
+     &  .or.(case .eq. 'qq_tth') .or. (case .eq. 'qq_ttz')
+     &  .or.(case .eq. 'qq_ttw'))
      . .and. (m1 .lt. mass2) ) return 1
+c--- for Wt radiation in decay, only on the first call
+      if ( (case .eq. 'Wtdkay') .and. (n2 .eq. 1)
+     &  .and. (m1 .lt. mass2) ) return 1
+
 c      s2min=bbsqmin
 c      s2max=min(s1,bbsqmax)
       s2min=1d-15
       s2max=s1
       if (((case .eq. 'Wbbmas') .and. (flav .eq. 5))
+     ..or. (case .eq. 'WHbbar')
+     ..or. (case .eq. 'ZHbbar')
      ..or. (case .eq. 'Zbbmas')
      ..or.(case .eq. 'Zccmas') .or. (case .eq. 'vlchkm')
      ..or.(case .eq. 'Wbbjet') .or. (case .eq. 'Wbbjem')
@@ -83,7 +90,19 @@ c      s2max=min(s1,bbsqmax)
      .   .or. (case .eq. 'qq_tth') .or. (case .eq. 'qq_ttz')) then
         oldzerowidth=zerowidth
         zerowidth=.true.
+      elseif ((case .eq. 'qq_ttw')
+     .   .or. (case .eq. 'Wttmas')) then
+        s2min=4d0*mt**2
       endif
+      
+      if (case .eq. 'ttwldk') then
+        if (abs(m1-mt) .lt. 1d-6) then
+          s2min=mb**2		! when called from gen9dk_rap
+	else
+	  s2min=4d0*mt**2	! when called from gen4/phase4
+	endif
+      endif
+      
       if (s2min .gt. s2max) return 1
       if (n2 .eq. 0) then
          w2=s2max-s2min

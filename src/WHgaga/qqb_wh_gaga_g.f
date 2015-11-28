@@ -13,6 +13,7 @@ c                           |    --> e^-(p3)+nubar(p4)
 c                           |
 c                           ---> b(p5)+b(p6)
 c   for the moment --- radiation only from initial line
+c---- Extension to photon decay contributed by Fabian Stoeckli
       implicit none 
       include 'constants.f'
       include 'masses.f'
@@ -107,10 +108,6 @@ c---calculate the 2 W propagators
       
       fac=2d0*cf*xn*gsq*gwsq**3*wmass**2/prop
 
-C----- REPLACED GFOR H->PHOTONS
-C      hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s45-4d0*mb**2)
-C      hdecay=hdecay/((s45-hmass**2)**2+(hmass*hwidth)**2)
-C      fac=fac*hdecay
       hdecay=msqgamgam(hmass)/((s45-hmass**2)**2+(hmass*hwidth)**2)
       fac=fac*hdecay
       

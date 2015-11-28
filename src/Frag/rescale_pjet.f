@@ -16,7 +16,12 @@ c---- Subroutine for rescaling momentum by z_frag
          call rescale_1phot(pjet,4)
       elseif(case.eq.'dirgam') then 
          call rescale_1phot(pjet,3) 
+      elseif(case.eq.'Z_2gam') then 
+         call rescale_1phot(pjet,6) 
+      elseif(case.eq.'Zgajet') then 
+         call rescale_1phot(pjet,5) 
       else
+
          write(6,*) 'Error: tried to rescale unknown quantity' 
          stop
       endif     
@@ -49,7 +54,11 @@ c---- Subroutine for returning original momenta
       elseif(case.eq.'gamgam') then
          call return_1phot(pjet,4)
       elseif(case.eq.'dirgam') then 
-         call return_1phot(pjet,3) 
+         call return_1phot(pjet,3)
+      elseif(case.eq.'Z_2gam') then 
+         call return_1phot(pjet,6) 
+      elseif(case.eq.'Zgajet') then 
+         call return_1phot(pjet,5) 
       else
          write(6,*) 'Error: tried to rescale unknown quantity' 
          stop

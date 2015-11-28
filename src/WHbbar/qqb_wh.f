@@ -29,24 +29,21 @@ c                           ---> b(p5)+b(p6)
       enddo
       enddo
       s56=s(5,6)+2*mb**2
-c---cut to ensure hard process
-      if (
-     .      (s(5,6) .lt. four*mbsq) 
-     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. mbsq) 
-     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. mbsq) ) return
 
 c---calculate the 2 W propagators
       prop=     ((s(1,2)-wmass**2)**2+(wmass*wwidth)**2)
       prop=prop*((s(3,4)-wmass**2)**2+(wmass*wwidth)**2)
       
       fac=xn*gwsq**3*wmass**2/prop
-      hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s56-4d0*mb**2)
+      call hbbdecay(p,5,6,hdecay)
       hdecay=hdecay/((s56-hmass**2)**2+(hmass*hwidth)**2)
       fac=fac*hdecay
+
 c-- Old form of this matrix element (modified to facilitate extension
 c--- to H->WW decay)
 c      spinave only (color factors cancel)
 c       fac=spinave*gw**8*0.5d0*mbsq*(s56-4d0*mb**2)/prop
+
       qqbWH=aveqq*fac*s(1,4)*s(2,3)
       qbqWH=aveqq*fac*s(2,4)*s(1,3)
 

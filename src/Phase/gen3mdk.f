@@ -8,12 +8,11 @@ c--- of one of the heavy particles
       include 'masses.f'
       include 'zerowidth.f'
       include 'limits.f'
+      include 'breit.f'
       double precision r(mxdim)
       double precision p(mxpart,4),m3,m4,m5,pswt,wtbw,wten,smin
       double precision pt(4),pb(4),pw(4),pe(4),pn(4),pbbar(4),pq(4)
-      integer nu,n2,n3
-      double precision mass2,width2,mass3,width3
-      common/breit/n2,n3,mass2,width2,mass3,width3
+      integer nu
 
 c--- these must be set this way for gen3m
       mass3=m4 ! =mb

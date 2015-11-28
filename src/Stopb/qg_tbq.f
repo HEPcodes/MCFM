@@ -12,6 +12,7 @@ c     u + g  ->  c + s + d  (t-channel single-charm)
       implicit none
       include 'constants.f'
       include 'ewcouple.f'
+      include 'couple.f'
       include 'masses.f'
       include 'ckm.f'
       include 'nwz.f'
@@ -29,9 +30,8 @@ c     u + g  ->  c + s + d  (t-channel single-charm)
      & amps_gqbar(2,2,2)
       logical nocheck
       integer hg,hc,hs,j,k
-      double precision amz,alphas
+      double precision alphas
       double precision b1scale,q2scale,q1scale,b2scale
-      common/couple/amz
       common/bqscale/b1scale,q2scale,q1scale,b2scale
 c--- set this parameter to .false. to check amplitudes vs. squared ME      
       parameter(nocheck=.true.)

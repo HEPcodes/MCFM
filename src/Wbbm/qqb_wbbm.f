@@ -18,7 +18,9 @@ c---  averaged(summed) over initial(final) colours and spins
       faclo=V*gsq**2*gwsq**2*aveqq
 
 C--- Set up the correct mass, according to 'flav'
-      if     (flav .eq. 5) then
+      if     (flav .eq. 6) then
+        mQsq=mt**2
+      elseif (flav .eq. 5) then
         mQsq=mb**2
       elseif (flav .eq. 4) then
         mQsq=mc**2
@@ -27,12 +29,8 @@ C--- Set up the correct mass, according to 'flav'
         stop
       endif
 
-C---Initialize to zero
-      do j=-nf,nf
-      do k=-nf,nf
-      msq(j,k)=0d0
-      enddo
-      enddo
+C---Initialize whole array to zero
+      msq(:,:)=0d0
 
 C---Fill dot-products
       call dotem(6,p,s)
@@ -40,8 +38,8 @@ C---Fill dot-products
       qqb=faclo*sumsq(1,2,3,4,6,5,mQsq)
       qbq=faclo*sumsq(2,1,3,4,6,5,mQsq)
 
-      do j=-(nf-1),(nf-1)
-      do k=-(nf-1),(nf-1)
+      do j=-(flav-1),(flav-1)
+      do k=-(flav-1),(flav-1)
       if     ((j .gt. 0) .and. (k .lt. 0)) then
                msq(j,k)=Vsq(j,k)*qqb
       elseif ((j .lt. 0) .and. (k .gt. 0)) then

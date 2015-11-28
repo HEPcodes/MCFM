@@ -4,13 +4,13 @@ c---  sqrt(M^2+pt5^2), where M is the mass of the particle (34)
       implicit none
       include 'constants.f'
       include 'process.f'
-      integer n2,n3
+      include 'breit.f'
       double precision p(mxpart,4),mu0,pt
-      double precision mass2,width2,mass3,width3
-      common/breit/n2,n3,mass2,width2,mass3,width3
 
       if((case .eq. 'Wgamma') .or.
-     &   (case .eq. 'Zgamma')) then
+     &   (case .eq. 'Zgamma') .or.
+     &   (case .eq. 'Zgajet') .or.
+     &   (case .eq. 'Zga2jt')) then
         mu0=mass3**2+pt(5,p)**2
         mu0=dsqrt(dabs(mu0))
       else
@@ -22,3 +22,4 @@ c---  sqrt(M^2+pt5^2), where M is the mass of the particle (34)
       return
       end
       
+

@@ -8,8 +8,6 @@ c--- by the strings 'lstring' and 'rstring'
       include 'constants.f'
       include 'maxwt.f'
       include 'masses.f'
-      include 'facscale.f'
-      include 'scale.f'
       include 'zerowidth.f'
       include 'flags.f'
       include 'clustering.f'
@@ -38,9 +36,9 @@ c--- by the strings 'lstring' and 'rstring'
       include 'frag.f'
       include 'initialscales.f'
       include 'outputoptions.f'
+      include 'part.f'
       character*(*) tag,lstring,rstring
       character*72 f96,f97,f98,f99
-      character*4 part
       character*30 runstring
       logical creatent,dswhisto,dryrun,makecuts,writeall,spira
       integer unitno, nmin,nmax
@@ -56,7 +54,6 @@ c--- by the strings 'lstring' and 'rstring'
       common/outputflags/creatent,dswhisto      
 
       common/nproc/nproc
-      common/part/part
       common/runstring/runstring
       common/energy/sqrts
       common/density/ih1,ih2
@@ -113,6 +110,9 @@ c--- f99 floating point format
       endif
       if ((tag .eq. 'writeroot') .or. (writeall)) then
       write(unitno,fmt=f98) writeroot,'writeroot'
+      endif
+      if ((tag .eq. 'writepwg') .or. (writeall)) then
+      write(unitno,fmt=f98) writepwg,'writepwg'
       endif
 
       if (writeall) then
@@ -334,8 +334,14 @@ c--- catch special scale choices for stop+b process
       if ((tag .eq. 'gammrap') .or. (writeall)) then
       write(unitno,fmt=f99) gammrap,'gammrap'
       endif
+      if ((tag .eq. 'gammpt2') .or. (writeall)) then
+      write(unitno,fmt=f99) gammpt2,'gammpt2'
+      endif
       if ((tag .eq. 'Rgalmin') .or. (writeall)) then
       write(unitno,fmt=f99) Rgalmin,'Rgalmin'
+      endif
+      if ((tag .eq. 'Rgagamin') .or. (writeall)) then
+      write(unitno,fmt=f99) Rgagamin,'Rgagamin'
       endif
       if ((tag .eq. 'cone_ang') .or. (writeall)) then
       write(unitno,fmt=f99) cone_ang,'cone_ang'

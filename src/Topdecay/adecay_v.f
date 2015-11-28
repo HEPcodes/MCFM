@@ -20,16 +20,17 @@ c--- File written by FORM program adecay_v.frm on Thu Mar  1 14:02:57 CST 2012
       include 'zprods_decl.f'
       include 'sprods_com.f'
       include 'masses.f'
-      double precision p(mxpart,4),q(mxpart,4),dot,sw,ala,alc,ctm
+      include 'qcdcouple.f'
+      double precision p(mxpart,4),q(mxpart,4),dot,sw,ala,alc,ctm,
+     & nloratiotopdecay,corr
       double complex m(2,2),cprop,
      & c0L,C0R,C1L,C1R,C1Lon2,C1Ron2,iza,izb
       integer qb,a,c,qq,si,pc,pqq,pqb,aa,bb
-      logical includect
-      save includect
       parameter(a=1,qq=3,qb=4,c=2)
       iza(aa,bb)=cone/za(aa,bb)
       izb(aa,bb)=cone/zb(aa,bb)
-      includect=.true.
+
+      corr=nloratiotopdecay(mt,mb,wmass,wwidth)/(cf*ason2pi)
       do si=1,4
       q(a,si)=p(pqq,si)+p(pqb,si)+p(pc,si)
       q(qq,si)=p(pqq,si)
@@ -44,8 +45,8 @@ c--- File written by FORM program adecay_v.frm on Thu Mar  1 14:02:57 CST 2012
       enddo
       call spinoru(4,q,za,zb)
       sw=s(qq,qb)
-      call coefsdkmass(sw,mt,mb,includect,ctm,c0L,c0R,c1L,C1R)
-      c0L=c0L+dcmplx(ctm)
+      call coefsdkmass(sw,mt,mb,ctm,c0L,c0R,c1L,C1R)
+      c0L=c0L+dcmplx(ctm)-corr
       c1Lon2=c1L/2d0
       c1Ron2=c1R/2d0
       cprop=dcmplx(sw-wmass**2,wmass*wwidth)

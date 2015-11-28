@@ -16,11 +16,25 @@
       include 'PR_new.f'
       include 'agq.f'
       include 'masses.f'
+      include 'heavyflav.f'
       integer is,nu
       double precision z,p(mxpart,4),dot,metric,Q56sq
       double precision xl12,xl15,xl16,xl25,xl26,xl56,
-     & mbar15,mbar16,mbar25,mbar26,mbar56
+     & mbar15,mbar16,mbar25,mbar26,mbar56,mq
       double precision ii_qq,ii_qg,if_mqq,fi_mqq,ff_mqq,tempqg
+
+C--- set up the correct mass, according to 'flav'
+      if     (flav .eq. 6) then
+        mq=mt
+      elseif (flav .eq. 5) then
+        mq=mb
+      elseif (flav .eq. 4) then
+        mq=mc
+      else
+        write(6,*) 'Wrong flavour in qqb_wbbm_z.f: flav=',flav
+	call flush(6)
+        stop
+      endif
 
       Q56sq=0d0
       metric=1d0
@@ -30,12 +44,12 @@
       enddo
 
 CDTS (5.45,5.77)
-      mbar15=mb/dSqrt(-2d0*dot(p,1,5))
-      mbar16=mb/dSqrt(-2d0*dot(p,1,6))
-      mbar25=mb/dSqrt(-2d0*dot(p,2,5))
-      mbar26=mb/dSqrt(-2d0*dot(p,2,6))
+      mbar15=mq/dSqrt(-2d0*dot(p,1,5))
+      mbar16=mq/dSqrt(-2d0*dot(p,1,6))
+      mbar25=mq/dSqrt(-2d0*dot(p,2,5))
+      mbar26=mq/dSqrt(-2d0*dot(p,2,6))
 CDTS (5.5)
-      mbar56=mb/dSqrt(Q56sq)
+      mbar56=mq/dSqrt(Q56sq)
       
       xl12=dlog(+two*dot(p,1,2)/musq)
       xl15=dlog(-two*dot(p,1,5)/musq)

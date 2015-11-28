@@ -1,4 +1,4 @@
-      subroutine higgsp(bbbr,gamgambr,wwbr,zzbr)
+      subroutine higgsp(bbbr,tautaubr,gamgambr,zgambr,wwbr,zzbr)
 C--returns Higgs branching ratios as calculated by
 C  interpolating the Spira tables br.sm1 br.sm2
 C  Other branching ratios could be added.
@@ -8,9 +8,10 @@ C  Other branching ratios could be added.
       parameter(npt=1000)
       integer j,nlo
       character*79 string
-      double precision bbbr,gamgambr,wwbr,zzbr,htemp,width(npt)
-      double precision xmh(npt),brbb(npt),brtautau,brss,brcc,brmumu,
-     . brtt,brgg,brgamgam(npt),brzgam,brww(npt),brzz(npt)
+      double precision bbbr,gamgambr,tautaubr,zgambr,wwbr,zzbr,htemp,
+     . width(npt)
+      double precision xmh(npt),brbb(npt),brtautau(npt),brss,brcc,brmumu
+     . ,brtt,brgg,brgamgam(npt),brzgam(npt),brww(npt),brzz(npt)
       logical first
       data first/.true./
       save brbb,brww,brzz,width
@@ -22,7 +23,7 @@ C  Other branching ratios could be added.
  75   read(47,*,err=76) string
  76   continue
       do j=1,npt
-      read(47,*,err=77) xmh(j),brbb(j),brtautau,brmumu,brss,brcc,brtt
+      read(47,*,err=77) xmh(j),brbb(j),brtautau(j),brmumu,brss,brcc,brtt
       enddo
  77   continue
       close(unit=47)
@@ -32,7 +33,8 @@ C  Other branching ratios could be added.
  85   read(48,*,err=86) string
  86   continue
       do j=1,npt
-      read(48,*) xmh(j),brgg,brgamgam(j),brzgam,brww(j),brzz(j),width(j)
+      read(48,*) xmh(j),
+     &           brgg,brgamgam(j),brzgam(j),brww(j),brzz(j),width(j)
       enddo
       close(unit=48)
       endif
@@ -48,7 +50,9 @@ C  Other branching ratios could be added.
       nlo=int(htemp)
       endif
       bbbr=brbb(nlo)+(htemp-nlo)*(brbb(nlo+1)-brbb(nlo)) 
+      tautaubr=brtautau(nlo)+(htemp-nlo)*(brtautau(nlo+1)-brtautau(nlo)) 
       gamgambr=brgamgam(nlo)+(htemp-nlo)*(brgamgam(nlo+1)-brgamgam(nlo))
+      zgambr=brzgam(nlo)+(htemp-nlo)*(brzgam(nlo+1)-brzgam(nlo))
       wwbr=brww(nlo)+(htemp-nlo)*(brww(nlo+1)-brww(nlo))
       zzbr=brzz(nlo)+(htemp-nlo)*(brzz(nlo+1)-brzz(nlo))
       hwidth=width(nlo)+(htemp-nlo)*(width(nlo+1)-width(nlo))

@@ -15,8 +15,7 @@ C***********************************************************************
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'masses.f'
-      include 'nwz.f'
-      include 'process.f'
+      include 'plabel.f'
       include 'zprods_com.f'
       integer j,k,h1,h2,h3,nu
       double precision t(4),r(4),
@@ -26,9 +25,9 @@ C***********************************************************************
       double complex 
      . ttbgggppp,ttbgggmpp,ttbgggpmp,ttbgggppm,
      . ttbgggmmm,ttbgggpmm,ttbgggmpm,ttbgggmmp,      
-     . a129(2,2,2),a192(2,2,2),a219(2,2,2),a291(2,2,2),
-     . a912(2,2,2),a921(2,2,2),
-     . a6sum,a3sum1a,a3sum1b,a3sum2a,a3sum2b,a3sum9a,a3sum9b
+     . a123(2,2,2),a132(2,2,2),a213(2,2,2),a231(2,2,2),
+     . a312(2,2,2),a321(2,2,2),
+     . a6sum,a3sum1a,a3sum1b,a3sum2a,a3sum2b,a3sum3a,a3sum3b
       double precision p3Dp5,p6Dp8,rDp7,tDp4,s34,s78
 c--- these definitions are used for gauge check only
 c      double complex a,
@@ -46,12 +45,6 @@ C----set all elements to zero
       enddo
       enddo
 
-      do nu=1,4
-      do j=1,mxpart
-      ps(j,nu)=p(j,nu)
-      enddo
-      enddo
-      
       p3Dp5=p(3,4)*p(5,4)-p(3,3)*p(5,3)-p(3,2)*p(5,2)-p(3,1)*p(5,1) 
       p6Dp8=p(6,4)*p(8,4)-p(6,3)*p(8,3)-p(6,2)*p(8,2)-p(6,1)*p(8,1) 
 
@@ -68,21 +61,23 @@ c      we will have no further need for p6 and p8
       tDp4=t(4)*p(4,4)-t(3)*p(4,3)-t(2)*p(4,2)-t(1)*p(4,1) 
       rDp7=r(4)*p(7,4)-r(3)*p(7,3)-r(2)*p(7,2)-r(1)*p(7,1)             
       do nu=1,4
-c---t2
-      ps(5,nu)=0.5d0*mt**2/tDp4*p(4,nu)
-c---t1
-      ps(3,nu)=t(nu)-ps(5,nu)
-
-c---t2
-      ps(8,nu)=0.5d0*mt**2/rDp7*p(7,nu)
-c---t1
-      ps(6,nu)=r(nu)-ps(8,nu)
+      ps(1,nu)=p(1,nu)
+      ps(2,nu)=p(2,nu)
+      ps(3,nu)=p(9,nu)
+c---rescaled positron
+      ps(4,nu)=0.5d0*mt**2/tDp4*p(4,nu)
+c---demassifyied top
+      ps(5,nu)=t(nu)-ps(4,nu)
+c---rescaled electron
+      ps(7,nu)=0.5d0*mt**2/rDp7*p(7,nu)
+c---demassifyied antitop
+      ps(6,nu)=r(nu)-ps(7,nu)
       enddo
 
 c      call writeout(ps)
 c      pause
 
-      call spinoru(9,ps,za,zb)
+      call spinoru(7,ps,za,zb)
 
 c--- gauge check of the ggg pieces (performed on 15/8/08)
 c      j1=2
@@ -170,90 +165,90 @@ c---  i5 -> ptb  with pta a rescaled version of p4     = ps(3)
 c---  i6 -> pua                                        = ps(6)
 c---  i7 -> pub  with pub a rescaled version of p7     = ps(8)
 
-      a129(2,2,2)=ttbgggppp(1,2,9,5,3,6,8)
-      a129(2,2,1)=ttbgggppm(1,2,9,5,3,6,8)
-      a129(2,1,2)=ttbgggpmp(1,2,9,5,3,6,8)
-      a129(2,1,1)=ttbgggpmm(1,2,9,5,3,6,8)
-      a129(1,2,2)=ttbgggmpp(1,2,9,5,3,6,8)
-      a129(1,2,1)=ttbgggmpm(1,2,9,5,3,6,8)
-      a129(1,1,2)=ttbgggmmp(1,2,9,5,3,6,8)
-      a129(1,1,1)=ttbgggmmm(1,2,9,5,3,6,8)
+      a123(2,2,2)=ttbgggppp(1,2,3,4,5,6,7)
+      a123(2,2,1)=ttbgggppm(1,2,3,4,5,6,7)
+      a123(2,1,2)=ttbgggpmp(1,2,3,4,5,6,7)
+      a123(2,1,1)=ttbgggpmm(1,2,3,4,5,6,7)
+      a123(1,2,2)=ttbgggmpp(1,2,3,4,5,6,7)
+      a123(1,2,1)=ttbgggmpm(1,2,3,4,5,6,7)
+      a123(1,1,2)=ttbgggmmp(1,2,3,4,5,6,7)
+      a123(1,1,1)=ttbgggmmm(1,2,3,4,5,6,7)
 
-      a192(2,2,2)=ttbgggppp(1,9,2,5,3,6,8)
-      a192(2,2,1)=ttbgggppm(1,9,2,5,3,6,8)
-      a192(2,1,2)=ttbgggpmp(1,9,2,5,3,6,8)
-      a192(2,1,1)=ttbgggpmm(1,9,2,5,3,6,8)
-      a192(1,2,2)=ttbgggmpp(1,9,2,5,3,6,8)
-      a192(1,2,1)=ttbgggmpm(1,9,2,5,3,6,8)
-      a192(1,1,2)=ttbgggmmp(1,9,2,5,3,6,8)
-      a192(1,1,1)=ttbgggmmm(1,9,2,5,3,6,8)
+      a132(2,2,2)=ttbgggppp(1,3,2,4,5,6,7)
+      a132(2,2,1)=ttbgggppm(1,3,2,4,5,6,7)
+      a132(2,1,2)=ttbgggpmp(1,3,2,4,5,6,7)
+      a132(2,1,1)=ttbgggpmm(1,3,2,4,5,6,7)
+      a132(1,2,2)=ttbgggmpp(1,3,2,4,5,6,7)
+      a132(1,2,1)=ttbgggmpm(1,3,2,4,5,6,7)
+      a132(1,1,2)=ttbgggmmp(1,3,2,4,5,6,7)
+      a132(1,1,1)=ttbgggmmm(1,3,2,4,5,6,7)
 
-      a219(2,2,2)=ttbgggppp(2,1,9,5,3,6,8)
-      a219(2,2,1)=ttbgggppm(2,1,9,5,3,6,8)
-      a219(2,1,2)=ttbgggpmp(2,1,9,5,3,6,8)
-      a219(2,1,1)=ttbgggpmm(2,1,9,5,3,6,8)
-      a219(1,2,2)=ttbgggmpp(2,1,9,5,3,6,8)
-      a219(1,2,1)=ttbgggmpm(2,1,9,5,3,6,8)
-      a219(1,1,2)=ttbgggmmp(2,1,9,5,3,6,8)
-      a219(1,1,1)=ttbgggmmm(2,1,9,5,3,6,8)
+      a213(2,2,2)=ttbgggppp(2,1,3,4,5,6,7)
+      a213(2,2,1)=ttbgggppm(2,1,3,4,5,6,7)
+      a213(2,1,2)=ttbgggpmp(2,1,3,4,5,6,7)
+      a213(2,1,1)=ttbgggpmm(2,1,3,4,5,6,7)
+      a213(1,2,2)=ttbgggmpp(2,1,3,4,5,6,7)
+      a213(1,2,1)=ttbgggmpm(2,1,3,4,5,6,7)
+      a213(1,1,2)=ttbgggmmp(2,1,3,4,5,6,7)
+      a213(1,1,1)=ttbgggmmm(2,1,3,4,5,6,7)
 
-      a291(2,2,2)=ttbgggppp(2,9,1,5,3,6,8)
-      a291(2,2,1)=ttbgggppm(2,9,1,5,3,6,8)
-      a291(2,1,2)=ttbgggpmp(2,9,1,5,3,6,8)
-      a291(2,1,1)=ttbgggpmm(2,9,1,5,3,6,8)
-      a291(1,2,2)=ttbgggmpp(2,9,1,5,3,6,8)
-      a291(1,2,1)=ttbgggmpm(2,9,1,5,3,6,8)
-      a291(1,1,2)=ttbgggmmp(2,9,1,5,3,6,8)
-      a291(1,1,1)=ttbgggmmm(2,9,1,5,3,6,8)
+      a231(2,2,2)=ttbgggppp(2,3,1,4,5,6,7)
+      a231(2,2,1)=ttbgggppm(2,3,1,4,5,6,7)
+      a231(2,1,2)=ttbgggpmp(2,3,1,4,5,6,7)
+      a231(2,1,1)=ttbgggpmm(2,3,1,4,5,6,7)
+      a231(1,2,2)=ttbgggmpp(2,3,1,4,5,6,7)
+      a231(1,2,1)=ttbgggmpm(2,3,1,4,5,6,7)
+      a231(1,1,2)=ttbgggmmp(2,3,1,4,5,6,7)
+      a231(1,1,1)=ttbgggmmm(2,3,1,4,5,6,7)
 
-      a912(2,2,2)=ttbgggppp(9,1,2,5,3,6,8)
-      a912(2,2,1)=ttbgggppm(9,1,2,5,3,6,8)
-      a912(2,1,2)=ttbgggpmp(9,1,2,5,3,6,8)
-      a912(2,1,1)=ttbgggpmm(9,1,2,5,3,6,8)
-      a912(1,2,2)=ttbgggmpp(9,1,2,5,3,6,8)
-      a912(1,2,1)=ttbgggmpm(9,1,2,5,3,6,8)
-      a912(1,1,2)=ttbgggmmp(9,1,2,5,3,6,8)
-      a912(1,1,1)=ttbgggmmm(9,1,2,5,3,6,8)
+      a312(2,2,2)=ttbgggppp(3,1,2,4,5,6,7)
+      a312(2,2,1)=ttbgggppm(3,1,2,4,5,6,7)
+      a312(2,1,2)=ttbgggpmp(3,1,2,4,5,6,7)
+      a312(2,1,1)=ttbgggpmm(3,1,2,4,5,6,7)
+      a312(1,2,2)=ttbgggmpp(3,1,2,4,5,6,7)
+      a312(1,2,1)=ttbgggmpm(3,1,2,4,5,6,7)
+      a312(1,1,2)=ttbgggmmp(3,1,2,4,5,6,7)
+      a312(1,1,1)=ttbgggmmm(3,1,2,4,5,6,7)
 
-      a921(2,2,2)=ttbgggppp(9,2,1,5,3,6,8)
-      a921(2,2,1)=ttbgggppm(9,2,1,5,3,6,8)
-      a921(2,1,2)=ttbgggpmp(9,2,1,5,3,6,8)
-      a921(2,1,1)=ttbgggpmm(9,2,1,5,3,6,8)
-      a921(1,2,2)=ttbgggmpp(9,2,1,5,3,6,8)
-      a921(1,2,1)=ttbgggmpm(9,2,1,5,3,6,8)
-      a921(1,1,2)=ttbgggmmp(9,2,1,5,3,6,8)
-      a921(1,1,1)=ttbgggmmm(9,2,1,5,3,6,8)
+      a321(2,2,2)=ttbgggppp(3,2,1,4,5,6,7)
+      a321(2,2,1)=ttbgggppm(3,2,1,4,5,6,7)
+      a321(2,1,2)=ttbgggpmp(3,2,1,4,5,6,7)
+      a321(2,1,1)=ttbgggpmm(3,2,1,4,5,6,7)
+      a321(1,2,2)=ttbgggmpp(3,2,1,4,5,6,7)
+      a321(1,2,1)=ttbgggmpm(3,2,1,4,5,6,7)
+      a321(1,1,2)=ttbgggmmp(3,2,1,4,5,6,7)
+      a321(1,1,1)=ttbgggmmm(3,2,1,4,5,6,7)
 
       wtgg=0d0
       do h1=1,2
       do h2=1,2
       do h3=1,2
 c--- NB: make sure to permute helicity labels appropriately too
-        a3sum9a=a129(h1,h2,h3)+a192(h1,h3,h2)+a912(h3,h1,h2)
-        a3sum1a=a291(h1,h2,h3)+a219(h1,h3,h2)+a129(h3,h1,h2)
-        a3sum2a=a912(h1,h2,h3)+a921(h1,h3,h2)+a291(h3,h1,h2)
-        a3sum9b=a219(h2,h1,h3)+a291(h2,h3,h1)+a921(h3,h2,h1)
-        a3sum1b=a921(h2,h1,h3)+a912(h2,h3,h1)+a192(h3,h2,h1)
-        a3sum2b=a192(h2,h1,h3)+a129(h2,h3,h1)+a219(h3,h2,h1)
+        a3sum3a=a123(h1,h2,h3)+a132(h1,h3,h2)+a312(h3,h1,h2)
+        a3sum1a=a231(h1,h2,h3)+a213(h1,h3,h2)+a123(h3,h1,h2)
+        a3sum2a=a312(h1,h2,h3)+a321(h1,h3,h2)+a231(h3,h1,h2)
+        a3sum3b=a213(h2,h1,h3)+a231(h2,h3,h1)+a321(h3,h2,h1)
+        a3sum1b=a321(h2,h1,h3)+a312(h2,h3,h1)+a132(h3,h2,h1)
+        a3sum2b=a132(h2,h1,h3)+a123(h2,h3,h1)+a213(h3,h2,h1)
 	a6sum=a3sum1a+a3sum1b
 	wtgg=wtgg+xn**3*cf*(
-     .   (cdabs(a129(h1,h2,h3))**2+cdabs(a192(h1,h3,h2))**2
-     .   +cdabs(a219(h2,h1,h3))**2+cdabs(a291(h2,h3,h1))**2
-     .   +cdabs(a912(h3,h1,h2))**2+cdabs(a921(h3,h2,h1))**2)
-     .  -(cdabs(a3sum1a)**2+cdabs(a3sum2a)**2+cdabs(a3sum9a)**2
-     .   +cdabs(a3sum1b)**2+cdabs(a3sum2b)**2+cdabs(a3sum9b)**2)/xn**2
+     .   (cdabs(a123(h1,h2,h3))**2+cdabs(a132(h1,h3,h2))**2
+     .   +cdabs(a213(h2,h1,h3))**2+cdabs(a231(h2,h3,h1))**2
+     .   +cdabs(a312(h3,h1,h2))**2+cdabs(a321(h3,h2,h1))**2)
+     .  -(cdabs(a3sum1a)**2+cdabs(a3sum2a)**2+cdabs(a3sum3a)**2
+     .   +cdabs(a3sum1b)**2+cdabs(a3sum2b)**2+cdabs(a3sum3b)**2)/xn**2
      .  +(cdabs(a6sum)**2)*(xn**2+1d0)/xn**4
      .                     )
       enddo
       enddo
       enddo
             
-      wtqqb=ttbqqbg_sq(1,2,9,5,3,6,8)
-      wtqbq=ttbqqbg_sq(2,1,9,5,3,6,8)
-      wtqg=ttbqqbg_sq(1,9,2,5,3,6,8)
-      wtgq=ttbqqbg_sq(2,9,1,5,3,6,8)
-      wtqbarg=ttbqqbg_sq(9,1,2,5,3,6,8)
-      wtgqbar=ttbqqbg_sq(9,2,1,5,3,6,8)
+      wtqqb=ttbqqbg_sq(1,2,3,4,5,6,7)
+      wtqbq=ttbqqbg_sq(2,1,3,4,5,6,7)
+      wtqg=ttbqqbg_sq(1,3,2,4,5,6,7)
+      wtgq=ttbqqbg_sq(2,3,1,4,5,6,7)
+      wtqbarg=ttbqqbg_sq(3,1,2,4,5,6,7)
+      wtgqbar=ttbqqbg_sq(3,2,1,4,5,6,7)
 
 c--- overall factor, starting with couplings
       fac=2d0*(gwsq/2d0)**4*gsq**3
@@ -268,7 +263,8 @@ c--- correct normalization for p4 and p7
      . /(0.5d0*mt**2/tDp4)
      . /(0.5d0*mt**2/rDp7)     
 C--include factor for hadronic decays
-      if (case .eq. 'tt_bbh') fac=2d0*xn*fac
+      if (plabel(3).eq. 'pp') fac=2d0*xn*fac
+      if (plabel(7).eq. 'pp') fac=2d0*xn*fac
 
 C---fill qb-q, gg and q-qb elements
       do j=-nf,nf
@@ -289,62 +285,3 @@ C---fill qb-q, gg and q-qb elements
 
 
 
-      double precision function ttbqqbg_sq(i1,i2,i9,i5,i3,i6,i8)
-c--- returns the summed squared helicity amplitudes for the
-c--- ttbqqbg amplitudes
-      implicit none
-      include 'constants.f'
-      integer i1,i2,i9,i5,i3,i6,i8
-      double complex sq,tq,qq,rq,
-     . ttbqqbsqpp,ttbqqbsqpm,ttbqqbsqmp,ttbqqbsqmm,
-     . ttbqqbtqpp,ttbqqbtqpm,ttbqqbtqmp,ttbqqbtqmm,
-     . ttbqqbqqpp,ttbqqbqqpm,ttbqqbqqmp,ttbqqbqqmm,
-     . ttbqqbrqpp,ttbqqbrqpm,ttbqqbrqmp,ttbqqbrqmm
-      double precision appsq,apmsq,ampsq,ammsq
-      
-c-- for q-qb , there are four colour amplitudes:
-c---    sq	proportional to Ta(it,i1)*delta(i2,ib)
-c---    tq	proportional to Ta(i2,ib)*delta(it,i1)
-c---    qq	proportional to Ta(i2,i1)*delta(it,ib)
-c---    rq	proportional to Ta(it,ib)*delta(i2,i1)
-      sq=ttbqqbsqpp(i1,i2,i9,i5,i3,i6,i8)
-      tq=ttbqqbtqpp(i1,i2,i9,i5,i3,i6,i8)
-      qq=ttbqqbqqpp(i1,i2,i9,i5,i3,i6,i8)
-      rq=ttbqqbrqpp(i1,i2,i9,i5,i3,i6,i8)
-      appsq=xn*cf*(
-     . +xn*cdabs(sq)**2+xn*cdabs(tq)**2
-     . +xn*cdabs(qq)**2+xn*cdabs(rq)**2
-     . +2d0*Dble((sq+tq)*dconjg(rq+qq)))
-      
-      sq=ttbqqbsqpm(i1,i2,i9,i5,i3,i6,i8)
-      tq=ttbqqbtqpm(i1,i2,i9,i5,i3,i6,i8)
-      qq=ttbqqbqqpm(i1,i2,i9,i5,i3,i6,i8)
-      rq=ttbqqbrqpm(i1,i2,i9,i5,i3,i6,i8)
-      apmsq=xn*cf*(
-     . +xn*cdabs(sq)**2+xn*cdabs(tq)**2
-     . +xn*cdabs(qq)**2+xn*cdabs(rq)**2
-     . +2d0*Dble((sq+tq)*dconjg(rq+qq)))
-      
-      sq=ttbqqbsqmp(i1,i2,i9,i5,i3,i6,i8)
-      tq=ttbqqbtqmp(i1,i2,i9,i5,i3,i6,i8)
-      qq=ttbqqbqqmp(i1,i2,i9,i5,i3,i6,i8)
-      rq=ttbqqbrqmp(i1,i2,i9,i5,i3,i6,i8)
-      ampsq=xn*cf*(
-     . +xn*cdabs(sq)**2+xn*cdabs(tq)**2
-     . +xn*cdabs(qq)**2+xn*cdabs(rq)**2
-     . +2d0*Dble((sq+tq)*dconjg(rq+qq)))
-      
-      sq=ttbqqbsqmm(i1,i2,i9,i5,i3,i6,i8)
-      tq=ttbqqbtqmm(i1,i2,i9,i5,i3,i6,i8)
-      qq=ttbqqbqqmm(i1,i2,i9,i5,i3,i6,i8)
-      rq=ttbqqbrqmm(i1,i2,i9,i5,i3,i6,i8)
-      ammsq=xn*cf*(
-     . +xn*cdabs(sq)**2+xn*cdabs(tq)**2
-     . +xn*cdabs(qq)**2+xn*cdabs(rq)**2
-     . +2d0*Dble((sq+tq)*dconjg(rq+qq)))
-      
-      ttbqqbg_sq=appsq+apmsq+ampsq+ammsq
-
-      return
-      end
-      

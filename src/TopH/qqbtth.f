@@ -46,7 +46,7 @@ C--diagram 2-Polarity minus
      . +mt/denb*(zb(4,1)*(za(2,b2)*zb(b2,a7)*za(a7,7)+mt**2*za(2,7))
      . +zb(4,q4)*za(q4,2)*(zb(1,b1)*za(b1,7)+zb(1,a7)*za(a7,7))) 
 
-      wtqqb=abs(ampp)**2+abs(ampm)**2
-
+      wtqqb=(abs(ampp)**2+abs(ampm)**2)/cdabs(za(1,2)*zb(2,1))**2
+      
       return
       end

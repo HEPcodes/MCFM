@@ -49,6 +49,8 @@ c--NB average over spins only -- colour factors cancel
 
 
       double precision function virtqqbdk(ju,jb,jn,je,jc,jd)
+C----virtual correction for decay of top quark.
+C----nlo correction to the width is included.
       implicit none
 
       integer ju,jd,jn,je,jc,jb
@@ -64,7 +66,6 @@ c--NB average over spins only -- colour factors cancel
       snec=+s(jn,je)+s(je,jc)+s(jc,jn)
 
       call coefsdk(s(jn,je),mtsq,ct,cv,c1)
-
       if (s(ju,jd) .lt. 0d0) then
       prop=(s(ju,jd)-wmass**2)**2
       else

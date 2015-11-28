@@ -23,76 +23,12 @@
       integer nd,isub
       integer j,k
       integer countlept,leptindex(mxpart),countgamm,gammindex(mxpart)
-      double precision pjet(mxpart,4),pt,etarap,R,pth,pts,s34
-      double precision pt_phot_hard,pt_phot_soft,eta_hard,eta_soft,etah
-     &,etas
+      double precision pjet(mxpart,4),pt,etarap,R,pt1,pt2,pth,pts,s34
       character*30 runstring
       common/runstring/runstring
       data first/.true./
       
       photoncuts=.false.
-      pth=0d0
-      pts=0d0
-
-!---------------------- Staggered Cut set up --------------------------
-! If we wish to apply staggered cuts to the photon  this is setup here
-! Sets up  : 
-!     pt(hardest) > pt_phot_hard
-!     pt(softest) > pt_phot_soft
-!     |eta(hardest)| < eta_hard  
-!     |eta(softest)| < eta_soft
-!
-! Default is to use gammpt as pt_soft_hard pt(hard) > 40 eta_hard=eta_soft=gammrap
-!-----------------------------------------------------------------------
-  
-      pt_phot_hard=40d0 
-      pt_phot_soft=gammpt
-      eta_hard =gammrap
-      eta_soft =gammrap
-
-      if(runstring(1:9).eq.'Stag_phot') then 
-         if((case.ne.'gamgam').and.(case.ne.'gmgmjt')) then 
-       write(6,*) 'attempted to apply staggered photon check runstring' 
-         stop
-         endif
-            
-         if(first) then 
-            first=.false.
-      write(6,*)  '****************************************************'
-      write(6,*)  '              Stagered Photon Cuts                  ' 
-      write(6,99) '*   pt(phot_hard)          >   ',pt_phot_hard,
-     &                '                *'
-      write(6,99) '*   pt(phot_soft)          >  ',pt_phot_soft,
-     &                '                *'
-          write(6,99) '*   |eta(phot_hard)|       <   ',eta_hard,
-     &                '                *'
-      write(6,99) '*   |eta(phot_soft)|       <   ',eta_soft,
-     &                '                *'
-      write(6,*)  '****************************************************'
-          endif
-
-         if(pt(3,pjet).gt.pt(4,pjet)) then 
-            pth=pt(3,pjet)
-            etah=etarap(3,pjet)
-            pts=pt(4,pjet) 
-            etas=etarap(4,pjet)
-         else
-            pth=pt(4,pjet)
-            etah=etarap(4,pjet)
-            pts=pt(3,pjet)
-            etas=etarap(3,pjet)
-         endif
-         if((pth.lt.pt_phot_hard).or.(pts.lt.pt_phot_soft)) then 
-            photoncuts=.true. 
-            return 
-         elseif((abs(etah).gt.eta_hard)
-     &      .or.(abs(etas).gt.eta_soft)) then
-            photoncuts=.true.
-            return 
-         endif
-         return 
-      endif
-            
 
 c--- write-out the cuts we are using
       if (first) then
@@ -101,16 +37,16 @@ c--- write-out the cuts we are using
       write(6,*)
       write(6,*)  '****************** Photon cuts *********************'
       write(6,*)  '*                                                  *'
-      write(6,99) '*   pt(photon)           >   ',gammpt,
+      write(6,99) '*   pt(photon 1)         >   ',gammpt,
+     &                '                *'
+      write(6,99) '*   pt(photon 2)         >   ',gammpt2,
      &                '                *'
       write(6,99) '*   eta(photon)          <   ',gammrap,
      &                '                *'
       write(6,99) '*   R(photon,lepton)     >   ',Rgalmin,
      &                '                *'
-c      write(6,99) '*   pt(hadronic)         <   ',gammcut,
-c     .                '    pt(photon)  *'
-c      write(6,99) '*   (in cone around photon of',gammcone,
-c     .                ')               *'
+      write(6,99) '*   R(photon,photon)     >   ',Rgagamin,
+     &                '                *'
       write(6,*)  '*                                                  *'
       write(6,*)  '****************************************************'
       if(case.eq.'gamgam') then 
@@ -139,14 +75,25 @@ c--- count leptons and photons
       enddo
       
 C     Basic pt and rapidity cuts for photon
-      if (countgamm .gt. 0) then
-        do j=1,countgamm
-          if (     (pt(gammindex(j),pjet) .lt. gammpt) .or.
-     &    (abs(etarap(gammindex(j),pjet)) .gt. gammrap)) then
+      if (countgamm .eq. 1) then
+          if (     (pt(gammindex(1),pjet) .lt. gammpt) .or.
+     &    (abs(etarap(gammindex(1),pjet)) .gt. gammrap)) then
             photoncuts=.true.
             return
           endif
-        enddo
+      endif
+      if (countgamm .eq. 2) then
+        pt1=pt(gammindex(1),pjet) 
+        pt2=pt(gammindex(2),pjet) 
+        pth=max(pt1,pt2)
+        pts=min(pt1,pt2)
+        if ( ( pth .lt. gammpt) .or.
+     &       ( pts .lt. gammpt2) .or.
+     &       (abs(etarap(gammindex(1),pjet)) .gt. gammrap) .or.
+     &       (abs(etarap(gammindex(2),pjet)) .gt. gammrap) ) then
+          photoncuts=.true.
+          return
+        endif
       endif
 
 c--- lepton-photon separation 
@@ -161,6 +108,20 @@ c--- lepton-photon separation
         enddo
       endif
       
+c--- photon-photon separation 
+      if (countgamm .ge. 2) then
+        do j=1,countgamm
+        do k=1,countgamm
+          if (gammindex(j).lt.gammindex(k)) then
+          if (R(pjet,gammindex(j),gammindex(k)) .lt. Rgagamin) then
+            photoncuts=.true.
+            return
+          endif
+          endif
+        enddo
+        enddo
+      endif
+
       !--- Apply mass cuts here (gamgam only)
       if(case.eq.'gamgam') then 
          if((photo_dip.eqv..false.)) then 

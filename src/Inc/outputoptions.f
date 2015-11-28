@@ -1,3 +1,3 @@
-      logical writetop,writedat,writegnu,writeroot
-      common/outputoptions/writetop,writedat,writegnu,writeroot
+      logical writetop,writedat,writegnu,writeroot,writepwg
+      common/outputoptions/writetop,writedat,writegnu,writeroot,writepwg
       

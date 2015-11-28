@@ -16,6 +16,7 @@
       include 'scale.f'
       include 'agq.f'
       include 'PR_cs_new.f'
+      include 'breit.f'
       double precision z,p(mxpart,4),pt(mxpart,4),dot,metric,Q34sq,
      & xl12,xl13,xl14,xl23,xl24,xl34,
      & mbar12,mbar13,mbar14,mbar23,mbar24,mbar34,tempgq,tempqg,
@@ -24,9 +25,7 @@
      .                 fi_mqq,
      .                 ff_mqq,
      .                 ii_qg,ii_gq
-      integer is,n2,n3,nu,icol
-      double precision mass2,width2,mass3,width3
-      common/breit/n2,n3,mass2,width2,mass3,width3
+      integer is,nu,icol
 
 c--- reduce momenta to top and anti-top sums
       do nu=1,4

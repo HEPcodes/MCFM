@@ -9,10 +9,9 @@ c--- AVAILABLE AT LEADING ORDER ONLY
       include 'constants.f'
       include 'process.f'
       include 'masses.f'
+      include 'part.f'
       double precision p(mxpart,4),mu0
-      character*4 part
       double precision b1scale,q2scale,q1scale,b2scale
-      common/part/part
       common/bqscale/b1scale,q2scale,q1scale,b2scale
 
       if((case .eq. 'bq_tpq') .or.

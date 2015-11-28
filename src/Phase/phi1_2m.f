@@ -10,17 +10,16 @@ c     delta(p2^2-m2) delta(p3^2-s3)
       include 'constants.f'
       include 'debug.f'
       include 'zerowidth.f'
+      include 'breit.f'
       double precision p1(4),p2(4),p3(4),p3cm(4)
       double precision x3,xth,xphi,costh,sinth,phi,cphi,sphi
       double precision wt,wt0,w3
       double precision s3max,s3min,xx,xexp
-      double precision m1,m2,m3,s1,s2,s3,lambda,xjac,rtxth,
-     . mass2,width2,mass3,width3
+      double precision m1,m2,m3,s1,s2,s3,lambda,xjac,rtxth
 c      double precision Eg
-      integer j,n2,n3
+      integer j
       integer jbranch
 c      logical first
-      common/breit/n2,n3,mass2,width2,mass3,width3
       parameter(wt0=one/8d0/pi)
       data jbranch/1/
       data xjac,rtxth/1d0,1d0/

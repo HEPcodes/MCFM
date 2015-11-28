@@ -5,8 +5,8 @@ CERNLIB     =
 # Replace this with the location of LHAPDF on your system (if desired)
 LHAPDFLIB   = 
 
-MCFMHOME        = /Users/johnmc/MCFM
-SOURCEDIR       = /Users/johnmc/MCFM/src
+MCFMHOME        = /scratch/ellis/play/MCFMdevel
+SOURCEDIR       = /scratch/ellis/play/MCFMdevel/src
 VPATH		= $(DIRS)
 BIN		= $(MCFMHOME)/Bin
 INCPATH  	= $(SOURCEDIR)/Inc
@@ -79,14 +79,24 @@ DIRS	=	$(MCFMHOME):\
 		$(SOURCEDIR)/epem3j:\
 		$(SOURCEDIR)/WpWp2j:$(SOURCEDIR)/F90\
 		$(SOURCEDIR)/qqZtt:$(SOURCEDIR)/ggHgaga:\
+		$(SOURCEDIR)/ggHZga:\
 		$(SOURCEDIR)/Gamgam:$(SOURCEDIR)/Dirgam:\
-		$(SOURCEDIR)/TopdkBSY:\
-		$(SOURCEDIR)/Topdecay:$(SOURCEDIR)/Newtpair:\
-		$(SOURCEDIR)/Newtchan:$(SOURCEDIR)/Newschan:\
-		$(SOURCEDIR)/Frag
+		$(SOURCEDIR)/TopdkBSY:$(SOURCEDIR)/Topdecay:\
+		$(SOURCEDIR)/Frag:$(SOURCEDIR)/Zgamgam:$(SOURCEDIR)/Zgamjet:\
+		$(SOURCEDIR)/pwgplots
 
 # -----------------------------------------------------------------------------
 # Specify the object files. 
+
+PWGPLOTSFILES = \
+boostrot.o \
+pwhg_analysis_generic.o \
+pwhg_analysis_KN.o \
+pwhg_analysis_ST_sch_dk.o \
+pwhg_analysis_ST_tch_dk.o \
+pwhg_analysis_ST_wt_dk.o \
+pwhg_bookhist-new.o \
+pwhgplotter.o
 
 TOPDKBSYFILES = \
 A1Hggppmp.o \
@@ -133,16 +143,10 @@ BSYARggpppp.o \
 BSYARggpppphp.o \
 gluegen.o \
 integralfill.o \
-qqb_QQbdkBSY.o \
-qqb_QQbdkBSY_v.o \
 qqbgen.o \
 spinorextend.o
 
 TOPDECAYFILES = \
-tdecay.o \
-adecay.o \
-tdecay_v.o \
-adecay_v.o \
 tdecayg.o \
 adecayg.o \
 tdecayW_v.o \
@@ -157,56 +161,11 @@ Gamma0.o \
 Gamma0int.o \
 asGamma1.o \
 asGamma1int.o \
-wtransform_generic.o
-
-NEWTPAIRFILES = \
-dk1qqb_QQb_g.o \
-dk1qqb_QQb_gs.o \
-dk2qqb_QQb_g.o \
-dk2qqb_QQb_gs.o \
-dkqqb_QQb_v.o \
-dkW1qqb_QQb_g.o \
-dkW1qqb_QQb_gs.o \
-dkW2qqb_QQb_g.o \
-dkW2qqb_QQb_gs.o \
-dkWqqb_QQb_v.o \
-qqb_QQbdk.o \
-toppaironshell.o \
-
-NEWTCHANFILES = \
-amp_dkqg_tbqdk_g.o \
-dkqg_tbqdk_g.o \
-dkqg_tbqdk_gs.o \
-dkqg_tbqdk_v.o \
-interdk.o \
-interdk_gg.o \
-interdk_qq.o \
-qg_tbqdk.o \
-qg_tbqdk_g.o \
-qg_tbqdk_gs.o \
-qg_tbqdk_gvec.o \
-qg_tbqdk_v.o \
-qg_tbqdk_z.o \
-qg_tbqndk_amp.o \
-qg_tbqndk_ampanti.o \
-singleatoponshell.o \
-singletoponshell.o
-
-NEWSCHANFILES = \
-dkqqb_tbbdk_v.o \
-dkqqb_tbbdk_g.o \
-dkqqb_tbbdk_gs.o \
-qqb_tbbdk.o \
-qqb_tbbdk_g.o \
-qqb_tbbdk_gs.o \
-qqb_tbbdk_v.o \
-qqb_tbbdk_z.o \
-schantoponshell.o \
-schantoponshellv.o \
-schanatoponshellv.o \
-schantoponshellg.o \
-schanatoponshellg.o \
-schanatoponshell.o
+wtransform_generic.o \
+tdecay.o \
+adecay.o \
+tdecay_v.o \
+adecay_v.o 
 
 WBFROMCFILES = \
 qqb_wbfromc.o \
@@ -222,6 +181,7 @@ NP_FragSetI.o \
 NP_FragSetII.o \
 Pert_Frag.o \
 dipolesfrag.o \
+dipolesfragx.o \
 dopols.o \
 fragdriver.o \
 int_dips_ga.o \
@@ -391,6 +351,19 @@ gg_hgamgam_z.o \
 msqgamgam.o \
 Ftriangle.o
 
+GGHZGAFILES = \
+C0DDHK.o \
+ffDDHK.o \
+hzgamwidth.o \
+HZgamMSQ.o \
+gg_hzgam.o \
+gg_hzgamg.o \
+gg_hzgam_gs.o \
+gg_hzgam_gvec.o \
+gg_hzgam_v.o \
+gg_hzgam_z.o 
+
+
 GGHGFILES = \
 amplonumer.o \
 Hqarbsq.o \
@@ -513,6 +486,9 @@ F42mhF.o
 HWWFILES = \
 gg_WW_int.o \
 qqb_hww.o \
+dkqqb_hww_v.o \
+dkqqb_hww_g.o \
+dkqqb_hww_gs.o \
 qqb_hww_g.o \
 qqb_hww_gvec.o \
 qqb_hww_gs.o \
@@ -553,6 +529,10 @@ Li4.o \
 WGPLG.o
 
 NEEDFILES = \
+hbbdecay.o \
+htautaudecay.o \
+hbbdecay_g.o \
+hbbdecay_v.o \
 arraysort.o \
 aveptjet.o \
 banner.o \
@@ -571,6 +551,7 @@ coupling.o \
 coupling2.o \
 couplz.o \
 dclaus.o \
+determinefilenames.o \
 dipoles.o \
 dipoles_fac.o \
 dipoles_mass.o \
@@ -593,6 +574,7 @@ itransform.o \
 includedipole.o \
 masscuts.o \
 mcfm.o \
+mcfm_main.o \
 mcfm_exit.o \
 mcfm_init.o \
 mcfm_vegas.o \
@@ -648,6 +630,9 @@ gen2m.o \
 gen3.o \
 gen3a.o \
 gen3b.o \
+gen3h.o \
+gen_higgszgam.o \
+gen_vgamj.o \
 gen3jet.o \
 gen3jetgaga.o \
 gen3m.o \
@@ -660,7 +645,10 @@ gen4from3.o \
 gen4h.o \
 gen4mdk.o \
 gen4mdkrad.o \
+gen_HZgamj.o \
 gen5.o \
+gen5h.o \
+phase5h.o \
 gen5a.o \
 gen5from4.o \
 gen6.o \
@@ -670,7 +658,12 @@ gen7m.o \
 phase7m_alt.o \
 gen7_rap.o \
 gen8.o \
+gen8_rap.o \
+gen9_rap.o \
+gen9dk_rap.o \
 gen_phots_jets.o \
+gen_phots_jets_dkrad.o \
+gen_phots_jets_dkrad2.o \
 gen_photons_jets.o \
 gen_njets.o \
 gen_soft.o \
@@ -701,6 +694,7 @@ phase7dk.o \
 phase7m.o \
 phase8.o \
 phi1_2.o \
+phi1_2bis.o \
 phi1_2m.o \
 phi1_2m_bw.o \
 phi1_2m_nobw.o \
@@ -792,7 +786,38 @@ bq_tpq_v.o \
 bq_tpq_z.o \
 bq_tpq_gdk.o \
 bq_tpq_gsdk.o \
-bq_tpq_vdk.o
+bq_tpq_vdk.o \
+dkqqb_tbbdk_v.o \
+dkqqb_tbbdk_g.o \
+dkqqb_tbbdk_gs.o \
+qqb_tbbdk.o \
+qqb_tbbdk_g.o \
+qqb_tbbdk_gs.o \
+qqb_tbbdk_v.o \
+qqb_tbbdk_z.o \
+schantoponshell.o \
+schantoponshellv.o \
+schanatoponshellv.o \
+schantoponshellg.o \
+schanatoponshellg.o \
+schanatoponshell.o \
+amp_dkqg_tbqdk_g.o \
+dkqg_tbqdk_g.o \
+dkqg_tbqdk_gs.o \
+dkqg_tbqdk_v.o \
+interdk.o \
+interdk_gg.o \
+interdk_qq.o \
+qg_tbqdk.o \
+qg_tbqdk_g.o \
+qg_tbqdk_gs.o \
+qg_tbqdk_gvec.o \
+qg_tbqdk_v.o \
+qg_tbqdk_z.o \
+qg_tbqndk_amp.o \
+qg_tbqndk_ampanti.o \
+singleatoponshell.o \
+singletoponshell.o
 
 TAUTAUFILES = \
 qqb_tautau.o \
@@ -809,7 +834,20 @@ qqb_QQb_v.o \
 qqb_QQb_z.o
 
 TOPDKFILES = \
-ggttww1.o \
+dk1qqb_QQb_g.o \
+dk1qqb_QQb_gs.o \
+dk2qqb_QQb_g.o \
+dk2qqb_QQb_gs.o \
+dkqqb_QQb_v.o \
+dkW1qqb_QQb_g.o \
+dkW1qqb_QQb_gs.o \
+dkW2qqb_QQb_g.o \
+dkW2qqb_QQb_gs.o \
+dkWqqb_QQb_v.o \
+ggttww1n.o \
+toppaironshell.o \
+qqb_QQbdk.o \
+ttbqqbg_sq.o \
 qqb_QQbdk_g.o \
 qqb_QQbdk_gs.o \
 qqb_QQbdk_gvec.o \
@@ -821,58 +859,7 @@ qqb_QQbdku_gs.o \
 qqb_QQbdku_gvec.o \
 qqb_QQbdku_v.o \
 qqb_QQbdku_z.o \
-KMampsqggQQb.o \
-KMampsqqqbQQb.o \
-KMampsqggQQbdk.o \
-KMampsqqqbQQbdk.o \
-KMampsqggQQbdkn.o \
-KMgg3h.o \
-KMgg2b.o \
-KMgg2c1.o \
-KMgg2c2.o \
-KMgg2c3.o \
-KMgg2c4.o \
-KMgg2d1.o \
-KMgg3f1.o \
-KMgg3f2.o \
-KMgg2a.o \
-KMggtrig.o \
-KMggtriq.o \
-KMggtriHQ.o \
-KMqqb5ab.o \
-KMqqb5c.o \
-KMqqb5d.o \
-KMqqb5e.o \
-KMqqb5f.o \
-KMqqb5g.o \
-KMqqb5h.o \
-KMqqb5i.o \
-coeffboxa1.o \
-coeffboxa2.o \
-coeffboxa4.o \
-coeffboxa.o \
-coeffboxb.o \
-Bqq.o \
-Bs.o \
-Bt.o \
-Bu.o \
-cdot.o \
-pol_mless.o \
-psp.o \
-spb.o \
-bsp.o \
-u0spinor.o \
-ubar0spinor.o \
-ubarspinor.o \
-v0spinor.o \
-vbar0spinor.o \
-vspinor.o \
-string.o \
-string_KM.o \
-ubarWspinor.o \
-uWspinor.o \
 extend_trans_ttb.o \
-polarization.o \
 ttbgggppp.o \
 ttbgggppm.o \
 ttbgggpmm.o \
@@ -906,6 +893,24 @@ qqb_tottth.o
 
 TOPWFILES = \
 qqb_ttw.o \
+qqb_ttw_v.o \
+dk1qqb_ttw_g.o \
+dk2qqb_ttw_g.o \
+dk1qqb_ttw_gs.o \
+dk2qqb_ttw_gs.o \
+dkqqb_ttw_v.o \
+qqb_ttw_z.o \
+qqb_ttw_g.o \
+qqb_ttw_gs.o \
+extend_trans_ttw.o \
+ttWprod.o \
+trodmsqm.o \
+adecayrod.o \
+tdecayrod.o \
+tdecayrodg.o \
+adecayrodg.o \
+adecayrod_v.o \
+tdecayrod_v.o 
 
 TOPZFILES = \
 qqb_ttz.o \
@@ -920,6 +925,7 @@ deltarj.o \
 durhamalg.o \
 eventhandler.o \
 etdoublebin.o \
+METHTdoublebin.o \
 fill_stdhep.o \
 filterW_bjet.o \
 filterWbbmas.o \
@@ -945,6 +951,7 @@ nplotter_generic.o \
 nplotter_gamgam.o \
 nplotter_tbbar.o \
 nplotter_ttbar.o \
+nplotter_ttw.o \
 nplotter_Vgamma.o \
 nplotter_VV.o \
 nplotter_W_only.o \
@@ -952,6 +959,8 @@ nplotter_Z_only.o \
 nplotter_Wbbmas.o \
 nplotter_Wjets.o \
 nplotter_WPWP.o \
+nplotter_zgamgam.o \
+nplotter_zgamjet.o \
 photo_iso.o \
 photgenclust.o \
 photoncuts.o \
@@ -959,6 +968,7 @@ plots_stop_cfmt.o \
 singletopreconstruct.o \
 stopcuts.o \
 topreconstruct.o \
+userplotter.o \
 wbfcuts.o \
 wbfcuts_jeppe.o \
 wconstruct.o 
@@ -1063,6 +1073,8 @@ fvs.o \
 vvg.o
 
 WHBBARFILES = \
+GammaHbb0.o \
+GammaHbb1.o \
 qqb_wh.o \
 qqb_wh_g.o \
 qqb_wh_gs.o \
@@ -1088,6 +1100,11 @@ qqb_wh_zz_gs.o \
 qqb_wh_zz_v.o
 
 WWFILES = \
+dkWWamps.o \
+dkqqb_ww_v.o \
+dkqqb_ww_gs.o \
+dkqqb_ww_g.o \
+c7tree.o \
 BigT.o \
 L34_12.o \
 a6loop.o \
@@ -1104,7 +1121,7 @@ d2six.o \
 d3six.o \
 d4six.o \
 fa.o \
-gg_WW.o \
+gg_ww.o \
 massivebox.o \
 massivebox6.o \
 massivebub.o \
@@ -1125,6 +1142,21 @@ triangle7new.o \
 triangle9new.o \
 vpole.o \
 wwamps.o
+# compare_madgraph.o \
+# initialize.o \
+# dkqqb_ww_g_mad.o \
+# ddb_veepscbg_dr.o \
+# uub_veepscbg_dr.o \
+# ddb_csbemveg_dr.o \
+# uub_csbemveg_dr.o \
+# ddb_veepscbg_r.o \
+# uub_veepscbg_r.o \
+# ddb_csbemveg_r.o \
+# uub_csbemveg_r.o \
+# ddb_veepscbg_sr.o \
+# uub_veepscbg_sr.o \
+# ddb_csbemveg_sr.o \
+# uub_csbemveg_sr.o \
 
 WZFILES = \
 qqb_wz.o \
@@ -1132,7 +1164,15 @@ qqb_wz_g.o \
 qqb_wz_gs.o \
 qqb_wz_v.o \
 qqb_wz_z.o \
-wzamps.o
+wzamps.o \
+dkqqb_wz_g.o \
+dksrwz.o \
+dksrwzc.o \
+dkdrwz.o \
+#dkqqb_wz_g_mad.o \
+#compare_madgraph.o \
+#initialize.o \
+
 
 WBBFILES = \
 a6.o \
@@ -1224,6 +1264,9 @@ gs_wc_dg.o \
 gs_wt_prog.o \
 gs_wt_prog_nores.o \
 qb_wtq.o \
+dkqqb_w_twdk_g.o \
+dkqqb_w_twdk_gs.o \
+dkqqb_w_twdk_v.o \
 qqb_w_tndk.o \
 qqb_w_tndk_g.o \
 qqb_w_tndk_gs.o \
@@ -1232,15 +1275,14 @@ qqb_w_tndk_v.o \
 qqb_w_tndk_z.o \
 qqb_w_twdk.o \
 qqb_w_twdk_g.o \
-qqb_w_twdk_gdk.o \
 qqb_w_twdk_gs.o \
-qqb_w_twdk_gsdk.o \
 qqb_w_twdk_gvec.o \
 qqb_w_twdk_v.o \
-qqb_w_twdk_vdk.o \
 qqb_w_twdk_z.o \
 qqb_wtbndk.o \
 qqb_wtbwdk.o \
+Wtoponshell.o \
+Watoponshell.o \
 tree.o \
 virt_mm.o \
 virt_mp.o \
@@ -1266,6 +1308,9 @@ qqb_z1jet_z.o \
 qqb_z_gvec.o
 
 Z2JETFILES = \
+fmtfull.o \
+tloop.o \
+Bdiff.o \
 a61z.o \
 a62z.o \
 a63.o \
@@ -1327,7 +1372,46 @@ qqb_zgam_z.o \
 qqb_zgam_fragdips.o \
 qqb_zfrag.o
 
+ZGAMJETFILES = \
+a6treeQL.o \
+a6virtQL_lc.o \
+a6virtQL_slc.o \
+a6virtQL_floop.o \
+amp_zqqagg_ql.o \
+amp_zqqQQgam_ql.o \
+xzqqag.o \
+xzqqag_v.o \
+xzqqag_n.o \
+xzqqagg.o \
+xzqqQQa.o \
+msq_zqqbagg.o \
+msq_zqqbQQba.o \
+qqb_zaj.o \
+qqb_zaj_v.o \
+qqb_zaj_gvec.o \
+qqb_zaj_z.o \
+qqb_zaj_g.o \
+qqb_zaj_gs.o \
+qqb_zaj_swap.o \
+qqb_zaj_frag.o \
+qqb_zaj_fragdips.o
+
+ZGAMGAMFILES = \
+a6virtLL.o \
+xzqqaa.o \
+xzqqaa_v.o \
+xzqqaag.o \
+qqb_zaa.o \
+qqb_zaa_v.o \
+qqb_zaa_g.o \
+qqb_zaa_gs.o \
+qqb_zaa_z.o \
+qqb_zaa_frag.o \
+qqb_zaa_fragdips.o
+
 ZHBBARFILES = \
+dkqqb_zh_g.o \
+dkqqb_zh_v.o \
 qqb_zh.o \
 qqb_zh_g.o \
 qqb_zh_gs.o \
@@ -1479,6 +1563,10 @@ endif
 # Master program.
 # extra lines: -L$(CRNLIB) -L/home/johnmc/madgraph/lib/ 
 #              -ldhelas
+#LIBDIR += -L/Users/johnmc/ciaran/Helas/lib/
+#LIBDIR += -L/Users/ellis/Madgraph/madgraph_orig/lib/
+#LIBDIR += -L/Users/ellis/Fortran/Helas/lib/
+#LIBFLAGS += -ldhelas
 
 OURCODE = $(LIBFILES) $(NEEDFILES)  $(PROCDEPFILES) \
           $(PHASEFILES) $(SINGLETOPFILES) \
@@ -1499,13 +1587,14 @@ OURCODE = $(LIBFILES) $(NEEDFILES)  $(PROCDEPFILES) \
 	  $(STOPBFILES) $(STOPJETFILES) $(EPEM3JFILES) $(QQZTTFILES) \
 	  $(GAMGAMFILES) $(DIRGAMFILES) \
 	  $(WBBMFILES) $(ZBBMFILES) $(FRAGFILES) \
-	  $(TOPDKBSYFILES) $(TOPDECAYFILES) $(NEWTPAIRFILES) \
-	  $(NEWTCHANFILES) $(NEWSCHANFILES) \
+	  $(TOPDKBSYFILES) $(TOPDECAYFILES) \
+	  $(GGHZGAFILES) $(ZGAMJETFILES) $(ZGAMGAMFILES) \
+	  $(PWGPLOTSFILES) \
 	  $(CHECKINGFILES)
           
 OTHER = $(INTEGRATEFILES) $(PARTONFILES) $(WPWP2JFILES) $(F90FILES) 
 
-ALLMCFM = $(OTHER) $(OURCODE)
+ALLMCFM = $(OURCODE) $(OTHER) 
 
           
 # CERNLIB libraries for PDFLIB: -lpdflib804 -lmathlib -lpacklib 

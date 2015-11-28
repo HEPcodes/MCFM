@@ -22,17 +22,18 @@
       include 'wts_bypart.f'
       include 'dipolescale.f'
       include 'stopscales.f'
-      include 'qcdcouple.f'
-      include 'ewcouple.f'
       include 'flags.f'
       include 'frag.f'
+      include 'ipsgen.f'
       include 'decay1q2a.f'
+      include 'outputoptions.f'
+      include 'breit.f'
 cz
       integer nproc
       common/nproc/nproc
 cz //
-      integer ih1,ih2,j,k,nd,nmax,nmin,nvec
-      double precision vector(mxdim),W,val,val2,valsum,xint,dot,tmp
+      integer ih1,ih2,j,k,nd,nmax,nmin,nvec,ii
+      double precision vector(mxdim),W,val,val2,valsum,xint,dot,ptmp
       double precision sqrts,fx1(-nf:nf),fx2(-nf:nf),
      . dipfx1(0:maxd,-nf:nf),dipfx2(0:maxd,-nf:nf),
      . fx1_H(-nf:nf),fx2_H(-nf:nf),fx1_L(-nf:nf),fx2_L(-nf:nf)
@@ -47,9 +48,7 @@ cz //
       double precision xmsq_bypart(0:maxd,-1:1,-1:1),xmsqjk,
      . lord_bypart(-1:1,-1:1)
       double precision ptDpg,pbDpg,ptDpb,eik
-      integer n2,n3,sgnj,sgnk
-      double precision mass2,width2,mass3,width3
-      common/breit/n2,n3,mass2,width2,mass3,width3
+      integer sgnj,sgnk
       common/xreal/xreal,xreal2
       common/Rbbmin/Rbbmin
       logical bin,first,failed
@@ -82,6 +81,7 @@ cz //
      . qqb_QQbdk_g,qqb_QQbdk_gs,qqb_gamgam_g
 c     . ,qqb_gamgam_g_mad,qqb_wgam_g_mad,qqb_zgam_g_mad,
 c     . qqb_dirgam_g_mad
+      external dkqqb_ww_g,dkqqb_ww_g_mad
       common/density/ih1,ih2
       common/energy/sqrts
       common/bin/bin
@@ -185,6 +185,10 @@ c--- processes that use "gen4mdk"
       elseif (case .eq. '4ftwdk') then
         npart=6
         call gen4mdk(vector,p,pswt,*999)
+
+      elseif (case .eq. 'Hi_Zga') then
+        npart=4
+        call gen_HZgamj(vector,p,pswt,*999)
                   
 c--- processes that use "gen4mdkrad"     
       elseif (case .eq. 'dk_4ft') then
@@ -192,9 +196,14 @@ c--- processes that use "gen4mdkrad"
         call gen4mdkrad(vector,p,pswt,*999)
                   
 c--- processes that use "gen5"     
-      elseif ( (case .eq. 'Wbbmas') ) then
+      elseif ( (case .eq. 'Wbbmas') 
+     . .or. (case .eq. 'Wttmas')
+     . .or. (case .eq. 'WWqqdk')) then
         npart=5
         call gen5(vector,p,pswt,*999)
+      elseif (case .eq. 'HWWdkW') then
+        npart=5
+        call gen5h(vector,p,pswt,*999)
                   
 c--- processes that use "gen6"     
       elseif ( 
@@ -234,6 +243,15 @@ c--- processes that use "gen7m"
         npart=7
 	call gen7m(vector,p,m3,m4,m5,pswt,*999)
 
+c--- processes that use "gen9"     
+      elseif ( (case .eq. 'qq_ttw')) then 
+        npart=9
+	call gen9_rap(vector,p,pswt,*999)
+
+      elseif ( (case .eq. 'ttwldk')) then 
+        npart=9
+	call gen9dk_rap(vector,p,pswt,*999)
+
 c--- processes that use "gen_njets" with an argument of "2"     
       elseif ( (case .eq. 'W_1jet')
      .    .or. (case .eq. 'Wcjet0')
@@ -267,7 +285,46 @@ c--- processes that use "gen_phots_jets"
       elseif ( (case .eq. 'Wgamma')
      .   .or.  (case .eq. 'Zgamma')   ) then
         npart=4
-        call gen_phots_jets(vector,1,1,p,pswt,*999)
+	if (new_pspace) then
+          call gen_vgamj(vector,p,pswt,*999)
+        else
+          call gen_phots_jets(vector,1,1,p,pswt,*999)
+        endif
+	          
+c--- special treatment for Z+gamma+gamma 
+      elseif (case .eq. 'Z_2gam') then
+        npart=5
+        if  (ipsgen .eq. 1) then
+            call gen_phots_jets(vector,2,1,p,pswt,*999) !AA+AB
+        elseif  (ipsgen .eq. 2) then
+            call gen_phots_jets_dkrad2(vector,2,1,p,pswt,*999) !BB+BC
+        elseif  (ipsgen .eq. 3) then
+           call gen_phots_jets_dkrad(vector,2,1,p,pswt,*999) !CC+AC+CD
+        elseif  (ipsgen .eq. 4) then
+           call gen_phots_jets_dkrad(vector,2,1,p,pswt,*999) !DD+AD+BD
+           do ii=1,4
+              ptmp=p(5,ii)
+              p(5,ii)=p(6,ii)
+              p(6,ii)=ptmp
+           enddo
+        else
+           write(6,*) 'Parameter ipsgen should be 1 or 2 or 3 or 4'
+           write(6,*) 'ipsgen = ',ipsgen
+           stop
+        endif
+                  
+c--- special treatment for Z+gamma+jet
+      elseif (case .eq. 'Zgajet') then
+        npart=5
+        if     (ipsgen .eq. 1) then
+          call gen_phots_jets(vector,1,2,p,pswt,*999)
+        elseif (ipsgen .eq. 2) then
+          call gen_phots_jets_dkrad(vector,1,2,p,pswt,*999)
+	else
+	  write(6,*) 'Parameter ipsgen should be 1 or 2'
+	  write(6,*) 'ipsgen = ',ipsgen
+	  stop
+        endif
                   
 c--- processes that use "gen_stop" with an argument of "1"
       elseif ( (case .eq. 'ttdkay')
@@ -392,9 +449,17 @@ c        call compare_madgraph(p,qqb_zgam_g,qqb_zgam_g_mad)
 c         call singcheck(qqb_zgam_g,qqb_zgam_gs,p)   ! Checked 01/04/11
         if (includereal) call qqb_zgam_g(p,msq)      
         call qqb_zgam_gs(p,msqc)
-c        write(6,*) msqc 
-c        pause
+      elseif (case .eq. 'Z_2gam') then
+        if (includereal) call qqb_zaa_g(p,msq)      
+        call qqb_zaa_gs(p,msqc)
+      elseif (case .eq. 'Zgajet') then
+        if (includereal) call qqb_zaj_g(p,msq)      
+        call qqb_zaj_gs(p,msqc)
       elseif (case .eq. 'Wbbmas') then
+c        call singcheck(qqb_wbbm_g,qqb_wbbm_gs,p)     ! Checked 10/21/10
+	if (includereal) call qqb_wbbm_g(p,msq)      
+        call qqb_wbbm_gs(p,msqc)      
+      elseif (case .eq. 'Wttmas') then
 c        call singcheck(qqb_wbbm_g,qqb_wbbm_gs,p)     ! Checked 10/21/10
 	if (includereal) call qqb_wbbm_g(p,msq)      
         call qqb_wbbm_gs(p,msqc)      
@@ -426,6 +491,10 @@ c        call singcheck(qqb_zbb_g,qqb_zbb_gs,p)     ! Checked 11/30/01
 c        call singcheck(qqb_ww_g,qqb_ww_gs,p)       ! Checked 11/30/01
         if (includereal) call qqb_ww_g(p,msq)      
         call qqb_ww_gs(p,msqc)      
+      elseif (case .eq. 'WWqqdk') then
+c        call compare_madgraph(p,dkqqb_ww_g,dkqqb_ww_g_mad)
+        if (includereal) call dkqqb_ww_g(p,msq)      
+        call dkqqb_ww_gs(p,msqc)      
       elseif (case .eq. 'WZbbar') then
 c        call singcheck(qqb_wz_g,qqb_wz_gs,p)       ! Checked 12/05/01
         if (includereal) call qqb_wz_g(p,msq)      
@@ -494,10 +563,20 @@ c         call singcheck(gg_hg,gg_h_gs,p)       ! Checked 28/02/03
 c         call singcheck(gg_hgamgamg,gg_hgamgam_gs,p)
          if (includereal) call gg_hgamgamg(p,msq)
          call gg_hgamgam_gs(p,msqc)
-      elseif (case .eq. 'HWW_4l') then
+       elseif (case .eq. 'Hi_Zga') then
+c         call singcheck(gg_hzgamg,gg_hzgam_gs,p)
+         if (includereal) call gg_hzgamg(p,msq)
+         call gg_hzgam_gs(p,msqc)
+      elseif ((case .eq. 'HWW_4l') .or. (case .eq. 'HWW2lq')) then
 c        call singcheck(qqb_hww_g,qqb_hww_gs,p)
         if (includereal) call qqb_hww_g(p,msq)      
-        call qqb_hww_gs(p,msqc)     
+        call qqb_hww_gs(p,msqc)      
+      elseif (case .eq. 'HWWdkW') then
+        if (includereal) call dkqqb_hww_g(p,msq)      
+        call dkqqb_hww_gs(p,msqc)      
+      elseif (case .eq. 'HWWdkW') then
+        if (includereal) call dkqqb_hww_g(p,msq)      
+        call dkqqb_hww_gs(p,msqc)      
       elseif (case .eq. 'HZZ_4l') then
 c        call singcheck(qqb_hzz_g,qqb_hzz_gs,p)
         if (includereal) call qqb_hzz_g(p,msq)      
@@ -571,9 +650,24 @@ c        call singcheck(qqb_w_twdk_g,qqb_w_twdk_gs,p)		! Checked 2/4/05
         if (includereal) call qqb_w_twdk_g(p,msq)
         call qqb_w_twdk_gs(p,msqc)
       elseif (case .eq. 'Wtdkay') then
-c        call singcheck(qqb_w_twdk_gdk,qqb_w_twdk_gsdk,p)	! Checked 2/2/05
-        if (includereal) call qqb_w_twdk_gdk(p,msq)
-        call qqb_w_twdk_gsdk(p,msqc)
+        if (includereal) call dkqqb_w_twdk_g(p,msq)
+        call dkqqb_w_twdk_gs(p,msqc)
+      elseif ( (case .eq. 'qq_ttw')) then 
+        if (includereal) call qqb_ttw_g(p,msq)
+        call qqb_ttw_gs(p,msqc)
+      elseif ( (case .eq. 'ttwldk')) then
+        if     (decay1q2a .eq. 1) then
+c------ radiation in the decay of the top quark
+	  if (includereal) call dk1qqb_ttw_g(p,msq)
+          call dk1qqb_ttw_gs(p,msqc)
+	elseif (decay1q2a .eq. 2) then 
+c------ radiation in the decay of the anti-top quark
+	  if (includereal) call dk2qqb_ttw_g(p,msq)
+          call dk2qqb_ttw_gs(p,msqc)
+	else
+	  write(6,*) 'Problem generating PS, decay1q2a=',decay1q2a
+	  stop
+	endif
       elseif (case .eq. 'ggfus1') then
 c        call singcheck(gg_hgg,gg_hg_gs,p)
         if (includereal) call gg_hgg(p,msq)
@@ -980,6 +1074,19 @@ c---if we're binning, add to histo too
           call getptildejet(nd,pjet)
           call dotem(nvec,pjet,s)
           call nplotter(pjet,val,val2,nd)
+c--- POWHEG-style output if requested
+	  if (writepwg) then
+            if (nd .eq. 0) then 
+              call pwhgplotter(p,pjet,val,nd)
+            else
+              do j=1,mxpart
+              do k=1,4
+              q(j,k)=ptilde(nd,j,k)
+              enddo
+              enddo
+              call pwhgplotter(q,pjet,val,nd)
+            endif
+	  endif
         endif
 c---otherwise, skip contribution
  997    continue

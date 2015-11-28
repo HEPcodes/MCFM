@@ -382,7 +382,7 @@ c     &' SET ORDER X Y DY ')
      &' SET LIMITS X ',F10.5,' ',F10.5,/1X,
      &' SET ORDER X Y')
       DO 1 J=1,NBIN(N)
-      IF(HIST(N,J).EQ.0.) GO TO 1
+c      IF(HIST(N,J).EQ.0.) GO TO 1
       if (scaleplots) then
       WRITE(99,'(3(2X,G13.6))')  
      & XHIS(N,J),scalefac*HIST(N,J),HIST(M,J)
@@ -522,7 +522,7 @@ c--- added these variables to scale plots at intermediate steps
       DO 1 J=1,NBIN(N)
       IF(HIST(N,J).EQ.0.) GO TO 1
       if (scaleplots) then
-      WRITE(97,'(3(2X,G13.6))')  
+      WRITE(96,'(3(2X,G13.6))')  
      & XHIS(N,J),scalefac*HIST(N,J),HIST(M,J)
       else
 C         write(96,*) ' ', histoid(1:idlength), ' -> Fill(', 

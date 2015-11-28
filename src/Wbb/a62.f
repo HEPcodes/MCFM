@@ -12,12 +12,13 @@
       include 'zprods_decl.f'
       integer j1,j2,j3,j4,j5,j6
       character*2 st
-      double complex a6,aa6sf,aa6uv
+      double complex a6,aa6sf,aa6tp,aa6uv
 
 c----Includes ultraviolet subtraction aa6uv (with +ve sign since
 c--- it appears in interference terms,e.g. 1234 x 3214)
-      call a6routine(st,j1,j2,j3,j4,j5,j6,za,zb,aa6sf,aa6uv) 
-      a62=a6(st,j1,j2,j3,j4,j5,j6,za,zb)/xnsq+aa6sf*dble(nf)/xn+aa6uv
+      call a6routine(st,j1,j2,j3,j4,j5,j6,za,zb,aa6sf,aa6tp,aa6uv) 
+      a62=a6(st,j1,j2,j3,j4,j5,j6,za,zb)/xnsq
+     & +(aa6sf*dble(nf)-aa6tp)/xn+aa6uv
 
       if (st .eq. 'pp') then
       a62=a62+a6('pm',j1,j3,j2,j4,j5,j6,za,zb)*(one+one/xnsq)

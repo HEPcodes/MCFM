@@ -19,6 +19,7 @@ c--- and returns the result in msqx(col,i,j,k,l)
       include 'zprods_com.f'
       include 'flags.f'
       include 'lc.f'
+      include 'part.f'
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),
      .                 facgg,facqq,prop,Vfac
       double precision qqbWgg2,qbqWgg2,qgWqg2,qbgWqbg2,
@@ -49,11 +50,9 @@ c--- and returns the result in msqx(col,i,j,k,l)
      .               qbq1(6),qbq2(6),qbq3(6),qbq4(6),
      .               qbqb1(4),qbqb2(4),qbqb3(4),qbqb4(4)
       integer rcolourchoice
-      character*4 part
       double precision mqq(0:2,fn:nf,fn:nf)
       double precision msqx(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf)
       double precision msqx_cs(0:2,-nf:nf,-nf:nf)
-      common/part/part
 c--- we label the amplitudes by helicity (qqb1 ... qqb4)
 c--- and by type of contribution qqb(1) ... qqb(n)
       integer i,j,k,l,m,n1,n2,sw(0:2)
@@ -786,11 +785,13 @@ c--- 2-quark, 2-gluon contribution to matrix elements
           msq(j,k)=msq(j,k)+Vsq(j,k)*qqbWgg2
           do i=0,2
             msqx_cs(i,j,k)=Vsq(j,k)*qqbWgg2_cs(i)
+            msqx(i,j,k,0,0)=Vsq(j,k)*qqbWgg2_cs(i)
           enddo
       elseif ((j .lt. 0) .and. (k .gt. 0)) then
           msq(j,k)=msq(j,k)+Vsq(j,k)*qbqWgg2
           do i=0,2
             msqx_cs(i,j,k)=Vsq(j,k)*qbqWgg2_cs(i)
+            msqx(i,j,k,0,0)=Vsq(j,k)*qbqWgg2_cs(i)
           enddo
       elseif ((j .gt. 0) .and. (k .eq. 0)) then
           msq(j,k)=msq(j,k)+

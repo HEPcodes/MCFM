@@ -15,6 +15,7 @@
       include 'PDFerrors.f'
       include 'wts_bypart.f'
       include 'nflav.f'
+      include 'ipsgen.f'
       integer ih1,ih2,j,k,sgnj,sgnk,nvec,pflav,pbarflav
       double precision r(mxdim),wgt,pswt,rscalestart,fscalestart,
      & p(mxpart,4),xx(2),flux,sqrts,xmsq_bypart(-1:1,-1:1),
@@ -24,6 +25,8 @@
       logical bin,first,includedipole,creatent,dswhisto
       external qqb_w_g,qqb_z1jet,qqb_dirgam,qqb_2jnogg
       external qqb_2j_t,qqb_2j_s
+      external qqb_z2jetx
+      external qqb_zaa,qqb_zaj
       common/density/ih1,ih2
       common/energy/sqrts
       common/bin/bin
@@ -40,9 +43,8 @@
          fscalestart=facscale
       endif
 
-       !-initialise fragmenation variables 
+!-initialise fragmenation variables 
 
-      
       fragint=0d0
 
       W=sqrts**2
@@ -68,6 +70,25 @@ c---  processes that use "gen3jet"
          z_frag=r(5) 
          frag=.true. 
 
+      elseif( (case .eq. 'Z_2gam')) then 
+         npart=4
+         if  (ipsgen .eq. 1) then
+             call gen_phots_jets(r,2,0,p,pswt,*999) 
+         elseif  (ipsgen .eq. 2) then
+             call gen_phots_jets_dkrad(r,2,0,p,pswt,*999) 
+         else
+            write(6,*) 'Parameter ipsgen should be 1 or 2'
+            write(6,*) 'ipsgen = ',ipsgen
+            stop
+         endif
+         z_frag=r(11) 
+         frag=.true. 
+         
+      elseif( (case .eq. 'Zgajet')) then 
+         npart=4
+         call gen_phots_jets(r,1,1,p,pswt,*999) 
+         z_frag=r(11) 
+         frag=.true. 
 
       else
         write(6,*) 'Fragmentation PS not available for this process.'
@@ -121,6 +142,12 @@ c-------------------------- CALCULATE MATRIX ELEMENTS --------------------------
       elseif (case .eq. 'dirgam') then 
          call qqb_dirgam_fragdips(p,qqb_2j_t,qqb_2j_s,msqdips)
          call qqb_dirgam_frag(p,msq)
+      elseif(case.eq.'Z_2gam') then 
+         call qqb_zaa_frag(p,msq) 
+         call qqb_zaa_fragdips(p,qqb_zaj,msqdips) 
+      elseif(case.eq.'Zgajet') then 
+         call qqb_zaj_frag(p,msq) 
+         call qqb_zaj_fragdips(p,qqb_z2jetx,msqdips)
       else
         write(6,*) 'Fragmentation MEs not available for this process.'
 	write(6,*) 'case = ',case
@@ -134,6 +161,8 @@ c-------------------------- CALCULATE MATRIX ELEMENTS --------------------------
       enddo 
 
 c--------------------------------------- INCLUDE PDF ---------------------------
+
+    
 
       currentPDF=0
 

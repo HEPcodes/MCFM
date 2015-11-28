@@ -26,17 +26,17 @@
       include 'initialscales.f'
       include 'dipolescale.f'
       include 'facscale.f'
+      include 'breit.f'
       double precision p(mxpart,4),ptrans(mxpart,4),sub(4),subv,vecsq,
      . x,omx,z,omz,y,omy,u,omu,pij,pik,pjk,dot,q(4),qsq,qij(4),qijsq,
      . vec(4),root,vtilde,pold(mxpart,4),pext(mxpart,4)
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),zp,zm
       double precision mksq,misq,mjsq,mijsq,muisq,mujsq,muksq,
      . muijsq,kappa,vijk,vtijk,viji,ztmi,ztmj,muk,mqsq,subv_gg,subv_gq
-      double precision yp,mass2,width2,mass3,width3
-      integer nd,ip,jp,kp,nu,j,jproc,n2,n3,ipt
+      double precision yp
+      integer nd,ip,jp,kp,nu,j,jproc,ipt
       logical incldip(0:maxd)
       common/incldip/incldip
-      common/breit/n2,n3,mass2,width2,mass3,width3
 c--- common block to handle the possibility of multiple definitions
 c--- of subv in the final-final section
       common/subv_ff/subv_gg,subv_gq
@@ -107,6 +107,18 @@ c--- reduce # of momenta from 8 to 6
         enddo
       endif
       
+      if (case .eq. 'qq_ttw') then
+c--- reduce # of momenta from 11 to 7
+        do nu=1,4
+          p(3,nu)=pold(9,nu)
+          p(4,nu)=pold(10,nu)
+          p(5,nu)=pold(3,nu)+pold(4,nu)+pold(5,nu)
+          p(6,nu)=pold(6,nu)+pold(7,nu)+pold(8,nu)
+          p(7,nu)=pold(11,nu)
+          p(8,nu)=0d0
+        enddo
+      endif
+      
 C---Initialize the dipoles to zero
       do j=1,4
       sub(j)=0d0
@@ -144,7 +156,8 @@ C---Modification so that only close to singular subtracted
         if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')
      .  .or.(case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')
      .  .or.(case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')
-     &  .or.(case .eq. 'tt_bbu') .or. (case .eq. '4ftwdk')) then
+     &  .or.(case .eq. 'tt_bbu') .or. (case .eq. '4ftwdk')
+     &  .or.(case .eq. 'qq_ttw')) then
           if     ((case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')) then
             call extend_trans_wt(pold,p,ptrans,pext)
           elseif ((case .eq. 'tt_bbl') 
@@ -153,6 +166,8 @@ C---Modification so that only close to singular subtracted
             call extend_trans_ttb(pold,p,ptrans,pext)
           elseif (case .eq. '4ftwdk') then
             call extend_trans_stopb(pold,p,ptrans,pext)
+          elseif ((case .eq. 'qq_ttw')) then 
+            call extend_trans_ttw(pold,p,ptrans,pext)
           else
             call extend_trans(pold,p,ptrans,pext)
           endif
@@ -210,7 +225,8 @@ C---transform the momenta so that only the first npart+1 are filled
         if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')
      .  .or.(case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')
      .  .or.(case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')
-     &  .or.(case .eq. 'tt_bbu') .or. (case .eq. '4ftwdk')) then
+     &  .or.(case .eq. 'tt_bbu') .or. (case .eq. '4ftwdk')
+     &  .or.(case .eq. 'qq_ttw')) then
           if     ((case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')) then
             call extend_trans_wt(pold,p,ptrans,pext)
           elseif ((case .eq. 'tt_bbl') 
@@ -219,6 +235,8 @@ C---transform the momenta so that only the first npart+1 are filled
             call extend_trans_ttb(pold,p,ptrans,pext)
           elseif (case .eq. '4ftwdk') then
             call extend_trans_stopb(pold,p,ptrans,pext)
+          elseif ((case .eq. 'qq_ttw')) then 
+            call extend_trans_ttw(pold,p,ptrans,pext)
           else
             call extend_trans(pold,p,ptrans,pext)
           endif
@@ -300,7 +318,8 @@ c--- the masses of i and j have been switched
         if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')
      .  .or.(case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')
      .  .or.(case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')
-     &  .or.(case .eq. 'tt_bbu') .or. (case .eq. '4ftwdk')) then
+     &  .or.(case .eq. 'tt_bbu') .or. (case .eq. '4ftwdk')
+     &  .or.(case .eq. 'qq_ttw')) then
           if     ((case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')) then
             call extend_trans_wt(pold,p,ptrans,pext)
           elseif ((case .eq. 'tt_bbl') 
@@ -309,6 +328,8 @@ c--- the masses of i and j have been switched
             call extend_trans_ttb(pold,p,ptrans,pext)
           elseif (case .eq. '4ftwdk') then
             call extend_trans_stopb(pold,p,ptrans,pext)
+          elseif ((case .eq. 'qq_ttw')) then 
+            call extend_trans_ttw(pold,p,ptrans,pext)
           else
             call extend_trans(pold,p,ptrans,pext)
           endif
@@ -461,7 +482,8 @@ C---calculate the ptrans-momenta
         if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')
      .  .or.(case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')
      .  .or.(case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')
-     &  .or.(case .eq. 'tt_bbu') .or. (case .eq. '4ftwdk')) then
+     &  .or.(case .eq. 'tt_bbu') .or. (case .eq. '4ftwdk')
+     &  .or.(case .eq. 'qq_ttw')) then
           if     ((case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')) then
             call extend_trans_wt(pold,p,ptrans,pext)
           elseif ((case .eq. 'tt_bbl') 
@@ -470,6 +492,8 @@ C---calculate the ptrans-momenta
             call extend_trans_ttb(pold,p,ptrans,pext)
           elseif (case .eq. '4ftwdk') then
             call extend_trans_stopb(pold,p,ptrans,pext)
+          elseif ((case .eq. 'qq_ttw')) then 
+            call extend_trans_ttw(pold,p,ptrans,pext)
           else
             call extend_trans(pold,p,ptrans,pext)
           endif

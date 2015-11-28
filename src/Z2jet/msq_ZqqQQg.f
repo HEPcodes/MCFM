@@ -8,8 +8,6 @@
 ************************************************************************
       implicit none
       include 'constants.f'
-      include 'masses.f'
-      include 'sprods_com.f'
       integer Qh,hq,hg,lh,f1,f3,i1,i2,i3,i4,i5,i6,i7,j
       double precision A(2,2,2),B(2,2,2),C(2,2,2),D(2,2,2),E(2,2,2),
      . F(2,2,2),G(2,2,2)
@@ -42,10 +40,6 @@ C---set everything to zero
       enddo
       enddo
       enddo
-
-      if (s(i6,i7) .lt. 4*mbsq) return
-      
-C---exclude the photon pole, 4*mbsq choosen as a scale approx above upsilon 
 
 c---mb1_1234 etc, has 6 indices each with possible values 1 or 2
 C---corresponding to f1,f3,hq,Qh,hg,lh

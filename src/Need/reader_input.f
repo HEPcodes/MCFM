@@ -1,4 +1,4 @@
-      subroutine reader_input
+      subroutine reader_input(inputfile,workdir)
 ************************************************************************
 *   Routine to read in the file input.DAT, which is a consolidated     *
 *   form of all the input files and new to version 3.4 of MCFM         *
@@ -7,6 +7,8 @@
       include 'constants.f'
       include 'debug.f'
       include 'new_pspace.f'
+      include 'couple.f'
+      include 'part.f'
       include 'virtonly.f'
       include 'realonly.f'
       include 'noglue.f'
@@ -27,7 +29,7 @@
       include 'gridinfo.f'
       include 'verbose.f'
       include 'limits.f'
-      include 'workdir.f'
+      include 'werkdir.f'
       include 'jetcuts.f'
       include 'leptcuts.f'
       include 'lhapdf.f'
@@ -41,14 +43,14 @@
       include 'vanillafiles.f'
       include 'frag.f'
       include 'outputoptions.f'
-      character*72 inputfile,getinput
+      include 'breit.f'
+      character*72 workdir,inputfile,getinput
       character*90 line
-      character*4 part
       character*30 runstring
       integer nargs,lenocc,lenarg
       logical spira
       logical creatent,dswhisto,dryrun,makecuts
-      integer nmin,nmax,n2,n3
+      integer nmin,nmax
       integer nproc,ih1,ih2,itmx1,itmx2,ncall1,ncall2,idum,origij
       integer NPTYPE,NGROUP,NSET
       double precision rtsmin,sqrts,factor
@@ -57,12 +59,9 @@
       logical technicalincluded
       double precision ran2,randummy
       double precision cmass,bmass
-      double precision mass2,width2,mass3,width3
-      double precision amz,alphas
+      double precision alphas
       
-      common/couple/amz
       
-      common/breit/n2,n3,mass2,width2,mass3,width3
       
       common/spira/spira
       common/nmin/nmin
@@ -72,7 +71,6 @@
       common/outputflags/creatent,dswhisto      
 
       common/nproc/nproc
-      common/part/part
       common/runstring/runstring
       common/energy/sqrts
       common/density/ih1,ih2
@@ -93,34 +91,9 @@
       
       verbose=.true.
 
+      werkdir=workdir
 c--- work out the name of the input file and open it
 
-      nargs=iargc()
-      if (nargs .ge. 1) then
-        call getarg(1,inputfile)
-      else
-        inputfile='input.DAT'
-      endif
-      
-      lenarg=lenocc(inputfile)
-
-      if ((lenarg.lt.4).or.(inputfile(lenarg-3:lenarg).ne.'.DAT')) then
-        workdir=inputfile
-c--- truncate if the directory / is included
-        if (workdir(lenarg:lenarg) .eq. '/') then
-           workdir(lenarg:lenarg)=' '
-           lenarg=lenarg-1
-        endif
-        if (nargs .ge. 2) then
-          call getarg(2,getinput)
-          inputfile=workdir(1:lenarg)//'/'//getinput
-        else  
-          inputfile=workdir(1:lenarg)//'/input.DAT'
-        endif
-      else
-        workdir=''
-      endif
-            
       write(6,*) '* Using input file named ',inputfile
 
       open(unit=20,file=inputfile,status='old',err=999)
@@ -150,6 +123,8 @@ c--- flags for the mode of MCFM
       if (verbose) call writeinput(6,' * ',' ','writegnu')
       read(20,*) writeroot
       if (verbose) call writeinput(6,' * ',' ','writeroot')
+      read(20,*) writepwg
+      if (verbose) call writeinput(6,' * ',' ','writepwg')
 
       if (verbose) write(6,*)
       read(20,99) line
@@ -329,8 +304,12 @@ c--- settings for photon processes
       if (verbose) call writeinput(6,' * ',' ','gammpt')
       read(20,*) gammrap
       if (verbose) call writeinput(6,' * ',' ','gammrap')
+      read(20,*) gammpt2
+      if (verbose) call writeinput(6,' * ',' ','gammpt2')
       read(20,*) Rgalmin 
       if (verbose) call writeinput(6,' * ',' ','Rgalmin')
+      read(20,*) Rgagamin 
+      if (verbose) call writeinput(6,' * ',' ','Rgagamin')
       read(20,*) cone_ang
       if (verbose) call writeinput(6,' * ',' ','cone_ang')
       read(20,*) epsilon_h
@@ -545,11 +524,14 @@ c--- check that we have a valid value of 'part'
         if    ( (part .eq. 'todk') .and.
      .          ((case .eq. 'bq_tpq') .or. (case .eq. 't_bbar')
      .      .or. (case .eq. 'W_twdk') .or. (case .eq. 'tt_bbl')
-     .      .or. (case .eq. 'tt_bbh') .or. (case .eq. '4ftwdk')) ) then
+     .      .or. (case .eq. 'tt_bbh') .or. (case .eq. '4ftwdk')
+     .      .or. (case .eq. 'HWW2lq') .or. (case .eq. 'qq_ttw')
+     .      .or. (case .eq. 'WWqqbr')) ) then
 c--- this is an allowed combination
         elseif ( (part .eq. 'frag') .and.
      .          ((case .eq. 'Wgamma') .or. (case .eq. 'Zgamma')
-     &      .or .(case .eq. 'gamgam') .or. (case .eq. 'dirgam')) ) then
+     &      .or .(case .eq. 'gamgam') .or. (case .eq. 'dirgam')
+     &      .or .(case .eq. 'Z_2gam') .or. (case .eq. 'Zgajet')) ) then
 c--- this is an allowed combination
         else 
           write(6,*) 'part=',part,' is not a valid option'

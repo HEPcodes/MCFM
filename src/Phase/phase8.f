@@ -4,18 +4,17 @@
       include 'masses.f'
       include 'mxdim.f'
       include 'process.f'
+      include 'breit.f'
 c******* generate phase space for 2-->4 process
 c******* r(mxdim),p1(4),p2(4) are inputs reversed in sign from physical values 
 c---- phase space for -p1-p2 --> p3+p4+p5+p6+p7+p8+p9+p10
 c---- with all 2 pi's (ie 1/(2*pi)^20)
-      integer n2,n3,nu,iflip,j
+      integer nu,iflip,j
       double precision r(mxdim)
       double precision p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4),p8(4)
      . ,p9(4),p10(4),p12(4),pa(4),pb(4),
      . p345(4),p678(4),p34(4),p78(4),
-     . ph(4),smin,wt,wt0,wt12,wtxh,wt345,wt678,wt34,wt78,wth,
-     . mass2,width2,mass3,width3,dkmass
-      common/breit/n2,n3,mass2,width2,mass3,width3 
+     . ph(4),smin,wt,wt0,wt12,wtxh,wt345,wt678,wt34,wt78,wth,dkmass
       parameter(wt0=1d0/twopi**6)
       data iflip/0/
       save iflip
@@ -30,7 +29,7 @@ c---- with all 2 pi's (ie 1/(2*pi)^20)
       n3=0
       mass2=mt
       width2=twidth
-      call phi1_2(r(1),r(2),r(3),r(4),p12,pb,pa,wt12,*99)
+      call phi1_2bis(r(1),r(2),r(3),r(4),p12,pb,pa,wt12,*99)
 
       n2=1
       n3=1
@@ -43,7 +42,7 @@ c---- with all 2 pi's (ie 1/(2*pi)^20)
         mass3=zmass
         width3=zwidth
         dkmass=0d0
-      elseif (case .eq. 'qq_ttw') then
+      elseif ((case .eq. 'qq_ttw').or. (case .eq. 'ttwldk'))then
         mass3=wmass
         width3=wwidth
         dkmass=0d0

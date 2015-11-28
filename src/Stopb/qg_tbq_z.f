@@ -17,6 +17,7 @@
       include 'PR_new.f'
       include 'noglue.f'
       include 'stopscales.f'
+      include 'breit.f'
       double precision z,p(mxpart,4),dot,metric,Q34sq,
      & xl13,xl14,xl23,xl24,xl34,xl15,xl25,xl15h,xl25h,
      & mbar13,mbar14,mbar23,mbar24,mbar34a,mbar34b,tempgq1,tempgq2,
@@ -26,9 +27,7 @@
      . if_qg,if_gq,
      . if_qq,fi_qq,
      . ason4pi_H,ason4pi_L
-      integer is,n2,n3,nu
-      double precision mass2,width2,mass3,width3
-      common/breit/n2,n3,mass2,width2,mass3,width3
+      integer is,nu
 
           
       Q34sq=0d0

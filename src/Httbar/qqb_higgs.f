@@ -14,22 +14,33 @@ c--- % Mass Higgs Bosons At The SSC,''
 c--- Nucl.\ Phys.\ B {\bf 297}, 221 (1988).
       include 'constants.f'
       include 'masses.f'
-      include 'ewcouple.f'
+      include 'hdecaymode.f'
       include 'sprods_com.f'
       integer j,k
-      double precision msq(-nf:nf,-nf:nf),p(mxpart,4),gg,qg,gq,qq,hbb
-      double precision ehsvm3,ehsvm4,origmbsq
+      double precision msq(-nf:nf,-nf:nf),p(mxpart,4),gg,qg,gq,qq,hdecay
+      double precision ehsvm3,ehsvm4,origmbsq,s34
+      double precision mb_eff,mt_eff,massfrun,msqhtautau,msqgamgam
+      s34=(p(3,4)+p(4,4))**2
+     & -(p(3,1)+p(4,1))**2-(p(3,2)+p(4,2))**2-(p(3,3)+p(4,3))**2
 
-c--- matrix element for H -> bbbar
-      hbb=xn*gw**2*0.5d0*mbsq/wmass**2*(s(3,4)-4d0*mb**2)/
-     .     ((s(3,4)-hmass**2)**2+(hmass*hwidth)**2)
-
+C   Deal with Higgs decay
+      if (hdecaymode == 'tlta') then
+          call htautaudecay(p,3,4,hdecay)
+      elseif (hdecaymode == 'bqba') then
+          call hbbdecay(p,3,4,hdecay)
+      elseif (hdecaymode == 'gaga') then
+          hdecay=msqgamgam(hmass)
+      else
+      write(6,*) 'Unimplemented process in qqb_higgs'
+      stop
+      endif
+      hdecay=hdecay/((s34-hmass**2)**2+(hmass*hwidth)**2)
       origmbsq=mbsq
       mbsq=mt**2
-      gg=+avegg*ehsvm3(s(1,2),s(1,5),s(2,5))*hbb
-      qq=+aveqq*ehsvm4(s(1,2),s(1,5),s(2,5))*hbb
-      qg=-aveqg*ehsvm4(s(1,5),s(1,2),s(2,5))*hbb
-      gq=-aveqg*ehsvm4(s(2,5),s(1,5),s(1,2))*hbb
+      gg=+avegg*ehsvm3(s(1,2),s(1,5),s(2,5))*hdecay
+      qq=+aveqq*ehsvm4(s(1,2),s(1,5),s(2,5))*hdecay
+      qg=-aveqg*ehsvm4(s(1,5),s(1,2),s(2,5))*hdecay
+      gq=-aveqg*ehsvm4(s(2,5),s(1,5),s(1,2))*hdecay
       mbsq=origmbsq
 
       do j=-nf,nf    

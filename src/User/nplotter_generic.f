@@ -1,14 +1,14 @@
       subroutine bookplot(n,tag,titlex,var,wt,wt2,xmin,xmax,dx,llplot) 
       implicit none
       include 'nplot.f'
+      include 'part.f'
       integer n
       character*(*) titlex
       character*3 llplot
-      character*4 tag,part
+      character*4 tag
       double precision var,wt,wt2,xmin,xmax,dx
       logical creatent,dswhisto
       common/outputflags/creatent,dswhisto
-      common/part/part
 
       if     (tag .eq. 'book') then
         if (dswhisto .eqv. .false.) then
@@ -286,6 +286,7 @@ c---  are handled with reference to nproc
       elseif ((case .eq. 'WWqqbr') .or. (case .eq. 'WWnpol')
      .    .or.(case .eq. 'WZbbar') .or. (case .eq. 'ZZlept')
      .    .or.(case .eq. 'HWW_4l') .or. (case .eq. 'HZZ_4l')
+     .    .or.(case .eq. 'HWW2lq') 
      .    .or.(case .eq. 'HWW_tb') .or. (case .eq. 'HWWint')
      .    .or.(case .eq. 'HZZ_tb') .or. (case .eq. 'HZZint')
      .    .or.(case .eq. 'HWWjet') .or. (case .eq. 'qq_HWW')
@@ -293,6 +294,9 @@ c---  are handled with reference to nproc
      .    .or.(case .eq. 'HWWjet') .or. (case .eq. 'HZZjet')
      .    .or.(case .eq. 'HWW2jt') .or. (case .eq. 'HZZ2jt')
      .    .or.(case .eq. 'HWW3jt') .or. (case .eq. 'HZZ3jt')) then
+        eventpart=6+jets
+      elseif (((case .eq. 'WHbbar') .or. (case .eq. 'ZHbbar'))
+     .         .and. (removebr)) then
         eventpart=6+jets
       elseif ((case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')
      .   .or. (case .eq. 'tt_bbu') .or. (case .eq. 'tt_ldk')) then
@@ -307,6 +311,8 @@ c---  are handled with reference to nproc
         eventpart=8+jets
       endif
       if (nproc .eq. 73) eventpart=4+jets
+      if (case .eq. 'Hi_Zga') eventpart=5+jets
+      if (case .eq. 'qq_ttw') eventpart=11
       
 c--- this variable should be set to .true. when the jets are reordered
 c---  according to their pt (or Et)
@@ -557,6 +563,15 @@ c--- set-up variables to catch b's
             elseif (nproc .eq. 103) then
 c--- set b-quarks to 5 and 6 arbitrarily: if you're interested in
 c--- this process, these should be set up properly 
+              ib1=5
+              ib2=6
+              ptb1=pt(ib1,p)
+              ptb2=pt(ib2,p)
+              etab1=etarap(ib1,p)
+              etab2=etarap(ib2,p)
+              rbb=r(p,ib1,ib2)
+            elseif (case .eq. 'qq_ttw') then
+c--- set b-quarks to 5 and 6: this should have been ensured by jetreorder.f
               ib1=5
               ib2=6
               ptb1=pt(ib1,p)

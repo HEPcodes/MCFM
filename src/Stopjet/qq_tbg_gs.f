@@ -23,6 +23,7 @@
       include 'qqgg.f'
       include 'nflav.f'
       include 'stopscales.f'
+      include 'breit.f'
       double precision dot,e15,e23,e24,e34,e25,e13,e14,corrL,corrH
       double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf)
       double precision
@@ -41,9 +42,7 @@
      . dummyv(-nf:nf,-nf:nf),dsubv,
      . subv_gg,subv_gq
       integer j,k,nd
-      double precision mass2,width2,mass3,width3,oldmass2
-      integer n2,n3
-      common/breit/n2,n3,mass2,width2,mass3,width3
+      double precision oldmass2
       common/subv_ff/subv_gg,subv_gq
       external qq_tbg,qq_tbg_gvec,donothing_gvec
 

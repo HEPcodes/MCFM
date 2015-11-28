@@ -3,15 +3,17 @@ C---generate two particle phase space and x1,x2 integration
 C---p1+p2 --> p3+p4
       implicit none
       include 'constants.f'
+      include 'limits.f'
       include 'mxdim.f'
-      integer n2,n3,j,nu
+      include 'hdecaymode.f'
+      include 'masses.f'
+      include 'breit.f'
+      integer j,nu
 
-      double precision r(mxdim),p(mxpart,4),xx(2)
+      double precision r(mxdim),p(mxpart,4),xx(2),mass
       double precision sqrts,ymax,yave,ydif,xjac,y3,y4,phi,wt0,wt2,w3,vs
       double precision vsqmin,vsqmax,pt,s34,xmin,rtshat,udif,trmass,beta
       common/energy/sqrts
-      double precision mass2,width2,mass3,width3 
-      common/breit/n2,n3,mass2,width2,mass3,width3 
       parameter(wt0=1d0/16d0/pi)
       common/x1x2/xx
 
@@ -22,19 +24,34 @@ C---p1+p2 --> p3+p4
       enddo   
       
       wt2=0d0
-        
-      vsqmax=1d0/(4d0*mass2**2)
-      vsqmin=1d0/sqrts**2
-      xmin=vsqmin/vsqmax
-      vs=(vsqmax-vsqmin)*r(3)+vsqmin
-      s34=1/vs
-      w3=(vsqmax-vsqmin)*s34**2
-
+      
+      if (n3 .eq. 1) then
+c--- generate s34 according to a Breit-Wigner, for gg->H 
+        call breitw(r(3),wsqmin,wsqmax,mass3,width3,s34,w3)
+	if     (hdecaymode .eq. 'bqba') then
+	  mass=mb
+	elseif (hdecaymode .eq. 'tlta') then
+	  mass=mtau
+	else
+	  write(6,*) 'Unanticipated hdecaymode in gen2m: ',hdecaymode
+	  stop
+	endif
+      else
+c--- no resonance, for tt~,bb~,cc~
+	mass=mass2
+        vsqmax=1d0/(4d0*mass**2)
+        vsqmin=1d0/sqrts**2
+        xmin=vsqmin/vsqmax
+        vs=(vsqmax-vsqmin)*r(3)+vsqmin
+        s34=1/vs
+        w3=(vsqmax-vsqmin)*s34**2
+      endif
+      
       rtshat=dsqrt(s34)
       ymax=dlog(sqrts/rtshat)
       yave=ymax*(two*r(1)-1d0)      
 c----udif=tanh(ydif)
-      beta=dsqrt(1d0-4d0*mass2**2/s34)
+      beta=dsqrt(1d0-4d0*mass**2/s34)
       udif=beta*(two*r(2)-1d0)
       ydif=half*dlog((1d0+udif)/(1d0-udif))
       xjac=four*ymax*beta
@@ -57,7 +74,7 @@ c----udif=tanh(ydif)
         return 1 
       endif
 
-      pt=dsqrt(trmass**2-mass2**2)
+      pt=dsqrt(trmass**2-mass**2)
           
       p(1,4)=-0.5d0*xx(1)*sqrts
       p(1,1)=0d0
@@ -82,7 +99,7 @@ c----udif=tanh(ydif)
       wt2=wt0*xjac/sqrts**2
 
 c      write(6,*) 's34',s34
-c      write(6,*) 's34-4d0*mass2**2',s34-4d0*mass2**2
+c      write(6,*) 's34-4d0*mass**2',s34-4d0*mass**2
 c      write(6,*) 'wsqmax',wsqmax
 c      write(6,*) 'ymax',ymax
 c      write(6,*) 'wsqmin',wsqmin
@@ -91,7 +108,7 @@ c      write(6,*) 'y4',y4
 c      write(6,*) 'xx(1)',xx(1)
 c      write(6,*) 'xx(2)',xx(2)
 c      write(6,*) 'trmass',trmass
-c      write(6,*) 'mass2',mass2
+c      write(6,*) 'mass',mass
 c      write(6,*) 'pt',pt
 c      write(6,*) 's12',2d0*(p(1,4)*p(2,4)-p(1,3)*p(2,3))
 

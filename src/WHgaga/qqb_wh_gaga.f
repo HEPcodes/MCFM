@@ -12,6 +12,7 @@ c                           |    |
 c                           |    --> e^-(p3)+nubar(p4)
 c                           |
 c                           ---> ga(p5)+ga(p6)
+c---- Extension to photon decay contributed by Fabian Stoeckli
       implicit none 
       include 'constants.f'
       include 'masses.f'
@@ -41,12 +42,6 @@ c---calculate the 2 W propagators
       prop=prop*((s(3,4)-wmass**2)**2+(wmass*wwidth)**2)
       
       fac=xn*gwsq**3*wmass**2/prop
-
-c---  Deal with Higgs decay to b-bbar
-C      hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s56-4d0*mb**2)
-C      hdecay=hdecay/((s56-hmass**2)**2+(hmass*hwidth)**2)
-C      fac=fac*hdecay
-C---  REPLACED BY FST FOR H->2PHOTONS
       hdecay=msqgamgam(hmass)/((s56-hmass**2)**2+(hmass*hwidth)**2)
       fac=fac*hdecay
 

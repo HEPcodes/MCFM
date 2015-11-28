@@ -17,6 +17,7 @@ c--- all momenta are incoming
       include 'flags.f'
       include 'msq_cs.f'
       include 'lc.f'
+      include 'part.f'
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),
      .                 facgg,facqq,prop,Vfac
       double precision qqbWgg2,qbqWgg2,qgWqg2,qbgWqbg2,
@@ -39,8 +40,6 @@ c--- all momenta are incoming
      .               qbq1(3),qbq2(3),qbq3(3),qbq4(3),
      .               qbqb1(4),qbqb2(4),qbqb3(4),qbqb4(4)
       integer rcolourchoice
-      character*4 part
-      common/part/part
       common/mqq/mqq
 c--- we label the amplitudes by helicity (qqb1 ... qqb4)
 c--- and by type of contribution qqb(1) ... qqb(n)

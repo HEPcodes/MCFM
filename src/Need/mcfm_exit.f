@@ -8,16 +8,15 @@
       include 'efficiency.f'
       include 'process.f'
       include 'PDFerrors.f'
+      include 'part.f'
       integer j,k,itmx
       double precision xinteg,xinteg_err,minPDFxsec,maxPDFxsec
       double precision PDFerror,PDFperror,PDFnerror
       double precision lord_bypart(-1:1,-1:1),lordnorm,rescale
       double precision ggpart,gqpart,qgpart,qqpart,qqbpart,
      . gqbpart,qbgpart,qbqbpart,qbqpart
-      character*4 part
       logical creatent,dswhisto
       common/outputflags/creatent,dswhisto
-      common/part/part
       common/bypart/lord_bypart
       common/finalpart/ggpart,gqpart,qgpart,qqpart,qqbpart
 

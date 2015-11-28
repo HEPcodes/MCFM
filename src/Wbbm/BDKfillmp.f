@@ -1,4 +1,4 @@
-      subroutine BDKfillmp(k1,k2,k3,k4,k5,k6,za,zb,ASLmp)
+      subroutine BDKfillmp(k1,k2,k3,k4,k5,k6,mq,za,zb,ASLmp)
 ************************************************************************
 *     Author: R.K. Ellis                                               *
 *     August 2010.                                                     *
@@ -8,12 +8,11 @@
       include 'sprods_com.f'
       include 'zprods_decl.f'
       include 'scale.f'
-      include 'masses.f'
       integer k1,k2,k3,k4,k5,k6,e
       double complex Lnrat,xl14,ASLmp(-2:0),C0(-1:0),
      & B0p23(-1:0),B0p3(-1:0),VV(-2:0)
       double complex BDK1211mp,atree,lo,qlI2,qlI3
-      double precision msq,p2Dp3 
+      double precision mqsq,p2Dp3,mq
 
       lo=atree('sl',k3,k2,k1,k4,k5,k6,zb,za)
 
@@ -22,14 +21,14 @@
       VV(-1)=-(dcmplx(1.5d0)+xl14)
       VV(0)=-(dcmplx(4d0)+1.5d0*xl14+0.5d0*xl14**2)
 
-      msq=mb**2
+      mqsq=mq**2
 c      write(6,*) 'BDKFill:musq',musq
       do e=-1,0
-      C0(e)=qlI3(msq,s(k2,k3),msq,zip,msq,msq,musq,e)
-      B0p23(e)=qlI2(s(k2,k3),msq,msq,musq,e)
-      B0p3(e)=qlI2(msq,zip,msq,musq,e)
+      C0(e)=qlI3(mqsq,s(k2,k3),mqsq,zip,mqsq,mqsq,musq,e)
+      B0p23(e)=qlI2(s(k2,k3),mqsq,mqsq,musq,e)
+      B0p3(e)=qlI2(mqsq,zip,mqsq,musq,e)
       enddo
-      p2Dp3=0.5d0*(s(k2,k3)-2d0*mb**2)
+      p2Dp3=0.5d0*(s(k2,k3)-2d0*mqsq)
     
 C---Contribution of Final vertex function (massless case)
 c       ASLmp(-2)=ASLmp(-2)-lo

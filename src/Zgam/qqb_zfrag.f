@@ -30,7 +30,7 @@ c---
       enddo
       enddo
       
-        fsq=zmass**2+half*((pttwo(3,4,p))**2+z_frag**2*pt(5,p)**2)
+      fsq=frag_scale**2
 c---- Generate array D(j) corresponding to MCFM notation 0=gluon 1=up 2=down ....
         do i=0,5
            D(i)=0d0

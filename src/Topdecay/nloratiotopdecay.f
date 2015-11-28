@@ -61,7 +61,7 @@ c--- check to see if result has already been computed
         ho=dgauss(asGamma1int,xlo,xhi,tiny)     
       endif
 
-      nloratiotopdecay=1d0+ho/lo
+      nloratiotopdecay=ho/lo
 
 
 c--- set-up caching variables

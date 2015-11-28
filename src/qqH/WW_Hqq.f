@@ -12,10 +12,11 @@ c                           ---> b(p3)+bbar(p4)
       include 'masses.f'
       include 'ewcouple.f'
       include 'sprods_com.f'
+      include 'hdecaymode.f'
       integer j,k,pn(-nf:nf)
       double precision p(mxpart,4),fac,s34
       double precision msq(-nf:nf,-nf:nf),hdecay,
-     . ud_du,uub_ddb
+     . ud_du,uub_ddb,msqgamgam
       
       data pn/-1,-2,-1,-2,-1,0,1,2,1,2,1/
 
@@ -27,8 +28,20 @@ c                           ---> b(p3)+bbar(p4)
       
       call dotem(6,p,s)
 
-      s34=s(3,4)+2d0*mb**2
-      hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s34-4d0*mb**2) 
+      s34=(p(3,4)+p(4,4))**2
+     & -(p(3,1)+p(4,1))**2-(p(3,2)+p(4,2))**2-(p(3,3)+p(4,3))**2
+
+C   Deal with Higgs decay
+      if (hdecaymode == 'tlta') then
+          call htautaudecay(p,3,4,hdecay)
+      elseif (hdecaymode == 'bqba') then
+          call hbbdecay(p,3,4,hdecay)
+      elseif (hdecaymode == 'gaga') then
+          hdecay=msqgamgam(hmass)
+      else
+      write(6,*) 'Unimplemented process in gg_hgg_v'
+      stop
+      endif
       hdecay=hdecay/((s34-hmass**2)**2+(hmass*hwidth)**2)
       fac=0.25d0*gwsq**3*hdecay
 C Color cancels, 0.25d0 is spin average

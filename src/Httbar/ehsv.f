@@ -23,6 +23,8 @@ C     ehsv:EqnA.10
       double precision hmass2,s,t,u
       double complex w2,w3
       hmass2=hmass**2
+c--- The Fermilab preprint has w2(s), but it makes no difference due
+c--- to symmetrization in ehsva4 above      
       ehsvb4=mbsq/hmass2*(-2d0/3d0
      . +(mbsq/hmass2-0.25d0)*(w2(t)-w2(hmass2)+w3(s,t,u,hmass2)))
       return 

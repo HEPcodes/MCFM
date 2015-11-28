@@ -5,14 +5,13 @@
       implicit none
       include 'masses.f'
       include 'pdlabel.f'
-      double precision amz
+      include 'couple.f'
 * PDFLIB variables
       integer NPTYPE,NGROUP,NSET
       character*20 pdflib_parm(20)
       double precision pdflib_val(20),alphas2
       common/pdflib/NPTYPE,NGROUP,NSET
       
-      common/couple/amz
 
       pdflib_parm(1)='INIT0'
       pdflib_val(1)=0d0

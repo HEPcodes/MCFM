@@ -169,7 +169,6 @@ c      endif
 
       subroutine HWW_cuts_params(in_mh) 
       implicit none 
-      include 'constants.f' 
       double precision mh
       double precision pts,pth,mllmax,phimax
       double precision etmiss_min,eta_max_h,eta_max_s

@@ -8,10 +8,11 @@ c     g(-p1)+g(-p2)-->H(-->  b(p3)+b~(p4))+g(p5)
       include 'masses.f'
       include 'qcdcouple.f'
       include 'ewcouple.f'
+      include 'hdecaymode.f'
       integer j,k,iglue
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4)
       double precision ss,tt,uu,mhsq,hdecay,s(mxpart,mxpart)
-      double precision s34,Asq,fac
+      double precision s34,Asq,fac,msqgamgam
       parameter(iglue=5)
 
       do j=-nf,nf
@@ -22,9 +23,20 @@ c     g(-p1)+g(-p2)-->H(-->  b(p3)+b~(p4))+g(p5)
 
       call dotem(iglue,p,s)
 
-C   Deal withb Higgs decay to b-bbar
-      s34=s(3,4)+2d0*mb**2
-      hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s34-4d0*mb**2) 
+      s34=(p(3,4)+p(4,4))**2
+     & -(p(3,1)+p(4,1))**2-(p(3,2)+p(4,2))**2-(p(3,3)+p(4,3))**2
+
+C   Deal with Higgs decay
+      if (hdecaymode == 'tlta') then
+          call htautaudecay(p,3,4,hdecay)
+      elseif (hdecaymode == 'bqba') then
+          call hbbdecay(p,3,4,hdecay)
+      elseif (hdecaymode == 'gaga') then
+          hdecay=msqgamgam(hmass)
+      else
+      write(6,*) 'Unimplemented process in gg_hg'
+      stop
+      endif
       hdecay=hdecay/((s34-hmass**2)**2+(hmass*hwidth)**2)
 
 

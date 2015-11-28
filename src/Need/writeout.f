@@ -14,6 +14,7 @@
       write(6,'(a3,4e24.16)') 'p8',p(8,1),p(8,2),p(8,3),p(8,4)
       write(6,'(a3,4e24.16)') 'p9',p(9,1),p(9,2),p(9,3),p(9,4)
       write(6,'(a3,4e24.16)') 'p10',p(10,1),p(10,2),p(10,3),p(10,4)
+      write(6,'(a3,4e24.16)') 'p11',p(11,1),p(11,2),p(11,3),p(11,4)
 
       write(6,*) 's12',2d0*dot(p,1,2)
       write(6,*) 's56',2d0*dot(p,5,6)
@@ -24,6 +25,8 @@
       write(6,*) 'sqrt(s9,10)',dsqrt(2d0*dot(p,9,10))
       write(6,*) 'sqrt(s345)', 
      .   dsqrt(2d0*dot(p,3,4)+2d0*dot(p,3,5)+2d0*dot(p,4,5))
+      write(6,*) 'sqrt(s347)', 
+     .   dsqrt(2d0*dot(p,3,4)+2d0*dot(p,3,7)+2d0*dot(p,4,7))
       write(6,*) 'sqrt(s567)', 
      .   dsqrt(2d0*dot(p,5,6)+2d0*dot(p,5,7)+2d0*dot(p,6,7))
       write(6,*) 'sqrt(s348)', 
@@ -96,6 +99,7 @@ c      write(6,*) '     msum4',sum(4)
       write(6,'(a7,e24.16)') 'p8Dp8',dot(p,8,8)
       write(6,'(a7,e24.16)') 'p9Dp9',dot(p,9,9)
       write(6,'(a7,e24.16)') 'p10Dp10',dot(p,10,10)
+      write(6,'(a7,e24.16)') 'p11Dp11',dot(p,11,11)
       write(6,*)
 
       call flush(6)

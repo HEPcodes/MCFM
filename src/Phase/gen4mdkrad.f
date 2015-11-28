@@ -9,17 +9,16 @@ c--- of one of the heavy particles, with radiation included in the decay
       include 'zerowidth.f'
       include 'limits.f'
       include 'phasemin.f'
+      include 'breit.f'
       double precision r(mxdim)
       double precision p(mxpart,4),pswt,smin
       double precision p1(4),p2(4),p12(4),p8(4),p34568(4),
      & p7(4),p3458(4),p345(4),p6(4),wt12,wt34568,wt3458
       double precision p34(4),p5(4),p3(4),p4(4),wt345,wt34
       double precision mtbsq
-      integer nu,n2,n3
+      integer nu
       double precision xjac,p1ext(4),p2ext(4),wt0
       double precision xx(2),tau,x1mx2,surd,lntaum
-      double precision mass2,width2,mass3,width3
-      common/breit/n2,n3,mass2,width2,mass3,width3
       common/pext/p1ext,p2ext
       common/x1x2/xx
       parameter(wt0=1d0/twopi**2)

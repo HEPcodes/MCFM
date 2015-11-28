@@ -8,19 +8,18 @@ c
 c--all momenta incoming
       include 'constants.f'
       include 'masses.f'
-      include 'mb_msbar.f'
+      include 'msbarmasses.f'
       include 'qcdcouple.f'
       include 'ewcouple.f'
       include 'susycoup.f'
       include 'scale.f'
+      include 'part.f'
+      include 'couple.f'
       integer j,k,j1,j2,j3
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),s,amp
-      double precision fac,propsq,hdecay,coupsq,ghbb,coupsq_eff,ghbb_eff
-      double precision amz,mb_eff,massfrun
-      character*4 part
+      double precision fac,propsq,hdecay,coupsq_eff,ghbb_eff
+      double precision mb_eff,massfrun
       logical first
-      common/part/part
-      common/couple/amz
       data first/.true./
       save first
       
@@ -47,7 +46,6 @@ c--- run mb to appropriate scale
       else
         mb_eff=massfrun(mb_msbar,scale,amz,2)
       endif  
-c       mb_eff=mb_msbar
             
       if (first) then
        first=.false.
@@ -59,12 +57,8 @@ c       mb_eff=mb_msbar
        write(6,*) '****************************************************'   
       endif      
             
-c--- our definition
-c      ghbb=sqrt(esq*mbsq/(xw*(1d0-xw)))/2d0/zmass
-c--- definition according to Maltoni, Willenbrock
-      ghbb=dsqrt(esq/xw)*mb/2d0/wmass
-      coupsq=susycoup**2*ghbb**2
-      hdecay=coupsq*2d0*(s(3,4)-4d0*mb**2)*xn 
+      call hbbdecay(p,3,4,hdecay)
+      hdecay=hdecay*susycoup**2
       propsq=1d0/((s(3,4)-hmass**2)**2+(hmass*hwidth)**2)
 c--- The _eff couplings include the running mass
 c--- We need to separate these from the factors associated with the

@@ -15,22 +15,38 @@ C
       include 'ewcouple.f'
       include 'zprods_com.f'
       include 'qcdcouple.f'
+      include 'couple.f'
+      include 'part.f'
       include 'masses.f'
+      include 'msbarmasses.f'
+      include 'hdecaymode.f'
       
       integer j,k,nu
       double precision msq(-nf:nf,-nf:nf),pin(mxpart,4),p(mxpart,4)
-      double precision pw1(4),pw2(4),p12(4),q(4),a(4),r(4),b(4),h(4),
+      double precision pw1(4),pw2(4),q(4),a(4),r(4),b(4),h(4),
      & q1(4),q2(4),a1(4),a2(4)
-      double precision shat,sh,sw1,sw2,qDq,aDa,rDr,bDb,densq,
+      double precision sh,sw1,sw2,qDq,aDa,rDr,bDb,densq,
      . p3Dp5,p6Dp8,q1Dq1,q2Dq2,a1Da1,a2Da2
-      double precision wtqqb,wtgg,hdecay
+      double precision wtqqb,wtgg,hdecay,mt_eff,massfrun
       double precision gamr1,gamr2,gamb1,gamb2,gamq4,gama7,dot
-      double precision fac,facgg,denr,denb,denq1,denq2,dena1,dena2
-      double precision p1Dr,p2Dr,p1Db,p2Db,p4Dq,p7Da
-
-
+      double precision fac,facqq,facgg,denr,denb,denq1,denq2,dena1,dena2
+      double precision p1Dr,p2Dr,p1Db,p2Db,p4Dq,p7Da,msqgamgam
       integer q4,a7,r1,r2,b1,b2
       parameter(q4=3,a7=5,r1=6,r2=8,b1=9,b2=10)
+      logical first
+      data first/.true./
+      save first,mt_eff
+
+      if (first) then
+c--- run mt to appropriate scale
+        if (part .eq. 'lord') then
+          mt_eff=massfrun(mt_msbar,hmass,amz,1)
+        else
+          mt_eff=massfrun(mt_msbar,hmass,amz,2)
+        endif
+        first=.false.
+      endif
+
 
       do nu=1,4
       do j=1,mxpart
@@ -38,7 +54,6 @@ C
       enddo      
 
       h(nu)=p(9,nu)+p(10,nu)
-      p12(nu)=p(1,nu)+p(2,nu)
       pw1(nu)=p(3,nu)+p(4,nu)
       pw2(nu)=p(7,nu)+p(8,nu)
 
@@ -54,7 +69,6 @@ C
       enddo      
 
 
-      shat=(p12(4)**2-p12(1)**2-p12(2)**2-p12(3)**2)
       sh=(h(4)**2-h(1)**2-h(2)**2-h(3)**2)
       sw1=(pw1(4)**2-pw1(1)**2-pw1(2)**2-pw1(3)**2)
       sw2=(pw2(4)**2-pw2(1)**2-pw2(2)**2-pw2(3)**2)
@@ -83,15 +97,22 @@ C
       dena1=a1Da1-mt**2
       dena2=a2Da2-mt**2
 
-      hdecay=2d0*(sh-4d0*mb**2)*xn 
-      fac=V/4d0/densq/shat**2*2d0*p3Dp5*2d0*p6Dp8
-     . *gwsq**6*gsq**2/4d0*mt**2*mbsq/wmass**4*hdecay
-C (gw/rt2)^4*(gw/2)^2*4 from amplitude
-
-      facgg=V*xn/4d0
-      facgg=facgg/densq*2d0*p3Dp5*2d0*p6Dp8
-     . *gwsq**6*gsq**2/4d0*mt**2*mbsq/wmass**4*hdecay
-C (gw/rt2)^4*(gw/2)^2*4 from amplitude
+C   Deal with Higgs decay
+      if (hdecaymode == 'tlta') then
+          call htautaudecay(p,9,10,hdecay)
+      elseif (hdecaymode == 'bqba') then
+          call hbbdecay(p,9,10,hdecay)
+      elseif (hdecaymode == 'gaga') then
+          hdecay=msqgamgam(hmass)
+      else
+      write(6,*) 'Unimplemented process in gg_hgg_v'
+      stop
+      endif
+      
+      fac=2d0*p3Dp5*2d0*p6Dp8/densq
+     &   *gwsq**5*gsq**2*mt_eff**2/wmass**2*hdecay
+      facqq=aveqq*V/4d0*fac
+      facgg=avegg*V*xn/4d0*fac
 
       p4Dq=p(4,4)*q(4)-p(4,1)*q(1)-p(4,2)*q(2)-p(4,3)*q(3)
       p7Da=p(7,4)*a(4)-p(7,1)*a(1)-p(7,2)*a(2)-p(7,3)*a(3)
@@ -124,7 +145,7 @@ C     so set
       call spinoru(10,p,za,zb)
       call qqbtth(denr,denb,wtqqb)
       call ggtth(denr,denb,denq1,denq2,dena1,dena2,wtgg)
-c      write(6,*) 'wtqqb,wtgg',wtqqb/shat**2,wtgg
+
 C----set all elements to zero
       do j=-nf,nf
       do k=-nf,nf
@@ -135,11 +156,11 @@ C----set all elements to zero
 C---fill qb-q, gg and q-qb elements
       do j=-nf,nf
       if (j .lt. 0) then
-          msq(j,-j)=aveqq*fac*wtqqb
+          msq(j,-j)=facqq*wtqqb
       elseif (j .eq. 0) then
-          msq(j,j)=avegg*facgg*wtgg
+          msq(j,j)=facgg*wtgg
       elseif (j .gt. 0) then
-          msq(j,-j)=aveqq*fac*wtqqb
+          msq(j,-j)=facqq*wtqqb
       endif
       enddo
             

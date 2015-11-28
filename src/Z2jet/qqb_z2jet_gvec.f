@@ -47,10 +47,6 @@ c---Conventions of Bern, Dixon, Kosower, Weinzierl,
 c---ie, za(i,j)*zb(j,i)=s(i,j)
       call spinork(6,p,zab,zba,n)
 
-
-C---exclude the photon pole, 4*mbsq choosen as a scale approx above upsilon 
-      if (s(3,4) .lt. 4d0*mbsq) return
-      
       do icol=0,2
       do pq=1,2
       do pl=1,2

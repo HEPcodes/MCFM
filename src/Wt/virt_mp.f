@@ -28,8 +28,6 @@ c----
       double complex ffcg1,ffcg2,ffcg3,ffcs1,ffcs2,fun1,fun2,fun3,fun4
       double complex fL6m1,fL6m2,fL6m3,L6m1,L6m2,L6m3
       double complex lnrat,C0fa2m,C0fb2m,I3me
-c      double precision mass2,width2,mass3,width3
-c      common/breit/n2,n3,mass2,width2,mass3,width3
       scheme='dred'
       msq=mQ**2
       xlog=log(musq/msq)

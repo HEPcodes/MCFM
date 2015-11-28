@@ -3,9 +3,9 @@
 c---Matrix element SUBTRACTION squared averaged over initial colors and spins
 c     q(-p1)+qbar(-p2) -->  W  + W + g(p7)
 c                           |    |
-c                           |    --> nu(p3)+e^+(p4)
+c                           |    --> f(p5)+bar{f}(6)
 c                           |
-c                           ---> f(p5)+bar{f}(6)
+c                           ---> nu(p3)+e^+(p4)
       implicit none 
       include 'constants.f'
       include 'ptilde.f'

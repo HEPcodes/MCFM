@@ -1,2 +1,2 @@
          integer mxdim
-         parameter(mxdim=22)
+         parameter(mxdim=23)

@@ -13,12 +13,11 @@ c---  ('none') to perform no clustering at all
       include 'jetlabel.f'
       include 'bbproc.f'
       include 'process.f'
+      include 'part.f'
       double precision q(mxpart,4),qfinal(mxpart,4),
      & qreorder(mxpart,4),R,Rbbmin
       integer nqcdjets,nqcdstart,isub,i,nu
       logical first
-      character*4 part
-      common/part/part
       common/nqcdjets/nqcdjets,nqcdstart
       common/Rbbmin/Rbbmin
       data first/.true./

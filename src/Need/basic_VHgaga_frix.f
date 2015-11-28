@@ -6,13 +6,12 @@ c---- f(p1)+f(p2) -->V->(l(p3)+la(p4))+gamma(p5)+gamma(p6)+f(p7) C Williams July
       include 'constants.f' 
       include 'process.f'
       include 'frag.f'
+      include 'part.f'
       double precision pin(mxpart,4)
       integer isub
       logical passed,in_cone
       double precision ret_ET,R
       double precision R57,R67,ET5,ET6,ET7,alpha_5,alpha_6
-      character*4 part
-      common/part/part
 
       passed=.true.
       

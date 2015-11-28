@@ -16,13 +16,13 @@ c    Calculation is fully analytic
       include 'scheme.f'
       include 'nflav.f'
       include 'deltar.f'
-      integer j,k,al,i5,i6
+      integer j,k,i5,i6
       double precision p(mxpart,4),msq(fn:nf,fn:nf),s3456
-      double precision hdecay,Asq,fac,q(4,5)
-      double precision Hqarbvsq,qrqr,qarb,aqbr,abab,qbra,bqar
-      double precision Hqaqavsq,qaqa,aqaq,qqqq,aaaa
-      double precision Hqaggvsq,qagg,aqgg,qgqg,gqqg,agag,gaag,ggqa
-      double precision Hggggvsq,gggg
+      double precision hdecay,Asq,fac
+      double precision qrqr,qarb,aqbr,abab,qbra,bqar
+      double precision qaqa,aqaq,qqqq,aaaa
+      double precision qagg,aqgg,qgqg,gqqg,agag,gaag,ggqa
+      double precision gggg
       double precision Hqarbvsqanal
       double precision Hqaqavsqanal
       double precision HAQggvsqanal

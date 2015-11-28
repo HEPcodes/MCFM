@@ -13,6 +13,7 @@ c   for the moment --- radiation only from initial line
       include 'zcouple.f'
       include 'ewcharge.f'
       include 'anomcoup.f'
+      include 'plabel.f'
       integer j,k,jk,tjk,polg,polq,minus,mplus,jp,kp,jtype
       double precision P(mxpart,4),qdks(mxpart,4),msq(-nf:nf,-nf:nf),
      . ave,s127,fac,fac1,offsh,xfac
@@ -37,10 +38,31 @@ c   for the moment --- radiation only from initial line
 
       fac=gw**4
       fac1=two*gsq*cf
+C---multiply by factor for c-sbar+u-dbar hadronic decay
+      if (plabel(5) .eq. 'qj') fac1=2d0*xn*fac1
 
 C----Change the momenta to DKS notation 
+C   swapped possibility if we want to swap momenta for hadronic case
+c   We have --- f(p1) + f'(p2)-->mu^-(p3)+nubar(p4)+e^+(p6)+nu(p5)+g(p7)
+c   DKS have--- ubar(q1)+u(q2)-->mu^-(q3)+nubar(q4)+e^+(q5)+nu(q6)+g(p7)
+c----
+C   or normal configuration
 c   We have --- f(p1) + f'(p2)-->mu^-(p5)+nubar(p6)+e^+(p4)+nu(p3)+g(p7)
 c   DKS have--- ubar(q1)+u(q2)-->mu^-(q3)+nubar(q4)+e^+(q5)+nu(q6)+g(p7)
+
+      if ((plabel(5) .eq. 'qj') .and. (plabel(3) .eq. 'el')) then 
+c----swapped case
+      do j=1,4
+      qdks(1,j)=p(1,j)
+      qdks(2,j)=p(2,j)
+      qdks(3,j)=p(3,j)
+      qdks(4,j)=p(4,j)
+      qdks(5,j)=p(6,j)
+      qdks(6,j)=p(5,j)
+      qdks(7,j)=p(7,j)
+      enddo
+      else
+c----normal case
       do j=1,4
       qdks(1,j)=p(1,j)
       qdks(2,j)=p(2,j)
@@ -50,6 +72,7 @@ c   DKS have--- ubar(q1)+u(q2)-->mu^-(q3)+nubar(q4)+e^+(q5)+nu(q6)+g(p7)
       qdks(6,j)=p(3,j)
       qdks(7,j)=p(7,j)
       enddo
+      endif
 
 c--   s returned from sprodx (common block) is 2*dot product
       call spinoru(7,qdks,za,zb)
@@ -185,8 +208,7 @@ c---sum is over diagram type t,s(Z),e,n,s(photon)
 C---tjk is equal to 2 (u,c) or 1 (d,s,b)
         tjk=2-mod(abs(jk),2)
 
-c-- include coupling in l1 to account for non-leptonic W decays
-      A(polg,polq)=l1*dcmplx(fac)*cprop
+      A(polg,polq)=dcmplx(fac)*cprop
      . *(ct(polq,tjk)*amp(1)+cs_z(polq,tjk)*amp(2)+cs_g(polq,tjk)*amp(5)
      .  +cz(polq,tjk)*amp(3)+cgamz(polq,tjk)*amp(4))
           

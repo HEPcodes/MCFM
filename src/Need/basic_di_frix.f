@@ -6,13 +6,12 @@ c---- f(p1)+f(p2) --> gamma(p3)+gamma(p4)+f(p5) C Williams Dec 2010
       include 'constants.f' 
       include 'process.f'
       include 'frag.f'
+      include 'part.f'
       double precision pin(mxpart,4)
       integer isub
       logical passed,in_cone
       double precision ret_ET,R
       double precision R45,R35,ET3,ET4,ET5,alpha_3,alpha_4
-      character*4 part
-      common/part/part
 
       passed=.true.
       

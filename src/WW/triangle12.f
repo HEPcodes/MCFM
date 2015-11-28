@@ -7,11 +7,9 @@
       include 'Higgsint.f'
       double precision mtsq
       integer k1,k2,k3,k4,k5,k6,i1,i2
-      double complex app,apm,triamp,iza,izb,
-     & A134,A134c,s134h,s234h
+      double complex app,apm,triamp,iza,A134,A134c,s134h,s234h
 c--- statement functions
       iza(i1,i2)=cone/za(i1,i2)
-      izb(i1,i2)=cone/zb(i1,i2)
 c--- end statement functions
 
       mtsq=mt**2

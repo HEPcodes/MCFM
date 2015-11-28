@@ -12,12 +12,32 @@ C
       include 'constants.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
+      include 'couple.f'
+      include 'part.f'
       include 'masses.f'
+      include 'msbarmasses.f'
       
       integer j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4)
-      double precision wtqqb,wtgg
+      double precision wtqqb,wtgg,massfrun,mt_eff
       double precision dot,DHQQ,DHGG,facqq,facgg,X12,X13,X14,X23,X24
+      logical first
+      data first/.true./
+      save first,mt_eff
+
+      if (first) then
+c--- run mt to appropriate scale
+        if (part .eq. 'lord') then
+          mt_eff=massfrun(mt_msbar,hmass,amz,1)
+        else
+          mt_eff=massfrun(mt_msbar,hmass,amz,2)
+        endif
+        first=.false.
+      endif
+
+
+
+
 
       x12=+2d0*dot(p,1,2)
       x13=+2d0*dot(p,1,3)
@@ -27,7 +47,7 @@ C
 
       wtqqb=DHQQ(X12,X13,X14,X23,X24)
       wtgg=DHGG(X12,X13,X14,X23,X24)
-      facqq=V/4d0*gsq**2*gwsq*mt**2/wmass**2/4d0
+      facqq=V/4d0*gsq**2*gwsq*mt_eff**2/wmass**2/4d0
       facgg=facqq*4d0/3d0
 C----set all elements to zero
       do j=-nf,nf

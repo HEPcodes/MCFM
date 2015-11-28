@@ -2,8 +2,8 @@
       implicit none
       include 'nlooprun.f'
       include 'pdlabel.f'
-      double precision amz,cmass,bmass
-      common/couple/amz
+      include 'couple.f'
+      double precision cmass,bmass
       COMMON/QMASS/CMASS,BMASS
 
       if         (pdlabel .eq. 'mstw8lo') then

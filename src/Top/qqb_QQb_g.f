@@ -74,11 +74,10 @@ C      %%CITATION = NUPHA,B282,642;%%
       include 'constants.f'
       include 'qcdcouple.f'
       include 'sprods_com.f'
-      integer i1,i2,i3,i4,i5,n2,n3
+      include 'breit.f'
+      integer i1,i2,i3,i4,i5
       double precision xm2,DL1,DL2,DL3,DL4,res1,res2
       double precision P13,P14,P15,P23,P24,P25,P12,P35,P34,P45,S12
-      double precision mass2,width2,mass3,width3
-      common/breit/n2,n3,mass2,width2,mass3,width3
 
       xm2=mass2**2
       S12=2d0*xm2+S(i1,i2)
@@ -157,11 +156,10 @@ C      %%CITATION = NUPHA,B282,642;%%
       implicit none
       include 'constants.f'
       include 'sprods_com.f'
-      integer i1,i2,i3,i4,i5,n2,n3
+      include 'breit.f'
+      integer i1,i2,i3,i4,i5
       double precision xm2,xm4,res
       double precision P13,P14,P15,P23,P24,P25,P12,P35,P34,P45,S12
-      double precision mass2,width2,mass3,width3
-      common/breit/n2,n3,mass2,width2,mass3,width3
       logical first
       data first/.true./
       save first

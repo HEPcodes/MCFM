@@ -32,11 +32,8 @@
       
       scheme='dred'
 
-      do j=-nf,nf
-      do k=-nf,nf
-      msqv(j,k)=0d0
-      enddo
-      enddo
+C----Intialize whole array to zero
+      msqv(:,:)=0d0
 
 c--- ensure that QCDLoop is initialized (now done in computescalars.f) 
 c      if (first) then
@@ -67,12 +64,14 @@ c--- perform the usual business to rotate away from the z-direction
       endif
       
 C--- set up the correct mass, according to 'flav'
-      if     (flav .eq. 5) then
+      if     (flav .eq. 6) then
+        mQsq=mt**2
+      elseif (flav .eq. 5) then
         mQsq=mb**2
       elseif (flav .eq. 4) then
         mQsq=mc**2
       else
-        write(6,*) 'Wrong flavour in qqb_wbbm.f: flav=',flav
+        write(6,*) 'Wrong flavour in qqb_wbbm_v.f: flav=',flav
 	call flush(6)
         stop
       endif
@@ -127,8 +126,8 @@ c--- QQB: compute 1-loop and tree amplitudes
       qqb=fac*dble(a6treemm*dconjg(a61mm)+a6treemp*dconjg(a61mp)
      &            +a6treepm*dconjg(a61pm)+a6treepp*dconjg(a61pp))
       
-      do j=-(nf-1),(nf-1)
-      do k=-(nf-1),(nf-1)
+      do j=-(flav-1),(flav-1)
+      do k=-(flav-1),(flav-1)
       if     ((j .gt. 0) .and. (k .lt. 0)) then
                msqv(j,k)=Vsq(j,k)*qqb
       elseif ((j .lt. 0) .and. (k .gt. 0)) then

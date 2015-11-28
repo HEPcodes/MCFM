@@ -10,6 +10,7 @@ c----(p4,p5) are dummies
       include 'limits.f'
       include 'masses.f'
       include 'process.f'
+      include 'hdecaymode.f'
 
       integer j
       double precision r1,r2,r3,r6,r7
@@ -39,9 +40,15 @@ c---generate p5 and p34,
 c---smin is the minimum inv mass of 34 system
 c---m5 is the mass of p5
       call phi1_2m(m5,r1,r2,r3,smin,p12,p5,p34,wt125,*99)
-c---decay 34-system
-      call phi3m0(r6,r7,p34,p3,p4,wt34,*99)
 
+c---decay 34-system
+      if (hdecaymode == 'tlta') then
+      call phi3m(r6,r7,p34,p3,p4,mtau,mtau,wt34,*99)
+      elseif (hdecaymode == 'bqba') then
+      call phi3m(r6,r7,p34,p3,p4,mb,mb,wt34,*99)
+      else
+      call phi3m0(r6,r7,p34,p3,p4,wt34,*99)
+      endif
       wt=wt0*wt125*wt34
       return
  99   continue

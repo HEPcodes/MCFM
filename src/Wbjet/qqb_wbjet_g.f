@@ -19,8 +19,6 @@ c--- Extended to include charm quark production via the variable "flav"
       include 'ckm.f'
       include 'heavyflav.f'
       include 'zprods_com.f'
-      include 'ewcouple.f'
-      include 'qcdcouple.f'
       include 'nwz.f'
       integer j,k
       double precision P(mxpart,4),msq(-nf:nf,-nf:nf),

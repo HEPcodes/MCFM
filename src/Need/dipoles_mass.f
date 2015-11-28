@@ -571,10 +571,7 @@ c---  leg, but this is the sum of both legs (as above)
       double precision function ff_mqq0(x,L,mbar,vorz)
       implicit none
       integer vorz
-      double precision x,L,mbar,mbarsq,ddilog,afftmp
-     & ,Icolla,Ieika,ommsq,logm,logomm,xp,yp
-     & ,ypp,ypm
-
+      double precision x,L,mbar,mbarsq,ddilog
       include 'constants.f'
       include 'epinv.f'
       include 'epinv2.f'

@@ -9,10 +9,10 @@ c--- routines for exact definitions of the scales.
       include 'frag.f'
       include 'nlooprun.f'
       include 'qcdcouple.f'
+      include 'couple.f'
       double precision rscalestart,fscalestart,p(mxpart,4),mu0,
-     & alphas,amz
+     & alphas
       logical first
-      common/couple/amz
       data first/.true./  
       save first
       
@@ -65,9 +65,9 @@ c--- piggy-back renomalization scale for fragmentation scale
       endif
   
 c--- catch absurdly large and small scales      
-      if  (scale .gt. 3000d0) scale=3000d0
-      if  (facscale .gt. 3000d0) facscale=3000d0
-      if  (frag_scale .gt. 3000d0) frag_scale=3000d0
+      if  (scale .gt. 10000d0) scale=10000d0
+      if  (facscale .gt. 10000d0) facscale=10000d0
+      if  (frag_scale .gt. 990d0) frag_scale=900d0
       if  (scale .lt. 1d0) scale=1d0
       if  (facscale .lt. 1d0) facscale=1d0
       if  (frag_scale .lt. 1d0) frag_scale=1d0

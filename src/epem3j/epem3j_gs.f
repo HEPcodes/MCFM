@@ -16,7 +16,6 @@ c   positively charged W only
       include 'constants.f'
       include 'ptilde.f'
       include 'qqgg.f'
-      include 'ckm.f'
       include 'nflav.f'
       integer j,k,nd
 c --- remember: nd will count the dipoles

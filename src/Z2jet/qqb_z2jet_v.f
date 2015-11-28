@@ -323,20 +323,16 @@ c      call xzqqgg_v(mmsq_qbg,mmsq_qbg_vec,mmsq_qbg_ax)
 c--- calculate the gg terms
 c-BDKW  0--> q(p1)+g(p2)+g(p3)+qb(p4)+lbar(p5)+l(p6)
 CALL    0--> q(p6)+g(p1)+g(p2)+qb(p5)+lbar(p4)+l(p3)
-
-c--- note that this gives the same answer as calling
-C---    0--> q(p5)+g(p1)+g(p2)+qb(p6)+lbar(p3)+l(p4)
-C--- due to charge conjugation
       do nu=1,4
-      pswap(1,nu)=p(5,nu)
+      pswap(1,nu)=p(6,nu)
       pswap(2,nu)=p(1,nu)
       pswap(3,nu)=p(2,nu)
-      pswap(4,nu)=p(6,nu)
-      pswap(5,nu)=p(3,nu)
-      pswap(6,nu)=p(4,nu)
+      pswap(4,nu)=p(5,nu)
+      pswap(5,nu)=p(4,nu)
+      pswap(6,nu)=p(3,nu)
       enddo
       call spinoru(6,pswap,za,zb)
-      call xzqqgg_v(mmsq_gg,mmsq_gg_vec,mmsq_gg_ax)
+      call xzqqgg_v(mmsq_gg,mmsq_gg_vec,mmsq_gg_ax)     
       endif      
       
 ************************************************************************
@@ -935,13 +931,14 @@ c	pause
       
 ************************************************************************
 *     UV contributions are included here                               *
+C     This is the correction to put the answer in UV renormalized      *
+C     dred scheme with msbar coupling                                  *
 ************************************************************************
       do j=-nf,nf
       do k=-nf,nf
 
       do cs=0,2
-      msqv(j,k)=msqv(j,k)+
-     .  ason2pi*(-subuv(cs))*msq_cs(cs,j,k)
+      msqv(j,k)=msqv(j,k)-ason2pi*subuv(cs)*msq_cs(cs,j,k)
       enddo
       
       enddo

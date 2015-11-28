@@ -1,4 +1,4 @@
-      subroutine Afh(k1,k2,k3,k4,k5,k6,Afmm,Afmp,Afpm,Afpp,
+      subroutine Afh(k1,k2,k3,k4,k5,k6,mq,Afmm,Afmp,Afpm,Afpp,
      & Ahmm,Ahmp,Ahpm,Ahpp,mhloopsq)
       implicit none
       include 'constants.f'
@@ -8,12 +8,12 @@
       double complex Afmm(-2:0),Afmp(-2:0),Afpm(-2:0),Afpp(-2:0),
      & Ahmm(-2:0),Ahmp(-2:0),Ahpm(-2:0),Ahpp(-2:0),
      & LOmm,LOmp,LOpm,LOpp,B0f,B0fm,A0fm,qlI2,qlI1
-      double precision s23,mhloopsq
+      double precision s23,mhloopsq,mq
      
       s23=s(k2,k3)
 
       
-      call a6treemass(k1,k2,k3,k4,k5,k6,LOmm,LOmp,LOpm,LOpp)
+      call a6treemass(k1,k2,k3,k4,k5,k6,mq,LOmm,LOmp,LOpm,LOpp)
 
 c--- compute finite parts of scalar integrals
       B0f=qlI2(s23,zip,zip,musq,0)      

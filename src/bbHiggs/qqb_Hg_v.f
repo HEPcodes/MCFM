@@ -8,17 +8,17 @@ c
 c--all momenta incoming
       include 'constants.f'
       include 'masses.f'
-      include 'mb_msbar.f'
+      include 'msbarmasses.f'
       include 'ewcouple.f'
       include 'susycoup.f'
       include 'scheme.f'
       include 'scale.f'
+      include 'couple.f'
       integer j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),s
       double precision coupsq_eff,ghbb_eff
-      double precision amz,mb_eff,massfrun
-      double precision fac,propsq,hdecay,coupsq,ghbb,bbghvirt
-      common/couple/amz
+      double precision mb_eff,massfrun
+      double precision fac,propsq,hdecay,bbghvirt
 
 c--susycoup is the deviation of Higgs coupling 
 c-- from the standard model value
@@ -43,12 +43,8 @@ c--- run mb to appropriate scale
       mb_eff=massfrun(mb_msbar,scale,amz,2)
 c      mb_eff=mb_msbar
       
-c--- our definition
-c      ghbb=sqrt(esq*mbsq/(xw*(1d0-xw)))/2d0/zmass
-c--- definition according to Maltoni, Willenbrock
-      ghbb=dsqrt(esq/xw)*mb/2d0/wmass
-      coupsq=susycoup**2*ghbb**2
-      hdecay=coupsq*2d0*(s(3,4)-4d0*mb**2)*xn 
+      call hbbdecay(p,3,4,hdecay)
+      hdecay=hdecay*susycoup**2
       propsq=1d0/((s(3,4)-hmass**2)**2+(hmass*hwidth)**2)
 c--- The _eff couplings include the running mass
 c--- We need to separate these from the factors associated with the

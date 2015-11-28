@@ -16,13 +16,12 @@
       include 'qcdcouple.f'
       include 'sprods_com.f'
       include 'scale.f'
+      include 'breit.f'
       integer j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),t1,ro
       double precision qqsym,qqasy,ggsym
       double precision ss,xm2,xlf,xmu,rmuom2
-      integer naem,nbeam1,nbeam2,n2,n3
-      double precision mass2,width2,mass3,width3
-      common/breit/n2,n3,mass2,width2,mass3,width3
+      integer naem,nbeam1,nbeam2
       common/para1/ss,xm2,xlf,xmu,rmuom2,naem,nbeam1,nbeam2
 
       ss=s(1,2)
@@ -65,6 +64,7 @@
       include 'epinv.f'
       include 'scheme.f'
       include 'scale.f'
+      include 'breit.f'
       external ddilog
       double precision t1,t2,ro,tbar,ubar,b,xlp,xlm,vlpm,vlsm,vltm,vlwm
       double precision vlbl,vdmp,vdmb,f1,f2,f3,f4,f5t1,f5t2,
@@ -77,9 +77,6 @@
       double precision ggQQv,ggQQov,ggQQsv,qqsym,qqasy,ggsym,
      . ggQQv_0,ggQQov_0,ggQQsv_0,ggQQv_1,ggQQov_1,ggQQsv_1,
      . ggQQv_2
-      integer n2,n3
-      double precision mass2,width2,mass3,width3
-      common/breit/n2,n3,mass2,width2,mass3,width3
       
 C---we arrive at the dred scheme by taking a HV result and applying
 C---a finite renormalization on the 

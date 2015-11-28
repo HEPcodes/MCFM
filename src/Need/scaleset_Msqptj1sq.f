@@ -7,10 +7,9 @@ c--- and ptj1 is the pt of the leading jet in the event
       include 'process.f'
       include 'jetlabel.f'
       include 'npart.f'
-      integer n2,n3,isub,oldjets
+      include 'breit.f'
+      integer isub,oldjets
       double precision p(mxpart,4),pjet(mxpart,4),mu0,pt,rcut,ptj1,ptj2
-      double precision mass2,width2,mass3,width3
-      common/breit/n2,n3,mass2,width2,mass3,width3
       common/rcut/rcut
 
       if((case .eq. 'W_1jet') .or.

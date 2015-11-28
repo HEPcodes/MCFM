@@ -8,9 +8,11 @@ c     g(-p1)+g(-p2)-->H -->  b(p3)+b(p4))
       include 'masses.f'
       include 'qcdcouple.f'
       include 'ewcouple.f'
+      include 'hdecaymode.f'
       integer j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),s,s12
-      double precision hdecay,gg,Asq,hprod,tn,ftn
+      double precision hdecay,gg,Asq,hprod,msqgamgam
+c      double precision tn,ftn
       s(j,k)=2d0*(p(j,4)*p(k,4)-p(j,1)*p(k,1)
      .           -p(j,2)*p(k,2)-p(j,3)*p(k,3))
 
@@ -20,11 +22,19 @@ c--- set msq=0 to initialize
       msq(j,k)=0d0
       enddo
       enddo
-
       s12=s(1,2)
       
-c---  Deal with Higgs decay to b-bbar
-      hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s12-4d0*mb**2) 
+C   Deal with Higgs decay
+      if (hdecaymode == 'tlta') then
+          call htautaudecay(p,3,4,hdecay)
+      elseif (hdecaymode == 'bqba') then
+          call hbbdecay(p,3,4,hdecay)
+      elseif (hdecaymode == 'gaga') then
+          hdecay=msqgamgam(hmass)
+      else
+      write(6,*) 'Unimplemented process in gg_hgg_v'
+      stop
+      endif
       hdecay=hdecay/((s12-hmass**2)**2+(hmass*hwidth)**2)
 
       hprod=1d0

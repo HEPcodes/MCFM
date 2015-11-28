@@ -145,6 +145,9 @@ c---  final - final
 
       elseif((ip .gt. 2) .and. (kp .gt. 2)) then 
 
+         if(npart.eq.3) then 
+
+!----- SPECIAL FORM FOR 2=>3 DIPOLE 
          ipart=1
       
       
@@ -168,6 +171,13 @@ c---  final - final
  13         continue          
          enddo 
       
+
+      else
+
+         write(6,*) 'LORENTZ TRANSFORM NEEDS TO BE IMPLEMENTED' 
+         stop 
+      endif
+
       endif
      
       

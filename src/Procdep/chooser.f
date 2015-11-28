@@ -32,14 +32,14 @@ c---- total cross-section comes out correctly when the BR is removed
       include 'frag.f'
       include 'plabel.f'
       include 'interference.f'
-      character*4 part
-      common/part/part
-      double precision wwbr,zzbr,tautaubr,gamgambr,Rcut,Rbbmin,
-     . alphas,amz,cmass,bmass
+      include 'couple.f'
+      include 'part.f'
+      include 'hdecaymode.f'
+      include 'breit.f'
+      double precision wwbr,zzbr,tautaubr,gamgambr,zgambr,Rcut,Rbbmin,
+     . alphas,cmass,bmass
       double precision br,BrnRat,brwen,brzee,brznn,brtau,brtop,brcharm
-      double precision mass2,width2,mass3,width3
-      common/breit/n2,n3,mass2,width2,mass3,width3
-      integer nproc,mproc,j,n2,n3,nqcdjets,nqcdstart,isub,notag,imhq
+      integer nproc,mproc,j,nqcdjets,nqcdstart,isub,notag,imhq
       character*83 pname
       character*1 order
       character*72 string
@@ -56,9 +56,8 @@ c---- total cross-section comes out correctly when the BR is removed
       common/nqcdjets/nqcdjets,nqcdstart
       common/isub/isub
       common/notag/notag
-      common/couple/amz
       common/qmass/cmass,bmass
-
+      data hdecaymode/'xxxx'/
       do j=1,mxpart
       plabel(j)=''
       enddo
@@ -202,13 +201,13 @@ c-----------------------------------------------------------------------
         plabel(6)='pp'
 
         if     (nproc .eq. 12) then
-c-- 13 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4))+bbar(p5)'
+c-- 12 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4))+bbar(p5)'
 c--    '  f(p1)+f(p2) --> W^+ (no BR) + bbar(p5)' (removebr=.true.)
           nwz=1
           plabel(3)='nl'
           plabel(4)='ea'
         elseif (nproc .eq. 17) then
-c-- 18 '  f(p1)+f(p2) --> W^-(-->e^-(p3)+nu~(p4))+b(p5)'
+c-- 17 '  f(p1)+f(p2) --> W^-(-->e^-(p3)+nu~(p4))+b(p5)'
 c--    '  f(p1)+f(p2) --> W^- (no BR) + b(p5)' (removebr=.true.)
           nwz=-1
           plabel(3)='el'
@@ -939,11 +938,11 @@ c        if(runstring(1:10).eq.'cdf_Wdijet') then
 c           srdiags=.false.
 c        endif
 
-        if    ((nproc .eq. 61) .or. (nproc .eq. 64)) then
+        if    ((nproc .eq. 61) .or. (nproc .eq. 69)) then
 c--  61 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4)) +W^-(-->e^-(p5)+nu~(p6))'
 c--     '  f(p1)+f(p2) --> W^+ + W^- (for total Xsect)' (removebr=.true.)
-          if (nproc .eq. 64) then
-c--  64 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4)) +W^-(-->e^-(p5)+nu~(p6)) [no pol]'
+          if (nproc .eq. 69) then
+c--  69 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4)) +W^-(-->e^-(p5)+nu~(p6)) [no pol]'
             case='WWnpol'
           endif
           plabel(3)='nl'
@@ -963,21 +962,50 @@ c--- total cross-section
         elseif (nproc .eq. 62) then
 c--  62 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4)) +W^-(-->q(p5)+q~(p6))'
 c--- note: scattering diagrams are NOT included, only couplings change
-           nqcdjets=2
-           notag=2
-           plabel(3)='nl'
-           plabel(4)='ea'
-           plabel(5)='qj'
-           plabel(6)='qj'
-           plabel(7)='pp'
+          case='WWqqbr'
+          nqcdjets=2
+          notag=2
+          plabel(3)='nl'
+          plabel(4)='ea'
+          plabel(5)='qj'
+          plabel(6)='qj'
+          plabel(7)='pp'
           l1=dsqrt(xn*2d0)
-        elseif (nproc .eq. 63) then
-c--  63 '  f(p1)+f(p2) --> W^+(--> q(p3)+ q~(p4)) +W^-(-->e^-(p5)+nu~(p6))'
+
+        elseif (nproc .eq. 63) then 
+c--  63 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4)) +W^-(-->q(p5)+q~(p6)) [rad.in.dk]'
+          case='WWqqdk'
+          nqcdjets=2
+          notag=2
+          plabel(3)='nl'
+          plabel(4)='ea'
+          plabel(5)='qj'
+          plabel(6)='qj'
+          plabel(7)='pp'
+          l1=dsqrt(xn*2d0)
+
+        elseif (nproc .eq. 64) then
+c--  64 '  f(p1)+f(p2) --> W^-(-->e^-(p3)+nu~(p4))+W^+(--> q(p5)+ q~(p6))'
 c--- note: scattering diagrams are NOT included, only couplings change
-          plabel(3)='qq'
-          plabel(4)='aa'
-          plabel(5)='el'
-          plabel(6)='na'
+          case='WWqqbr'
+          nqcdjets=2
+          notag=2
+          plabel(5)='qj'
+          plabel(6)='qj'
+          plabel(3)='el'
+          plabel(4)='na'
+          plabel(7)='pp'
+          l1=dsqrt(xn*2d0)
+        elseif (nproc .eq. 65) then
+c--  65 '  f(p1)+f(p2) --> W^-(-->e^-(p3)+nu~(p4))+W^+(--> q(p5)+ q~(p6)),[rad.in.dk]'
+c--- note: scattering diagrams are NOT included, only couplings change
+          case='WWqqdk'
+          nqcdjets=2
+          notag=2
+          plabel(5)='qj'
+          plabel(6)='qj'
+          plabel(3)='el'
+          plabel(4)='na'
           plabel(7)='pp'
           l1=dsqrt(xn*2d0)
         elseif (nproc .eq. 66) then
@@ -1319,8 +1347,8 @@ c-----------------------------------------------------------------------
 
       elseif ((nproc .eq. 91) .or. (nproc .eq. 96)) then
         case='WHbbar'
-        mb=0
-        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
+        hdecaymode='bqba'
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
         nqcdjets=2
         bbproc=.true.
         plabel(5)='bq'
@@ -1376,7 +1404,7 @@ c-----------------------------------------------------------------------
       elseif ((nproc .eq. 92) .or. (nproc .eq. 97)) then
         case='WH__WW'
         mb=0
-        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
         nqcdjets=0
         plabel(5)='nl'
         plabel(6)='ea'
@@ -1438,7 +1466,7 @@ C---93  '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4)) + H(-->Z(e^-(p5),e^+(p6))+Z(mu
 C---98  '  f(p1)+f(p2) --> W^-(-->e^-(p3)+nu~(p4)) + H(-->Z(e^-(p5),e^+(p6))+Z(mu^-(p7),mu(p8)))'
         case='WH__ZZ'
         mb=0
-        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
         nqcdjets=0
         plabel(5)='el'
         plabel(6)='ea'
@@ -1504,8 +1532,9 @@ c-----------------------------------------------------------------------
       elseif ((nproc .eq. 94) .or. (nproc .eq. 99)) then
         case='WHgaga'
         mb=0
-        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
         nqcdjets=0
+        hdecaymode='gaga'
         plabel(5)='ga'
         plabel(6)='ga'
         
@@ -1542,12 +1571,9 @@ c-----------------------------------------------------------------------
 
       elseif ((nproc .ge. 101) .and. (nproc .le. 105)) then
         case='ZHbbar'
-        mb=0
-        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
         nqcdjets=2
         bbproc=.true.
-        plabel(5)='bq'
-        plabel(6)='ba'
         plabel(7)='pp'
 
         ndim=10
@@ -1562,9 +1588,12 @@ c-----------------------------------------------------------------------
         if (nproc .eq. 101) then
 c--  101 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4)) + H(-->b(p5)+b~(p6))'
 c--      '  f(p1)+f(p2) --> H + Z0 (for total Xsect)' (removebr=.true.)
+          hdecaymode='bqba'
           call checkminzmass(1)
           plabel(3)='el'
           plabel(4)='ea'
+          plabel(5)='bq'
+          plabel(6)='ba'
           q1=-1d0
           l1=le
           r1=re
@@ -1580,17 +1609,23 @@ c--      '  f(p1)+f(p2) --> H + Z0 (for total Xsect)' (removebr=.true.)
           endif
         elseif (nproc .eq. 102) then
 c--  102 '  f(p1)+f(p2) --> Z^0(-->3*(nu(p3)+nu~(p4))) + H(-->b(p5)+b~(p6))'
+          hdecaymode='bqba'
           plabel(3)='nl'
           plabel(4)='na'
+          plabel(5)='bq'
+          plabel(6)='ba'
           q1=0d0
           l1=ln*dsqrt(3d0)
           r1=rn*dsqrt(3d0)
         elseif (nproc .eq. 103) then
 c--  103 '  f(p1)+f(p2) --> Z^0(-->b(p3)+b~(p4)) + H(-->b(p5)+b~(p6))'     
+          hdecaymode='bqba'
           call checkminzmass(1)
           nqcdjets=4
           plabel(3)='bq'
           plabel(4)='ba'
+          plabel(5)='bq'
+          plabel(6)='ba'
           q1=Q(5)*dsqrt(xn)
           l1=l(5)*dsqrt(xn)
           r1=r(5)*dsqrt(xn)
@@ -1607,6 +1642,7 @@ c--  104 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4)) + H(-->gamma(p5)+gamma(p6))'
           plabel(4)='ea'
           plabel(5)='ga'
           plabel(6)='ga'
+          hdecaymode='gaga'
            if (removebr) then
             call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
             BrnRat=brzee*gamgambr          
@@ -1624,6 +1660,7 @@ c--  105 '  f(p1)+f(p2) --> Z^0(-->-->3*(nu(p3)+nu~(p4))) + H(-->gamma(p5)+gamma
           plabel(4)='na'
           plabel(5)='ga'
           plabel(6)='ga'          
+          hdecaymode='gaga'
           q1=0d0
           l1=ln*dsqrt(3d0)
           r1=rn*dsqrt(3d0)
@@ -1644,7 +1681,7 @@ c-----------------------------------------------------------------------
       elseif ((nproc .ge. 106) .and. (nproc .le. 108)) then
         case='ZH__WW'
         mb=0
-        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
         nqcdjets=0
         plabel(3)='nl'
         plabel(4)='ea'
@@ -1723,7 +1760,7 @@ c-----------------------------------------------------------------------
         elseif (nproc .eq. 109) then
 c--  109 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4)) + H(-->Z(e^-(p5),e^+(p6))+Z(mu^-(p7),mu(p8)))'
         case='ZH__ZZ'
-        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
         nqcdjets=0
         plabel(3)='el'
         plabel(4)='ea'
@@ -1777,8 +1814,7 @@ c-----------------------------------------------------------------------
 
        elseif ((nproc .eq. 111) .or. (nproc .eq. 112)) then
         case='ggfus0'
-        mb=0
-        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
         plabel(5)='pp'
         ndim=4
       
@@ -1790,6 +1826,7 @@ c-----------------------------------------------------------------------
         if     (nproc .eq. 111) then
 c--  111 '  f(p1)+f(p2) --> H(-->b(p3)+bbar(p4))'
 c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)       
+          hdecaymode='bqba'
           plabel(3)='bq'
           plabel(4)='ba'
           nqcdjets=2
@@ -1803,36 +1840,29 @@ c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)
         elseif (nproc .eq. 112) then
 c--  112 '  f(p1)+f(p2) --> H(-->tau^-(p3)+tau^+(p4))'
 c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)       
+          hdecaymode='tlta'
           plabel(3)='tl'
           plabel(4)='ta'
           nqcdjets=0
-          Brnrat=br/tautaubr
           if (removebr) then
             plabel(3)='ig'
             plabel(4)='ig'
-            BrnRat=br
+            BrnRat=tautaubr
           endif
         endif
 
-        if (removebr) then
-          plabel(3)='ig'
-          plabel(4)='ig'
-          nqcdjets=0
-          BrnRat=br
-        endif
-
-      elseif ((nproc .eq. 113) .or. (nproc .eq. 121)
-     &   .or. (nproc .eq. 122)) then
+      elseif ((nproc .eq. 113) .or. (nproc .eq. 126)
+     &   .or. (nproc .eq. 127)) then
 c--  113 '  f(p1)+f(p2) --> H (--> W^+(nu(p3)+e^+(p4)) + W^-(e^-(p5)+nu~(p6)))'
 c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)
         if     (nproc .eq. 113) then
           case='HWW_4l'  
-	elseif (nproc .eq. 121) then
+	elseif (nproc .eq. 126) then
           case='HWW_tb'  
-	elseif (nproc .eq. 122) then
+	elseif (nproc .eq. 127) then
 	  case='HWWint'
 	endif           
-        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
 c--- widths according to Kauer et al., for comparison with gg2WW
 c        if (abs(hmass-140d0) .lt. 1d-4) hwidth=0.008235d0
 c        if (abs(hmass-170d0) .lt. 1d-4) hwidth=0.3837d0
@@ -1877,9 +1907,103 @@ c--- print warning if we're below threshold
           plabel(6)='ig'               
         endif
         
-      elseif ((nproc .ge. 114) .and. (nproc .le. 116)) then
+      elseif (nproc .eq. 114) then
+      case='HWW2lq'  
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
+c--- widths according to Kauer et al., for comparison with gg2WW
+c        if (abs(hmass-140d0) .lt. 1d-4) hwidth=0.008235d0
+c        if (abs(hmass-170d0) .lt. 1d-4) hwidth=0.3837d0
+c        if (abs(hmass-200d0) .lt. 1d-4) hwidth=1.426d0
+        plabel(3)='nl'
+        plabel(4)='ea'
+        plabel(5)='pp'
+        plabel(6)='pp'
+        plabel(7)='pp'
+        nqcdjets=2
+        ndim=10
+        n2=1
+        n3=1
+        mass2=wmass
+        width2=wwidth
+        mass3=wmass
+        width3=wwidth
+
+c--- print warning if we're below threshold
+        if (hmass .lt. 2d0*wmass) then
+        write(6,*)
+        write(6,*) 'WARNING: Higgs decay H->WW is below threshold and'
+        write(6,*) 'may not yield sensible results - check the number'
+        write(6,*) 'of integration points'
+	if (removebr) then
+	write(6,*)
+	write(6,*) 'Cannot remove H->WW BR, not defined below threshold'
+        stop
+	endif
+        if (zerowidth) then
+        write(6,*) 'zerowidth=.true. and higgs decay below threshold'
+        stop
+        endif
+        endif
+        
+        if (removebr) then
+          call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
+          BrnRat=2d0*xn*brwen**2*wwbr
+c	  if (part .eq. 'todk') BrnRat=BrnRat*(1d0+as/pi)
+          plabel(3)='ig'
+          plabel(4)='ig'
+          plabel(5)='ig'
+          plabel(6)='ig'        
+	  nqcdjets=0       
+        endif
+        
+      elseif (nproc .eq. 115) then
+      case='HWWdkW'  
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
+        plabel(3)='nl'
+        plabel(4)='ea'
+        plabel(5)='pp'
+        plabel(6)='pp'
+        plabel(7)='pp'
+        nqcdjets=2
+        ndim=10
+        n2=1
+        n3=1
+        mass2=wmass
+        width2=wwidth
+        mass3=wmass
+        width3=wwidth
+
+        if (removebr) then
+          call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
+          BrnRat=2d0*xn*brwen**2*wwbr
+c	  if (part .eq. 'todk') BrnRat=BrnRat*(1d0+as/pi)
+          plabel(3)='ig'
+          plabel(4)='ig'
+          plabel(5)='ig'
+          plabel(6)='ig'   
+	  nqcdjets=0            
+        endif
+        
+c--- print warning if we're below threshold
+        if (hmass .lt. 2d0*wmass) then
+        write(6,*)
+        write(6,*) 'WARNING: Higgs decay H->WW is below threshold and'
+        write(6,*) 'may not yield sensible results - check the number'
+        write(6,*) 'of integration points'
+	if (removebr) then
+	write(6,*)
+	write(6,*) 'Cannot remove H->WW BR, not defined below threshold'
+        stop
+	endif
+        if (zerowidth) then
+        write(6,*) 'zerowidth=.true. and higgs decay below threshold'
+        stop
+        endif
+        endif
+        
+      elseif ((nproc .ge. 116) .and. (nproc .le. 118)) then
         case='HZZ_4l'
-        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
         plabel(7)='pp'
         nqcdjets=0
         ndim=10
@@ -1907,8 +2031,8 @@ c--- print warning if we're below threshold
           endif
         endif
         
-        if     (nproc .eq. 114) then
-c--  114 '  f(p1)+f(p2) --> H(-->Z^0(mu^-(p3)+mu^+(p4)) + Z^0(e^-(p5)+e^+(p6))'
+        if     (nproc .eq. 116) then
+c--  116 '  f(p1)+f(p2) --> H(-->Z^0(mu^-(p3)+mu^+(p4)) + Z^0(e^-(p5)+e^+(p6))'
 c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)
           plabel(3)='el'
           plabel(4)='ea'
@@ -1926,8 +2050,8 @@ c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)
             plabel(5)='ig'
             plabel(6)='ig'             
           endif
-        elseif (nproc .eq. 115) then
-c--  115 '  f(p1)+f(p2) --> H(-->Z^0(3*(nu(p3)+nu~(p4)))+ Z^0(e^-(p5)+e^+(p6))'
+        elseif (nproc .eq. 117) then
+c--  117 '  f(p1)+f(p2) --> H(-->Z^0(3*(nu(p3)+nu~(p4)))+ Z^0(e^-(p5)+e^+(p6))'
           plabel(3)='nl'
           plabel(4)='na'
           plabel(5)='ml'
@@ -1944,8 +2068,8 @@ c--  115 '  f(p1)+f(p2) --> H(-->Z^0(3*(nu(p3)+nu~(p4)))+ Z^0(e^-(p5)+e^+(p6))'
             plabel(5)='ig'
             plabel(6)='ig'             
           endif
-        elseif (nproc .eq. 116) then
-c--  116 '  f(p1)+f(p2) --> H(-->Z^0(mu^-(p3)+mu^+(p4)) + Z^0(b(p5)+b~(p6))'
+        elseif (nproc .eq. 118) then
+c--  118 '  f(p1)+f(p2) --> H(-->Z^0(mu^-(p3)+mu^+(p4)) + Z^0(b(p5)+b~(p6))'
           nqcdjets=2
           plabel(3)='ml'
           plabel(4)='ma'
@@ -1959,10 +2083,10 @@ c--  116 '  f(p1)+f(p2) --> H(-->Z^0(mu^-(p3)+mu^+(p4)) + Z^0(b(p5)+b~(p6))'
           call nprocinvalid()
         endif
 
-        elseif (nproc .eq. 117) then
+        elseif (nproc .eq. 119) then
         case='Higaga'
         plabel(5)='pp'
-        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
         ndim=4
       
         n2=0
@@ -1970,10 +2094,11 @@ c--  116 '  f(p1)+f(p2) --> H(-->Z^0(mu^-(p3)+mu^+(p4)) + Z^0(b(p5)+b~(p6))'
         mass3=hmass
         width3=hwidth
 
-c--  117 '  f(p1)+f(p2) --> H(-->gamma^-(p3)+gamma^+(p4))'
+c--  119 '  f(p1)+f(p2) --> H(-->gamma^-(p3)+gamma^+(p4))'
 c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)       
         plabel(3)='ga'
         plabel(4)='ga'
+        hdecaymode='gaga'
         nqcdjets=0
         if (removebr) then
           plabel(3)='ig'
@@ -1981,16 +2106,73 @@ c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)
           BrnRat=gamgambr
         endif
 
+        elseif (nproc .eq. 120) then
+        case='Hi_Zga'
+        call checkminzmass(1)
+        nqcdjets=0
+        plabel(6)='pp'
+        ndim=7
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
+      
+        n2=0
+        n3=1
+        mass3=zmass
+        width3=zwidth
+
+c--  120 '  f(p1)+f(p2) --> H(-->Z^0(mu^-(p3)+mu^+(p4)) + gamma(p5)')'
+c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)
+        plabel(3)='el'
+        plabel(4)='ea'
+        plabel(5)='ga'
+        l1=le
+        r1=re
+        q1=-1d0
+        if (removebr) then
+          call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
+          BrnRat=brzee*zgambr 
+          plabel(3)='ig'
+          plabel(4)='ig'
+          plabel(5)='ig'
+        endif
+
+        elseif (nproc .eq. 121) then
+        case='Hi_Zga'
+        nqcdjets=0
+        plabel(6)='pp'
+        ndim=7
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
+      
+        n2=0
+        n3=1
+        mass3=zmass
+        width3=zwidth
+
+c--  121 '  f(p1)+f(p2) --> H(-->Z^0(3*(nu(p3)+nu~(p4))) + gamma(p5)')'
+c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)
+        plabel(3)='nl'
+        plabel(4)='na'
+        q1=0d0
+        l1=ln*dsqrt(3d0)
+        r1=rn*dsqrt(3d0)      
+        if (removebr) then
+          call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
+          BrnRat=brznn*zgambr
+          plabel(3)='ig'
+          plabel(4)='ig'
+          plabel(5)='ig'
+        endif
+
 c-----------------------------------------------------------------------
 
       elseif ((nproc .ge. 131) .and. (nproc .le. 133)) then
         case='H_1jet'
-        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
         call setmb_msbar
         ndim=7
         plabel(3)='qb'
         plabel(4)='ab'
         plabel(5)='bq'
+        hdecaymode='bqba'
         nqcdjets=1
 
         n2=0
@@ -2765,12 +2947,12 @@ c--  185 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4))+tbar(p5)'
       elseif (nproc .eq. 186) then
 c--  186 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4))+t~(e^-(p5)+nu~(p6)+bbar(p7))'
         case='W_twdk'
-        nqcdjets=0
+        nqcdjets=1
         plabel(3)='nl'
         plabel(4)='ea'
         plabel(5)='el'
         plabel(6)='na'
-        plabel(7)='ab'
+        plabel(7)='ba'
         plabel(8)='pp'
         nflav=5
         nwz=+1
@@ -2797,15 +2979,15 @@ c--  186 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4))+t~(e^-(p5)+nu~(p6)+bbar(p7))'
 c--  182 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4))+t~(e^-(p5)+nu~(p6)+bbar(p7)) [decay]'
         
         case='Wtdkay'
-        nqcdjets=0
+        nqcdjets=1
         plabel(3)='nl'
         plabel(4)='ea'
         plabel(5)='el'
         plabel(6)='na'
-        plabel(7)='ab'
+        plabel(7)='bq'
         plabel(8)='pp'
         nflav=5
-        nwz=-1
+        nwz=+1
 
         if (part .eq. 'lord') then
           write(6,*) 'This process number can not be used for a'
@@ -2850,7 +3032,7 @@ c--  191 '  f(p1)+f(p2)-->t(-->nu(p3)+e^+(p4)+b(p5))
 c--         +t~(-->nu~(p7)+e^-(p8)+b~(p6))+H(p9+p10)'
 c--      '  f(p1)+f(p2)-->t(p3+p4+p5)+t~(p6+p7+p8)+H(p9+p10)' (removebr=.true.)
         case='qq_tth'
-        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
         plabel(3)='nl'
         plabel(4)='ea'
         plabel(5)='bq'
@@ -2859,6 +3041,7 @@ c--      '  f(p1)+f(p2)-->t(p3+p4+p5)+t~(p6+p7+p8)+H(p9+p10)' (removebr=.true.)
         plabel(8)='na'
         plabel(9)='bq'
         plabel(10)='ba'
+        hdecaymode='bqba'
 	nqcdjets=4
 
         nwz=1
@@ -2886,106 +3069,10 @@ c--      '  f(p1)+f(p2)-->t(p3+p4+p5)+t~(p6+p7+p8)+H(p9+p10)' (removebr=.true.)
 
 c-----------------------------------------------------------------------
 
-        elseif ((nproc .eq. 196) .or. (nproc .eq. 197)) then
-        case='qq_ttz'
-        plabel(3)='nl'
-        plabel(4)='ea'
-        plabel(5)='bq'
-        plabel(6)='ba'
-        plabel(7)='el'
-        plabel(8)='na'
-        nwz=1
-
-        ndim=22
-        n2=1
-        n3=1
-        mass2=mt
-        width2=twidth
-        mass3=mt
-        width3=twidth
-
-        if     (nproc .eq. 196) then 
-c--  196 '  f(p1)+f(p2)-->t(-->nu(p3)+e^+(p4)+b(p5))+t~(-->nu~(p7)+e^-(p8)+b~(p6))+Z(e(p9),e~(p10))'
-          plabel(9)='el'
-          plabel(10)='ea'
-          q1=-1d0
-          l1=le
-          r1=re
-	  mb=0d0
-          if (removebr) then
-            q1=0d0
-            call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
-            BrnRat=(brtop*brwen)**2*brzee
-            plabel(3)='ig'
-            plabel(4)='ig'
-            plabel(5)='ig'
-            plabel(6)='ig'
-            plabel(7)='ig'
-            plabel(8)='ig'
-            plabel(9)='ig'
-            plabel(10)='ig'
-          endif
-        elseif (nproc .eq. 197) then 
-c--  197 '  f(p1)+f(p2)-->t(-->nu(p3)+e^+(p4)+b(p5))+t~(-->nu~(p7)+e^-(p8)+b~(p6))+Z(b(p9),b~(p10))'
-          plabel(9)='bq'
-          plabel(10)='ba'
-          q1=Q(5)*dsqrt(xn)
-          l1=l(5)*dsqrt(xn)
-          r1=r(5)*dsqrt(xn)
-	  mb=0d0
-        endif
-
-        elseif ((nproc .eq. 198) .or. (nproc .eq. 199)) then
-        case='qq_ttw'
-        plabel(3)='nl'
-        plabel(4)='ea'
-        plabel(5)='bq'
-        plabel(6)='ba'
-        plabel(7)='el'
-        plabel(8)='na'
-        ndim=22
-        n2=1
-        n3=1
-        mass2=mt
-        width2=twidth
-        mass3=mt
-        width3=twidth
-
-        if     (nproc .eq. 198) then 
-c-- 198 'f(p1)+f(p2) -->t(->nu(p3)+e^+(p4)+b(p5))+t~(->nu~(p7)+e^-(p8)+b~(p6))+W^+(nu(p9),mu^+(p10))'
-          nwz=+1
-          plabel(9)='nl'
-          plabel(10)='ea'
-	  mb=0d0
-        elseif     (nproc .eq. 199) then 
-c-- 199 'f(p1)+f(p2) -->t(->nu(p3)+e^+(p4)+b(p5))+t~(->nu~(p7)+e^-(p8)+b~(p6))+W^-(mu^-(p9),nb(p10))'
-          nwz=-1
-          plabel(9)='el'
-          plabel(10)='na'
-	  mb=0d0
-          endif
-          if (removebr) then
-            call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
-            BrnRat=(brtop*brwen)**2*brwen
-            plabel(3)='ig'
-            plabel(4)='ig'
-            plabel(5)='ig'
-            plabel(6)='ig'
-            plabel(7)='ig'
-            plabel(8)='ig'
-            plabel(9)='ig'
-            plabel(10)='ig'
-        endif
-
-c-----------------------------------------------------------------------
-
       elseif ((nproc .ge. 200) .and. (nproc .le. 210)) then
         case='httjet'
-        mb=0
-        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
         nqcdjets=1
-        plabel(3)='tl'
-        plabel(4)='ta'
         plabel(5)='pp'
  
         ndim=7
@@ -2994,12 +3081,10 @@ c-----------------------------------------------------------------------
         mass3=hmass
         width3=hwidth
         
-        mass3=hmass
-        width3=hwidth
-        
         if     (nproc .eq. 201) then
 c--  201 '  f(p1)+f(p2)--> H(-->b(p3)+b~(p4)) + f(p5) [full mt dep.]'
 c--      '  f(p1)+f(p2)--> H(p3+p4) + f(p5) (for total Xsect)' (removebr=.true.)
+          hdecaymode='bqba'
           plabel(3)='bq'
           plabel(4)='ba'  
           nqcdjets=3
@@ -3012,9 +3097,15 @@ c--      '  f(p1)+f(p2)--> H(p3+p4) + f(p5) (for total Xsect)' (removebr=.true.)
 
         elseif (nproc .eq. 202) then
 c--  202 '  f(p1)+f(p2)--> H (-> tau(p3) tau~(p4)) + f(p5) [full mt dep.]'
+          hdecaymode='tlta'
           plabel(3)='tl'
           plabel(4)='ta'
-          Brnrat=br/tautaubr
+          if (removebr) then        
+            BrnRat=tautaubr
+            plabel(3)='ig'
+            plabel(4)='ig'
+            nqcdjets=1
+          endif
 
         elseif ((nproc .eq. 203) .or. (nproc .eq. 204)) then
           case='ggfus1'
@@ -3030,6 +3121,7 @@ c--  202 '  f(p1)+f(p2)--> H (-> tau(p3) tau~(p4)) + f(p5) [full mt dep.]'
           if     (nproc .eq. 203) then
 c--  203 '  f(p1)+f(p2) -->H(-->b(p3)+b~(p4)) + f(p5)'
 c--      '  f(p1)+f(p2)--> H(p3+p4) + f(p5) (for total Xsect)' (removebr=.true.)
+            hdecaymode='bqba'
             plabel(3)='bq'
             plabel(4)='ba'  
             nqcdjets=3
@@ -3041,13 +3133,14 @@ c--      '  f(p1)+f(p2)--> H(p3+p4) + f(p5) (for total Xsect)' (removebr=.true.)
             endif
           elseif (nproc .eq. 204) then
 c--  204 '  f(p1)+f(p2) -->H(-->tau^-(p3)+tau^+(p4)) + f(p5)'
+            hdecaymode='tlta'
             plabel(3)='tl'
             plabel(4)='ta'
-            Brnrat=br/tautaubr
+            nqcdjets=1
             if (removebr) then        
-              BrnRat=br
               plabel(3)='ig'
               plabel(4)='ig'
+              Brnrat=tautaubr
             endif
           endif
         
@@ -3055,6 +3148,7 @@ c--  204 '  f(p1)+f(p2) -->H(-->tau^-(p3)+tau^+(p4)) + f(p5)'
 c--  206 '  f(p1)+f(p2)--> A(-->b(p3)+b~(p4)) + f(p5) [full mt dep.]'
 c--      '  f(p1)+f(p2)--> A(p3+p4) + f(p5) (for total Xsect)' (removebr=.true.)
           case='attjet'
+          hdecaymode='bqba'
           plabel(3)='bq'
           plabel(4)='ba'  
           nqcdjets=3
@@ -3068,9 +3162,15 @@ c--      '  f(p1)+f(p2)--> A(p3+p4) + f(p5) (for total Xsect)' (removebr=.true.)
         elseif (nproc .eq. 207) then
 c--  207 '  f(p1)+f(p2)--> A (--> tau(p3) tau~(p4)) + f(p5) [full mt dep.]'
          case='attjet'
+          hdecaymode='tlta'
           plabel(3)='tl'
           plabel(4)='ta'
-          Brnrat=br/tautaubr
+          if (removebr) then        
+            BrnRat=tautaubr
+            plabel(3)='ig'
+            plabel(4)='ig'
+            nqcdjets=1
+          endif
         endif
 
         if     (nproc .eq. 208) then
@@ -3137,7 +3237,7 @@ c--- print warning if we're below threshold
           width2=zwidth
           mass3=zmass
           width3=zwidth
-          call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
+          call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
 
 c--- print warning if we're below threshold
         if (hmass .lt. 2d0*zmass) then
@@ -3171,7 +3271,8 @@ c--  210 '  f(p1)+f(p2) -->H(-->gamma(p3)+gamma(p4)) + f(p5)'
             plabel(4)='ga'  
             plabel(5)='pp'  
             plabel(6)='pp'  
-            nqcdjets=1
+            hdecaymode='gaga'
+          nqcdjets=1
             if (removebr) then        
               BrnRat=gamgambr
               plabel(3)='ig'
@@ -3183,8 +3284,7 @@ c-----------------------------------------------------------------------
 
       elseif ((nproc .eq. 211) .or. (nproc .eq. 212)) then
         case='qq_Hqq'
-        mb=0d0
-        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
         nwz=2
         plabel(5)='pp'
         plabel(6)='pp'
@@ -3199,6 +3299,7 @@ c-----------------------------------------------------------------------
         if     (nproc .eq. 211) then
 c--  211 '  f(p1)+f(p2)--> H(-->b(p3)+b~(p4))+f(p5)+f(p6) [WBF]'
 c--      '  f(p1)+f(p2)--> H(p3+p4)+f(p5)+f(p6) [WBF]' (removebr=.true.)
+          hdecaymode='bqba'
           plabel(3)='bq'
           plabel(4)='ba'
           nqcdjets=4
@@ -3211,22 +3312,21 @@ c--      '  f(p1)+f(p2)--> H(p3+p4)+f(p5)+f(p6) [WBF]' (removebr=.true.)
         elseif (nproc .eq. 212) then
 c--  212 '  f(p1)+f(p2)--> H(-->tau-(p3)+tau+(p4))+f(p5)+f(p6) [WBF]'
 c--      '  f(p1)+f(p2)--> H(p3+p4)+f(p5)+f(p6) [WBF]' (removebr=.true.)
+          hdecaymode='tlta'
           plabel(3)='tl'
           plabel(4)='ta'
           nqcdjets=2
-          Brnrat=br/tautaubr
           if (removebr) then
             plabel(3)='ig'
             plabel(4)='ig'
-            nqcdjets=0
-            BrnRat=br
+            Brnrat=tautaubr
           endif
         endif
           
       elseif (nproc .eq. 213) then
         case='qq_HWW'
         mb=0d0
-        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
         nwz=2
         plabel(3)='nl'
         plabel(4)='ea'
@@ -3280,7 +3380,7 @@ c--- print warning if we're below threshold
         l2=le
         r2=re
         mb=0d0
-        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
         nwz=2
         plabel(3)='el'
         plabel(4)='ea'
@@ -3326,7 +3426,8 @@ c--- print warning if we're below threshold
           
       elseif (nproc .eq. 215) then
         case='qq_Hgg'
-        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
+	hdecaymode='gaga'
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
         plabel(3)='ga'
         plabel(4)='ga'
         plabel(5)='pp'
@@ -3350,10 +3451,8 @@ c--- print warning if we're below threshold
       elseif ((nproc .eq. 216) .or. (nproc .eq. 217)) then
         case='qqHqqg'
         mb=0d0
-        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
         nwz=2
-        plabel(3)='bq'
-        plabel(4)='ba'
         plabel(5)='pp'
         plabel(6)='pp'
         plabel(7)='pp'
@@ -3367,6 +3466,7 @@ c--- print warning if we're below threshold
         if     (nproc .eq. 216) then
 c-- 216 '  f(p1)+f(p2)--> H(-->b(p3)+b~(p4))+f(p5)+f(p6)+f(p7) [WBF+jet]'
 c--     '  f(p1)+f(p2)--> H(p3+p4)+f(p5)+f(p6)+f(p7) [WBF+jet]' (removebr=.true.)
+          hdecaymode='bqba'
           plabel(3)='bq'
           plabel(4)='ba'
           nqcdjets=5
@@ -3378,15 +3478,15 @@ c--     '  f(p1)+f(p2)--> H(p3+p4)+f(p5)+f(p6)+f(p7) [WBF+jet]' (removebr=.true.
           endif
         elseif (nproc .eq. 217) then
 c-- 217 '  f(p1)+f(p2)--> H(-->tau-(p3)+tau+(p4))+f(p5)+f(p6)+f(p7) [WBF+jet]'
+          hdecaymode='tlta'
           plabel(3)='tl'
           plabel(4)='ta'
           nqcdjets=3
-          Brnrat=br/tautaubr
           if (removebr) then
             plabel(3)='ig'
             plabel(4)='ig'
             nqcdjets=1
-            BrnRat=br
+            Brnrat=tautaubr
           endif
         endif
 
@@ -4009,10 +4109,8 @@ c--- parameters to turn off various pieces, for checking
         f2q=one
         f4q=one
       
-        mb=0d0
-        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
-        plabel(3)='tl'
-        plabel(4)='ta'
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
+
         plabel(5)='pp'
         plabel(6)='pp'
         plabel(7)='pp'
@@ -4027,6 +4125,7 @@ c--- parameters to turn off various pieces, for checking
         if     (nproc .eq. 270) then
 c-- 270 '  f(p1)+f(p2) --> H(gamma(p3)+gamma(p4))+f(p5)+f(p6)[in heavy top limit]'
 c--     '  f(p1)+f(p2) --> H(no BR)+f(p5)+f(p6)[in heavy top limit]' (removebr=.true.)
+          hdecaymode='gaga'
           plabel(3)='ga'
           plabel(4)='ga'
           case='gagajj'
@@ -4040,6 +4139,7 @@ c--     '  f(p1)+f(p2) --> H(no BR)+f(p5)+f(p6)[in heavy top limit]' (removebr=.
         elseif     (nproc .eq. 271) then
 c-- 271 '  f(p1)+f(p2) --> H(b(p3)+b~(p4))+f(p5)+f(p6)[in heavy top limit]'
 c--     '  f(p1)+f(p2) --> H(no BR)+f(p5)+f(p6)[in heavy top limit]' (removebr=.true.)
+          hdecaymode='bqba'
           plabel(3)='bq'
           plabel(4)='ba'
           case='ggfus2'
@@ -4054,23 +4154,23 @@ c--     '  f(p1)+f(p2) --> H(no BR)+f(p5)+f(p6)[in heavy top limit]' (removebr=.
         elseif (nproc .eq. 272) then
 c-- 272 '  f(p1)+f(p2) --> H(tau-(p3)+tau+(p4))+f(p5)+f(p6)[in heavy top limit]'
 c--     '  f(p1)+f(p2) --> H(no BR)+f(p5)+f(p6)[in heavy top limit]' (removebr=.true.)
+          hdecaymode='tlta'
           plabel(3)='tl'
           plabel(4)='ta'
           case='ggfus2'
           nqcdjets=2
-          Brnrat=br/tautaubr
           if (removebr) then
             plabel(3)='ig'
             plabel(4)='ig'
-            BrnRat=br
+            Brnrat=tautaubr
           endif
         endif
                 
 c-----------------------------------------------------------------------
 
       elseif     (nproc .eq. 273) then
-c-- 273 '  f(p1)+f(p2) --> H(-->W^+(p3,p4)W^-(p5,p6)) + f(p7) + f(p8)'
-        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
+c-- 273 '  f(p1)+f(p2) -->` H(-->W^+(p3,p4)W^-(p5,p6)) + f(p7) + f(p8)'
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
 
 c--- parameters to turn off various pieces, for checking
         f0q=one
@@ -4123,7 +4223,7 @@ c-----------------------------------------------------------------------
 
       elseif     (nproc .eq. 274) then
 c-- 274 f(p1)+f(p2)->H(Z^+(e^-(p3),e^+(p4))Z(mu^-(p5),mu^+(p6)))+f(p7)+f(p8)
-        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
 
 c--- parameters to turn off various pieces, for checking
         f0q=one
@@ -4187,9 +4287,7 @@ c--- parameters to turn off various pieces, for checking
 
         case='ggfus3'
         mb=0
-        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
-        plabel(3)='tl'
-        plabel(4)='ta'
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
         plabel(5)='pp'
         plabel(6)='pp'
         plabel(7)='pp'
@@ -4204,6 +4302,7 @@ c--- parameters to turn off various pieces, for checking
         if     (nproc .eq. 275) then
 c-- 275 '  f(p1)+f(p2) --> H(b(p3)+b~(p4))+f(p5)+f(p6)+f(p7)[in heavy top limit]'
 c--     '  f(p1)+f(p2) --> H(no BR)+f(p5)+f(p6)+f(p7)[in heavy top limit]' (removebr=.true.)
+          hdecaymode='bqba'
           plabel(3)='bq'
           plabel(4)='ba'
           nqcdjets=5
@@ -4217,14 +4316,14 @@ c--     '  f(p1)+f(p2) --> H(no BR)+f(p5)+f(p6)+f(p7)[in heavy top limit]' (remo
         elseif (nproc .eq. 276) then
 c-- 276 '  f(p1)+f(p2) --> H(tau-(p3)+tau+(p4))+f(p5)+f(p6)+f(p7)[in heavy top limit]'
 c--     '  f(p1)+f(p2) --> H(no BR)+f(p5)+f(p6)+f(p7)[in heavy top limit]' (removebr=.true.)
+          hdecaymode='tlta'
           plabel(3)='tl'
           plabel(4)='ta'
           nqcdjets=3
-          Brnrat=br/tautaubr
           if (removebr) then
             plabel(3)='ig'
             plabel(4)='ig'
-            BrnRat=br
+            BrnRat=tautaubr
           endif
         endif
 
@@ -4232,7 +4331,7 @@ c-----------------------------------------------------------------------
 
       elseif     (nproc .eq. 278) then
 c-- 278 '  f(p1)+f(p2) --> H(-->W^+(p3,p4)W^-(p5,p6)) + f(p7) + f(p8) + f(p9)'
-        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
 
 c--- parameters to turn off various pieces, for checking
         f0q=one
@@ -4285,7 +4384,7 @@ c-----------------------------------------------------------------------
 
       elseif     (nproc .eq. 279) then
 c-- 279 f(p1)+f(p2)->H(Z^+(e^-(p3),e^+(p4))Z(mu^-(p5),mu^+(p6)))+f(p7)+f(p8)+f(p9)
-        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr)
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
 
 c--- parameters to turn off various pieces, for checking
         f0q=one
@@ -4484,6 +4583,13 @@ c     '  f(p1)+f(p2) --> W^-(no BR)+(f(p5) -->gamma(p5)) (removebr=.true.)'
            plabel(4)='na'
        endif
         
+       if (zerowidth .eqv. .false.) then
+	 write(6,*)
+         write(6,*) 'Setting removebr to .false. in order to ensure'
+	 write(6,*) 'lepton-photon singularity can be removed'
+	 removebr=.false.
+       endif
+      
 c---  total cross-section             
        if (removebr) then
           plabel(3)='ig'
@@ -4497,7 +4603,6 @@ c-------------------------------------------------------------------------------
 
         elseif ((nproc .eq. 300) .or. (nproc .eq. 305)) then
           case='Zgamma'
-          call checkminzmass(1)
           nqcdjets=0
           ndim=7
           n2=0
@@ -4508,21 +4613,21 @@ c-------------------------------------------------------------------------------
           plabel(5)='ga'
           plabel(6)='pp'
           
-        if (zerowidth .eqv. .false.) then
-	  write(6,*)
-          write(6,*) 'Setting removebr to .false. in order to ensure'
-	  write(6,*) 'lepton-photon singularity can be removed'
-	  removebr=.false.
-	endif
-
           if     (nproc .eq. 300) then
 c-- 300 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4))+gamma(p5)'
 c--     '  f(p1)+f(p2) --> Z^0 (no BR) +gamma(p5)' (removebr=.true.)
+            call checkminzmass(1)
             plabel(3)='el'
             plabel(4)='ea'
             q1=-1d0
             l1=le
             r1=re
+            if (zerowidth .eqv. .false.) then
+	      write(6,*)
+              write(6,*)'Setting removebr to .false. in order to ensure'
+	      write(6,*)'lepton-photon singularity can be removed'
+	      removebr=.false.
+	    endif
             if (removebr) then
               plabel(3)='ig'
               plabel(4)='ig'
@@ -4540,42 +4645,179 @@ c-- 305 '  f(p1)+f(p2) --> Z^0(-->3*(nu(p3)+nu~(p4)))-(sum over 3 nu)+gamma(p5)'
 
 c-----------------------------------------------------------------------
 
-        elseif (nproc .eq. 302) then
+        elseif ((nproc .eq. 302) .or. (nproc .eq. 307)) then
           case='Zgajet'
-          call checkminzmass(1)
           nqcdjets=1
           ndim=10
           n2=0
-          n3=1
+          n3=0
           mass3=zmass
           width3=zwidth
           nwz=0
           plabel(5)='ga'
           plabel(6)='pp'
+          plabel(7)='pp'
           
-        if (zerowidth .eqv. .false.) then
-	  write(6,*)
-          write(6,*) 'Setting removebr to .false. in order to ensure'
-	  write(6,*) 'lepton-photon singularity can be removed'
-	  removebr=.false.
-	endif
-
           if     (nproc .eq. 302) then
 c-- 302 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4))+gamma(p5)+f(p6)'
 c--     '  f(p1)+f(p2) --> Z^0 (no BR) +gamma(p5)+jet(p6)' (removebr=.true.)
+            call checkminzmass(1)
             plabel(3)='el'
             plabel(4)='ea'
             q1=-1d0
             l1=le
             r1=re
+            if (zerowidth .eqv. .false.) then
+	      write(6,*)
+              write(6,*)'Setting removebr to .false. in order to ensure'
+	      write(6,*)'lepton-photon singularity can be removed'
+	      removebr=.false.
+	    endif
             if (removebr) then
               plabel(3)='ig'
               plabel(4)='ig'
               call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
               BrnRat=brzee
             endif
+          elseif  (nproc .eq. 307) then
+c-- 307 '  f(p1)+f(p2) --> Z^0(-->nu(p3)+nu~(p4))+gamma(p5)+f(p6)'
+            plabel(3)='nl'
+            plabel(4)='na'
+            q1=0d0
+            l1=ln*dsqrt(3d0)
+            r1=rn*dsqrt(3d0)
           endif
-                
+c-----------------------------------------------------------------------
+
+      elseif ((nproc .eq. 301) .or. (nproc .eq. 306)) then
+c-- 301 '  f(p1)+f(p2) --> Z^0(e^-(p3)+e^+(p4))+gamma(p5)+gamma(p6)'
+c-- 306 '  f(p1)+f(p2) --> Z^0(-->3*(nu(p3)+nu~(p4))+gamma(p5)+gamma(p6)'
+        case='Z_2gam'
+        ndim=10
+        n2=0
+        n3=0
+        if (nproc .eq. 301) then
+           call checkminzmass(1)
+           plabel(3)='el'
+           plabel(4)='ea'
+           q1=-1d0
+           l1=le
+           r1=re
+           if (zerowidth .eqv. .false.) then
+	     write(6,*)
+             write(6,*)'Setting removebr to .false. in order to ensure'
+	     write(6,*)'lepton-photon singularity can be removed'
+	     removebr=.false.
+	   endif
+c--- total cross-section             
+           if (removebr) then
+             plabel(3)='ig'
+             plabel(4)='ig'
+             call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
+             BrnRat=brzee
+           endif
+        elseif (nproc .eq. 306) then
+           plabel(3)='nl'
+           plabel(4)='na'
+           q1=0d0
+           l1=ln*dsqrt(3d0)
+           r1=rn*dsqrt(3d0)
+        endif
+        plabel(5)='ga'
+        plabel(6)='ga'
+        plabel(7)='pp'
+        nwz=0   
+        mass3=zmass
+        width3=zwidth
+        
+c-----------------------------------------------------------------------
+
+      elseif ((nproc .eq. 303) .or. (nproc .eq. 308)) then
+c-- 303 '  f(p1)+f(p2) --> Z^0(e^-(p3)+e^+(p4))+gamma(p5)+gamma(p6)+f(p7)'
+c-- 308 '  f(p1)+f(p2) --> Z^0(-->3*(nu(p3)+nu~(p4))+gamma(p5)+gamma(p6)+f(p7)'
+        case='Z2gajt'
+        nqcdjets=1
+        ndim=13
+        n2=0
+        n3=0
+        if (nproc .eq. 303) then
+           call checkminzmass(1)
+           plabel(3)='el'
+           plabel(4)='ea'
+           q1=-1d0
+           l1=le
+           r1=re
+           if (zerowidth .eqv. .false.) then
+	     write(6,*)
+             write(6,*)'Setting removebr to .false. in order to ensure'
+	     write(6,*)'lepton-photon singularity can be removed'
+	     removebr=.false.
+	   endif
+c--- total cross-section             
+           if (removebr) then
+             plabel(3)='ig'
+             plabel(4)='ig'
+             call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
+             BrnRat=brzee
+           endif
+        elseif (nproc .eq. 308) then
+           plabel(3)='nl'
+           plabel(4)='na'
+           q1=0d0
+           l1=ln*dsqrt(3d0)
+           r1=rn*dsqrt(3d0)
+        endif
+        plabel(5)='ga'
+        plabel(6)='ga'
+        plabel(7)='pp'
+        nwz=0   
+        mass3=zmass
+        width3=zwidth
+                 
+c-----------------------------------------------------------------------
+
+      elseif ((nproc .eq. 304) .or. (nproc .eq. 309)) then
+c-- 304 '  f(p1)+f(p2) --> Z^0(e^-(p3)+e^+(p4))+gamma(p5)+f(p6)+f(p7)'
+c-- 309 '  f(p1)+f(p2) --> Z^0(-->3*(nu(p3)+nu~(p4))+gamma(p5)+f(p6)+f(p7)'
+        case='Zga2jt'
+        nqcdjets=2
+        ndim=13
+        n2=0
+        n3=0
+        if (nproc .eq. 304) then
+           call checkminzmass(1)
+           plabel(3)='el'
+           plabel(4)='ea'
+           q1=-1d0
+           l1=le
+           r1=re
+           if (zerowidth .eqv. .false.) then
+	     write(6,*)
+             write(6,*)'Setting removebr to .false. in order to ensure'
+	     write(6,*)'lepton-photon singularity can be removed'
+	     removebr=.false.
+	   endif
+c--- total cross-section             
+           if (removebr) then
+             plabel(3)='ig'
+             plabel(4)='ig'
+             call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
+             BrnRat=brzee
+           endif
+        elseif (nproc .eq. 309) then
+           plabel(3)='nl'
+           plabel(4)='na'
+           q1=0d0
+           l1=ln*dsqrt(3d0)
+           r1=rn*dsqrt(3d0)
+        endif
+        plabel(5)='ga'
+        plabel(6)='pp'
+        plabel(7)='pp'
+        nwz=0   
+        mass3=zmass
+        width3=zwidth
+                         
 c-----------------------------------------------------------------------
 
       elseif ((nproc .eq. 311) .or. (nproc .eq. 316)) then
@@ -5042,6 +5284,214 @@ c--- total cross-section
           BrnRat=brwen
         endif
 	     
+c-----------------------------------------------------------------------
+
+      elseif ((nproc .eq. 500) .or. (nproc .eq. 510)) then
+        case='Wttmas'
+        write(6,*) 'mt=',mt
+        flav=6
+        plabel(5)='ig'
+        plabel(6)='ig'
+        plabel(7)='pp'
+        ndim=10
+        n2=0
+        n3=1
+        mass3=wmass
+        width3=wwidth
+ 
+        if     (nproc .eq. 500) then
+C-- 500 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4)) +t(p5)+t~(p6) [massive]' 'N'
+          nwz=1
+          plabel(3)='nl'
+          plabel(4)='ea'
+        elseif (nproc .eq. 510) then
+C-- 510 '  f(p1)+f(p2) --> W^-(-->e^-(p3)+nu~(p4))+t(p5)+t~(p6) [massive]' 'N'
+          nwz=-1
+          plabel(3)='el'
+          plabel(4)='na'
+        endif
+ 
+c--- total cross-section             
+        if (removebr) then
+          plabel(3)='ig'
+          plabel(4)='ig'
+          call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
+          BrnRat=brwen
+        endif
+             
+c-----------------------------------------------------------------------
+
+      elseif ((nproc .eq. 501) .or. (nproc .eq. 502)
+     &   .or. (nproc .eq. 511) .or. (nproc .eq. 512)
+     &   .or. (nproc .eq. 503) .or. (nproc .eq. 513)
+     &   .or. (nproc .eq. 506) .or. (nproc .eq. 516)) then
+        case='qq_ttw'
+        plabel(5)='bq'
+        plabel(6)='ba'
+        plabel(11)='pp'
+        ndim=20
+        n2=0
+        n3=1
+        mass3=wmass
+        width3=wwidth
+
+        if     (nproc .eq. 501) then 
+c-- 501 '  f(p1)+f(p2) --> t(-->nu(p3)+e^+(p4)+b(p5))+t~(->b~(p6)+e^-(p7)+nu~(p8))+W^+(nu(p9),mu^+(p10))'
+          nwz=+1
+          plabel(3)='nl'
+          plabel(4)='ea'
+          plabel(7)='el'
+          plabel(8)='na'
+          plabel(9)='nl'
+          plabel(10)='ea'
+	  nqcdjets=2
+        elseif   (nproc .eq. 502) then 
+c-- 502 '  f(p1)+f(p2) --> t(-->nu(p3)+e^+(p4)+b(p5))+t~(->b~(p6)+e^-(p7)+nu~(p8))+W^+(nu(p9),mu^+(p10))[rid]'
+          case='ttwldk'
+          nwz=+1
+          plabel(3)='nl'
+          plabel(4)='ea'
+          plabel(7)='el'
+          plabel(8)='na'
+          plabel(9)='nl'
+          plabel(10)='ea'
+	  nqcdjets=2
+        elseif (nproc .eq. 503) then 
+c-- 503 '  f(p1)+f(p2) --> t(-->nu(p3)+e^+(p4)+b(p5))+t~(->b~(p6)+q(p7)+q~(p8))+W^+(nu(p9),mu^+(p10))'
+          nwz=+1
+          plabel(3)='nl'
+          plabel(4)='ea'
+          plabel(7)='pp'
+          plabel(8)='pp'
+          plabel(9)='nl'
+          plabel(10)='ea'
+	  nqcdjets=4
+c--- for CMS study: we can allow 2 jets to be lost
+          notag=2	  
+        elseif (nproc .eq. 506) then 
+c-- 506 '  f(p1)+f(p2) --> t(-->q(p3)+q~(p4)+b(p5))+t~(->b~(p6)+e^-(p7)+nu~(p8))+W^+(nu(p9),mu^+(p10))'
+          nwz=+1
+          plabel(3)='pp'
+          plabel(4)='pp'
+          plabel(7)='el'
+          plabel(8)='na'
+          plabel(9)='nl'
+          plabel(10)='ea'
+	  nqcdjets=4
+c--- for CMS study: we can allow 2 jets to be lost
+          notag=2	  
+        elseif (nproc .eq. 511) then 
+c-- 511 '  f(p1)+f(p2) --> t(-->nu(p3)+e^+(p4)+b(p5))+t~(->b~(p6)+e^-(p7)+nu~(p8))+W^-(mu^-(p9),nu~(p10))'
+          nwz=-1
+          plabel(3)='nl'
+          plabel(4)='ea'
+          plabel(7)='el'
+          plabel(8)='na'
+          plabel(9)='el'
+          plabel(10)='na'
+	  nqcdjets=2
+        elseif (nproc .eq. 512) then 
+c-- 512 '  f(p1)+f(p2) --> t(-->nu(p3)+e^+(p4)+b(p5))+t~(->b~(p6)+e^-(p7)+nu~(p8))+W^-(mu^-(p9),nu~(p10))[rid]'
+          case='ttwldk'
+          nwz=-1
+          plabel(3)='nl'
+          plabel(4)='ea'
+          plabel(7)='el'
+          plabel(8)='na'
+          plabel(9)='el'
+          plabel(10)='na'
+	  nqcdjets=2
+        elseif (nproc .eq. 513) then 
+c-- 513 '  f(p1)+f(p2) --> t(-->nu(p3)+e^+(p4)+b(p5))+t~(->b~(p6)+q(p7)+q~(p8))+W^-(mu^-(p9),nu~(p10))'
+          nwz=-1
+          plabel(3)='nl'
+          plabel(4)='ea'
+          plabel(7)='pp'
+          plabel(8)='pp'
+          plabel(9)='el'
+          plabel(10)='na'
+	  nqcdjets=4
+c--- for CMS study: we can allow 2 jets to be lost
+          notag=2	  
+        elseif (nproc .eq. 516) then 
+c-- 516 '  f(p1)+f(p2) --> t(-->q(p3)+q~(p4)+b(p5))+t~(->b~(p6)+e^-(p7)+nu~(p8))+W^-(mu^-(p9),nu~(p10))'
+          nwz=-1
+          plabel(3)='pp'
+          plabel(4)='pp'
+          plabel(7)='el'
+          plabel(8)='na'
+          plabel(9)='el'
+          plabel(10)='na'
+	  nqcdjets=4
+c--- for CMS study: we can allow 2 jets to be lost
+          notag=2	  
+        endif
+
+        if (removebr) then
+            call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
+            BrnRat=(brtop*brwen)**2*brwen
+            plabel(3)='ig'
+            plabel(4)='ig'
+            plabel(5)='ig'
+            plabel(6)='ig'
+            plabel(7)='ig'
+            plabel(8)='ig'
+            plabel(9)='ig'
+            plabel(10)='ig'
+	    nqcdjets=0
+        endif
+
+c-----------------------------------------------------------------------
+
+      elseif ((nproc .eq. 530) .or. (nproc .eq. 531)) then
+        case='qq_ttz'
+        plabel(3)='nl'
+        plabel(4)='ea'
+        plabel(5)='bq'
+        plabel(6)='ba'
+        plabel(7)='el'
+        plabel(8)='na'
+        nwz=1
+
+        ndim=22
+        n2=1
+        n3=1
+        mass2=mt
+        width2=twidth
+        mass3=mt
+        width3=twidth
+
+        if     (nproc .eq. 530) then 
+c--  530 '  f(p1)+f(p2)-->t(-->nu(p3)+e^+(p4)+b(p5))+t~(-->nu~(p7)+e^-(p8)+b~(p6))+Z(e(p9),e~(p10))'
+          plabel(9)='el'
+          plabel(10)='ea'
+          q1=-1d0
+          l1=le
+          r1=re
+	  mb=0d0
+          if (removebr) then
+            q1=0d0
+            call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
+            BrnRat=(brtop*brwen)**2*brzee
+            plabel(3)='ig'
+            plabel(4)='ig'
+            plabel(5)='ig'
+            plabel(6)='ig'
+            plabel(7)='ig'
+            plabel(8)='ig'
+            plabel(9)='ig'
+            plabel(10)='ig'
+          endif
+        elseif (nproc .eq. 531) then 
+c--  531 '  f(p1)+f(p2)-->t(-->nu(p3)+e^+(p4)+b(p5))+t~(-->nu~(p7)+e^-(p8)+b~(p6))+Z(b(p9),b~(p10))'
+          plabel(9)='bq'
+          plabel(10)='ba'
+          q1=Q(5)*dsqrt(xn)
+          l1=l(5)*dsqrt(xn)
+          r1=r(5)*dsqrt(xn)
+	  mb=0d0
+        endif
+
 c-----------------------------------------------------------------------
 
       elseif (nproc/10 .ge. 90) then

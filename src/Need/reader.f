@@ -30,13 +30,13 @@
       include 'process.f'
       include 'limits.f'
       include 'pdlabel.f'
+      include 'part.f'
       integer ih1,ih2,itmx1,itmx2,ncall1,ncall2,idum,nmin,nmax
       integer nproc,nargs
       double precision sqrts,Rcut,randummy,ran2
       double precision cmass,bmass
       character*72 optionsfile
       character*30 runstring
-      character*4 part
       logical makecuts,dryrun,creatent,dswhisto
       logical spira
       double precision rtsmin
@@ -45,7 +45,6 @@
       common/nproc/nproc
       common/spira/spira
       common/ranno/idum
-      common/part/part
       common/runstring/runstring
       common/Rcut/Rcut
 

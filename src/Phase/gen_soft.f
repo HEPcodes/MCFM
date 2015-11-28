@@ -5,6 +5,8 @@
       include 'limits.f'
       include 'xmin.f'
       include 'reset.f'
+      include 'breit.f'
+      include 'part.f'
 c---- generate phase space for 2-->2+n process
 c---- with (34) being a vector boson and 5,..,4+n the jets
 c---- r(mxdim),p1(4),p2(4) are inputs reversed in sign 
@@ -20,14 +22,10 @@ c---- with all 2 pi's (ie 1/(2*pi)^(4+2n))
       double precision costh,sinth,dely
       double precision ptjetmin,etajetmin,etajetmax,pbreak
       double precision plstar,estar,plstarsq,y5starmax,y5starmin
-      double precision mass2,width2,mass3,width3
-      integer j,nu,njets,ijet,n2,n3
+      integer j,nu,njets,ijet
       logical gen15,gen16,gen17,gen25,gen26,gen27,gen56,gen57,gen67
       logical first,xxerror
-      character*4 part
-      common/part/part
       common/energy/sqrts
-      common/breit/n2,n3,mass2,width2,mass3,width3
       common/x1x2/xx
       data first/.true./,xxerror/.false./
       save first,ptjetmin,etajetmin,etajetmax,pbreak,xxerror

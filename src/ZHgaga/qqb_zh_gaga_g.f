@@ -7,7 +7,6 @@ c                           |
 c                           ---> gamma(p5)+gamma(p6)
       implicit none 
       include 'constants.f'
-      include 'masses.f'
       include 'zcouple.f'
       include 'sprods_com.f'
       integer j,k

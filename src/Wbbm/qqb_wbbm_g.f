@@ -17,22 +17,34 @@ c   with mass for the b and the bbar
       include 'ckm.f'
       include 'masses.f'
       include 'zprods_com.f'
+      include 'heavyflav.f'
       integer j,k,nu
       double precision p(mxpart,4),q(mxpart,4),
-     . msq(-nf:nf,-nf:nf),rodmsqm,fac,bp,bm,beta,s56
+     . msq(-nf:nf,-nf:nf),rodmsqm,fac,bp,bm,beta,s56,mQsq,mq
       double precision qqbWbbg,qbqWbbg,qgWbbq,gqWbbq,gqbWbbqb,qbgWbbqb
 
-      do j=-nf,nf
-      do k=-nf,nf
-      msq(j,k)=0d0
-      enddo
-      enddo
+C--- set up the correct mass, according to 'flav'
+      if     (flav .eq. 6) then
+        mQsq=mt**2
+      elseif (flav .eq. 5) then
+        mQsq=mb**2
+      elseif (flav .eq. 4) then
+        mQsq=mc**2
+      else
+        write(6,*) 'Wrong flavour in qqb_wbbm_v.f: flav=',flav
+	call flush(6)
+        stop
+      endif
+      mq=dsqrt(mQsq)
+
+C----Initialize whole array to zero
+      msq(:,:)=0d0
 
       fac=gsq**3*gw**4/4d0*32d0
 
-      s56=2d0*mb**2
+      s56=2d0*mQsq
      & +2d0*(+p(5,4)*p(6,4)-p(5,1)*p(6,1)-p(5,2)*p(6,2)-p(5,3)*p(6,3))
-      beta=sqrt(1d0-4d0*mb**2/s56)
+      beta=sqrt(1d0-4d0*mQsq/s56)
       bp=0.5d0+0.5d0*beta
       bm=0.5d0-0.5d0*beta
 
@@ -51,19 +63,19 @@ c   with mass for the b and the bbar
       call spinoru(7,q,za,zb)
 
 c--- q-qb and qb-q
-      qqbWbbg =+rodmsqm(2,1,5,6,7,4,3,mb)*fac*aveqq
-      qbqWbbg =+rodmsqm(1,2,5,6,7,4,3,mb)*fac*aveqq
+      qqbWbbg =+rodmsqm(2,1,5,6,7,4,3,mq)*fac*aveqq
+      qbqWbbg =+rodmsqm(1,2,5,6,7,4,3,mq)*fac*aveqq
 
 c--- q-g and g-q
-      qgWbbq  =+rodmsqm(7,1,5,6,2,4,3,mb)*fac*aveqg
-      gqWbbq  =+rodmsqm(7,2,5,6,1,4,3,mb)*fac*aveqg
+      qgWbbq  =+rodmsqm(7,1,5,6,2,4,3,mq)*fac*aveqg
+      gqWbbq  =+rodmsqm(7,2,5,6,1,4,3,mq)*fac*aveqg
 
 c--- g-qb and qb-g
-      gqbWbbqb=+rodmsqm(2,7,5,6,1,4,3,mb)*fac*aveqg
-      qbgWbbqb=+rodmsqm(1,7,5,6,2,4,3,mb)*fac*aveqg
+      gqbWbbqb=+rodmsqm(2,7,5,6,1,4,3,mq)*fac*aveqg
+      qbgWbbqb=+rodmsqm(1,7,5,6,2,4,3,mq)*fac*aveqg
 
-      do j=-(nf-1),(nf-1)
-      do k=-(nf-1),(nf-1)
+      do j=-(flav-1),(flav-1)
+      do k=-(flav-1),(flav-1)
 
       if     ((j .gt. 0) .and. (k .lt. 0)) then
       msq(j,k)=Vsq(j,k)*qqbWbbg
@@ -90,7 +102,7 @@ c--- g-qb and qb-g
       end
 
 
-      double precision function rodmsqm(j1,j2,j3,j4,j5,j6,j7,bmass)
+      double precision function rodmsqm(j1,j2,j3,j4,j5,j6,j7,mQ)
       implicit none
 c matrix element squared summed over colors and spins
       include 'constants.f'
@@ -99,14 +111,14 @@ c matrix element squared summed over colors and spins
       include 'sprods_com.f'
       integer j1,j2,j3,j4,j5,j6,j7,h3,h4,h5
       double complex qcda(2,2,2),qcdb(2,2,2),qedi(2,2,2),qedf(2,2,2)
-      double precision prop,bmass
+      double precision prop,mQ
 c---calculate the W propagator
       prop=((s(j6,j7)-wmass**2)**2+(wmass*wwidth)**2)
 
 C---These two calls exploit the symmetry under 1<->2,3<->4,6<->7,za<->zb 
 C---and overall sign change
-      call Wbb(j1,j2,j3,j4,j5,j6,j7,bmass,za,zb,1,qedi,qedf,qcda,qcdb)
-      call Wbb(j2,j1,j4,j3,j5,j7,j6,bmass,zb,za,2,qedi,qedf,qcda,qcdb)
+      call Wbb(j1,j2,j3,j4,j5,j6,j7,mQ,za,zb,1,qedi,qedf,qcda,qcdb)
+      call Wbb(j2,j1,j4,j3,j5,j7,j6,mQ,zb,za,2,qedi,qedf,qcda,qcdb)
 
       rodmsqm=zip
       do h3=1,2

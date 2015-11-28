@@ -35,8 +35,6 @@ c--- initialize gg 2-loop matrix elements
       Qsum=+Q(1)**2+Q(2)**2+Q(3)**2+Q(4)**2+Q(5)**2 
       facgg=4d0*esq*gsq/(16d0*pisq)*Qsum
       gg=avegg*V*facgg**2*statfac*virtgamgam(s(1,2),s(1,3),s(2,3))
-!DEBUG zero gg for now
-c      gg=0d0
 
       do j=-nf,nf
       do k=-nf,nf

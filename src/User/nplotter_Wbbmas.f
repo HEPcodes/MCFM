@@ -17,7 +17,6 @@ c---                1  --> counterterm for real radiation
       include 'constants.f'
       include 'histo.f'
       include 'jetlabel.f'
-      include 'masses.f'
       integer ilept,inu,ibq,iba,ilt
       double precision p(mxpart,4),wt,wt2
       double precision yrap,pt,r,yraptwo,pttwo

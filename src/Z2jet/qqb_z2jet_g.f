@@ -78,9 +78,6 @@ c
 C---call spinor routine and load common block twopij
       call spinoru(7,p,za,zb)
 
-C---exclude the photon pole, 4*mbsq choosen as a scale approx above upsilon 
-      if (s(3,4) .lt. 4d0*mbsq) return
-
       prop=s(3,4)/dcmplx((s(3,4)-zmass**2),zmass*zwidth)
 
       if (Gflag) then

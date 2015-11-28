@@ -22,6 +22,7 @@
       include 'qqgg.f'
       include 'noglue.f'
       include 'stopscales.f'
+      include 'breit.f'
       double precision corrL,corrH
       double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf)
       double precision
@@ -57,9 +58,7 @@ c     . msq25_1v(-nf:nf,-nf:nf),sub25_1v,
      . msq15_6v(-nf:nf,-nf:nf),sub15_6v,
      . dummyv(-nf:nf,-nf:nf),dsubv
       integer j,k,nd
-      double precision mass2,width2,mass3,width3,oldmass2
-      integer n2,n3
-      common/breit/n2,n3,mass2,width2,mass3,width3
+      double precision oldmass2
       external qg_tbq,qg_tbq_gvec,donothing_gvec
 
 c--- Note that the subtractions here must separate the initial-final

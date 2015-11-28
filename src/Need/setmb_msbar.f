@@ -10,12 +10,11 @@ c--- [arXiv:hep-ph/9803493].
       implicit none
       include 'constants.f'
       include 'masses.f'
-      include 'mb_msbar.f'
-      double precision alphas,amz,c1,c2,a,zeta3,i31 
-      character*4 part
-      common/couple/amz
-      common/part/part
-      parameter(zeta3=1.202057d0)
+      include 'msbarmasses.f'
+      include 'couple.f'
+      include 'part.f'
+      double precision alphas,c1,c2,a,zeta3,i31 
+      parameter(zeta3=1.20205690315959428539d0)
 
       if (mb_msbar .lt. 0d0) then
         c1=4d0*Cf

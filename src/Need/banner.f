@@ -1,7 +1,7 @@
       block data codeversion_data
       implicit none
       include 'codeversion.f'
-      data codeversion/'6.2'/      
+      data codeversion/'6.3'/      
       data      prelim/.false./      ! if true, print warning message
       end
 
@@ -44,7 +44,7 @@ c--- warning message, if necessary
 
       write(6,*) '*                                                *'
       write(6,*) '* MCFM, v'//codeversion//
-     .                          '                 April 9th, 2012  *'
+     .                          '                August 9th, 2012  *'
       write(6,*) '*                                                *'
       write(6,*) '* Authors: John Campbell, Keith Ellis,           *'
       write(6,*) '*          Ciaran Williams                       *'
@@ -53,7 +53,10 @@ c--- warning message, if necessary
       write(6,*) '*                                                *'
       write(6,*) '* For details see:                               *'
       write(6,*) '*                                                *'
+      write(6,*) '*  arXiv:1208.0566 (Z+gamma+jet,Z+gamma+gamma)   *'
+      write(6,*) '*       (with H. Hartanto)                       *'
       write(6,*) '*  arXiv:1204.1513 (top production+decay)        *'
+      write(6,*) '*  JHEP 1207:052(2012), arXiv:1204.5678 (ttW)    *'
       write(6,*) '*  JHEP 1110:005(2011), arXiv:1107.5569          *'
       write(6,*) '*         (gg->WW,Higgs intference)              *'
       write(6,*) '*  JHEP 1107:018(2011), arXiv:1105.0020          *'

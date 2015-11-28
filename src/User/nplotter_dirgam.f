@@ -27,6 +27,8 @@ c---                1  --> counterterm for real radiation
       integer switch,n,nplotmax
       character*4 tag
       integer nd
+      logical phot_dip(mxpart) 
+      common/phot_dip/phot_dip
       logical first,creatent,dswhisto
       common/outputflags/creatent,dswhisto
       common/nplotmax/nplotmax
@@ -44,7 +46,7 @@ c--- This corresponds to the logical variable rescale set in chooser
       if(rescale) then 
          call rescale_pjet(p) 
       endif
-      if((nd.ge.7)) then 
+      if(phot_dip(nd)) then 
          call rescale_z_dip(p,nd,3)      
       endif
 
@@ -211,7 +213,7 @@ c--- If rescaling occured above, return to original value
       if(rescale) then 
          call return_pjet(p) 
       endif
-      if((nd.ge.7)) then 
+      if(phot_dip(nd)) then 
          call return_z_dip(p,nd,3)
       endif
  

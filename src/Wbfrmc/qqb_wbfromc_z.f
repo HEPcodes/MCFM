@@ -9,14 +9,13 @@
       include 'scale.f'
       include 'PR_new.f'
       include 'agq.f'
-      integer is,n2,n3
+      include 'breit.f'
+      integer is
       double precision z,xl12,xl15,xl25,p(mxpart,4),dot
       double precision mbar12,mbar15,mbar25
       double precision ii_mqq,ii_mqg,ii_mgq,ii_mgg,
      .                 if_mqq,if_mgg,
      .                 fi_mqq
-      double precision mass2,width2,mass3,width3
-      common/breit/n2,n3,mass2,width2,mass3,width3
 
       xl12=dlog(+two*dot(p,1,2)/musq)
       xl15=dlog(-two*dot(p,1,5)/musq)

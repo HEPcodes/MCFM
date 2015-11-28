@@ -8,6 +8,7 @@
       include 'zerowidth.f'
       include 'process.f'
       include 'reset.f'
+      include 'part.f'
 c---- Generate phase space for 2-->2+n process
 c---- with (345) being a top and 6,..,5+n the jets
 c---- r(mxdim),p1(4),p2(4) are inputs reversed in sign 
@@ -34,9 +35,7 @@ c---- larger than the value of 'njets' passed
       double precision bm(4),wp(4),nn(4),ep(4),pbg(4),g(4),wtwp,wtepnn
       integer j,nu,njets,ijet,in,notag
       logical first,oldzerowidth,xxerror
-      character*4 part
       parameter(wt0=1d0/twopi**2)
-      common/part/part
       common/energy/sqrts
       common/x1x2/xx
       common/notag/notag

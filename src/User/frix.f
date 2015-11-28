@@ -6,11 +6,10 @@
 !----- p -momentum array 
 !----- passed, should be obvious!
 !----- j - photon identification in p i.e. p(j,i) = photon(i) 
-!----- isub wether we are working with a dipole or not 
+!----- isub whether we are working with a dipole or not 
       subroutine frix(p,passed,j,isub) 
       implicit none 
       include 'constants.f' 
-      include 'leptcuts.f' 
       include 'frag.f' 
       include 'npart.f'
       double precision p(mxpart,4),R,pref,ret_ET
@@ -28,6 +27,18 @@
 
       if(first) then 
          first=.false. 
+!----- check for non-zero parameters, if zero exit with warning 
+         if((epsilon_h.eq.0d0).or.(cone_ang.eq.0d0)) then 
+       write(6,*)'************** Frixione Isolation    ***************'
+       write(6,*)'*   Read zero parameters, not isolating            *'
+       write(6,*) '* Warning, this may be unsafe in general *'
+       write(6,99)'*  eps_phot = ',epsilon_h,' delta_0 = ',cone_ang, '*'
+       write(6,97)'*  n = ',n_pow,'                                   *'     
+       write(6,*)'****************************************************'
+       return
+      endif
+      
+
        write(6,*)'************** Frixione Isolation    ***************'
        write(6,*)'*                                                  *'
       write(6,99)'*  eps_phot = ',epsilon_h,' delta_0 = ',cone_ang,  '*'

@@ -9,6 +9,7 @@ c                          + W^+ (nu(p3)+e^+(p4))+g(p7)
       include 'masses.f'
       include 'qcdcouple.f'
       include 'ewcouple.f'
+      include 'process.f'
       integer j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac
       double precision sh,ss,tt,uu,decay,s(mxpart,mxpart)
@@ -23,6 +24,7 @@ c                          + W^+ (nu(p3)+e^+(p4))+g(p7)
       aw=gwsq/(4d0*pi)
       call dotem(7,p,s)
       decay=gwsq**3*wmass**2*s(5,3)*s(6,4)
+      if (case .eq. 'HWW2lq') decay=2d0*xn*decay
 
 c--   calculate propagators
       ss=s(1,2)

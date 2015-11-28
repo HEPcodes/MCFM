@@ -8,13 +8,13 @@ c---- form of Lorentz transformation given in Section IV of arxiv:hep-ph/0408158
 c---- Updated: February 24, 2012 to allow for a non-zero b-quark mass
       implicit none
       include 'constants.f'
-      double precision p(mxpart,4),pw(4),pt(4),lDt(9),lDw(9)
+      double precision p(mxpart,4),pw(4),pt(4),lDt(12),lDw(12)
       double precision ptDpt,pwDpw,ptDpw,q(mxpart,4),root,hsin,hcos,a,b
       double precision ptDpg,pbDpg,ptDpb,pbDpb,rtlambda
       integer j,nu,n3,n4,n5,nmax
       
-      if (nmax .gt. 9) then
-        write(6,*) 'Routine wtransform_generic fails, limit nmax=9'
+      if (nmax .gt. 12) then
+        write(6,*) 'Routine wtransform_generic fails, limit nmax=12'
 	stop
       endif
       

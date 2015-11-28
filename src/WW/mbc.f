@@ -17,7 +17,7 @@ c    (6-->6)
       double complex bcoeff(8),zab2,izab2,bub6
       double complex iza(6,6),izb(6,6)
       double precision is(6,6),t,t134ms34,t234ms34,t134ms56,t234ms56
-      double precision IDelta,p(mxpart,4),afac,bfac
+      double precision IDelta
       zab2(j1,j2,j3,j4)=+za(j1,j2)*zb(j2,j4)+za(j1,j3)*zb(j3,j4)
       izab2(j1,j2,j3,j4)=cone/zab2(j1,j2,j3,j4)
       t(j1,j2,j3)=s(j1,j2)+s(j2,j3)+s(j1,j3)

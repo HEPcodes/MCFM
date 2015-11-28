@@ -20,6 +20,8 @@ c---                1  --> counterterm for real radiation
       include 'histo.f'
       include 'jetlabel.f'
       include 'frag.f'
+      logical phot_dip(mxpart) 
+      common/phot_dip/phot_dip
       double precision p(mxpart,4),wt,wt2
       double precision yrap,pt,r,yraptwo
       double precision y3,y4,y34,y5,pt3,pt4,pt5,r45,r35,r34,s34,m34
@@ -45,14 +47,16 @@ c--- This corresponds to the logical variable rescale set in chooser
       if(rescale) then 
          call rescale_pjet(p) 
       endif
-      if((nd.eq.3).or.(nd.eq.4)) then 
-         call rescale_z_dip(p,nd,3)
-! nd=3 or nd=4 corresponds to p_3 photon dipoles
-      elseif((nd.eq.5).or.(nd.eq.6)) then 
-         call rescale_z_dip(p,nd,4) 
-! nd =5 or nd=6 corresponds to p_4 phtoon dipoles       
-      endif
 
+      if(phot_dip(nd)) then 
+         if((nd.eq.3).or.(nd.eq.4)) then 
+            call rescale_z_dip(p,nd,3)
+!     nd=3 or nd=4 corresponds to p_3 photon dipoles
+         elseif((nd.eq.5).or.(nd.eq.6)) then 
+            call rescale_z_dip(p,nd,4) 
+!     nd =5 or nd=6 corresponds to p_4 phtoon dipoles       
+         endif
+      endif
      
 
       if (first) then
@@ -222,14 +226,16 @@ c--- If rescaling occured above, return to original value
       if(rescale) then 
          call return_pjet(p) 
       endif
-      if((nd.eq.3).or.(nd.eq.4)) then 
-         call return_z_dip(p,nd,3)
-! nd=3 or nd=4 corresponds to p_3 photon dipoles
-      elseif((nd.eq.5).or.(nd.eq.6)) then 
-         call return_z_dip(p,nd,4) 
-! nd =5 or nd=6 corresponds to p_4 photon dipoles       
+      if(phot_dip(nd)) then 
+         if((nd.eq.3).or.(nd.eq.4)) then 
+            call return_z_dip(p,nd,3)
+!     nd=3 or nd=4 corresponds to p_3 photon dipoles
+         elseif((nd.eq.5).or.(nd.eq.6)) then 
+            call return_z_dip(p,nd,4) 
+!     nd =5 or nd=6 corresponds to p_4 photon dipoles       
+         endif
       endif
- 
+         
       return 
       end
       

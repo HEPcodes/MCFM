@@ -24,11 +24,9 @@ c--- label on amplitudes represents heavy quark helicity
 c---  amp(1)= negative helicity, amp(2)= positive helicity    
       amp(1) =
      &  - za(pn,pb)*zb(pe,t1)
-     &
 
       amp(2) =
      &  - 1/(zb(p1,t1))*za(pn,pb)*zb(p1,pe)*mq
-     &
 
       do j=1,2
       amp(j)=amp(j)/propd/propt

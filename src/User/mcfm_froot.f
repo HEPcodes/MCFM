@@ -45,10 +45,9 @@ c--- it should finalize the output and close opened files, if necessary
       include 'scale.f'
       include 'facscale.f'
       include 'PDFerrors.f'
-      double precision scale_store,facscale_store
 c--- Added to keep track of number of momenta entries to be filled
-      character*4 part
-      common/part/part
+      include 'part.f'
+      double precision scale_store,facscale_store
 c--- Extra definitions to facilitate dummy call to lowint
       double precision dummy,wgt,r(mxdim),lowint
       integer ifill

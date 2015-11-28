@@ -4,16 +4,15 @@
       include 'masses.f'
       include 'process.f'
       include 'jetcuts.f'
-      include 'workdir.f'
+      include 'werkdir.f'
       include 'pdlabel.f'
+      include 'part.f'
       double precision scalestart,fscalestart
       integer nlength,lenocc
       character*30 runstring
-      character*4 part
       character*255 outlabel1,runname,outlabeltmp
       character*3 strmh,getstr,strpt
       character*7 strscale
-      common/part/part
       common/runstring/runstring
       common/runname/runname
       common/nlength/nlength
@@ -62,10 +61,10 @@ c      endif
       nlength=lenocc(runname)
 
 c--- add working directory, if necessary 
-      if (workdir .ne. '') then
+      if (werkdir .ne. '') then
         outlabeltmp=runname
-        runname=workdir(1:lenocc(workdir))//'/'//outlabeltmp
-        nlength=nlength+1+lenocc(workdir)
+        runname=werkdir(1:lenocc(werkdir))//'/'//outlabeltmp
+        nlength=nlength+1+lenocc(werkdir)
       endif
       
       return

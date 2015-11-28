@@ -27,7 +27,6 @@ c---  amp(1)= negative helicity, amp(2)= positive helicity
      & taugt**(-1)
      &  - 1/(zb(p1,p2))*za(ie,in)*za(jn,jb)*zb(p2,in)**2*zab(p1,je)*
      & taugt**(-1)
-     &
 
       amp(2) =
      &  - 1/(za(p1,p2))*za(p2,ie)*za(jn,jb)*zb(p1,je)*zb(p2,in)*mq**2*
@@ -35,7 +34,6 @@ c---  amp(1)= negative helicity, amp(2)= positive helicity
      &  + 1/(za(p1,p2))*za(jn,jb)*zb(p1,in)*zab(ie,je)
      &  + 1/(za(p1,p2))*za(jn,jb)*zb(p2,in)*zab(p2,je)*zab(ie,p1)*
      & taugt**(-1)
-     &
 
       do j=1,2
       amp(j)=amp(j)/propp/propd/propt

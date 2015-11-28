@@ -9,6 +9,7 @@ c---
       include 'masses.f'
       include 'qcdcouple.f'
       include 'ewcouple.f'
+      include 'process.f'
       integer j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),s,s12
       double precision decay,gg,Asq
@@ -27,7 +28,9 @@ c---set msq=0 to initialize
       decay=decay/((s(3,4)-wmass**2)**2+(wmass*wwidth)**2)
       decay=decay/((s(5,6)-wmass**2)**2+(wmass*wwidth)**2)
       decay=decay/((s12-hmass**2)**2+(hmass*hwidth)**2)
-
+      if ((case .eq. 'HWW2lq') .or. (case .eq. 'HWWdkW')) then
+        decay=2d0*xn*decay
+      endif
       Asq=(as/(3d0*pi))**2/vevsq
       gg=0.5d0*V*Asq*s12**2
 

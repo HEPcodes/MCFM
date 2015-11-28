@@ -46,9 +46,6 @@ C in is the label of the contracted line
       enddo
       enddo
 
-C---exclude the photon pole, 4*mbsq choosen as a scale approx above upsilon 
-      if (s(3,4) .lt. 4d0*mbsq) return
-      
       do icol=0,2
       do pq=1,2
       do pl=1,2

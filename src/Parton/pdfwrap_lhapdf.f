@@ -8,13 +8,12 @@
       include 'nlooprun.f'
       include 'PDFerrors.f'
       include 'pdlabel.f'
-      double precision amz,alphasPDF
+      include 'couple.f'
+      double precision alphasPDF
       logical validPDF
-      character*30 oldPDFname
+      character*50 oldPDFname
       character*72 checkpath 
       integer i,iorder
-
-      common/couple/amz
 
       
 c      if (newinput .eqv. .false.) then
@@ -40,7 +39,7 @@ c      endif
           PDFname=oldPDFname(1:i-1)//'.LHpdf'
         endif
       endif  
-      if ((i .lt. 20) .and. (validPDF .eqv. .false.)) goto 20
+      if ((i .lt. 40) .and. (validPDF .eqv. .false.)) goto 20
       
       if (validPDF .eqv. .false.) then
         write(6,*) 'Problem with PDFname'
@@ -52,7 +51,7 @@ c      endif
       write(6,*) '*******************************************'
       write(6,*) '*     MCFM is calling LHAPDF              *'
       write(6,*) '*                                         *'
-      write(6,98) 'PDFname',PDFname(1:29)
+      write(6,98) 'PDFname',PDFname(1:49)
       write(6,99) 'PDFmember',PDFmember
       write(6,*) '*******************************************'
       write(6,*)

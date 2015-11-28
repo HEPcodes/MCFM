@@ -1,15 +1,12 @@
       subroutine massivebox(k1,k2,k3,k4,k5,k6,za,zb,box)
       implicit none
       include 'constants.f'
-      include 'ewcouple.f'
-      include 'qcdcouple.f'
       include 'masses.f'
       include 'scale.f'
       include 'sprods_com.f'
       include 'zprods_decl.f'
-      double complex d(2,2,6),box(2,2,-2:0),a,b,c,al,be,ga,de,
-     & iza12,qlI4,Dint(6,-2:0)
-      double precision sign,s12,s34,s56,s134,s156,mtsq
+      double complex d(2,2,6),box(2,2,-2:0),qlI4,Dint(6,-2:0)
+      double precision s12,s34,s56,s134,s156,mtsq
       integer j,k1,k2,k3,k4,k5,k6,h1,h2,e
       common/transferbox/d
       common/docheck/docheck
@@ -19,8 +16,8 @@
       mtsq=mt**2
       if (first) then
       first=.false. 
-      write(6,*) 'mtsq',mtsq
-      write(6,*) 'musq',musq
+c      write(6,*) 'mtsq',mtsq
+c      write(6,*) 'musq',musq
       call qlinit
 c      pause
       endif

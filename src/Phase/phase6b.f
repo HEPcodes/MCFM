@@ -3,6 +3,7 @@ c----phase space for signal
       implicit none
       include 'constants.f'
       include 'mxdim.f'
+      include 'breit.f'
 c********* generate phase space for 2-->6 process
 c********* r(mxdim),p1(4),p2(4) are inputs 
 c--------- incoming p1 and p2 reversed in sign from physical values 
@@ -14,9 +15,6 @@ c---- with all 2 pi's (ie 1/(2*pi)^11)
       double precision p12(4),p56(4),p34(4),p5678(4),p78(4)
       double precision wt,wt12,wt5678,wt567,wt34,wt56,wt0
       integer j
-      integer n2,n3
-      double precision mass2,width2,mass3,width3
-      common/breit/n2,n3,mass2,width2,mass3,width3
 
       parameter(wt0=1d0/twopi**4)
 

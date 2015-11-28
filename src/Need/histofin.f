@@ -11,6 +11,7 @@ c--- For itno>0, this is an intermediate result only
       include 'verbose.f'
       include 'PDFerrors.f'
       include 'histo.f'
+      include 'ehisto.f'
       include 'outputoptions.f'
       include 'vanillafiles.f'
       integer j,nlength,itno,itmx,nplotmax,nempty
@@ -19,17 +20,23 @@ c--F  Add gnuplot output and root output
       character*255, outfilegnuplot, outfileps
       character*255, outfileroot, outfilerootC
 c--F
+c      character*255 outfilepwg
       character*3 oldbook
       character mop
       double precision xsec,xsec_err,scalefac,itscale
-      double precision EHIST(4,1000,100)   
-      integer IHISTOMATCH(100),ICOUNTHISTO  
+      integer ibin,index 
       logical scaleplots                  
+      integer itmx1,ncall1,itmx2,ncall2
+      common/iterat/itmx1,ncall1,itmx2,ncall2
       common/runname/runname
       common/nlength/nlength
       common/nplotmax/nplotmax
-      COMMON/EHISTO/EHIST,IHISTOMATCH,ICOUNTHISTO
       common/scaleplots/scalefac,scaleplots
+
+c--- call to POWHEG-style histofin if requested    
+      if (writepwg) then
+        call pwhghistofin(itno,itmx)
+      endif
       
       if (itno .eq. 0) then
       write(6,*)
@@ -58,6 +65,7 @@ c--F
       outfileroot=runname
       outfilerootC=runname
       outfileerr=runname
+c      outfilepwg=runname
       outfiledat(nlength+1:nlength+4)='.dat'
       outfiletop(nlength+1:nlength+4)='.top'
       outfilegnuplot(nlength+1:nlength+4)='.gnu'
@@ -65,6 +73,7 @@ c--F
       outfileroot(nlength+1:nlength+5)='.root'
       outfilerootC(nlength+1:nlength+2)='.C'
       outfileerr(nlength+1:nlength+10)='_error.top'
+c      outfilepwg(nlength+1:nlength+7)='pwg.top'
       
 
       if ((PDFerrors) .and. (ICOUNTHISTO .gt. 0)) then
@@ -83,6 +92,9 @@ c--F
       if (writeroot) then
       open(unit=96, file=outfilerootC, status='unknown')
       endif
+c      if (writepwg) then
+c      open(unit=100,file=outfilepwg,status='unknown')
+c      endif
       
 c--- write out run info to top of files
       if (writedat) then
@@ -191,6 +203,40 @@ c--F  closing statements for root file
         close(unit=96)
       endif
       
+cC--- generate POWHEG-style output if requested
+c      if (writepwg) then
+c        index = 0
+c        call flush(6) 
+c!      write(*,*) 'itno,itmx,nplotmax ',itno,itmx, nplotmax  
+c!         write(100,*) '# itmx1, ncall1, itmx2, ncall2 ', 
+c        if (itno .eq. 0) then
+c           write(100,*) '# nev = ', itmx2*ncall2
+c        else
+c           write(100,*) '# nev = ', itno*ncall2
+c        endif
+c      
+c         do j=1,nplotmax	   !-nempty
+cc            write(100,*) '# index ', index, trim(TITLE(j)) 
+cc            write(100,*) '# title ', trim(TITLE(j))
+c            write(100,*) '# ', trim(TITLE(j)),' index ',index
+c            do ibin = 1,nbin(j)!size(hist(j,:))
+c               if (xhis(j,ibin).ne.0d0 .or. hist(j,ibin).ne.0d0) then 
+c         	  if (itno .ne. 0) then 
+c         	     write(100,*) xhis(j,ibin),hist(j,ibin)/itno,
+c     &   		  hist(2*maxhisto+j,ibin)/itno
+c         	  else
+c         	     write(100,*) xhis(j,ibin),hist(j,ibin),
+c     &   		  hist(2*maxhisto+j,ibin)
+c         	  endif
+c               endif
+c            enddo
+c            write(100,*)
+c            write(100,*)
+c            index= index+1
+c         enddo
+c         close(unit=100) 
+c      endif
+
 c---generate error file
       if ((PDFerrors) .and. (ICOUNTHISTO .gt. 0)) then
         do j=1,nplotmax

@@ -9,13 +9,10 @@ c--- including both top and bottom quark loops
       include 'masses.f'
       include 'sprods_com.f'
       include 'zprods_decl.f'
-      include 'blabels.f'
-      include 'Higgsint.f'
-      include 'scale.f'
-      integer h1,h2,nu,i,j,k,om
+      integer h1,h2,j,k
       double precision p(mxpart,4),msq(fn:nf,fn:nf),msqgg,fac
-      double precision mfsq,tau,tauinv,rt,p1(4),p2(4),p3(4),p4(4),pttwo
-      double complex Ahiggs(2,2),Agen3(2,2),fachiggs,amphiggs,f,e3De4
+      double precision mfsq,tau,tauinv,rt
+      double complex Ahiggs(2,2),fachiggs,amphiggs,f,e3De4
 
       do j=-nf,nf
       do k=-nf,nf

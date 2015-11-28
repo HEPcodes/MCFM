@@ -153,14 +153,14 @@ c--- 2-quark, 2-gluon contribution to matrix elements
           enddo
       elseif ((j .eq. 0) .and. (k .eq. 0)) then
           if     (nwz .eq. +1) then
-            msq(j,k)=ggWqbq2
+            msq(j,k)=Vsum(+4)*ggWqbq2
             do i=0,2
-              msq_cs(i,j,k)=ggWqbq2_cs(i)
+              msq_cs(i,j,k)=Vsum(+4)*ggWqbq2_cs(i)
             enddo
           elseif (nwz .eq. -1) then
-            msq(j,k)=ggWqqb2
+            msq(j,k)=Vsum(-4)*ggWqqb2
             do i=0,2
-              msq_cs(i,j,k)=ggWqqb2_cs(i)
+              msq_cs(i,j,k)=Vsum(-4)*ggWqqb2_cs(i)
             enddo
           endif
       endif

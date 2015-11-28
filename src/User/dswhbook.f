@@ -197,6 +197,7 @@ c--- Included for the extra code below
       include 'scale.f'
       include 'facscale.f'
       include 'PDFerrors.f'
+      include 'part.f'
 
       double precision scale_store,facscale_store
 
@@ -208,8 +209,6 @@ c--- Included for the extra code below
       common/QUEST/IQUEST(100)
 
 c--- Added to keep track of number of momenta entries to be filled
-      character*4 part
-      common/part/part
 c--- Extra definitions to facilitate dummy call to lowint
       double precision dummy,wgt,r(mxdim),lowint
       integer ifill

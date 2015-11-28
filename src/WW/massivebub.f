@@ -12,19 +12,17 @@ c----Bubble coefficients extracted from BDK 11.5, 11.8
       double complex b(2,2,7),bcoeff(8),bub(2,2,-2:0),Bint(7,-2:0),
      & qlI2,tmp
       double precision mtsq,s12,s34,s56,s134,s156
-      logical first,docheck
+      logical docheck
       common/docheck/docheck
-      data first/.true./ 
-      save first
       mtsq=mt**2
 
 c--- QCDLoop already initialized from call to massivebox
+c      call qlinit
 c      if (first) then
 c      first=.false. 
-cc      write(6,*) 'mtsq',mtsq
-cc      write(6,*) 'musq',musq
-c      call qlinit
-cc      pause
+c      write(6,*) 'mtsq',mtsq
+c      write(6,*) 'musq',musq
+c      pause
 c      endif
 
 c--- note: these look unnatural due to the

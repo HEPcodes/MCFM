@@ -3,7 +3,6 @@ c--- subroutine to calculate dynamic scale equal to
 c--- partonic HT (i.e. scalar sum of particle pt's, whether or not they pass cuts)
       implicit none
       include 'constants.f'
-      include 'process.f'
       include 'npart.f'
       integer j
       double precision p(mxpart,4),mu0,pt

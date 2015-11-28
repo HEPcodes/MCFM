@@ -8,22 +8,19 @@ c--- alpha-s will be determined again (in coupling2).
       include 'masses.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
+      include 'couple.f'
       include 'scale.f'
       include 'nlooprun.f'
       include 'ewinput.f'
       include 'nflav.f'
       include 'b0.f'
-      character*4 part,mypart
-      common/part/part
+      include 'part.f'
       integer i
-      double precision aemmz,alphas,amz,cmass,bmass
-      double precision xwsq,xbsq,root,lotopdecaywidth
+      double precision aemmz,alphas,cmass,bmass,lotopdecaywidth
       character*3 inlabel(10)
       character*5 tworder
       common/qmass/cmass,bmass
       common/em/aemmz
-      common/couple/amz
-      common/mypart/mypart
 
 c--- blank out labels that indicate input parameters
       do i=1,10

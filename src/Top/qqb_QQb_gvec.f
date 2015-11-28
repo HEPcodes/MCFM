@@ -13,11 +13,10 @@
       include 'qcdcouple.f'
       include 'sprods_com.f'
       include 'msqv_cs.f'
-      integer j,k,in,n2,n3
+      include 'breit.f'
+      integer j,k,in
 C--in is the label of the parton dotted with n
-      double precision msq(-nf:nf,-nf:nf),p(mxpart,4),n(4)
-      double precision mass2,width2,mass3,width3,msqn(0:2)
-      common/breit/n2,n3,mass2,width2,mass3,width3
+      double precision msq(-nf:nf,-nf:nf),p(mxpart,4),n(4),msqn(0:2)
       logical first
       data first/.true./
 

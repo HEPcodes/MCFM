@@ -1,4 +1,4 @@
-      subroutine mcfm_init
+      subroutine mcfm_init(inputfile,workdir)
 ************************************************************************
 *                                                                      *
 *  This routine should initialize any necessary variables and          *
@@ -14,11 +14,13 @@
       include 'facscale.f'
       include 'scale.f'
       include 'verbose.f'
+      include 'includect.f'
 C -- GZ
       include 'first_time.f'
       double precision rtsmin,sqrts,p1ext(4),p2ext(4),
      . p(mxpart,4),val
       integer j,k
+      character*72 inputfile,workdir
       common/rtsmin/rtsmin
       common/energy/sqrts
       common/pext/p1ext,p2ext
@@ -26,7 +28,7 @@ C -- GZ
 
 * Welcome banner
       call banner
-      call reader_input
+      call reader_input(inputfile,workdir)
 
       first_time = .true. 
       
@@ -38,6 +40,9 @@ C -- GZ
       write(6,*)
       endif
 
+* Counter-terms for radiation in top decay should be included
+      includect=.true.
+      
 * Set-up incoming beams and PS integration cut-offs
       rtsmin=min(rtsmin,dsqrt(wsqmin+cutoff))
       rtsmin=min(rtsmin,dsqrt(bbsqmin+cutoff))

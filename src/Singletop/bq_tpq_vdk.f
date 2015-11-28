@@ -13,13 +13,17 @@ c--NB average over spins only -- colour factors cancel
       include 'ewcouple.f'
       include 'ckm.f'
       include 'nwz.f'
+      include 'masses.f'
       include 'zprods_com.f'
       include 'scheme.f'
-      double precision msqv(-nf:nf,-nf:nf),p(mxpart,4)
-      double precision fac,bu,ub,bubar,ubarb,virtqqbdk
+      double precision msqv(-nf:nf,-nf:nf),p(mxpart,4),
+     & msq(-nf:nf,-nf:nf),fac,bu,ub,bubar,ubarb,virtqqbdk,
+     & nloratiotopdecay,corr
       integer j,k,ib
 
       scheme='dred'
+      corr=nloratiotopdecay(mt,mb,wmass,wwidth)
+      call bq_tpq(p,msq)
 
       call spinoru(6,p,za,zb)
 
@@ -48,21 +52,25 @@ c--- for nwz=+1, initial state is b, for nwz=-1 it is b~
       
       if     ((j .eq. ib) .and. (k .gt. 0)) then
       msqv(j,k)=(Vsq(-1,k)+Vsq(-2,k)+Vsq(-3,k)+Vsq(-4,k)+Vsq(-5,k))
-     . *bu
+     . *bu-corr*msq(j,k)
       elseif ((j .eq. ib) .and. (k .lt. 0)) then
       msqv(j,k)=(Vsq(+1,k)+Vsq(+2,k)+Vsq(+3,k)+Vsq(+4,k)+Vsq(+5,k))
-     . *bubar
+     . *bubar-corr*msq(j,k)
       elseif ((j .gt. 0) .and. (k .eq. ib)) then
       msqv(j,k)=(Vsq(j,-1)+Vsq(j,-2)+Vsq(j,-3)+Vsq(j,-4)+Vsq(j,-5))
-     . *ub
+     . *ub-corr*msq(j,k)
       elseif ((j .lt. 0) .and. (k .eq. ib)) then
       msqv(j,k)=(Vsq(j,+1)+Vsq(j,+2)+Vsq(j,+3)+Vsq(j,+4)+Vsq(j,+5))
-     . *ubarb
+     . *ubarb-corr*msq(j,k)
       endif
       
-      enddo
-      enddo
+c      if ((j.eq.5) .and. (k.eq.4))
+c     & write(6,*) 'new:bq_tpq_vdk,j,k,msqv(j,k)',
+c     & j,k,msqv(j,k)+corr*msq(j,k),msq(j,k),corr
+c      pause
 
+      enddo
+      enddo
       return
       end
 

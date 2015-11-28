@@ -16,7 +16,6 @@ c---                1  --> counterterm for real radiation
       include 'vegas_common.f'
       include 'constants.f'
       include 'histo.f'
-      include 'jetlabel.f'
       include 'masses.f'
       include 'plabel.f'
       include 'process.f'
@@ -26,14 +25,12 @@ c---                1  --> counterterm for real radiation
      & ptfour,yrapfour,yrapseven,mt3,mt4,min14,min23,min24,dot,tiny,
      & ptsix,ptt,pttb,yt,ytb,mttb,mwp,mwm,mlb
       double precision plep(4),ptop(4),pleprest(4),ptoprest(4),mj1j2
-      integer switch,n,nplotmax,nproc,nqcdjets,nqcdstart,j,
+      integer switch,n,nplotmax,j,
      & jetindex(mxpart),iorder(mxpart),ijet
       character*4 tag
       logical first,creatent,dswhisto,dilepton,failed
       common/outputflags/creatent,dswhisto
       common/nplotmax/nplotmax
-      common/nproc/nproc
-      common/nqcdjets/nqcdjets,nqcdstart
       parameter(tiny=1d-8)
       data first/.true./
       save first

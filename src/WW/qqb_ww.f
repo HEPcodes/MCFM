@@ -18,7 +18,8 @@ c--- note that non-leptonic W decays do not include scattering diagrams
       include 'ewcharge.f'
       include 'anomcoup.f'
       include 'srdiags.f'
-      double precision msq(-nf:nf,-nf:nf),p(mxpart,4),qdks(mxpart,4),ave
+      include 'plabel.f'
+      double precision msq(-nf:nf,-nf:nf),p(mxpart,4),qdks(mxpart,4)
       double complex prop12,prop34,prop56
       double complex AWW(2),a6treea,A6b_1,A6b_2,A6b_3
       double complex propwp,propwm,propzg,cprop
@@ -30,10 +31,11 @@ c--- note that non-leptonic W decays do not include scattering diagrams
       double complex cs_z(2,2),cs_g(2,2),cgamz(2,2),cz(2,2)
       double precision fac,mp(nf),xfac
       integer j,k,jk,tjk,minus,mplus
-      parameter(ave=0.25d0/xn)
       data minus,mplus/1,2/
       data mp/-1d0,+1d0,-1d0,+1d0,-1d0/
-      fac=gw**8*ave
+      fac=gw**8*xn*aveqq
+C---multiply by factor for c-sbar+u-dbar hadronic decay
+      if (plabel(5) .eq. 'qj') fac=2d0*xn*fac
 
       do j=-nf,nf
       do k=-nf,nf
@@ -43,9 +45,25 @@ c--set msq=0 to initalize
       enddo
 
 C----Change the momenta to DKS notation 
+C   swapped possibility if we want to swap momenta for hadronic case
+c   We have --- f(p1) + f'(p2)-->mu^-(p3)+nubar(p4)+e^+(p6)+nu(p5)
+c   DKS have--- ubar(q1)+u(q2)-->mu^-(q3)+nubar(q4)+e^+(q5)+nu(q6)
+c----
+C   or normal configuration
 c   We have --- f(p1) + f'(p2)-->mu^-(p5)+nubar(p6)+e^+(p4)+nu(p3)
 c   DKS have--- ubar(q1)+u(q2)-->mu^-(q3)+nubar(q4)+e^+(q5)+nu(q6)
 
+      if ((plabel(3) .eq. 'el') .and. (plabel(5) .eq. 'qj')) then 
+C----swapped case for hadronic decay of Wp
+      do j=1,4
+      qdks(1,j)=p(1,j)
+      qdks(2,j)=p(2,j)
+      qdks(3,j)=p(3,j)
+      qdks(4,j)=p(4,j)
+      qdks(5,j)=p(6,j)
+      qdks(6,j)=p(5,j)
+      enddo
+      else
       do j=1,4
       qdks(1,j)=p(1,j)
       qdks(2,j)=p(2,j)
@@ -54,7 +72,7 @@ c   DKS have--- ubar(q1)+u(q2)-->mu^-(q3)+nubar(q4)+e^+(q5)+nu(q6)
       qdks(5,j)=p(4,j)
       qdks(6,j)=p(3,j)
       enddo
-
+      endif
       call spinoru(6,qdks,za,zb)
 c--   s returned from sprod (common block) is 2*dot product
       
@@ -198,9 +216,8 @@ C---tjk is equal to 2 (u,c) or 1 (d,s,b)
       endif
       endif
 C-- Inclusion of width for W's a la Baur and Zeppenfeld with cprop.
-c-- also include coupling in l1 to account for non-leptonic W decays
-      AWW(minus)=l1*cprop*AWW(minus)
-      AWW(mplus)=l1*cprop*AWW(mplus)
+      AWW(minus)=cprop*AWW(minus)
+      AWW(mplus)=cprop*AWW(mplus)
 
       msq(j,k)=fac*(abs(AWW(minus))**2+abs(AWW(mplus))**2)
  20   continue

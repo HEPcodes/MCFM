@@ -20,6 +20,7 @@ c----
       include 'leptcuts.f'
       include 'reset.f'
       include 'xmin.f'
+      include 'part.f'
       double precision r(mxdim),p(mxpart,4),psumjet(4),wt
       double precision hmin,hmax,delh,h,sqrts,pt,etamax,xx(2)
       double precision y,sinhy,coshy,phi
@@ -27,8 +28,6 @@ c----
       double precision ptmin_part,etamax_part,pbreak_part,swap
       integer j,nu,nphots,njets,nphotsjets,ijet,icount
       logical first,flatreal
-      character*4 part
-      common/part/part
       common/energy/sqrts
       common/x1x2/xx
       parameter(flatreal=.false.)

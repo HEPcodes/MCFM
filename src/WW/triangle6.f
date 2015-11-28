@@ -7,7 +7,7 @@
       include 'Higgsint.f'
       double precision mtsq
       integer k1,k2,k3,k4,k5,k6,i1,i2,k12h,k34h
-      double complex app,apm,triamp,za34b,iza34b,iza,izb,
+      double complex app,apm,triamp,iza,izb,
      & s12,s34,dot1234,delta,ga,x,y
       parameter(k12h=9,k34h=10)
 

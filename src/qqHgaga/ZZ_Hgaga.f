@@ -8,6 +8,7 @@ c                           |
 c                           |
 c                           |
 c                           ---> b(p3)+bbar(p4)
+c---- Extension to photon decay contributed by Fabian Stoeckli
       include 'constants.f'
       include 'masses.f'
       include 'ewcouple.f'
@@ -27,12 +28,8 @@ c                           ---> b(p3)+bbar(p4)
       
       call dotem(6,p,s)
 
-      s34=s(3,4)+2d0*mb**2
-
-C      hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s34-4d0*mb**2) 
-C      hdecay=hdecay/((s34-hmass**2)**2+(hmass*hwidth)**2)
-C---  REPLACED BY FST FOR H->2PHOTONS
-      hdecay=msqgamgam(hmass)/((s34-hmass**2)**2+(hmass*hwidth)**2)
+      
+      hdecay=msqgamgam(hmass)/((s(3,4)-hmass**2)**2+(hmass*hwidth)**2)
 
       fac=0.25d0*gwsq**3*hdecay
 C Color cancels, 0.25d0 is spin average

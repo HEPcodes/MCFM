@@ -65,11 +65,16 @@ c        r(1)=r(1)*1d-5 ! to check small s35
       endif
       
       if   ( ((case .eq. 'Wbbmas') .and. (flav .eq. 5))
+     ..or. (case .eq. 'WHbbar')
+     ..or. (case .eq. 'ZHbbar')
      ..or. (case .eq. 'Zbbmas')
      ..or. (case .eq. 'Zccmas') .or. (case .eq. 'vlchkm')) then
         call phi3m(r(5),r(6),p56,p5,p6,mb,mb,wt56,*99)
       elseif ((case .eq. 'Wbbmas') .and. (flav .eq. 4)) then
         call phi3m(r(5),r(6),p56,p5,p6,mc,mc,wt56,*99)
+      elseif ((case .eq. 'qq_ttw') .or. (case .eq. 'ttwldk') 
+     &   .or. (case .eq. 'Wttmas')) then
+        call phi3m(r(5),r(6),p56,p5,p6,mt,mt,wt56,*99)
       elseif (case .eq. 'W_cjet') then
         call phi3m(r(5),r(6),p56,p5,p6,mc,zip,wt56,*99)
       elseif (case .eq. 'Wbfrmc') then

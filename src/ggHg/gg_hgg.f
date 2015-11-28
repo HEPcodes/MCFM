@@ -8,11 +8,10 @@ c     g(-p1)+g(-p2) -->  H(p3)+g(p_iglue1=5)+g(p_iglue2=6)
       include 'masses.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
-      include 'sprods_com.f'
       include 'zprods_com.f'
       include 'msq_struc.f'
       include 'nflav.f'
-      include 'process.f'
+      include 'hdecaymode.f'
       integer j,k,iglue1,iglue2
       double precision p(mxpart,4),Asq,fac,msqgamgam
       double precision Hgggg,Hgggg_1256,Hgggg_1265,Hgggg_1625
@@ -43,17 +42,21 @@ c     .                     ,Hgggg_1652,Hgggg_1562,Hgggg_1526
 C---fill spinor products up to maximum number
       call spinoru(iglue2,p,za,zb)  
 
-C   Deal with Higgs decay to b-bbar
-      if (case .eq. 'ggfus2') then
-      s34=s(3,4)+2d0*mb**2
-      hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s34-4d0*mb**2) 
-      hdecay=hdecay/((s34-hmass**2)**2+(hmass*hwidth)**2)
-      elseif (case .eq. 'gagajj') then
-      hdecay=msqgamgam(hmass)/((s(3,4)-hmass**2)**2+(hmass*hwidth)**2)
+      s34=(p(3,4)+p(4,4))**2
+     & -(p(3,1)+p(4,1))**2-(p(3,2)+p(4,2))**2-(p(3,3)+p(4,3))**2
+
+C   Deal with Higgs decay
+      if (hdecaymode == 'tlta') then
+          call htautaudecay(p,3,4,hdecay)
+      elseif (hdecaymode == 'bqba') then
+          call hbbdecay(p,3,4,hdecay)
+      elseif (hdecaymode == 'gaga') then
+          hdecay=msqgamgam(hmass)
       else
-      write(6,*) 'Unimplemented process in gg_hgg'
+      write(6,*) 'Unimplemented process in gg_hgg_v'
       stop
       endif
+      hdecay=hdecay/((s34-hmass**2)**2+(hmass*hwidth)**2)
 
       Asq=(as/(3d0*pi))**2/vevsq
       fac=gsq**2*Asq*hdecay

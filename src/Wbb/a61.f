@@ -15,12 +15,12 @@
       include 'zprods_decl.f'
       integer j1,j2,j3,j4,j5,j6
       character*2 st
-      double complex a6,aa6sf,aa6uv
+      double complex a6,aa6sf,aa6tp,aa6uv
 
 c----Includes ultraviolet subtraction aa6uv
-      call a6routine(st,j1,j2,j3,j4,j5,j6,za,zb,aa6sf,aa6uv) 
+      call a6routine(st,j1,j2,j3,j4,j5,j6,za,zb,aa6sf,aa6tp,aa6uv) 
       a61=(one-two/xnsq)*a6(st,j1,j2,j3,j4,j5,j6,za,zb)
-     & -dble(nf)/xn*aa6sf-aa6uv
+     & -(dble(nf)*aa6sf-aa6tp)/xn-aa6uv
 
       if (st .eq. 'pp') then
       a61=a61+(-two*a6('pm',j1,j3,j2,j4,j5,j6,za,zb)

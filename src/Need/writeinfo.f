@@ -12,7 +12,6 @@
      . gqbpart,qbgpart,qbqbpart,qbqpart
       
       character*2 commchars
-      character*4 part
       character*30 runstring
       logical creatent,dswhisto,dryrun,makecuts
       integer nproc,ih1,ih2,itmx1,itmx2,ncall1,ncall2,origij
@@ -23,7 +22,6 @@
       common/outputflags/creatent,dswhisto      
 
       common/nproc/nproc
-      common/part/part
       common/runstring/runstring
       common/energy/sqrts
       common/density/ih1,ih2

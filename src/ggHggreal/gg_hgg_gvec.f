@@ -12,8 +12,8 @@ C  in is the label of the momentum contracted with n
       integer j,k,in
       double precision msq(-nf:nf,-nf:nf),msqgamgam
       double precision n(4),p(mxpart,4),hdecay,s34,fac,
-     . qqgghn_ab,qqgghn_ba,qqgghn_sym,ab,ba,sym,
-     . c1234,c1243,c1423,p1p2(-1:1,-1:1),Asq
+     . qqgghn_ab,qqgghn_ba,qqgghn_sym,
+     . c1234,c1243,c1423,Asq
 
       do j=-nf,nf
       do k=-nf,nf
@@ -27,7 +27,8 @@ C---fill dot products
 C   Deal with Higgs decay to b-bbar
       if (case .eq. 'ggfus2') then
       s34=s(3,4)+2d0*mb**2
-      hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s34-4d0*mb**2) 
+c      hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s34-4d0*mb**2) 
+      call hbbdecay(p,3,4,hdecay)
       hdecay=hdecay/((s34-hmass**2)**2+(hmass*hwidth)**2)
       elseif (case .eq. 'gagajj') then
       hdecay=msqgamgam(hmass)/((s(3,4)-hmass**2)**2+(hmass*hwidth)**2)
@@ -39,11 +40,11 @@ C   Deal with Higgs decay to b-bbar
       Asq=(as/(3d0*pi))**2/vevsq
       fac=gsq**2*Asq*hdecay
 
-      do j=-1,+1
-      do k=-1,+1
-      p1p2(j,k)=0d0
-      enddo
-      enddo
+c      do j=-1,+1
+c      do k=-1,+1
+c      p1p2(j,k)=0d0
+c      enddo
+c      enddo
 
 c--- NOTE: there seems to be some redundancy in the function calls, e.g.
 c--- the entries for (0,-1) = (0,+1). Need to check if this is true

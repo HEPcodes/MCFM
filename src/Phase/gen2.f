@@ -11,13 +11,12 @@ c---- are required
       include 'mxdim.f'
       include 'phasemin.f'
       include 'nodecay.f'
-      integer n2,n3,j,nu
+      include 'breit.f'
+      integer j,nu
       double precision r(mxdim),p(mxpart,4),xx(2),rdk1,rdk2
       double precision sqrts,ymax,yave,ydif,xjac,y3,y4,phi,wt0,wt2,w3
       double precision pt,s34,rtshat,udif
       common/energy/sqrts
-      double precision mass2,width2,mass3,width3 
-      common/breit/n2,n3,mass2,width2,mass3,width3 
       parameter(wt0=1d0/16d0/pi)
       common/x1x2/xx
 

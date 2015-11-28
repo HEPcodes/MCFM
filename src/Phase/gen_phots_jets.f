@@ -22,6 +22,8 @@ c---- are required
       include 'nodecay.f'
       include 'leptcuts.f'
       include 'reset.f'
+      include 'breit.f'
+      include 'part.f'
       double precision r(mxdim),rdk1,rdk2
       double precision p(mxpart,4),p3(4),p34(4),psumjet(4),pcm(4),Q(4)
       double precision wt
@@ -32,13 +34,9 @@ c---- are required
       double precision ptjetmin,etajetmin,etajetmax,pbreak
       double precision ptmin_part,etamax_part,pbreak_part
       double precision plstar,estar,plstarsq,y5starmax,y5starmin
-      double precision mass2,width2,mass3,width3
-      integer j,nu,nphots,njets,nphotsjets,ijet,n2,n3
+      integer j,nu,nphots,njets,nphotsjets,ijet
       logical first,xxerror,flatreal
-      character*4 part
-      common/part/part
       common/energy/sqrts
-      common/breit/n2,n3,mass2,width2,mass3,width3
       common/x1x2/xx
       parameter(flatreal=.false.)
       data first/.true./,xxerror/.false./

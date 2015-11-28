@@ -6,11 +6,12 @@
       include 'qcdcouple.f'
       include 'sprods_com.f'
       include 'scheme.f'
+      include 'hdecaymode.f'
 C     (Taken from Ravindran, Smith, van Neerven hep-ph/0201114)
 C     Modified by overall factors
       integer iglue,j,k
       double precision p(mxpart,4),msq(fn:nf,fn:nf)
-      double precision ss,tt,uu,s34,
+      double precision ss,tt,uu,s34,msqgamgam,
      . virtgg,virtqa,virtaq,virtqg,virtgq,hdecay,Asq,fac
       parameter(iglue=5)
 
@@ -23,9 +24,20 @@ C     Modified by overall factors
 
       Asq=(as/(3d0*pi))**2/vevsq
 
-C   Deal with Higgs decay to b-bbar
-      s34=s(3,4)+2d0*mb**2
-      hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s34-4d0*mb**2)
+      s34=(p(3,4)+p(4,4))**2
+     & -(p(3,1)+p(4,1))**2-(p(3,2)+p(4,2))**2-(p(3,3)+p(4,3))**2
+
+C   Deal with Higgs decay
+      if (hdecaymode == 'tlta') then
+          call htautaudecay(p,3,4,hdecay)
+      elseif (hdecaymode == 'bqba') then
+          call hbbdecay(p,3,4,hdecay)
+      elseif (hdecaymode == 'gaga') then
+          hdecay=msqgamgam(hmass)
+      else
+      write(6,*) 'Unimplemented process in gg_hg_v'
+      stop
+      endif
       hdecay=hdecay/((s34-hmass**2)**2+(hmass*hwidth)**2)
 
       fac=ason2pi*Asq*gsq*hdecay

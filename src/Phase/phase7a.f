@@ -5,19 +5,17 @@
       include 'mxdim.f'
       include 'zerowidth.f'
       include 'process.f'
+      include 'breit.f'
 c******* generate phase space for 2-->5 process
 c******* r(mxdim),p1(4),p2(4) are inputs reversed in sign from physical values 
 c---- phase space for -p1-p2 --> p5+p6+p3+p4+p7+p8+p9
 c---- with all 2 pi's (ie 1/(2*pi)^17)
       logical oldzerowidth
-      integer n2,n3
       double precision r(mxdim)
       double precision p1(4),p2(4),p5(4),p6(4),p3(4),p4(4),p7(4),
      . p8(4),p9(4)
       double precision p12(4),p789(4),p34(4),p78(4),p56(4),p3456(4)
       double precision wt,wt0,wt12,wt789,wt34,wt78,wt3456,wt56
-      double precision mass2,width2,mass3,width3
-      common/breit/n2,n3,mass2,width2,mass3,width3 
       integer j
       parameter(wt0=1d0/twopi**5)
 

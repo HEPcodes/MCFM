@@ -6,6 +6,10 @@
       include 'xmin.f'
       include 'nodecay.f'
       include 'reset.f'
+      include 'hdecaymode.f'
+      include 'masses.f'
+      include 'breit.f'
+      include 'part.f'
 c---- generate phase space for 2-->2+n process
 c---- with (34) being a vector boson and 5,..,4+n the jets
 c---- r(mxdim),p1(4),p2(4) are inputs reversed in sign 
@@ -24,14 +28,10 @@ c---- are required
       double precision ybar,ptsumjet2,ycm,sumpst,q0st,rshat
       double precision costh,sinth,dely
       double precision ptjetmin,etajetmin,etajetmax,pbreak
-      double precision plstar,estar,plstarsq,y5starmax,y5starmin
-      double precision mass2,width2,mass3,width3
-      integer j,nu,njets,ijet,n2,n3,notag
+      double precision plstar,estar,plstarsq,y5starmax,y5starmin,mf,beta
+      integer j,nu,njets,ijet,notag
       logical first,xxerror,flatreal
-      character*4 part
-      common/part/part
       common/energy/sqrts
-      common/breit/n2,n3,mass2,width2,mass3,width3
       common/x1x2/xx
       common/notag/notag
       parameter(flatreal=.false.)
@@ -193,15 +193,27 @@ c--- dummy values if there's no decay
         rdk1=r(3*njets+3)
         rdk2=r(3*njets+4)
       endif
+      if (hdecaymode == 'tlta') then
+      mf=mtau
+      elseif (hdecaymode == 'bqba') then
+      mf=mb
+      else
+      mf=0d0
+      endif
       
 c--- decay boson into leptons, in boson rest frame
+      if (mv2 > 4d0*mf**2) then
+      beta=sqrt(1d0-4d0*mf**2/mv2)
+      else
+      beta=0d0
+      endif
       costh=2d0*rdk1-1d0
       sinth=dsqrt(1d0-costh**2)
       phi=2d0*pi*rdk2
       p34(4)=dsqrt(mv2)/2d0
-      p34(1)=p34(4)*sinth*dcos(phi)
-      p34(2)=p34(4)*sinth*dsin(phi)
-      p34(3)=p34(4)*costh
+      p34(1)=beta*p34(4)*sinth*dcos(phi)
+      p34(2)=beta*p34(4)*sinth*dsin(phi)
+      p34(3)=beta*p34(4)*costh
       
 c--- boost into lab frame    
       call boost(dsqrt(mv2),Q,p34,p3)
@@ -210,7 +222,7 @@ c--- boost into lab frame
       p(4,j)=Q(j)-p(3,j)
       enddo
 
-      wt=wt/8d0/pi
+      wt=wt*beta/8d0/pi
             
       return
       end

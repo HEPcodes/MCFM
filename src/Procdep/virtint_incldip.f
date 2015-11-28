@@ -37,12 +37,15 @@
       include 'ewcouple.f'
       include 'flags.f'
       include 'frag.f'
+      include 'ipsgen.f'
+      include 'phasemin.f'
+      include 'outputoptions.f'
       double precision mqq(0:2,fn:nf,fn:nf)
       double precision msqx(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf)
       double precision msqx_cs(0:2,-nf:nf,-nf:nf)
       double precision AP(-1:1,-1:1,3),APqg_mass
 
-      integer ih1,ih2,j,k,m,n,cs,ics,csmax,nvec,is,iq,ia,ib,ic
+      integer ih1,ih2,j,k,m,n,cs,ics,csmax,nvec,is,iq,ia,ib,ic,ii
       double precision p(mxpart,4),pjet(mxpart,4),r(mxdim),W,sqrts,xmsq,
      . val,val2,fx1(-nf:nf),fx2(-nf:nf),fx1z(-nf:nf),fx2z(-nf:nf),xmsqt,
      . fx1_H(-nf:nf),fx2_H(-nf:nf),fx1_L(-nf:nf),fx2_L(-nf:nf),
@@ -52,7 +55,7 @@
      . msqvdkW(-nf:nf,-nf:nf),
      . msq_qq,msq_aa,msq_aq,msq_qa,msq_qg,msq_gq,epcorr,topwidth
       double precision xx(2),z,x1onz,x2onz,flux,omz,nloratiotopdecay,JK,
-     . BrnRat,xmsq_old,tmp,hup
+     . BrnRat,xmsq_old,tmp,hup,ptmp
       double precision xmsq_bypart(-1:1,-1:1),lord_bypart(-1:1,-1:1)
       integer nshot,rvcolourchoice,sgnj,sgnk
       logical bin,first,includedipole
@@ -94,7 +97,6 @@ c--- ensure isolation code does not think this is fragmentation piece
 c--- processes that use "gen2"     
       if     ( (case .eq. 'W_only')
      .    .or. (case .eq. 'Z_only')
-     .    .or. (case .eq. 'ggfus0')
      .    .or. (case .eq. 'Higaga')
      .    .or. (case .eq. 'Wcsbar')
      .    .or. (case .eq. 'Wcs_ms')
@@ -111,7 +113,8 @@ c--- processes that use "gen2"
         endif
 
 c--- processes that use "gen2m"     
-      elseif ( (case .eq. 'tt_tot')
+      elseif ( (case .eq. 'ggfus0')
+     .    .or. (case .eq. 'tt_tot')
      .    .or. (case .eq. 'bb_tot')
      .    .or. (case .eq. 'cc_tot') ) then
         npart=2
@@ -132,6 +135,11 @@ c--- processes that use "gen3"
         npart=3
         call gen3(r,p,pswt,*999)
 
+c--- processes that use "gen3h"     
+      elseif (case .eq. 'Hi_Zga') then
+        npart=3
+        call gen3h(r,p,pswt,*999)
+
 c--- processes that use "gen3jet"     
       elseif ( (case .eq. 'Wgamma') 
      .   .or.  (case .eq. 'Zgamma')
@@ -144,6 +152,41 @@ c--- processes that use "gen3jet"
         npart=3
         call gen_phots_jets(r,1,0,p,pswt,*999)      
 
+c--- special treatment for Z+gamma+gamma 
+      elseif ( (case .eq. 'Z_2gam') ) then
+        npart=4
+        if  (ipsgen .eq. 1) then
+            call gen_phots_jets(r,2,0,p,pswt,*999) !AA+AB
+        elseif  (ipsgen .eq. 2) then
+            call gen_phots_jets_dkrad2(r,2,0,p,pswt,*999) !BB+BC
+        elseif  (ipsgen .eq. 3) then
+           call gen_phots_jets_dkrad(r,2,0,p,pswt,*999) !CC+AC+CD
+        elseif  (ipsgen .eq. 4) then
+           call gen_phots_jets_dkrad(r,2,0,p,pswt,*999) !DD+AD+BD
+           do ii=1,4
+              ptmp=p(5,ii)
+              p(5,ii)=p(6,ii)
+              p(6,ii)=ptmp
+           enddo
+        else
+           write(6,*) 'Parameter ipsgen should be 1 or 2 or 3 or 4'
+           write(6,*) 'ipsgen = ',ipsgen
+           stop
+        endif
+
+c--- special treatment for Z+gamma+jet 
+      elseif ( (case .eq. 'Zgajet') ) then
+        npart=4
+        if     (ipsgen .eq. 1) then
+          call gen_phots_jets(r,1,1,p,pswt,*999)
+        elseif (ipsgen .eq. 2) then
+          call gen_phots_jets_dkrad(r,1,1,p,pswt,*999)
+	else
+	  write(6,*) 'Parameter ipsgen should be 1 or 2'
+	  write(6,*) 'ipsgen = ',ipsgen
+	  stop
+        endif
+                  
 c--- processes that use "gen3m"     
       elseif ((case .eq. 'qg_tbq') .or. (case .eq. 'qq_tbg')) then
         m3=mt
@@ -162,7 +205,9 @@ c--- processes that use gen3mdk
         
 c--- processes that use "gen4h"     
       elseif ( (case .eq. 'HWW_4l')
-     .    .or. (case .eq. 'HZZ_4l') ) then
+     .    .or. (case .eq. 'HWWdkW') 
+     .    .or. (case .eq. 'HWW2lq') 
+     .    .or. (case .eq. 'HZZ_4l')) then
         npart=4
         call gen4h(r,p,pswt,*999)
           
@@ -208,6 +253,12 @@ c--- processes that use "gen8"
      .    .or. (case .eq. 'vlchk8') ) then
         npart=8
         call gen8(r,p,pswt,*999)
+
+c--- processes that use "gen8"     
+      elseif ( (case .eq. 'qq_ttw') .or. (case .eq. 'ttwldk')) then
+        npart=8
+        taumin=(2d0*mt/sqrts)**2
+        call gen8_rap(r,p,pswt,*999)
           
 c--- processes that use "gen_njets" with an argument of "1"     
       elseif ( (case .eq. 'W_1jet')
@@ -314,7 +365,8 @@ c--- contributions, so all these should be set to zero
       if  ( (case .eq. 'tdecay') .or. (case .eq. 'ttdkay') 
      . .or. (case .eq. 'Wtdkay') .or. (case .eq. 'tt_ldk')
      . .or. (case .eq. 'tt_hdk') .or. (case .eq. 'tthWdk')
-     . .or. (case .eq. 'dk_4ft') ) then
+     . .or. (case .eq. 'dk_4ft') .or. (case .eq. 'ttwldk')
+     . .or. (case .eq. 'HWWdkW') ) then
         epcorr=0d0
       endif      
 
@@ -460,6 +512,10 @@ c--- Calculate the required matrix elements
         call qqb_wbbm(p,msq)
         call qqb_wbbm_v(p,msqv)
         call qqb_wbbm_z(p,z)
+      elseif (case .eq. 'Wttmas') then
+        call qqb_wbbm(p,msq)
+        call qqb_wbbm_v(p,msqv)
+        call qqb_wbbm_z(p,z)
       elseif (case .eq. 'Wbbbar') then
         call qqb_wbb(p,msq)
         call qqb_wbb_v(p,msqv)
@@ -482,9 +538,17 @@ c--- Calculate the required matrix elements
         call qqb_z2jet_z(p,z)
       elseif (case .eq. 'Zgamma') then
         call qqb_zgam(p,msq)
-        call qqb_zgam_v(p,msqv)
+        call qqb_zgam_v(p,msqv)      
         call qqb_zgam_z(p,z)
         call gg_zgam(p,msqv(0,0)) ! additional gluon-gluon contribution
+      elseif (case .eq. 'Z_2gam') then
+        call qqb_zaa(p,msq)
+        call qqb_zaa_v(p,msqv)
+        call qqb_zaa_z(p,z)
+      elseif (case .eq. 'Zgajet') then
+        call qqb_zaj(p,msq)
+        call qqb_zaj_v(p,msqv)
+        call qqb_zaj_z(p,z)
       elseif (case .eq. 'Zbbbar') then
         call qqb_zbb(p,msq)
         call qqb_zbb_v(p,msqv)
@@ -501,8 +565,18 @@ c--- Calculate the required matrix elements
           call qqb_ww(p,msq)
           call qqb_ww_v(p,msqv)
           call qqb_ww_z(p,z)
+          if (mypart .eq. 'todk') then
+            call dkqqb_ww_v(p,msqvdk)
+            do j=-nf,nf
+            do k=-nf,nf
+              msqv(j,k)=msqv(j,k)+msqvdk(j,k)
+            enddo
+            enddo
+          endif
 	endif
-        call gg_WW(p,msqv(0,0)) ! additional gluon-gluon contribution
+        call gg_ww(p,msqv(0,0)) ! additional gluon-gluon contribution
+      elseif (case .eq. 'WWqqdk') then
+        call dkqqb_ww_v(p,msqv)
       elseif (case .eq. 'WZbbar') then
         call qqb_wz(p,msq)
         call qqb_wz_v(p,msqv)
@@ -552,10 +626,24 @@ c--- Calculate the required matrix elements
         call gg_hgamgam(p,msq)
         call gg_hgamgam_v(p,msqv)
         call gg_hgamgam_z(p,z)
+      elseif (case .eq. 'Hi_Zga') then
+        call gg_hzgam(p,msq)
+        call gg_hzgam_v(p,msqv)
+        call gg_hzgam_z(p,z)
       elseif (case .eq. 'HWW_4l') then
         call qqb_hww(p,msq)
         call qqb_hww_v(p,msqv)
         call qqb_hww_z(p,z)
+      elseif (case .eq. 'HWW2lq') then
+        call qqb_hww(p,msq)
+        call qqb_hww_v(p,msqv)
+        call qqb_hww_z(p,z)
+        if (mypart .eq. 'todk') then
+          call dkqqb_hww_v(p,msqvdkW)
+          msqv(:,:)=msqv(:,:)+msqvdkW(:,:)
+        endif
+      elseif (case .eq. 'HWWdkW') then
+        call dkqqb_hww_v(p,msqv)
       elseif (case .eq. 'HZZ_4l') then
         call qqb_hzz(p,msq)
         call qqb_hzz_v(p,msqv)
@@ -581,10 +669,8 @@ c--- Calculate the required matrix elements
         call qqb_gamgam_v(p,msqv)
         call qqb_gamgam_z(p,z)
       elseif ((case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')) then
-c        call qqb_QQbdk(p,msq)
-c        call qqb_QQbdk_v(p,msqv)
         call qqb_QQbdk(p,msq)
-        call qqb_QQbdkBSY_v(p,msqv)
+        call qqb_QQbdk_v(p,msqv)
         call qqb_QQbdk_z(p,z)
         if (mypart .eq. 'todk') then
           call dkqqb_QQb_v(p,msqvdk)
@@ -592,47 +678,13 @@ c        call qqb_QQbdk_v(p,msqv)
           do j=-nf,nf
           do k=-nf,nf
             msqv(j,k)=msqv(j,k)+msqvdk(j,k)+msqvdkW(j,k)
-c--- extra term to ensure top cross section is unchanged by decay in top
-            msqv(j,k)=msqv(j,k)
-     &          -2d0*(nloratiotopdecay(mt,mb,wmass,wwidth)-1d0)*msq(j,k)
-c--- extra term to ensure top cross section is unchanged by decay in W
-            if (case .eq. 'tt_bbh') then
-              msqv(j,k)=msqv(j,k)-2d0*ason2pi*msq(j,k)
-            endif
           enddo
           enddo     
         endif
       elseif ((case .eq. 'tt_ldk') .or. (case .eq. 'tt_hdk')) then
-        call qqb_QQbdk(p,msq)
         call dkqqb_QQb_v(p,msqv)
-        do j=-nf,nf
-        do k=-nf,nf
-c--- extra term to ensure top cross section is unchanged by decay in top
-          msqv(j,k)=msqv(j,k)
-     &        -2d0*(nloratiotopdecay(mt,mb,wmass,wwidth)-1d0)*msq(j,k)
-        enddo
-        enddo   	  
-c--- set LO matrix elements to zero
-        do j=-nf,nf
-        do k=-nf,nf
-          msq(j,k)=0d0
-        enddo
-        enddo
       elseif (case .eq. 'tthWdk') then
-        call qqb_QQbdk(p,msq)
         call dkWqqb_QQb_v(p,msqv)
-c--- extra term to ensure top cross section is unchanged by decay in W
-        do j=-nf,nf
-        do k=-nf,nf
-	  msqv(j,k)=msqv(j,k)-2d0*ason2pi*msq(j,k)
-        enddo
-        enddo   	  
-c--- set LO matrix elements to zero
-        do j=-nf,nf
-        do k=-nf,nf
-          msq(j,k)=0d0
-        enddo
-        enddo
       elseif (case .eq. 'tt_bbu') then
         call qqb_QQbdku(p,msq)
         call qqb_QQbdku_v(p,msqv)
@@ -652,27 +704,11 @@ c--- set LO matrix elements to zero
           do j=-nf,nf
           do k=-nf,nf
             msqv(j,k)=msqv(j,k)+msqvdk(j,k)
-c--- extra term to ensure single top cross section is unchanged by decay in top
-            msqv(j,k)=msqv(j,k)
-     &          -(nloratiotopdecay(mt,mb,wmass,wwidth)-1d0)*msq(j,k)
           enddo
           enddo
         endif
       elseif (case .eq. 'ttdkay') then
-        call bq_tpq(p,msq)
         call bq_tpq_vdk(p,msqv)
-        do j=-nf,nf
-        do k=-nf,nf
-c--- extra term to ensure single top cross section is unchanged by decay in top
-          msqv(j,k)=msqv(j,k)
-     &        -(nloratiotopdecay(mt,mb,wmass,wwidth)-1d0)*msq(j,k)
-        enddo
-        enddo
-        do j=-nf,nf
-        do k=-nf,nf
-          msq(j,k)=0d0
-        enddo
-        enddo
       elseif (case .eq. 't_bbar') then
         call qqb_tbbdk(p,msq)
         call qqb_tbbdk_v(p,msqv)
@@ -682,27 +718,11 @@ c--- extra term to ensure single top cross section is unchanged by decay in top
           do j=-nf,nf
           do k=-nf,nf
             msqv(j,k)=msqv(j,k)+msqvdk(j,k)
-c--- extra term to ensure single top cross section is unchanged by decay in top
-            msqv(j,k)=msqv(j,k)
-     &          -(nloratiotopdecay(mt,mb,wmass,wwidth)-1d0)*msq(j,k)
           enddo
           enddo
         endif
       elseif (case .eq. 'tdecay') then
-        call qqb_tbbdk(p,msq)    
         call dkqqb_tbbdk_v(p,msqv)
-        do j=-nf,nf
-        do k=-nf,nf
-c--- extra term to ensure single top cross section is unchanged by decay in top
-          msqv(j,k)=msqv(j,k)
-     &        -(nloratiotopdecay(mt,mb,wmass,wwidth)-1d0)*msq(j,k)
-        enddo
-        enddo
-        do j=-nf,nf
-        do k=-nf,nf
-          msq(j,k)=0d0
-        enddo
-        enddo
       elseif (case .eq. 'W_tndk') then
         call qqb_w_tndk(p,msq)    
         call qqb_w_tndk_v(p,msqv)    
@@ -712,31 +732,21 @@ c--- extra term to ensure single top cross section is unchanged by decay in top
         call qqb_w_twdk_v(p,msqv)    
         call qqb_w_twdk_z(p,z)    
         if (mypart .eq. 'todk') then
-          call qqb_w_twdk_vdk(p,msqvdk)
-          do j=-nf,nf
-          do k=-nf,nf
-            msqv(j,k)=msqv(j,k)+msqvdk(j,k)
-c--- extra term to ensure single top cross section is unchanged by decay in top
-          msqv(j,k)=msqv(j,k)
-     &             -(nloratiotopdecay(mt,mb,wmass,wwidth)-1d0)*msq(j,k)
-          enddo
-          enddo
+          call dkqqb_w_twdk_v(p,msqvdk)
+          msqv(:,:)=msqv(:,:)+msqvdk(:,:)
         endif
       elseif (case .eq. 'Wtdkay') then
-        call qqb_w_twdk(p,msq)
-        call qqb_w_twdk_vdk(p,msqv)
-        do j=-nf,nf
-        do k=-nf,nf
-c--- extra term to ensure single top cross section is unchanged by decay in top
-          msqv(j,k)=msqv(j,k)
-     &             -(nloratiotopdecay(mt,mb,wmass,wwidth)-1d0)*msq(j,k)
-        enddo
-        enddo
-        do j=-nf,nf
-        do k=-nf,nf
-          msq(j,k)=0d0
-        enddo
-        enddo
+	call dkqqb_w_twdk_v(p,msqv)
+      elseif (case .eq. 'qq_ttw') then
+        call qqb_ttw(p,msq)
+        call qqb_ttw_v(p,msqv)
+        call qqb_ttw_z(p,z)
+        if (mypart .eq. 'todk') then
+          call dkqqb_ttw_v(p,msqvdk)
+          msqv(:,:)=msqv(:,:)+msqvdk(:,:)
+        endif
+      elseif (case .eq. 'ttwldk') then
+        call dkqqb_ttw_v(p,msqv)
       elseif (case .eq. 'ggfus1') then
         call gg_hg(p,msq)
         call gg_hg_v(p,msqv)
@@ -787,31 +797,10 @@ c--- extra term to ensure single top cross section is unchanged by decay in top
         call qg_tbqdk_z(p,z)
         if (mypart .eq. 'todk') then
           call dkqg_tbqdk_v(p,msqvdk)
-          do j=-nf,nf
-          do k=-nf,nf
-            msqv(j,k)=msqv(j,k)+msqvdk(j,k)
-c--- extra term to ensure single top cross section is unchanged by decay in top
-            msqv(j,k)=msqv(j,k)
-     &          -(nloratiotopdecay(mt,mb,wmass,wwidth)-1d0)*msq(j,k)
-          enddo
-          enddo
+          msqv(:,:)=msqv(:,:)+msqvdk(:,:)
         endif
       elseif (case .eq. 'dk_4ft') then
-        call qg_tbqdk(p,msq)
         call dkqg_tbqdk_v(p,msqv)
-        do j=-nf,nf
-        do k=-nf,nf
-c--- extra term to ensure top cross section is unchanged by decay in top
-          msqv(j,k)=msqv(j,k)
-     &        -(nloratiotopdecay(mt,mb,wmass,wwidth)-1d0)*msq(j,k)
-        enddo
-        enddo   	  
-c--- set LO matrix elements to zero
-        do j=-nf,nf
-        do k=-nf,nf
-          msq(j,k)=0d0
-        enddo
-        enddo
       elseif (case .eq. 'qq_tbg') then
 c--- do not include initial-state subtractions since we are only
 c--- calculating corrections on the heavy quark line (for now)
@@ -1862,6 +1851,10 @@ c--- update the maximum weight so far, if necessary
 
       if (bin) then
         call nplotter(pjet,val,val2,0)
+c--- POWHEG-style output if requested
+	if (writepwg) then
+          call pwhgplotter(p,pjet,val,0)
+	endif
       endif
 
 c--- handle special caase of Qflag and Gflag

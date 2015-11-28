@@ -17,8 +17,8 @@
       mtsq=mt**2
       if (first) then
       first=.false. 
-      write(6,*) 'mtsq',mtsq
-      write(6,*) 'musq',musq
+c      write(6,*) 'mtsq',mtsq
+c      write(6,*) 'musq',musq
       call qlinit
 c      pause
       endif

@@ -19,8 +19,9 @@ c     q(-p1)+qbar(-p2)-->q'(p5)+bar{q'}(p6)+n(p3)+ebar(p4)
       include 'ewcharge.f'
       include 'anomcoup.f'
       include 'srdiags.f'
+      include 'plabel.f'
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),mp(nf),
-     . p(mxpart,4),qdks(mxpart,4),facnlo,ave
+     . p(mxpart,4),qdks(mxpart,4),facnlo
       double complex AWWM,AWWP,BWWM,BWWP
       double complex prop12,prop34,prop56
       double complex a6treea,a6loopa,A6b_1,A6b_2,A6b_3
@@ -37,11 +38,12 @@ c     q(-p1)+qbar(-p2)-->q'(p5)+bar{q'}(p6)+n(p3)+ebar(p4)
       double complex clgamz(2),crgamz(2),clz(2),crz(2)
       double precision FAC,xfac
       integer j,k,jk
-      parameter(ave=0.25d0/xn)
       data mp/-1d0,+1d0,-1d0,+1d0,-1d0/
 
       scheme='dred'
-      FAC=gw**8*ave
+      FAC=gw**8*xn*aveqq
+C---multiply by factor for c-sbar+u-dbar hadronic decay
+      if (plabel(5) .eq. 'qj') fac=2d0*xn*fac
       facnlo=ason2pi*cf
 
 c--- set msqv=0 to initalize
@@ -54,10 +56,29 @@ c--- set msqv=0 to initalize
 c--- calculate the lowest order matrix element
       call qqb_ww(p,msq)
 
-c--- Change the momenta to DKS notation 
-c    We have --- f(p1) + f'(p2)-->mu^-(p5)+nubar(p6)+e^+(p4)+nu(p3)
-c    DKS have--- ubar(q1)+u(q2)-->mu^-(q3)+nubar(q4)+e^+(q5)+nu(q6)
+C----Change the momenta to DKS notation 
+C   swapped possibility if we want to swap momenta
+c   We have --- f(p1) + f'(p2)-->mu^-(p3)+nubar(p4)+e^+(p6)+nu(p5)
+c   DKS have--- ubar(q1)+u(q2)-->mu^-(q3)+nubar(q4)+e^+(q5)+nu(q6)
+c----
+C   or normal configuration
+c   We have --- f(p1) + f'(p2)-->mu^-(p5)+nubar(p6)+e^+(p4)+nu(p3)
+c   DKS have--- ubar(q1)+u(q2)-->mu^-(q3)+nubar(q4)+e^+(q5)+nu(q6)
 
+
+      if ((plabel(5) .eq. 'qj') .and. (plabel(3) .eq. 'el')) then 
+C----swapped case for hadronic decay of Wp
+C----swapped case
+      do j=1,4
+      qdks(1,j)=p(1,j)
+      qdks(2,j)=p(2,j)
+      qdks(3,j)=p(3,j)
+      qdks(4,j)=p(4,j)
+      qdks(5,j)=p(6,j)
+      qdks(6,j)=p(5,j)
+      enddo
+      else
+C----all other cases
       do j=1,4
       qdks(1,j)=p(1,j)
       qdks(2,j)=p(2,j)
@@ -66,6 +87,7 @@ c    DKS have--- ubar(q1)+u(q2)-->mu^-(q3)+nubar(q4)+e^+(q5)+nu(q6)
       qdks(5,j)=p(4,j)
       qdks(6,j)=p(3,j)
       enddo
+      endif
 
 c-- s returned from sprod (common block) is 2*dot product
       call spinoru(6,qdks,za,zb)
@@ -274,11 +296,10 @@ c     .                  +crz(1)*(Fa653412*prop34+Fa342156*prop56)
       endif
 
 C-- Inclusion of width for W's a la Baur and Zeppenfeld
-c-- also include coupling in l1 to account for non-leptonic W decays
-      AWWM=l1*cprop*AWWM
-      AWWP=l1*cprop*AWWP
-      BWWM=l1*cprop*BWWM
-      BWWP=l1*cprop*BWWP
+      AWWM=cprop*AWWM
+      AWWP=cprop*AWWP
+      BWWM=cprop*BWWM
+      BWWP=cprop*BWWP
       
       msqv(j,k)=facnlo*fac*two*dble(dconjg(AWWM)*BWWM+dconjg(AWWP)*BWWP)
 

@@ -4,10 +4,8 @@ c---  sqrt(M^2+pt34^2), where M is the mass of the particle (34)
       implicit none
       include 'constants.f'
       include 'process.f'
-      integer n2,n3
+      include 'breit.f'
       double precision p(mxpart,4),mu0,pttwo
-      double precision mass2,width2,mass3,width3
-      common/breit/n2,n3,mass2,width2,mass3,width3
 
       if((case .eq. 'W_only') .or.
      &   (case .eq. 'Z_only') .or.

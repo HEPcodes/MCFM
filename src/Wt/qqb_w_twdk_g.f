@@ -71,8 +71,8 @@ c--- calculate amplitudes for q+g in initial state
       call gs_wt_prog(mt,twidth,p,2,1,i3,i4,i5,i6,7,8,ampqg_ag)
       call gs_wt_prog(mt,twidth,p,8,1,i3,i4,i5,i6,7,2,ampqg_ga)
 c--- calculate amplitudes for g+g in initial state
-c      call gs_wt_prog(p,1,8,3,4,5,6,7,2,ampgg_ag)
-c      call gs_wt_prog(p,2,8,3,4,5,6,7,1,ampgg_ga)
+c      call gs_wt_prog(p,1,8,i3,i4,5,6,7,2,ampgg_ag)
+c      call gs_wt_prog(p,2,8,i3,i4,5,6,7,1,ampgg_ga)
 c--- The two lines commented out below calculate the contribution
 c--- from non-resonant diagrams only (gauge-dependent)
       if (nores .eqv. .false.) then

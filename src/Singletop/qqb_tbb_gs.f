@@ -8,6 +8,7 @@ c   positively charged W only
       include 'nwz.f'
       include 'qqgg.f'
       include 'stopbmass.f'
+      include 'breit.f'
       integer j,k,ib,nd,isub
 
       double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf)
@@ -25,9 +26,7 @@ c   positively charged W only
      . sub15_4(4),sub25_3(4),sub45_1(4),sub35_2(4),
      . sub15_3(4),sub25_4(4),sub45_2(4),sub35_1(4),
      . dummyv(-nf:nf,-nf:nf),dsubv
-      double precision mass2,width2,mass3,width3,oldmass2
-      integer n2,n3
-      common/breit/n2,n3,mass2,width2,mass3,width3
+      double precision oldmass2
       external qqb_tbb,bq_tpq,donothing_gvec
 
       common/isub/isub

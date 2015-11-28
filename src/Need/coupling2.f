@@ -16,16 +16,15 @@ c      include 'ewinput.f'
       include 'dynamicscale.f'
       include 'stopscales.f'
       include 'fourthgen.f'
-      character*4 part
-      common/part/part
+      include 'couple.f'
+      include 'part.f'
       integer nproc
-      double precision alphas,amz,cmass,bmass
+      double precision alphas,cmass,bmass
       double precision Vud,Vus,Vub,Vcd,Vcs,Vcb
       common/cabib/Vud,Vus,Vub,
      &             Vcd,Vcs,Vcb
       common/qmass/cmass,bmass
 c      common/em/aemmz
-      common/couple/amz
 c      common/mypart/mypart
       common/nproc/nproc
 

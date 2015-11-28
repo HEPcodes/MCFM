@@ -13,12 +13,11 @@ c---  ('none') to perform no clustering at all
       include 'jetlabel.f'
       include 'bbproc.f'
       include 'process.f'
+      include 'part.f'
       double precision q(mxpart,4),qfinal(mxpart,4),
      & qreorder(mxpart,4),R,Rbbmin
       integer nqcdjets,nqcdstart,isub,i,nu
       logical first
-      character*4 part
-      common/part/part
       common/nqcdjets/nqcdjets,nqcdstart
       common/Rbbmin/Rbbmin
       data first/.true./
@@ -109,7 +108,9 @@ c--- particles for use in the plotting routines
      &   .or. (case .eq. 'tthWdk')
      &   .or. (case .eq. 'tt_bbu')
      &   .or. (case .eq. '4ftwdk')
-     &   .or. (case .eq. 'dk_4ft')) then
+     &   .or. (case .eq. 'dk_4ft')
+     &   .or. (case .eq. 'qq_ttw')
+     &   .or. (case .eq. 'ttwldk')) then
 	call jetreorder(qfinal,qreorder,isub)
 	do i=1,mxpart
 	  do nu=1,4

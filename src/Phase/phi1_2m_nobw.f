@@ -7,14 +7,13 @@ c     ds2 d^4 p2 d^4 p3 (2 pi)^4 delta(p1-p2-p3)/(2 pi)^6
 c     delta(p2^2-s2) delta(p3^2-s3)
       implicit none
       include 'constants.f'
+      include 'breit.f'
       double precision p1(4),p2(4),p3(4),p3cm(4)
       double precision x3,xth,xphi,costh,sinth,phi,cphi,sphi
       double precision wt,wt0,w3
       double precision s3max,s3min
-      double precision m1,m2,m3,s1,s2,s3,lambda,
-     . mass2,width2,mass3,width3
-      integer j,n2,n3
-      common/breit/n2,n3,mass2,width2,mass3,width3
+      double precision m1,m2,m3,s1,s2,s3,lambda
+      integer j
       parameter(wt0=one/8d0/pi)
 
       wt=0d0

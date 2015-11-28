@@ -14,11 +14,12 @@ c                           ---> b(p3)+bbar(p4)
       include 'qcdcouple.f'
       include 'ckm.f'
       include 'sprods_com.f'
+      include 'hdecaymode.f'
       integer j,k,m,n,pn(-nf:nf)
       double precision p(mxpart,4),facqq,facqg,s34
       double precision msq(-nf:nf,-nf:nf),hdecay,
      . msqll,msqlr,msqzzin,msqwzin,msqwl,
-     . msxll,msxlr,msxzzin,msxwzin,msxwl
+     . msxll,msxlr,msxzzin,msxwzin,msxwl,msqgamgam
       double precision msqx(fn:nf,fn:nf,fn:nf,fn:nf)
       common/msq_all/msqx
       logical includeall
@@ -46,9 +47,22 @@ c---    TRUE ---> untested, no point in including
       enddo
       enddo
 
-      s34=s(3,4)+2d0*mb**2
-      hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s34-4d0*mb**2) 
+      s34=(p(3,4)+p(4,4))**2
+     & -(p(3,1)+p(4,1))**2-(p(3,2)+p(4,2))**2-(p(3,3)+p(4,3))**2
+
+C   Deal with Higgs decay
+      if (hdecaymode == 'tlta') then
+          call htautaudecay(p,3,4,hdecay)
+      elseif (hdecaymode == 'bqba') then
+          call hbbdecay(p,3,4,hdecay)
+      elseif (hdecaymode == 'gaga') then
+          hdecay=msqgamgam(hmass)
+      else
+      write(6,*) 'Unimplemented process in gg_hgg_v'
+      stop
+      endif
       hdecay=hdecay/((s34-hmass**2)**2+(hmass*hwidth)**2)
+
       facqq=0.25d0*gsq*Cf*gwsq**3*hdecay
       facqg=-facqq*(aveqg/aveqq)
 C Extra factor of gsq*Cf compared to lowest order

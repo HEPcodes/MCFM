@@ -17,7 +17,6 @@
 ************************************************************************
       implicit none
       include 'constants.f'
-      include 'qcdcouple.f'
       include 'nflav.f'
       include 'stopscales.f'
       double precision p(mxpart,4),pp(mxpart,4),qq(mxpart,4),

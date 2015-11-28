@@ -1,4 +1,4 @@
-      subroutine a61mass(k1,k2,k3,k4,k5,k6,mhsq,a61mm,a61mp,a61pm,a61pp,
+      subroutine a61mass(k1,k2,k3,k4,k5,k6,mqsq,a61mm,a61mp,a61pm,a61pp,
      &                   a6treemm,a6treemp,a6treepm,a6treepp)
 c--- Routine to compute the 1-loop primitive amplitude A6;1 for the Wbb
 c--- process, where the mass of the b-quark is kept non-zero.
@@ -19,8 +19,8 @@ c---     0 -> q(k1) + qb(k4) + W(->e(k6)+nubar(k5)) + Q(k3) + Qbar(k2)
       include 'zprods_com.f'
       integer k1,k2,k3,k4,k5,k6,iep,nu
       logical checkcoeffs,numcheck,writescalars
-      double precision mhsq,ren,p2(4),p3(4),p1Dp2,p3Dp4,p1Dp3,p2Dp4,
-     & pole(-2:-1),mhloopsq
+      double precision mqsq,ren,p2(4),p3(4),p1Dp2,p3Dp4,p1Dp3,p2Dp4,
+     & pole(-2:-1),mhloopsq,mq
       double complex a61mm,a61mp,a61pm,a61pp
       double complex a6treemm,a6treemp,a6treepm,a6treepp
       double complex a61mmep(-2:0),a61mpep(-2:0),
@@ -39,8 +39,10 @@ c---     0 -> q(k1) + qb(k4) + W(->e(k6)+nubar(k5)) + Q(k3) + Qbar(k2)
 
       writescalars=.false.
       
+      mq=dsqrt(mqsq)
+      
 c--- first calculate the tree-level amplitudes
-      call a6treemass(k1,k2,k3,k4,k5,k6,
+      call a6treemass(k1,k2,k3,k4,k5,k6,mq,
      & a6treemm,a6treemp,a6treepm,a6treepp)
 
 c--- compute logarithms appearing in pole contributions      
@@ -98,7 +100,7 @@ c--- calculate (-,-) and (+,+) amplitudes, the latter obtained by symmetry
 
 c--- explicit form for poles in ALC
       pole(-2)=-1d0
-      pole(-1)=xl12+xl34+8d0/3d0-dlog(mhsq/musq)
+      pole(-1)=xl12+xl34+8d0/3d0-dlog(mqsq/musq)
       do iep=-2,-1
       ALCmp(iep)=pole(iep)*a6treemp
       ALCpm(iep)=pole(iep)*a6treepm
@@ -107,7 +109,7 @@ c--- explicit form for poles in ALC
       enddo
       
       if (numcheck) then
-        call catani(mhsq,k1,k2,k3,k4,k5,k6,coeff2,coeff1)
+        call catani(mqsq,k1,k2,k3,k4,k5,k6,coeff2,coeff1)
         write(6,*) 'Catani',coeff2
         write(6,*) 'Catani',coeff1
         write(6,*)
@@ -163,7 +165,7 @@ c--- calculate (-,-) and (+,+) amplitudes, the latter obtained by symmetry
 
 c--- explicit form for poles in BLC
       pole(-2)=-1d0
-      pole(-1)=xl13+xl24+8d0/3d0-dlog(mhsq/musq)
+      pole(-1)=xl13+xl24+8d0/3d0-dlog(mqsq/musq)
       do iep=-2,-1
       BLCmp(iep)=-pole(iep)*a6treemp
       BLCpm(iep)=-pole(iep)*a6treepm
@@ -172,7 +174,7 @@ c--- explicit form for poles in BLC
       enddo
       
       if (numcheck) then
-        call catani(mhsq,k1,k3,k2,k4,k5,k6,coeff2,coeff1)
+        call catani(mqsq,k1,k3,k2,k4,k5,k6,coeff2,coeff1)
         write(6,*) 'Catani',coeff2
         write(6,*) 'Catani',coeff1
         write(6,*)
@@ -193,9 +195,9 @@ c--- explicit form for poles in BLC
 c--- subleading colour Asl
 c--- calculate (-,+) and (+,-) amplitudes separately
 
-      call BDKfillmm(k1,k2,k3,k4,k5,k6,za,zb,ASLmm,ASLpp)
-      call BDKfillmp(k1,k2,k3,k4,k5,k6,za,zb,ASLmp)
-      call BDKfillmp(k1,k3,k2,k4,k5,k6,za,zb,ASLpm)
+      call BDKfillmm(k1,k2,k3,k4,k5,k6,mq,za,zb,ASLmm,ASLpp)
+      call BDKfillmp(k1,k2,k3,k4,k5,k6,mq,za,zb,ASLmp)
+      call BDKfillmp(k1,k3,k2,k4,k5,k6,mq,za,zb,ASLpm)
 
       if (numcheck) then
 c        write(6,89) 'ASL: MINUS-PLUS'
@@ -224,7 +226,7 @@ c        write(6,89) 'ASL: PLUS-PLUS'
         atreesl=atree('sl',k3,k2,k1,k4,k5,k6,zb,za)
 	write(6,*) 'a6treemp',a6treemp
 	write(6,*) 'atreesl ',atreesl
-        call catanisl(mhsq,k1,k2,k3,k4,k5,k6,coeff2,coeff1)
+        call catanisl(mqsq,k1,k2,k3,k4,k5,k6,coeff2,coeff1)
         write(6,*) 'Catani(-2)*tree',coeff2*atreesl
         write(6,*) 'Catani(-1)*tree',coeff1*atreesl
         write(6,*)
@@ -245,8 +247,8 @@ c        write(6,89) 'ASL: PLUS-PLUS'
       mhloopsq=mt**2
 c--- light fermion loop contribution Af and heavy fermion contribution Ah
 c--- (computed for a fermion of mass-squared mhloopsq, passed into the routine)
-      call Afh(k1,k2,k3,k4,k5,k6,Afmm,Afmp,Afpm,Afpp,
-     &                           Ahmm,Ahmp,Ahpm,Ahpp,mhloopsq)
+      call Afh(k1,k2,k3,k4,k5,k6,mq,Afmm,Afmp,Afpm,Afpp,
+     &                              Ahmm,Ahmp,Ahpm,Ahpp,mhloopsq)
 
       if (numcheck) then
 c        write(6,89) ' Af: MINUS-MINUS' 
@@ -339,7 +341,7 @@ c--- overall wave function and couping constant renormalization
       ren=
      & +2d0*((dfloat(nflav)/3d0-11d0/6d0*xn)*epinv+xn/6d0)
      & +2d0/3d0*(epinv+log(musq/mhloopsq))
-     & -(xn**2-1d0)/2d0/xn*(3d0*(epinv+log(musq/mhsq))+5d0)
+     & -(xn**2-1d0)/2d0/xn*(3d0*(epinv+log(musq/mqsq))+5d0)
       
 
 c--- overall normalization of amplitude wrt. t-tbar process

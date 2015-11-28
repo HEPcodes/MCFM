@@ -15,7 +15,6 @@ c                           ---> b(p5)+b(p6)
 c   for the moment --- radiation only from initial line
       implicit none 
       include 'constants.f'
-      include 'masses.f'
       include 'ckm.f'
       include 'sprods_com.f'
       integer j,k
@@ -31,10 +30,6 @@ c      double precision radf
       enddo
 
       call dotem(7,p,s)
-      if (
-     .      (s(5,6) .lt. four*mbsq) 
-     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. mbsq) 
-     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. mbsq) ) return
 
       qqbWHg=aveqq*radi(1,2,7,5,6,3,4)
 c    &  +zip*aveqq*radf(1,2,7,5,6,3,4)
@@ -92,7 +87,7 @@ c      write(6,*) 'gqWHq',gqWHq
       include 'sprods_com.f'
       integer j1,j2,j3,j4,j5,j6,j7
       double precision s45,s12,s13,s23,s123,prop
-      double precision fac,hdecay
+      double precision fac,hdecay,msqhbb
 
 
       s45=s(j4,j5)+2d0*mb**2
@@ -105,7 +100,8 @@ c---calculate the 2 W propagators
       prop=prop*((s(j6,j7)-wmass**2)**2+(wmass*wwidth)**2)
       
       fac=2d0*cf*xn*gsq*gwsq**3*wmass**2/prop
-      hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s45-4d0*mb**2)
+c      hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s45-4d0*mb**2)
+      hdecay=msqhbb(s45)
       hdecay=hdecay/((s45-hmass**2)**2+(hmass*hwidth)**2)
       fac=fac*hdecay
 c-- Old form of this matrix element (modified to facilitate extension

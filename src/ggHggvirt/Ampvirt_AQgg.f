@@ -2,7 +2,7 @@
       implicit none
       include 'constants.f'
       include 'zprods_com.f'
-      integer p1,p2,p3,p4,j1,j2,j3
+      integer p1,p2,p3,p4
       double complex ab41(2,2,2),ba41(2,2,2),ab43(2,2,2),ba43(2,2,2),
      . A41HAQggmppp,A41HAQggmpmm,A41HAQggmpmp,A41HAQggmppm,
      . A43HAQggmppp,A43HAQggmpmm,A43HAQggmpmp,A43HAQggmppm

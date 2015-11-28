@@ -1,7 +1,7 @@
       subroutine nplotter(p,wt,wt2,nd)
 c--- Variable passed in to this routine:
 c
-c---      p:  4-momenta of particles in the format p(i,4)
+c---      p:  4-momenta of leptons and jets in the format p(i,4)
 c---          with the particles numbered according to the input file
 c---          and components labelled by (px,py,pz,E)
 c
@@ -21,6 +21,10 @@ c---          (if applicable), otherwise equal to zero
 c--- This routine simply picks out a process-specific plotting routine
 c---  (if available) and falls back to the generic routine otherwise
 c---  so far available: W_only, Z_only, Wbbbar, Wbbmas, WpWp2j, WpWp3j
+c---  For the convenience of the user who wants to bail out and do their
+c---  own plotting we provide the dummy routine userplotter
+
+      call userplotter(p,wt,wt2,nd)
 
 c--- switch:  an integer equal to either 0 or 1, depending on the type of event
 c---                0  --> lowest order, virtual or real radiation
@@ -57,7 +61,7 @@ c--- Special plotting routine for WW -> leptons
      &   .or. (case.eq.'W_3jet')) then
         call nplotter_Wjets(p,wt,wt2,switch)
       elseif ((case.eq.'HWW_4l') .or. (case.eq.'HWW_tb') 
-     &   .or. (case.eq.'HWWint')) then
+     &   .or. (case.eq.'HWW2lq') .or. (case.eq.'HWWint')) then
         call nplotter_VV(p,wt,wt2,switch,0)
 c--- photon processes also need to know the dipole number
       elseif ((case.eq.'Wgamma') .or. (case.eq.'Zgamma')
@@ -67,6 +71,10 @@ c--- photon processes also need to know the dipole number
         call nplotter_gamgam(p,wt,wt2,switch,nd)
       elseif (case.eq.'dirgam') then 
         call nplotter_dirgam(p,wt,wt2,switch,nd)
+      elseif (case.eq.'Z_2gam')  then
+        call nplotter_zgamgam(p,wt,wt2,switch,nd)
+      elseif (case.eq.'Zgajet')  then
+        call nplotter_zgamjet(p,wt,wt2,switch,nd) 
       elseif ((case.eq.'tt_bbl') .or. (case.eq.'tt_ldk')
      &   .or. (case.eq.'tt_bbh') .or. (case.eq.'tt_bbu')
      &   .or. (case.eq.'tt_hdk') .or. (case.eq.'tthWdk')) then
@@ -75,6 +83,8 @@ c--- photon processes also need to know the dipole number
         call nplotter_4ftwdk(p,wt,wt2,switch)
       elseif ((case.eq.'t_bbar') .or. (case.eq.'tdecay')) then
         call nplotter_tbbar(p,wt,wt2,switch)
+      elseif (case.eq.'qq_ttw') then
+        call nplotter_ttw(p,wt,wt2,switch)
       else
         call nplotter_generic(p,wt,wt2,switch)
       endif

@@ -4,17 +4,17 @@
       include 'masses.f'
       include 'limits.f'
       include 'mxdim.f'
+      include 'zerowidth.f'
+      include 'breit.f'
 c********* generate phase space for 2-->4 process
 c********* r(mxdim),p1(4),p2(4) are inputs reversed in sign from physical values 
 c---- phase space for -p1-p2 --> p4+p5+p6+p7
 c---- with all 2 pi's (ie 1/(2*pi)^8)
-      integer n2,n3
       double precision r(mxdim)
       double precision p1(4),p2(4),p3(4),p4(4),p5(4),p6(4)
       double precision p12(4),p345(4),p34(4),s345min
       double precision wt,wt3456,wt345,wt34,wt0
-      double precision mass2,width2,mass3,width3 
-      common/breit/n2,n3,mass2,width2,mass3,width3 
+      logical oldzerowidth
       double precision Mbbsq
       
       integer j
@@ -30,8 +30,13 @@ c---- calculate momenta of top and bbbar
       n3=1
       mass3=mt
       width3=twidth
+      
+      oldzerowidth=zerowidth
+      zerowidth=.true.
 
       call phi1_2m(mb,r(1),r(2),r(3),s345min,p12,p6,p345,wt3456,*99)
+
+      zerowidth=oldzerowidth
 
       n3=1
       mass3=wmass
@@ -47,6 +52,7 @@ c---- calculate momenta of top and bbbar
 
       return
  99   wt=0d0
+      zerowidth=oldzerowidth
       return 1
       end
 

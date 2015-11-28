@@ -14,11 +14,13 @@ c                           ---> b(p3)+bbar(p4)
       include 'qcdcouple.f'
       include 'zcouple.f'
       include 'sprods_com.f'
+      include 'hdecaymode.f'
       integer j,k,nup,ndo
       double precision p(mxpart,4),facqq,facqg,s34
       double precision msq(-nf:nf,-nf:nf),hdecay,
      . ud_udg_LL,udb_udbg_LL,ud_udg_LR,udb_udbg_LR,
-     . ug_uddb_LL,ug_uddb_LR,gu_ddbu_LL,gu_ddbu_LR
+     . ug_uddb_LL,ug_uddb_LR,gu_ddbu_LL,gu_ddbu_LR,
+     & msqgamgam
       
       parameter (nup=2,ndo=3)
 
@@ -30,8 +32,20 @@ c                           ---> b(p3)+bbar(p4)
       
       call dotem(7,p,s)
 
-      s34=s(3,4)+2d0*mb**2
-      hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s34-4d0*mb**2) 
+      s34=(p(3,4)+p(4,4))**2
+     & -(p(3,1)+p(4,1))**2-(p(3,2)+p(4,2))**2-(p(3,3)+p(4,3))**2
+
+C   Deal with Higgs decay
+      if (hdecaymode == 'tlta') then
+          call htautaudecay(p,3,4,hdecay)
+      elseif (hdecaymode == 'bqba') then
+          call hbbdecay(p,3,4,hdecay)
+      elseif (hdecaymode == 'gaga') then
+          hdecay=msqgamgam(hmass)
+      else
+      write(6,*) 'Unimplemented process in ZZ_hqq_g'
+      stop
+      endif
       hdecay=hdecay/((s34-hmass**2)**2+(hmass*hwidth)**2)
       facqq=0.25d0*gsq*Cf*gwsq**3*hdecay
       facqg=-facqq*(aveqg/aveqq)

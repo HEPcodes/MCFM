@@ -25,7 +25,6 @@ c     g(-p1)+g(-p2)-->H(-->  b(p3)+b~(p4))+g(p5)
 C   Deal with Higgs decay to gamgam
       hdecay=msqgamgam(hmass)/((s(3,4)-hmass**2)**2+(hmass*hwidth)**2)
 
-
 c--   calculate propagators
       ss=s(1,2)
       tt=s(1,iglue)

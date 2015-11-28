@@ -10,14 +10,14 @@ c----(p4,p5) are dummies
       include 'masses.f'
       include 'mxdim.f'
       include 'zerowidth.f'
-      integer n2,n3,j
+      include 'breit.f'
+      integer j
       logical oldzerowidth
       double precision r(mxdim)
       double precision p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4),p8(4),
      . p9(4),p12(4),p345678(4),p345(4),p678(4),p34(4),p78(4),smin
       double precision wt0,wt12,wt345678,wt345,wt678,wt34,wt78,wt,
-     . m3,m4,m5,mass2,width2,mass3,width3
-      common/breit/n2,n3,mass2,width2,mass3,width3 
+     . m3,m4,m5
       parameter(wt0=1d0/twopi**5)
 
       oldzerowidth=zerowidth
