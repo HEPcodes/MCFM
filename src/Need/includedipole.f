@@ -28,7 +28,7 @@
         ptildejet(nd,i,j)=pjet(i,j)
         enddo
       enddo
-
+     
 c--- if the number of jets is not correct, then do not include dipole
       if ((clustering .and. (jets .ne. nqcdjets-notag)
      .       .and. (inclusive .eqv. .false.)) .or.

@@ -23,16 +23,13 @@
       double precision sig,sd,chi,sigr,sdr,chir,
      . xreal,xreal2,xinteg,xerr,adjust
       character*4 part,mypart
-      character*72 runname
-      integer nlength
       common/part/part
       common/bin/bin
       common/xreal/xreal,xreal2
-      common/runname/runname,nlength
       common/reset/reset
       double precision lowint,virtint,realint
       double precision region(2*mxdim),lord_bypart(-1:1,-1:1)
-      logical first,reset
+      logical first,reset,myreadin
       common/bypart/lord_bypart
       external lowint,virtint,realint
       data first/.true./
@@ -74,15 +71,21 @@ c--- part can be changed to make sure that the tota option works.
       mypart=part
       
 c--- If we're doing the tota integration, then set up the grid info
-      if (mypart .eq. 'tota') then
-        if (first .eqv. .true.) then
-          readin=.false.
-          writeout=.true.
-          outgridfile=runname(1:nlength)//'_dvegas_virt.grid'          
+      if (mypart .eq. 'tota') then        
+        if (first .and. (myinit .eq. 1)) then
+c-- special input name for virtual grid
+            ingridfile='dvegas_virt_'//ingridfile
+            myreadin=readin
         else
-          readin=.true.
-          writeout=.false.
-          ingridfile=runname(1:nlength)//'_dvegas_virt.grid'
+          if (first .eqv. .true.) then
+            readin=.false.
+            writeout=.true.
+            outgridfile='dvegas_virt.grid'          
+          else
+            readin=.true.
+            writeout=.false.
+            ingridfile='dvegas_virt.grid'
+          endif
         endif
       endif        
       
@@ -91,23 +94,31 @@ c--- (added and then taken away)
       if ((mypart .eq. 'virt') .or. (mypart .eq. 'tota'))  then
         part='virt'
         reset=.true.
-        call boundregion(ndim+1,region)
-        call vegasnr(region,ndim+1,virtint,myinit,myncall,myitmx,
+        ndim=ndim+1
+        call boundregion(ndim,region)
+        call vegasnr(region,ndim,virtint,myinit,myncall,myitmx,
      .              0,sig,sd,chi)
+        ndim=ndim-1
       endif
             
 c--- If we're doing the tota integration, then set up the grid info
       if (mypart .eq. 'tota') then
-        if (first .eqv. .true.) then
-          readin=.false.
-          writeout=.true.
-          outgridfile=runname(1:nlength)//'_dvegas_real.grid'          
+        if (first .and. (myinit .eq. 1)) then
+c-- special input name for real grid
+          ingridfile(8:11)='real'
+          readin=myreadin
         else
-          readin=.true.
-          writeout=.false.
-          ingridfile=runname(1:nlength)//'_dvegas_real.grid'
-        endif
-      endif        
+          if (first .eqv. .true.) then
+            readin=.false.
+            writeout=.true.
+            outgridfile='dvegas_real.grid'          
+          else
+            readin=.true.
+            writeout=.false.
+            ingridfile='dvegas_real.grid'
+          endif
+        endif        
+      endif 
       
 c--- Real integration should have three extra dimensions
 c--- 'realwt' is a special option that in general should be false
@@ -120,9 +131,11 @@ c---   unsubtracted real emission weight)
         endif
         xreal=0d0
         xreal2=0d0
-        call boundregion(ndim+3,region)
-        call vegasnr(region,ndim+3,realint,myinit,myncall,myitmx,
+        ndim=ndim+3
+        call boundregion(ndim,region)
+        call vegasnr(region,ndim,realint,myinit,myncall,myitmx,
      .              0,sigr,sdr,chi)
+        ndim=ndim-3
         write(6,*) 
         ncall=myncall
         if (realwt) then
@@ -144,9 +157,11 @@ c---   unsubtracted real emission weight)
         adjust=(dfloat(ndim+3))/(dfloat(ndim+1))
         ncall=int(dfloat(myncall)**adjust)
         write(6,*) 'Adjusting number of points for real to',ncall
-        call boundregion(ndim+3,region)
-        call vegasnr(region,ndim+3,realint,myinit,ncall,myitmx,
+        ndim=ndim+3
+        call boundregion(ndim,region)
+        call vegasnr(region,ndim,realint,myinit,ncall,myitmx,
      .              0,sigr,sdr,chi)
+        ndim=ndim-3
         write(6,*) 
         ncall=myncall
 

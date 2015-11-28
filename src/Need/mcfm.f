@@ -14,6 +14,7 @@
       include 'constants.f'
       include 'maxwt.f'
       include 'eventbuffer.f'
+      include 'gridinfo.f'
       integer itmx1,ncall1,itmx2,ncall2
       double precision integ,integ_err
       logical dryrun
@@ -33,16 +34,25 @@
 * The Vegas parameters are those read from options.DAT for
 * the warm-up stage (itmx1,ncall1) and binning should only take
 * place if dryrun is set to true
-      call mcfm_vegas(0,itmx1,ncall1,dryrun,integ,integ_err)
-      
+
+* There are now 3 modes of operation:
+*   dryrun = .false. : warmup, then freeze grid and accumulate
+*   dryrun = .true. , readin = .false. : accumulate during warmup
+*   dryrun = .true. , readin = .true.  : accumulate with frozen grid
+
+      if ((dryrun .eqv. .false.) .or. 
+     .    ((dryrun) .and. (readin .eqv. .false.))) then
+        call mcfm_vegas(0,itmx1,ncall1,dryrun,integ,integ_err)
+      endif
 * This is the mcfm_vegas(accum) call
 * This takes place only if dryrun is false
 * The Vegas parameters are those read from options.DAT for
 * the results stage (itmx2,ncall2) and binning takes place (.true.)
 * wtmax may have been set during the dry run, so re-set here :
       wtmax = 0d0
-      if (dryrun .eqv. .false.) then
-      call mcfm_vegas(1,itmx2,ncall2,.true.,integ,integ_err)
+      if ((dryrun .eqv. .false.) .or. 
+     .    ((dryrun) .and. (readin .eqv. .true.))) then
+        call mcfm_vegas(1,itmx2,ncall2,.true.,integ,integ_err)
       endif
       
 * So far we have not used VEGAS to generate any events.

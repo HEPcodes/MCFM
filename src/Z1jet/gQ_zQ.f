@@ -1,11 +1,13 @@
-      subroutine gQ_zQ(p,msq,flav)
+      subroutine gQ_zQ(p,msq)
       implicit none
-c--- Authors: John Campbell, Keith Ellis
-c--- December 2002
-c--- Matrix element for Z + heavy quark (of flavour "flav") production
-c--- averaged over initial colours and spins
-c     g(-p1)+Q(-p2)-->Z(e^-(p3)+e^+(p4)) + Q(p5)
-c---
+************************************************************************
+*    Authors: R.K. Ellis and John Campbell                             *
+*    July, 2003.                                                       *
+*    Matrix element for Z + heavy quark (of flavour "flav") production *
+*    in order alpha_s^2                                                *
+*    averaged over initial colours and spins                           *
+*     g(-p1)+Q(-p2)-->Z^+(l(p3)+a(p4))+Q(p5)                           *
+************************************************************************
       include 'constants.f'
       include 'masses.f'
       include 'qcdcouple.f'
@@ -14,7 +16,8 @@ c---
       include 'ewcharge.f'
       include 'sprods_com.f'
       include 'zprods_decl.f'
-      integer j,k,hq,hl,swap(2),flav
+      include 'heavyflav.f'
+      integer j,k,hq,hl,swap(2)
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac
       double complex prop
       double precision 
@@ -45,7 +48,7 @@ c---
       enddo 
 
       do j=-flav,flav,flav
-      do k=-flav,flav
+      do k=-flav,flav,flav
 
       if( abs(j+k) .ne. flav) goto 20
 

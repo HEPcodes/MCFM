@@ -15,6 +15,9 @@ C     USES fxn,ran1,rebin
      *d(NDMX,MXDIM),di(NDMX,MXDIM),dt(MXDIM),dx(MXDIM),r(NDMX),x(MXDIM),
      *xi(NDMX,MXDIM),xin(NDMX),ran1
       DOUBLE PRECISION schi,si,swgt
+      character*72 runname
+      integer nlength
+      common/runname/runname,nlength
       COMMON /ranno/ idum
       SAVE
       if(init.le.0)then
@@ -57,9 +60,11 @@ C     USES fxn,ran1,rebin
 
 c--- read-in grid if necessary
          if (readin) then
-           open(unit=11,file=ingridfile,status='unknown')
+           open(unit=11,file=runname(1:nlength)//'_'
+     .           //ingridfile,status='unknown')
         write(6,*)'****************************************************'
-        write(6,*)'* Reading in vegas grid from ',ingridfile,' *'
+        write(6,*)'* Reading in vegas grid from ',runname(1:nlength)//
+     .   '_'//ingridfile,' *'
         write(6,*)'****************************************************'
            call flush(6)
            do j=1,ndim
@@ -181,9 +186,11 @@ c          write(6,201) it,ti,tsi,tgral,sd,chi2a
 
 c--- write-out grid if necessary
          if (writeout) then
-           open(unit=11,file=outgridfile,status='unknown')
+           open(unit=11,file=runname(1:nlength)//'_'
+     .           //outgridfile,status='unknown')
         write(6,*)'****************************************************'
-        write(6,*)'* Writing out vegas grid to ',outgridfile,'  *'
+        write(6,*)'* Writing out vegas grid to ',runname(1:nlength)//'_'
+     .           //outgridfile,'  *'
         write(6,*)'****************************************************'
            call flush(6)
            do j=1,ndim

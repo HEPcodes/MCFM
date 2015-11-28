@@ -17,9 +17,11 @@
       
 c--- Print-out the value of the integral and its error
       write(6,*) 
-      write(6,*)'Value of final ',part,' integral is',
+      write(6,53)'Value of final ',part,' integral is',
      . xinteg,' +/-',xinteg_err, ' fb'
      
+   53 format(a15,a4,a12,f13.3,a4,f10.3,a3)
+
 c--- Print-out a summary of the effects of jets and cuts
       write(6,*) 
       write(6,*) 'Total number of shots       : ',ntotshot
@@ -40,36 +42,34 @@ c--- through the jet and cut routines
      .  100d0-100d0*dfloat((njetzero+ncutzero))/dfloat(ntotshot)
       write(6,*) 
       
-      if (part .eq. 'lord') then
-        lordnorm=0d0
-        do j=-1,1
-        do k=-1,1
-          lordnorm=lordnorm+lord_bypart(j,k)
-        enddo
-        enddo
-        write(6,*) 'Contribution from parton sub-processes:'
-        write(6,*) '---------------------------------------'
-        write(6,55) '   GG    ',
-     .  lord_bypart( 0, 0)/lordnorm*xinteg,
-     .  lord_bypart( 0, 0)/lordnorm*100d0
-        write(6,55) 'GQ + GQB ',
-     .  (lord_bypart( 0,+1)+lord_bypart( 0,-1))/lordnorm*xinteg,
-     .  (lord_bypart( 0,+1)+lord_bypart( 0,-1))/lordnorm*100d0
-        write(6,55) 'QG + QBG ',
-     .  (lord_bypart(+1, 0)+lord_bypart(-1, 0))/lordnorm*xinteg,
-     .  (lord_bypart(+1, 0)+lord_bypart(-1, 0))/lordnorm*100d0
-        write(6,55) 'QQ + QBQB',
-     .  (lord_bypart(+1,+1)+lord_bypart(-1,-1))/lordnorm*xinteg,
-     .  (lord_bypart(+1,+1)+lord_bypart(-1,-1))/lordnorm*100d0
-        write(6,55) '   QQB   ',
-     .  (lord_bypart(+1,-1)+lord_bypart(-1,+1))/lordnorm*xinteg,
-     .  (lord_bypart(+1,-1)+lord_bypart(-1,+1))/lordnorm*100d0
-        write(6,*) '---------------------------------------'
-      endif
+      lordnorm=0d0
+      do j=-1,1
+      do k=-1,1
+        lordnorm=lordnorm+lord_bypart(j,k)
+      enddo
+      enddo
+      write(6,*) 'Contribution from parton sub-processes:'
+      write(6,*) '---------------------------------------'
+      write(6,55) '   GG    ',
+     .lord_bypart( 0, 0)/lordnorm*xinteg,
+     .lord_bypart( 0, 0)/lordnorm*100d0
+      write(6,55) 'GQ + GQB ',
+     .(lord_bypart( 0,+1)+lord_bypart( 0,-1))/lordnorm*xinteg,
+     .(lord_bypart( 0,+1)+lord_bypart( 0,-1))/lordnorm*100d0
+      write(6,55) 'QG + QBG ',
+     .(lord_bypart(+1, 0)+lord_bypart(-1, 0))/lordnorm*xinteg,
+     .(lord_bypart(+1, 0)+lord_bypart(-1, 0))/lordnorm*100d0
+      write(6,55) 'QQ + QBQB',
+     .(lord_bypart(+1,+1)+lord_bypart(-1,-1))/lordnorm*xinteg,
+     .(lord_bypart(+1,+1)+lord_bypart(-1,-1))/lordnorm*100d0
+      write(6,55) '   QQB   ',
+     .(lord_bypart(+1,-1)+lord_bypart(-1,+1))/lordnorm*xinteg,
+     .(lord_bypart(+1,-1)+lord_bypart(-1,+1))/lordnorm*100d0
+      write(6,*) '---------------------------------------'
       call flush(6)
 
    54 format(a20,f6.2,'%')
-   55 format(4x,a9,'  |',f14.5,f8.2,'%')
+   55 format(4x,a9,' |',f15.5,f8.2,'%')
 
 c--- Finalize the histograms, if we're not filling ntuples instead
       if (creatent .eqv. .false.) then

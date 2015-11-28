@@ -5,7 +5,7 @@ c--- reads in the anomalous couplings from the file anomcoup.DAT
       logical newinput
       common/newinput/newinput
       
-      if (newinput) return      
+      if (newinput) goto 20     
       
       open(unit=21,file='anomcoup.DAT',status='old',err=999)
       call checkversion(21,'anomcoup.DAT')
@@ -18,6 +18,8 @@ c--- reads in the anomalous couplings from the file anomcoup.DAT
       close(21)
 c--- E-M gauge invariance requires that delg1_g=0
       delg1_g=0d0
+      
+   20 continue   
       
       write(6,*)
       write(6,*)  '*************** Anomalous couplings ****************'

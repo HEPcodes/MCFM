@@ -18,9 +18,12 @@ c--all momenta incoming
       double precision fac,propsq,hdecay,coupsq,ghbb,coupsq_eff,ghbb_eff
       double precision amz,alphas,mb_eff,mb_msbar,massfrun
       character*4 part
+      logical first
       common/part/part
       common/couple/amz
-
+      data first/.true./
+      save first
+      
 c--susycoup is the deviation of Higgs coupling 
 c-- from the standard model value
 
@@ -52,6 +55,16 @@ c--- run mb to appropriate scale, if necessary
         mb_eff=mb_msbar
       endif
             
+      if (first) then
+       first=.false.
+       write(6,*)      
+       write(6,*) '******************* Running b-mass *****************'
+       write(6,*) '*                                                  *'
+       write(6,99) '*         mb(scale=',scale,') = ',mb_eff,
+     .  'GeV           *'
+       write(6,*) '****************************************************'   
+      endif      
+            
 c--- our definition
 c      ghbb=sqrt(esq*mbsq/(xw*(1d0-xw)))/2d0/zmass
 c--- definition according to Maltoni, Willenbrock
@@ -73,6 +86,9 @@ c--- Higgs decay, because the Br. Ratio does not include running mb
       msq(-5,0)=-fac*aveqg*amp(5,1,2)
 
       return
+      
+   99 format(a20,f6.2,a4,f6.4,a17)  
+      
       end
           
     

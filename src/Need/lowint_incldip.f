@@ -99,8 +99,7 @@ c          call gen5a(r,p,pswt,*999)
      .   .or. (case .eq. 'Z_1jet')
      .   .or. (case .eq. 'W_1jet')
      .   .or. (case .eq. 'ggfus1')
-     .   .or. (case .eq. 'gQ_ZQc')
-     .   .or. (case .eq. 'gQ_ZQb')) then
+     .   .or. (case .eq. 'gQ__ZQ')) then
           npart=3
           call gen_njets(r,1,p,pswt,*999)
       elseif ((case .eq. 'vlchk3') 
@@ -213,15 +212,15 @@ c--- bother calculating the matrix elements for it, instead bail out
         goto 999
       endif
       
-      if ((scalestart .lt. 0d0) .or. (case .eq. 'H_1jet'))
-     . call scaleset(scalestart,p)
+      if ((scalestart .lt. 0d0) .or. (case .eq. 'H_1jet')
+     .  .or. (case .eq. 'gQ__ZQ')) call scaleset(scalestart,p)
       
       xx(1)=-2d0*p(1,4)/sqrts
       xx(2)=-2d0*p(2,4)/sqrts
 
       if (debug) write(*,*) 'Reconstructed x1,x2 ',xx(1),xx(2)      
 
-      if (case .eq. 'H_1jet') then
+      if ((case .eq. 'H_1jet') .or. (case .eq. 'gQ__ZQ')) then
         pdfscale=facscale
       else
         pdfscale=scale
@@ -361,10 +360,8 @@ c      call qqb_ttbgg(p,msq)
       stop
       elseif (case .eq. 'dirgam') then
       call qqb_dirgam(p,msq)
-      elseif (case .eq. 'gQ_ZQb') then
-      call gQ_zQ(p,msq,5)
-      elseif (case .eq. 'gQ_ZQc') then
-      call gQ_zQ(p,msq,4)
+      elseif (case .eq. 'gQ__ZQ') then
+      call gQ_zQ(p,msq)
       elseif (case .eq. 'vlchk2') then
       call qqb_vol(p,msq)
       flux=one/vol(W,2)
@@ -516,7 +513,7 @@ c      if ((j.ne.0) .and. (k.ne.0)) goto 20
       do j=-1,1
       do k=-1,1
         lord_bypart(j,k)=lord_bypart(j,k)+
-     .       flux*pswt*xmsq_bypart(j,k)/BrnRat
+     .       wgt*flux*pswt*xmsq_bypart(j,k)/BrnRat
       enddo
       enddo
 

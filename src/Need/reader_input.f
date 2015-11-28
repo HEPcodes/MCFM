@@ -227,9 +227,9 @@ c--- pdf options
       read(20,*) NSET
       if (verbose) write(6,*) 'NSET=',NSET
       read(20,*) PDFname
-      if (verbose) write(6,*) PDFname
+      if (verbose) write(6,*) 'PDFname=',PDFname
       read(20,*) PDFmember
-      if (verbose) write(6,*) PDFmember
+      if (verbose) write(6,*) 'PDFmember=',PDFmember
 
       if (verbose) write(6,*)
       read(20,99) line

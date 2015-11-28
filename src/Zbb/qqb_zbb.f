@@ -20,8 +20,24 @@ c---  averaged(summed) over initial(final) colours and spins
 c      double complex qqb5,qbq5,qqb6,qbq6,qqb7,qbq7,qqb8,qbq8
       double complex qqb_a(2,2,2),qqb_b(2,2,2)
       double complex qbq_a(2,2,2),qbq_b(2,2,2)
-      data swap/2,1/
-      save swap
+      logical first
+      data swap/2,1/,first/.true./
+      save first,swap
+      
+      if (first) then
+       write(6,*)
+       write(6,*) '****************** Process info ********************'
+       write(6,*) '*                                                  *'
+       write(6,*) '* mb=0 for this process, although cuts are applied *'
+       write(6,*) '* to simulate the effect of the b-mass:            *'
+       write(6,*) '*                                                  *'
+       write(6,99) ' *                pt(b) > ',dsqrt(mbsq),
+     .  '                *'
+       write(6,99) ' *                m(bb) > ',two*dsqrt(mbsq),
+     .  '                *'
+       write(6,*) '****************************************************'
+       first=.false.
+      endif
       
 c--initialize to zero
       do j=-nf,nf
@@ -139,7 +155,11 @@ c--- qbq from symmetries
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
           endif
       enddo
+
       return
+
+   99 format(a26,f6.3,a21)   
+      
       end
 
 

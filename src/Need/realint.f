@@ -33,8 +33,10 @@
       double precision xx1,xx2,q(mxpart,4),rcut,pttwo,pt
       double precision m3,m4,m5
       double precision s19,s29,s3459,s6789
+      double precision xmsq_bypart(0:maxd,-1:1,-1:1),xmsqjk,
+     . lord_bypart(-1:1,-1:1)
       integer nqcdjets,nqcdstart
-      integer n2,n3
+      integer n2,n3,sgnj,sgnk
       double precision mass2,width2,mass3,width3
       common/breit/n2,n3,mass2,width2,mass3,width3
       common/nqcdjets/nqcdjets,nqcdstart
@@ -47,7 +49,7 @@
      . qqb_wz_g,qqb_wz_gs,qqb_zz_g,qqb_zz_gs,qqb_wgam_g,qqb_wgam_gs,
      . qqb_zgam_g,qqb_zgam_gs,qqb_dirgam_g,qqb_dirgam_gs,
      . qq_Hqq_g,qq_Hqq_gs,WW_Hqq_g,WW_Hqq_gs,ZZ_Hqq_g,ZZ_Hqq_gs,
-     . gg_Hg,gg_H_gs,gg_Hgg,gg_Hg_gs
+     . VV_Hqq_g,VV_Hqq_gs,gg_Hg,gg_H_gs,gg_Hgg,gg_Hg_gs
       common/density/ih1,ih2
       common/energy/sqrts
       common/bin/bin
@@ -57,6 +59,7 @@
       common/BrnRat/BrnRat
       common/nmin/nmin
       common/rcut/rcut
+      common/bypart/lord_bypart
       data p/48*0d0/
       data first/.true./
       save first,scalestart
@@ -116,11 +119,11 @@ c          call gen4(vector,p,pswt,*999)
           endif
       elseif ((case .eq. 'W_2jet')
      .   .or. (case .eq. 'Z_2jet')
+     .   .or. (case .eq. 'Wbbbar')
+     .   .or. (case .eq. 'Zbbbar')
      .   .or. (case .eq. 'WW_Hqq')
      .   .or. (case .eq. 'ZZ_Hqq')
      .   .or. (case .eq. 'VV_Hqq')
-     .   .or. (case .eq. 'Wbbbar')
-     .   .or. (case .eq. 'Zbbbar')
      .       ) then
           npart=5
           call gen_njets(vector,3,p,pswt,*999)
@@ -258,6 +261,7 @@ c        call singcheck(ZZ_Hqq_g,ZZ_Hqq_gs,p)   ! Checked 3/03
         call ZZ_Hqq_g(p,msq)
         call ZZ_Hqq_gs(p,msqc)
       elseif (case .eq. 'VV_Hqq') then
+c        call singcheck(VV_Hqq_g,VV_Hqq_gs,p)   ! Checked 6/03
         call VV_Hqq_g(p,msq)
         call VV_Hqq_gs(p,msqc)
        elseif (case .eq. 'ggfus0') then
@@ -298,8 +302,13 @@ c        call singcheck(qqb_Hg_g,qqb_Hg_gs,p)       ! Checked 19/02/02
         call qqb_tbb(p,msq)
       endif
       
-      do j=0,ndmax
-      xmsq(j)=0d0
+      do nd=0,ndmax
+      xmsq(nd)=0d0
+      do j=-1,1
+      do k=-1,1
+      xmsq_bypart(nd,j,k)=0d0
+      enddo
+      enddo
       enddo
       
       do j=-nf,nf
@@ -328,10 +337,31 @@ c        call singcheck(qqb_Hg_g,qqb_Hg_gs,p)       ! Checked 19/02/02
            xmsq(nd)=xmsq(nd)+fx1(j)*fx2(k)*(-msqc(nd,j,k))
          enddo
       else
-         xmsq(0)=xmsq(0)+fx1(j)*fx2(k)*msq(j,k)
+
+         if     (j .gt. 0) then
+           sgnj=+1
+         elseif (j .lt. 0) then
+           sgnj=-1
+         else
+           sgnj=0
+         endif
+         if     (k .gt. 0) then
+           sgnk=+1
+         elseif (k .lt. 0) then
+           sgnk=-1
+         else
+           sgnk=0
+         endif
+
+         xmsqjk=fx1(j)*fx2(k)*msq(j,k)
+         xmsq(0)=xmsq(0)+xmsqjk
+         xmsq_bypart(0,sgnj,sgnk)=xmsq_bypart(0,sgnj,sgnk)+xmsqjk
          do nd=1,ndmax
-           xmsq(nd)=xmsq(nd)+fx1(j)*fx2(k)*(-msqc(nd,j,k))
+           xmsqjk=fx1(j)*fx2(k)*(-msqc(nd,j,k))
+           xmsq(nd)=xmsq(nd)+xmsqjk
+           xmsq_bypart(nd,sgnj,sgnk)=xmsq_bypart(nd,sgnj,sgnk)+xmsqjk
          enddo
+         
       endif
  20   continue
 
@@ -348,10 +378,10 @@ c---first set up all dipole contributions
 c---this is the value of integral including subtractions
       do nd=0,ndmax
         xmsq(nd)=xmsq(nd)*flux*pswt/BrnRat
-
+         
 c--- if this dipole has no contribution, go to end of loop
-        if (xmsq(nd) .eq. 0d0) goto 997
-
+        if (xmsq(nd) .eq. 0d0) goto 997         
+         
         if (nd .eq. 0) then
 c---call clustering for event
 c--- cluster partons (nqcdstart) to (nqcdstart+nqcdjets)
@@ -426,6 +456,12 @@ c--- Apply the (counter-)event cuts
         endif
 c---if it does, add to total
         xint=xint+xmsq(nd)
+        do j=-1,1
+        do k=-1,1
+          lord_bypart(j,k)=lord_bypart(j,k)+
+     .         wgt*flux*pswt*xmsq_bypart(nd,j,k)/BrnRat
+        enddo
+        enddo
 
         val=xmsq(nd)*wgt
 c--- update the maximum weight so far, if necessary

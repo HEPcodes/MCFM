@@ -589,6 +589,8 @@ c      n=n+1
       n=n+1
       call bookplot(n,tag,'     mbb',mbb,wt,0d0,200d0,10d0,'log')
       n=n+1
+      call bookplot(n,tag,'     mbb',mbb,wt,0d0,200d0,5d0,'log')
+      n=n+1
       call bookplot(n,tag,'     rbb',rbb,wt,0d0,4d0,0.1d0,'lin')
       n=n+1
       endif

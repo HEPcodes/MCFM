@@ -23,6 +23,7 @@
       include 'limits.f'
       include 'jetlabel.f'
       include 'pdlabel.f'
+      include 'phasemin.f'
       double precision mqq(0:2,fn:nf,fn:nf)
       double precision msqx(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf)
       double precision msqx_cs(0:2,-nf:nf,-nf:nf)
@@ -34,17 +35,18 @@
       double precision pswt,xjac,scalestart,pdfscale,
      . wgt,msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),
      . msq_qq,msq_aa,msq_aq,msq_qa,msq_qg,msq_gq
-      double precision xx(2),z,x1onz,x2onz,flux,vol,taumin,omz,
+      double precision xx(2),z,x1onz,x2onz,flux,vol,omz,
      . BrnRat,xmsq_old,tmp
-      integer nshot,rvcolourchoice
+      double precision xmsq_bypart(-1:1,-1:1),lord_bypart(-1:1,-1:1)
+      integer nshot,rvcolourchoice,sgnj,sgnk
       logical bin,first,includedipole
       common/density/ih1,ih2
       common/energy/sqrts
       common/bin/bin
       common/x1x2/xx
-      common/taumin/taumin
       common/BrnRat/BrnRat
       common/rvcolourchoice/rvcolourchoice
+      common/bypart/lord_bypart
       data p/48*0d0/
       data nshot/1/
       data first/.true./
@@ -338,7 +340,7 @@ c--- point to restart from when checking epsilon poles
      .   .or. (case .eq. 'bb_tot')
      .   .or. (case .eq. 'cc_tot')) then
       write(6,*) 'Virtual corrections not yet included!'
-      pause
+      stop
       elseif (case .eq. 'vlchk4') then
          taumin=0.0001d0
          bbsqmax=W
@@ -357,6 +359,11 @@ c--- point to restart from when checking epsilon poles
 
 C---initialize to zero
       xmsq=0d0
+      do j=-1,1
+      do k=-1,1
+      xmsq_bypart(j,k)=0d0
+      enddo
+      enddo
 
       do j=-nf,nf
       do k=-nf,nf
@@ -372,6 +379,8 @@ C---initialize to zero
       if (noglue) then 
       if ((j.eq.0) .or. (k.eq.0)) goto 20
       endif
+
+      tmp=xmsq
 
 c--- The variables R1 and R2 provide the Regular and Plus pieces associated
 c--- with radiation from leg 1 (R1(a,b,c,cs,is)) and leg 2 (R2(a,b,c,cs,is))
@@ -731,6 +740,24 @@ C--Qbarg
       endif
       
       endif
+
+      if     (j .gt. 0) then
+        sgnj=+1
+      elseif (j .lt. 0) then
+        sgnj=-1
+      else
+        sgnj=0
+      endif
+      if     (k .gt. 0) then
+        sgnk=+1
+      elseif (k .lt. 0) then
+        sgnk=-1
+      else
+        sgnk=0
+      endif
+
+      xmsq_bypart(sgnj,sgnk)=xmsq_bypart(sgnj,sgnk)+(xmsq-tmp)
+
       
  20   continue
 
@@ -747,7 +774,7 @@ c--- code to check that epsilon poles cancel
         goto 12
       elseif (nshot .eq. 2) then
         nshot=nshot+1
-        if (abs(xmsq_old/xmsq-1d0) .gt. 1d-7) then
+        if (abs(xmsq_old/xmsq-1d0) .gt. 1d-6) then
           write(6,*) 'epsilon fails to cancel'
           write(6,*) 'xmsq (epinv=large) = ',xmsq_old
           write(6,*) 'xmsq (epinv=zero ) = ',xmsq
@@ -788,6 +815,13 @@ c         endif
 c      endif
          
       virtint=flux*xjac*pswt*xmsq/BrnRat
+
+      do j=-1,1
+      do k=-1,1
+        lord_bypart(j,k)=lord_bypart(j,k)+
+     .       wgt*flux*xjac*pswt*xmsq_bypart(j,k)/BrnRat
+      enddo
+      enddo
 
       val=virtint*wgt 
 c--- update the maximum weight so far, if necessary

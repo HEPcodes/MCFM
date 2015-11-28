@@ -1,12 +1,13 @@
 ****************************************************
-*             MCFM VERSION 3.4.3                   *
+*             MCFM VERSION 3.4.4                   *
 *              Build date:                         *
-*       Wed Jul 2 15:47:52 CDT 2003                *
+*       Wed Sep 3 10:30:55 CDT 2003                *
 *                                                  *
 *     John Campbell, johnmc@hep.anl.gov            *
 *     Keith Ellis,   ellis@fnal.gov                *
 *                                                  *
 *   For details see:                               *
+*    Preprint, hep-ph/0308195 (Vjj at the LHC)     *
 *    Phys.Rev.D65:113007, hep-ph/0202176 (W,Z+2j)  *
 *    Phys.Rev.D62:114012, hep-ph/0006304 (W,Z+bb)  *
 *    Phys.Rev.D60:113006, hep-ph/9905386 (diboson) *

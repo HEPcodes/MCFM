@@ -15,6 +15,7 @@ c---- total cross-section comes out correctly when the BR is removed
       include 'lc.f'
       include 'nwz.f'
       include 'process.f'
+      include 'heavyflav.f'
       character*4 part
       common/part/part
       double precision rtsmin
@@ -496,7 +497,7 @@ c---total cross-section
              mass3=zmass
              width3=zwidth
              if     (nproc .eq. 50) then
-             case='Zbbmas'
+               case='Zbbmas'
                write(6,*) 'mb=',mb
                bbproc=.true.
                nqcdjets=2
@@ -562,7 +563,7 @@ c---case WW
              plabel(7)='pp'
              nwz=1
              ndim=10
-             mb=0
+             mb=0d0
              n2=1
              n3=1
              mass2=wmass
@@ -575,6 +576,8 @@ c---case WW
                BrnRat=brwen**2
                plabel(3)='ig'
                plabel(4)='ig'
+               plabel(5)='ig'
+               plabel(6)='ig'
              elseif (nproc .eq. 62) then
 c--- note: scattering diagrams are NOT included, only couplings change
                plabel(3)='nl'
@@ -1780,9 +1783,10 @@ C mb=0, keeps mbsq in the coupling but ignores it in the phase space)
              plabel(5)='pp'
              nqcdjets=1
              n3=0
-      elseif (nproc .eq. 261) then
+      elseif ((nproc .eq. 261) .or. (nproc .eq. 266)) then
              nqcdjets=1
-             case='gQ_ZQb'
+             case='gQ__ZQ'
+             flav=5
              nwz=0
              ndim=7
              mb=0
@@ -1792,14 +1796,20 @@ C mb=0, keeps mbsq in the coupling but ignores it in the phase space)
              width3=zwidth
              plabel(3)='el'
              plabel(4)='ea'
-             plabel(5)='pp'
-             plabel(6)='pp'
+             plabel(5)='bq'
+             isub=1+(nproc-261)/5
+             if (nproc .eq. 261) then
+               plabel(6)='pp'
+             else
+               plabel(6)='ba'
+             endif
              q1=-1d0
              l1=le
              r1=re
-      elseif (nproc .eq. 262) then
+      elseif ((nproc .eq. 262) .or. (nproc .eq. 267)) then
              nqcdjets=1
-             case='gQ_ZQc'
+             case='gQ__ZQ'
+             flav=4
              nwz=0
              ndim=7
              mb=0
@@ -1809,8 +1819,13 @@ C mb=0, keeps mbsq in the coupling but ignores it in the phase space)
              width3=zwidth
              plabel(3)='el'
              plabel(4)='ea'
-             plabel(5)='pp'
-             plabel(6)='pp'
+             plabel(5)='bq'
+             isub=1+(nproc-262)/5
+             if (nproc .eq. 262) then
+               plabel(6)='pp'
+             else
+               plabel(6)='ba'
+             endif
              q1=-1d0
              l1=le
              r1=re

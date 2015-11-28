@@ -1,4 +1,4 @@
-'3.4.3'		[file version number]
+'3.4.4'		[file version number]
 
 [Flags to specify the mode in which MCFM is run]
 .false.		[evtgen]

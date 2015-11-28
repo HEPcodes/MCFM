@@ -26,9 +26,14 @@
       msg=''
 
 c--- factorization scale is also set here for the bg -> Hb process
-      if (nproc/10 .eq. 14) then
+c--- and for the bg->Zb process too
+      if ((nproc/10 .eq. 14) .or. (nproc/10 .eq. 26)) then
         if     (scalestart .lt. 0d0) then
-          scale=hmass
+          if (nproc/10 .eq. 14) then
+            scale=hmass
+          else
+            scale=zmass
+          endif
           if (scalestart .gt. -9d0) then
             facindex=int(-scalestart)
             facscale=scale*facsf(facindex)
@@ -36,7 +41,11 @@ c--- factorization scale is also set here for the bg -> Hb process
             facscale=scale
           endif
         elseif (scalestart .lt. 9d0) then
-            facscale=hmass 
+            if (nproc/10 .eq. 14) then
+              facscale=hmass
+            else
+              facscale=zmass
+            endif
             facindex=int(scalestart)
             scale=facscale*facsf(facindex)
         else
