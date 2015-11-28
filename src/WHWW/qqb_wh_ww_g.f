@@ -101,10 +101,15 @@ c---calculate the 2 W propagators
      .   *((s(j6,j7)-wmass**2)**2+(wmass*wwidth)**2))
       fac=fac*hdecay
 
-      radi_ww=s12/s13/s23
-     & *(2d0*s(j1,j9)*s(j2,j8)+s(j1,j9)*s(j3,j8)+s(j2,j8)*s(j3,j9))
-     & +(s(j1,j9)*s(j2,j8)+s(j2,j8)*s(j3,j9)-s(j1,j8)*s(j1,j9))/s13
-     & +(s(j1,j9)*s(j2,j8)+s(j1,j9)*s(j3,j8)-s(j2,j8)*s(j2,j9))/s23
+C---old
+c      radi_ww=s12/s13/s23
+c     & *(2d0*s(j1,j9)*s(j2,j8)+s(j1,j9)*s(j3,j8)+s(j2,j8)*s(j3,j9))
+c     & +(s(j1,j9)*s(j2,j8)+s(j2,j8)*s(j3,j9)-s(j1,j8)*s(j1,j9))/s13
+c     & +(s(j1,j9)*s(j2,j8)+s(j1,j9)*s(j3,j8)-s(j2,j8)*s(j2,j9))/s23
+c---
+      radi_ww=
+     & (s(j2,j8)*((s12+s23)*(s(j1,j9)+s(j3,j9))-s13*s(j2,j9))
+     & +s(j1,j9)*((s12+s13)*(s(j2,j8)+s(j3,j8))-s23*s(j1,j8)))/(s13*s23)
       radi_ww=fac*radi_ww
       return
       end

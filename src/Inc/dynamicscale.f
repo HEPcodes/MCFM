@@ -1,2 +1,3 @@
       logical dynamicscale
-      common/dynamicscale/dynamicscale
+      character*24 dynstring
+      common/dynamicscale/dynamicscale,dynstring

@@ -9,7 +9,7 @@
 C     (Taken from Ravindran, Smith, van Neerven hep-ph/0201114)
 C     Modified by overall factors
       integer iglue,j,k
-      double precision p(4,mxpart),msq(fn:nf,fn:nf)
+      double precision p(mxpart,4),msq(fn:nf,fn:nf)
       double precision ss,tt,uu,s34,
      . virtgg,virtqa,virtaq,virtqg,virtgq,hdecay,Asq,fac
       parameter(iglue=5)

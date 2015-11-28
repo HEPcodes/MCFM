@@ -84,12 +84,6 @@ c--- Add event in histograms
         tag='plot'
       endif
 
-c--- Book and fill ntuple if that option is set, remembering to divide
-c--- by # of iterations now that is handled at end for regular histograms
-      if (creatent .eqv. .true.) then
-        call bookfill(tag,p,wt/dfloat(itmx))  
-      endif
-
 ************************************************************************
 *                                                                      *
 *     DEFINITIONS OF QUANTITIES TO PLOT                                *
@@ -146,6 +140,12 @@ c--- Photons order based on pt
 
 c--- Call histogram routines
    99 continue
+
+c--- Book and fill ntuple if that option is set, remembering to divide
+c--- by # of iterations now that is handled at end for regular histograms
+      if (creatent .eqv. .true.) then
+        call bookfill(tag,p,wt/dfloat(itmx))  
+      endif
 
 c--- "n" will count the number of histograms
       n=1              

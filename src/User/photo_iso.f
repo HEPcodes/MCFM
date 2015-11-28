@@ -1,41 +1,27 @@
-      logical function photo_iso(p,isub,phot_dip,phot_id,nd,str,R_0,e_h) 
+      logical function photo_iso(p,isub,phot_dip,phot_id,nd,imode) 
       implicit none
 !----------------------------------------------------------------------------
 !-                           Photon Isolation                               -
 !- C. Williams Jan 2011                                                     - 
 !-                                                                          -
 !- This function implements isolation cuts on photons                       -
-!- The general requirement is that pt_had < e_h pt_photon                   -  
-!- Within a cone of radius R_0                                              - 
-!- z_c = 1/1+e_h corresponds to the lower cut off in z_frag                 -
+!- The general requirement is that pt_had < epsilon_h pt_photon             -  
+!- Within a cone of radius cone_ang                                         - 
+!- z_c = 1/1+epsilon_h corresponds to the lower cut off in z_frag           -
 !----------------------------------------------------------------------------
       include 'constants.f'
       include 'frag.f'
       include 'npart.f'
       include 'z_dip.f'
-      include 'useet.f'
       double precision p(mxpart,4),p_incone(4),R,pt_incone,pt 
-      double precision z_c,e_h,R_0,ope_h,z_kin,Rjga,tiny
-      integer isub,j,nu,nd
-      logical phot_dip,init_useEt
+      double precision z_c,opepsilon_h,z_kin,Rjga,tiny
+      integer isub,j,nu,nd,imode
+      logical phot_dip
       integer phot_id ! refers to which photon we are isolating
       logical is_hadronic 
-      character*2 str
       parameter(tiny=1d-8)
 
       photo_iso = .true. 
-
-!--- determine whether we are isolating Et or Pt, UseEt controls this 
-      init_useEt=useEt
-      if(str.eq.'Et') then 
-         useEt=.true. 
-      elseif(str.eq.'pt') then 
-         useEt=.false.
-      else
-         write(6,*) 'Unrecognised photon isolation parameter'
-         stop
-      endif
-
 
       do nu=1,4
          p_incone(nu)=0d0
@@ -43,29 +29,26 @@
       z_kin = 0d0
       pt_incone = 0d0 
 
-      ope_h = one+e_h
-!-- use e_h to define type of isolation
-!--   e_h < 1 : e_h corresponds to a pt fraction i.e. pt(had) < e_h pt_gamma 
-!--   e_h > 1 : treat it as an E_t max in cone   i.e. pt(had) < e_h 
+      opepsilon_h = one+epsilon_h
 
-      if(e_h.lt.0.9999d0) then
-         !-fractional isolation 
-         z_c = one/ope_h
-      else
-c--- Old version
+      if     (imode .eq. 1) then
+!--- isolation using scaling cut 
+         z_c = one/opepsilon_h
+      elseif (imode .eq. 2) then
+!--- isolation using fixed cut
          if(phot_dip.eqv..true.) then 
 !---- Photon dipole need to rescale pt 
-           z_c=(z_dip(nd)*pt(phot_id,p))/(e_h+(z_dip(nd)*pt(phot_id,p)))
+           z_c=(z_dip(nd)*pt(phot_id,p))
+     &        /(epsilon_h+(z_dip(nd)*pt(phot_id,p)))
         elseif(z_frag.gt.tiny) then 
-           z_c=(z_frag*pt(phot_id,p))/(e_h+(z_frag*pt(phot_id,p)))
+           z_c=(z_frag*pt(phot_id,p))
+     &        /(epsilon_h+(z_frag*pt(phot_id,p)))
         else 
-           z_c=pt(phot_id,p)/(e_h+pt(phot_id,p))
+           z_c=pt(phot_id,p)/(epsilon_h+pt(phot_id,p))
         endif
-!------   
-
-           
-c--- New version (JMC)
-!	 z_c=1d0-e_h/pt(phot_id,p)
+      else
+        write(6,*) 'Unknown isolation parameter: imode=',imode
+	stop
       endif
          
 
@@ -73,7 +56,7 @@ c--- New version (JMC)
       do j=3,npart+2-isub
          if(is_hadronic(j)) then 
             Rjga=R(p,j,phot_id) 
-            if(Rjga .lt. R_0) then 
+            if(Rjga .lt. cone_ang) then 
                do nu=1,4
                   p_incone(nu)=p_incone(nu)+p(j,nu) 
                enddo
@@ -141,11 +124,9 @@ c--- New version (JMC)
       
       endif
       
-!---- Reset useEt to initial vaule
-      useEt=init_useEt
-
       return 
       end
+
       
       logical function is_hadronic(i)
       implicit none

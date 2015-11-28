@@ -36,11 +36,13 @@
       include 'PDFerrors.f'
       include 'frag.f'
       include 'reset.f'
-      integer myitmx,myncall,myinit,i,j,k,nproc
+      include 'masses.f'
+      integer myitmx,myncall,myinit,i,j,k,nproc,mynproc
       logical mybin,bin
       double precision sig,sd,chi,sigr,sdr,sigdk,sddk,chidk,
      & sigfrag,sdfrag,chifrag,
-     & xreal,xreal2,xinteg,xerr,adjust,myscale,myfacscale
+     & xreal,xreal2,xinteg,xerr,adjust,myscale,myfacscale,
+     & mymb,sumsig,sumsigr,sumsd,sumsdr
       character*4 part,mypart
       common/nproc/nproc
       common/part/part
@@ -96,6 +98,46 @@ c--- part and scale can be changed to make sure that the tota option works.
       mypart=part
       myscale=scale
       myfacscale=facscale
+      mynproc=nproc
+      mymb=mb
+
+c--- special process: 5FNS + 4FNS: initialization
+c---   for process 421 (426) we will actually run
+c---   process 411 (416) [5FNS] and then add on the result of process 401 (406) [4FNS]
+      if ((mynproc .eq. 421) .or. (mynproc .eq. 426)) then
+        nproc=mynproc-10
+	sumsig=0d0
+	sumsigr=0d0
+	sumsd=0d0
+	sumsdr=0d0
+      endif
+
+   77 continue     
+      if ((mynproc .eq. 421) .or. (mynproc .eq. 426)) then
+        mb=mymb
+	call chooser
+        reset=.true.
+        scalereset=.true.
+c--- special write-out/read-in for 5FNS + 4FNS process
+        if (first .eqv. .true.) then
+          readin=.false.
+          writeout=.true.
+	  if (nproc .ge. 411) then
+            outgridfile='dvegas_5FNS_'//part//'.grid'
+	  else
+            outgridfile='dvegas_4FNS_'//part//'.grid'
+	  endif 	 
+        else
+          readin=.true.
+          writeout=.false.
+	  if (nproc .ge. 411) then
+            ingridfile='dvegas_5FNS_'//part//'.grid'
+	  else
+            ingridfile='dvegas_4FNS_'//part//'.grid'
+	  endif 	 
+        endif
+      endif
+      
       
 c--- Basic lowest-order integration
       if (part .eq. 'lord') then
@@ -133,7 +175,7 @@ c-- special input name for virtual grid
           endif
         endif
       endif        
-      
+
 c--- Virtual integration should have one extra dimension
 c--- (added and then taken away)
       if (  (mypart .eq. 'virt') .or. (mypart .eq. 'tota')
@@ -317,6 +359,26 @@ c         write(6,*) 'Adjusting number of points for frag to',ncall
 	 rescale=.false. 	! turn rescaling off again
       endif
 
+c--- special process: 5FNS + 4FNS: initialization
+c---   for process 421 (426) we will actually run
+c---   process 411 (416) [5FNS] and then add on the result of process 401 (406) [4FNS]
+      if ((mynproc .eq. 421) .or. (mynproc .eq. 426)) then 
+        sumsig=sumsig+sig
+        sumsigr=sumsigr+sigr
+        sumsd=sumsd+sd**2
+        sumsdr=sumsdr+sdr**2
+        if (nproc .ge. 411) then
+          nproc=nproc-10
+	  goto 77
+	endif
+c--- return nproc to the value from the input file
+        nproc=mynproc	 
+	sig=sumsig
+	sigr=sumsigr
+	sd=dsqrt(sumsd)
+	sdr=dsqrt(sumsdr)
+      endif
+      
 c--- calculate integration variables to be returned
       xinteg=sig+sigr+sigdk+sigfrag
       xerr=dsqrt(sd**2+sdr**2+sddk**2+sdfrag**2)      

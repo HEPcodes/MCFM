@@ -25,6 +25,8 @@
         jetlabel_to_stdhep=+5
       elseif (label .eq. 'ba') then
         jetlabel_to_stdhep=-5
+      elseif (label .eq. 'pp') then
+        jetlabel_to_stdhep=21	! Use gluon label for any jet
       elseif (label .eq. 'ga') then
         jetlabel_to_stdhep=22
       elseif (label .eq. 'ig') then

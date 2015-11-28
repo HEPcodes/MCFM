@@ -173,7 +173,7 @@ c---  final - final
       
 
       return 
-      end subroutine
+      end
 
       double precision function pdotp(p1,p2)
       implicit none

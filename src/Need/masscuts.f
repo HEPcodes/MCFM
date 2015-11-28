@@ -19,6 +19,12 @@ c--- do not allow a cut on m56 for W/Z+gamma processes
 	bbsqmax=81d8
       endif
 
+c--- do not allow a cut on m34 for direct photon process
+      if (case .eq. 'dirgam') then
+        wsqmin=0d0
+	wsqmax=81d8
+      endif
+
 !---- do not allow cuts on m34 if doing gamma gamma (will be done elsewhere) 
       if(case .eq. 'gamgam') then 
          return 
@@ -41,7 +47,8 @@ c--- do not allow a cut on m56 for W/Z+gamma processes
       
       if ((s34 .lt. wsqmin) .or. (s34 .gt. wsqmax)) return 1
       
-      if ((npart .gt. 3) .and. (nqcdjets .lt. 2)) then
+c--- only apply cuts on s56 if vectors 5 and 6 are defined
+      if ((abs(p(5,4)) .gt. 1d-8) .and. (abs(p(6,4)) .gt. 1d-8)) then
         s56=+(p(5,4)+p(6,4))**2-(p(5,1)+p(6,1))**2
      .      -(p(5,2)+p(6,2))**2-(p(5,3)+p(6,3))**2
         if ((s56 .lt. bbsqmin) .or. (s56 .gt. bbsqmax)) return 1

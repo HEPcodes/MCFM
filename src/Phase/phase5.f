@@ -31,7 +31,11 @@ c---- with all 2 pi's (ie 1/(2*pi)^11)
 c--- In the case of HVV_4l, we should generate s127 according to
 c--- a Breit-Wigner at mH, otherwise just linearly      
       if (  (case .eq. 'HWW_4l') 
+     . .or. (case .eq. 'HWW_tb')
+     . .or. (case .eq. 'HWWint')
      . .or. (case .eq. 'HZZ_4l')
+     . .or. (case .eq. 'HZZ_tb')
+     . .or. (case .eq. 'HZZint')
      . .or. (case .eq. 'HWWjet')
      . .or. (case .eq. 'HZZjet')
      . ) then
@@ -45,7 +49,8 @@ c--- a Breit-Wigner at mH, otherwise just linearly
       call phi1_2(r(1),r(2),r(3),r(4),p127,p56,p34,wt3456,*99)
 
       if (   (case .eq. 'Wbbjet') .or. (case .eq. 'Wbbjem')
-     .  .or. ((case .eq. 'Wbbmas') .and. (flav .eq. 5)) ) then
+     .  .or. ((case .eq. 'Wbbmas') .and. (flav .eq. 5))  
+     .  .or. ((case .eq. 'W_bjet') .and. (mb .gt. 0d0)) ) then
         call phi3m(r(5),r(6),p56,p5,p6,mb,mb,wt56,*99)
       elseif ((case .eq. 'Wbbmas') .and. (flav .eq. 4)) then
         call phi3m(r(5),r(6),p56,p5,p6,mc,mc,wt56,*99)

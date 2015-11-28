@@ -22,7 +22,8 @@
      & xmsq,xmsqjk,W,msq(-nf:nf,-nf:nf),fx1(-nf:nf),fx2(-nf:nf),
      & ran2,msqdips(-nf:nf,-nf:nf)
       logical bin,first,includedipole,creatent,dswhisto
-      external qqb_w_g,qqb_z1jet,qqb_dirgam
+      external qqb_w_g,qqb_z1jet,qqb_dirgam,qqb_2jnogg
+      external qqb_2j_t,qqb_2j_s
       common/density/ih1,ih2
       common/energy/sqrts
       common/bin/bin
@@ -32,7 +33,7 @@
       common/outputflags/creatent,dswhisto
       data first/.true./
       save first,rscalestart,fscalestart
-
+      
       if (first) then
          first=.false.
          rscalestart=scale
@@ -60,7 +61,14 @@ c---  processes that use "gen3jet"
          call gen2jet(r,p,pswt,*999)        
          z_frag=r(5) 
          frag=.true. 
-        
+
+      elseif( (case .eq. 'dirgam')) then 
+         npart=2
+         call gen2jet(r,p,pswt,*999)        
+         z_frag=r(5) 
+         frag=.true. 
+
+
       else
         write(6,*) 'Fragmentation PS not available for this process.'
 	write(6,*) 'case = ',case
@@ -72,8 +80,8 @@ c--------------------------------- PHASE SPACE CUTS ---------------------------
       nvec=npart+2
       call dotem(nvec,p,s)
       
-c---impose cuts on final state
-      call masscuts(p,*999)
+c--- (moved to includedipole) impose cuts on final state
+c      call masscuts(p,*999)
 
 c----reject event if any s(i,j) is too small
       call smalls(s,npart,*999)                                             
@@ -87,8 +95,12 @@ c--- bother calculating the matrix elements for it, instead bail out
 c--- cut on z_frag      
       if((z_frag .lt. 0.0001d0) .or. (z_frag .gt. 1d0)) goto 999
        
-      if (dynamicscale) call scaleset(rscalestart,fscalestart,p)
-      
+      if (dynamicscale) then 
+         call rescale_pjet(p)
+         call scaleset(rscalestart,fscalestart,p)
+         call return_pjet(p) 
+      endif
+
       xx(1)=-2d0*p(1,4)/sqrts
       xx(2)=-2d0*p(2,4)/sqrts
 
@@ -106,6 +118,9 @@ c-------------------------- CALCULATE MATRIX ELEMENTS --------------------------
       elseif (case .eq. 'gamgam') then 
         call qqb_gamgam_fragdips(p,qqb_dirgam,msqdips)     
         call qqb_gamgam_singfrag(p,msq)
+      elseif (case .eq. 'dirgam') then 
+         call qqb_dirgam_fragdips(p,qqb_2j_t,qqb_2j_s,msqdips)
+         call qqb_dirgam_frag(p,msq)
       else
         write(6,*) 'Fragmentation MEs not available for this process.'
 	write(6,*) 'case = ',case
@@ -139,6 +154,9 @@ c--- calculate PDF's
       do j=-nflav,nflav
       do k=-nflav,nflav    
       
+     
+
+
       if (ggonly) then
       if ((j.ne.0) .or. (k.ne.0)) goto 20
       endif
@@ -149,6 +167,10 @@ c--- calculate PDF's
       
       if (noglue) then 
       if ((j.eq.0) .or. (k.eq.0)) goto 20
+      endif
+
+      if (omitgg) then 
+      if ((j.eq.0) .and. (k.eq.0)) goto 20
       endif
 
 c--- sum of fragmentation contribution and integrated fragmentation dipoles

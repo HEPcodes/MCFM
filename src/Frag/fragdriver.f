@@ -41,8 +41,6 @@ c---- Non Perturbative part
 
 c---- reset parton id 
       parton_id=100
-c---- DEBUG Turn off NP part
-      NP_part=0d0
 c---- Output      
       frag_func=pert_part+NP_part 
   

@@ -56,7 +56,8 @@ c      s2max=min(s1,bbsqmax)
       if (((case .eq. 'Wbbmas') .and. (flav .eq. 5))
      ..or. (case .eq. 'Zbbmas')
      ..or.(case .eq. 'Zccmas') .or. (case .eq. 'vlchkm')
-     ..or.(case .eq. 'Wbbjet') .or. (case .eq. 'Wbbjem')) then
+     ..or.(case .eq. 'Wbbjet') .or. (case .eq. 'Wbbjem')
+     ..or.(case .eq. 'W_bjet') ) then
         s2min=4d0*mb**2
       elseif ((case .eq. 'Wbbmas') .and. (flav .eq. 4)) then
         s2min=4d0*mc**2

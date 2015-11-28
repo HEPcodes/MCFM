@@ -17,6 +17,8 @@ c---- routine frixione.f C Williams 9th Nov 2010
 
       passed=.true.
       
+     
+
 c--- This routine also called for 'gamjet' -> always need second branch
       if ( ((part .eq. 'lord') .or. (part .eq. 'virt')
      &.or. (isub .eq. 1)) .and. (case .eq. 'dirgam') ) then
@@ -81,19 +83,7 @@ c	   if (passed) passed=in_cone(maxR,ET4+ET5,alpha)
       
       
 
-      double precision function ret_ET(p,j) 
-      implicit none 
-      include 'constants.f' 
-      double precision p(mxpart,4)
-      integer j 
-      double precision ptsq
-      
-      ptsq=p(j,1)**2+p(j,2)**2
-      
-      ret_ET=p(j,4)*dsqrt(ptsq)/(dsqrt(ptsq+p(j,3)**2))
-      
-      return 
-      end
+  
       
       logical function in_cone(Rij,Ejet,pref)
       implicit none

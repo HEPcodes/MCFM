@@ -6,7 +6,6 @@ c--- This routine just applies the appropriate interchange to get from
 c---  the mm amplitude to the pp one, namely 1<->4, 2<->3, 5<->6
 
       implicit none
-      include 'constants.f'
       include 'Wbbmlabels.f'
       integer k1,k2,k3,k4,k5,k6
       double complex ampALC(2,2)

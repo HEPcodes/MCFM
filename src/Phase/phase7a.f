@@ -22,8 +22,9 @@ c---- with all 2 pi's (ie 1/(2*pi)^17)
       parameter(wt0=1d0/twopi**5)
 
 c--- written for real contribution to qq->H(->WW)+qq only
-      if  ((case .eq. 'qq_HWW') .or. (case .eq. 'HWW2jt')
-     ..or. (case .eq. 'HZZ2jt') .or. (case .eq. 'WpWp3j')) then
+      if  ((case .eq. 'qq_HWW') .or. (case .eq. 'qq_HZZ')
+     ..or. (case .eq. 'HWW2jt') .or. (case .eq. 'HZZ2jt')
+     ..or. (case .eq. 'WpWp3j')) then
         continue
       else 
         write(6,*) 'Phase space routine not correct - needs updating.'
@@ -55,14 +56,14 @@ c--- to a Breit-Wigner at mH
 
       call phi1_2(r(1),r(2),r(3),r(4),p12,p3456,p789,wt12,*99)
 
-      if     (case .eq. 'HWW2jt') then
+      if     ((case .eq. 'HWW2jt') .or. (case .eq. 'qq_HWW')) then
         n2=1
         mass2=wmass
         width2=wwidth
         n3=1
         mass3=wmass
         width3=wwidth
-      elseif (case .eq. 'HZZ2jt') then
+      elseif ((case .eq. 'HZZ2jt') .or. (case .eq. 'qq_HZZ')) then
         n2=1
         mass2=zmass
         width2=zwidth

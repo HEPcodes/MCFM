@@ -42,18 +42,18 @@
       enddo
       
 c--- veto this contribution if we're doing the subtraction and pt(b~)>25 GeV
-      if (runstring(1:3) .eq. 'sub') then
-        if (dsqrt(p(8,1)**2+p(8,2)**2) .gt. 60d0) then
-c          return
-        endif
-      endif
+c      if (runstring(1:3) .eq. 'sub') then
+c        if (dsqrt(p(8,1)**2+p(8,2)**2) .gt. 60d0) then
+cc          return
+c        endif
+c      endif
       
 c--- variable to determine whether or not to subtract tt contribution      
       ttsubtract=.false.
-      if (runstring(1:3) .eq. 'sub') then
-        ttsubtract=.true.
-        nearmt=.false.
-      else
+c      if (runstring(1:3) .eq. 'sub') then
+c        ttsubtract=.true.
+c        nearmt=.false.
+c      else
 c--- first check the invariant mass of the W and the potential b-jet,
 c--- if it's close to the top mass then the contribution from
 c--- gg and qqb initial states should be zero
@@ -64,7 +64,7 @@ c--- gg and qqb initial states should be zero
         else
           nearmt=.false.
         endif
-      endif
+c      endif
       
       fac=gsq**2*gwsq**4
 

@@ -4,7 +4,6 @@ c---  (q1, Qb2, Q3, qb4)
 
 c--- This routine makes use of the identity B(1,2,3,4)=-A(1,3,2,4) 
       implicit none
-      include 'constants.f'
       include 'Wbbmlabels.f'
       integer k1,k2,k3,k4,k5,k6      
       double complex ampBLC(2,2),coefftmp(0:4,20)

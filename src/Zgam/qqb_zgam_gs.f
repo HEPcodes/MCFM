@@ -30,7 +30,6 @@ c     q(-p1)+qbar(-p2) -->  e-(p3)+e+(p4))+a(p5)+g(p6)
          phot_dip(j)=.false.
       enddo
 
-
 c---- calculate both initial-initial dipoles
 c---- note that we do not require the gg dipoles, so the v-type
 c---- entries are left as dummies
@@ -67,15 +66,10 @@ c---- entries are left as dummies
             msq(3,j,k)=Q(j)**2*sub56_1*msq56_1(j,k) 
          endif
       elseif ((j .eq. 0) .and. (k .ne. 0)) then
-         msq(1,j,k)=2d0*tr*sub16_2(qg)*msq16_2(-k,k)
-         
+         msq(1,j,k)=2d0*tr*sub16_2(qg)*msq16_2(-k,k)         
          if(frag) then 
             msq(4,j,k)=Q(k)**2*sub56_2*msq56_2(j,k) 
          endif
-         
-     
-    
-
          
       endif
  20   continue

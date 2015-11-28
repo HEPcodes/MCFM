@@ -11,9 +11,14 @@ c--- For itno>0, this is an intermediate result only
       include 'verbose.f'
       include 'PDFerrors.f'
       include 'histo.f'
+      include 'outputoptions.f'
       include 'vanillafiles.f'
       integer j,nlength,itno,itmx,nplotmax,nempty
       character*255 runname,outfiledat,outfiletop,outfileerr
+c--F  Add gnuplot output and root output
+      character*255, outfilegnuplot, outfileps
+      character*255, outfileroot, outfilerootC
+c--F
       character*3 oldbook
       character mop
       double precision xsec,xsec_err,scalefac,itscale
@@ -25,7 +30,6 @@ c--- For itno>0, this is an intermediate result only
       common/nplotmax/nplotmax
       COMMON/EHISTO/EHIST,IHISTOMATCH,ICOUNTHISTO
       common/scaleplots/scalefac,scaleplots
-      
       
       if (itno .eq. 0) then
       write(6,*)
@@ -49,20 +53,64 @@ c--- For itno>0, this is an intermediate result only
 
       outfiledat=runname
       outfiletop=runname
+      outfilegnuplot=runname
+      outfileps=runname
+      outfileroot=runname
+      outfilerootC=runname
       outfileerr=runname
       outfiledat(nlength+1:nlength+4)='.dat'
       outfiletop(nlength+1:nlength+4)='.top'
+      outfilegnuplot(nlength+1:nlength+4)='.gnu'
+      outfileps(nlength+1:nlength+3)='.ps'
+      outfileroot(nlength+1:nlength+5)='.root'
+      outfilerootC(nlength+1:nlength+2)='.C'
       outfileerr(nlength+1:nlength+10)='_error.top'
+      
 
       if ((PDFerrors) .and. (ICOUNTHISTO .gt. 0)) then
-        open(unit=97,file=outfileerr,status='unknown')
+        open(unit=95,file=outfileerr,status='unknown')
       endif
-      open(unit=98,file=outfiledat,status='unknown')
+
+      if (writedat) then
+        open(unit=98,file=outfiledat,status='unknown')
+      endif
+      if (writetop) then
       open(unit=99,file=outfiletop,status='unknown')
+      endif
+      if (writegnu) then
+      open(unit=97, file=outfilegnuplot,status='unknown')
+      endif
+      if (writeroot) then
+      open(unit=96, file=outfilerootC, status='unknown')
+      endif
       
 c--- write out run info to top of files
-      call writeinfo(98,xsec,xsec_err,itno)      
-      call writeinfo(99,xsec,xsec_err,itno)      
+      if (writedat) then
+      call writeinfo(98,' (',xsec,xsec_err,itno)      
+      endif
+      if (writetop) then
+      call writeinfo(99,' (',xsec,xsec_err,itno)      
+      endif
+      if (writegnu) then
+      call writeinfo(97,'# ',xsec,xsec_err,itno) 
+      write(97,120) outfileps(1:nlength+3)
+      endif
+      if (writeroot) then
+      call writeinfo(96,'//',xsec,xsec_err,itno) 
+      write(96,121) outfileroot(1:nlength+5)
+      endif
+
+  120 FORMAT (/1x,
+     & ' set terminal postscript col enhanced', /1x,
+     & ' set output "', A, '"', /1X,
+     & ' set style data points', /1X,
+     & ' set key off')
+  121 FORMAT (/1x,
+     & ' {', /1x,
+     & ' mcfmhisto = new TFile("', A, '", "recreate");',/1x,
+     & ' mcfmhisto -> cd();',/1x,
+     & ' histos = new TObjArray(0);',/1x)
+
 
 c--- make sure to scale results by the maximum number of iterations
       if (itno .eq. 0) then
@@ -101,24 +149,48 @@ c--- ensure that MFINAL doesn't turn off booking for intermediate results
 c        write(6,*) 'Writing .dat for plot ',j
         call flush(6)
       endif
-      call mprint(j,2*maxhisto+j)
+      if (writedat) then
+        call mprint(j,2*maxhisto+j)
+      endif
 c      if (book(j) .ne. 'YES') nempty=nempty+1
       enddo
-      close (unit=98)
+      
+      if (writedat) close(unit=98)
 
 c---generate topdrawer file - only for non-empty plots
+c--F also gnuplot files
       do j=1,nplotmax-nempty
       if (verbose) then
 c        write(6,*) 'Writing .top for plot ',j
         call flush(6)
       endif
-      call mtop(j,2*maxhisto+j,'x','y',linlog(j))
+      if (writetop) then
+        call mtop(j,2*maxhisto+j,'x','y',linlog(j))
+      endif
+      if (writegnu) then
+        call mgnuplot(j,2*maxhisto+j,'x','y',linlog(j))
+      endif
+      if (writeroot) then
+        call mrootplot(j,2*maxhisto+j,'x','y')
+      endif
       if ((PDFerrors) .and. (IHISTOMATCH(j) .ne. 0)) then
         call emtop(j,2*maxhisto,'x','y',linlog(j))
       endif
       enddo
-      close (unit=99)
+      if (writetop) close(unit=99)
+      if (writegnu) close(unit=97)
 
+      if (writeroot) then
+c--F  closing statements for root file
+        write(96,*) ' mcfmhisto -> cd();'
+        write(96,*) ' if (histos -> GetEntries() > 0 ) then  {'
+        write(96,*) '  histos->Write();'
+        write(96,*) '  mcfmhisto -> Close();'
+        write(96,*) ' }'
+        write(96,*) '}'
+        close(unit=96)
+      endif
+      
 c---generate error file
       if ((PDFerrors) .and. (ICOUNTHISTO .gt. 0)) then
         do j=1,nplotmax
@@ -130,7 +202,7 @@ c              write(6,*) 'Writing .top for plot ',j
             call etop(j,2*maxhisto,'x','y',linlog(j))
           endif
         enddo
-        close (unit=97)
+        close (unit=95)
       endif
       
       return

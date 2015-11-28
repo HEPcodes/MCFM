@@ -52,13 +52,14 @@ cz //
       logical bin,first,failed
       logical incldip(0:maxd),includedipole,includereal
       logical creatent,dswhisto
-      logical QandGflag
       double precision QandGint
       character*30 runstring
       common/runstring/runstring
       external qqb_w2jet_g,qqb_w2jet_gs,qqb_z2jet_g,qqb_z2jet_gs,
      . qqb_w2jet,qqb_w1jet_gs,qqb_z2jet,qqb_z1jet_gs,qqb_Hg_g,qqb_Hg_gs,
      . qqb_hww_g,qqb_hww_gs,qqb_zbb_g,qqb_zbb_gs,
+     . qqb_wh_ww,qqb_wh_ww_gs,
+     . qqb_wh_zz,qqb_wh_zz_gs,
      . qqb_wbb_g,qqb_wbb_gs,
      . qqb_dirgam_g,qqb_dirgam_gs,
      . qqb_w_g,qqb_w_gs,qqb_z1jet,qqb_z_gs,qqb_ww_g,qqb_ww_gs,
@@ -152,9 +153,17 @@ c--- processes that use "gen3m"
         m5=0d0
         npart=3
         call gen3m(vector,p,m3,m4,m5,pswt,*999)
+
       elseif ((case .eq. 'twojet') .or. (case .eq. 'dirgam')) then
         npart=3
-        call gen3jet(vector,p,pswt,*999)
+        if(frag) then
+c---       this phase space does a better job for the photons
+           call gen_photons_jets(vector,1,2,p,pswt,*999)
+        else
+c---       this phase space does a better job for the jets 
+           call gen3jet(vector,p,pswt,*999)
+        endif
+
 
 c--- processes that use "gen4"     
       elseif ( (case .eq. 'W_cjet')
@@ -186,8 +195,11 @@ c--- processes that use "gen6"
 c--- processes that use "gen7"     
       elseif ( 
      .      (case .eq. 'qq_HWW')
+     . .or. (case .eq. 'qq_HZZ')
      . .or. (case .eq. 'WH__WW')
+     . .or. (case .eq. 'WH__ZZ')
      . .or. (case .eq. 'ZH__WW')
+     . .or. (case .eq. 'ZH__ZZ')
      . .or. (case .eq. 'HWW2jt')
      . .or. (case .eq. 'HZZ2jt')
      . ) then
@@ -211,6 +223,7 @@ c--- processes that use "gen_njets" with an argument of "2"
      .    .or. (case .eq. 'Z_1jet')
      .    .or. (case .eq. 'H_1jet')
      .    .or. (case .eq. 'ggfus1')
+     .    .or. (case .eq. 'Hgagaj')
      .    .or. (case .eq. 'gQ__ZQ') ) then
         npart=4
         if (new_pspace) then
@@ -227,6 +240,7 @@ c--- processes that use "gen_njets" with an argument of "3"
      .    .or. (case .eq. 'W_bjet')
      .    .or. (case .eq. 'Z_bjet')
      .    .or. (case .eq. 'qq_Hqq')
+     .    .or. (case .eq. 'qq_Hgg')
      .    .or. (case .eq. 'ggfus2') ) then
         npart=5
         call gen_njets(vector,3,p,pswt,*999) 
@@ -262,8 +276,9 @@ c--- DEFAULT: processes that use "gen5"
       nvec=npart+2
       call dotem(nvec,p,s)
       
-c---impose cuts on final state
-      call masscuts(p,*999)
+c--- (moved to includedipole) impose cuts on final state
+c      call masscuts(p,*999)
+
 c----reject event if any s(i,j) is too small
       call smalls(s,npart,*999)
      
@@ -295,6 +310,20 @@ c--- bother calculating the matrix elements for it, instead set to zero
       enddo
       enddo
       
+c--- test to see whether we need Gflag and Qflag together
+      if ( ((case .eq. 'W_2jet') .or. (case .eq. 'Z_2jet'))
+     &.and. (Qflag) .and. (Gflag) ) then
+        QandGflag=.true.
+	QandGint=0d0
+c--- first pass: Gflag
+        Gflag=.true.
+	Qflag=.false.
+      endif
+      
+c--- restart from here when calculating with Qflag and Gflag
+c--- (W+2 jet and Z+2 jet processes only)
+   44 continue      
+      
       if (dynamicscale) then
         call scaleset(rscalestart,fscalestart,p)
 	dipscale(0)=facscale
@@ -315,20 +344,6 @@ c----calculate the x's for the incoming partons from generated momenta
          return
       endif
 
-c--- test to see whether we need Gflag and Qflag together
-      if ( ((case .eq. 'W_2jet') .or. (case .eq. 'Z_2jet'))
-     &.and. (Qflag) .and. (Gflag) ) then
-        QandGflag=.true.
-	QandGint=0d0
-c--- first pass: Gflag
-        Gflag=.true.
-	Qflag=.false.
-      endif
-      
-c--- restart from here when calculating with Qflag and Gflag
-c--- (W+2 jet and Z+2 jet processes only)
-   44 continue      
-      
 c--- Calculate the required matrix elements      
       if     (case .eq. 'W_only') then
 c        call singcheck(qqb_w_g,qqb_w_gs,p)         ! Checked 11/30/01
@@ -401,11 +416,31 @@ c        call singcheck(qqb_wh_g,qqb_wh_gs,p)
       elseif (case .eq. 'WH__WW') then
 c        call singcheck(qqb_wh_ww_g,qqb_wh_ww_gs,p)
         if (includereal) call qqb_wh_ww_g(p,msq)      
-        call qqb_wh_ww_gs(p,msqc)     
+        call qqb_wh_ww_gs(p,msqc)
+      elseif (case .eq. 'WH__ZZ') then
+c        call singcheck(qqb_wh_zz_g,qqb_wh_zz_gs,p)
+        if (includereal) call qqb_wh_zz_g(p,msq)      
+        call qqb_wh_zz_gs(p,msqc)   
+      elseif (case .eq. 'WHgaga') then
+c        call singcheck(qqb_wh_gaga_g,qqb_wh_gaga_gs,p)
+        if (includereal) call qqb_wh_gaga_g(p,msq)      
+        call qqb_wh_gaga_gs(p,msqc) 
       elseif (case .eq. 'ZHbbar') then
 c        call singcheck(qqb_zh_g,qqb_zh_gs,p)
         if (includereal) call qqb_zh_g(p,msq)      
         call qqb_zh_gs(p,msqc)     
+      elseif (case .eq. 'ZHgaga') then
+c        call singcheck(qqb_zh_gaga_g,qqb_zh_gaga_gs,p)
+        if (includereal) call qqb_zh_gaga_g(p,msq)      
+        call qqb_zh_gaga_gs(p,msqc)     
+      elseif (case .eq. 'ZH__WW') then
+c        call singcheck(qqb_zh_ww_g,qqb_zh_ww_gs,p)
+        if (includereal) call qqb_zh_ww_g(p,msq)      
+        call qqb_zh_ww_gs(p,msqc)     
+      elseif (case .eq. 'ZH__ZZ') then
+c        call singcheck(qqb_zh_zz_g,qqb_zh_zz_gs,p)
+        if (includereal) call qqb_zh_zz_g(p,msq)      
+        call qqb_zh_zz_gs(p,msqc)     
       elseif (case .eq. 'dirgam') then
 c        call compare_madgraph(p,qqb_dirgam_g,qqb_dirgam_g_mad)
 
@@ -426,10 +461,6 @@ c        if (includereal) call singcheck(qqb_gamgam_g,qqb_gamgam_gs,p)
         call qqb_gamgam_gs(p,msqc)
 c	write(6,*) 'msq',msq
 c	pause
-      elseif (case .eq. 'ZH__WW') then
-c        call singcheck(qqb_zh_ww_g,qqb_zh_ww_gs,p)
-        if (includereal) call qqb_zh_ww_g(p,msq)      
-        call qqb_zh_ww_gs(p,msqc)     
        elseif (case .eq. 'ggfus0') then
 c         call singcheck(gg_hg,gg_h_gs,p)       ! Checked 28/02/03
          if (includereal) call gg_hg(p,msq)
@@ -492,6 +523,10 @@ c        call singcheck(qqb_w_twdk_gdk,qqb_w_twdk_gsdk,p)	! Checked 2/2/05
 c        call singcheck(gg_hgg,gg_hg_gs,p)
         if (includereal) call gg_hgg(p,msq)
         call gg_hg_gs(p,msqc)
+      elseif (case .eq. 'Hgagaj') then
+c        call singcheck(gg_hgagagg,gg_hgagag_gs,p)
+        if (includereal) call gg_hgagagg(p,msq)
+        call gg_hgagag_gs(p,msqc)
       elseif (case .eq. 'HWWjet') then
 c        call singcheck(gg_hWWgg,gg_hWWg_gs,p)
         if (includereal) call gg_hWWgg(p,msq)
@@ -514,10 +549,18 @@ c	pause
 c        call singcheck(VV_Hqq_g,VV_Hqq_gs,p)
         if (includereal) call VV_Hqq_g(p,msq)
         call VV_Hqq_gs(p,msqc)
+      elseif (case .eq. 'qq_Hgg') then
+c        call singcheck(VV_Hgaga_g,VV_Hgaga_gs,p)
+        if (includereal) call VV_Hgaga_g(p,msq)
+        call VV_Hgaga_gs(p,msqc)
       elseif (case .eq. 'qq_HWW') then
 c        call singcheck(VV_HWW_g,VV_HWW_gs,p)
         if (includereal) call VV_HWW_g(p,msq)
         call VV_HWW_gs(p,msqc)
+      elseif (case .eq. 'qq_HZZ') then
+c        call singcheck(VV_HZZ_g,VV_HZZ_gs,p)
+        if (includereal) call VV_HZZ_g(p,msq)
+        call VV_HZZ_gs(p,msqc)
       elseif (case .eq. 'ggfus2') then
 c        call singcheck(gg_hggg,gg_hgg_gs,p)		! Checked 10/29/09
         if (includereal) call gg_hggg(p,msq)
@@ -542,6 +585,10 @@ c        call singcheck(gQ_zQ_g,gQ_zQ_gs,p)
 c        call singcheck(qqb_zbjet_g,qqb_zbjet_gs,p)	! Checked 07/18/05
         if (includereal) call qqb_zbjet_g(p,msq)
         call qqb_zbjet_gs(p,msqc)
+      elseif (case .eq. 'W_bjet') then
+c        call singcheck(qqb_wbjet_g,qqb_wbjet_gs,p) ! Rechecked 14/3/08
+        if (includereal) call qqb_wbjet_g(p,msq)
+        call qqb_wbjet_gs(p,msqc)
       elseif (case .eq. 'Wcsbar') then
 c        call singcheck(qqb_w_g,qqb_w_gs,p)         ! Checked 11/30/01
         if (includereal) call qqb_w_g(p,msq)      
@@ -568,9 +615,9 @@ cz //
             
       flux=fbGeV2/(two*xx1*xx2*W)
 c--- for mlm study, divide by (Ecm)**2=W
-      if (runstring(1:3) .eq. 'mlm') then
-	flux=flux/W
-      endif
+c      if (runstring(1:3) .eq. 'mlm') then
+c	flux=flux/W
+c      endif
 
 c--- initialize a PDF set here, if calculating errors
   777 continue    
@@ -623,24 +670,24 @@ c--- for single top + b, make sure to use two different scales
 	  enddo
         else
 c--- for comparison with C. Oleari's e+e- --> QQbg calculation
-            if (runstring(1:5) .eq. 'carlo') then
-            flux=1d0/2d0/W/(as/twopi)**2
+c            if (runstring(1:5) .eq. 'carlo') then
+c            flux=1d0/2d0/W/(as/twopi)**2
 c--- divide out by (ason2pi) and then the "LO" massless DY process
-	    flux=flux/(aveqq*xn*fourpi*(gwsq/fourpi)**2/3d0/sqrts**2)
-  	    flux=flux/(xn/8d0)
-	    do j=-nf,nf
-	    fx1(j)=0d0
-	    fx2(j)=0d0
-	    enddo
-	    fx1(0)=1d0
-	    fx1(1)=1d0
-	    fx2(0)=1d0
-	    fx2(1)=1d0
-          else   
+c	    flux=flux/(aveqq*xn*fourpi*(gwsq/fourpi)**2/3d0/sqrts**2)
+c  	    flux=flux/(xn/8d0)
+c	    do j=-nf,nf
+c	    fx1(j)=0d0
+c	    fx2(j)=0d0
+c	    enddo
+c	    fx1(0)=1d0
+c	    fx1(1)=1d0
+c	    fx2(0)=1d0
+c	    fx2(1)=1d0
+c          else   
 c--- usual case            
             call fdist(ih1,xx1,facscale,fx1)
             call fdist(ih2,xx2,facscale,fx2)
-	  endif
+c	  endif
         endif
       endif	
             
@@ -657,6 +704,10 @@ c--- usual case
       
       if (noglue) then 
       if ((j.eq.0) .or. (k.eq.0)) goto 20
+      endif
+
+      if (omitgg) then 
+      if ((j.eq.0) .and. (k.eq.0)) goto 20
       endif
 
       if ((case .eq. 'Wcsbar').and.(j .ne. 4).and.(k .ne. 4)) goto 20
@@ -885,7 +936,7 @@ c--- update the maximum weight so far, if necessary
       xreal=xreal+xint*wgt/dfloat(itmx)
       xreal2=xreal2+(xint*wgt)**2/dfloat(itmx)
       
-c--- handle special caase of Qflag and Gflag
+c--- handle special case of Qflag and Gflag
       if (QandGflag) then
         QandGint=QandGint+realint
         if ((Gflag) .and. (.not.(Qflag))) then

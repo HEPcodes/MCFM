@@ -47,6 +47,8 @@ c---  averaged(summed) over initial(final) colours and spins
 c      double complex Fa561243,Fa562143
       double precision v2(2),cl1,cl2,en1,en2,xfac
       double complex ZgL(-nf:nf),ZgR(-nf:nf)
+      character*2 plabel(mxpart)
+      common/plabel/plabel
       parameter(ave=0.25d0/xn)
       data cl1,cl2,en1,en2/4*1d0/
 
@@ -74,6 +76,12 @@ c      double complex Fa561243,Fa562143
       v2(2)=r1
       cotw=dsqrt((one-xw)/xw)
 
+c-- if Z -> neutrinos, we need to switch c1 and c2
+      if (plabel(5) .eq. 'nl') then
+        cl1=1d0-cl1
+        cl2=1d0-cl2
+      endif
+      
       do j=-nf,nf
       do k=-nf,nf
       msqv(j,k)=0d0

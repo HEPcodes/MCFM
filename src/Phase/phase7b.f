@@ -23,7 +23,10 @@ c---- with all 2 pi's (ie 1/(2*pi)^17)
       parameter(wt0=1d0/twopi**5)
 
 c--- written for real contribution to qq->WH(->WW)+g (and ZH) only
-      if ((case .ne. 'WH__WW') .and. (case .ne. 'ZH__WW')) then
+      if    ((case .ne. 'WH__WW')
+     & .and. (case .ne. 'ZH__WW')
+     & .and. (case .ne. 'WH__ZZ')
+     & .and. (case .ne. 'ZH__ZZ')) then
         write(6,*) 'Phase space routine not correct - needs updating.'
 	stop
       endif
@@ -42,17 +45,26 @@ c--- a Breit-Wigner at mH
       width3=hwidth
       n3=1
       call phi1_2(r(1),r(2),r(3),r(4),p12,p349,p5678,wt12,*99)
+      if  ((case .eq. 'WH__WW') .or. (case .eq. 'ZH__WW')) then
       n2=1
       mass2=wmass
       width2=wwidth
       n3=1
       mass3=wmass
       width3=wwidth
+      elseif ((case .eq. 'WH__ZZ') .or. (case .eq. 'ZH__ZZ')) then
+      n2=1
+      mass2=zmass
+      width2=zwidth
+      n3=1
+      mass3=zmass
+      width3=zwidth
+      endif
       call phi1_2(r(5),r(6),r(7),r(8),p5678,p56,p78,wt5678,*99)
       call phi3m0(r(11),r(12),p56,p5,p6,wt56,*99)
       call phi3m0(r(13),r(14),p78,p7,p8,wt78,*99)
       n3=1
-      if (case .eq. 'WH__WW') then
+      if ((case .eq. 'WH__WW') .or. (case .eq. 'WH__ZZ')) then
         mass3=wmass
         width3=wwidth
       else

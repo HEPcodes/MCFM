@@ -4,6 +4,7 @@ c--- performs H->WW search cuts along the lines of CDF Note 9887;
 c--- a point that fails the cuts returns passed=.false.
       implicit none
       include 'constants.f'
+      include 'masses.f'
       integer ilept(2),ile,ineut(2),inu,i,j,maxparts
       logical passed
       double precision pt,etarap,p(mxpart,4),etvec(2),
@@ -20,6 +21,7 @@ c--- size of cone for lepton isolation
       double precision Risol
 c--- fractional pt threshold for lepton isolation
       double precision threshisol
+      double precision mtmax,mtmin,mt45,m45,et_vec(4),etmiss,pttwo
       character*2 plabel(mxpart)
       common/plabel/plabel
       data trigpt,trigeta/20d0,0.8d0/
@@ -136,6 +138,33 @@ c--- CUT on missing Et
         passed=.false.
 	return
       endif
+
+! OPTIONAL mt cut 
+      m45=0d0
+      do i=1,4
+         if(i.ne.4) then 
+            m45=m45-(p(4,i)+p(5,i))**2
+         else
+            m45=m45+(p(4,i)+p(5,i))**2 
+         endif
+      enddo
+
+
+      mtmin=0d0*hmass
+      mtmax=hmass 
+      mt45=0d0 
+      mt45=(dsqrt(dsqrt(pttwo(4,5,p)**2+m45)+etmiss(p,et_vec))**2)
+!      write(6,*) mt45
+ !     mt45=dsqrt(max(0d0,dsqrt(mt45-ptsq))) 
+ !     write(6,*) mt45 
+ !     pause 
+!------ Mt cuts
+      if((mt45.lt.mtmin).or.(mt45.gt.mtmax)) then 
+         passed=.false. 
+         return 
+      endif
+
+
 
       return      
       end

@@ -21,10 +21,13 @@ c--- add temporay histograms to the cumulative ones
       include 'histo.f'
       double precision wgt
       integer nplotmax
+      logical added
       common/nplotmax/nplotmax
 
 c--- loop over plots      
       do I=1,nplotmax
+
+      added=.false.
 
       DO L=1,NBIN(I)
 
@@ -33,7 +36,7 @@ c--- add weights
 c--- add errors
       if (abs(wgt) .gt. 1d-15) then         ! for safety
       HIST(maxhisto+I,L)=HIST(maxhisto+I,L)
-     . + HIST(3*maxhisto+I,L)**2/wgt*HDEL(I)
+     . + HIST(3*maxhisto+I,L)**2*HDEL(I)/wgt
 c--- we want (f**2*wgt), so we do (f*wgt)**2/wgt ; the extra
 c--- factor of HDEL(I) is to account for the normalization by the
 c--- bin width (c.f. MFILL in mbook.f)
@@ -42,12 +45,27 @@ c--- bin width (c.f. MFILL in mbook.f)
 c--- count entries
       if (IHIS(3*maxhisto+I,L) .GT. 0) then
         IHIS(I,L)=IHIS(I,L)+1
-        IENT(I)=IENT(I)+1
         IHIS(maxhisto+I,L)=IHIS(maxhisto+I,L)+1
-        IENT(maxhisto+I)=IENT(maxhisto+I)+1
+	added=.true.
       endif
 
       ENDDO
+
+c--- if any bin has been filled, increment histogram counter
+      if (added) then
+        IENT(I)=IENT(I)+1
+        IENT(maxhisto+I)=IENT(maxhisto+I)+1
+c--- otherwise, increment out of bounds counters if necessary
+      else
+        if     (IUSCORE(3*maxhisto+I) .GT. 0) then
+          IUSCORE(I)=IUSCORE(I)+1      
+          IUSCORE(maxhisto+I)=IUSCORE(maxhisto+I)+1      
+        elseif (IOSCORE(3*maxhisto+I) .GT. 0) then
+          IOSCORE(I)=IOSCORE(I)+1      
+          IOSCORE(maxhisto+I)=IOSCORE(maxhisto+I)+1
+	endif
+      endif
+      
       
       enddo
       

@@ -96,7 +96,7 @@ c   for the moment --- radiation only from initial line
       s23=s(j2,j3)
       s123=s12+s13+s23
 c---calculate the 2 Z propagators
-      prop=       ((s123-zmass**2)**2+(zmass*zwidth)**2)
+      prop=         ((s123-zmass**2)**2+(zmass*zwidth)**2)
       prop=prop*((s(j6,j7)-zmass**2)**2+(zmass*zwidth)**2)
 
       fac=8d0*cf*xn*(xw/(1d0-xw))**2*gsq*gwsq**3*wmass**2/prop

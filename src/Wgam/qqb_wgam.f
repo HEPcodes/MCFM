@@ -1,5 +1,7 @@
       subroutine qqb_wgam(p,msq)
       implicit none
+C-----Author Keith Ellis, September 2002
+C----- updated: John Campbell, August 2011 (anomalous couplings)
 c----Matrix element for W gam production
 C----averaged over initial colours and spins
 C For nwz=+1
@@ -26,7 +28,6 @@ c--set msq=0 to initalize
       call spinoru(5,p,za,zb)
       fac=aveqq*2d0*xn*gwsq**2*esq
 
-    
       if (nwz .eq. -1) then 
          qbq=fac*(abs(agamtree(1,2,3,4,5,za,zb,-1))**2
      .           +abs(agamtree(1,2,3,4,5,za,zb,+1))**2)
@@ -62,37 +63,55 @@ c--set msq=0 to initalize
       include 'sprods_com.f'
       include 'masses.f'
       include 'zerowidth.f'
+      include 'anomcoup.f'
+      double precision xfac
       double complex prp12,prp34
       integer p1,p2,p3,p4,p5,hgamma
-C  -i * Matrix element is what is implemented 
-      prp12=s(p1,p2)/dcmplx((s(p1,p2)-wmass**2),wmass*wwidth)
       prp34=s(p3,p4)/dcmplx((s(p3,p4)-wmass**2),wmass*wwidth)
 
+c--- apply a dipole form factor to anomalous couplings, with power two
+      xfac=1d0/(1d0+s(p1,p2)/(tevscale*1d3)**2)**2
+      xdelk_g=xfac*delk_g
+      xlambda_g=xfac*lambda_g
+      
       if (zerowidth) then
-         if (hgamma .eq. -1) then
-         agamtree=Qu*za(p2,p5)/zb(p1,p5)*prp34
-     .           +Qd*za(p1,p5)/zb(p2,p5)*prp34
-         agamtree=-zb(p2,p4)**2*agamtree/(zb(p4,p3)*(s(p1,p2)-s(p3,p4)))
-         elseif (hgamma .eq. +1) then
-         agamtree=Qu*zb(p2,p5)/za(p1,p5)*prp34
-     .           +Qd*zb(p1,p5)/za(p2,p5)*prp34
-         agamtree=+agamtree*za(p1,p3)**2/(za(p4,p3)*(s(p1,p2)-s(p3,p4)))
-         endif
-         return
+c--- zerowidth: no final state radiation, so we can set prp12 to zero
+        prp12=czip
       else
-         if (hgamma .eq. -1) then
-         agamtree=Qu*za(p2,p5)/(zb(p4,p3)*zb(p1,p5))*prp34
-     .     +Qd*za(p1,p5)/(zb(p4,p3)*zb(p2,p5))*prp34
-     .     +(Qu-Qd)*za(p4,p5)/(zb(p2,p1)*zb(p3,p5))*prp12
-         agamtree=-zb(p2,p4)**2*agamtree/(s(p1,p2)-s(p3,p4))
-         elseif (hgamma .eq. +1) then
-         agamtree=Qu*zb(p2,p5)/(za(p4,p3)*za(p1,p5))*prp34
-     .   +Qd*zb(p1,p5)/(za(p4,p3)*za(p2,p5))*prp34
-     .   +(Qu-Qd)*zb(p4,p5)/(za(p2,p1)*za(p3,p5))*prp12
-         agamtree=agamtree*za(p1,p3)**2/(s(p1,p2)-s(p3,p4))
-         endif
+c--- otherwise, usual Breit-Wigner form
+        prp12=s(p1,p2)/dcmplx((s(p1,p2)-wmass**2),wmass*wwidth)
       endif
 
+
+c---  c.f. Eqs.(4.4),(4.5) of hep-ph/9803250 (multiplied by -i)
+c---       for the terms proportional to prp34
+      if (hgamma .eq. -1) then
+        agamtree=-zb(p2,p4)**2/(s(p1,p2)-s(p3,p4))*(
+     &    Qu*(za(p2,p5)/(zb(p4,p3)*zb(p1,p5))*prp34
+     &       -za(p4,p5)/(zb(p1,p2)*zb(p3,p5))*prp12)
+     &   +Qd*(za(p1,p5)/(zb(p4,p3)*zb(p2,p5))*prp34
+     &       +za(p4,p5)/(zb(p1,p2)*zb(p3,p5))*prp12))
+      elseif (hgamma .eq. +1) then
+        agamtree=-za(p1,p3)**2/(s(p1,p2)-s(p3,p4))*(
+     &    Qd*(zb(p1,p5)/(za(p3,p4)*za(p2,p5))*prp34
+     &       +zb(p4,p5)/(za(p2,p1)*za(p3,p5))*prp12)
+     &   +Qu*(zb(p2,p5)/(za(p3,p4)*za(p1,p5))*prp34
+     &       -zb(p4,p5)/(za(p2,p1)*za(p3,p5))*prp12))
+      endif
+ 
+c--- additional anomalous coupling component, Eqs. (7)-(9) of hep-ph/0002138
+      if     (hgamma .eq. -1) then
+       agamtree=agamtree+prp34*(Qu-Qd)
+     &  *za(p5,p3)/(2d0*s(p3,p4)*(s(p1,p2)-s(p3,p4))*za(p4,p3))
+     &  *((xdelk_g+xlambda_g)*zb(p2,p4)*za(p1,p5)*za(p4,p3)
+     &    +xlambda_g*zb(p2,p5)*za(p5,p1)*za(p3,p5))
+      elseif (hgamma .eq. +1) then
+       agamtree=agamtree+prp34*(Qd-Qu)
+     &  *zb(p5,p4)/(2d0*s(p3,p4)*(s(p1,p2)-s(p3,p4))*zb(p3,p4))
+     &  *((xdelk_g+xlambda_g)*za(p1,p3)*zb(p2,p5)*zb(p3,p4)
+     &    +xlambda_g*za(p1,p5)*zb(p5,p2)*zb(p4,p5))
+       endif
+       
       return
       end
 

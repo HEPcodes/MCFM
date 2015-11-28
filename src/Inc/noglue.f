@@ -1,2 +1,2 @@
-      logical noglue,ggonly,gqonly
-      common/noglue/noglue,ggonly,gqonly
+      logical noglue,ggonly,gqonly,omitgg
+      common/noglue/noglue,ggonly,gqonly,omitgg

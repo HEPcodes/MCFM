@@ -1,2 +1,2 @@
-      logical Qflag,Gflag
-      common/flags/Qflag,Gflag
+      logical Qflag,Gflag,QandGflag
+      common/flags/Qflag,Gflag,QandGflag

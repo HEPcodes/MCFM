@@ -21,8 +21,9 @@
       include 'initialscales.f' 
       include 'dipolescale.f'
       include 'facscale.f'
+      include 'betacut.f'
       double precision p(mxpart,4),ptrans(mxpart,4),sub
-      double precision z,omz,sij,sik,sjk,dot
+      double precision z,omz,sij,sik,sjk,dot,u
       double precision msq(-nf:nf,-nf:nf)
       integer nd,ip,jp,kp,j,k
       logical incldip(0:maxd),check_nv,phot_pass
@@ -30,7 +31,7 @@
       external subr_born
       z=0d0
       omz=1d0
-      
+      u=0d0
       sub=0d0
       do j=-nf,nf
          do k=-nf,nf
@@ -44,7 +45,7 @@
       sik=two*dot(p,ip,kp) 
       sjk=two*dot(p,jp,kp)
 
-
+     
 ******************************************************************************* 
 ************************ INITIAL - INITIAL ************************************
 *******************************************************************************
@@ -66,9 +67,11 @@
       
       if ((ip .gt. 2) .and. (kp .le. 2)) then
          
-       
-c         if (checkv(p,ip,jp,kp).eqv..false.) return
-         if(check_nv(p,ip,jp,kp).eqv..false.) return 
+     
+         if(check_nv(p,ip,jp,kp).eqv..false.) then 
+            incldip(nd)=.false.
+            return 
+         endif
          call transformfrag(p,ptrans,z,ip,jp,kp)
          call storeptilde(nd,ptrans) 
          call store_zdip(nd,z)
@@ -87,31 +90,38 @@ c--- if using a dynamic scale, set that scale with dipole kinematics
          
          sub=two*(esq/sij)*((one+omz**2)/z)
         
-
+         
 ******************************************************************************* 
 ************************ FINAL - FINAL ****************************************
 *******************************************************************************
          
       elseif ((ip .gt. 2) .and. (kp .gt. 2)) then 
-         
+
          z=(sij+sik)/(sik+sjk+sij) 
          omz=one-z
          
-     
-         
-
+         u=sij/(sij+sik) 
+       
+         if(u.gt.bff) then
+            incldip(nd)=.false.
+            return 
+         endif
+            
 c--- Calculate the ptrans-momenta 
          call transformfrag(p,ptrans,z,ip,jp,kp)
          call storeptilde(nd,ptrans) 
-c         call store_zdip(nd,z)
+         call store_zdip(nd,z)
 
 c----  Check that photon will still pass cuts 
 	 if (phot_pass(ptrans,ip,z) .eqv. .false.) return 
 c--- if using a dynamic scale, set that scale with dipole kinematics	
 	if (dynamicscale) then
-	  call scaleset(initscale,initfacscale,ptrans)
-	  dipscale(nd)=facscale
+           call rescale_z_dip(ptrans,nd,ip)
+           call scaleset(initscale,initfacscale,ptrans)
+           call return_z_dip(ptrans,nd,ip)
+	   dipscale(nd)=facscale
 	endif
+
 
          call subr_born(ptrans,msq)
       

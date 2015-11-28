@@ -1,5 +1,7 @@
       subroutine qqb_wgam_g(p,msq)
       implicit none
+C-----Author Keith Ellis, September 2002
+C----- updated: John Campbell, August 2011 (anomalous couplings)
 c----Matrix element for W gam production
 C----averaged over initial colours and spins
 C For nwz=+1
@@ -21,8 +23,6 @@ c---
 
       call spinoru(6,p,za,zb)
       fac=V/2d0*gwsq**2*4d0*gsq*esq
-
-
 
       if (nwz .eq. -1) then 
       qbq=aveqq*fac*ubdgmsq(1,2,3,4,5,6,za,zb)
@@ -75,124 +75,112 @@ C     ub(-p1)+d(-p2)=e-(p3)+nu~(p4)+gamma(p5)+g(p6)
       include 'sprods_com.f'
       include 'zprods_decl.f'
       include 'zerowidth.f'
+      include 'anomcoup.f'
       integer p1,p2,p3,p4,p5,p6
-      double complex aLL,aRR,aRL,aLR,prp34,prp345
-      double precision s156,s256
+      double complex aLL,aRR,aRL,aLR,prp34,prp345,zazb
+      double precision s345,s156,s256,xfac
+
+      zazb(p1,p2,p3,p4)=+za(p1,p2)*zb(p2,p4)+za(p1,p3)*zb(p3,p4)
 
       s156=s(p1,p5)+s(p1,p6)+s(p5,p6)
       s256=s(p2,p5)+s(p2,p6)+s(p5,p6)
-      prp34=dcmplx(s(p3,p4)-wmass**2,wmass*wwidth)
-      prp345=dcmplx(s(p3,p4)+s(p3,p5)+s(p4,p5)-wmass**2,wmass*wwidth)
+      s345=s(p3,p4)+s(p3,p5)+s(p4,p5)
+      prp34=s(p3,p4)/dcmplx(s(p3,p4)-wmass**2,wmass*wwidth)
+
+c--- apply a dipole form factor to anomalous couplings, with power two
+      xfac=1d0/(1d0+s345/(tevscale*1d3)**2)**2
+      xdelk_g=xfac*delk_g
+      xlambda_g=xfac*lambda_g
 
       if (zerowidth) then
-      prp345=dcmplx(s(p3,p5)+s(p4,p5),0d0)
-
-
-
-C  Eqs. 4.9-4.12 Multiplied by i 
-      aLR=+Qd/zb(p2,p5)*(
-     .   +za(p1,p3)*zb(p6,p2)*za(p1,p6)/s256
-     .  *(za(p5,p1)*zb(p1,p4)+za(p5,p3)*zb(p3,p4))
-
-     . +(za(p1,p2)*zb(p2,p4)+za(p1,p6)*zb(p6,p4))/prp345
-     . *((za(p3,p4)*za(p1,p5)*zb(p4,p2)+za(p3,p5)*za(p1,p6)*zb(p6,p2))
-     . ))
- 
-     .    -Qu/zb(p1,p5)*(
-     .  +za(p1,p5)*zb(p2,p4)*za(p6,p2)/s156
-     .  *(za(p3,p1)*zb(p1,p6)+za(p3,p5)*zb(p5,p6))
-
-     .  +(za(p1,p2)*zb(p2,p4)+za(p1,p6)*zb(p6,p4))
-     . *((za(p5,p2)*zb(p2,p4)+za(p5,p6)*zb(p6,p4))*za(p4,p3)
-     . +za(p5,p3)*za(p2,p6)*zb(p6,p2))/prp345)
-      aLR=aLR/(prp34*za(p1,p6)*za(p6,p2))
-
-      aRL=+Qu/za(p1,p5)*(
-     .   +zb(p2,p4)*za(p6,p1)*zb(p2,p6)/s156
-     .  *(zb(p5,p2)*za(p2,p3)+zb(p5,p4)*za(p4,p3))
-
-     . +(zb(p2,p1)*za(p1,p3)+zb(p2,p6)*za(p6,p3))/prp345
-     . *((zb(p4,p3)*zb(p2,p5)*za(p3,p1)+zb(p4,p5)*zb(p2,p6)*za(p6,p1))
-     . ))
- 
-     .    -Qd/za(p2,p5)*(
-     .  +zb(p2,p5)*za(p1,p3)*zb(p6,p1)/s256
-     .  *(zb(p4,p2)*za(p2,p6)+zb(p4,p5)*za(p5,p6))
-
-     .  +(zb(p2,p1)*za(p1,p3)+zb(p2,p6)*za(p6,p3))
-     . *((zb(p5,p1)*za(p1,p3)+zb(p5,p6)*za(p6,p3))*zb(p3,p4)
-     . +zb(p5,p4)*zb(p1,p6)*za(p6,p1))/prp345)
-      aRL=aRL/(prp34*zb(p2,p6)*zb(p6,p1))
-
-
-      aRR=+Qu/za(p1,p5)*(za(p1,p3)*zb(p3,p5)+za(p1,p4)*zb(p4,p5))
-     .    -Qd/za(p2,p5)*(za(p2,p3)*zb(p3,p5)+za(p2,p4)*zb(p4,p5))
-      aRR=aRR*za(p1,p3)**2*zb(p4,p3)/(prp34*prp345*za(p1,p6)*za(p6,p2))
-
-      aLL=+Qd/zb(p2,p5)*(zb(p2,p4)*za(p4,p5)+zb(p2,p3)*za(p3,p5))
-     .    -Qu/zb(p1,p5)*(zb(p1,p4)*za(p4,p5)+zb(p1,p3)*za(p3,p5))
-      aLL=aLL*zb(p2,p4)**2*za(p3,p4)/(prp34*prp345*zb(p1,p6)*zb(p6,p2))
-
+c--- zerowidth: no final state radiation, so we can set prp345 to zero
+        prp345=czip
       else
-c      prp345=dcmplx(s(p3,p4)+s(p3,p5)+s(p4,p5)-wmass**2,wmass*wwidth)
-      aLR=+Qd/zb(p2,p5)*(
-     .   +za(p1,p3)*za(p1,p6)*zb(p2,p6)/prp34/s256
-     .  *(za(p1,p5)*zb(p1,p4)+za(p3,p5)*zb(p3,p4))
-
-     .  +(za(p1,p2)*zb(p2,p4)-za(p1,p6)*zb(p4,p6))/prp345/prp34
-     .  *((-za(p1,p5)*za(p3,p4)*zb(p2,p4)-za(p1,p6)*za(p3,p5)*zb(p2,p6))
-     .  -prp34/zb(p3,p5)
-     .  *(za(p1,p3)*zb(p2,p3)+za(p1,p5)*zb(p2,p5))))
- 
-     .    -Qu/zb(p1,p5)*(
-     .  +za(p1,p5)*za(p2,p6)*zb(p2,p4)/prp34/s156
-     .  *(za(p1,p3)*zb(p1,p6)-za(p3,p5)*zb(p5,p6))
-     .  +(za(p1,p2)*zb(p2,p4)-za(p1,p6)*zb(p4,p6))/prp345/prp34
-     . *(za(p3,p5)*(-za(p2,p6)*zb(p6,p2)-za(p3,p4)*zb(p3,p4))
-     .  -za(p1,p5)*za(p3,p4)*zb(p1,p4)
-     .  -prp34/zb(p3,p5)
-     .  *(za(p1,p5)*zb(p1,p5)+za(p1,p3)*zb(p1,p3)+za(p3,p5)*zb(p3,p5))))
-      aLR=aLR/(za(p1,p6)*za(p6,p2))
-
- 
-
-      aRL=
-     .      +Qu/za(p1,p5)*(
-     .  +zb(p2,p4)*zb(p2,p6)*za(p1,p6)/prp34/s156
-     .  *(zb(p2,p5)*za(p2,p3)+zb(p4,p5)*za(p4,p3))
-     . +(zb(p2,p1)*za(p1,p3)-zb(p2,p6)*za(p3,p6))/prp345/prp34
-     . *((zb(p2,p5)*zb(p3,p4)*za(p1,p3)-zb(p2,p6)*zb(p4,p5)*za(p1,p6))
-     .    -prp34/za(p3,p5)*za(p1,p3)*zb(p2,p4)))
-
-     .    -Qd/za(p2,p5)*(
-     .   +zb(p2,p5)*zb(p1,p6)*za(p1,p3)/prp34/s256
-     .  *(zb(p2,p4)*za(p2,p6)-zb(p4,p5)*za(p5,p6))
-     .  +(zb(p2,p1)*za(p1,p3)-zb(p2,p6)*za(p3,p6))/prp345/prp34
-     . *(zb(p4,p5)*(-zb(p1,p6)*za(p6,p1)-zb(p3,p4)*za(p3,p4))
-     .     -zb(p2,p5)*zb(p4,p3)*za(p2,p3)
-     .   -prp34/za(p3,p5)
-     .  *(za(p2,p3)*zb(p2,p4)+za(p3,p5)*zb(p4,p5))))
-      aRL=aRL/(zb(p1,p6)*zb(p6,p2))
-
-      aRR=+Qu/za(p1,p5)*(
-     .    +zb(p4,p3)*(za(p1,p3)*zb(p3,p5)+za(p1,p4)*zb(p4,p5))/prp34
-     .    -(za(p1,p5)*zb(p4,p5)-za(p1,p3)*zb(p3,p4))/za(p3,p5))
-
-     .        -Qd/za(p2,p5)*(
-     .    +zb(p4,p3)*(za(p2,p3)*zb(p3,p5)+za(p2,p4)*zb(p4,p5))/prp34
-     .     -(za(p2,p5)*zb(p4,p5)-za(p2,p3)*zb(p3,p4))/za(p3,p5))
-      aRR=aRR*za(p1,p3)**2/(prp345*za(p1,p6)*za(p6,p2))
-
-      aLL=+Qd/zb(p2,p5)*(
-     .   +za(p3,p4)*(zb(p2,p4)*za(p4,p5)+zb(p2,p3)*za(p3,p5))/prp34
-     .   +(zb(p2,p5)*za(p4,p5)-zb(p2,p3)*za(p3,p4))/zb(p3,p5))
-
-     .        -Qu/zb(p1,p5)*(
-     .   +za(p3,p4)*(zb(p1,p4)*za(p4,p5)+zb(p1,p3)*za(p3,p5))/prp34
-     .     +(zb(p1,p5)*za(p4,p5)-zb(p1,p3)*za(p3,p4))/zb(p3,p5))
-      aLL=aLL*zb(p2,p4)**2/(prp345*zb(p1,p6)*zb(p6,p2))
+c--- otherwise, usual Breit-Wigner form
+        prp345=s345/dcmplx(s345-wmass**2,wmass*wwidth)
       endif
+
+c---  c.f. Eqs.(4.9)-(4.12) of hep-ph/9803250 (multiplied by -i)
+c---       for the terms proportional to prp34
+      aRR=za(p1,p3)**2/(za(p1,p6)*za(p2,p6)*(s345-s(p3,p4)))*(
+     &  Qd*(+zazb(p2,p3,p4,p5)/za(p4,p3)*prp34
+     &      +za(p2,p5)*zb(p4,p5)/za(p3,p5)*prp345)/za(p2,p5)
+     & +Qu*(+zazb(p1,p3,p4,p5)/za(p3,p4)*prp34
+     &      -za(p1,p5)*zb(p4,p5)/za(p3,p5)*prp345)/za(p1,p5))
+      
+      aLR=Qd*(
+     & (-za(p1,p3)*zb(p6,p2)*zazb(p5,p1,p3,p4)
+     &  /(zb(p2,p5)*za(p6,p2)*s256)
+     &  -zazb(p1,p2,p6,p4)*(za(p3,p4)*za(p1,p5)*zb(p4,p2)
+     &                     +za(p3,p5)*za(p1,p6)*zb(p6,p2))
+     &  /(zb(p2,p5)*za(p1,p6)*za(p6,p2)*(s345-s(p3,p4))))*prp34/s(p3,p4)
+     & +zazb(p1,p2,p6,p4)**2*za(p4,p5)
+     &   /(zb(p3,p5)*za(p1,p6)*za(p2,p6)*(s345-s(p3,p4)))*prp345/s345)
+     &   +Qu*(
+     & (za(p1,p5)*zb(p2,p4)*zazb(p3,p1,p5,p6)
+     &  /(zb(p1,p5)*za(p1,p6)*s156)
+     & +zazb(p1,p2,p6,p4)*(zazb(p5,p2,p6,p4)*za(p4,p3)
+     &                    +za(p5,p3)*s(p2,p6))
+     &  /(zb(p1,p5)*za(p1,p6)*za(p6,p2)*(s345-s(p3,p4))))*prp34/s(p3,p4)
+     & -zazb(p1,p2,p6,p4)**2*za(p4,p5)
+     &   /(zb(p3,p5)*za(p1,p6)*za(p2,p6)*(s345-s(p3,p4)))*prp345/s345)
+           
+      aLL=zb(p2,p4)**2/(zb(p1,p6)*zb(p2,p6)*(s345-s(p3,p4)))*(
+     &  Qu*(+zazb(p5,p3,p4,p1)/zb(p3,p4)*prp34
+     &      -zb(p1,p5)*za(p4,p5)/zb(p3,p5)*prp345)/zb(p1,p5)
+     & +Qd*(+zazb(p5,p3,p4,p2)/zb(p4,p3)*prp34
+     &      +zb(p2,p5)*za(p4,p5)/zb(p3,p5)*prp345)/zb(p2,p5))
+
+      aRL=Qu*(
+     & (-zb(p2,p4)*za(p6,p1)*zazb(p3,p2,p4,p5)
+     &  /(za(p1,p5)*zb(p6,p1)*s156)
+     &  -zazb(p3,p1,p6,p2)*(zb(p4,p3)*zb(p2,p5)*za(p3,p1)
+     &                     +zb(p4,p5)*zb(p2,p6)*za(p6,p1))
+     &  /(za(p1,p5)*zb(p2,p6)*zb(p6,p1)*(s345-s(p3,p4))))*prp34/s(p3,p4)
+     & -zazb(p3,p1,p6,p2)**2*zb(p4,p5)
+     &   /(za(p3,p5)*zb(p2,p6)*zb(p1,p6)*(s345-s(p3,p4)))*prp345/s345)
+     &   +Qd*(
+     & (zb(p2,p5)*za(p1,p3)*zazb(p6,p2,p5,p4)
+     &  /(za(p2,p5)*zb(p2,p6)*s256)
+     & +zazb(p3,p1,p6,p2)*(zazb(p3,p1,p6,p5)*zb(p3,p4)
+     &                    +zb(p5,p4)*s(p1,p6))
+     &  /(za(p2,p5)*zb(p2,p6)*zb(p6,p1)*(s345-s(p3,p4))))*prp34/s(p3,p4)
+     & +zazb(p3,p1,p6,p2)**2*zb(p4,p5)
+     &   /(za(p3,p5)*zb(p2,p6)*zb(p1,p6)*(s345-s(p3,p4)))*prp345/s345)
+      
+c--- additional anomalous coupling component, Eqs. (11)-(16) of hep-ph/0002138
+c---  (multiplied by -i)
+c--- note: there is a typo in Eq. (15), <45> should be replaced by [45]
+      aRR=aRR+prp34*(Qd-Qu)
+     & *zb(p4,p5)*(za(p1,p2)*zb(p2,p5)+za(p1,p6)*zb(p6,p5))
+     & /(2d0*s(p3,p4)**2*(s345-s(p3,p4))*za(p1,p6)*za(p6,p2))
+     & *(xlambda_g*za(p3,p4)*za(p1,p5)*zb(p4,p5)
+     &  +(xdelk_g+xlambda_g)*za(p1,p3)*s(p3,p4))
+
+      aLR=aLR+prp34*(Qd-Qu)
+     & *za(p3,p5)*za(p1,p5)
+     & /(2d0*s(p3,p4)**2*(s345-s(p3,p4))*za(p1,p6)*za(p6,p2))
+     & *(xlambda_g*za(p3,p5)*zb(p3,p4)
+     &    *(za(p1,p2)*zb(p2,p5)+za(p1,p6)*zb(p6,p5))
+     &  -(xdelk_g+xlambda_g)
+     &    *(za(p1,p2)*zb(p2,p4)+za(p1,p6)*zb(p6,p4))*s(p3,p4))
+
+      aLL=aLL+prp34*(Qu-Qd)
+     & *za(p3,p5)*(zb(p2,p1)*za(p1,p5)+zb(p2,p6)*za(p6,p5))
+     & /(2d0*s(p3,p4)**2*(s345-s(p3,p4))*zb(p2,p6)*zb(p6,p1))
+     & *(xlambda_g*zb(p4,p3)*zb(p2,p5)*za(p3,p5)
+     &  +(xdelk_g+xlambda_g)*zb(p2,p4)*s(p3,p4))
+
+      aRL=aRL+prp34*(Qu-Qd)
+     & *zb(p4,p5)*zb(p2,p5)
+     & /(2d0*s(p3,p4)**2*(s345-s(p3,p4))*zb(p2,p6)*zb(p6,p1))
+     & *(xlambda_g*zb(p4,p5)*za(p4,p3)
+     &    *(zb(p2,p1)*za(p1,p5)+zb(p2,p6)*za(p6,p5))
+     &  -(xdelk_g+xlambda_g)
+     &    *(zb(p2,p1)*za(p1,p3)+zb(p2,p6)*za(p6,p3))*s(p3,p4))
+
       ubdgmsq=cdabs(aLL)**2+cdabs(aRR)**2+cdabs(aRL)**2+cdabs(aLR)**2
+      
       return
       end
 

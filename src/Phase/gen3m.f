@@ -34,11 +34,11 @@ c----p(6,i) and p(7,i) are set equal to zero
       xx(2)=dsqrt(tau)*exp(-y)
 
 c--- for comparison with C. Oleari's e+e- --> QQbg calculation
-      if (runstring(1:5) .eq. 'carlo') then
-        xx(1)=1d0
-	xx(2)=1d0
-	xjac=1d0
-      endif
+c      if (runstring(1:5) .eq. 'carlo') then
+c        xx(1)=1d0
+c	xx(2)=1d0
+c	xjac=1d0
+c      endif
 
 c---if x's out of normal range alternative return
       if   ((xx(1) .gt. 1d0) 

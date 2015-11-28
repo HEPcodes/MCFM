@@ -21,7 +21,7 @@ c---  where non-jet four vectors are set equal to the incoming q
      . qshared(4),sharedet,getet
       integer maxproto,protoc(20,0:mxpart),eti,shared,
      . sharedc(20),ni
-      logical jetmerge,failed,first
+      logical jetmerge,failed,first,trackdoubleb
 c--- DEBUG
       parameter (Rsep=1d0)  ! Default value
 c      parameter (Rsep=1.3d0)  ! Default value
@@ -46,6 +46,14 @@ c      parameter (Rsep=2.0d0)  ! Usual (e.g. Snowmass) definition
       maxjet=0
       jetmerge=.false.
 
+c--- flag to determine whether or not to count "double b" jets
+c--- (for Wbb, Wb+X processes only)
+      if ( (case .eq. 'Wbbmas') .or. (case .eq. 'W_bjet')) then
+        trackdoubleb=.true.
+      else
+        trackdoubleb=.false.
+      endif
+      
       do i=1,mxpart
         do nu=1,4
         qfinal(i,nu)=0d0
@@ -229,7 +237,7 @@ c-- proto-jet does not share any partons - move it to qfinal and repeat
           if (jetlabel(protoc(eti,i)) .eq. 'ba') finallabel(jets)='ba'
         enddo
 c--- special combination for W+heavy quarks
-        if ((case .eq. 'Wbbmas') .and. (protoc(eti,0) .eq. 2)) then
+        if ((trackdoubleb) .and. (protoc(eti,0) .eq. 2)) then
           if ( ((jetlabel(protoc(eti,1)) .eq. 'bq') .and. 
      &          (jetlabel(protoc(eti,2)) .eq. 'ba')) 
      &    .or. ((jetlabel(protoc(eti,1)) .eq. 'ba') .and. 
@@ -237,9 +245,13 @@ c--- special combination for W+heavy quarks
              finallabel(jets)='bb'
            endif 
 	endif
-        if ((case .eq. 'Wbbmas') .and. (protoc(eti,0) .eq. 3)) then
+        if ((trackdoubleb) .and. (protoc(eti,0) .eq. 3)) then
              finallabel(jets)='bb'
         endif
+c	if (protoc(eti,0) .eq. 3) then
+c	  write(6,*) jetlabel(protoc(eti,1)),jetlabel(protoc(eti,2)),
+c     &               jetlabel(protoc(eti,3)),' ->',finallabel(jets)
+c	endif
 c--- shuffle down the proto-jets
         do i=eti+1,maxproto
           do nu=1,4

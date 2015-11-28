@@ -18,7 +18,7 @@ c---                    ipow = +1 (normal kt), ipow = -1 ("anti-kt")
       include 'jetcuts.f'
       include 'jetlabel.f'
       double precision q(mxpart,4),qjet(mxpart,4),qfinal(mxpart,4)
-      double precision pt,Rmin,dijmin,dkmin,aetarap
+      double precision pt,Rmin,dijmin,dkmin,ayrap
       integer i,nu,iter,nmin1,nmin2,maxjet,nk,
      . ajet,jetindex(mxpart),isub,ipow
       character*2 plabel(mxpart)
@@ -154,8 +154,8 @@ c        write(*,*) 'aeta: ',aetarap(i,qjet),' vs min. ',etajetmin
 c        write(*,*) 'aeta: ',aetarap(i,qjet),' vs max. ',etajetmax
 
         if ((pt(i,qjet) .ge. ptjetmin) .and.
-     .      (aetarap(i,qjet) .ge. etajetmin) .and.
-     .      (aetarap(i,qjet) .le. etajetmax)) then 
+     .      (ayrap(i,qjet) .ge. etajetmin) .and.
+     .      (ayrap(i,qjet) .le. etajetmax)) then 
         ajet=ajet+1
         do nu=1,4
           qfinal(jetindex(ajet),nu)=qjet(i,nu)

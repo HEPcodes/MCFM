@@ -13,7 +13,12 @@ c---- Subroutine for rescaling momentum by z_frag
       if((case.eq.'Wgamma').or.(case.eq.'Zgamma')) then 
          call rescale_1phot(pjet,5)
       elseif(case.eq.'gamgam') then
-         call rescale_1phot(pjet,4)  
+         call rescale_1phot(pjet,4)
+      elseif(case.eq.'dirgam') then 
+         call rescale_1phot(pjet,3) 
+      else
+         write(6,*) 'Error: tried to rescale unknown quantity' 
+         stop
       endif     
 
 !--- Old routine rescales all photons by z_frag -----     
@@ -25,7 +30,7 @@ c---- Subroutine for rescaling momentum by z_frag
 !         endif
 !      enddo
       
-      end subroutine 
+      end 
       
     
       
@@ -43,6 +48,11 @@ c---- Subroutine for returning original momenta
          call return_1phot(pjet,5)
       elseif(case.eq.'gamgam') then
          call return_1phot(pjet,4)
+      elseif(case.eq.'dirgam') then 
+         call return_1phot(pjet,3) 
+      else
+         write(6,*) 'Error: tried to rescale unknown quantity' 
+         stop
       endif     
 
 
@@ -55,7 +65,7 @@ c---- Subroutine for returning original momenta
 !         endif
 !      enddo
       
-      end subroutine 
+      end 
 
       
 !---- New routines 
@@ -72,7 +82,7 @@ c---- Subroutine for returning original momenta
       enddo
       
       return 
-      end subroutine 
+      end 
 
       subroutine return_1phot(p,i) 
       implicit none
@@ -86,7 +96,7 @@ c---- Subroutine for returning original momenta
       enddo
       
       return 
-      end subroutine 
+      end 
 
       
      

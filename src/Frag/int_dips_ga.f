@@ -114,7 +114,7 @@ C      write(6,*) 'split ',P_gaq
       double precision function ff_gaq(z,L,vorz) 
       implicit none
       include 'constants.f'
-      include 'epinv.f'
+      include 'betacut.f' 
       double precision z,L,omz,lz,lmz
       double precision P_gaq
       integer vorz
@@ -129,9 +129,13 @@ C      write(6,*) 'split ',P_gaq
       if((vorz .eq. 1) .or. (vorz .eq.3)) then
          return
       elseif(vorz .eq. 2) then 
-         ff_gaq=P_gaq*((-epinv+L)+(lz+lmz))+z 
+         ff_gaq=P_gaq*((L)+(lz+lmz))+z 
+!----- beta cut terms 
+         ff_gaq=ff_gaq+dlog(bff)*P_gaq 
          return
       endif
+
+
       
       return 
       end

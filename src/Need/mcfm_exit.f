@@ -36,8 +36,10 @@ c--- Print-out the value of the integral and its error
 
 c--- for gg->H+X processes, also write out the cross section
 c---  normalized by sigma(gg->H, finite mt)/sigma(gg->H, mt-> infinity)
-      if ( (case(1:5) .eq. 'ggfus') .or. (case(1:3) .eq. 'HWW')
-     . .or.(case(1:3) .eq. 'HZZ')) then
+      if (((case(1:5) .eq. 'ggfus') .or. (case(1:3) .eq. 'HWW')
+     & .or.(case(1:3) .eq. 'HZZ')) .and. (case .ne. 'HWWint')
+     &  .and. (case .ne. 'HWW_tb') .and. (case .ne. 'HZZint')
+     &  .and. (case .ne. 'HZZ_tb') ) then
         call finitemtcorr(rescale)
         write(6,*)
 	write(6,*) 'Cross section normalized by the ratio'

@@ -189,10 +189,10 @@ cz //
       save first
 
 c--- Check for special plotting instructions
-      if (runstring(1:4) .eq. 'cfmt') then
-        call plots_stop_cfmt(p,wt,wt2)
-	return
-      endif
+c      if (runstring(1:4) .eq. 'cfmt') then
+c        call plots_stop_cfmt(p,wt,wt2)
+c	return
+c      endif
 
 c--- Set up string for pt or Et
       if (useEt) then
@@ -286,6 +286,8 @@ c---  are handled with reference to nproc
       elseif ((case .eq. 'WWqqbr') .or. (case .eq. 'WWnpol')
      .    .or.(case .eq. 'WZbbar') .or. (case .eq. 'ZZlept')
      .    .or.(case .eq. 'HWW_4l') .or. (case .eq. 'HZZ_4l')
+     .    .or.(case .eq. 'HWW_tb') .or. (case .eq. 'HWWint')
+     .    .or.(case .eq. 'HZZ_tb') .or. (case .eq. 'HZZint')
      .    .or.(case .eq. 'HWWjet') .or. (case .eq. 'qq_HWW')
      .    .or.(case .eq. 'WW_jet') .or. (case .eq. 'ZZ_jet')
      .    .or.(case .eq. 'HWWjet') .or. (case .eq. 'HZZjet')
@@ -683,11 +685,11 @@ c	cosdeltaphi=abs(cosdeltaphi)
    99 continue
 
 c--- make plots for H(->WW)+jet paper
-      if (runstring(1:6) .eq. 'hjetww') then
-        call hwwjetplots(eventpart,tag,p,wt,wt2)
-	first=.false.
-	return
-      endif
+c      if (runstring(1:6) .eq. 'hjetww') then
+c        call hwwjetplots(eventpart,tag,p,wt,wt2)
+c	first=.false.
+c	return
+c      endif
       
 cz Added by Z. Sullivan, 1/25/05
 c--- further amended by JC, 19/8/08
@@ -879,108 +881,108 @@ c--- b jet (only if ibbar>0)
       n=n+1
       endif
       
-      if (runstring(1:5) .eq. 'carlo') then
-c--- Special histograms for comparison with C. Oleari's
-c---  e+e- --> QQbg calculation (Durham jet rates)
-        ycut001=0d0
-	ycut005=0d0
-	ycut010=0d0
-	ycut015=0d0
-	ycut020=0d0
-	if (tag .eq. 'plot') then
-	  call durhamalg(p,npart-switch,y32,y43,z3,z4,z5,z6)
-	endif
-c	write(6,'(i3,3e16.6)') switch,y43,y32,wt
-	if ((y32 .gt. 0.01d0) .and. (y43 .lt. 0.01d0)) ycut001=1d0
-	if ((y32 .gt. 0.05d0) .and. (y43 .lt. 0.05d0)) ycut005=1d0
-	if ((y32 .gt. 0.10d0) .and. (y43 .lt. 0.10d0)) ycut010=1d0
-	if ((y32 .gt. 0.15d0) .and. (y43 .lt. 0.15d0)) ycut015=1d0
-	if ((y32 .gt. 0.20d0) .and. (y43 .lt. 0.20d0)) ycut020=1d0
-        call bookplot(n,tag,'ycut=0.01',ycut001,wt,wt2,
-     .                0.5d0,1.5d0,1d0,'lin')
-        n=n+1
-        call bookplot(n,tag,'ycut=0.05',ycut005,wt,wt2,
-     .                0.5d0,1.5d0,1d0,'lin')
-        n=n+1
-        call bookplot(n,tag,'ycut=0.10',ycut010,wt,wt2,
-     .                0.5d0,1.5d0,1d0,'lin')
-        n=n+1
-        call bookplot(n,tag,'ycut=0.15',ycut015,wt,wt2,
-     .                0.5d0,1.5d0,1d0,'lin')
-        n=n+1
-        call bookplot(n,tag,'ycut=0.20',ycut020,wt,wt2,
-     .                0.5d0,1.5d0,1d0,'lin')
-        n=n+1
-        call bookplot(n,tag,'y43      ',y43,wt,wt2,
-     .                0d0,1d0,0.05d0,'lin')
-        n=n+1
-        call bookplot(n,tag,'y43>0.01 ',y43,wt,wt2,
-     .                0.01d0,1.01d0,0.05d0,'lin')
-        n=n+1
-        call bookplot(n,tag,'y43>0.05 ',y43,wt,wt2,
-     .                0.05d0,1d0,0.05d0,'lin')
-        n=n+1
-        call bookplot(n,tag,'y43>0.10 ',y43,wt,wt2,
-     .                0.10d0,1d0,0.05d0,'lin')
-        n=n+1
-        call bookplot(n,tag,'y43>0.15 ',y43,wt,wt2,
-     .                0.15d0,1d0,0.05d0,'lin')
-        n=n+1
-        call bookplot(n,tag,'y43>0.20 ',y43,wt,wt2,
-     .                0.20d0,1d0,0.05d0,'lin')
-        n=n+1
-      endif
+c      if (runstring(1:5) .eq. 'carlo') then
+cc--- Special histograms for comparison with C. Oleari's
+cc---  e+e- --> QQbg calculation (Durham jet rates)
+c        ycut001=0d0
+c	ycut005=0d0
+c	ycut010=0d0
+c	ycut015=0d0
+c	ycut020=0d0
+c	if (tag .eq. 'plot') then
+c	  call durhamalg(p,npart-switch,y32,y43,z3,z4,z5,z6)
+c	endif
+cc	write(6,'(i3,3e16.6)') switch,y43,y32,wt
+c	if ((y32 .gt. 0.01d0) .and. (y43 .lt. 0.01d0)) ycut001=1d0
+c	if ((y32 .gt. 0.05d0) .and. (y43 .lt. 0.05d0)) ycut005=1d0
+c	if ((y32 .gt. 0.10d0) .and. (y43 .lt. 0.10d0)) ycut010=1d0
+c	if ((y32 .gt. 0.15d0) .and. (y43 .lt. 0.15d0)) ycut015=1d0
+c	if ((y32 .gt. 0.20d0) .and. (y43 .lt. 0.20d0)) ycut020=1d0
+c        call bookplot(n,tag,'ycut=0.01',ycut001,wt,wt2,
+c     .                0.5d0,1.5d0,1d0,'lin')
+c        n=n+1
+c        call bookplot(n,tag,'ycut=0.05',ycut005,wt,wt2,
+c     .                0.5d0,1.5d0,1d0,'lin')
+c        n=n+1
+c        call bookplot(n,tag,'ycut=0.10',ycut010,wt,wt2,
+c     .                0.5d0,1.5d0,1d0,'lin')
+c        n=n+1
+c        call bookplot(n,tag,'ycut=0.15',ycut015,wt,wt2,
+c     .                0.5d0,1.5d0,1d0,'lin')
+c        n=n+1
+c        call bookplot(n,tag,'ycut=0.20',ycut020,wt,wt2,
+c     .                0.5d0,1.5d0,1d0,'lin')
+c        n=n+1
+c        call bookplot(n,tag,'y43      ',y43,wt,wt2,
+c     .                0d0,1d0,0.05d0,'lin')
+c        n=n+1
+c        call bookplot(n,tag,'y43>0.01 ',y43,wt,wt2,
+c     .                0.01d0,1.01d0,0.05d0,'lin')
+c        n=n+1
+c        call bookplot(n,tag,'y43>0.05 ',y43,wt,wt2,
+c     .                0.05d0,1d0,0.05d0,'lin')
+c        n=n+1
+c        call bookplot(n,tag,'y43>0.10 ',y43,wt,wt2,
+c     .                0.10d0,1d0,0.05d0,'lin')
+c        n=n+1
+c        call bookplot(n,tag,'y43>0.15 ',y43,wt,wt2,
+c     .                0.15d0,1d0,0.05d0,'lin')
+c        n=n+1
+c        call bookplot(n,tag,'y43>0.20 ',y43,wt,wt2,
+c     .                0.20d0,1d0,0.05d0,'lin')
+c        n=n+1
+c      endif
       
-      if (runstring(1:4) .eq. 'stop') then
-c--- Special histograms for single top search
-        if (tag .eq. 'plot') then
-c        call stopcuts(p,eventpart,ht,qeta,mlbnu,merecon,reconcorr)
-c these variables should already be in the common-block
-        else
-          ht_stop=-1d0
-          qeta=99d0
-          mlbnu=-1d0
-          merecon=-1d0
-          reconcorr=-99d0
-        endif
-      call bookplot(n,tag,'HT',HT_stop,wt,wt2,100d0,500d0,10d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'qeta',qeta,wt,wt2,-2.8d0,3.2d0,0.4d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'mlbnu',mlbnu,wt,wt2,0d0,300d0,10d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'reconcorr?',reconcorr,
-     . wt,wt2,-1d0,1d0,1d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'MEn recon',merecon,
-     . wt,wt2,0d0,300d0,10d0,'lin')
-      n=n+1
-      endif
+c      if (runstring(1:4) .eq. 'stop') then
+cc--- Special histograms for single top search
+c        if (tag .eq. 'plot') then
+cc        call stopcuts(p,eventpart,ht,qeta,mlbnu,merecon,reconcorr)
+cc these variables should already be in the common-block
+c        else
+c          ht_stop=-1d0
+c          qeta=99d0
+c          mlbnu=-1d0
+c          merecon=-1d0
+c          reconcorr=-99d0
+c        endif
+c      call bookplot(n,tag,'HT',HT_stop,wt,wt2,100d0,500d0,10d0,'lin')
+c      n=n+1
+c      call bookplot(n,tag,'qeta',qeta,wt,wt2,-2.8d0,3.2d0,0.4d0,'lin')
+c      n=n+1
+c      call bookplot(n,tag,'mlbnu',mlbnu,wt,wt2,0d0,300d0,10d0,'lin')
+c      n=n+1
+c      call bookplot(n,tag,'reconcorr?',reconcorr,
+c     . wt,wt2,-1d0,1d0,1d0,'lin')
+c      n=n+1
+c      call bookplot(n,tag,'MEn recon',merecon,
+c     . wt,wt2,0d0,300d0,10d0,'lin')
+c      n=n+1
+c      endif
       
-      if (runstring(1:3) .eq. 'hww') then
-c--- Special histograms for H->WW search
-        if (tag .eq. 'plot') then
-c these variables should already be in the common-block
-        else
-          dphi_ll=-1d0
-          m_ll=-1d0
-          mtrans=-1d0
-          scut1=-1d0
-          scut2=-1d0
-        endif
-      call bookplot(n,tag,'dphi_ll',dphi_ll,wt,wt2,
-     .              0d0,3.142d0,0.1571d0,'lin')
-c      write(6,*) switch,dphi_ll,wt,wt2
-      n=n+1
-      call bookplot(n,tag,'m_ll',m_ll,wt,wt2,0d0,200d0,5d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'mtrans',mtrans,wt,wt2,0d0,250d0,5d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'scut1',scut1,wt,wt2,0.5d0,1.5d0,1d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'scut2',scut2,wt,wt2,0.5d0,1.5d0,1d0,'lin')
-      n=n+1
-      endif
+c      if (runstring(1:3) .eq. 'hww') then
+cc--- Special histograms for H->WW search
+c        if (tag .eq. 'plot') then
+cc these variables should already be in the common-block
+c        else
+c          dphi_ll=-1d0
+c          m_ll=-1d0
+c          mtrans=-1d0
+c          scut1=-1d0
+c          scut2=-1d0
+c        endif
+c      call bookplot(n,tag,'dphi_ll',dphi_ll,wt,wt2,
+c     .              0d0,3.142d0,0.1571d0,'lin')
+cc      write(6,*) switch,dphi_ll,wt,wt2
+c      n=n+1
+c      call bookplot(n,tag,'m_ll',m_ll,wt,wt2,0d0,200d0,5d0,'lin')
+c      n=n+1
+c      call bookplot(n,tag,'mtrans',mtrans,wt,wt2,0d0,250d0,5d0,'lin')
+c      n=n+1
+c      call bookplot(n,tag,'scut1',scut1,wt,wt2,0.5d0,1.5d0,1d0,'lin')
+c      n=n+1
+c      call bookplot(n,tag,'scut2',scut2,wt,wt2,0.5d0,1.5d0,1d0,'lin')
+c      n=n+1
+c      endif
 
 c--- calculate lepton 3 angle in W rest frame
 c      do nu=1,4

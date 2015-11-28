@@ -8,7 +8,7 @@
 *     Matrix element for gamma + 2 parton production                   *
 *     in order alpha_s, averaged over initial colours and spins        *
 *                                                                      *
-*     q(-p1)+qbar(-p2) --> gamma gamma(p3)+f(p4)+f(p5)                       *
+*     q(-p1)+qbar(-p2) --> gamma(p3)+f(p4)+f(p5)                       *
 *                                                                      *
 ************************************************************************
       include 'constants.f'
@@ -81,11 +81,12 @@ c---- ub db -> gamma ub db
 
 C--qa      
       elseif ((j .gt. 0) .and. (k .lt. 0)) then
-          if (j .eq. -k) then
+          if (j .eq. -k) then             
             msq(j,k)=qa_qa(jj(j))+qa_gg(jj(j))
             if (jj(j).eq.1) then
 c---- (d db -> gamma d db) + 2*(d db -> gamma s sb) + 2*(d db -> gamma u ub) + (d db -> gamma g g) 
-               msq(j,k)=msq(j,k)+2d0*qa_rb(jj(j),1)+2d0*qa_rb(jj(j),2)
+               msq(j,k)=msq(j,k)
+     &              +2d0*qa_rb(jj(j),1)+2d0*qa_rb(jj(j),2)
             elseif (jj(j).eq.2) then
 c---- (u ub -> gamma u ub) + (u ub -> gamma c cb) + 3*(u ub -> gamma d db) + (u ub -> gamma g g) 
                 msq(j,k)=msq(j,k)+qa_rb(jj(j),2)+3d0*qa_rb(jj(j),1)

@@ -22,10 +22,10 @@ c---                1  --> counterterm for real radiation
       double precision etarap,pt,r
       double precision y3,y4,y5,y6,pt3,pt4,pt5,pt6,re5,rea5,re6,rea6
       double precision ylep, yjet, ptlep, ptjet,ptphot,yWgam,pt34,pttwo
-      double precision yraptwo,m345,mtrans,yellgam
+      double precision yraptwo,m34,m345,yellgam,dot
       integer switch,n,nplotmax,nproc,nqcdjets,nqcdstart,nd 
       character*4 tag
-      integer j
+      integer j,ilep,igam,inu
       logical first,creatent,dswhisto
       common/outputflags/creatent,dswhisto
       common/nplotmax/nplotmax
@@ -60,11 +60,13 @@ c--- set them to dummy values
         pt3=1d7
         pt4=1d7
         pt34=1d7
-c---Intiailise photon 
+c---Initialise photon 
         y5=1d3
         pt5=1d7
         yWgam=1d3
         yellgam=1d8
+	m34=-1d0
+	m345=-1d0
 c----Initialise jet values will not pass cuts in there is an NLO jet
         y6=1d3
         pt6=1d7
@@ -85,12 +87,6 @@ c--- (Upper) limits for the plots
       else
 c--- Add event in histograms
         tag='plot'
-      endif
-
-c--- Book and fill ntuple if that option is set, remembering to divide
-c--- by # of iterations now that is handled at end for regular histograms
-      if (creatent .eqv. .true.) then
-        call bookfill(tag,p,wt/dfloat(itmx))  
       endif
 
 ************************************************************************
@@ -121,6 +117,7 @@ c--- For nproc=300 plot e^+(4) and e^-(3)
       endif
       
       pt34=pttwo(3,4,p)
+      m34=dsqrt(max(2d0*dot(p,3,4),0d0))
       pt5=pt(5,p)
       y5=etarap(5,p)
       if(nproc .eq. 290) then
@@ -160,35 +157,35 @@ c--- For nproc=300 plot e^+(4) and e^-(3)
       endif
 
 
-!----- Transverse mass 
       if(nproc.ne.300) then 
-         m345=0d0
+c---  transverse mass of (e-gam,nu) system for Wgamma     
+        if ((nproc .eq. 290) .or. (nproc .eq. 292)) then
+	  inu=3
+	  ilep=4
+	else
+	  inu=4
+	  ilep=3
+	endif
+	igam=5
+	m345=(p(ilep,4)+p(igam,4))**2-(p(ilep,1)+p(igam,1))**2
+     &      -(p(ilep,2)+p(igam,2))**2-(p(ilep,3)+p(igam,3))**2
+        m345=m345+(p(ilep,1)+p(igam,1))**2
+     &           +(p(ilep,2)+p(igam,2))**2
+	m345=dsqrt(max(m345,0d0))+dsqrt(p(inu,1)**2+p(inu,2)**2)
+	m345=m345**2
+        do j=1,2 
+           m345=m345-(p(3,j)+p(4,j)+p(5,j))**2
+        enddo
+        m345=dsqrt(max(m345,0d0)) 
 
-c---  cut on transverse mass of (3,4,5) system for Wgamma
-     
-         do j=3,5
-            m345=m345+dsqrt(p(j,1)**2+p(j,2)**2)
-         enddo
-         m345=m345**2
-         do j=1,2 
-            m345=m345-(p(3,j)+p(4,j)+p(5,j))**2
-         enddo
-         mtrans=dsqrt(max(m345,0d0)) 
+c---  invariant mass of (Z,gam) system for Zgamma     
       else 
-         m345=0d0
-         do j=1,4 
-            if(j.ne.4) then 
-               m345=m345-(p(3,j)+p(4,j)+p(5,j))**2 
-            else
-               m345=m345+(p(3,j)+p(4,j)+p(5,j))**2
-            endif
-         enddo
-        
-         mtrans=dsqrt(max(m345,0d0)) 
+         m345=(p(3,4)+p(4,4)+p(5,4))**2
+         do j=1,3
+           m345=m345-(p(3,j)+p(4,j)+p(5,j))**2 
+         enddo        
+         m345=dsqrt(max(m345,0d0))
       endif
-
-      
-
 
 ************************************************************************
 *                                                                      *
@@ -198,6 +195,12 @@ c---  cut on transverse mass of (3,4,5) system for Wgamma
 
 c--- Call histogram routines
    99 continue
+
+c--- Book and fill ntuple if that option is set, remembering to divide
+c--- by # of iterations now that is handled at end for regular histograms
+      if (creatent .eqv. .true.) then
+        call bookfill(tag,p,wt/dfloat(itmx))  
+      endif
 
 c--- "n" will count the number of histograms
       n=1              
@@ -216,6 +219,7 @@ c---     xmin:  lowest value to bin
 c---     xmax:  highest value to bin
 c---       dx:  bin width
 c---   llplot:  equal to "lin"/"log" for linear/log scale
+
       if((nproc .eq. 290).or.(nproc.eq.300)) then
          call bookplot(n,tag,'y4',y4,wt,wt2,-ylep,ylep,0.2d0,'lin')
          n=n+1
@@ -228,13 +232,15 @@ c---   llplot:  equal to "lin"/"log" for linear/log scale
          call bookplot(n,tag,'pt3',pt3,wt,wt2,0d0,ptlep,2d0,'lin')
          n=n+1
       endif
+      call bookplot(n,tag,'boson invariant mass',
+     & m34,wt,wt2,0d0,200d0,5d0,'lin')
+      n=n+1
       
-
       call bookplot(n,tag,'DeltaRe5',re5,wt,wt2,0d0,5d0,0.1d0,'lin')
       n=n+1
       if(nproc.eq.300) then 
       call bookplot(n,tag,'DeltaRea5',rea5,wt,wt2,0d0,5d0,0.1d0,'lin')
-       n=n+1
+      n=n+1
       endif
       call bookplot(n,tag,'pt34',pt34,wt,wt2,0d0,ptphot,10d0,'log')
       n=n+1
@@ -243,13 +249,18 @@ c---   llplot:  equal to "lin"/"log" for linear/log scale
       call bookplot(n,tag,'pt5',pt5,wt,wt2,0d0,ptphot,10d0,'log')
       n=n+1
       if(nproc.ne.300) then 
-      call bookplot(n,tag,'m345_T',mtrans,wt,wt2,0d0,200d0,5d0,'lin')
+      call bookplot(n,tag,'transverse cluster mass, m(e-gam,nu)',
+     & m345,wt,wt2,0d0,200d0,5d0,'lin')
       n=n+1
       call bookplot(n,tag,'ydiff(ellgam)',yellgam,wt,wt2,-5d0,5d0,
      & 0.2d0,'lin')
       n=n+1
       else
-      call bookplot(n,tag,'m345',mtrans,wt,wt2,75d0,200d0,5d0,'lin')
+      call bookplot(n,tag,'(Z,gam) invariant mass',
+     & m345,wt,wt2,0d0,200d0,5d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'(Z,gam) invariant mass',
+     & m345,wt,wt2,0d0,4000d0,50d0,'log')
       n=n+1
       endif
       call bookplot(n,tag,'ydiff(Vgam)',yWgam,wt,wt2,-5d0,5d0,

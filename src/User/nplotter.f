@@ -31,25 +31,42 @@ c---                1  --> counterterm for real radiation
          switch=0
       endif
 
+c--- Special runstring for CDF W+2j plots
+c      if(runstring(1:10).eq.'cdf_Wdijet') then 
+c         call nplotter_Wdijet_v2(p,wt,wt2,switch,nd)
+c         return 
+c      endif
+         
+c--- Special plotting routine for WW -> leptons
+      if((nproc.eq.61)) then 
+         call nplotter_VV(p,wt,wt2,switch,0)
+         return 
+      endif
+
       if     (case .eq. 'W_only') then
         call nplotter_W_only(p,wt,wt2,switch)
       elseif (case .eq. 'Z_only') then
         call nplotter_Z_only(p,wt,wt2,switch)
       elseif (case .eq. 'Wbbbar') then
         call nplotter_Wbbmas(p,wt,wt2,switch)
-      elseif (case .eq. 'Wbbmas') then
+      elseif ((case .eq. 'Wbbmas') .or. (case .eq. 'W_bjet')) then
         call nplotter_Wbbmas(p,wt,wt2,switch)
       elseif ((case .eq. 'WpWp2j') .or. (case .eq. 'WpWp3j'))then
         call nplotter_WpWp(p,wt,wt2,switch)
       elseif ((case.eq.'W_1jet') .or. (case.eq.'W_2jet') 
      &   .or. (case.eq.'W_3jet')) then
         call nplotter_Wjets(p,wt,wt2,switch)
+      elseif ((case.eq.'HWW_4l') .or. (case.eq.'HWW_tb') 
+     &   .or. (case.eq.'HWWint')) then
+        call nplotter_VV(p,wt,wt2,switch,0)
 c--- photon processes also need to know the dipole number
       elseif ((case.eq.'Wgamma') .or. (case.eq.'Zgamma')
      &   .or. (case.eq.'Wgajet') .or. (case.eq.'Zgajet')) then
         call nplotter_Vgamma(p,wt,wt2,switch,nd)
       elseif ((case.eq.'gamgam') .or. (case .eq. 'gmgmjt'))  then
         call nplotter_gamgam(p,wt,wt2,switch,nd)
+      elseif (case.eq.'dirgam') then 
+        call nplotter_dirgam(p,wt,wt2,switch,nd)
       else
         call nplotter_generic(p,wt,wt2,switch)
       endif

@@ -40,7 +40,7 @@
       double precision mqq(0:2,fn:nf,fn:nf)
       double precision msqx(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf)
       double precision msqx_cs(0:2,-nf:nf,-nf:nf)
-      double precision AP(-1:1,-1:1,3)
+      double precision AP(-1:1,-1:1,3),APqg_mass
 
       integer ih1,ih2,j,k,m,n,cs,ics,csmax,nvec,is,iq,ia,ib,ic
       double precision p(mxpart,4),pjet(mxpart,4),r(mxdim),W,sqrts,xmsq,
@@ -56,7 +56,6 @@
       integer nshot,rvcolourchoice,sgnj,sgnk
       logical bin,first,includedipole
       logical creatent,dswhisto
-      logical QandGflag
       double precision QandGint
       character*4 mypart
       character*30 runstring
@@ -173,8 +172,11 @@ c--- processes that use "gen6"
      .    .or. (case .eq. 'HWW2jt') 
      .    .or. (case .eq. 'HZZ2jt') 
      .    .or. (case .eq. 'qq_HWW')
+     .    .or. (case .eq. 'qq_HZZ')
      .    .or. (case .eq. 'WH__WW')
+     .    .or. (case .eq. 'WH__ZZ')
      .    .or. (case .eq. 'ZH__WW')
+     .    .or. (case .eq. 'ZH__ZZ')
      .    .or. (case .eq. 'vlchk6') ) then
         npart=6
         call gen6(r,p,pswt,*999)
@@ -201,6 +203,7 @@ c--- processes that use "gen_njets" with an argument of "1"
      .    .or. (case .eq. 'H_1jet')
      .    .or. (case .eq. 'httjet')
      .    .or. (case .eq. 'ggfus1')
+     .    .or. (case .eq. 'Hgagaj')
      .    .or. (case .eq. 'attjet')
      .    .or. (case .eq. 'gQ__ZQ') ) then
         npart=3
@@ -212,6 +215,7 @@ c--- processes that use "gen_njets" with an argument of "2"
      .    .or. (case .eq. 'Z_2jet')
      .    .or. (case .eq. 'Zbbbar')
      .    .or. (case .eq. 'qq_Hqq')
+     .    .or. (case .eq. 'qq_Hgg')
      .    .or. (case .eq. 'ggfus2')
      .    .or. (case .eq. 'W_bjet')
      .    .or. (case .eq. 'Wcjetg')
@@ -251,8 +255,9 @@ c--- DEFAULT: processes that use "gen4"
       nvec=npart+2
       call dotem(nvec,p,s)
 
-c---impose mass cuts on final state
-      call masscuts(p,*999)
+c--- (moved to includedipole) impose cuts on final state
+c      call masscuts(p,*999)
+
 c----reject event if any s(i,j) is too small
       call smalls(s,npart,*999)
          
@@ -272,9 +277,9 @@ c--- bother calculating the matrix elements for it, instead bail out
 
       flux=fbGeV2/(2d0*xx(1)*xx(2)*W)
 c--- for mlm study, divide by (Ecm)**2=W
-      if (runstring(1:3) .eq. 'mlm') then
-	flux=flux/W
-      endif
+c      if (runstring(1:3) .eq. 'mlm') then
+c	flux=flux/W
+c      endif
 
 c--- to test poles, we need colourchoice=0, but save real value
       if (nshot .eq. 1) then
@@ -460,9 +465,18 @@ c--- Calculate the required matrix elements
         call qqb_zbb_v(p,msqv)
         call qqb_zbb_z(p,z)
       elseif (case .eq. 'WWqqbr') then
-        call qqb_ww(p,msq)
-        call qqb_ww_v(p,msqv)
-        call qqb_ww_z(p,z)
+        if (ggonly) then ! special catch for gg->WW piece only
+	  do j=-nf,nf
+	  do k=-nf,nf
+	  msq(j,k)=0d0
+	  msqv(j,k)=0d0
+	  enddo
+	  enddo
+	else
+          call qqb_ww(p,msq)
+          call qqb_ww_v(p,msqv)
+          call qqb_ww_z(p,z)
+	endif
         call gg_WW(p,msqv(0,0)) ! additional gluon-gluon contribution
       elseif (case .eq. 'WZbbar') then
         call qqb_wz(p,msq)
@@ -481,13 +495,29 @@ c--- Calculate the required matrix elements
         call qqb_wh_ww(p,msq)
         call qqb_wh_ww_v(p,msqv)
         call qqb_wh_z(p,z) ! nb: the same as above
+      elseif (case .eq. 'WH__ZZ') then
+        call qqb_wh_zz(p,msq)
+        call qqb_wh_zz_v(p,msqv)
+        call qqb_wh_z(p,z) ! nb: the same as above
+      elseif (case .eq. 'WHgaga') then
+        call qqb_wh_gaga(p,msq)
+        call qqb_wh_gaga_v(p,msqv)
+        call qqb_wh_z(p,z) ! nb: the same as above
       elseif (case .eq. 'ZHbbar') then
         call qqb_zh(p,msq)
         call qqb_zh_v(p,msqv)
         call qqb_zh_z(p,z)
+      elseif (case .eq. 'ZHgaga') then
+        call qqb_zh_gaga(p,msq)
+        call qqb_zh_gaga_v(p,msqv)
+        call qqb_zh_z(p,z)      ! nb: the same as above
       elseif (case .eq. 'ZH__WW') then
         call qqb_zh_ww(p,msq)
         call qqb_zh_ww_v(p,msqv)
+        call qqb_zh_z(p,z) ! nb: the same as above
+      elseif (case .eq. 'ZH__ZZ') then
+        call qqb_zh_zz(p,msq)
+        call qqb_zh_zz_v(p,msqv)
         call qqb_zh_z(p,z) ! nb: the same as above
       elseif (case .eq. 'ggfus0') then
         call gg_h(p,msq)
@@ -604,6 +634,10 @@ c--- Calculate the required matrix elements
         call gg_hg(p,msq)
         call gg_hg_v(p,msqv)
         call gg_hg_z(p,z)
+      elseif (case .eq. 'Hgagaj') then
+        call gg_hgagag(p,msq)
+        call gg_hgagag_v(p,msqv)
+        call gg_hg_z(p,z) ! nb: the same as above
       elseif (case .eq. 'ggfus2') then
         call gg_hgg(p,msq)
         call gg_hgg_v(p,msqv)
@@ -620,10 +654,18 @@ c--- Calculate the required matrix elements
         call VV_hqq(p,msq)
         call VV_hqq_v(p,msqv)
         call VV_hqq_z(p,z)
+      elseif (case .eq. 'qq_Hgg') then
+        call VV_Hgaga(p,msq)
+        call VV_Hgaga_v(p,msqv)
+        call VV_Hgaga_z(p,z)
       elseif (case .eq. 'qq_HWW') then
         call VV_HWW(p,msq)
         call VV_HWW_v(p,msqv)
         call VV_HWW_z(p,z)
+      elseif (case .eq. 'qq_HZZ') then
+        call VV_HZZ(p,msq)
+        call VV_HZZ_v(p,msqv)
+        call VV_HZZ_z(p,z)
       elseif (case .eq. 'qg_tbq') then
         call qg_tbq(p,msq)
         call qg_tbq_v(p,msqv)
@@ -662,6 +704,11 @@ c--- calculating corrections on the quark line
         call qqb_zbjet(p,msq)
         call qqb_zbjet_v(p,msqv)
         call qqb_zbjet_z(p,z)
+      elseif (case .eq. 'W_bjet') then
+        call qqb_Wbjet(p,msq)
+        call qqb_Wbjet_v(p,msqv)
+        call qqb_Wbjet_z(p,z)
+        APqg_mass=-ason2pi*Tr*(z**2+omz**2)*dlog(facscale**2/mbsq)
       elseif (case .eq. 'Wcsbar') then
         call qqb_w(p,msq)
         call qqb_w_v(p,msqv)
@@ -714,24 +761,24 @@ c--- for single top + b, make sure to use two different scales
         enddo
       else
 c--- for comparison with C. Oleari's e+e- --> QQbg calculation
-        if (runstring(1:5) .eq. 'carlo') then
-          flux=1d0/2d0/W/(as/twopi)**2
-c--- divide out by (ason2pi) and then the "LO" massless DY process
-	  flux=flux/(aveqq*xn*fourpi*(gwsq/fourpi)**2/3d0/sqrts**2)
-	  flux=flux/(xn/8d0)
-	  do j=-nf,nf
-	  fx1(j)=0d0
-	  fx2(j)=0d0
-	  enddo
-	    fx1(0)=1d0
-	    fx1(1)=1d0
-	    fx2(0)=1d0
-	    fx2(1)=1d0
-        else   
+c        if (runstring(1:5) .eq. 'carlo') then
+c          flux=1d0/2d0/W/(as/twopi)**2
+cc--- divide out by (ason2pi) and then the "LO" massless DY process
+c	  flux=flux/(aveqq*xn*fourpi*(gwsq/fourpi)**2/3d0/sqrts**2)
+c	  flux=flux/(xn/8d0)
+c	  do j=-nf,nf
+c	  fx1(j)=0d0
+c	  fx2(j)=0d0
+c	  enddo
+c	    fx1(0)=1d0
+c	    fx1(1)=1d0
+c	    fx2(0)=1d0
+c	    fx2(1)=1d0
+c        else   
 c--- usual case            
           call fdist(ih1,xx(1),facscale,fx1)
           call fdist(ih2,xx(2),facscale,fx2)
-	endif
+c	endif
       endif
       
       do j=-nf,nf
@@ -747,14 +794,14 @@ c--- for single top + b, make sure to use two different scales
           call fdist(ih1,x1onz,facscale_L,fx1z_L)
         else
 c--- for comparison with C. Oleari's e+e- --> QQbg calculation
-          if (runstring(1:5) .eq. 'carlo') then
- 	    do j=-nf,nf
-	    fx1z(j)=0d0
-	    enddo
-          else   
+c          if (runstring(1:5) .eq. 'carlo') then
+c 	    do j=-nf,nf
+c	    fx1z(j)=0d0
+c	    enddo
+c          else   
 c--- usual case            
             call fdist(ih1,x1onz,facscale,fx1z)
-          endif
+c          endif
 	endif
       endif
       if (z .gt. xx(2)) then
@@ -765,14 +812,14 @@ c--- for single top + b, make sure to use two different scales
           call fdist(ih2,x2onz,facscale_L,fx2z_L)
         else
 c--- for comparison with C. Oleari's e+e- --> QQbg calculation
-          if (runstring(1:5) .eq. 'carlo') then
- 	    do j=-nf,nf
-	    fx2z(j)=0d0
-	    enddo
-          else   
+c          if (runstring(1:5) .eq. 'carlo') then
+c 	    do j=-nf,nf
+c	    fx2z(j)=0d0
+c	    enddo
+c          else   
 c--- usual case            
             call fdist(ih2,x2onz,facscale,fx2z)
-          endif
+c          endif
 	endif
       endif         
       
@@ -789,6 +836,10 @@ c--- usual case
       
       if (noglue) then 
       if ((j.eq.0) .or. (k.eq.0)) goto 20
+      endif
+
+      if (omitgg) then 
+      if ((j.eq.0) .and. (k.eq.0)) goto 20
       endif
 
       if ((case .eq. 'Wcsbar').and.(j .ne. 4).and.(k .ne. 4)) goto 20
@@ -1138,6 +1189,10 @@ c---   (interchange integrated CT's for q-qbar and qbar-q)
      & + msq_gq*(AP(q,g,2)+R2(q,g,g,cs,2)))*fx1(g)*fx2z(g)/z
       enddo
       elseif ((j .eq. g) .and. (k .gt. 0)) then
+c--- special case for W+bj - remove b-PDF contribution
+      if ((case .eq. 'W_bjet') .and. (k .ne. 5)) then
+      xmsq=xmsq+(msq(-5,k)+msq(+5,k))*APqg_mass*fx1z(g)/z*fx2(k)
+      else
       do cs=0,2
       msq_aq=msq_cs(cs,-1,k)+msq_cs(cs,-2,k)+msq_cs(cs,-3,k)
      &      +msq_cs(cs,-4,k)+msq_cs(cs,-5,k)
@@ -1156,8 +1211,13 @@ c---   (interchange integrated CT's for q-qbar and qbar-q)
      &                +R2(q,q,g,cs,2)+R2(q,q,g,cs,3))
      & + msq_cs(cs,g,g)*(AP(g,q,2)+R2(g,q,g,cs,2)))*fx1(g)*fx2z(k)/z
       enddo
-
+      endif
+      
       elseif ((j .eq. g) .and. (k .lt. 0)) then
+c--- special case for W+bj - remove b-PDF contribution
+      if ((case .eq. 'W_bjet') .and. (k .ne. -5)) then
+      xmsq=xmsq+(msq(-5,k)+msq(+5,k))*APqg_mass*fx1z(g)/z*fx2(k)
+      else
       do cs=0,2
       msq_qa=msq_cs(cs,+1,k)+msq_cs(cs,+2,k)+msq_cs(cs,+3,k)
      &      +msq_cs(cs,+4,k)+msq_cs(cs,+5,k)
@@ -1176,8 +1236,13 @@ c---   (interchange integrated CT's for q-qbar and qbar-q)
      &                  +R2(a,a,g,cs,2)+R2(a,a,g,cs,3))
      & + msq_cs(cs,g,g)*(AP(g,a,2)+R2(g,a,g,cs,2)))*fx1(g)*fx2z(k)/z
       enddo
-
+      endif
+      
       elseif ((j .gt. 0) .and. (k .eq. g)) then
+c--- special case for W+bj - remove b-PDF contribution
+      if ((case .eq. 'W_bjet') .and. (j .ne. 5)) then
+      xmsq=xmsq+(msq(j,-5)+msq(j,+5))*APqg_mass*fx1(j)*fx2z(g)/z
+      else
       do cs=0,2
       msq_qa=msq_cs(cs,j,-1)+msq_cs(cs,j,-2)+msq_cs(cs,j,-3)
      &      +msq_cs(cs,j,-4)+msq_cs(cs,j,-5)
@@ -1196,8 +1261,13 @@ c---   (interchange integrated CT's for q-qbar and qbar-q)
      &+ msq_qa*(AP(a,g,2)+R2(a,g,q,cs,2))
      &+ msq_qq*(AP(q,g,2)+R2(q,g,q,cs,2)))*fx1(j)*fx2z(g)/z
       enddo
+      endif
       
       elseif ((j .lt. 0) .and. (k .eq. g)) then
+c--- special case for W+bj - remove b-PDF contribution
+      if ((case .eq. 'W_bjet') .and. (j .ne. -5)) then
+      xmsq=xmsq+(msq(j,-5)+msq(j,+5))*APqg_mass*fx1(j)*fx2z(g)/z
+      else
       do cs=0,2
       msq_aq=msq_cs(cs,j,+1)+msq_cs(cs,j,+2)+msq_cs(cs,j,+3)
      &      +msq_cs(cs,j,+4)+msq_cs(cs,j,+5)
@@ -1216,6 +1286,7 @@ c---   (interchange integrated CT's for q-qbar and qbar-q)
      & + msq_aq*(AP(q,g,2)+R2(q,g,a,cs,2))
      & + msq_aa*(AP(a,g,2)+R2(a,g,a,cs,2)))*fx1(j)*fx2z(g)/z
       enddo
+      endif
       endif
 
 
@@ -1545,7 +1616,8 @@ c      if (xmsq-tmp .ne. 0d0) write(6,*) j,k,'-> msqc = ',xmsq-tmp
 
 c--- subtract off LO (we don't want it) for Wcs_ms case and for
 c--- the comparison with C. Oleari's e+e- --> QQbg calculation
-      if ((case .eq. 'Wcs_ms') .or. (runstring(1:5) .eq. 'carlo')) then
+c      if ((case .eq. 'Wcs_ms') .or. (runstring(1:5) .eq. 'carlo')) then
+      if (case .eq. 'Wcs_ms') then
         xmsq=xmsq-msq(j,k)*fx1(j)*fx2(k)
       endif  
            

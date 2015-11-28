@@ -62,13 +62,13 @@
 
       if (first) then
         first=.false.
-        if (Gflag) then
+        if ((Gflag) .or. (QandGflag)) then
           write(*,*) 'Using QQGG (VIRTUAL) matrix elements'
           write(*,*) '[LC is     N   ]'
           write(*,*) '[SLC is   1/N  ]'
           write(*,*) '[SSLC is 1/N**3]'
         endif
-        if (Qflag) then
+        if ((Qflag) .or. (QandGflag)) then
           write(*,*) 'Using QQBQQB (VIRTUAL) matrix elements'
           write(*,*) '[LC is   1 ]'
           write(*,*) '[SLC is 1/N]'
@@ -132,9 +132,9 @@ c--- NB: this breaks the routine if Qflag = Gflag = .true.
       enddo
 
 c--- when testing alpha-dependence, we do not need loop contribution
-      if (runstring(1:5) .eq. 'alpha') then
-        return
-      endif
+c      if (runstring(1:5) .eq. 'alpha') then
+c        return
+c      endif
 
 c--- Now calculate the relevant lowest-order matrix elements
 c--- for each possible initial state from the QQGG contribution
@@ -257,9 +257,9 @@ c--- NB: this breaks the routine if Qflag = Gflag = .true.
       enddo
 
 c--- when testing alpha-dependence, we do not need loop contribution
-      if (runstring(1:5) .eq. 'alpha') then
-        return
-      endif
+c      if (runstring(1:5) .eq. 'alpha') then
+c        return
+c      endif
 
 c--- early return if there's no contribution here      
       if ((gqonly) .or. (ggonly)) return      

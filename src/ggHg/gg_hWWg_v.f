@@ -14,7 +14,7 @@ C----f(p1)+f(p2) --> H(W^+(-->nu(p3)+e^+(p4)) +W^-(-->e^-(p5)+nu~(p6)))+g(p7)
 C     (Taken from Ravindran, Smith, van Neerven hep-ph/0201114)
 C     Modified by overall factors
       integer iglue,j,k
-      double precision p(4,mxpart),msq(fn:nf,fn:nf),s3456
+      double precision p(mxpart,4),msq(fn:nf,fn:nf),s3456
       double precision ss,tt,uu,
      . virtgg,virtqa,virtaq,virtqg,virtgq,hdecay,Asq,fac
       parameter(iglue=7)

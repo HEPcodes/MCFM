@@ -107,7 +107,7 @@ c--- maximum number of PDF error sets is 1000
 c--- loop over all PDF sets
       DO K=1,maxPDFsets
       
-      WRITE(97,100) TITLE(N),BTIT,LTIT,SCALE,HMIN(N),HMAX(N)
+      WRITE(95,100) TITLE(N),BTIT,LTIT,SCALE,HMIN(N),HMAX(N)
   100 FORMAT( /1x,                               
      &' SET WINDOW Y 2.5 TO 7.'/,1X,
      &' SET WINDOW X 2.5 TO 10.'/,1X,
@@ -121,12 +121,12 @@ c--- loop over all PDF sets
      &' SET ORDER X Y DY ')
       DO 1 J=1,NBIN(N)
       IF(EHIST(NMATCH,K,J).EQ.0.) GO TO 1
-      WRITE(97,'(3X,G13.6,2(2X,G13.6))')  
+      WRITE(95,'(3X,G13.6,2(2X,G13.6))')  
      &                  XHIS(N,J),EHIST(NMATCH,K,J),0d0
     1 CONTINUE
-      WRITE(97,200)
+      WRITE(95,200)
   200 FORMAT('   PLOT')
-      WRITE(97,400)
+      WRITE(95,400)
   400 FORMAT('   NEW PLOT')
   
       enddo

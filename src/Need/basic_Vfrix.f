@@ -42,6 +42,6 @@ c---- Calcualte prefac for check
          endif
      
       return 
-      end subroutine
+      end
       
 

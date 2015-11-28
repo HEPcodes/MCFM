@@ -152,16 +152,16 @@ c--- these amplitudes are only used for isub=1
       if (isub .eq. 1) then
 c--- calculate H-q and q-Q amplitudes      
       call msq_ZqqQQg_noid(5,1,6,2,7,4,3,msq_Hq)
-      call msq_ZqqQQg_noid(6,1,5,2,7,4,3,msq_qH)
+      call msq_ZqqQQg_noid(5,2,6,1,7,4,3,msq_qH)
 c--- calculate Hb-qb and qb-Hb amplitudes      
       call msq_ZqqQQg_noid(1,5,2,6,7,4,3,msq_Hbqb)
-      call msq_ZqqQQg_noid(1,6,2,5,7,4,3,msq_qbHb)
+      call msq_ZqqQQg_noid(2,5,1,6,7,4,3,msq_qbHb)
 c--- calculate H-qb and q-Qb amplitudes      
       call msq_ZqqQQg_noid(5,1,2,6,7,4,3,msq_Hqb)
-      call msq_ZqqQQg_noid(6,1,2,5,7,4,3,msq_qHb)
+      call msq_ZqqQQg_noid(2,5,6,1,7,4,3,msq_qHb)
 c--- calculate Hb-q and qb-H amplitudes      
       call msq_ZqqQQg_noid(1,5,6,2,7,4,3,msq_Hbq)
-      call msq_ZqqQQg_noid(1,6,5,2,7,4,3,msq_qbH)
+      call msq_ZqqQQg_noid(5,2,1,6,7,4,3,msq_qbH)
       endif
 
 c--- these amplitudes are only used for isub=2 (ADDED 12/8/05)
@@ -206,7 +206,7 @@ c--- Q-q/q-Q contribution (isub=1 only)
         if     (j .eq. +flav) then
           msq(j,k)=fac*aveqq*msq_Hq(jj(j),kk(k))
         elseif (k .eq. +flav) then
-          msq(j,k)=fac*aveqq*msq_qH(jj(j),kk(k))
+          msq(j,k)=fac*aveqq*msq_qH(kk(k),jj(j))
         endif
 
       elseif ((isub .eq. 1) .and. (j .lt. 0) .and. (k .lt. 0)) then
@@ -214,7 +214,7 @@ c--- Qb-qb/qb-Qb contribution (isub=1 only)
         if     (j .eq. -flav) then
           msq(j,k)=fac*aveqq*msq_Hbqb(-jj(j),-kk(k))
         elseif (k .eq. -flav) then
-          msq(j,k)=fac*aveqq*msq_qbHb(-jj(j),-kk(k))
+          msq(j,k)=fac*aveqq*msq_qbHb(-kk(k),-jj(j))
         endif
 
       elseif ((isub .eq. 1) .and. (j .gt. 0) .and. (k .lt. 0)) then
@@ -222,7 +222,7 @@ c--- Q-qb/q-Qb contribution (isub=1 only)
         if     (j .eq. +flav) then
           msq(j,k)=fac*aveqq*msq_Hqb(jj(j),-kk(k))
         elseif (k .eq. -flav) then
-          msq(j,k)=fac*aveqq*msq_qHb(jj(j),-kk(k))
+          msq(j,k)=fac*aveqq*msq_qHb(-kk(k),jj(j))
         endif
 
       elseif ((isub .eq. 1) .and. (j .lt. 0) .and. (k .gt. 0)) then
@@ -230,7 +230,7 @@ c--- Qb-q/qb-Q contribution (isub=1 only)
         if     (j .eq. -flav) then
           msq(j,k)=fac*aveqq*msq_Hbq(-jj(j),kk(k))
         elseif (k .eq. +flav) then
-          msq(j,k)=fac*aveqq*msq_qbH(-jj(j),kk(k))
+          msq(j,k)=fac*aveqq*msq_qbH(kk(k),-jj(j))
         endif
 
       elseif ((j .gt. 0) .and. (k .eq. 0)) then

@@ -44,13 +44,13 @@ c
 
       if (first) then
       first=.false.
-        if (Gflag) then
+        if ((Gflag) .or. (QandGflag)) then
           write(*,*) 'Using QQGG+G (REAL) matrix elements'
           write(*,*) '[LC is     N   ]'
           write(*,*) '[SLC is   1/N  ]'
           write(*,*) '[SSLC is 1/N**3]'
         endif
-        if (Qflag) then
+        if ((Qflag) .or. (QandGflag)) then
           write(*,*) 'Using QQBQQB+G (REAL) matrix elements'
           write(*,*) '[LC is   1 ]'
           write(*,*) '[SLC is 1/N]'

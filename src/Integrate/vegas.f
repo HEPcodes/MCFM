@@ -9,6 +9,8 @@
 c--- Note: NDMX increased to 100 (from 50) compared with versions 5.1 and
 c---  earlier, to aid calculation of H+2 jets process
       PARAMETER (ALPH=1.5d0,NDMX=100,TINY=1d-30)
+c--- DEBUG: no adapting
+c      PARAMETER (ALPH=0d0,NDMX=100,TINY=1d-30)
       EXTERNAL fxn
 C     USES fxn,ran2,rebin
       INTEGER i,idum,it,j,k,jj,mds,nd,ndo,ng,npg,ia(MXDIM),kg(MXDIM)
@@ -41,6 +43,10 @@ C     USES fxn,ran2,rebin
       if (init.le.2)then
         nd=NDMX
         ng=1
+c--- DEBUG	
+c	write(6,*) 'DEBUG: Setting mds to zero'
+c        mds=0
+c--- DEBUG	
         if(mds.ne.0)then
           ng=(ncall/2d0+0.25d0)**(1d0/ndim)
           mds=1

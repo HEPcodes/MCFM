@@ -41,10 +41,10 @@ CXXFLAGS=$(CXXFLAGS0) $(DROOT)
 # Find the ROOT directory automatically by running root-config 
 # or specify it manually by editing the variable ROOTDIR 
 
-#ROOTDIR= $(shell root-config --prefix)
-#DMYROOT= -DMYROOT
-#ROOTLIBS     := $(shell root-config --prefix=$(ROOTDIR)  --libs)
-#ROOTINCLUDE     := -I $(shell root-config --prefix=$(ROOTDIR) --incdir)
+ROOTDIR= $(shell root-config --prefix)
+DMYROOT= -DMYROOT
+ROOTLIBS     := $(shell root-config --prefix=$(ROOTDIR)  --libs)
+ROOTINCLUDE     := -I $(shell root-config --prefix=$(ROOTDIR) --incdir)
 
 
 DIRS	=	$(MCFMHOME):\
@@ -56,7 +56,7 @@ DIRS	=	$(MCFMHOME):\
 		$(SOURCEDIR)/WHbbar:$(SOURCEDIR)/ZHbbar:\
 		$(SOURCEDIR)/WW:$(SOURCEDIR)/WZ:$(SOURCEDIR)/ZZ:\
 		$(SOURCEDIR)/Top:$(SOURCEDIR)/Topdk:$(SOURCEDIR)/Singletop:\
-		$(SOURCEDIR)/TopH:$(SOURCEDIR)/TopZ:\
+		$(SOURCEDIR)/TopH:$(SOURCEDIR)/TopZ:$(SOURCEDIR)/TopW:\
 		$(SOURCEDIR)/HWW:$(SOURCEDIR)/HZZ:$(SOURCEDIR)/Tau:\
 		$(SOURCEDIR)/Httbar:\
 		$(SOURCEDIR)/W:$(SOURCEDIR)/Z:\
@@ -67,11 +67,14 @@ DIRS	=	$(MCFMHOME):\
 		$(SOURCEDIR)/Wgam:$(SOURCEDIR)/Zgam:\
                 $(SOURCEDIR)/Z2jet:$(SOURCEDIR)/Zb:\
 		$(SOURCEDIR)/bbHiggs:$(SOURCEDIR)/Wt:\
-                $(SOURCEDIR)/qqH:$(SOURCEDIR)/qqHWW:$(SOURCEDIR)/ZQjet:\
+                $(SOURCEDIR)/qqH:$(SOURCEDIR)/qqHWW:$(SOURCEDIR)/qqHZZ:\
+		$(SOURCEDIR)/ZQjet:\
                 $(SOURCEDIR)/ggH:$(SOURCEDIR)/ggHg:\
                 $(SOURCEDIR)/ggHggreal:$(SOURCEDIR)/ggHggvirt:\
                 $(SOURCEDIR)/H4pCode:\
                 $(SOURCEDIR)/WHWW:$(SOURCEDIR)/ZHWW:\
+		$(SOURCEDIR)/WHZZ:$(SOURCEDIR)/ZHZZ:\
+		$(SOURCEDIR)/WHgaga:$(SOURCEDIR)/ZHgaga:$(SOURCEDIR)/qqHgaga:\
 		$(SOURCEDIR)/Stopb:$(SOURCEDIR)/Stopjet:\
 		$(SOURCEDIR)/epem3j:\
 		$(SOURCEDIR)/WpWp2j:$(SOURCEDIR)/F90\
@@ -84,6 +87,7 @@ DIRS	=	$(MCFMHOME):\
 # Specify the object files. 
 
 FRAGFILES = \
+GGdR_frag.o \
 NP_FragSetI.o \
 NP_FragSetII.o \
 Pert_Frag.o \
@@ -162,6 +166,11 @@ epem3j_v.o \
 epem3j_z.o
 
 HWWJETFILES = \
+gg_hgagag.o \
+gg_hgagagg.o \
+gg_hgagag_gs.o \
+gg_hgagag_gvec.o \
+gg_hgagag_v.o \
 gg_hZZg.o \
 gg_hZZgg.o \
 gg_hZZg_gs.o \
@@ -198,13 +207,17 @@ qqb_Hg_v.o \
 qqb_Hg_z.o
 
 DIRGAMFILES = \
+qqb_2jnogg.o \
 qqb_dirgam_swap.o \
 qqb_dirgam.o \
+qqb_dirgam_frag.o \
+qqb_dirgam_fragdips.o \
 qqb_dirgam_g.o \
 qqb_dirgam_gs.o \
 qqb_dirgam_gvec.o \
 qqb_dirgam_v.o \
 qqb_dirgam_z.o \
+small.o \
 Bigagam.o \
 Bigbgam.o \
 Bigcgam.o 
@@ -243,7 +256,9 @@ gg_hgamgamg.o \
 gg_hgamgam_gs.o \
 gg_hgamgam_gvec.o \
 gg_hgamgam_v.o \
-gg_hgamgam_z.o
+gg_hgamgam_z.o \
+msqgamgam.o \
+Ftriangle.o
 
 GGHGFILES = \
 amplonumer.o \
@@ -365,10 +380,12 @@ F42meF.o \
 F42mhF.o
 
 HWWFILES = \
+gg_WW_int.o \
 qqb_hww.o \
 qqb_hww_g.o \
 qqb_hww_gvec.o \
 qqb_hww_gs.o \
+qqb_hww_tb.o \
 qqb_hww_z.o \
 qqb_hww_v.o
 
@@ -455,12 +472,21 @@ reader_input.o \
 realhistos.o \
 Rgen.o \
 scaleset.o \
+scaleset_m34.o \
+scaleset_m345.o \
+scaleset_m3456.o \
+scaleset_Msqpt34sq.o \
+scaleset_Msqpt5sq.o \
+scaleset_ptphoton.o \
+scaleset_HT.o \
+scaleset_ddis.o \
 sethparams.o \
 setmb_msbar.o \
 setrunname.o \
 smalls.o \
 spinork.o \
 spinoru.o \
+spinorz.o \
 storedip.o \
 storedip_mass.o \
 storeptilde.o \
@@ -508,6 +534,7 @@ phase7m_alt.o \
 gen7_rap.o \
 gen8.o \
 gen_phots_jets.o \
+gen_photons_jets.o \
 gen_njets.o \
 gen_soft.o \
 genff.o \
@@ -567,6 +594,19 @@ ZZ_Hqq.o \
 ZZ_Hqq_g.o \
 ZZ_Hqq_gs.o
 
+QQHGAGAHFILES = \
+VV_Hgaga.o \
+VV_Hgaga_g.o \
+VV_Hgaga_gs.o \
+VV_Hgaga_v.o \
+VV_Hgaga_z.o \
+WW_Hgaga.o \
+WW_Hgaga_g.o \
+WW_Hgaga_gs.o \
+ZZ_Hgaga.o \
+ZZ_Hgaga_g.o \
+ZZ_Hgaga_gs.o
+
 QQHWWFILES = \
 VV_HWW.o \
 WW_HWW.o \
@@ -579,6 +619,19 @@ WW_HWW_gs.o \
 ZZ_HWW_gs.o \
 VV_HWW_v.o \
 VV_HWW_z.o
+
+QQHZZFILES = \
+VV_HZZ.o \
+WW_HZZ.o \
+ZZ_HZZ.o \
+VV_HZZ_g.o \
+WW_HZZ_g.o \
+ZZ_HZZ_g.o \
+VV_HZZ_gs.o \
+WW_HZZ_gs.o \
+ZZ_HZZ_gs.o \
+VV_HZZ_v.o \
+VV_HZZ_z.o
 
 QQZTTFILES = \
 qqbZtt.o \
@@ -714,6 +767,9 @@ qqbtth.o \
 qqb_tth.o \
 qqb_tottth.o
 
+TOPWFILES = \
+qqb_ttw.o \
+
 TOPZFILES = \
 qqb_ttz.o \
 qqbttz.o \
@@ -722,12 +778,15 @@ ggttz.o
 USERFILES = \
 cdfhwwcuts.o \
 cms_higgsWW.o \
+ATLAS_hww.o \
 deltarj.o \
 durhamalg.o \
 eventhandler.o \
 etdoublebin.o \
 fill_stdhep.o \
+filterW_bjet.o \
 filterWbbmas.o \
+frix.o \
 genclust2.o \
 genclust_kt.o \
 genclust_cone.o \
@@ -742,9 +801,11 @@ jetreorder.o \
 mdata.o \
 miscclust.o \
 nplotter.o \
+nplotter_dirgam.o \
 nplotter_generic.o \
 nplotter_gamgam.o \
 nplotter_Vgamma.o \
+nplotter_VV.o \
 nplotter_W_only.o \
 nplotter_Z_only.o \
 nplotter_Wbbmas.o \
@@ -783,7 +844,14 @@ qqb_w_gvec.o \
 virt5.o
 
 WBJETFILES = \
-qqb_wbjet.o 
+addhel_wbj.o \
+qqb_wbjet.o \
+qqb_wbjet_g.o \
+qqb_wbjet_gs.o \
+qqb_wpbjet_gs.o \
+qqb_wmbjet_gs.o \
+qqb_wbjet_v.o \
+qqb_wbjet_z.o
  
 WCJETFILES = \
 qqb_w_cjet.o \
@@ -858,11 +926,23 @@ qqb_wh_gs.o \
 qqb_wh_v.o \
 qqb_wh_z.o
 
+WHGAGAFILES = \
+qqb_wh_gaga.o \
+qqb_wh_gaga_g.o \
+qqb_wh_gaga_gs.o \
+qqb_wh_gaga_v.o \
+
 WHWWFILES = \
 qqb_wh_ww.o \
 qqb_wh_ww_g.o \
 qqb_wh_ww_gs.o \
 qqb_wh_ww_v.o
+
+WHZZFILES = \
+qqb_wh_zz.o \
+qqb_wh_zz_g.o \
+qqb_wh_zz_gs.o \
+qqb_wh_zz_v.o
 
 WWFILES = \
 BigT.o \
@@ -871,15 +951,36 @@ a6loop.o \
 a7tree.o \
 amps_anom.o \
 b7tree.o \
+box1.o \
+box3.o \
+box5.o \
+bub6.o \
+comparenum.o \
+d1six.o \
+d2six.o \
+d3six.o \
+d4six.o \
 fa.o \
 gg_WW.o \
+massivebox.o \
+massivebox6.o \
+massivebub.o \
+massivetri.o \
+massivetri6.o \
+mbc.o \
 qqb_ww.o \
-qqb_ww_unpol.o \
-susana.o \
 qqb_ww_g.o \
 qqb_ww_gs.o \
+qqb_ww_unpol.o \
 qqb_ww_v.o \
 qqb_ww_z.o \
+susana.o \
+triangle11new.o \
+triangle12.o \
+triangle6.o \
+triangle7new.o \
+triangle9new.o \
+vpole.o \
 wwamps.o
 
 WZFILES = \
@@ -963,8 +1064,7 @@ qqb_wgam_z.o \
 qqb_wgam_fragdips.o \
 qqb_wfrag.o \
 fagamma.o \
-fbgamma.o \
-vpole.o
+fbgamma.o
 
 WTFILES = \
 BBamps.o \
@@ -1049,6 +1149,21 @@ xzqqgg_v_sym.o \
 z2jetsq.o \
 z2jetsqn.o
 
+ZBBFILES = \
+amp_qqggg.o \
+ampqqb_qqb.o \
+aqqb_zbb.o \
+msq_qqQQg.o \
+qqb_zbb.o \
+qqb_zbb_g.o \
+qqb_zbb_gs.o \
+qqb_zbb_gvec.o \
+qqb_zbb_v.o \
+qqb_zbb_z.o \
+xzqqgg.o \
+xzqqgg_v.o \
+xzqqggg.o
+
 ZBBMFILES = \
 gamps0.o \
 gampsabc.o \
@@ -1076,11 +1191,23 @@ qqb_zh_gs.o \
 qqb_zh_v.o \
 qqb_zh_z.o
 
+ZHGAGAFILES = \
+qqb_zh_gaga.o \
+qqb_zh_gaga_g.o \
+qqb_zh_gaga_gs.o \
+qqb_zh_gaga_v.o \
+
 ZHWWFILES = \
 qqb_zh_ww.o \
 qqb_zh_ww_g.o \
 qqb_zh_ww_gs.o \
 qqb_zh_ww_v.o
+
+ZHZZFILES = \
+qqb_zh_zz.o \
+qqb_zh_zz_g.o \
+qqb_zh_zz_gs.o \
+qqb_zh_zz_v.o
 
 ZZFILES = \
 gg_ZZ.o \
@@ -1092,21 +1219,6 @@ qqb_zz_z.o \
 zzamps.o \
 zzamp.o \
 zzgamp.o
-
-ZBBFILES = \
-amp_qqggg.o \
-ampqqb_qqb.o \
-aqqb_zbb.o \
-msq_qqQQg.o \
-qqb_zbb.o \
-qqb_zbb_g.o \
-qqb_zbb_gs.o \
-qqb_zbb_gvec.o \
-qqb_zbb_v.o \
-qqb_zbb_z.o \
-xzqqgg.o \
-xzqqgg_v.o \
-xzqqggg.o
 
 ZQFILES = \
 gQ_zQ.o \
@@ -1169,7 +1281,7 @@ ifeq ($(PDFROUTINES),PDFLIB)
    fdist_pdflib.o \
    pdfwrap_pdflib.o
    LIBDIR=$(CERNLIB)
-   LIBFLAGS += -lpdflib804 $(LIBFLAGS)
+   LIBFLAGS += -lpdflib804
    ifeq (,$(findstring packlib,$(LIBFLAGS)))
      LIBFLAGS += -lpacklib -lmathlib
    endif
@@ -1225,7 +1337,7 @@ endif
 
 OURCODE = $(LIBFILES) $(NEEDFILES)  $(PROCDEPFILES) \
           $(PHASEFILES) $(SINGLETOPFILES) \
-          $(TOPHFILES) $(TOPZFILES) $(TOPDKFILES) \
+          $(TOPHFILES) $(TOPZFILES) $(TOPWFILES) $(TOPDKFILES) \
           $(USERFILES) $(VOLFILES) $(WFILES) $(W2JETFILES) \
           $(WCJETFILES) $(WBJETFILES) \
 	  $(W2JETVIRTFILES) $(WHBBARFILES) $(WGAMFILES) $(ZGAMFILES) \
@@ -1234,10 +1346,11 @@ OURCODE = $(LIBFILES) $(NEEDFILES)  $(PROCDEPFILES) \
 	    $(Z1JETFILES) $(HWWFILES) $(HZZFILES) \
           $(TAUTAUFILES) $(HTTBARFILES) \
           $(BBHIGGSFILES) $(WBBFILES) $(ZBBFILES) \
-          $(QQHFILES) $(QQHWWFILES) $(GGHFILES) $(GGHGFILES) \
+          $(QQHFILES) $(QQHWWFILES) $(QQHZZFILES) $(GGHFILES) $(GGHGFILES) \
           $(GGHGGrealFILES) $(GGHGGvirtFILES) $(H4PCODEFILES) \
 	  $(TOPFILES) $(ZQFILES) $(ZQJETFILES) $(WTFILES) $(HWWJETFILES) \
-	  $(WHWWFILES) $(ZHWWFILES) \
+	  $(WHWWFILES) $(ZHWWFILES) $(WHZZFILES) $(ZHZZFILES) \
+	  $(WHGAGAFILES) $(ZHGAGAFILES) $(QQHGAGAHFILES) \
 	  $(STOPBFILES) $(STOPJETFILES) $(EPEM3JFILES) $(QQZTTFILES) \
 	  $(WPWP2JFILES) $(F90FILES) \
 	  $(GAMGAMFILES) $(DIRGAMFILES) \
@@ -1297,7 +1410,7 @@ checkf:
 		$(FORCHKPATH)/forchk -I $(INCPATH) $(PRJSF)
 
 clean:
-	- rm -f *.o obj/*.o obj/*.mod *.s *.prj *~ core
+	- rm -f *.o obj/*.o obj/*.mod Bin/mcfm QCDLoop/*/*.o *.s *.prj *~ core
 
 # -----------------------------------------------------------------------------
 

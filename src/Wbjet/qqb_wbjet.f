@@ -87,6 +87,8 @@ c--- set up auxiliary array
       do j=-nf,nf
         Vsm(j)=Vsum(j)
         if (abs(j) .ge. flav) Vsm(j)=0d0
+c--- make sure that elements are either one or zero
+        if (Vsm(j) .gt. 0d0) Vsm(j)=1d0 	
       enddo
 
       do j=-nf,nf

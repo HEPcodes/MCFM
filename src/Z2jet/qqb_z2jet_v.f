@@ -108,13 +108,13 @@ c--- both be set to .false.
 
       if (first) then
         first=.false.
-        if (Gflag) then
+        if ((Gflag) .or. (QandGflag)) then
           write(*,*) 'Using QQGG (VIRTUAL) matrix elements'
           write(*,*) '[LC is     N   ]'
           write(*,*) '[SLC is   1/N  ]'
           write(*,*) '[SSLC is 1/N**3]'
         endif
-        if (Qflag) then
+        if ((Qflag) .or. (QandGflag)) then
           write(*,*) 'Using QQBQQB (VIRTUAL) matrix elements'
           write(*,*) '[LC is   1 ]'
           write(*,*) '[SLC is 1/N]'
@@ -930,7 +930,7 @@ c--- add additional annihilation diagrams if necessary
 c--- write out ug virtual amplitude when checking
       if (checkvector .or. checkaxial) then      
         write(6,*) 'Madloop check: ug Virt',msqv(2,0)
-	pause
+c	pause
       endif
       
 ************************************************************************

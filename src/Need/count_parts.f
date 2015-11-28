@@ -9,7 +9,6 @@
       common/plabel/plabel
 
       count_photo=0
-
       do j=1,mxpart
          if (plabel(j) .eq. 'ga') then 
             count_photo=count_photo+1

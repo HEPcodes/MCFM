@@ -35,11 +35,11 @@ c      xjac=2*r(9)*(one-taumin)
       xjac=xjac*two/surd
 
 c--- for comparison with C. Oleari's e+e- --> QQbg calculation
-      if (runstring(1:5) .eq. 'carlo') then
-        xx(1)=1d0
-	xx(2)=1d0
-	xjac=1d0
-      endif
+c      if (runstring(1:5) .eq. 'carlo') then
+c        xx(1)=1d0
+c	xx(2)=1d0
+c	xjac=1d0
+c      endif
 
       if   ((xx(1) .gt. 1d0) 
      & .or. (xx(2) .gt. 1d0)

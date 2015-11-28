@@ -18,7 +18,7 @@ c---                1  --> counterterm for real radiation
       include 'histo.f'
       include 'jetlabel.f'
       double precision p(mxpart,4),wt,wt2,yrap,pt,r,yraptwo,etaraptwo,
-     & y3,y4,y5,pt3,pt4,pt5,re5,y34,eta34,ylep,yjet,ptlep,ptjet
+     & y3,y4,y5,pt3,pt4,pt5,Re5,y34,eta34,ylep,yjet,ptlep,ptjet
       integer switch,n,nplotmax,nproc,nqcdjets,nqcdstart
       character*4 tag
       logical first,creatent,dswhisto
@@ -44,10 +44,10 @@ c--- set them to dummy values
 c--- If there is no NLO jet, these initial y5, pt5 will not pass the cut
         y5=1d3
         pt5=1d3
-c--- If re5 is not changed by the NLO value, it will be out of
+c--- If Re5 is not changed by the NLO value, it will be out of
 c--- the plotting range
-        re5=1d3
-        jets=nqcdjets
+        Re5=1d3
+        jets=1
 c--- (Upper) limits for the plots
         ylep=5d0
         yjet=3d0
@@ -57,12 +57,6 @@ c--- (Upper) limits for the plots
       else
 c--- Add event in histograms
         tag='plot'
-      endif
-
-c--- Book and fill ntuple if that option is set, remembering to divide
-c--- by # of iterations now that is handled at end for regular histograms
-      if (creatent .eqv. .true.) then
-        call bookfill(tag,p,wt/dfloat(itmx))  
       endif
 
 ************************************************************************
@@ -89,10 +83,14 @@ c---      print*, nproc
          pt5=pt(5,p)
          y5=yrap(5,p)
          if(nproc .eq. 1) then
-            re5=R(p,4,5)
+            Re5=R(p,4,5)
          else
-            re5=R(p,3,5)
+            Re5=R(p,3,5)
          endif
+      else
+        pt5=-1d0
+	y5=1d3
+	Re5=1d3
       endif
       
 ************************************************************************
@@ -103,6 +101,12 @@ c---      print*, nproc
 
 c--- Call histogram routines
    99 continue
+
+c--- Book and fill ntuple if that option is set, remembering to divide
+c--- by # of iterations now that is handled at end for regular histograms
+      if (creatent .eqv. .true.) then
+        call bookfill(tag,p,wt/dfloat(itmx))  
+      endif
 
 c--- "n" will count the number of histograms
       n=1              
@@ -122,22 +126,22 @@ c---     xmax:  highest value to bin
 c---       dx:  bin width
 c---   llplot:  equal to "lin"/"log" for linear/log scale
 
-       call bookplot(n,tag,'W rapidity',y34,wt,wt2,-5d0,5d0,0.1d0,'lin')
+       call bookplot(n,tag,'W rapidity',y34,wt,wt2,-5d0,5d0,0.4d0,'lin')
        n=n+1
-       call bookplot(n,tag,'W ps-rap',eta34,wt,wt2,-5d0,5d0,0.1d0,'lin')
+       call bookplot(n,tag,'W ps-rap',eta34,wt,wt2,-5d0,5d0,0.4d0,'lin')
        n=n+1
       if(nproc .eq. 1) then
-         call bookplot(n,tag,'y(lep)',y4,wt,wt2,-ylep,ylep,0.1d0,'lin')
-         n=n+1
-         call bookplot(n,tag,'pt(lep)',pt4,wt,wt2,0d0,ptlep,2d0,'lin')
-         n=n+1
-      else          
-         call bookplot(n,tag,'y(lep)',y3,wt,wt2,-ylep,ylep,0.1d0,'lin')
-         n=n+1
-         call bookplot(n,tag,'pt(lep)',pt3,wt,wt2,0d0,ptlep,2d0,'lin')
-         n=n+1
+	 call bookplot(n,tag,'y(lep)',y4,wt,wt2,-ylep,ylep,0.4d0,'lin')
+	 n=n+1
+	 call bookplot(n,tag,'pt(lep)',pt4,wt,wt2,0d0,ptlep,4d0,'lin')
+	 n=n+1
+      else	    
+	 call bookplot(n,tag,'y(lep)',y3,wt,wt2,-ylep,ylep,0.4d0,'lin')
+	 n=n+1
+	 call bookplot(n,tag,'pt(lep)',pt3,wt,wt2,0d0,ptlep,4d0,'lin')
+	 n=n+1
       endif
-      call bookplot(n,tag,'DeltaRe5',re5,wt,wt2,0d0,5d0,0.1d0,'lin')
+      call bookplot(n,tag,'DeltaRe5',Re5,wt,wt2,0d0,5d0,0.4d0,'lin')
       n=n+1
       call bookplot(n,tag,'y5',y5,wt,wt2,-yjet,yjet,0.2d0,'lin')
       n=n+1

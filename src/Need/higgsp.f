@@ -57,7 +57,6 @@ C  Other branching ratios could be added.
  44   continue
       write(6,*) 'Error opening br1.sm1'
       stop
-      return
 
  45   continue
       write(6,*) 'Error opening br2.sm2'

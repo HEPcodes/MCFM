@@ -26,7 +26,7 @@ c---- are required
       double precision ptjetmin,etajetmin,etajetmax,pbreak
       double precision plstar,estar,plstarsq,y5starmax,y5starmin
       double precision mass2,width2,mass3,width3
-      integer j,nu,njets,ijet,n2,n3
+      integer j,nu,njets,ijet,n2,n3,notag
       logical first,xxerror,flatreal
       character*30 runstring
       common/runstring/runstring
@@ -35,6 +35,7 @@ c---- are required
       common/energy/sqrts
       common/breit/n2,n3,mass2,width2,mass3,width3
       common/x1x2/xx
+      common/notag/notag
       parameter(flatreal=.false.)
       data first/.true./,xxerror/.false./
       save first,ptjetmin,etajetmin,etajetmax,pbreak,xxerror
@@ -46,7 +47,7 @@ c---- are required
 c--- added extra check here, to allow for analysis of G. Hesketh et al.
 c--- that requires Z+2 jets with only one jet within cuts, to obtain
 c--- prediction for Delta_phi(Z,jet) at NLO
-        if ((part .eq. 'real') .or. (runstring(1:6) .eq. 'dphizj')) then
+        if ((part .eq. 'real') .or. (notag .gt. 0)) then
 c--- if we're generating phase space for real emissions, then we need
 c--- to produce partons spanning the whole phase space pt>0,eta<10;
 c--- in this case, pbreak=ptjetmin simply means that we

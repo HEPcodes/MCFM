@@ -5,7 +5,7 @@ c--- new virtual amplitudes
       implicit none
       include 'constants.f'
       include 'zprods_com.f'
-      integer p1,p2,p3,p4,j1,j2,j3
+      integer p1,p2,p3,p4
       double complex ab(2,2,2),ba(2,2,2),
      . A0HAQggmppp,A0HAQggmpmm,A0HAQggmpmp,A0HAQggmppm
       

@@ -23,7 +23,7 @@ c      double precision pwidth_u,pwidth_d,width
       factau=gwsq**2/32d0/wmass**4*mtau**5/192d0/pi**3
       xwsq=(wmass/mt)**2
       xbsq=(mb/mt)**2
-      write(6,*) 'xbsq',xbsq
+      write(6,*) '(mb/mt)**2',xbsq
       root=sqrt((1d0+xbsq-xwsq)**2-4d0*xbsq)
 c      factop=(gw/wmass)**2*mt**3/(64d0*pi)(1d0-xwsq)**2*(1d0+2d0*xwsq)
       factop=(gw/wmass)**2*mt**3/(64d0*pi)*root

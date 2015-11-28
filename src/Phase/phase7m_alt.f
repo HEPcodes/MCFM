@@ -9,7 +9,9 @@ c----(p4,p5) are dummies
       include 'constants.f'
       include 'masses.f'
       include 'mxdim.f'
+      include 'zerowidth.f'
       integer n2,n3,j
+      logical oldzerowidth
       double precision r(mxdim)
       double precision p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4),p8(4),
      . p9(4),p12(4),p345678(4),p345(4),p678(4),p34(4),p78(4),smin
@@ -17,6 +19,8 @@ c----(p4,p5) are dummies
      . m3,m4,m5,mass2,width2,mass3,width3
       common/breit/n2,n3,mass2,width2,mass3,width3 
       parameter(wt0=1d0/twopi**5)
+
+      oldzerowidth=zerowidth
 
       do j=1,4
       p12(j)=-p1(j)-p2(j)
@@ -45,7 +49,9 @@ c--- END DEBUG
       width3=twidth
 
 c---decay 345678-system
+      zerowidth=.true.
       call phi1_2(r(4),r(5),r(6),r(7),p345678,p345,p678,wt345678,*99)
+      zerowidth=oldzerowidth
 
       n2=0
       n3=1
@@ -69,6 +75,7 @@ c--decay of p678 into p6 and p78
       return
       
  99   continue
+      zerowidth=oldzerowidth
       wt=0d0
 
       return

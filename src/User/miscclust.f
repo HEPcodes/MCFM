@@ -114,7 +114,7 @@ c--Run II prescription
       pjet(i,4)=pjet(i,4)+pjet(j,4)
 
 c--- special combination tag for W+heavy quarks
-      if (case .eq. 'Wbbmas') then
+      if ((case .eq. 'Wbbmas') .or. (case .eq. 'W_bjet')) then
       if (((jetlabel(i) .eq. 'bq') .and. (jetlabel(j) .eq. 'ba'))
      ..or.((jetlabel(j) .eq. 'bq') .and. (jetlabel(i) .eq. 'ba'))) then
         jetlabel(i)='bb'

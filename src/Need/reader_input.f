@@ -40,6 +40,7 @@
       include 'stopscales.f'
       include 'vanillafiles.f'
       include 'frag.f'
+      include 'outputoptions.f'
       character*72 inputfile,getinput
       character*90 line
       character*4 part
@@ -141,6 +142,14 @@ c--- flags for the mode of MCFM
       if (verbose) call writeinput(6,' * ',' ','skipnt')
       read(20,*) dswhisto
       if (verbose) call writeinput(6,' * ',' ','dswhisto')
+      read(20,*) writetop
+      if (verbose) call writeinput(6,' * ',' ','writetop')
+      read(20,*) writedat
+      if (verbose) call writeinput(6,' * ',' ','writedat')
+      read(20,*) writegnu
+      if (verbose) call writeinput(6,' * ',' ','writegnu')
+      read(20,*) writeroot
+      if (verbose) call writeinput(6,' * ',' ','writeroot')
 
       if (verbose) write(6,*)
       read(20,99) line
@@ -163,8 +172,10 @@ c--- general options
       read(20,*) hmass
       if (verbose) call writeinput(6,' * ',' ','hmass')
       read(20,*) scale
+      initscale=scale
       if (verbose) call writeinput(6,' * ',' ','scale')
       read(20,*) facscale
+      initfacscale=facscale
       if (verbose) call writeinput(6,' * ',' ','facscale')
       
       initrenscale_L=0d0
@@ -192,7 +203,7 @@ c--- catch special scale choices for stop+b process
 	facscale=initfacscale_H        
       endif
 
-      read(20,*) dynamicscale
+      read(20,*) dynstring 
       if (verbose) call writeinput(6,' * ',' ','dynamicscale')
       read(20,*) zerowidth
       if (verbose) call writeinput(6,' * ',' ','zerowidth')
@@ -339,6 +350,22 @@ c--- anomalous couplings
       if (verbose) call writeinput(6,' * ',' ','lambda_z')
       read(20,*) lambda_g
       if (verbose) call writeinput(6,' * ',' ','lambda_g')
+      read(20,*) h1Z
+      if (verbose) call writeinput(6,' * ',' ','h1Z')
+      read(20,*) h1gam
+      if (verbose) call writeinput(6,' * ',' ','h1gam')
+      read(20,*) h2Z
+      if (verbose) call writeinput(6,' * ',' ','h2Z')
+      read(20,*) h2gam
+      if (verbose) call writeinput(6,' * ',' ','h2gam')
+      read(20,*) h3Z
+      if (verbose) call writeinput(6,' * ',' ','h3Z')
+      read(20,*) h3gam
+      if (verbose) call writeinput(6,' * ',' ','h3gam')
+      read(20,*) h4Z
+      if (verbose) call writeinput(6,' * ',' ','h4Z')
+      read(20,*) h4gam
+      if (verbose) call writeinput(6,' * ',' ','h4gam')
       read(20,*) tevscale
       if (verbose) call writeinput(6,' * ',' ','tevscale')
 
@@ -403,6 +430,8 @@ c---- read-in the technical parameters
       if (verbose) call writeinput(6,' * ',' ','ggonly')
       read(20,*) gqonly
       if (verbose) call writeinput(6,' * ',' ','gqonly')
+      read(20,*) omitgg
+      if (verbose) call writeinput(6,' * ',' ','omitgg')
       read(20,*) vanillafiles
       if (verbose) call writeinput(6,' * ',' ','vanillafiles')
       read(20,*) nmin
@@ -440,79 +469,31 @@ c---- read-in the technical parameters
 	stop
       endif
 
-c--- reset values of the alpha parameters, for specific runstrings
-      if (runstring(1:5) .eq. 'alpha') then
-        if     (runstring(6:9) .eq. '1111') then
-          aii=1d0
-          aif=1d0
-          afi=1d0
-          aff=1d0
-        elseif (runstring(6:9) .eq. '0111') then
-          aii=0.1d0
-          aif=1d0
-          afi=1d0
-          aff=1d0
-        elseif (runstring(6:9) .eq. '1011') then
-          aii=1d0
-          aif=0.1d0
-          afi=1d0
-          aff=1d0
-        elseif (runstring(6:9) .eq. '1101') then
-          aii=1d0
-          aif=1d0
-          afi=0.1d0
-          aff=1d0
-        elseif (runstring(6:9) .eq. '1110') then
-          aii=1d0
-          aif=1d0
-          afi=1d0
-          aff=0.1d0
-        elseif (runstring(6:9) .eq. '0001') then
-          aii=0.1d0
-          aif=0.1d0
-          afi=0.1d0
-          aff=1d0
-        elseif (runstring(6:9) .eq. '0000') then
-          aii=0.1d0
-          aif=0.1d0
-          afi=0.1d0
-          aff=0.1d0
-        else
-          write(6,*) 'runstring=alpha.... reserved for internal tests'
-          stop
-        endif
-        write(6,*) 'Values of alpha parameters reset, for testing:'
-        write(6,*) '  alpha_ii=',aii
-        write(6,*) '  alpha_if=',aif
-        write(6,*) '  alpha_fi=',afi
-        write(6,*) '  alpha_ff=',aff
-        write(6,*)
+c      if     (index(runstring,'mc1.3') .gt. 0) then
+c        mc=1.3d0
+c	mcsq=mc**2
+c      elseif (index(runstring,'mc1.4') .gt. 0) then
+c        mc=1.4d0
+c	mcsq=mc**2
+c      elseif (index(runstring,'mc1.5') .gt. 0) then
+c        mc=1.5d0
+c	mcsq=mc**2
+c      endif
+      
+c      if (runstring(1:3) .eq. 'mlm') then
+c        write(6,*) 'WARNING: cross sections divided by Ecm**2'
+c	write(6,*)
+c      endif
+      
+c---  create logical variable dynamicscale for use in other routines
+      if (  (dynstring .eq. 'no') .or. (dynstring .eq. '.false.')
+     & .or. (dynstring .eq. 'none') ) then 
+         dynamicscale=.false. 
+      else
+         dynamicscale=.true. 
       endif
 
-      if     (index(runstring,'noglue') .gt. 0) then
-        noglue=.true.
-      elseif (index(runstring,'ggonly') .gt. 0) then
-        ggonly=.true.
-      elseif (index(runstring,'gqonly') .gt. 0) then
-        gqonly=.true.
-      endif
-      
-      if     (index(runstring,'mc1.3') .gt. 0) then
-        mc=1.3d0
-	mcsq=mc**2
-      elseif (index(runstring,'mc1.4') .gt. 0) then
-        mc=1.4d0
-	mcsq=mc**2
-      elseif (index(runstring,'mc1.5') .gt. 0) then
-        mc=1.5d0
-	mcsq=mc**2
-      endif
-      
-      if (runstring(1:3) .eq. 'mlm') then
-        write(6,*) 'WARNING: cross sections divided by Ecm**2'
-	write(6,*)
-      endif
-      
+c--- print warning messages if some parton fluxes are not included      
       if (noglue) then
         write(6,*) 'WARNING: no gluon contribution included in PDF'
 	write(6,*)
@@ -525,13 +506,11 @@ c--- reset values of the alpha parameters, for specific runstrings
         write(6,*) 'WARNING: only gluon-quark flux included'
 	write(6,*)
       endif
+      if (omitgg) then
+        write(6,*) 'WARNING: no gluon-gluon contribution included'
+	write(6,*)
+      endif
       
-c-----initialize various quantities
-
-c--- save initial scale choices (that may be changed later)
-      initscale=scale
-      initfacscale=facscale
-
 c--- assign squared masses for b- and c-quarks
       if (abs(mb) .gt. 1d-8) then
         mbsq=mb**2
@@ -573,8 +552,8 @@ c--- check that we have a valid value of 'part'
      .      .or. (case .eq. 'W_twdk')) ) then
 c--- this is an allowed combination
         elseif ( (part .eq. 'frag') .and.
-     .       ((case .eq. 'Wgamma') .or. (case .eq. 'Zgamma')
-     &       .or.(case.eq.'gamgam'))) then
+     .          ((case .eq. 'Wgamma') .or. (case .eq. 'Zgamma')
+     &      .or .(case .eq. 'gamgam') .or. (case .eq. 'dirgam')) ) then
 c--- this is an allowed combination
         else 
           write(6,*) 'part=',part,' is not a valid option'

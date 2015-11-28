@@ -183,7 +183,9 @@ c--- if using a dynamic scale, set that scale with dipole kinematics
 
 c--- do something special if we're doing W+2,Z+2jet (jp .ne. 7)
         if ((jp .ne. 7) .and. (case .ne. 'HWWjet')
-     .      .and. (case .ne. 'HZZjet') .and. (case .ne. 'qq_HWW')) then
+     .      .and. (case .ne. 'HZZjet')
+     .      .and. (case .ne. 'qq_HWW')
+     .      .and. (case .ne. 'qq_HZZ')) then
           if (ip .lt. 7) then
 C ie for cases 56_i,65_i
             ipt=5

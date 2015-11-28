@@ -1,4 +1,4 @@
-#!/bin/csh
+#!/bin/bash
 
 # first configure the makefile
 
@@ -7,17 +7,17 @@ set CERNLIB     =
 # Insert the location of LHAPDF on your system (if desired)
 set LHAPDFLIB   = 
 
-if ($CERNLIB == '') then
+if [$CERNLIB == '']; then
   echo 'Warning: no directory specified for CERNLIB'
 else
   echo 'CERNLIB directory: '$CERNLIB
-endif
-if ($LHAPDFLIB == '') then
+fi
+if [$LHAPDFLIB == '']; then
   echo 'Warning: no directory specified for LHAPDF'
 else
   echo 'LHAPDFLIB directory: '$LHAPDFLIB
   ln -s $LHAPDFLIB/PDFsets Bin/PDFsets
-endif
+fi
 
 echo '# Makefile routine.' > makefile.new
 echo '' >> makefile.new
@@ -43,13 +43,13 @@ cd ..
 sed -e "s|REPLACEPATH|${PWD}|" QCDLoop/ff/ffinit_mine_orig.f > QCDLoop/ff/ffinit_mine.f
 
 # Compile QCDLoop libraries if necessary
-if ( ! -e QCDLoop/ql/libqcdloop.a ) then
+if [ ! -e QCDLoop/ql/libqcdloop.a ]; then
   ls
   echo 'Compiling QCDLoop library'
   cd QCDLoop
   make
   cd ..
-endif
+fi
 
 echo ''
 echo 'Installation complete. You may now compile MCFM by running make.'

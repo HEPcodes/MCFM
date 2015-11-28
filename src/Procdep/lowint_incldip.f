@@ -36,7 +36,7 @@ c --- To use VEGAS random number sequence :
      . fx1_H(-nf:nf),fx2_H(-nf:nf),fx1_L(-nf:nf),fx2_L(-nf:nf),
      . fxb1(-nf:nf),fxb2(-nf:nf)
       double precision wgt,msq(-nf:nf,-nf:nf),m3,m4,m5,xmsqjk
-C     & ,msq1(-nf:nf,-nf:nf),msq2(-nf:nf,-nf:nf)
+c     & ,msq1(-nf:nf,-nf:nf),msq2(-nf:nf,-nf:nf)
       double precision xx(2),flux,vol,vol_mass,vol3_mass,vol_wt,BrnRat
       double precision xmsq_bypart(-1:1,-1:1),lord_bypart(-1:1,-1:1)
       logical bin,first,includedipole
@@ -72,7 +72,6 @@ c--- ensure isolation code does not think this is fragmentation piece
       z_frag=0d0
       
       W=sqrts**2
-      
 c--- processes that use "gen2"     
       if     ( (case .eq. 'W_only')
      .    .or. (case .eq. 'Z_only')
@@ -136,7 +135,8 @@ c--- processes that use "gen_phots_jets"
         call gen_phots_jets(r,1,1,p,pswt,*999)
                   
       elseif ((case .eq. 'thrjet') .or. (case .eq. 'gamjet')) then
-        call gen3jet(r,p,pswt,*999)
+!        call gen3jet(r,p,pswt,*999)
+        call gen_photons_jets(r,1,2,p,pswt,*999)
         npart=3
 c--- processes that use "gen3m"
       elseif ( (case .eq. 'tottth') ) then
@@ -169,6 +169,14 @@ c--- processes that use "gen3m"
         npart=3
         call gen3m(r,p,m3,m4,m5,pswt,*999)
 	
+c--- processes that use gen3mdk
+c      elseif ( (case .eq. '4ftwdk') ) then
+c        m3=mt
+c        m4=mb
+c        m5=0d0
+c        npart=5
+c        call gen3mdk(r,p,m3,m4,m5,pswt,*999)
+        
 c--- processes that use "gen3m_rap"     
       elseif ( (case .eq. 'vlchm3') ) then
         taumin=(2d0*mt/sqrts)**2
@@ -184,6 +192,8 @@ c--- processes that use "gen4"
                   
 c--- processes that use "gen4h"     
       elseif ( (case .eq. 'HWW_4l')
+     .    .or. (case .eq. 'HWW_tb')
+     .    .or. (case .eq. 'HWWint')
      .    .or. (case .eq. 'HZZ_4l') ) then
         npart=4
         call gen4h(r,p,pswt,*999)
@@ -210,10 +220,13 @@ c--- processes that use "gen6"
      .    .or. (case .eq. 'vlchwg')
      .    .or. (case .eq. 'vlchwh')
      .    .or. (case .eq. 'qq_HWW')
+     .    .or. (case .eq. 'qq_HZZ')
      .    .or. (case .eq. 'HWW2jt')
      .    .or. (case .eq. 'HZZ2jt')
-     .    .or. (case .eq. 'WH__WW')
+     .    .or. (case .eq. 'WH__ZZ')
+     .    .or. (case .eq. 'WH__WW')  
      .    .or. (case .eq. 'ZH__WW')
+     .    .or. (case .eq. 'ZH__ZZ')
      .    .or. (case .eq. 'WpWp2j')) then
         npart=6
         call gen6(r,p,pswt,*999)
@@ -236,6 +249,7 @@ c	call writeout(p)
 c--- processes that use "gen8"     
       elseif ( (case .eq. 'qq_tth') 
      .    .or. (case .eq. 'qq_ttz') 
+     .    .or. (case .eq. 'qq_ttw') 
      .    .or. (case .eq. 'vlchk8') ) then
         npart=8
         call gen8(r,p,pswt,*999)
@@ -247,6 +261,7 @@ c--- processes that use "gen_njets" with an argument of "1"
      .    .or. (case .eq. 'H_1jet')
      .    .or. (case .eq. 'httjet')
      .    .or. (case .eq. 'ggfus1')
+     .    .or. (case .eq. 'Hgagaj')
      .    .or. (case .eq. 'attjet')
      .    .or. (case .eq. 'gQ__ZQ') ) then
         npart=3
@@ -258,6 +273,7 @@ c--- processes that use "gen_njets" with an argument of "2"
      .    .or. (case .eq. 'Z_2jet')
      .    .or. (case .eq. 'Zbbbar')
      .    .or. (case .eq. 'qq_Hqq')
+     .    .or. (case .eq. 'qq_Hgg')
      .    .or. (case .eq. 'ggfus2')
      .    .or. (case .eq. 'W_bjet')
      .    .or. (case .eq. 'Wcjetg')
@@ -277,7 +293,6 @@ c--- processes that use "gen_njets" with an argument of "3"
      .    .or. (case .eq. 'vlchk5') ) then
         npart=5
         call gen_njets(r,3,p,pswt,*999)      
- 
 c--- processes that use "gen_stop" with an argument of "1" (number of extra jets)
       elseif ( (case .eq. 'bq_tpq')
      .    .or. (case .eq. 'ttdkay')
@@ -299,10 +314,11 @@ c--- DEFAULT: processes that use "gen4"
       nvec=npart+2
       call dotem(nvec,p,s)
       
-c--- impose cuts on final state
-      if (case .ne. 'vlchk6' .and. case .ne. 'tautau') then
-        call masscuts(p,*999)
-      endif
+c--- (moved to includedipole) impose cuts on final state
+c      if (case .ne. 'vlchk6' .and. case .ne. 'tautau') then
+c        call masscuts(p,*999)
+c      endif
+
 c---- reject event if any s(i,j) is too small
       call smalls(s,npart,*999)                                             
 
@@ -398,16 +414,28 @@ c        pause
         call qqb_dirgam_g(p,msq)
       elseif (case .eq. 'WH__WW') then
         call qqb_wh_ww(p,msq)
+      elseif (case .eq. 'WH__ZZ') then
+        call qqb_wh_zz(p,msq)
+      elseif (case .eq. 'WHgaga') then
+        call qqb_wh_gaga(p,msq)
       elseif (case .eq. 'ZHbbar') then
         call qqb_zh(p,msq)
       elseif (case .eq. 'ZH__WW') then
         call qqb_zh_ww(p,msq)
+      elseif (case .eq. 'ZH__ZZ') then
+        call qqb_zh_zz(p,msq)
+      elseif (case .eq. 'ZHgaga') then
+        call qqb_zh_gaga(p,msq)
       elseif (case .eq. 'ggfus0') then
         call gg_h(p,msq)
       elseif (case .eq. 'Higaga') then
         call gg_hgamgam(p,msq)
       elseif (case .eq. 'HWW_4l') then
         call qqb_hww(p,msq)
+      elseif (case .eq. 'HWW_tb') then
+        call qqb_hww_tb(p,msq)
+      elseif (case .eq. 'HWWint') then
+        call gg_ww_int(p,msq)
       elseif (case .eq. 'HZZ_4l') then
         call qqb_hzz(p,msq)
       elseif (case .eq. 'H_1jet') then
@@ -452,10 +480,14 @@ c        pause
         call qqb_tth(p,msq)
       elseif (case .eq. 'qq_ttz') then
         call qqb_ttz(p,msq)
+      elseif (case .eq. 'qq_ttw') then
+        call qqb_ttw(p,msq)
       elseif (case .eq. 'httjet') then
         call qqb_higgs(p,msq)
       elseif (case .eq. 'ggfus1') then
         call gg_hg(p,msq)
+      elseif (case .eq. 'Hgagaj') then
+        call gg_hgagag(p,msq)
       elseif (case .eq. 'HWWjet') then
         call gg_hWWg(p,msq)
       elseif (case .eq. 'HZZjet') then
@@ -468,10 +500,14 @@ c        pause
         call qqb_higgs_odd(p,msq)
       elseif (case .eq. 'qq_Hqq') then
         call VV_hqq(p,msq)
+      elseif (case .eq. 'qq_Hgg') then
+        call VV_Hgaga(p,msq)
       elseif (case .eq. 'qqHqqg') then
         call VV_hqq_g(p,msq)
       elseif (case .eq. 'qq_HWW') then
         call VV_HWW(p,msq)
+      elseif (case .eq. 'qq_HZZ') then
+        call VV_HZZ(p,msq)
       elseif (case .eq. 'tautau') then
         call qqb_tautau(p,msq)
       elseif (case .eq. 'qg_tbq') then
@@ -481,6 +517,8 @@ c      call checkgvec(+2,0,2,p,qg_tbq,qg_tbq_gvec)
 c      call checkgvec(-1,0,2,p,qg_tbq,qg_tbq_gvec)
       elseif (case .eq. 'qgtbqq') then
         call qg_tbq_g(p,msq)
+c      elseif (case .eq. '4ftwdk') then
+c        call qg_tbqdk(p,msq)
       elseif (case .eq. 'qq_tbg') then
         call qq_tbg(p,msq)
 c--- Check of gvec routines
@@ -620,9 +658,9 @@ c--- do not calculate the flux if we're only checking the volume
       if (case(1:4) .ne. 'vlch') then      
         flux=fbGeV2/(2d0*xx(1)*xx(2)*W)
 c--- for mlm study, divide by (Ecm)**2=W
-	if (runstring(1:3) .eq. 'mlm') then
-	  flux=flux/W
-	endif
+c	if (runstring(1:3) .eq. 'mlm') then
+c	  flux=flux/W
+c	endif
       endif
       
 c--- initialize a PDF set here, if calculating errors
@@ -649,22 +687,23 @@ c--- for single top + b, make sure to use two different scales
 	  endif
 	enddo
       elseif (case(1:4) .ne. 'vlch') then
-c--- for comparison with C. Oleari's e+e- --> QQbg calculation
-        if (runstring(1:5) .eq. 'carlo') then
-          flux=1d0/2d0/W/(as/twopi)
-c--- divide out by (ason2pi) and then the "LO" massless DY process
-	  flux=flux/(aveqq*xn*fourpi*(gwsq/fourpi)**2/3d0/sqrts**2)
-	  flux=flux/(xn/8d0)
-	  do j=-nf,nf
-	  fx1(j)=0d0
-	  fx2(j)=0d0
-	  enddo
-	  fx1(0)=1d0
-	  fx2(0)=1d0
-        elseif ((case .eq. 'bq_tpq') .or. (case .eq. 'qg_tbq')) then   
+cc--- for comparison with C. Oleari's e+e- --> QQbg calculation
+c        if (runstring(1:5) .eq. 'carlo') then
+c          flux=1d0/2d0/W/(as/twopi)
+cc--- divide out by (ason2pi) and then the "LO" massless DY process
+c	  flux=flux/(aveqq*xn*fourpi*(gwsq/fourpi)**2/3d0/sqrts**2)
+c	  flux=flux/(xn/8d0)
+c	  do j=-nf,nf
+c	  fx1(j)=0d0
+c	  fx2(j)=0d0
+c	  enddo
+c	  fx1(0)=1d0
+c	  fx2(0)=1d0
+c        endif
+        if ((case .eq. 'bq_tpq') .or. (case .eq. 'qg_tbq')) then   
 c--- single top: allow for different scales on each leg  
-c---  (applies only if dynamic scale is true)
-          if (dynamicscale) then
+c---  (applies only if dynstring = 'DDIS')
+          if (dynstring .eq. 'DDIS') then
             call fdist(ih1,xx(1),b1scale,fxb1)
             call fdist(ih2,xx(2),q2scale,fx2)
             call fdist(ih1,xx(1),q1scale,fx1)
@@ -695,7 +734,11 @@ c--- usual case
       if ((j.eq.0) .or. (k.eq.0)) goto 20
       endif
 
-      if     ((case .eq. 'bq_tpq') .and. (dynamicscale)) then
+      if (omitgg) then 
+      if ((j.eq.0) .and. (k.eq.0)) goto 20
+      endif
+
+      if     ((case .eq. 'bq_tpq') .and. (dynstring .eq. 'DDIS')) then
 c--- special case for dynamic scale in t-channel single top
         if     (abs(j) .eq. 5) then
           xmsqjk=fxb1(j)*fx2(k)*msq(j,k)
@@ -704,7 +747,7 @@ c--- special case for dynamic scale in t-channel single top
 	else
 	  xmsqjk=0d0
 	endif
-      elseif ((case .eq. 'qg_tbq') .and. (dynamicscale)) then
+      elseif ((case .eq. 'qg_tbq') .and. (dynstring .eq. 'DDIS')) then
 c--- special case for dynamic scale in t-channel single top
         if     (j .eq. 0) then
           xmsqjk=fxb1(j)*fx2(k)*msq(j,k)

@@ -16,7 +16,7 @@ c                          + Z(mu^-(p3)+mu^+(p4))+g(p_iglue1=7)
 C     (Taken from Ravindran, Smith, van Neerven hep-ph/0201114)
 C     Modified by overall factors
       integer iglue,j,k
-      double precision p(4,mxpart),msq(fn:nf,fn:nf),s3456
+      double precision p(mxpart,4),msq(fn:nf,fn:nf),s3456
       double precision ss,tt,uu,
      . virtgg,virtqa,virtaq,virtqg,virtgq,hdecay,Asq,fac
       parameter(iglue=7)

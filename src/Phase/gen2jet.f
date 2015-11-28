@@ -7,6 +7,8 @@ C---p1+p2 --> p3+p4
       include 'mxdim.f'
       include 'jetcuts.f'
       include 'phasemin.f'
+      include 'leptcuts.f'
+!--- Modified July 11 by CW to switch between photons and jets appropriately 
       character*4 part
       common/part/part
       integer j,nu
@@ -15,18 +17,21 @@ C---p1+p2 --> p3+p4
       double precision sqrts,yave,ydif,xjac,y3,y4,phi,wt0,wt2,
      . ydifmin,ydifmax,yavemin,yavemax,xtsq,pt,xt
       logical first
+      integer nproc
       parameter(wt0=1d0/16d0/pi)
       common/energy/sqrts
+      common/nproc/nproc
       common/x1x2/xx
       data first/.true./
       save first
 
       if (first) then
         first=.false.
-        call read_jetcuts(ptjetmin,etajetmin,etajetmax)
-        if (part .eq. 'real') then
-          ptjetmin=dsqrt(cutoff)
-          etajetmax=10d0
+c--- for dirgam and gamgam, generate using photon pt as cutoff
+        if ((nproc.eq.280) .or. (nproc.eq.285)) then 
+           ptjetmin=gammpt 
+        else
+           call read_jetcuts(ptjetmin,etajetmin,etajetmax)
         endif
       endif        
 

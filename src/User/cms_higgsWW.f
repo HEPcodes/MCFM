@@ -1,27 +1,61 @@
-
       subroutine cms_higgsWW(p,failed_cuts) 
       implicit none
-      include 'constants.f' 
-      include 'process.f'
+      include 'constants.f'
+      include 'masses.f'
       double precision p(mxpart,4)
       logical failed_cuts 
       double precision pt,etarap,m45
-      double precision pt_l_hard,pt_l_soft,pttwo
+      double precision pt_l_hard,pt_l_soft
       double precision pts,pth,phimax,mllmax,etmiss,etmiss_min
-      double precision et_vec(4),eta_max,r2,delphi,eta_max_h
+      double precision et_vec(4),r2,delphi,eta_max_h
       double precision eta_max_s,eta_hard,eta_soft
       integer i 
       logical first 
       data first/.true./
+      common/HWW_Cuts/pts,pth,mllmax,phimax,etmiss_min,
+     &     eta_max_h,eta_max_s
+
+
+!------- ETA DOESNT CHANGE ------------- 
+c      etmiss_min=20d0
+c      eta_max_h=2.5d0
+c      eta_max_s=2.5d0
+!----------------------------------------   
 
       !-- cut params change to change cuts
-      pts=25d0
-      pth=30d0
-      mllmax=50d0
-      phimax=60d0
+!      pts=25d0
+!      pth=30d0
+!      mllmax=50d0
+!      phimax=60d0
+
+!------- ETA DOESNT CHANGE ------------- 
       etmiss_min=20d0
       eta_max_h=2.5d0
       eta_max_s=2.5d0
+!----------------------------------------      
+
+!      if (hmass .lt. 160d0) then
+!        pth=25d0
+!	pts=20d0
+!	mllmax=45d0
+!	phimax=60d0
+!      endif
+      
+!      if (hmass .gt. 180d0) then
+!        pth=40d0
+!	pts=25d0
+!	mllmax=90d0
+!	phimax=100d0
+!      endif
+      
+!      if (hmass .gt. 380d0) then
+!        pth=90d0
+!	pts=25d0!
+!	mllmax=300d0
+!	phimax=175d0
+!      endif
+
+      call HWW_cuts_params(hmass)
       
       if(first) then 
          first=.false.
@@ -42,12 +76,12 @@
 !---- eta_l < 2.5, ET_miss = 20
 !-----Inclusive in the jet 
 ! '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4)) +W^-(-->e^-(p5)+nu~(p6))' 
-      if(case.ne.'WWqqbr') then 
-         write(6,*)'Attempted to apply Higgs search cuts to process' 
-         write(6,*)'Check Runstring ' 
-         stop
-         return 
-      endif
+c      if(case.ne.'WWqqbr') then 
+c         write(6,*)'Attempted to apply Higgs search cuts to process' 
+c         write(6,*)'Check Runstring ' 
+c         stop
+c         return 
+c      endif
 
       
       failed_cuts = .false. 
@@ -130,9 +164,103 @@
  99   format(1x,a29,f6.2,a17)
 
       return 
-      end subroutine
+      end
       
 
+      subroutine HWW_cuts_params(in_mh) 
+      implicit none 
+      include 'constants.f' 
+      double precision mh
+      double precision pts,pth,mllmax,phimax
+      double precision etmiss_min,eta_max_h,eta_max_s
+      common/HWW_Cuts/pts,pth,mllmax,phimax,etmiss_min,
+     &     eta_max_h,eta_max_s
+      double precision tiny,in_mh
+      tiny=1d-4 
+!----- Ensure that an input of 130 etc is treated properly (i.e. always boosted into correct cuts
+      mh=in_mh+tiny
+      
+!---- HWW_cuts from CMS 7 TeV
+      if(mh.lt.130d0) then 
+         pth=20d0
+         pts=20d0
+         mllmax=40d0
+         phimax=60d0
+      elseif((mh.gt.130d0).and.(mh.lt.150d0)) then 
+         pth=25d0
+         pts=20d0
+         mllmax=45d0
+         phimax=60d0
+         
+      elseif((mh.gt.150d0).and.(mh.lt.160d0)) then 
+         pth=27d0
+         pts=25d0
+         mllmax=50d0
+         phimax=60d0
+         
+         
+      elseif((mh.gt.160d0).and.(mh.lt.170d0)) then 
+         pth=30d0
+         pts=25d0
+         mllmax=50d0
+         phimax=60d0
 
+         
+      elseif((mh.gt.170d0).and.(mh.lt.180d0)) then 
+         pth=34d0
+         pts=25d0
+         mllmax=50d0
+         phimax=60d0
+         
+      elseif((mh.gt.180d0).and.(mh.lt.190d0)) then 
+         pth=36d0
+         pts=25d0
+         mllmax=60d0
+         phimax=70d0
+         
+      elseif((mh.gt.190d0).and.(mh.lt.200d0)) then 
+         pth=38d0
+         pts=25d0
+         mllmax=80d0
+         phimax=90d0
 
-        
+      elseif((mh.gt.200d0).and.(mh.lt.210d0)) then 
+         pth=40d0
+         pts=25d0
+         mllmax=90d0
+         phimax=100d0
+    
+      elseif((mh.gt.210d0).and.(mh.lt.220d0)) then 
+         pth=44d0
+         pts=25d0
+         mllmax=110d0
+         phimax=110d0
+         
+      elseif((mh.gt.220d0).and.(mh.lt.230d0)) then 
+         pth=48d0
+         pts=25d0
+         mllmax=120d0
+         phimax=120d0
+
+      elseif((mh.gt.230d0).and.(mh.lt.250d0)) then 
+         pth=52d0
+         pts=25d0
+         mllmax=130d0
+         phimax=130d0
+
+      elseif((mh.gt.250d0).and.(mh.lt.300d0)) then 
+         Pth=55d0
+         pts=25d0
+         mllmax=150d0
+         phimax=140d0
+         
+      elseif((mh.gt.300d0)) then 
+         pth=70d0
+         pts=25d0
+         mllmax=200d0
+         phimax=175d0
+
+      endif
+      return 
+         
+      end

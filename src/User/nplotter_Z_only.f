@@ -52,7 +52,7 @@ c--- set them to dummy values
         pt34=0d0
         m34=0d0
         r35=1d3
-        jets=nqcdjets
+        jets=1
 c---  (Upper) limits for the plots
         ylep=6d0
         yjet=3.2d0
@@ -62,12 +62,6 @@ c---  (Upper) limits for the plots
       else
 c--- Add event in histograms
         tag='plot'
-      endif
-
-c--- Book and fill ntuple if that option is set, remembering to divide
-c--- by # of iterations now that is handled at end for regular histograms
-      if (creatent .eqv. .true.) then
-        call bookfill(tag,p,wt/dfloat(itmx))  
       endif
 
 ************************************************************************
@@ -89,6 +83,10 @@ c--- by # of iterations now that is handled at end for regular histograms
          pt5=pt(5,p)
          y5=yrap(5,p)
          r35=R(p,3,5)
+      else
+         pt5=-1d0
+	 y5=1d3
+	 r35=1d3
       endif
       
 
@@ -100,6 +98,12 @@ c--- by # of iterations now that is handled at end for regular histograms
 
 c--- Call histogram routines
    99 continue
+
+c--- Book and fill ntuple if that option is set, remembering to divide
+c--- by # of iterations now that is handled at end for regular histograms
+      if (creatent .eqv. .true.) then
+        call bookfill(tag,p,wt/dfloat(itmx))  
+      endif
 
 c--- "n" will count the number of histograms
       n=1              

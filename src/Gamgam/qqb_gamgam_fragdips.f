@@ -11,16 +11,13 @@
       subroutine qqb_gamgam_fragdips(p,qcd_tree,msq_out) 
       implicit none
       include 'constants.f'
-      include 'epinv.f'
-      include 'FR.f'
       include 'ewcouple.f'
       include 'ewcharge.f'
       include 'frag.f'
-      include 'masses.f'
-      double precision old_epinv,p(mxpart,4)
+      double precision p(mxpart,4)
       double precision msq_qcd(-nf:nf,-nf:nf),msq_out(-nf:nf,-nf:nf)
       integer j,k
-      double precision virt_dips(2),xl(2),dot,pt,pttwo,fsq 
+      double precision virt_dips(2),xl(2),dot,fsq 
       double precision aewo2pi,fi_gaq
       external qcd_tree
 

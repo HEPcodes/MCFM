@@ -41,6 +41,9 @@ c--- Initialize dummy values for all quantities that could be plotted
       ptj1=-1d0
       ptj2=-1d0
       ptj3=-1d0
+      etaj1=99d0
+      etaj2=99d0
+      etaj3=99d0
       mjj=-1d0
       delr=-1d0
       deleta=-1d0
@@ -54,12 +57,6 @@ c--- set them to dummy values
       else
 c--- Add event in histograms
         tag='plot'
-      endif
-
-c--- Book and fill ntuple if that option is set, remembering to divide
-c--- by # of iterations now that is handled at end for regular histograms
-      if (creatent .eqv. .true.) then
-        call bookfill(tag,p,wt/dfloat(itmx))  
       endif
 
 c--- BEGIN: order jets according to pt
@@ -185,6 +182,12 @@ c--- Calculate quantities to plot
 c--- Call histogram routines
    99 continue
 
+c--- Book and fill ntuple if that option is set, remembering to divide
+c--- by # of iterations now that is handled at end for regular histograms
+      if (creatent .eqv. .true.) then
+        call bookfill(tag,p,wt/dfloat(itmx))  
+      endif
+
 c--- "n" will count the number of histograms
       n=1              
 
@@ -209,17 +212,26 @@ c---   llplot:  equal to "lin"/"log" for linear/log scale
       call bookplot(n,tag,'Jet 1 pt lin',ptj1,wt,wt2,
      &              20d0,430d0,5d0,'lin')
       n=n+1
+      call bookplot(n,tag,'Jet 1 eta',etaj1,wt,wt2,
+     &              -5d0,5d0,0.2d0,'lin')
+      n=n+1
       call bookplot(n,tag,'Jet 2 pt log',ptj2,wt,wt2,
      &              20d0,260d0,5d0,'log')
       n=n+1
       call bookplot(n,tag,'Jet 2 pt lin',ptj2,wt,wt2,
      &              20d0,260d0,5d0,'lin')
       n=n+1
+      call bookplot(n,tag,'Jet 2 eta',etaj2,wt,wt2,
+     &              -5d0,5d0,0.2d0,'lin')
+      n=n+1
       call bookplot(n,tag,'Jet 3 pt log',ptj3,wt,wt2,
      &              20d0,170d0,5d0,'log')
       n=n+1
       call bookplot(n,tag,'Jet 3 pt lin',ptj3,wt,wt2,
      &              20d0,170d0,5d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'Jet 3 eta',etaj3,wt,wt2,
+     &              -5d0,5d0,0.2d0,'lin')
       n=n+1
       call bookplot(n,tag,'(jet 1,jet 2) invariant mass',mjj,wt,wt2,
      &              0d0,425d0,5d0,'log')

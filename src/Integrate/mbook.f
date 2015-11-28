@@ -203,7 +203,8 @@ c     we are renormalising the weights by the bin width
 c--- need extra factor to account for renormalization by bin width
         XSQAVG=XSQAVG/hdel(i)
 c--- Assume that grid is optimal and iterations improve statistics
-        XNORM=DFLOAT(IHIS(I,L))/X
+c        XNORM=DFLOAT(IHIS(I,L))/X
+        XNORM=(IENT(I)+IUSCORE(I)+IOSCORE(I))/X
         IF(XNORM.NE.0.d0) THEN
         HIST(K,L)=DSQRT(ABS(XSQAVG-XAVG**2)/XNORM)
         HIST(I,L)=XAVG
@@ -216,7 +217,8 @@ c--- Assume that grid is optimal and iterations improve statistics
 c--- need extra factor to account for renormalization by bin width
         XSQAVG=XSQAVG/hdel(i)
 c--- Assume that grid is optimal and iterations improve statistics
-        XNORM=DFLOAT(IHIS(I,L))/X
+c        XNORM=DFLOAT(IHIS(I,L))/X
+        XNORM=(IENT(I)+IUSCORE(I)+IOSCORE(I))/X
         IF(XNORM.NE.0.d0) THEN
         HIST(K,L)=DSQRT(ABS(XSQAVG-XAVG**2)/XNORM)
 c        HIST(I,L)=XAVG ! removed from 'V'
@@ -366,7 +368,7 @@ c     &' SET ORDER X Y DY ')
      &' SET SCALE Y ',A5,/1X,
      &' (SET TICKS TOP OFF)   '/1x,     
      &' SET LIMITS X ',F10.5,' ',F10.5,/1X,
-     &' SET ORDER X Y ')
+     &' SET ORDER X Y')
   101 FORMAT( /1x,                               
      &' SET WINDOW Y 2.5 TO 7.'/,1X,
      &' SET WINDOW X 2.5 TO 10.'/,1X,
@@ -378,7 +380,7 @@ c     &' SET ORDER X Y DY ')
      &' SET SCALE Y ',A5,/1X,
      &' (SET TICKS TOP OFF)   '/1x,     
      &' SET LIMITS X ',F10.5,' ',F10.5,/1X,
-     &' SET ORDER X Y ')
+     &' SET ORDER X Y')
       DO 1 J=1,NBIN(N)
       IF(HIST(N,J).EQ.0.) GO TO 1
       if (scaleplots) then
@@ -420,6 +422,117 @@ c     &' SET TITLE SIZE -2')
       WRITE(99,400)
   400 FORMAT('   NEW PLOT')
       END
+
+
 C*******************************************************************
 C     END OF THE HISTOGRAMMING PACKAGE
 C*******************************************************************
+
+
+c--F  Add gnuplot output
+      
+      SUBROUTINE MGNUPLOT(N,M,BTIT,LTIT,SCALE)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT INTEGER (I-N)
+      CHARACTER*(*) LTIT,BTIT,SCALE
+      include 'histo.f'
+c--- added these variables to scale plots at intermediate steps
+      logical scaleplots                  
+      double precision scalefac
+      common/scaleplots/scalefac,scaleplots
+
+      istring=LEN_TRIM(TITLE(N))
+
+      IF(BOOK(N).NE.'YES') RETURN
+      WRITE(97,101) TITLE(N)(1:istring), TITLE(N)(1:istring),
+     & TITLE(N)(1:istring), HMIN(N),HMAX(N)
+  101 FORMAT( /1x,                               
+     &' set title ','"',A,' distribution" font "Helvetica, 20"',/1X,
+     &' set xlabel ','"',A,'" font "Helvetica, 20"',/1X,
+     &' set ylabel ','"d{/Symbol s}/d',A,
+     &' [fb]" font "Helvetica, 20"',/1X,
+     &' set xrange [ ',F10.5,':',F10.5,']')
+      if(SCALE .eq. 'log') then
+         write(97,*) ' set logscale y'
+      endif
+      write(97,*) ' plot "-" with histeps'
+
+      DO 1 J=1,NBIN(N)
+      IF(HIST(N,J).EQ.0.) GO TO 1
+      if (scaleplots) then
+      WRITE(97,'(3(2X,G13.6))')  
+     & XHIS(N,J),scalefac*HIST(N,J),HIST(M,J)
+      else
+      WRITE(97,'(3X,G13.6,2(2X,G13.6))')  
+     &                            XHIS(N,J),HIST(N,J),HIST(M,J)
+      endif
+    1 CONTINUE
+      WRITE(97,200)
+  200 FORMAT(' e')
+      END
+
+
+
+c--F  Add root output
+      
+      SUBROUTINE MROOTPLOT(N,M,BTIT,LTIT)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT INTEGER (I-N)
+      CHARACTER*(*) LTIT,BTIT
+      CHARACTER*5 histoid
+      include 'histo.f'
+c--- added these variables to scale plots at intermediate steps
+      logical scaleplots                  
+      double precision scalefac
+      common/scaleplots/scalefac,scaleplots
+
+      istring=LEN_TRIM(TITLE(N))
+
+      if (N.lt.10) then
+         write(histoid, '(A2,I1,A2)') 'id', N, '  '
+      elseif ((N.ge.10).and.(N.lt.100)) then
+         write(histoid, '(A2,I2,A1)') 'id', N, ' '
+      elseif (N.ge.100) then
+         write(histoid, '(A2,I3)') 'id', N
+      endif
+
+      idlength=LEN_TRIM(histoid)
+
+      IF(BOOK(N).NE.'YES') RETURN
+
+      WRITE(96,131) histoid(1:idlength), TITLE(N)(1:istring), NBIN(N), 
+     & HMIN(N), HMAX(N)
+ 131  FORMAT ( /1X,
+     & ' mcfmhisto -> cd();', /1X,
+     & ' TH1F *hist = new TH1F( "', A, '", "', A, '", ',
+     & I0, ', ', F10.5, ', ', F10.5, ');')
+
+      WRITE(96, 132) histoid(1:idlength), TITLE(N)(1:istring),
+     & histoid(1:idlength), TITLE(N)(1:istring)
+ 132  FORMAT ( /1X, 
+     & ' ', A, ' -> GetXaxis() -> SetTitle("', A, '");', /1X,
+     & ' ', A, ' -> GetYaxis() -> SetTitle(" d#sigma/d', A, 
+     & ' [fb]");', /1X)
+
+      WRITE (96,*) ' ', histoid(1:idlength), ' -> GetYaxis() -> ',
+     & 'SetTitleOffset(1.2);'
+
+      WRITE(96,*) ' ', histoid(1:idlength), ' -> SetStats(false);'
+
+      DO 1 J=1,NBIN(N)
+      IF(HIST(N,J).EQ.0.) GO TO 1
+      if (scaleplots) then
+      WRITE(97,'(3(2X,G13.6))')  
+     & XHIS(N,J),scalefac*HIST(N,J),HIST(M,J)
+      else
+         write(96,*) ' ', histoid(1:idlength), ' -> Fill(', 
+     &        XHIS(N,J), ', ', HIST(N,J), ');'
+      endif
+    1 CONTINUE
+
+      WRITE (96, *) ' histos -> Add(hist); '
+      WRITE (96, *) ''
+      WRITE (96, *) ''
+
+      END
+

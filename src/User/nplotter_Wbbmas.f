@@ -17,11 +17,15 @@ c---                1  --> counterterm for real radiation
       include 'constants.f'
       include 'histo.f'
       include 'jetlabel.f'
+      include 'masses.f'
       integer ilept,inu,ibq,iba,ilt
       double precision p(mxpart,4),wt,wt2
       double precision yrap,pt,r,yraptwo,pttwo
       double precision ylept,ptlept,misset,yw,ptw,mw,ybq,ptbq,yba,ptba,
      & ylt,ptlt,yj1,ptj1,yj2,ptj2,yj3,ptj3,mbb,mjj,Rjl
+     & ,dphibqnu, dphibanu, r2
+     & , ptbmax, ybmax
+      double precision etaw, etabq, etaba, etaraptwo, etarap
       integer switch,n,nplotmax,nproc
       character*4 tag
       logical first,creatent,dswhisto
@@ -58,7 +62,14 @@ c--- Initialize dummy values for all quantities that could be plotted
       mw=-1d0
       mbb=-1d0
       mjj=-1d0
-      
+      dphibqnu=99d0
+      dphibanu=99d0
+      etaw=99d0
+      etabq=99d0
+      etaba=99d0
+      ptbmax=-1d0
+      ybmax=99d0
+
       if (first) then
 c--- Initialize histograms, without computing any quantities; instead
 c--- set them to dummy values
@@ -67,12 +78,6 @@ c--- set them to dummy values
       else
 c--- Add event in histograms
         tag='plot'
-      endif
-
-c--- Book and fill ntuple if that option is set, remembering to divide
-c--- by # of iterations now that is handled at end for regular histograms
-      if (creatent .eqv. .true.) then
-        call bookfill(tag,p,wt/dfloat(itmx))  
       endif
 
 ************************************************************************
@@ -87,13 +92,15 @@ c--- by # of iterations now that is handled at end for regular histograms
 ************************************************************************
 
       if     ((nproc .eq. 20) .or. (nproc .eq. 21)
-     &   .or. (nproc .eq. 420) .or. (nproc .eq. 421)
-     &   .or. (nproc .eq. 422)) then
+     &   .or. (nproc .eq. 311) .or. (nproc .eq. 321)
+     &   .or. (nproc .eq. 401) .or. (nproc .eq. 402)
+     &   .or. (nproc .eq. 403) .or. (nproc .eq. 411)) then
         ilept=4
 	inu=3
       elseif ((nproc .eq. 25) .or. (nproc .eq. 26)
-     &   .or. (nproc .eq. 425) .or. (nproc .eq. 426)
-     &   .or. (nproc .eq. 427)) then
+     &   .or. (nproc .eq. 316) .or. (nproc .eq. 326)
+     &   .or. (nproc .eq. 406) .or. (nproc .eq. 407)
+     &   .or. (nproc .eq. 408) .or. (nproc .eq. 416)) then
         ilept=3
 	inu=4
       else
@@ -106,6 +113,7 @@ c--- by # of iterations now that is handled at end for regular histograms
       misset=pt(inu,p)
       
       yw=yraptwo(3,4,p)
+      etaw=etaraptwo(3,4,p)
       ptw=pttwo(3,4,p)
       mw=dsqrt((p(3,4)+p(4,4))**2-(p(3,1)+p(4,1))**2
      &        -(p(3,2)+p(4,2))**2-(p(3,3)+p(4,3))**2)
@@ -182,6 +190,44 @@ c--- this case only occurs for processes 421, 426
         mbb=dsqrt((p(ibq,4)+p(iba,4))**2-(p(ibq,1)+p(iba,1))**2
      &           -(p(ibq,2)+p(iba,2))**2-(p(ibq,3)+p(iba,3))**2)
       endif
+
+c---  Add deltaphi histogram for bq and ba
+      if (ibq .gt. 0) then
+         r2 = (p(ibq,1)*p(inu,1)+p(ibq,2)*p(inu,2))/
+     & (dsqrt((p(ibq,1)**2+p(ibq,2)**2)*(p(inu,1)**2+p(inu,2)**2)))
+         if (r2 .gt. +0.9999999D0) r2=+1D0
+         if (r2 .lt. -0.9999999D0) r2=-1D0
+         dphibqnu = dacos(r2)
+      endif
+
+      if (iba .gt. 0) then
+         r2 = (p(iba,1)*p(inu,1)+p(iba,2)*p(inu,2))/
+     & (dsqrt((p(iba,1)**2+p(iba,2)**2)*(p(inu,1)**2+p(inu,2)**2)))
+         if (r2 .gt. +0.9999999D0) r2=+1D0
+         if (r2 .lt. -0.9999999D0) r2=-1D0
+         dphibanu = dacos(r2)
+      endif
+
+
+c--   pt and rapidity distributions for the highest pt b-quark jet
+      if ((iba .lt. 0) .and. (ibq .gt. 0)) then
+         ptbmax = pt(ibq, p)
+         ybmax = yrap(ibq, p)
+      elseif ((iba .gt. 0) .and. (ibq .lt. 0)) then
+         ptbmax = pt(iba, p)
+         ybmax = yrap(iba, p)
+      elseif ((iba .gt. 0) .and. (ibq .gt. 0) .and. 
+     &    (pt(iba, p) .gt. pt(ibq, p)) ) then
+         ptbmax = pt(iba, p)
+         ybmax = yrap(iba, p)
+      elseif ((iba .gt. 0) .and. (ibq .gt. 0) .and.
+     &    (pt(iba,p) .le. pt(ibq, p)) ) then
+         ptbmax = pt(ibq, p)
+         ybmax = yrap(ibq, p)
+      endif
+
+         
+
       
 c      write(6,*) 'In Wbbmas, switch=',switch
 c      write(6,*) 'In Wbbmas, jets=',jets
@@ -196,6 +242,12 @@ c      write(6,*)
 
 c--- Call histogram routines
    99 continue
+
+c--- Book and fill ntuple if that option is set, remembering to divide
+c--- by # of iterations now that is handled at end for regular histograms
+      if (creatent .eqv. .true.) then
+        call bookfill(tag,p,wt/dfloat(itmx))  
+      endif
 
 c--- "n" will count the number of histograms
       n=1              
@@ -280,6 +332,37 @@ c---   llplot:  equal to "lin"/"log" for linear/log scale
      &              -5d0,5d0,0.2d0,'lin')
       n=n+1
       call bookplot(n,tag,'Jet 3 pt',ptj3,wt,wt2,
+     &              0d0,200d0,5d0,'log')
+      n=n+1
+
+c---  Add histograms for dphi_bqnu and dphi_banu
+
+      call bookplot(n,tag,'deltaphi(nu,b-quark-jet)', dphibqnu, 
+     & wt, wt2, 0d0, pi+0.1d0, 0.1d0, 'lin')
+      n=n+1
+
+      call bookplot(n,tag,'deltaphi(nu,anti-b-quark-jet)', dphibanu, 
+     & wt, wt2, 0d0, pi+0.1d0, 0.1d0, 'lin')
+      n=n+1
+
+c---  Add pseudorapidity histograms
+
+      call bookplot(n,tag,'W boson pseudo-rapidity',etaw,wt,wt2,
+     &              -5d0,5d0,0.1d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'b-quark jet pseudo-rapidity',etabq,wt,wt2,
+     &              -5d0,5d0,0.1d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'anti-b-quark jet pseudo-rapidity',etaba,
+     & wt,wt2, -5d0,5d0,0.1d0,'lin')
+      n=n+1
+
+c---   pt and rapidity for the highst pt b-quark jet
+
+      call bookplot(n,tag,'b-quark harder jet rapidity',ybq,wt,wt2,
+     &              -5d0,5d0,0.1d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'b-quark harder jet pt',ptbq,wt,wt2,
      &              0d0,200d0,5d0,'log')
       n=n+1
 

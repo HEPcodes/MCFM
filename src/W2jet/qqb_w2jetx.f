@@ -64,12 +64,12 @@ c--- and by type of contribution qqb(1) ... qqb(n)
 
       if (first) then
       first=.false.
-        if (Gflag) then
+        if ((Gflag) .or. (QandGflag)) then
           write(*,*) 'Using QQGG matrix elements'
           write(*,*) '[LC is   N ]'
           write(*,*) '[SLC is 1/N]'
         endif
-        if (Qflag) then
+        if ((Qflag) .or. (QandGflag)) then
           write(*,*) 'Using QQBQQB matrix elements'
           write(*,*) '[LC is   1 ]'
           write(*,*) '[SLC is 1/N]'

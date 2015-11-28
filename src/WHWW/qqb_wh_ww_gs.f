@@ -1,13 +1,13 @@
       subroutine qqb_wh_ww_gs(p,msq)
 c---Matrix element SUBTRACTION squared averaged over initial colors and spins
 c---for nwz=1
-c     q(-p1)+qbar(-p2) -->  H  + W +g(p7)
+c     q(-p1)+qbar(-p2) -->  H  + W +g(p9)
 c                           |    |
 c                           |    --> nu(p3)+e^+(p4)
 c                           |
 c                           ---> W^+(nu(p5),e^+(p6))W^-(e^-(p7),nub(p8))
 c---for nwz=-1
-c     q(-p1)+qbar(-p2) -->  H  + W +g(p7)
+c     q(-p1)+qbar(-p2) -->  H  + W +g(p9)
 c                           |    |
 c                           |    --> e^-(p3)+nubar(p4)
 c                           |

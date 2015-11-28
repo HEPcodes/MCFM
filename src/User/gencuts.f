@@ -37,13 +37,13 @@
       double precision pjet(mxpart,4),etvec(4)
       double precision pt,etarap,etmiss,evtmisset,R,Rcut,etaj,etak,
      & etalept,mll,jetpt,jetrap
-      double precision etabuffer
+      double precision etabuffer,m3456
       logical passed,hwwjetcuts
       double precision ht,qeta,mlbnu,merecon,reconcorr
       double precision dphi_ll,m_ll,mtrans,scut1,scut2
       double precision pttwo,phill,phillcut,etajet2cut,mllcut
       double precision deltaeta,deltaphi,pt5sq,pt6sq,ptthree
-      integer ij
+      integer ij,i,ilep,igam,inu
       character*30 runstring
       common/runstring/runstring
       common/stopvars/ht,qeta,mlbnu,merecon,reconcorr
@@ -61,7 +61,30 @@
       gencuts=.false.
       
       hwwjetcuts=.false.
+      
+      
 c--- THIS FUNCTIONALITY REMOVED, TO AVOID CONFUSION
+c      if (case .eq. 'Zgamma') then
+cc--- DEBUG: cut on pt of Z
+c      if (pttwo(3,4,pjet) .lt. 200d0) then
+c        gencuts=.true.
+c	return
+c      endif
+cc--- DEBUG: cut on maximum m345
+c      m3456=
+c     &    +2d0*(pjet(3,4)*pjet(4,4)-pjet(3,1)*pjet(4,1)
+c     &         -pjet(3,2)*pjet(4,2)-pjet(3,3)*pjet(4,3)) 
+c     &    +2d0*(pjet(3,4)*pjet(5,4)-pjet(3,1)*pjet(5,1)
+c     &         -pjet(3,2)*pjet(5,2)-pjet(3,3)*pjet(5,3)) 
+c     &    +2d0*(pjet(4,4)*pjet(5,4)-pjet(4,1)*pjet(5,1)
+c     &         -pjet(4,2)*pjet(5,2)-pjet(4,3)*pjet(5,3)) 
+c      m3456=dsqrt(m3456)
+c      if (m3456 .gt. 4000d0) then
+c        gencuts=.true.
+c	return
+c      endif
+c      endif
+            
 c--- perform extra H(->WW)+jet search cuts if there is a minimum
 c---  jet rapidity, as is usually done
 c      if (abs(etajetmin) .gt. 1d-6) then
@@ -69,111 +92,126 @@ c        hwwjetcuts=.true.
 c      else
 c        hwwjetcuts=.false.
 c      endif 
+     
 
 c--- CMS Higgs search cuts
-      if(runstring(1:8).eq.'CMSHiggs') then 
-         call cms_higgsWW(pjet,gencuts) 
-         return 
-      endif
+c      if(runstring(1:8).eq.'CMSHiggs') then 
+c         call cms_higgsWW(pjet,gencuts) 
+c         return 
+c      endif
       
-c--- additional cuts for CDF Mjj analysis
-      if (runstring(1:3) .eq. 'mjj') then
-c--- transverse mass of the W > 30
-        mtrans=
-     .   (pjet(3,1)*pjet(4,1)+pjet(3,2)*pjet(4,2))
-     .   /dsqrt((pjet(3,1)**2+pjet(3,2)**2)
-     .         *(pjet(4,1)**2+pjet(4,2)**2))
-        mtrans=2d0*dsqrt(pjet(3,1)**2+pjet(3,2)**2)
-     .   *dsqrt(pjet(4,1)**2+pjet(4,2)**2)*(1d0-mtrans)
-        mtrans=dsqrt(max(mtrans,0d0))
-        if (mtrans .lt. 30d0) then
-	  gencuts=.true.
-	  return
-	endif       
-c--- DeltaEta(J1,J2)| < 2.5
-        deltaeta=etarap(5,pjet)-etarap(6,pjet)
-	if (abs(deltaeta) .gt. 2.5d0) then
-	  gencuts=.true.
-	  return
-	endif
-c--- Pt(J1,J2) > 40 (Pt of vectorial sum of the two jets > 40) 
-c--- (this cut may be avoided)
-	if (runstring(4:9) .ne. 'noptjj') then
-	  if (pttwo(5,6,pjet) .lt. 40d0) then
-	    gencuts=.true.
-	    return
-	  endif
-	endif
-c--- DeltaPhi(J1, MET) >0.4
-	pt5sq=pjet(5,1)**2+pjet(5,2)**2
-	pt6sq=pjet(6,1)**2+pjet(6,2)**2
-	if (pt5sq .gt. pt6sq) then
-          ij=5
-	else
-	  ij=6
-	endif
-        deltaphi=atan2(pjet(3,1),pjet(3,2))-atan2(pjet(ij,1),pjet(ij,2))
-        if (deltaphi .gt. pi) deltaphi=twopi-deltaphi
-        if (deltaphi .lt. -pi) deltaphi=twopi+deltaphi
-	if (abs(deltaphi) .lt. 0.4d0) then
-	  gencuts=.true.
-	  return
-	endif
-      endif
+c--- ATLAS HIGGS SEARCH CUTS 
+c      if(runstring(1:10).eq.'ATLASHiggs') then 
+c         call ATLAS_hww(pjet,gencuts) 
+c         return 
+c      endif
 
-c--- extra transverse mass cut in W+jets for CDF
-      if (runstring(1:7) .eq. 'cdfjoey') then
-        mtrans=
-     .   (pjet(3,1)*pjet(4,1)+pjet(3,2)*pjet(4,2))
-     .   /dsqrt((pjet(3,1)**2+pjet(3,2)**2)
-     .         *(pjet(4,1)**2+pjet(4,2)**2))
-c---    transverse mass calculation
-        mtrans=2d0*dsqrt(pjet(3,1)**2+pjet(3,2)**2)
-     .   *dsqrt(pjet(4,1)**2+pjet(4,2)**2)*(1d0-mtrans)
-        mtrans=dsqrt(max(mtrans,0d0))
-        if (mtrans .lt. 20d0) then
-	  gencuts=.true.
-	  return
-	endif       
-      endif
+
+c--- Special runstring for CDF W+2j cuts
+c      if(runstring(1:10).eq.'cdf_Wdijet') then 
+c         call cdf_Wdijet_v3(pjet,gencuts)
+c         return 
+c      endif
+
+cc--- additional cuts for CDF Mjj analysis
+c      if (runstring(1:3) .eq. 'mjj') then
+cc--- transverse mass of the W > 30
+c        mtrans=
+c     .   (pjet(3,1)*pjet(4,1)+pjet(3,2)*pjet(4,2))
+c     .   /dsqrt((pjet(3,1)**2+pjet(3,2)**2)
+c     .         *(pjet(4,1)**2+pjet(4,2)**2))
+c        mtrans=2d0*dsqrt(pjet(3,1)**2+pjet(3,2)**2)
+c     .   *dsqrt(pjet(4,1)**2+pjet(4,2)**2)*(1d0-mtrans)
+c        mtrans=dsqrt(max(mtrans,0d0))
+c        if (mtrans .lt. 30d0) then
+c	  gencuts=.true.
+c	  return
+c	endif       
+c--- DeltaEta(J1,J2)| < 2.5
+c        deltaeta=etarap(5,pjet)-etarap(6,pjet)
+c	if (abs(deltaeta) .gt. 2.5d0) then
+c	  gencuts=.true.
+c	  return
+c	endif
+cc--- Pt(J1,J2) > 40 (Pt of vectorial sum of the two jets > 40) 
+cc--- (this cut may be avoided)
+c	if (runstring(4:9) .ne. 'noptjj') then
+c	  if (pttwo(5,6,pjet) .lt. 40d0) then
+c	    gencuts=.true.
+c	    return
+c	  endif
+c	endif
+cc--- DeltaPhi(J1, MET) >0.4
+c	pt5sq=pjet(5,1)**2+pjet(5,2)**2
+c	pt6sq=pjet(6,1)**2+pjet(6,2)**2
+c	if (pt5sq .gt. pt6sq) then
+c          ij=5
+c	else
+c	  ij=6
+c	endif
+c        deltaphi=atan2(pjet(3,1),pjet(3,2))-atan2(pjet(ij,1),pjet(ij,2))
+c        if (deltaphi .gt. pi) deltaphi=twopi-deltaphi
+c        if (deltaphi .lt. -pi) deltaphi=twopi+deltaphi
+c	if (abs(deltaphi) .lt. 0.4d0) then
+c	  gencuts=.true.
+c	  return
+c	endif
+c      endif
+
+cc--- extra transverse mass cut in W+jets for CDF
+c      if (runstring(1:7) .eq. 'cdfjoey') then
+c        mtrans=
+c     .   (pjet(3,1)*pjet(4,1)+pjet(3,2)*pjet(4,2))
+c     .   /dsqrt((pjet(3,1)**2+pjet(3,2)**2)
+c     .         *(pjet(4,1)**2+pjet(4,2)**2))
+cc---    transverse mass calculation
+c        mtrans=2d0*dsqrt(pjet(3,1)**2+pjet(3,2)**2)
+c     .   *dsqrt(pjet(4,1)**2+pjet(4,2)**2)*(1d0-mtrans)
+c        mtrans=dsqrt(max(mtrans,0d0))
+c        if (mtrans .lt. 20d0) then
+c	  gencuts=.true.
+c	  return
+c	endif       
+c      endif
       
-      if (runstring(1:4) .eq. 'stop') then
-c--- do single-top search cuts instead
-        maxparts=4+njets
-        if ((case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')
-     .  .or.(case .eq. 'tt_bbu')) maxparts=6+njets
-        call stopcuts(pjet,maxparts,ht,qeta,mlbnu,merecon,reconcorr)  
-        if (ht .lt. 0d0) gencuts=.true.
-        return
-      endif
+c      if (runstring(1:4) .eq. 'stop') then
+cc--- do single-top search cuts instead
+c        maxparts=4+njets
+c        if ((case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')
+c     .  .or.(case .eq. 'tt_bbu')) maxparts=6+njets
+c        call stopcuts(pjet,maxparts,ht,qeta,mlbnu,merecon,reconcorr)  
+c        if (ht .lt. 0d0) gencuts=.true.
+c        return
+c      endif
        
-      if (runstring(1:6) .eq. 'cdfhww') then
-c--- do CDF H->WW search cuts instead
-        maxparts=6+njets
-        call cdfhwwcuts(pjet,maxparts,passed)  
-        if (passed .eqv. .false.) gencuts=.true.
-        return
-      endif
+c      if (runstring(1:6) .eq. 'cdfhww') then
+cc--- do CDF H->WW search cuts instead
+c        maxparts=6+njets
+c        call cdfhwwcuts(pjet,maxparts,passed)  
+c        if (passed .eqv. .false.) gencuts=.true.
+c        return
+c      endif
        
-      if (runstring(1:3) .eq. 'hww') then
-c--- do H->WW search cuts instead
-        maxparts=6+njets
-        call hwwcuts(pjet,maxparts,dphi_ll,m_ll,mtrans,scut1,scut2)  
-        if (mtrans .lt. 0d0) gencuts=.true.
-        return
-      endif
+c      if (runstring(1:3) .eq. 'hww') then
+cc--- do H->WW search cuts instead
+c        maxparts=6+njets
+c        call hwwcuts(pjet,maxparts,dphi_ll,m_ll,mtrans,scut1,scut2)  
+c        if (mtrans .lt. 0d0) gencuts=.true.
+c        return
+c      endif
        
-      if (runstring(1:3) .eq. 'wbf') then
-c--- do WBF search cuts instead
-        maxparts=4+njets
-	if (runstring(4:8) .eq. 'jeppe') then
-          call wbfcuts_jeppe(pjet,maxparts,passed)  
-        else
-	  call wbfcuts(pjet,maxparts,passed)  
-	endif
-        if (passed .eqv. .false.) gencuts=.true.
-        return
-      endif
+c      if (runstring(1:3) .eq. 'wbf') then
+cc--- do WBF search cuts instead
+c        maxparts=4+njets
+c	if (runstring(4:8) .eq. 'jeppe') then
+c          call wbfcuts_jeppe(pjet,maxparts,passed)  
+c        else
+c	  call wbfcuts(pjet,maxparts,passed)  
+c	endif
+c        if (passed .eqv. .false.) gencuts=.true.
+c        return
+c      endif
+ 
        
 c--- Look for particles that should be treated as jets,
 c--- so far only b decays from Z-bosons and
@@ -208,8 +246,13 @@ c--- write-out the cuts we are using
      .                '                *'
       endif
       if     (case.eq.'Wgamma') then
-      write(6,99) '*   (3,4,5) trans. mass  >   ',mtrans34cut,
+      if (mtrans34cut .lt. 0d0) then
+      write(6,99) '*   (3,4,5) trans. mass  >   ',abs(mtrans34cut),
      .                ' GeV            *'
+      else
+      write(6,99) '* (e-gam,nu) trans. mass >   ',mtrans34cut,
+     .                ' GeV            *'
+      endif
       elseif (case.eq.'Zgamma') then
       write(6,99) '*    (3,4,5) inv. mass   >   ',mtrans34cut,
      .                ' GeV            *'
@@ -349,12 +392,14 @@ c--- missing energy cut
       endif
       
 c--- mtrans34cut is used for three roles:
-c---  1) Wgamma    --> transverse mass cut on (3,4,5) system
+c---  1) Wgamma    --> mtrans34cut<0: transverse mass cut on (3,4,5) system
+c---               --> mtrans34cut<0: transverse mass cut on (e-gam,nu) system
 c---  2) Zgamma    --> invariant mass cut on (3,4,5) system
 c---  3) otherwise --> transverse mass cut on (3,4) system
 c---
-c--- cut on transverse mass of (3,4,5) system for Wgamma
       if (case.eq.'Wgamma') then 
+c--- cut on transverse mass of (3,4,5) system for Wgamma
+        if (mtrans34cut .lt. 0d0) then
         mtrans=0d0
         do j=3,5
            mtrans=mtrans+dsqrt(pjet(j,1)**2+pjet(j,2)**2)
@@ -364,10 +409,38 @@ c--- cut on transverse mass of (3,4,5) system for Wgamma
            mtrans=mtrans-(pjet(3,j)+pjet(4,j)+pjet(5,j))**2
         enddo
         mtrans=dsqrt(max(mtrans,0d0)) 
+        if (mtrans .lt. abs(mtrans34cut)) then
+           gencuts=.true.
+           return
+        endif
+	else
+c--- cut on (e-gam,nu) transverse mass for Wgamma
+        if (plabel(3) .eq. 'nl') then
+	  inu=3
+	  ilep=4
+	else
+	  inu=4
+	  ilep=3
+	endif
+	igam=5
+	mtrans=(pjet(ilep,4)+pjet(igam,4))**2
+     &        -(pjet(ilep,1)+pjet(igam,1))**2
+     &        -(pjet(ilep,2)+pjet(igam,2))**2
+     &        -(pjet(ilep,3)+pjet(igam,3))**2
+        mtrans=mtrans+(pjet(ilep,1)+pjet(igam,1))**2
+     &               +(pjet(ilep,2)+pjet(igam,2))**2
+	mtrans=dsqrt(max(mtrans,0d0))
+     &        +dsqrt(pjet(inu,1)**2+pjet(inu,2)**2)
+	mtrans=mtrans**2
+        do j=1,2 
+           mtrans=mtrans-(pjet(3,j)+pjet(4,j)+pjet(5,j))**2
+        enddo
+        mtrans=dsqrt(max(mtrans,0d0)) 
         if (mtrans .lt. mtrans34cut) then
            gencuts=.true.
            return
         endif
+	endif
 c--- cut on invariant mass of (3,4,5) system for Zgamma
       elseif (case.eq.'Zgamma') then 
 	mtrans=(pjet(3,4)+pjet(4,4)+pjet(5,4))**2

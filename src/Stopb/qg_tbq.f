@@ -18,6 +18,7 @@ c     u + g  ->  c + s + d  (t-channel single-charm)
       include 'stopscales.f'
       include 'dynamicscale.f'
       include 'nlooprun.f'
+      include 'qcdcouple.f'
       integer i3,i4
       double precision p(mxpart,4),fac1,fac2,msq_qg,msq_gq,
      & msq_qbarg,msq_gqbar
@@ -44,11 +45,14 @@ c--- initialize
       
       gsq_H=fourpi*as_H
       
-      if (dynamicscale) then
+      if (dynstring .eq. 'DDIS') then
         fac1=aveqg*2d0*xn**2*Cf*gwsq**2
      &       *fourpi*alphas(b1scale,amz,nlooprun)
         fac2=aveqg*2d0*xn**2*Cf*gwsq**2
      &       *fourpi*alphas(b2scale,amz,nlooprun)
+      elseif (dynamicscale) then
+        fac1=aveqg*2d0*xn**2*Cf*gsq*gwsq**2
+	fac2=fac1
       else
         fac1=aveqg*2d0*xn**2*Cf*gsq_H*gwsq**2
 	fac2=fac1

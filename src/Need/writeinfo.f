@@ -1,10 +1,8 @@
-      subroutine writeinfo(unitno,xsec,xsec_err,itno)
+      subroutine writeinfo(unitno,commchars,xsec,xsec_err,itno)
 ************************************************************************
 *   Routine to write out run information to a desired unit             *
 ************************************************************************
       implicit none
-      include 'constants.f'
-      include 'removebr.f'
       include 'PDFerrors.f'
       include 'process.f'
       integer unitno,j,k,itno
@@ -13,6 +11,7 @@
       double precision ggpart,gqpart,qgpart,qqpart,qqbpart,
      . gqbpart,qbgpart,qbqbpart,qbqpart
       
+      character*2 commchars
       character*4 part
       character*30 runstring
       logical creatent,dswhisto,dryrun,makecuts
@@ -44,7 +43,8 @@
       if (itno .gt. 0) then
 c--- write warning that result is only intermediate; populate the
 c--- variables in finalpart (normally done in mcfm_exit)
-      write(unitno,*) '( Intermediate result for iteration',itno,')'
+      write(unitno,*) commchars//
+     & ' Intermediate result for iteration',itno,')'
       lordnorm=0d0
       do j=-1,1
       do k=-1,1
@@ -61,29 +61,33 @@ c--- variables in finalpart (normally done in mcfm_exit)
       qqbpart=lord_bypart(+1,-1)/lordnorm
       qbqpart=lord_bypart(-1,+1)/lordnorm
       endif
-      write(unitno,55) '( Cross-section is: ',xsec,' +/-',xsec_err,')'
+      write(unitno,55) commchars//
+     & ' Cross-section is: ',xsec,' +/-',xsec_err,')'
       write(unitno,*)
 
 c--- for gg->H+X processes, also write out the cross section
 c---  normalized by sigma(gg->H, finite mt)/sigma(gg->H, mt-> infinity)
-      if ( (case(1:5) .eq. 'ggfus') .or. (case(1:3) .eq. 'HWW')
-     . .or.(case(1:3) .eq. 'HZZ')) then
+      if (((case(1:5) .eq. 'ggfus') .or. (case(1:3) .eq. 'HWW')
+     & .or.(case(1:3) .eq. 'HZZ')) .and. (case .ne. 'HWWint')
+     &  .and. (case .ne. 'HWW_tb') .and. (case .ne. 'HZZint')
+     &  .and. (case .ne. 'HZZ_tb') ) then
         call finitemtcorr(rescale)
-        write(unitno,55)'( Rescaled x-sec is: ',xsec*rescale,' +/-',
-     .                                          xsec_err*rescale,')'
+        write(unitno,55) commchars//'Rescaled x-sec is:',
+     &     xsec*rescale,' +/-',xsec_err*rescale,')'
         write(unitno,*)
       endif
      
-      write(unitno,*) '( Contribution from parton sub-processes:'
-      write(unitno,95) '   GG    ',ggpart*xsec,ggpart*100d0
-      write(unitno,95) '   GQ    ',gqpart*xsec,gqpart*100d0
-      write(unitno,95) '   GQB   ',gqbpart*xsec,gqbpart*100d0
-      write(unitno,95) '   QG    ',qgpart*xsec,qgpart*100d0
-      write(unitno,95) '   QBG   ',qbgpart*xsec,qbgpart*100d0
-      write(unitno,95) '   QQ    ',qqpart*xsec,qqpart*100d0
-      write(unitno,95) '   QBQB  ',qbqbpart*xsec,qbqbpart*100d0
-      write(unitno,95) '   QQB   ',qqbpart*xsec,qqbpart*100d0
-      write(unitno,95) '   QBQ   ',qbqpart*xsec,qbqpart*100d0
+      write(unitno,*) commchars,
+     &                ' Contribution from parton sub-processes:'
+      write(unitno,95)commchars,'   GG    ',ggpart*xsec,ggpart*100d0
+      write(unitno,95)commchars,'   GQ    ',gqpart*xsec,gqpart*100d0
+      write(unitno,95)commchars,'   GQB   ',gqbpart*xsec,gqbpart*100d0
+      write(unitno,95)commchars,'   QG    ',qgpart*xsec,qgpart*100d0
+      write(unitno,95)commchars,'   QBG   ',qbgpart*xsec,qbgpart*100d0
+      write(unitno,95)commchars,'   QQ    ',qqpart*xsec,qqpart*100d0
+      write(unitno,95)commchars,'   QBQB  ',qbqbpart*xsec,qbqbpart*100d0
+      write(unitno,95)commchars,'   QQB   ',qqbpart*xsec,qqbpart*100d0
+      write(unitno,95)commchars,'   QBQ   ',qbqpart*xsec,qbqpart*100d0
       write(unitno,*)
 
       if (PDFerrors) then
@@ -93,9 +97,12 @@ c---  normalized by sigma(gg->H, finite mt)/sigma(gg->H, mt-> infinity)
         write(unitno,*)
       endif
 
+      if (commchars .eq. ' (') then
 c--- new routine for writing out contents of input file
-      call writeinput(unitno,' (',' )','WRITEALL')
-
+        call writeinput(unitno,' (',' )','WRITEALL')
+      else
+        call writeinput(unitno,commchars,'  ','WRITEALL')
+      endif
 
 c--- old lines for writing out inputs
 
@@ -214,7 +221,7 @@ c--- 55 format
 c--- 56 character format
    56 format('( PDF error set ',i3,'  --->',f13.3,' fb  )')
 c--- 95 character format
-   95 format(' (',5x,a9,' |',f18.5,f8.2,'%')
+   95 format(a2,5x,a9,' |',f18.5,f8.2,'%')
 c--- 96 character format      
    96 format(' (',a20,12x,'[',a,']',' )')  
 c--- 97 integer format      
