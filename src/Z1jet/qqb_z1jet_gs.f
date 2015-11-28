@@ -12,6 +12,7 @@ c                            -->l(p3)+a(p4)                            *
       implicit none 
       include 'constants.f'
       include 'ptilde.f'
+      include 'nflav.f'
       include 'qqgg.f'
       integer j,k,nd
 c --- remember: nd will count the dipoles
@@ -28,7 +29,7 @@ c --- remember: nd will count the dipoles
      & msq16_5v(-nf:nf,-nf:nf),msq25_6v(-nf:nf,-nf:nf),
      & msq25_1v(-nf:nf,-nf:nf),
      & msq15_2v(-nf:nf,-nf:nf),
-     & dummy(-nf:nf,-nf:nf),dummyv(-nf:nf,-nf:nf),
+     & dummy(-nf:nf,-nf:nf),
      & sub15_2(4),sub25_1(4),sub16_2(4),sub26_1(4),
      & sub15_6(4),sub16_5(4),sub25_6(4),sub26_5(4),
      & sub56_1(4),sub56_2(4),sub56_1v,sub56_2v,
@@ -72,7 +73,7 @@ c--- sub... and sub...v and msqv
       enddo
       enddo
       
-c      if (Gflag) then       
+c--- Gflag subtraction pieces
       do j=-nf,nf
       do k=-nf,nf
       
@@ -132,10 +133,8 @@ c---Hence 25 split multiplies g(p1)+q(p25)-->Z+q(p6)
  19   continue
       enddo
       enddo
-c      endif
 
-
-c      if (Qflag) then       
+c--- Qflag subtraction pieces
       do j=-nf,nf
       do k=-nf,nf      
 
@@ -164,9 +163,8 @@ c q-qbar
      .  *(msq15_2(0,k)*sub15_2(gq)+msq15_2v(0,k)*sub15_2v)
       msq(4,j,k)=msq(4,j,k)+(xn-1d0/xn)
      .  *(msq26_1(j,0)*sub26_1(gq)+msq26_1v(j,0)*sub26_1v)
-
-      msq(6,j,k)=msq(6,j,k)+2d0*tr*dfloat(nf)*(msq26_5(j,k)*sub56_2(gq)
-     .                  -msq56_2v(j,k)*sub56_2v)
+      msq(6,j,k)=msq(6,j,k)+2d0*tr*dfloat(nflav)
+     .  *(msq26_5(j,k)*sub56_2(gq)-msq56_2v(j,k)*sub56_2v)
       else 
       msq(1,j,k)=msq(1,j,k)+(xn-1d0/xn)
      .  *(msq15_2(0,k)*sub15_2(gq)+msq15_2v(0,k)*sub15_2v)
@@ -180,8 +178,7 @@ c--qbar-q
      .  *(msq25_1(j,0)*sub25_1(gq)+msq25_1v(j,0)*sub25_1v)
       msq(3,j,k)=msq(3,j,k)+(xn-1d0/xn)
      .  *(msq16_2(0,k)*sub16_2(gq)+msq16_2v(0,k)*sub16_2v)
-
-      msq(6,j,k)=msq(6,j,k)+2d0*tr*dfloat(nf)
+      msq(6,j,k)=msq(6,j,k)+2d0*tr*dfloat(nflav)
      . *(msq26_5(j,k)*sub56_2(gq)-msq56_2v(j,k)*sub56_2v)
       else 
       msq(2,j,k)=msq(2,j,k)+(xn-1d0/xn)
@@ -195,7 +192,6 @@ c--qbar-q
 
       enddo
       enddo
-c      endif
 
       return
       end

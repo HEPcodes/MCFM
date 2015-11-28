@@ -10,7 +10,6 @@
 *     f(P1) + f(P2) --> Q(-P3) + Qbar(-P4)                             *
 ************************************************************************
       include 'constants.f'
-      include 'masses.f'
       include 'qcdcouple.f'
       include 'sprods_com.f'
       include 'msqv_cs.f'
@@ -66,7 +65,6 @@ C--in is the label of the parton dotted with n
       subroutine qqb_QQbn(i1,i2,mass,p,n,msqn) 
       implicit none
       include 'constants.f'
-      include 'masses.f'
       include 'sprods_com.f'
       integer i1,i2
 C--in is the label of the parton dotted with n

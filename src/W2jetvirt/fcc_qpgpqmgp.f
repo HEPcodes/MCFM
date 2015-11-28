@@ -4,7 +4,7 @@
       include 'constants.f'
       include 'zprods_decl.f'
       include 'sprods_com.f'
-      double complex L0,Lsm1,Lsm1_2mh,Lsm1_2mht,Lsm1_2me,Lnrat,I3m
+      double complex L0,Lsm1,Lsm1_2me
       double precision t  
 
       Fcc_qpgpqmgp=

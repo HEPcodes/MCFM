@@ -24,8 +24,6 @@ c---
       enddo
 
       call dotem(5,p,s)
-c---protect from soft and collinear singularities
-c      if  ((-s(1,5) .lt. cutoff) .or. (-s(2,5) .lt. cutoff)) return
 c---calculate the propagator
       fac=gwsq**2*gsq*V
 
@@ -67,18 +65,12 @@ c---calculate the propagator
       include 'constants.f'
       include 'masses.f'
       include 'sprods_com.f'
-      integer j1,j2,j5,j3,j4
+      integer j1,j2,j3,j4,j5
       double precision prop
 
       prop=((s(3,4)-wmass**2)**2+(wmass*wwidth)**2)
 
       w1jet=(s(j1,j4)**2+s(j2,j3)**2)*s(j3,j4)/(s(j1,j5)*s(j2,j5)*prop)
-      
-c      w1jet=
-c     . (s12*(2*s(j1,j4)*s(j2,j3)+s(j1,j4)*s(j5,j3)+s(j2,j3)*s(j5,j4))
-c     . +s15*(s(j1,j4)*s(j2,j3)+s(j1,j4)*s(j5,j3)-s(j2,j3)*s(j2,j4))
-c     . +s25*(s(j1,j4)*s(j2,j3)+s(j2,j3)*s(j5,j4)-s(j1,j3)*s(j1,j4)))
-c     . /(s25*s15*prop)
 
       return
       end

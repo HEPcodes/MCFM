@@ -37,7 +37,6 @@ c---in label of gluon which is contracted with n
       fac=2d0*gsq*V*gwsq**2
       call dotem(5,p,s)
 
-C----needs more work (not correct yet)
       if (in .eq. 1) then
       p1p2(0,-1)=-aveqg*fac*w1jetn(5,2,1,p,n)
       p1p2(0,+1)=-aveqg*fac*w1jetn(2,5,1,p,n)

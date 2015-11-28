@@ -1,5 +1,16 @@
       double complex function I3m(s1,s2,s3)
-      implicit none
+C     This is the function I3m, a massless triangle with all three external 
+C     lines offshell defined in BDK
+C     %\cite{Bern:1997sc}
+C     \bibitem{Bern:1997sc}
+C     Z.~Bern, L.~J.~Dixon and D.~A.~Kosower,
+C     %``One-loop amplitudes for e+ e- to four partons,''
+C     Nucl.\ Phys.\ B {\bf 513}, 3 (1998)
+C     [arXiv:hep-ph/9708239].
+C     %%CITATION = HEP-PH 9708239;%%
+C     defined in their equation II.9
+C     \int da_1 da_2 da_3 /(-a_1*a_2*s1-a_2*a_3*s2-a_3*a_1*s3)
+       implicit none
       include 'constants.f'
       double precision s1,s2,s3,smax,smid,smin,del3,rtdel3
       double precision i3m1a,flag
@@ -11,7 +22,7 @@
       del3=s1**2+s2**2+s3**2-two*(s1*s2+s2*s3+s3*s1)      
 
       if (del3 .gt. 0) then
-      rtdel3=dsqrt(del3)
+      rtdel3=sqrt(del3)
          if (smax .lt. 0) then
 c---case all negative
              flag=0d0
@@ -30,7 +41,7 @@ c---case two positive and one negative
              i3m=-i3m1b(-smax,-smid,-smin,rtdel3,flag)
          endif
       elseif (del3 .lt. 0) then 
-      rtdel3=dsqrt(-del3)
+      rtdel3=sqrt(-del3)
          if (smax .lt. 0) then
 c---case all negative
              i3m=+dcmplx(i3m1a(+s1,+s2,+s3,rtdel3))
@@ -46,6 +57,7 @@ c---case all positive
 
       double precision function I3m1a(s1,s2,s3,rtmdel)
       implicit none
+C     symmetric form of Lu and Perez
       include 'constants.f'
       double precision s1,s2,s3,d1,d2,d3,rtmdel,arg1,arg2,arg3,dclaus
 
@@ -63,6 +75,7 @@ c---case all positive
       
       double complex function I3m1b(s1,s2,s3,rtdel,flag)
       implicit none
+C     form of Ussyukina and Davydychev
       include 'constants.f'
       double precision s1,s2,s3,d3,temp,ddilog,xlog,ylog
       double precision x,y,rho,rtdel,argx,argy,argdlx,argdly,flag
@@ -82,11 +95,11 @@ c---case all positive
       stop
       endif
 
-      xlog=dlog(abs(argx))
-      ylog=dlog(abs(argy))
-      temp=xlog*ylog+pisq/3d0+(ylog-xlog)*dlog((one+argy)/(one+argx))
+      xlog=log(abs(argx))
+      ylog=log(abs(argy))
+      temp=xlog*ylog+pisq/3d0+(ylog-xlog)*log((one+argy)/(one+argx))
      & +two*(ddilog(argdlx)+ddilog(argdly))
-      I3m1b=Dcmplx(temp-dabs(flag)*pisq)+impi*Dcmplx(flag*(xlog+ylog))
+      I3m1b=Dcmplx(temp-abs(flag)*pisq)+impi*Dcmplx(flag*(xlog+ylog))
       I3m1b=-I3m1b/Dcmplx(rtdel)
       end
 

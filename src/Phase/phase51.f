@@ -3,6 +3,7 @@ c----phase space for qg--> t(\nu(3) b(5) e^+(4))  bbar(6) q'(7)
       implicit none
       include 'constants.f'
       include 'masses.f'
+      include 'process.f'
       include 'mxdim.f'
       include 'debug.f'
 c********* generate phase space for 2-->5 process
@@ -25,8 +26,13 @@ c---- with all 2 pi's (ie 1/(2*pi)^11)
       p12(j)=-p1(j)-p2(j)
       enddo
 
-      smin=4d0*mb**2
+      if (case .eq. 't_bbar') then
+      bmass=0d0
+      smin=0d0
+      else
       bmass=mb
+      smin=4d0*bmass**2
+      endif
       call 
      . phi1_2m_nobw(0d0,r(13),r(12),r(11),smin,p12,p7,p127,wt127,*99)
 
@@ -34,13 +40,12 @@ c---- with all 2 pi's (ie 1/(2*pi)^11)
       n3=1
       mass3=mt
       width3=twidth
-
-      call phi1_2m(bmass,r(1),r(2),r(3),mbsq,p127,p6,p345,wt3456,*99)
+      call phi1_2m(bmass,r(1),r(2),r(3),smin,p127,p6,p345,wt3456,*99)
       n3=1
       mass3=wmass
       width3=wwidth
 
-      call phi1_2m(bmass,r(4),r(5),r(6),mbsq,p345,p5,p34,wt345,*99)
+      call phi1_2m(bmass,r(4),r(5),r(6),smin,p345,p5,p34,wt345,*99)
 
       call phi3m0(r(7),r(8),p34,p3,p4,wt34,*99)
       wt=wt0*wt127*wt3456*wt345*wt34

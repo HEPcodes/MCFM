@@ -11,15 +11,12 @@ C      Quark antiquark annihilation in order alfa_s^3
 C      Q(P1) + Qbar(P2) --> q(-P3) + qbar(-P4) + g(-P5)
 ************************************************************************
       include 'constants.f'
-      include 'qcdcouple.f'
-      include 'masses.f'
       include 'sprods_com.f'
       
       integer j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4)
       double precision ttbqqbg,ttbggg
       double precision wtqqb,wtqbq,wtqg,wtgq,wtqbg,wtgqb,wtgg
-      double precision mass2,width2,mass3,width3 
 
 C----set all elements to zero
       do j=-nf,nf
@@ -75,9 +72,7 @@ C      %``Explicit Formulae For Heavy Flavor Production,''
 C      Nucl.\ Phys.\ B {\bf 282}, 642 (1987).
 C      %%CITATION = NUPHA,B282,642;%%
       include 'constants.f'
-      include 'ewcouple.f'
       include 'qcdcouple.f'
-      include 'masses.f'
       include 'sprods_com.f'
       integer i1,i2,i3,i4,i5,n2,n3
       double precision xm2,DL1,DL2,DL3,DL4,res1,res2
@@ -115,8 +110,8 @@ C      %%CITATION = NUPHA,B282,642;%%
      . -V*(xn**2-4D0)/xn
      . *2D0*XM2/S12/P34*((P13-P14)/P25-(P23-P24)/P15)
      . +4D0*V**2/xn*XM2*( (P35**2+P45**2)/P35/P45/S12**2 
-     . -0.5*(1D0/P15+1D0/P25+1D0/P35+1D0/P45)/S12
-     . -0.25*(1D0/P15+1D0/P25+XM2/P15**2+XM2/P25**2+4D0/S12)/P34
+     . -0.5d0*(1D0/P15+1D0/P25+1D0/P35+1D0/P45)/S12
+     . -0.25d0*(1D0/P15+1D0/P25+XM2/P15**2+XM2/P25**2+4D0/S12)/P34
      . -(DL1**2+DL2**2+DL3**2+DL4**2)/4D0/P34**2)
      . -2D0*V/xn
      . *XM2/S12/P34*(1D0+2D0*P34/S12+XM2/P15+XM2/P25
@@ -161,9 +156,6 @@ C      Nucl.\ Phys.\ B {\bf 282}, 642 (1987).
 C      %%CITATION = NUPHA,B282,642;%%
       implicit none
       include 'constants.f'
-      include 'ewcouple.f'
-      include 'qcdcouple.f'
-      include 'masses.f'
       include 'sprods_com.f'
       integer i1,i2,i3,i4,i5,n2,n3
       double precision xm2,xm4,res
@@ -213,7 +205,8 @@ C      %%CITATION = NUPHA,B282,642;%%
      . -0.125d0*S12*(S12+2D0*P34))/S12/P34/P15/P25
      . +V*xn**2*XM2 
      . *((P34-2D0*XM2)/S12/P13/P24-S12/4D0/P34/P15/P25)
-     . -2D0*V*xn**2*XM4*(0.25*S12**2+P34**2+P45**2)/S12/P34/P45/P13/P25
+     . -2D0*V*xn**2*XM4*(0.25d0*S12**2+P34**2+P45**2)
+     . /S12/P34/P45/P13/P25
       RES = RES
      . +4D0*V*xn**2*XM2
      . *((P34**2+P35**2+P45**2)/S12**2/P34**2+2D0*P23**2/S12/P34**2/P15)
@@ -221,7 +214,7 @@ C      %%CITATION = NUPHA,B282,642;%%
      . ( (P13/P25-P23/P15)**2/P34**2+2D0*XM2/P34/P15**2
      . +XM2*(P34+P45)/P34/P45/P13/P25 )
       RES = RES
-     . +V**2/xn**2*XM2*0.25
+     . +V**2/xn**2*XM2*0.25d0
      . *( (P13**2+P23**2-(P13+P23)*P45)/P13/P23/P14/P25
      .  +2D0*XM2*S12/P13/P23/P14/P25-4D0*XM4/P13/P14/P25**2)
       RES = RES

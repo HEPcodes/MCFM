@@ -12,10 +12,10 @@ c        1         2         3         4         5         6         7
       integer pflav,pbarflav
 
 c --- To use VEGAS random number sequence :
-      integer idum
-      COMMON/ranno/idum
+c      integer idum
+c      COMMON/ranno/idum
       
-      double precision ran1
+      double precision ran2
       
       integer j,k
       double precision weight_sum,weight_int
@@ -32,7 +32,7 @@ c --- First add up the weights :
       enddo
 
 c --- Now find a random number between zero and this integral :
-      pointer = ran1(idum)*weight_sum
+      pointer = ran2()*weight_sum
 
 c --- Find where this falls in the integral distribution to 
 c --- discover the combination :
@@ -104,17 +104,17 @@ c        1         2         3         4         5         6         7
 
 c --- This common block ensures we are calling VEGAS with the same
 c --- parameters as during the weight scan :
-      integer itmx1,ncall1,itmx2,ncall2,icall
+      integer itmx1,ncall1,itmx2,ncall2
       double precision integ,integ_err
       common/iterat/itmx1,ncall1,itmx2,ncall2
 
 c --- To use VEGAS random number sequence :
-      integer idum
-      COMMON/ranno/idum
+c      integer idum
+c      COMMON/ranno/idum
 
       integer i,j,position
 
-      double precision ran1
+      double precision ran2
 
       real*4 rannum,randomList(buffersize)
 
@@ -131,7 +131,7 @@ c ---   Call integration loop again, this time unweighting :
         write(6,*) 'After event generation, numstored = ',numstored
         if (numstored.eq.0) goto 10
         do i=1,numstored
-           rannum = sngl(ran1(idum))
+           rannum = sngl(ran2())
            randomList(i) = rannum
            indexList(i) = 0
         enddo

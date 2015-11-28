@@ -91,7 +91,7 @@ C---corresponding to f1,f3,hq,Qh,hg,lh
      . +cdabs(mb1_3412(f3,f4,f1,f2,Qh,hq,hg)*d3412)**2
      . +cdabs(mb2_3412(f3,f4,f1,f2,Qh,hq,hg)*d3412)**2
 
-      D(f1,f2,f3,f4)=D(f1,f2,f3,f4)+two*Dreal(
+      D(f1,f2,f3,f4)=D(f1,f2,f3,f4)+two*dble(
      .+mb1_1234(f1,f2,f3,f4,hq,Qh,hg)*d1234
      .*Dconjg(mb2_1234(f1,f2,f3,f4,hq,Qh,hg)*d1234)
      .+mb1_3412(f3,f4,f1,f2,Qh,hq,hg)*d3412
@@ -103,13 +103,13 @@ C---corresponding to f1,f3,hq,Qh,hg,lh
      . +cdabs(mb1_1432(f1,f2,f3,f4,hq,Qh,hg)*d1432)**2
      . +cdabs(mb2_1432(f1,f2,f3,f4,hq,Qh,hg)*d1432)**2
 
-      D(f1,f2,f3,f4)=D(f1,f2,f3,f4)+two*Dreal(
+      D(f1,f2,f3,f4)=D(f1,f2,f3,f4)+two*dble(
      .+mb1_3214(f3,f4,f1,f2,Qh,hq,hg)*d3214
      .*Dconjg(mb2_3214(f3,f4,f1,f2,Qh,hq,hg)*d3214)
      .+mb1_1432(f1,f2,f3,f4,hq,Qh,hg)*d1432
      .*Dconjg(mb2_1432(f1,f2,f3,f4,hq,Qh,hg)*d1432))
  
-      B(f1,f2,f3,f4)=B(f1,f2,f3,f4)-two*Dreal(
+      B(f1,f2,f3,f4)=B(f1,f2,f3,f4)-two*dble(
      .+mb1_1234(f1,f2,f3,f4,hq,Qh,hg)*d1234
      .*Dconjg(mb1_1432(f1,f2,f3,f4,hq,Qh,hg)*d1432)
      .+mb2_1234(f1,f2,f3,f4,hq,Qh,hg)*d1234
@@ -119,7 +119,7 @@ C---corresponding to f1,f3,hq,Qh,hg,lh
      .+mb2_3412(f3,f4,f1,f2,Qh,hq,hg)*d3412
      .*Dconjg(mb2_1432(f1,f2,f3,f4,hq,Qh,hg)*d1432))
 
-      C(f1,f2,f3,f4)=C(f1,f2,f3,f4)-two*Dreal(
+      C(f1,f2,f3,f4)=C(f1,f2,f3,f4)-two*dble(
      .+mb1_1234(f1,f2,f3,f4,hq,Qh,hg)*d1234
      .*Dconjg(mb1_3214(f3,f4,f1,f2,Qh,hq,hg)*d3214)
      .+mb2_1234(f1,f2,f3,f4,hq,Qh,hg)*d1234
@@ -129,7 +129,7 @@ C---corresponding to f1,f3,hq,Qh,hg,lh
      .+mb2_3412(f3,f4,f1,f2,Qh,hq,hg)*d3412
      .*Dconjg(mb2_3214(f3,f4,f1,f2,Qh,hq,hg)*d3214))
 
-      E(f1,f2,f3,f4)=E(f1,f2,f3,f4)-two*Dreal(
+      E(f1,f2,f3,f4)=E(f1,f2,f3,f4)-two*dble(
      .+(mb1_1234(f1,f2,f3,f4,hq,Qh,hg)*d1234
      . +mb1_3412(f3,f4,f1,f2,Qh,hq,hg)*d3412)
      .*Dconjg(mb2_3214(f3,f4,f1,f2,Qh,hq,hg)*d3214
@@ -139,25 +139,25 @@ C---corresponding to f1,f3,hq,Qh,hg,lh
      .*Dconjg(mb1_3214(f3,f4,f1,f2,Qh,hq,hg)*d3214
      . +mb1_1432(f1,f2,f3,f4,hq,Qh,hg)*d1432))
 
-       F(f1,f2,f3,f4)=F(f1,f2,f3,f4)+two*Dreal(
+       F(f1,f2,f3,f4)=F(f1,f2,f3,f4)+two*dble(
      . +mb1_3214(f3,f4,f1,f2,Qh,hq,hg)*d3214
      . *Dconjg(mb1_1432(f1,f2,f3,f4,hq,Qh,hg)*d1432)
      . +mb2_3214(f3,f4,f1,f2,Qh,hq,hg)*d3214
      . *Dconjg(mb2_1432(f1,f2,f3,f4,hq,Qh,hg)*d1432))
 
-       G(f1,f2,f3,f4)=G(f1,f2,f3,f4)+two*Dreal(
+       G(f1,f2,f3,f4)=G(f1,f2,f3,f4)+two*dble(
      . +mb1_3214(f3,f4,f1,f2,Qh,hq,hg)*d3214
      . *Dconjg(mb2_1432(f1,f2,f3,f4,hq,Qh,hg)*d1432)
      . +mb2_3214(f3,f4,f1,f2,Qh,hq,hg)*d3214
      . *Dconjg(mb1_1432(f1,f2,f3,f4,hq,Qh,hg)*d1432))      
 
-      F(f1,f2,f3,f4)=F(f1,f2,f3,f4)+two*Dreal(
+      F(f1,f2,f3,f4)=F(f1,f2,f3,f4)+two*dble(
      . +mb1_1234(f1,f2,f3,f4,hq,Qh,hg)*d1234
      . *Dconjg(mb1_3412(f3,f4,f1,f2,Qh,hq,hg)*d3412)
      . +mb2_1234(f1,f2,f3,f4,hq,Qh,hg)*d1234
      . *Dconjg(mb2_3412(f3,f4,f1,f2,Qh,hq,hg)*d3412))
 
-      G(f1,f2,f3,f4)=G(f1,f2,f3,f4)+two*Dreal(
+      G(f1,f2,f3,f4)=G(f1,f2,f3,f4)+two*dble(
      . +mb1_1234(f1,f2,f3,f4,hq,Qh,hg)*d1234
      . *Dconjg(mb2_3412(f3,f4,f1,f2,Qh,hq,hg)*d3412)
      . +mb2_1234(f1,f2,f3,f4,hq,Qh,hg)*d1234

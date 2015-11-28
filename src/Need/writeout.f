@@ -16,11 +16,14 @@
       write(6,*) 'p10',p(10,1),p(10,2),p(10,3),p(10,4)
 
       write(6,*) 's12',2d0*dot(p,1,2)
-      write(6,*) 's34',2d0*dot(p,3,4)
+      write(6,*) 'sqrt(s34)',sqrt(2d0*dot(p,3,4))
       write(6,*) 's56',2d0*dot(p,5,6)
-
-      call flush(6)
-      pause
+      write(6,*) 'sqrt(s345)', 
+     .   sqrt(2d0*dot(p,3,4)+2d0*dot(p,3,5)+2d0*dot(p,4,5))
+      write(6,*) 'sqrt(s3457)',
+     .   sqrt(2d0*dot(p,3,4)+2d0*dot(p,3,5)+2d0*dot(p,3,7)
+     .                                 +2d0*dot(p,4,5)+2d0*dot(p,4,7)
+     .                                                +2d0*dot(p,5,7))
 
       do j=1,4
       sum(j)=p(1,j)+p(2,j)
@@ -59,6 +62,9 @@ c      write(6,*) '     msum4',sum(4)
       write(6,*) 'p9Dp9',dot(p,9,9)
       write(6,*) 'p10Dp10',dot(p,10,10)
       write(6,*)
+
+      call flush(6)
+      pause
 
       return
       end

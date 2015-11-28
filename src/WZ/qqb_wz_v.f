@@ -31,7 +31,7 @@ c---  averaged(summed) over initial(final) colours and spins
       double complex AWZM,AWZP,BWZM,BWZP,Vpole,Vpole12,suppl
       double complex prop12,prop34,prop56
       double complex props,propw,propz,cprop,A6b_1,A6b_2,A6b_3,A6b_4
-      double complex a6treea,a6loopa,a6loopb
+      double complex a6treea,a6loopa
       double complex Fa123456,Fa126543,Fb123456_z,Fb123456_g
       double complex Fa123465,Fa125643,Fb123465_z,Fb123465_g
       double complex Fa213456,Fa216543,Fb213456_z,Fb213456_g

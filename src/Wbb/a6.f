@@ -11,14 +11,14 @@
       include 'zprods_decl.f'
       character*2 st
       integer j1,j2,j3,j4,j5,j6
-      double complex atree,vv,ff
+      double complex atree,vv,switchyard
 
       a6=atree(st,j1,j2,j3,j4,j5,j6,za,zb)*vv(st,j1,j2,j3,j4,j5,j6)
-      a6=a6+ff(st,j1,j2,j3,j4,j5,j6,za,zb)
+      a6=a6+switchyard(st,j1,j2,j3,j4,j5,j6,za,zb)
 
       end
 
-      double complex function ff(st,j1,j2,j3,j4,j5,j6,za,zb) 
+      double complex function switchyard(st,j1,j2,j3,j4,j5,j6,za,zb) 
 c-----switchyard function to direct to pm,pp or st
       implicit none
       include 'constants.f'
@@ -27,11 +27,11 @@ c-----switchyard function to direct to pm,pp or st
       integer j1,j2,j3,j4,j5,j6
       double complex fpp,fpm,fsl
       if     (st .eq. 'pp') then
-           ff=fpp(j1,j2,j3,j4,j5,j6,za,zb) 
+           switchyard=fpp(j1,j2,j3,j4,j5,j6,za,zb) 
       elseif (st .eq. 'pm') then
-           ff=fpm(j1,j2,j3,j4,j5,j6,za,zb) 
+           switchyard=fpm(j1,j2,j3,j4,j5,j6,za,zb) 
       elseif (st .eq. 'sl') then
-           ff=fsl(j1,j2,j3,j4,j5,j6,za,zb) 
+           switchyard=fsl(j1,j2,j3,j4,j5,j6,za,zb) 
       endif
       end
 

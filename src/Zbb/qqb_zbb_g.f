@@ -115,7 +115,7 @@ c--- the 2nd of these is conjugated for convenience in interference
           msq(j,k)=msq(j,k)+aveqq*fac*(
      .      cdabs(czq)**2*msq_qqb(hq,Qh,hg,lh,1)
      .     +cdabs(czb)**2*msq_qqb(hq,Qh,hg,lh,2)
-     .     +dreal(czq*czb*dcmplx(msq_qqb(hq,Qh,hg,lh,3),
+     .     +dble(czq*czb*dcmplx(msq_qqb(hq,Qh,hg,lh,3),
      .                           msq_qqb(hq,Qh,hg,lh,4))))
         enddo
         enddo
@@ -135,7 +135,7 @@ c--- the 2nd of these is conjugated for convenience in interference
           msq(j,k)=msq(j,k)+aveqq*fac*(
      .      cdabs(czq)**2*msq_qbq(hq,Qh,hg,lh,1)
      .     +cdabs(czb)**2*msq_qbq(hq,Qh,hg,lh,2)
-     .     +dreal(czq*czb*dcmplx(msq_qbq(hq,Qh,hg,lh,3),
+     .     +dble(czq*czb*dcmplx(msq_qbq(hq,Qh,hg,lh,3),
      .                           msq_qbq(hq,Qh,hg,lh,4))))
         enddo
         enddo
@@ -155,7 +155,7 @@ c--- the 2nd of these is conjugated for convenience in interference
           msq(j,k)=msq(j,k)+aveqg*fac*(
      .      cdabs(czq)**2*msq_qg(hq,Qh,hg,lh,1)
      .     +cdabs(czb)**2*msq_qg(hq,Qh,hg,lh,2)
-     .     +dreal(czq*czb*dcmplx(msq_qg(hq,Qh,hg,lh,3),
+     .     +dble(czq*czb*dcmplx(msq_qg(hq,Qh,hg,lh,3),
      .                           msq_qg(hq,Qh,hg,lh,4))))
         enddo
         enddo
@@ -175,7 +175,7 @@ c--- the 2nd of these is conjugated for convenience in interference
           msq(j,k)=msq(j,k)+aveqg*fac*(
      .      cdabs(czq)**2*msq_qbg(hq,Qh,hg,lh,1)
      .     +cdabs(czb)**2*msq_qbg(hq,Qh,hg,lh,2)
-     .     +dreal(czq*czb*dcmplx(msq_qbg(hq,Qh,hg,lh,3),
+     .     +dble(czq*czb*dcmplx(msq_qbg(hq,Qh,hg,lh,3),
      .                           msq_qbg(hq,Qh,hg,lh,4))))
         enddo
         enddo
@@ -195,7 +195,7 @@ c--- the 2nd of these is conjugated for convenience in interference
           msq(j,k)=msq(j,k)+aveqg*fac*(
      .      cdabs(czq)**2*msq_gq(hq,Qh,hg,lh,1)
      .     +cdabs(czb)**2*msq_gq(hq,Qh,hg,lh,2)
-     .     +dreal(czq*czb*dcmplx(msq_gq(hq,Qh,hg,lh,3),
+     .     +dble(czq*czb*dcmplx(msq_gq(hq,Qh,hg,lh,3),
      .                           msq_gq(hq,Qh,hg,lh,4))))
         enddo
         enddo
@@ -215,7 +215,7 @@ c--- the 2nd of these is conjugated for convenience in interference
           msq(j,k)=msq(j,k)+aveqg*fac*(
      .      cdabs(czq)**2*msq_gqb(hq,Qh,hg,lh,1)
      .     +cdabs(czb)**2*msq_gqb(hq,Qh,hg,lh,2)
-     .     +dreal(czq*czb*dcmplx(msq_gqb(hq,Qh,hg,lh,3),
+     .     +dble(czq*czb*dcmplx(msq_gqb(hq,Qh,hg,lh,3),
      .                           msq_gqb(hq,Qh,hg,lh,4))))
         enddo
         enddo

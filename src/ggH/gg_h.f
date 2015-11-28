@@ -12,7 +12,8 @@ c---
       integer j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),s,s12
       double precision hdecay,gg,Asq
-      s(j,k)=2*(p(j,4)*p(k,4)-p(j,1)*p(k,1)-p(j,2)*p(k,2)-p(j,3)*p(k,3))
+      s(j,k)=2d0*(p(j,4)*p(k,4)-p(j,1)*p(k,1)
+     .           -p(j,2)*p(k,2)-p(j,3)*p(k,3))
 
 c---set msq=0 to initialize
       do j=-nf,nf

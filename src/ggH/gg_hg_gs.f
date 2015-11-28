@@ -15,7 +15,7 @@ c                            -->b(p3)+bbar(p4)
       integer j,k,nd
 c --- remember: nd will count the dipoles
       
-      double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf),stat
+      double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf)
       double precision 
      & msq15_2(-nf:nf,-nf:nf),msq25_1(-nf:nf,-nf:nf),
      & msq16_2(-nf:nf,-nf:nf),msq26_1(-nf:nf,-nf:nf),
@@ -70,7 +70,6 @@ c--- sub... and sub...v and msqv
       enddo
       enddo
 
-c      goto 99
 
       do j=-nf,nf
       do k=-nf,nf
@@ -166,7 +165,6 @@ c      endif
 
 c      return
 c--- Start of the 4Q contribution
-   99 continue
 
       do j=-nf,nf
       do k=-nf,nf

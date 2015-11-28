@@ -21,12 +21,12 @@ c--all momenta incoming
       include 'susycoup.f'
       include 'sprods_com.f'
       include 'zprods_com.f'
-      include 'runmb.f'
       include 'scale.f'
       integer j,k,isub
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4)
       double precision fac,propsq,hdecay,coupsq,ghbb,coupsq_eff,ghbb_eff
-      double precision amz,alphas,mb_eff,mb_msbar,massfrun
+      double precision amz,mb_eff,mb_msbar,massfrun
+c      double precision alphas
       double precision bbggh,bbaqh,bbbbh
       common/couple/amz
       common/isub/isub
@@ -45,13 +45,13 @@ c-- from the standard model value
 
 c--- calculate MS-bar mass from pole mass
 c      mb_msbar=mb/(1d0+cf*alphas(mb,amz,2)/pi)
+c--- mb(mb)=4.20 is our choice for the H+b paper
       mb_msbar=4.20d0
-c--- run mb to appropriate scale, if necessary
-      if (runmb) then
-        mb_eff=massfrun(mb_msbar,scale,amz,2)
-      else
-        mb_eff=mb_msbar
-      endif
+c--- mb(mb)=4.25 is to agree with Spira for Les Houches write-up
+c      mb_msbar=4.25d0
+c--- run mb to appropriate scale
+      mb_eff=massfrun(mb_msbar,scale,amz,2)
+c      mb_eff=mb_msbar
       
 c--- our definition
 c      ghbb=sqrt(esq*mbsq/(xw*(1d0-xw)))/2d0/zmass

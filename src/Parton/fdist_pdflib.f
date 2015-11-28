@@ -42,4 +42,12 @@ C---set to zero if x out of range
       end
 
   
+      subroutine InitPDF(dummy)
+      integer dummy
+
+c--- this is a dummy routine that exists in LHAPDF only
+      
+      return
+      end
+      
 

@@ -6,6 +6,10 @@
 *     implementation of Eqs. (2.7) and (2.8) of BDKW hep-ph/9610370
 *     with ns=0
 *     character string st can take the value pp or pm
+*     a61(pp,j1,j2,j3,j4,j5,j6,za,zb) corresponds to 
+*     q(j1,+)+Q(j3,-)+e(j6,+)+q~(j4)+Q~(j2)+e~(j5)
+*     a61(pm,j1,j2,j3,j4,j5,j6,za,zb) corresponds to 
+*     q(j1,+)+Q(j3,+)+e(j6,+)+q~(j4)+Q~(j2)+e~(j5)
       implicit none
       include 'constants.f'
       include 'zprods_decl.f'

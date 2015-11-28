@@ -8,16 +8,17 @@
       DOUBLE PRECISION tgral,chi2a,sd,region(2*mxdim),fxn,ALPH,TINY
       PARAMETER (ALPH=1.5d0,NDMX=50,TINY=1d-30)
       EXTERNAL fxn
-C     USES fxn,ran1,rebin
+C     USES fxn,ran2,rebin
       INTEGER i,idum,it,j,k,jj,mds,nd,ndo,ng,npg,ia(MXDIM),kg(MXDIM)
       DOUBLE PRECISION calls,dv2g,dxg,f,f2,f2b,fb,rc,ti,tsi,wgt,xjac,xn,
      *xnd,xo,
      *d(NDMX,MXDIM),di(NDMX,MXDIM),dt(MXDIM),dx(MXDIM),r(NDMX),x(MXDIM),
-     *xi(NDMX,MXDIM),xin(NDMX),ran1
+     *xi(NDMX,MXDIM),xin(NDMX),ran2
       DOUBLE PRECISION schi,si,swgt
       character*72 runname
       integer nlength
-      common/runname/runname,nlength
+      common/runname/runname
+      common/nlength/nlength
       COMMON /ranno/ idum
       SAVE
       if(init.le.0)then
@@ -104,7 +105,7 @@ c--- read-in grid if necessary
           do 19 k=1,npg
             wgt=xjac
             do 17 j=1,ndim
-              xn=(kg(j)-ran1(idum))*dxg+1d0
+              xn=(kg(j)-ran2())*dxg+1d0
               ia(j)=max(min(int(xn),NDMX),1)
               if(ia(j).gt.1)then
                 xo=xi(ia(j),j)-xi(ia(j)-1,j)

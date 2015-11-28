@@ -15,6 +15,7 @@ C***********************************************************************
       include 'zcouple.f'
       include 'ewcharge.f'
       include 'sprods_com.f'
+      include 'nflav.f'
       integer j,k,in
 C--in is the label of the parton dotted with n
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4)
@@ -30,7 +31,8 @@ C--in is the label of the parton dotted with n
 
       call dotem(5,p,s)
 
-      if (s(3,4) .lt. 4d0*mbsq) return
+C-----Protect from photon pole by cutting off at some value about 10 GeV
+c      if (s(3,4) .lt. 4d0*mbsq) return
 
       fac=16d0*cf*xn*esq**2*gsq
       prop=s(3,4)/dcmplx((s(3,4)-zmass**2),zmass*zwidth)
@@ -51,8 +53,9 @@ C--in is the label of the parton dotted with n
       p1p2(-1,1)=+aveqq*fac*z1jetn(2,1,5,p,n)
       p1p2(1,-1)=+aveqq*fac*z1jetn(1,2,5,p,n)
       endif
-      do j=-nf,nf
-      do k=-nf,nf
+
+      do j=-nflav,nflav
+      do k=-nflav,nflav
       if( j .ne. 0 .and. k .ne. 0 .and. j .ne. -k) goto 19
 
       if     ((j .eq. 0) .and. (k .eq. 0)) then

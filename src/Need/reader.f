@@ -17,6 +17,7 @@
       include 'noglue.f'
       include 'realwt.f'
       include 'zerowidth.f'
+      include 'removebr.f'
       include 'new_pspace.f'
       include 'impsample.f'
       include 'cutoff.f'
@@ -31,7 +32,7 @@
       include 'pdlabel.f'
       integer ih1,ih2,itmx1,itmx2,ncall1,ncall2,idum,nmin,nmax
       integer nproc,nargs,iargc
-      double precision sqrts,Rcut,randummy,ran1
+      double precision sqrts,Rcut,randummy,ran2
       double precision cmass,bmass
       character*72 optionsfile
       character*30 runstring
@@ -171,7 +172,7 @@ c      endif
       endif
 
       call chooser
-
+      
       write(6,*)
       write(6,*) '****************'
       write(6,*) 'Grid file:'
@@ -244,7 +245,7 @@ c-----initialize various quantities
 
 c--- set-up the random number generator with a negative seed
       idum=-abs(idum)
-      randummy=ran1(idum)
+      randummy=ran2()
 
 c---initialize masses for alpha_s routine
       cmass=dsqrt(mcsq)

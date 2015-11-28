@@ -9,13 +9,13 @@
       double precision wt6,p(mxpart,4),tp(4),tm(4),bp(4),bm(4)
       double precision wtepnn,wtnbem,ep(4),em(4),nn(4),nb(4),wp(4),wm(4)
       double precision wtttb,wtwp,wtwm,s3min,wt0
+      integer n2,n3
+      double precision mass2,width2,mass3,width3 
+      common/breit/n2,n3,mass2,width2,mass3,width3 
       parameter(wt0=1d0/twopi**4)
       data wp,wm,ep,em,nn,nb,bp,bm/32*0d0/
 
 
-      integer n2,n3
-      double precision mass2,width2,mass3,width3 
-      common/breit/n2,n3,mass2,width2,mass3,width3 
 *     q(-p1) +qbar(-p2)=t(nu(p3)+e^+(p4)+b(p5))                        *
 *                       +t~(b~(p6)+e^-(p7)+nu(p8))+g(p9)               *
 *                                                                      * 

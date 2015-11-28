@@ -4,6 +4,5 @@
 /Doc/*.dvi
 /Doc/*.log
 /Doc/*.out
-/Doc/*.pdf
 /Doc/*.toc
 /mcfm.dSYM

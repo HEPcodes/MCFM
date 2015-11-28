@@ -33,9 +33,6 @@ c---- calculate momenta of top and bbbar
 
       call phi1_2m(mb,r(1),r(2),r(3),s345min,p12,p6,p345,wt3456,*99)
 
-      n2=1
-      mass2=hmass
-      width2=hwidth
       n3=1
       mass3=wmass
       width3=wwidth

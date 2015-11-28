@@ -5,22 +5,23 @@
       implicit none
       include 'masses.f'
       include 'lhapdf.f'
+      include 'PDFerrors.f'
+      include 'pdlabel.f'
       double precision amz,alphasPDF
-      logical newinput,validPDF
+      logical validPDF
       character*30 oldPDFname
       integer i
-      common/newinput/newinput
 
       common/couple/amz
 
       
-      if (newinput .eqv. .false.) then
-        open(unit=21,file='lhapdf.DAT',status='old',err=999)
-        call checkversion(21,'lhapdf.DAT')
-        read(21,*) PDFname
-        read(21,*) PDFmember            
-        close(21)
-      endif
+c      if (newinput .eqv. .false.) then
+c        open(unit=21,file='lhapdf.DAT',status='old',err=999)
+c        call checkversion(21,'lhapdf.DAT')
+c        read(21,*) PDFname
+c        read(21,*) PDFmember            
+c        close(21)
+c      endif
       
       oldPDFname=PDFname
       validPDF=.false.
@@ -31,7 +32,11 @@
      .    (oldPDFname(i:i) .eq. ' ') .or.
      .    (oldPDFname(i:i) .eq. '[')) then
         validPDF=.true.
-        PDFname=oldPDFname(1:i-1)//'.LHpdf'
+        if (oldPDFname(i:i+6) .eq. '.LHgrid') then        
+          PDFname=oldPDFname(1:i-1)//'.LHgrid'
+        else
+          PDFname=oldPDFname(1:i-1)//'.LHpdf'
+        endif
       endif  
       if ((i .lt. 20) .and. (validPDF .eqv. .false.)) goto 20
       
@@ -48,10 +53,32 @@
       write(6,98) 'PDFname',PDFname(1:20)
       write(6,99) 'PDFmember',PDFmember
       write(6,*) '**********************************'
+      write(6,*)
 
       call InitPDFset('PDFsets/'//PDFname)
-      call InitPDF(PDFmember)
-      amz=alphasPDF(zmass)
+      
+      if (PDFmember .lt. 0) then
+        PDFerrors=.true.
+        call numberPDF(maxPDFsets)
+        if (maxPDFsets .gt. 40) then
+          write(6,*) 'ERROR: Max. number of error sets is 40!'
+          stop
+        endif
+        write(6,*)
+        write(6,*) '****************************************'        
+        write(6,*) '*        Calculating errors using      *'
+        write(6,*) '*',maxPDFsets,'sets of error PDFs       *'
+        write(6,*) '****************************************'
+        call InitPDF(0)
+        amz=alphasPDF(zmass)
+        currentPDF=0
+      else  
+        call InitPDF(PDFmember)
+        amz=alphasPDF(zmass)
+      endif
+
+c--- rename pdlabel to get sensible output name
+      pdlabel=PDFname(1:7)
 
       return
  

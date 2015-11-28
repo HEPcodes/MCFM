@@ -7,16 +7,16 @@
 ! Constants
 !
       double precision  sw2
-      parameter        (sw2 = 0.225880997d0)
+      parameter        (sw2 = 0.2312d0)
 
 !   masses and widths of fermions
 
       double precision tmass,      bmass,     cmass
-      parameter       (tmass=175d0,bmass=4.75d0, cmass=0d0)
+      parameter       (tmass=175d0,bmass=0d0, cmass=0d0)
       double precision smass,      umass,     dmass
       parameter       (smass=0d0,  umass=0d0, dmass=0d0)
       double precision twidth,     bwidth,    cwidth
-      parameter       (twidth=0d0, bwidth=0d0,cwidth=0d0)
+      parameter       (twidth=1.55666215d0, bwidth=0d0,cwidth=0d0)
       double precision swidth,     uwidth,    dwidth
       parameter       (swidth=0d0, uwidth=0d0,dwidth=0d0)
       double precision emass,      mumass,    taumass
@@ -27,9 +27,9 @@
 !   masses and widths of bosons
 
       double precision wmass,         zmass
-      parameter       (wmass=80.23d0,    zmass=91.187d0)
+      parameter       (wmass=80.419d0,    zmass=91.188d0)
       double precision wwidth,        zwidth
-      parameter       (wwidth=2.03d0, zwidth=2.49d0)
+      parameter       (wwidth=2.06d0, zwidth=2.49d0)
       double precision amass,         awidth
       parameter       (amass=0d0,     awidth=0d0)
       double precision hmass,         hwidth
@@ -65,7 +65,10 @@
 !-----------
       write(6,*) 'umass',umass
       write(6,*) 'bmass',bmass
+      write(6,*) 'cmass',cmass
+      write(6,*) 'tmass',tmass
       write(6,*) 'emass',emass
+      write(6,*) 'gw',gw
       fmass(1) = emass
       fmass(2) = 0d0
       fmass(3) = umass
@@ -110,6 +113,7 @@
          call coup4x(sw2,zmass,fmass(i),gchf(1,i))
       enddo
 
+      write(6,*) 'gw,gwsq',gw,gw**2
 !  QCD couplings
 
       g = 1d0

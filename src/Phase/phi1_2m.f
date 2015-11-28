@@ -49,6 +49,7 @@ c      endif
       endif
 
       m3=dsqrt(s3)
+      if (m1-m2-m3.lt. 0d0) return 1
 
 
       if (jbranch .eq. 1) then
@@ -69,7 +70,7 @@ c      endif
       cphi=dcos(phi)
       sphi=dsin(phi)
       lambda=((s1-s2-s3)**2-4d0*s2*s3)
-      if ((lambda .lt. 0d0) .or. debug) then
+      if ((m1-m2-m3.lt. 0d0) .or. debug) then
       write(6,*) 'lambda in phi1_2m',lambda
       write(6,*) 's1 in phi1_2m',s1
       write(6,*) 's2 in phi1_2m',s2

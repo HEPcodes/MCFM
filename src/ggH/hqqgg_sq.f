@@ -4,14 +4,13 @@ C     Taken from Kauffman
 C     PRD 55 1997 (4009)
 C     and checked with hep-ph/9903330 
       include 'constants.f'
-      include 'masses.f'
       include 'sprods_com.f'
       integer p1,p2,p3,p4,j,j1,j2,j3
       integer i1,i2,i3,i4,i5,i6,k1,k2
       double precision ampsq
       double precision sq(2,2,2),Trace4,Trace6,mssq,masq,m34sq,m43sq
       double precision n11,n12,n22,n33,n13,n23,d1,d2,d3,d4,d5,c1,c2
-      double precision m34int,m34inta
+      double precision m34int
       parameter(c1=cf**2*xn,c2=-0.5d0*cf)
 
       Trace4(i1,i2,i3,i4)=

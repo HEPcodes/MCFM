@@ -24,7 +24,7 @@ c     g(-p1)+g(-p2) -->  H(p3)+g(p_iglue1=5)+g(p_iglue2=6)
 C---fill spinor products upto maximum number
       call spinoru(iglue2,p,za,zb)  
 
-C   Deal withb Higgs decay to b-bbar
+C   Deal with Higgs decay to b-bbar
       s34=s(3,4)+2d0*mb**2
       hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s34-4d0*mb**2) 
       hdecay=hdecay/((s34-hmass**2)**2+(hmass*hwidth)**2)

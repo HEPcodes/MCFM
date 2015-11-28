@@ -8,7 +8,7 @@ c--- return an error message.
       implicit none
 
       write(6,*) 'This version of MCFM has not been compiled against'
-      write(6,*) 'PDFLIB, so output of n-tuples and event unweighting'
+      write(6,*) 'CERNLIB, so output of n-tuples and event unweighting'
       write(6,*) 'are not available.'
       write(6,*)
       stop

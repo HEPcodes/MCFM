@@ -19,15 +19,14 @@
       xl15=dlog(-two*dot(p,1,5)/musq)
       xl25=dlog(-two*dot(p,2,5)/musq)
 
-c      if (Gflag) then
 c--- sum over regular and plus terms
       do is=1,3
 c--- (q,qb) terms
       Q1(q,q,a,is) =ason4pi*xn*(if_qq(z,xl15,is)+0.5d0*fi_gg(z,xl15,is)
-     &                            -ii_qq(z,xl12,is)/xnsq)
+     &                         -ii_qq(z,xl12,is)/xnsq)
       Q1(a,a,q,is)=Q1(q,q,a,is)
       Q2(a,a,q,is)=ason4pi*xn*(if_qq(z,xl25,is)+0.5d0*fi_gg(z,xl25,is)
-     &                            -ii_qq(z,xl12,is)/xnsq)
+     &                         -ii_qq(z,xl12,is)/xnsq)
       Q2(q,q,a,is) =Q2(a,a,q,is)
 
 c--- (q,g)
@@ -59,9 +58,7 @@ c--- (g,g)
       Q2(a,g,g,is)=Q1(q,g,g,is)
       
       enddo
-c      endif
 
-c      if (Qflag) then
       do is=1,3
       Q1(g,q,q,is)=ason4pi*(xn-1d0/xn)*ii_gq(z,xl12,is)
       Q2(g,q,q,is)=ason4pi*(xn-1d0/xn)*ii_gq(z,xl12,is)
@@ -73,7 +70,6 @@ c      if (Qflag) then
       Q2(g,q,a,is)=Q2(g,q,q,is)
 
       enddo
-c      endif
       
       return
       end

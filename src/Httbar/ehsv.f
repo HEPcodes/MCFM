@@ -140,7 +140,7 @@ C     ehsv:EqnA.21
            zth=r*dcmplx(cos(theta),sin(theta))
            zph=r*dcmplx(cos(phi),sin(phi))
            i3=2d0/(2d0*be-1d0)
-     .     *(2d0*dreal(li2(zth))-2d0*dreal(li2(zph))
+     .     *(2d0*dble(li2(zth))-2d0*dble(li2(zph))
      .     +(phi-theta)*(phi+theta-pi))
       else
            be=0.5d0*(1d0+sqrt(1d0+4d0*t*mbsq/(u*s)))

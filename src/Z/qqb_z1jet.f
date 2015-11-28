@@ -14,6 +14,7 @@ c---
       include 'ewcharge.f'
       include 'sprods_com.f'
       include 'zprods_decl.f'
+      include 'nflav.f'
       integer j,k,hq,hl,swap(2)
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac
       double complex prop
@@ -21,6 +22,7 @@ c---
      .               AqbgZqb2(2,2),AgqbZqb2(2,2),AgqZq2(2,2)
       data swap/2,1/
       save swap
+
       do j=-nf,nf
       do k=-nf,nf
       msq(j,k)=0d0
@@ -60,8 +62,8 @@ c      call zgamps2(2,1,3,4,5,za,zb,AqbqZg2)
 c      call zgamps2(5,1,3,4,2,za,zb,AqbgZqb2)
 c      call zgamps2(5,2,3,4,1,za,zb,AgqbZqb2)
  
-      do j=-nf,nf
-      do k=-nf,nf
+      do j=-nflav,nflav
+      do k=-nflav,nflav
 
       if( (j .ne. 0) .and. (k .ne. 0) .and. (j .ne. -k)) goto 20
 

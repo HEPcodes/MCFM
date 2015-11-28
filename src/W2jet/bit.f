@@ -380,30 +380,30 @@ c + t(cb,i4,i1)*D(i2,i3)/2*(dLR1+dLR2+dLR4+dLR5+dLR7+dLR10+dLR11)
 C---eg uL+uR
       xmsqLR=ofac*V*xn/8d0*(abs(dLRna1)**2+abs(dLRna2)**2
      . +abs(dLRa1)**2+abs(dLRa2)**2
-     . +2d0/xn*dreal((dLRa1+dLRa2)*Dconjg(dLRna1+dLRna2)))
+     . +2d0/xn*dble((dLRa1+dLRa2)*Dconjg(dLRna1+dLRna2)))
 C---eg uL+dR (second term)
       xmsq1LR=ofac*V*xn/8d0*(abs(eLRna1)**2+abs(eLRna2)**2
      . +abs(eLRa1)**2+abs(eLRa2)**2
-     . +2d0/xn*dreal((eLRa1+eLRa2)*Dconjg(eLRna1+eLRna2)))
+     . +2d0/xn*dble((eLRa1+eLRa2)*Dconjg(eLRna1+eLRna2)))
 
 C--eg uL+sL
       xmsqLL=ofac*V*xn/8d0*(abs(dLLna1)**2+abs(dLLna2)**2
      . +abs(dLLa1)**2+abs(dLLa2)**2
-     . +2d0/xn*dreal((dLLa1+dLLa2)*Dconjg(dLLna1+dLLna2)))
+     . +2d0/xn*dble((dLLa1+dLLa2)*Dconjg(dLLna1+dLLna2)))
 
 C--eg uL+dL
       xmsqiLL=ofac*V*xn/8d0*(abs(diLLa1)**2+abs(diLLa2)**2
      . +abs(diLLna1)**2+abs(diLLna2)**2
-     . +2d0/xn*dreal((diLLa1+diLLa2)*Dconjg(diLLna1+diLLna2)))
+     . +2d0/xn*dble((diLLa1+diLLa2)*Dconjg(diLLna1+diLLna2)))
 C--eg uL+uL
       xmsqiiLL=ofac*V*xn/8d0*(abs(fiLLna1)**2+abs(fiLLna2)**2
      . +abs(fiLLa1)**2+abs(fiLLa2)**2
-     . +2d0/xn*dreal((fiLLa1+fiLLa2)*Dconjg(fiLLna1+fiLLna2)))
+     . +2d0/xn*dble((fiLLa1+fiLLa2)*Dconjg(fiLLna1+fiLLna2)))
 
 C--eg uR+uL
       xmsqRL=ofac*V*xn/8d0*(abs(fRLna1)**2+abs(fRLna2)**2
      . +abs(fRLa1)**2+abs(fRLa2)**2
-     . +2d0/xn*dreal((fRLa1+fRLa2)*Dconjg(fRLna1+fRLna2)))
+     . +2d0/xn*dble((fRLa1+fRLa2)*Dconjg(fRLna1+fRLna2)))
 
       return
       end

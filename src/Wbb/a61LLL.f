@@ -1,5 +1,7 @@
       double complex function a61LLL(j1,j2,j3,j4,j5,j6,za,zb) 
       implicit none
+C---  Corresponds to all outgoing
+*     q(j1,-)+Q(j3,-)+e(j6,-)+q~(j4)+Q~(j2)+e~(j5)
       include 'constants.f'
       include 'zprods_decl.f'
       include 'sprods_com.f'

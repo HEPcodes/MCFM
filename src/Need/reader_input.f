@@ -4,6 +4,7 @@
 *   form of all the input files and new to version 3.4 of MCFM         *
 ************************************************************************
       implicit none
+      include 'constants.f'
       include 'debug.f'
       include 'new_pspace.f'
       include 'virtonly.f'
@@ -14,8 +15,12 @@
       include 'cutoff.f'
       include 'maxwt.f'
       include 'masses.f'
+      include 'process.f'
       include 'scale.f'
+      include 'facscale.f'
+      include 'dynamicscale.f'
       include 'zerowidth.f'
+      include 'removebr.f'
       include 'flags.f'
       include 'clustering.f'
       include 'anomcoup.f'
@@ -27,6 +32,8 @@
       include 'lhapdf.f'
       include 'alfacut.f'
       include 'pdlabel.f'
+      include 'qcdcouple.f'
+      include 'nlooprun.f'
       character*72 inputfile,getinput
       character*90 line
       character*4 part
@@ -34,7 +41,7 @@
       integer nargs,iargc,lenocc,lenarg
       logical spira
       logical creatent,dswhisto,dryrun,makecuts
-      integer nmin,nmax
+      integer nmin,nmax,n2,n3
       integer nproc,ih1,ih2,itmx1,itmx2,ncall1,ncall2,idum,origij
       integer NPTYPE,NGROUP,NSET
       double precision rtsmin,sqrts
@@ -44,8 +51,14 @@
      . leptpt2,leptrap2,gammpt,gammrap,gammcone,gammcut
       integer lbjscheme
       logical jetsopphem
-      double precision randummy,ran1
+      double precision ran2,randummy
       double precision cmass,bmass
+      double precision mass2,width2,mass3,width3
+      double precision amz,alphas
+      
+      common/couple/amz
+      
+      common/breit/n2,n3,mass2,width2,mass3,width3
       
       common/spira/spira
       common/nmin/nmin
@@ -74,7 +87,7 @@
       common/qmass/cmass,bmass
 
       common/origij/origij
-
+      save /ranno/
 c---- read-in the technical parameters
 
       open(unit=21,file='technical.DAT',status='old',err=999)
@@ -195,8 +208,14 @@ c--- general options
       if (verbose) write(6,*) 'hmass',hmass
       read(20,*) scale
       if (verbose) write(6,*) 'scale',scale
+      read(20,*) facscale
+      if (verbose) write(6,*) 'facscale',facscale
+      read(20,*) dynamicscale
+      if (verbose) write(6,*) 'dynamicscale',dynamicscale
       read(20,*) zerowidth
       if (verbose) write(6,*) 'zerowidth',zerowidth
+      read(20,*) removebr
+      if (verbose) write(6,*) 'removebr',removebr
       read(20,*) itmx1
       if (verbose) write(6,*) 'itmx1',itmx1
       read(20,*) ncall1
@@ -344,7 +363,7 @@ c--- set-up the variables for the process we wish to consider
 
 c--- set-up the random number generator with a negative seed
       idum=-abs(origij)
-      randummy=ran1(idum)
+      randummy=ran2()
 
 c--- initialize masses for alpha_s routine
       cmass=dsqrt(mcsq)
@@ -353,8 +372,63 @@ c--- initialize masses for alpha_s routine
 c--- E-M gauge invariance requires that delg1_g=0
       delg1_g=0d0
 
+c--- check that we have a valid value of 'part'
+      if ( (part .ne. 'lord') .and. (part .ne. 'real') .and.
+     .     (part .ne. 'virt') .and. (part .ne. 'tota') ) then
+        if ( (part .eq. 'todk') .and.
+     .       ((case .eq. 'bq_tpq') .or. (case .eq. 't_bbar')) ) then
+c--- this is an allowed combination
+        else 
+          write(6,*) 'part=',part,' is not a valid option'
+          write(6,*) 'for this process number.'
+          stop     
+        endif
+      endif      
+
+c--- set up the default choices of static scale, if required
+      if (scale .eq. -1d0) then
+        if (n2+n3 .ne. 0) then
+	scale=(dfloat(n2)*mass2+dfloat(n3)*mass3)/dfloat(n2+n3)
+        as=alphas(scale,amz,nlooprun)
+        ason2pi=as/twopi
+        ason4pi=as/fourpi
+        gsq=fourpi*as
+        musq=scale**2
+        write(6,*)
+        write(6,*)'************* Strong coupling, alpha_s  ************'
+        write(6,*)'*					              *'
+        write(6,49)'alpha_s (scale)',gsq/fourpi
+        write(6,49)'alpha_s (zmass)',amz
+        write(6,50)' (using ',nlooprun,'-loop running of alpha_s)'  
+        write(6,*)'****************************************************'
+	write(6,*)
+	write(6,*)'****************************************************'
+	write(6,76) scale
+	write(6,*)'****************************************************'
+        else
+	write(6,*) 'Invalid choice of renormalization scale!'
+	stop
+	endif
+      endif
+      if (facscale .eq. -1d0) then
+        if (n2+n3 .ne. 0) then
+	facscale=(dfloat(n2)*mass2+dfloat(n3)*mass3)/dfloat(n2+n3)
+	write(6,*)
+	write(6,*)'****************************************************'
+	write(6,77) facscale
+ 	write(6,*)'****************************************************'
+       else
+	write(6,*) 'Invalid choice of factorization scale!'
+	stop
+	endif
+      endif
+      
       return
 
+   49 format(' *  ',a20,f12.8,16x,'*')
+   50 format(' *  ',6x,a8,i1,a25,8x,'*')
+   76 format(' *      Renormalization scale =',f7.2,'              *')   
+   77 format(' *        Factorization scale =',f7.2,'              *')   
    99 format(a90)
 
   999 continue

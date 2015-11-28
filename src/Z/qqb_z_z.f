@@ -20,14 +20,11 @@ c----contributions for one leg
       Q1(a,a,q,is)=tempqq
       Q2(q,q,a,is)=tempqq
 
-      Q2(q,g,q,is)=tempqg
       Q2(a,g,q,is)=tempqg
       Q2(q,g,a,is)=tempqg
-      Q2(a,g,a,is)=tempqg
-      Q1(q,g,q,is)=tempqg
       Q1(a,g,q,is)=tempqg
       Q1(q,g,a,is)=tempqg
-      Q1(a,g,a,is)=tempqg
       enddo
+
       return
       end

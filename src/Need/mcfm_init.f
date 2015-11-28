@@ -1,10 +1,3 @@
-      block data newinput_data
-      implicit none
-      logical newinput
-      common/newinput/newinput
-      data newinput/.true./
-      end
-
       subroutine mcfm_init
 ************************************************************************
 *                                                                      *
@@ -25,25 +18,16 @@
       include 'workdir.f'
       logical creatent,dswhisto
       double precision rtsmin,sqrts,p1ext(4),p2ext(4),
-     . vector(mxdim),p(mxpart,4),s(mxpart,mxpart),val
+     . p(mxpart,4),val
       integer j,k
-      logical newinput
-      common/newinput/newinput
       common/rtsmin/rtsmin
       common/energy/sqrts
       common/pext/p1ext,p2ext
       data p/mxpart*3d0,mxpart*4d0,mxpart*0d0,mxpart*5d0/
-      data vector/mxdim*0d0/
 
 * Welcome banner
       call banner
-* Read-in the options.DAT file
-      if (newinput) then
-        call reader_input
-      else
-        call reader
-        workdir=''
-      endif
+      call reader_input
 
 * Initialize efficiency variables      
       njetzero=0
@@ -78,9 +62,8 @@
 * Initialize all histograms
 * npart=6 is a dummy value, to ensure that all histograms are included
       npart=6
-      call dotem(8,p,s)
       val=1d-15   
-      call nplotter(vector,s,p,val,1)
+      call nplotter(p,val,1)
        
       do j=1,mxpart
       do k=1,4

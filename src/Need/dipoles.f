@@ -76,7 +76,7 @@ c  * ( 2*L + 4*[ln(1-x)] - 2*epinv )
       if (vorz .eq. 2) then
         ii_qq=omx-(one+x)*(two*lomx+L-epinv)-(one+x**2)/omx*lx
         if (omx .gt. aii) ii_qq=ii_qq+(one+x**2)/omx*dlog(aii/omx)
-      return
+        return
       endif
       
       ii_qq=two/omx*(two*lomx+L-epinv)
@@ -168,7 +168,7 @@ c--- initial-initial gluon-gluon antenna, either
 c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
 C--TH-V
 c-- Id,agg=(epinv*(epinv-L)+1/2*L^2+epinv*11/6-[pi]^2/6
-c--  -nf/3/xn*epinv)*[delta(1-x)]
+c--  -nflav/3/xn*epinv)*[delta(1-x)]
 c--  -2*[ln(x)]/[1-x]
 c--  +2*(-1+x*(1-x)+(1-x)/x)*(-[ln(x)]+L+2*[ln(1-x)])
 c--  +(4*[ln(1-x)/(1-xp)]+2*L/[1-xp])
@@ -202,7 +202,7 @@ c    * ( 2*L + 4*[ln(1-x)] - 2*epinv )
         lx=dlog(x)
         ii_gg=two*(omx/x+x*omx-one)*(two*lomx-lx+L-epinv)-two*lx/omx
         if (omx .gt. aii) ii_gg=ii_gg
-     .  +two*(one/omx+omx/x+x*omx-one)*dlog(aii/omx)
+     .   +two*(one/omx+omx/x+x*omx-one)*dlog(aii/omx)
         return
       endif
       
@@ -288,7 +288,7 @@ c--- initial-final gluon-gluon antenna, either
 c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
 c-- TH-V
 c-- Id,agg=[delta(1-x)]*(
-c--  epinv*(epinv-L)+1/2*L^2+11/6*epinv+[pi]^2/6-1/3*epinv*nf/xn)
+c--  epinv*(epinv-L)+1/2*L^2+11/6*epinv+[pi]^2/6-1/3*epinv*nflav/xn)
 c--  +2*(-1+(1-x)/x+x*(1-x))*(L-[ln(x)]+[ln(1-x)])
 c--  -2*[ln(2-x)]/[1-x]-2*[ln(x)]/[1-x]
 c--  +4*[ln(1-x)/(1-xp)]+2*L/[1-xp]
@@ -465,6 +465,8 @@ c - 3/2*[1/(1-x)_(1-al)]
       include 'epinv2.f'
       include 'scheme.f'
       include 'alfacut.f'
+      include 'nflav.f'
+      include 'b0.f'
 c--- returns the integral of the subtraction term for an
 c--- final-initial gluon-gluon antenna, either
 c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
@@ -487,7 +489,7 @@ c + [delta(1-x)]
 c  * ( 67/9 + L^2 - pisq - 2*[ln(al)]^2 - 2*epinv*L + 2*epinv^2 )
 c 
 c + [delta(1-x)]*CA^-1
-c  * ( - 20/9*Tr*nf - 2*[ln(al)]*b0 - 2*b0*L + 2*b0*epinv )
+c  * ( - 20/9*Tr*nflav - 2*[ln(al)]*b0 - 2*b0*L + 2*b0*epinv )
 c 
 c + [1/(1-x)_(1-al)]*CA^-1
 c  * ( - 2*b0 )
@@ -495,12 +497,13 @@ c  * ( - 2*b0 )
       theta=0d0 
       if (x .gt. 1d0-afi) theta=1d0       
       if (vorz .eq. 1) then
-        fi_gg=two*epinv*(epinv2-L)+L**2+67d0/9d0-10d0/9d0*dfloat(nf)/xn
+        fi_gg=two*epinv*(epinv2-L)+L**2
+     .  +67d0/9d0-10d0/9d0*dfloat(nflav)/xn
      .  -pisq+2d0*b0/xn*(epinv-L)-2d0*dlog(afi)*(b0/xn+dlog(afi))
         if (scheme .eq. 'tH-V') then
         return
         elseif (scheme .eq. 'dred') then
-        fi_gg=fi_gg-dfloat(nf)/xn/3d0
+        fi_gg=fi_gg-dfloat(nflav)/xn/3d0
         return
         endif
       endif
@@ -512,7 +515,8 @@ c  * ( - 2*b0 )
         return
       endif
       
-      fi_gg=-(four*dlog(omx)+11d0/3d0-dfloat(nf)/xn*2d0/3d0)/omx*theta
+      fi_gg=-(four*dlog(omx)
+     .       +11d0/3d0-dfloat(nflav)/xn*2d0/3d0)/omx*theta
       return
       end
 
@@ -630,6 +634,8 @@ c      end
       include 'epinv2.f'
       include 'scheme.f'
       include 'alfacut.f'
+      include 'nflav.f'
+      include 'b0.f'
 c--- returns the integral of the subtraction term for an
 c--- final-initial gluon-gluon antenna, either
 c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
@@ -640,17 +646,17 @@ c Id,agg=2*epinv*(epinv-L)+L^2+11/3*(epinv-L)+100/9-[pi]^2
 cFFg = 
 c  + 67/9 + L^2 - pisq - 2*[ln(al)]^2 - 2*epinv*L + 2*epinv^2
 c + CA^-1
-c  * ( 2*al*b0 - 20/9*Tr*nf - 2*[ln(al)]*b0 - 2*b0*L + 2*b0*epinv ) + 0.
+c  * ( 2*al*b0 - 20/9*Tr*nflav - 2*[ln(al)]*b0 - 2*b0*L + 2*b0*epinv ) + 0.
 
       ff_gg=0d0
       if (vorz .eq. 1) then
         ff_gg=two*epinv*(epinv2-L)+L**2+100d0/9d0-pisq
-     .        +two*b0/xn*(epinv-L)-dfloat(nf)/xn*16d0/9d0
+     .        +two*b0/xn*(epinv-L)-dfloat(nflav)/xn*16d0/9d0
         ff_gg=ff_gg-two*dlog(aff)**2+two*b0/xn*(aff-1d0-dlog(aff))
         if (scheme .eq. 'tH-V') then
           return
         elseif (scheme .eq. 'dred') then
-          ff_gg=ff_gg-dfloat(nf)/xn/3d0
+          ff_gg=ff_gg-dfloat(nflav)/xn/3d0
           return
         endif
       endif

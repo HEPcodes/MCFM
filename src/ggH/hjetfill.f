@@ -3,6 +3,7 @@
       include 'constants.f'
       include 'epinv.f'
       include 'scale.f'
+      include 'b0.f'
       double precision virtgg,virtqa,virtaq,virtqg,virtgq,
      . logg,loqa,loaq,loqg,logq,ddilog,Li2s,Li2t,Li2u,
      . lnm,lns,lnt,lnu,ln2t,ln2u,mhsq,s,t,u,xlf,subuv,Delta

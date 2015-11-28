@@ -5,8 +5,8 @@ CERNLIB     =
 # Replace this with the location of LHAPDF on your system (if desired)
 LHAPDFLIB   = 
 
-MCFMHOME        = /home/johnmc/MCFM-3.4.4
-SOURCEDIR       = /home/johnmc/MCFM-3.4.4/src
+MCFMHOME        = /home/ellis/Res/MCFM-4.0
+SOURCEDIR       = /home/ellis/Res/MCFM-4.0/src
 VPATH		= $(DIRS)
 BIN		= $(MCFMHOME)/Bin
 INCPATH  	= $(SOURCEDIR)/Inc
@@ -34,29 +34,49 @@ DIRS	=	$(MCFMHOME):\
 		$(SOURCEDIR)/Top:$(SOURCEDIR)/Singletop:\
 		$(SOURCEDIR)/TopH:$(SOURCEDIR)/TopZ:$(SOURCEDIR)/Topg:\
 		$(SOURCEDIR)/HWW:$(SOURCEDIR)/HZZ:$(SOURCEDIR)/Tau:\
-		$(SOURCEDIR)/Hbbbar:$(SOURCEDIR)/Httbar:\
+		$(SOURCEDIR)/Httbar:\
 		$(SOURCEDIR)/W:$(SOURCEDIR)/Z:\
 		$(SOURCEDIR)/W1jet:$(SOURCEDIR)/Z1jet:\
+		$(SOURCEDIR)/Wcjet:$(SOURCEDIR)/Wbjet:\
 		$(SOURCEDIR)/W2jet:$(SOURCEDIR)/W2jetvirt:\
 		$(SOURCEDIR)/WZbbm:\
 		$(SOURCEDIR)/Wgam:$(SOURCEDIR)/Zgam:\
-		$(SOURCEDIR)/Z2jet:\
-		$(SOURCEDIR)/bbHiggs:$(SOURCEDIR)/Topdk:\
-		$(SOURCEDIR)/Jets:$(SOURCEDIR)/Dirgam:\
+                $(SOURCEDIR)/Z2jet:$(SOURCEDIR)/Zb:\
+		$(SOURCEDIR)/bbHiggs:\
                 $(SOURCEDIR)/qqH:$(SOURCEDIR)/ggH
 
+# Extra directories for debugging
+DIRS +=     $(SOURCEDIR)/Top/Mad:\
+            $(SOURCEDIR)/WZbbm/Mad:\
+            $(SOURCEDIR)/Wgam/Mad:$(SOURCEDIR)/Zgam/Mad:\
+            $(SOURCEDIR)/Wcjet/Mad:\
+            $(SOURCEDIR)/W2jet/Mad:$(SOURCEDIR)/Z2jet/Mad:\
+            $(SOURCEDIR)/bbHiggs/Mad:$(SOURCEDIR)/Jets/Mad:\
+            $(SOURCEDIR)/madtest/w2jet:$(SOURCEDIR)/Wbjet/Mad:\
+            $(SOURCEDIR)/Singletop/Mad:\
+            $(SOURCEDIR)/Dirgam/Mad:\
+            $(SOURCEDIR)/qqH/Mad
+
 FC = g77
-FFLAGS 	= -fno-automatic -fno-f2c -malign-double -O0 -I$(INCPATH)
+FFLAGS 	= -fno-automatic -fno-f2c -O0 -I$(INCPATH)
 
 # -----------------------------------------------------------------------------
 # Specify the object files. 
 
-ZQFILES = \
-gQ_zQ.o \
-qqb_zccm.o
+BBHIGGSFILES = \
+bbaqh.o \
+bbbbh.o \
+bbggh.o \
+bbghvirt.o \
+gq_qqqb.o \
+qqb_H_gvec.o \
+qqb_Hg.o \
+qqb_Hg_g.o \
+qqb_Hg_gs.o \
+qqb_Hg_v.o \
+qqb_Hg_z.o
 
 GGHFILES = \
-gambranch.o \
 hjetfill.o \
 qqb_hgaga.o \
 qqb_hgaga_g.o \
@@ -71,19 +91,7 @@ gg_hg_z.o \
 gg_hg_gvec.o \
 gg_hg_gs.o \
 gg_hgg.o \
-h4g.o \
-gg_hgg_soft.o
-
-DIRGAMFILES = \
-Bigagam.o \
-Bigbgam.o \
-Bigcgam.o \
-qqb_dirgam.o \
-qqb_dirgam_g.o \
-qqb_dirgam_gs.o \
-qqb_dirgam_gvec.o \
-qqb_dirgam_v.o \
-qqb_dirgam_z.o 
+h4g.o 
 
 HWWFILES = \
 qqb_hww.o \
@@ -101,24 +109,16 @@ qqb_hzz_gs.o \
 qqb_hzz_z.o \
 qqb_hzz_v.o
 
-HBBBARFILES = \
-qqb_hbbbar.o \
-qqb_hbbbar_g.o \
-qqb_hbbbar_gs.o \
-qqb_hbbbar_gvec.o \
-qqb_hbbbar_v.o \
-qqb_hbbbar_z.o
-
 HTTBARFILES = \
 qqb_higgs.o \
 qqb_higgs_odd.o \
 ehsv.o \
 ehsv_odd.o \
 li2.o \
-Htautau.o
 
 INTEGRATEFILES = \
 vegas.o \
+ebook.o \
 mbook.o \
 ran0.o \
 ran1.o \
@@ -129,20 +129,19 @@ ddilog.o \
 lenocc.o
 
 NEEDFILES = \
-angle.o \
-anglephi.o \
 aveptjet.o \
 banner.o \
 boost.o \
-boosta.o \
+boostx.o \
 branch.o \
 checkversion.o \
+checkjets.o \
+checkorder.o \
 chooser.o \
 ckmfill.o \
 coupling.o \
 couplz.o \
 dclaus.o \
-ddvdif.o \
 dipoles.o \
 dipoles_fac.o \
 dipoles_mass.o \
@@ -152,11 +151,10 @@ dipolesubxx.o \
 donothing_gvec.o \
 dot.o \
 dotem.o \
-dotpr.o \
 etmiss.o \
-gasdev.o \
 getbs.o \
 getptildejet.o \
+getptQ1.o \
 gtperp.o \
 higgsp.o \
 higgsw.o \
@@ -174,10 +172,10 @@ ptyrap.o \
 r.o \
 read_jetcuts.o \
 readcoup.o \
-reader.o \
 reader_input.o \
 realint.o \
 scaleset.o \
+sethparams.o \
 setrunname.o \
 smalls.o \
 spinork.o \
@@ -193,14 +191,6 @@ dips_mass.o \
 storedip_mass.o \
 transform_mass.o \
 zeromsq.o
-# clust.o \
-# conserve.o \
-# dittdrein.o \
-# dsigdy.o \
-# preclus.o \
-# prod4.o \
-# singgen.o \
-# wconstruct.o \
 
 PARTONFILES = \
 alfamz.o \
@@ -231,6 +221,7 @@ gen6.o \
 gen6_rap.o \
 gen7.o \
 gen7_rap.o \
+gen8.o \
 gen_njets.o \
 genff.o \
 genii.o \
@@ -239,6 +230,7 @@ genrad.o \
 genrff.o \
 genrif.o \
 genrii.o \
+gen_stop.o \
 phase2.o \
 phase3.o \
 phase3m.o \
@@ -246,10 +238,12 @@ phase4.o \
 phase41.o \
 phase4m.o \
 phase5.o \
+phase5a.o \
 phase51.o \
 phase6.o \
 phase7.o \
 phase7m.o \
+phase8.o \
 phi1_2.o \
 phi1_2m.o \
 phi1_2m_bw.o \
@@ -259,26 +253,8 @@ phi3m0.o \
 wt2gen.o \
 wt4gen.o \
 wtgen.o
-# kingen.o \
-# phi3.o \
-# rangen.o \
 
 QQHFILES = \
-VV_Hqq.o \
-VV_Hqq_g.o \
-VV_Hqq_gs.o \
-VV_Hqq_v.o \
-VV_Hqq_z.o \
-WW_Hqq.o \
-WW_Hqq_g.o \
-WW_Hqq_gs.o \
-WW_Hqq_v.o \
-WW_Hqq_z.o \
-ZZ_Hqq.o \
-ZZ_Hqq_g.o \
-ZZ_Hqq_gs.o \
-ZZ_Hqq_v.o \
-ZZ_Hqq_z.o \
 qq_Hqq.o \
 qq_Hqq_g.o \
 qq_Hqq_gs.o \
@@ -288,18 +264,41 @@ hqqgg.o \
 h4q.o
 
 SINGLETOPFILES = \
-qg_tbb.o \
-qqb_tbb.o
+topwidth.o \
+extend_trans.o \
+qqb_tbb.o \
+qqb_tbb_g.o \
+qqb_tbb_v.o \
+qqb_tbb_z.o \
+qqb_tbb_gs.o \
+qqb_tbb_gdk.o \
+qqb_tbb_gsdk.o \
+qqb_tbb_vdk.o \
+coefsdk.o \
+bq_tpq.o \
+bq_tpq_v.o \
+bq_tpq_z.o \
+bq_tpq_gdk.o \
+bq_tpq_gsdk.o \
+bq_tpq_vdk.o \
+qqb_w_tndk.o \
+qqb_w_twdk.o 
+
 
 TAUTAUFILES = \
 qqb_tautau.o \
 tautauww.o
 
 TOPFILES = \
-ggttww.o \
 qqb_QQb.o \
+qqb_QQb_g.o \
+qqb_QQb_gs.o \
+qqb_QQb_gvec.o \
+qqb_QQb_v.o \
+qqb_QQb_z.o \
 qqb_ttb.o \
-ttbbww.o
+ttbbww.o \
+ggttww.o 
 
 TOPGFILES = \
 qqb_ttb_g.o \
@@ -310,10 +309,7 @@ ttgdiags.o
 TOPHFILES = \
 qqbtth.o \
 qqb_tth.o \
-gen8.o \
-qqb_tottth.o \
-phase8.o 
-# ggtth.o \
+qqb_tottth.o
 
 TOPZFILES = \
 ttbbd1.o \
@@ -328,11 +324,13 @@ genclust2.o \
 genclust_kt.o \
 genclust_cone.o \
 gencuts.o \
+getet.o \
 jetlabel_to_stdhep.o \
 mdata.o \
 miscclust.o \
 nplotter.o \
-# threebee.o
+stopcuts.o \
+wconstruct.o 
 
 VOLFILES = \
 qqb_vol.o \
@@ -353,13 +351,22 @@ qqb_w1jet_gs.o \
 qqb_w1jet_v.o \
 qqb_w1jet_z.o \
 qqb_w_gvec.o \
-virt5.o
-# qqb_w1jet_soft.o \
+virt5.o \
+
+
+WBJETFILES = \
+qqb_wbjet.o 
+ 
+WCJETFILES = \
+qqb_w_cjet.o \
+qqb_w_cjet_massless.o \
+qqb_w_cjet_massless_g.o \
+wqq_sc.o \
+w2jetsq_mass.o \
+subqcdm.o 
 
 W2JETFILES = \
 bit.o \
-nagy1.o \
-nagy2.o \
 qqb_w2jet.o \
 qqb_w2jet_g.o \
 qqb_wp2jet_g.o \
@@ -379,21 +386,10 @@ subqcd.o \
 subqcdn.o \
 w2jetnx.o \
 w2jetsq.o \
-wmakem.o \
-wmakemb.o \
 xmqqgg.o \
 xwqqgg_v.o \
 xwqqggg.o 
-# couplant.o \
-# work.o \
-# xmqqqq.o \
-# initqqgg.o \
-# initqqqq.o \
-# msq_WqqQQg.o \
-# qqb_w2jet_soft.o \
-# xwqqbqqb.o \
-# xwqqqq.o \
-# xzqqqq.o \
+
 
 W2JETVIRTFILES = \
 a6g.o \
@@ -463,7 +459,12 @@ gampsdef.o \
 gampsgh.o \
 mamps.o \
 qqb_wbbm.o \
-qqb_zbbm.o
+qqb_zbbm.o \
+#qqb_wbbm_g.o \
+#wbbgmassa.o \
+#wbbgmassb.o \
+#wbbgmassi.o \
+#wbbgmassf.o
 
 WBBFILES = \
 a6.o \
@@ -477,17 +478,6 @@ aqqb_wbb.o \
 atrLLL.o \
 atrLRL.o \
 atree.o \
-d1.o \
-d10.o \
-d11.o \
-d12.o \
-d2.o \
-d3.o \
-d4.o \
-d5.o \
-d6.o \
-d78.o \
-d9.o \
 fpm.o \
 fpp.o \
 fsl.o \
@@ -498,21 +488,13 @@ msqwbb.o \
 nagyqqqqg.o \
 qqb_wbb.o \
 qqb_wbb_g.o \
+wbbgamp.o \
 qqb_wbb_gs.o \
 qqb_wbb_v.o \
 qqb_wbb_z.o \
-sumd.o \
-sumqcda.o \
-sumqcdb.o \
 t.o \
 t1234.o \
-vv.o \
-# wbb.o
-# a6f.o \
-# atreepm.o \
-# atreepp.o \
-# atreesl.o \
-# qqb_wbb_soft.o \
+vv.o
 
 WGAMFILES = \
 qqb_wgam.o \
@@ -523,6 +505,8 @@ qqb_wgam_z.o \
 fagamma.o \
 fbgamma.o \
 vpole.o
+
+
 
 ZGAMFILES = \
 qqb_zgam.o \
@@ -537,14 +521,12 @@ qqb_z1jet.o \
 qqb_z_gs.o \
 qqb_z_v.o \
 qqb_z_z.o
-# qqb_z_g.o \
 
 Z1JETFILES = \
 qqb_z1jet_gs.o \
 qqb_z1jet_v.o \
 qqb_z1jet_z.o \
 qqb_z_gvec.o
-# qqb_z1jet_soft.o \
 
 Z2JETFILES = \
 a61z.o \
@@ -602,21 +584,14 @@ qqb_zbb_z.o \
 xzqqgg.o \
 xzqqgg_v.o \
 xzqqggg.o
-# qqb_zbb_soft.o \
-# spassign.o \
 
-BBHIGGSFILES = \
-bbaqh.o \
-bbbbh.o \
-bbggh.o \
-bbghvirt.o \
-gq_qqqb.o \
-qqb_H_gvec.o \
-qqb_Hg.o \
-qqb_Hg_g.o \
-qqb_Hg_gs.o \
-qqb_Hg_v.o \
-qqb_Hg_z.o
+ZQFILES = \
+gQ_zQ.o \
+gQ_zQ_g.o \
+gQ_zQ_gs.o \
+gQ_zQ_v.o \
+gQ_zQ_z.o \
+qqb_zccm.o
 
 LIBDIR=.
 LIBFLAGS=
@@ -697,18 +672,23 @@ endif
 # extra lines: -L$(CRNLIB) -L/home/johnmc/madgraph/lib/ 
 #              -ldhelas
 
-ALLMCFM = $(INTEGRATEFILES) $(LIBFILES) $(NEEDFILES) \
-          $(PARTONFILES) $(PHASEFILES) $(SINGLETOPFILES) \
+OURCODE = $(LIBFILES) $(NEEDFILES) \
+          $(PHASEFILES) $(SINGLETOPFILES) \
           $(TOPHFILES) $(TOPZFILES) $(TOPGFILES) \
           $(USERFILES) $(VOLFILES) $(WFILES) $(W2JETFILES) \
-	    $(W2JETVIRTFILES) $(WHBBARFILES) $(WGAMFILES) $(ZGAMFILES) \
+          $(WCJETFILES) $(WBJETFILES) \
+	  $(W2JETVIRTFILES) $(WHBBARFILES) $(WGAMFILES) $(ZGAMFILES) \
           $(WWFILES) $(WZFILES) $(ZFILES) $(ZHBBARFILES) \
           $(ZZFILES) $(ZGFILES) $(W1JETFILES) $(Z2JETFILES) \
-	    $(Z1JETFILES) $(HBBBARFILES) $(HWWFILES) $(HZZFILES) \
-          $(TAUTAUFILES) $(HTTBARFILES) $(JETFILES) \
+	    $(Z1JETFILES) $(HWWFILES) $(HZZFILES) \
+          $(TAUTAUFILES) $(HTTBARFILES) \
           $(BBHIGGSFILES) $(WBBFILES) $(ZBBFILES) $(WZBBMFILES) \
-          $(DIRGAMFILES) $(COLLCHECKFILES) $(QQHFILES) $(GGHFILES) \
-	$(TOPFILES) $(TOPDKFILES) $(ZQFILES)
+          $(QQHFILES) $(GGHFILES) \
+	  $(TOPFILES) $(ZQFILES)
+          
+OTHER = $(INTEGRATEFILES) $(PARTONFILES) 
+ALLMCFM = $(OTHER) $(OURCODE)
+
           
 # CERNLIB libraries for PDFLIB: -lpdflib804 -lmathlib -lpacklib 
 
@@ -720,10 +700,12 @@ mcfm: $(ALLMCFM)
 	@echo $(NTUPMSG)
 
 # -----------------------------------------------------------------------------
-# Specify the dependencies of the .o files and the rules to make them.
+# Specify other options.
 
 FTNCHEKPATH = /home/ellis/Fortran/Ftnchek/ftnchek-3.1.2
-FORCHKPATH = /home/ellis/forchk
+FORCHKPATH = /usr/local/bin/
+
+# Specify the dependencies of the .o files and the rules to make them.
 
 FOROPTS = -include=$(INCPATH) -nonovice -nopretty -quiet
 
@@ -737,20 +719,17 @@ FOROPTS = -include=$(INCPATH) -nonovice -nopretty -quiet
             if ! [ -e $(MCFMHOME)/$(notdir $<) ] ; then \
             mv $(basename $<).prj $(MCFMHOME) ; fi
             
-PRJS =      $(ALLMCFM:.o=.prj) 
-PRJSF =      $(ALLMCFM:.o=.f) 
+PRJS =      $(OURCODE:.o=.prj) 
 
 check:      $(PRJS) 
 		$(FTNCHEKPATH)/ftnchek $(FOROPTS) $(PRJS)
 
+
+
+PRJSF =      $(OURCODE:.o=.f) 
+
 checkf:      
-		$(FORCHKPATH)/forchk $(PRJSF)
-
-# -----------------------------------------------------------------------------
-# Specify other options.
-
-cleanprj:
-	- rm -f *.prj $(SOURCEDIR)/*/*.prj
+		$(FORCHKPATH)/forchk -I $(INCPATH) $(PRJSF)
 
 clean:
 	- rm -f *.o obj/*.o *.s *.prj *~ core

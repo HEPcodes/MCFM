@@ -4,20 +4,13 @@ c---Matrix element squared for
 c     q(-p1)+q(-p2) --> +H+q(p3)+q(p4)+g(p5) 
 C     
       include 'constants.f'
-      include 'masses.f'
-      include 'ewcouple.f'
-      include 'qcdcouple.f'
       include 'sprods_com.f'
       include 'zprods_decl.f'
 
       integer P1,P2,P3,P4,P5,h1,h2,h5
       double precision s123,s124,s135,s134,s245,s234,S1234,msq
-      double precision s12,s13,s14,s15,s23,s24,s25,s34,s35,s45
+      double precision s12,s14,s15,s23,s25,s34,s35,s45
       double complex XTOTAL,HDPART,TLPART
-      double complex ppp31,pmp31,mpp31,ppm31
-      double complex ppp32,pmp32,mpp32,ppm32
-      double complex ppp41,pmp41,mpp41,ppm41
-      double complex ppp42,pmp42,mpp42,ppm42
       double complex a31(2,2,2),a32(2,2,2),a41(2,2,2),a42(2,2,2)
 
       S123=s(p1,p2)+s(p1,p3)+s(p2,p3)
@@ -29,11 +22,9 @@ C
 
       S1234=s(p1,p2)+s(p1,p3)+s(p1,p4)+s(p2,p3)+s(p2,p4)+s(p3,p4)
       s12=s(p1,p2)
-      s13=s(p1,p3)
       s14=s(p1,p4)
       s15=s(p1,p5)
       s23=s(p2,p3)
-      s24=s(p2,p4)
       s25=s(p2,p5)
       s34=s(p3,p4)
       s35=s(p3,p5)
@@ -780,7 +771,6 @@ C Expression ppm32
       HDPART=za(P2,P5)*zb(P3,P4)/zb(P1,P5)*S134**(-1)*S1234**(-1)
       TLPART= S15 +S25 +S35 +S45
 	XTOTAL=XTOTAL+HDPART*TLPART
-	ppm32=XTOTAL
       a32(2,2,1)=XTOTAL
 C Punched 146 terms out of 146.
 
@@ -3688,7 +3678,6 @@ C Expression ppm32
       HDPART=zb(P2,P5)*za(P3,P4)/za(P1,P5)*S134**(-1)*S1234**(-1)
       TLPART= S15 +S25 +S35 +S45
 	XTOTAL=XTOTAL+HDPART*TLPART
-	ppm32=XTOTAL
       a32(1,1,2)=XTOTAL
 C Punched 146 terms out of 146.
 

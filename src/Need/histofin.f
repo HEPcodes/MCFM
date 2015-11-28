@@ -7,21 +7,16 @@
       subroutine histofin(xsec,xsec_err)
       implicit none
       include 'nplot.f'
-      include 'masses.f'
-      include 'scale.f'
       include 'verbose.f'
-      include 'process.f'
-      include 'workdir.f'
-      include 'pdlabel.f'
-      integer j,nlength,lenocc
-      character*30 runstring
-      character*4 part
-      character*72 outlabel1,runname,outfiledat,outfiletop,outlabeltmp
-      character*3 strmh,strscale,getstr
+      include 'PDFerrors.f'
+      integer j,nlength
+      character*72 runname,outfiledat,outfiletop,outfileerr
       double precision xsec,xsec_err
-      common/part/part
-      common/runstring/runstring
-      common/runname/runname,nlength
+      double precision EHIST(4,40,100)   
+      integer IHISTOMATCH(100),ICOUNTHISTO                    
+      common/runname/runname
+      common/nlength/nlength
+      COMMON/EHISTO/EHIST,IHISTOMATCH,ICOUNTHISTO
       
       write(6,*)
       write(6,*) '****************************************************'
@@ -31,9 +26,14 @@
 
       outfiledat=runname
       outfiletop=runname
+      outfileerr=runname
       outfiledat(nlength+1:nlength+4)='.dat'
       outfiletop(nlength+1:nlength+4)='.top'
+      outfileerr(nlength+1:nlength+10)='_error.top'
 
+      if ((PDFerrors) .and. (ICOUNTHISTO .gt. 0)) then
+        open(unit=97,file=outfileerr,status='unknown')
+      endif
       open(unit=98,file=outfiledat,status='unknown')
       open(unit=99,file=outfiletop,status='unknown')
       
@@ -65,9 +65,26 @@ c        write(6,*) 'Writing .top for plot ',j
         call flush(6)
       endif
       call mtop(j,100,'x','y',linlog(j))
+      if ((PDFerrors) .and. (IHISTOMATCH(j) .ne. 0)) then
+        call emtop(j,100,'x','y',linlog(j))
+      endif
       enddo
       close (unit=99)
 
+c---generate error file
+      if ((PDFerrors) .and. (ICOUNTHISTO .gt. 0)) then
+        do j=1,nplot
+          if (IHISTOMATCH(j) .ne. 0) then
+            if (verbose) then
+c              write(6,*) 'Writing .top for plot ',j
+              call flush(6)
+            endif
+            call etop(j,100,'x','y',linlog(j))
+          endif
+        enddo
+        close (unit=97)
+      endif
+      
       return
       end
 

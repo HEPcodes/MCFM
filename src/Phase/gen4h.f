@@ -11,7 +11,7 @@ c--- the Higgs mass
       double precision r(mxdim)
       double precision wt4,p1(4),p2(4),p3(4),p4(4),p5(4),p6(4)
       double precision p(mxpart,4),sqrts,rtshat
-      double precision pswt,xjac,p1ext(4),p2ext(4)
+      double precision pswt,xjac
       double precision xx(2),s3456,wt3456,ymax,yave
       common/energy/sqrts
       common/x1x2/xx

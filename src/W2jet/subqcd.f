@@ -12,7 +12,7 @@ c     one colour ordering only
 c     left-on quark line only
 c*******************************************************************
       integer i1,i2,i3,i4,i5,i6
-      real*8 s156,s56,s256,s34
+      double precision s156,s56,s256,s34
       double complex amp(-1:1,-1:1)
       double complex p1,p2,p3,b1,b2
 

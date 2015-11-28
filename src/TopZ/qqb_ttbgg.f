@@ -10,9 +10,6 @@ C     q(-p1) +qbar(-p2)=t(p3)+tbar(p4)+g(p5)+g(p6)
 C  
 ************************************************************************
       include 'constants.f'
-      include 'ewcouple.f'
-      include 'qcdcouple.f'
-      include 'masses.f'
       integer nu,np,j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4)
       double precision pu(0:3),pub(0:3),pt(0:3),ptb(0:3),pb(0:3),

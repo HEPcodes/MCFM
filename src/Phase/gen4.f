@@ -43,7 +43,8 @@ c      xjac=2*r(9)*(one-taumin)
       p2(nu)=xx(2)*p2ext(nu)
       enddo
 
-      if (case .eq. 't_bbar') then
+      if  ((case .eq. 't_bbar')
+     . .or.(case .eq. 'bq_tpq')) then
       call phase41(r,p1,p2,p3,p4,p5,p6,pswt,*999)
       elseif (
      .      (case .eq. 'qqttbb') 

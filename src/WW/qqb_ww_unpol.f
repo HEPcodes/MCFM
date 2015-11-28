@@ -16,25 +16,17 @@ c--- unpolarized W-pairs
       include 'ewcouple.f'
       include 'zcouple.f'
       include 'ewcharge.f'
-      include 'anomcoup.f'
 
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),qdks(mxpart,4),ave
-      double complex prop12,prop34,prop56
-      double complex AWW(2,-1:1,-1:1),a6treea,A6b_1,A6b_2,A6b_3
+      double complex prop12,prop34,prop56,cprop,cs_z(2,2),cs_g(2,2)
+      double complex AWW(2,-1:1,-1:1)
       double complex a123456(-1:1,-1:1),b123456(-1:1,-1:1)
       double complex a213456(-1:1,-1:1),b213456(-1:1,-1:1)
       double complex a126543(-1:1,-1:1),b126543(-1:1,-1:1)
       double complex a216543(-1:1,-1:1),b216543(-1:1,-1:1)
 
-      double complex propwp,propwm,propzg,cprop
-      double complex Fa123456,Fa213456,Fb123456_z,Fb213456_z
-      double complex Fa126543,Fa216543,Fb126543_z,Fb216543_z
-      double complex Fb123456_g,Fb213456_g,Fb126543_g,Fb216543_g
-      double complex Fa341256,Fa653421,Fa346521,Fa651243
-      double complex Fa342156,Fa653412,Fa346512,Fa652143
-      double complex cs_z(2,2),cs_g(2,2),cgamz(2,2),cz(2,2)
-      double precision fac,mp(nf),xfac
-      integer j,k,jk,tjk,minus,mplus,hel34,hel56,n34max,n34min,
+      double precision fac,mp(nf)
+      integer j,k,jk,minus,mplus,hel34,hel56,n34max,n34min,
      . n56max,n56min
       parameter(ave=0.25d0/xn)
       data minus,mplus/1,2/

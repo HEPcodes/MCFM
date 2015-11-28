@@ -39,10 +39,10 @@ c     Notation to allow room for p3 --- gluon emission.
       double precision ave,cotw,wwflag,xfac
       character*2 plabel(mxpart)
       common/plabel/plabel
-      data cl1,cl2,en1,en2/4*1d0/
       double precision FAC,FACM
       integer j,k
       parameter(ave=0.25d0/xn)
+      data cl1,cl2,en1,en2/4*1d0/
 
       FAC=-two*gwsq*esq
       if ((nwz.eq.1) .or. (nwz .eq. -1)) then

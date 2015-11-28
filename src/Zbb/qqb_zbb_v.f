@@ -19,6 +19,7 @@
       include 'epinv.f'
       include 'scheme.f'
       include 'noglue.f'
+      include 'b0.f'
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),
      . p(mxpart,4),q_bdkw(mxpart,4),faclo,subuv,
      . fac,v2(2),vQ(nf,2),
@@ -148,10 +149,10 @@ c--- set-up amplitudes first, to improve efficiency
       if ((j .eq. 0) .and. (k .eq. 0)) then
         msqv(j,k)=msqv(j,k)+mmsq(polq,polz)*(
      .             cdabs(Q(1)*q1+vQ(1,polq)*v2(polz)*prop)**2)
-     .                     +mmsq_vec(polq,polz)*dreal(
+     .                     +mmsq_vec(polq,polz)*dble(
      .             (Q(1)*q1+vQ(1,polq)*v2(polz)*prop)
      .            *(Q(1)*q1+0.5d0*(vQ(1,1)+vQ(1,2))*v2(polz)*prop))
-     .                     +mmsq_ax(polq,polz)*dreal(
+     .                     +mmsq_ax(polq,polz)*dble(
      .             (Q(1)*q1+vQ(1,polq)*v2(polz)*prop)
      .            *(v2(polz)*prop)/sin2w)
       endif

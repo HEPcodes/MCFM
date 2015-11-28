@@ -2,20 +2,20 @@
       implicit none
       include 'flags.f'
       include 'masses.f'
-      include 'scale.f'
       include 'process.f'
+      include 'jetcuts.f'
       include 'workdir.f'
       include 'pdlabel.f'
       double precision scalestart
-      integer j,nlength,lenocc
+      integer nlength,lenocc
       character*30 runstring
       character*4 part
       character*72 outlabel1,runname,outlabeltmp
-      character*3 strmh,strscale,getstr
+      character*3 strmh,strscale,getstr,strpt
       common/part/part
       common/runstring/runstring
-      common/runname/runname,nlength
-
+      common/runname/runname
+      common/nlength/nlength
       strscale=getstr(int(scalestart))
       if (  (case .eq. 'WHbbar')
      . .or. (case .eq. 'ZHbbar')
@@ -24,6 +24,11 @@
      .) then
       strmh=getstr(int(hmass))
       outlabel1=case//'_'//part//'_'//pdlabel//'_'//strscale//'_'//strmh
+      elseif (  (case .eq. 'H_1jet') ) then
+      strmh=getstr(int(hmass))
+      strpt=getstr(int(ptjetmin))
+      outlabel1=case//'_'//part//'_'//pdlabel//'_'//strscale//
+     . '_'//strmh//'_pt'//strpt(1:2)      
       elseif (  (case .eq. 'W_2jet')
      .     .or. (case .eq. 'Z_2jet') ) then
         if     (Gflag .eqv. .false.) then

@@ -19,18 +19,24 @@ c--all momenta incoming
       integer i,j,k,f,pq,pl,nquark,swap(2),swap1(0:2),nup,ndo,
      .   j1,j2,j3,icol
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac,faclo,
-     .   qqbZgg2(2,2),qbqZgg2(2,2),
-     .   qgZqg2(2,2),qbgZqbg2(2,2),
-     .   gqbZgqb2(2,2),gqZgq2(2,2),
-     .   qgZgq2(2,2),qbgZgqb2(2,2),
-     .   gqbZqbg2(2,2),gqZqg2(2,2),
-     .   ggZqbq2(2,2),ggZqqb2(2,2),
      .   qqbZgg2_cs(0:2,2,2),qbqZgg2_cs(0:2,2,2),
      .   qgZqg2_cs(0:2,2,2),gqZqg2_cs(0:2,2,2),
      .   qgZgq2_cs(0:2,2,2),gqZgq2_cs(0:2,2,2),
      .   qbgZqbg2_cs(0:2,2,2),gqbZqbg2_cs(0:2,2,2),
      .   qbgZgqb2_cs(0:2,2,2),gqbZgqb2_cs(0:2,2,2),
-     .   ggZqbq2_cs(0:2,2,2),ggZqqb2_cs(0:2,2,2),ggtemp(0:2)
+     .   ggZqbq2_cs(0:2,2,2),ggZqqb2_cs(0:2,2,2),ggtemp(0:2),
+     .   qqbZgg2(2,2),
+     .   qgZqg2(2,2),
+c     .   gqbZgqb2(2,2),
+     .   gqZgq2(2,2),
+     .   qgZgq2(2,2),
+c     .   gqbZqbg2(2,2),
+     .   gqZqg2(2,2),
+     .   ggZqbq2(2,2)
+c     .   qbgZgqb2(2,2),
+c     .   ggZqqb2(2,2),
+c     .   qbgZqbg2(2,2),
+c     .   qbqZgg2(2,2)
       double precision tup,tdo
 
       double complex qRb_a(2,2,2),qRb_b(2,2,2)
@@ -122,12 +128,12 @@ C --NB this is the matrix element for gg->Z qb(5) q(6)
 
         do j=1,2
         do k=1,2
-        qbqZgg2(j,k)=qqbZgg2(swap(j),k)
-        qbgZqbg2(j,k)=qgZqg2(swap(j),k)
-        gqbZqbg2(j,k)=gqZqg2(swap(j),k)
-        qbgZgqb2(j,k)=qgZgq2(swap(j),k)
-        gqbZgqb2(j,k)=gqZgq2(swap(j),k)        
-        ggZqqb2(j,k)=ggZqbq2(swap(j),k)        
+c        qbqZgg2(j,k)=qqbZgg2(swap(j),k)
+c        qbgZqbg2(j,k)=qgZqg2(swap(j),k)
+c        gqbZqbg2(j,k)=gqZqg2(swap(j),k)
+c        qbgZgqb2(j,k)=qgZgq2(swap(j),k)
+c        gqbZgqb2(j,k)=gqZgq2(swap(j),k)        
+c        ggZqqb2(j,k)=ggZqbq2(swap(j),k)        
         do i=0,2
         qbqZgg2_cs(i,j,k)=qqbZgg2_cs(swap1(i),swap(j),k)
         qbgZqbg2_cs(i,j,k)=qgZqg2_cs(swap1(i),swap(j),k)
@@ -175,28 +181,28 @@ c        call storecsz(ggZqqb2_cs)
 
         qqbZgg2(pq,pl) = qqbZgg2_cs(1,pq,pl)+qqbZgg2_cs(2,pq,pl)
      .                  +qqbZgg2_cs(0,pq,pl) 
-        qbqZgg2(pq,pl) = qbqZgg2_cs(1,pq,pl)+qbqZgg2_cs(2,pq,pl)
-     .                  +qbqZgg2_cs(0,pq,pl) 
         gqZqg2(pq,pl)  = gqZqg2_cs(1,pq,pl) +gqZqg2_cs(2,pq,pl)
      .                  +gqZqg2_cs(0,pq,pl)  
         qgZqg2(pq,pl)  = qgZqg2_cs(1,pq,pl)  +qgZqg2_cs(2,pq,pl)
      .                  +qgZqg2_cs(0,pq,pl)  
-        gqbZqbg2(pq,pl)= gqbZqbg2_cs(1,pq,pl)+gqbZqbg2_cs(2,pq,pl)
-     .                  +gqbZqbg2_cs(0,pq,pl)
-        qbgZqbg2(pq,pl)= qbgZqbg2_cs(1,pq,pl)+qbgZqbg2_cs(2,pq,pl)
-     .                  +qbgZqbg2_cs(0,pq,pl)
         gqZgq2(pq,pl)  = gqZgq2_cs(1,pq,pl) +gqZgq2_cs(2,pq,pl)
      .                  +gqZgq2_cs(0,pq,pl)  
         qgZgq2(pq,pl)  = qgZgq2_cs(1,pq,pl)  +qgZgq2_cs(2,pq,pl)
      .                  +qgZgq2_cs(0,pq,pl)  
-        gqbZgqb2(pq,pl)= gqbZgqb2_cs(1,pq,pl)+gqbZgqb2_cs(2,pq,pl)
-     .                  +gqbZgqb2_cs(0,pq,pl)
-        qbgZgqb2(pq,pl)= qbgZgqb2_cs(1,pq,pl)+qbgZgqb2_cs(2,pq,pl)
-     .                  +qbgZgqb2_cs(0,pq,pl)
         ggZqbq2(pq,pl) = ggZqbq2_cs(1,pq,pl) +ggZqbq2_cs(2,pq,pl)
      .                  +ggZqbq2_cs(0,pq,pl) 
-        ggZqqb2(pq,pl) = ggZqqb2_cs(1,pq,pl) +ggZqqb2_cs(2,pq,pl)
-     .                  +ggZqqb2_cs(0,pq,pl) 
+c        gqbZqbg2(pq,pl)= gqbZqbg2_cs(1,pq,pl)+gqbZqbg2_cs(2,pq,pl)
+c     .                  +gqbZqbg2_cs(0,pq,pl)
+c        qbqZgg2(pq,pl) = qbqZgg2_cs(1,pq,pl)+qbqZgg2_cs(2,pq,pl)
+c     .                  +qbqZgg2_cs(0,pq,pl) 
+c        qbgZqbg2(pq,pl)= qbgZqbg2_cs(1,pq,pl)+qbgZqbg2_cs(2,pq,pl)
+c     .                  +qbgZqbg2_cs(0,pq,pl)
+c        gqbZgqb2(pq,pl)= gqbZgqb2_cs(1,pq,pl)+gqbZgqb2_cs(2,pq,pl)
+c     .                  +gqbZgqb2_cs(0,pq,pl)
+c        qbgZgqb2(pq,pl)= qbgZgqb2_cs(1,pq,pl)+qbgZgqb2_cs(2,pq,pl)
+c     .                  +qbgZgqb2_cs(0,pq,pl)
+c        ggZqqb2(pq,pl) = ggZqqb2_cs(1,pq,pl) +ggZqqb2_cs(2,pq,pl)
+c     .                  +ggZqqb2_cs(0,pq,pl) 
         enddo
         enddo
       endif

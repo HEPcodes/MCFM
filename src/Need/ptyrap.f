@@ -118,13 +118,13 @@ c--- this is the pseudo-rapidity
       
       etaraptwo=dsqrt((p(j,1)+p(k,1))**2+(p(j,2)+p(k,2))**2
      .               +(p(j,3)+p(k,3))**2)
-      etaraptwo=(etaraptwo+p(j,3)+p(k,3))
-     .         /(etaraptwo-p(j,3)-p(k,3))
-      if (etaraptwo .lt. 1d-13) then
+      if (abs(etaraptwo)-abs(p(j,3)+p(k,3)) .lt. 1d-13) then
 C-- set to 100 if this is very close to or less than zero
 c-- rapidities of 100 will be rejected by any sensible cuts
       etaraptwo=100d0
       else 
+      etaraptwo=(etaraptwo+p(j,3)+p(k,3))
+     .         /(etaraptwo-p(j,3)-p(k,3))
       etaraptwo=0.5d0*dlog(etaraptwo)
       endif
       

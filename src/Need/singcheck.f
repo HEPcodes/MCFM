@@ -11,6 +11,7 @@
       subroutine singcheck(real_g,sub_gs,p)
       implicit none
       include 'constants.f'
+      include 'nflav.f'
       include 'npart.f'
       include 'ptilde.f'
       include 'process.f'
@@ -18,7 +19,7 @@
       integer j,k,jj,kk,jmax,kmax,nd,nqcdjets,nqcdstart
       double precision p(mxpart,4),q(mxpart,4),pjet(mxpart,4),
      . msq(-nf:nf,-nf:nf),msqs(-nf:nf,-nf:nf),msqc(maxd,-nf:nf,-nf:nf),
-     . s(mxpart,mxpart),rcut,debugsmall,debuglarge,xtoler
+     . s(mxpart,mxpart),rcut,debugsmall,debuglarge,xtoler,pttwo
       character*32 debugmsg
       external real_g,sub_gs
       common/nqcdjets/nqcdjets,nqcdstart
@@ -40,10 +41,17 @@
       elseif (npart .eq. 4) then
         jmax=5
         kmax=5
+        xtoler=1d3
       elseif (npart .eq. 5) then
+        if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')) then
+        jmax=5
+        kmax=6
+        xtoler=1d3
+        else
         jmax=5
         kmax=9
         xtoler=1d3
+        endif
       else
         write(6,*) 'No singularity check implemented yet'
         stop
@@ -63,9 +71,17 @@
              call coll3(p,k,j)
            endif
          elseif (npart .eq. 4) then
-           call coll4a(p,k,j)
+           if (case .eq. 'W_cjet') then
+             call coll4c(p,k,j)
+           else
+             call coll4a(p,k,j)
+           endif
          elseif (npart .eq. 5) then
-           call coll5(p,k,j)
+           if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')) then
+             call coll_stop(p,k,j)
+           else
+             call coll5(p,k,j)
+           endif
          endif
          write(*,*) 'Point ',j,':'
          call real_g(p,msq)  
@@ -77,6 +93,8 @@
          enddo
          call dotem(7,p,s)
          call genclust2(p,rcut,pjet,0)
+c         write(6,*) 'rl,pt34',0,pttwo(3,4,p)
+c         write(6,*) 'nd,jets, msq(2,-1)',0,jets,msq(2,-1)
          if (jets .eq. -1) then
            write(6,*) 'This point does not have a final state b-jet'
            do jj=-nf,nf
@@ -99,26 +117,28 @@ c     .                      -(pjet(5,3)+pjet(6,3))**2
                q(jj,kk)=ptilde(nd,jj,kk)
             enddo
             enddo
+c            write(6,*) 'nd,pt34',nd,pttwo(3,4,q)
             call dotem(7,q,s)
             call genclust2(q,rcut,pjet,1)
-            if (jets .eq. nqcdjets) then
+            if (jets .ge. nqcdjets) then
 c            write(6,*) nd,jets,msqc(nd,2,0),(pjet(5,4)+pjet(6,4))**2
 c     .                        -(pjet(5,1)+pjet(6,1))**2
 c     .                        -(pjet(5,2)+pjet(6,2))**2
 c     .                        -(pjet(5,3)+pjet(6,3))**2
-               do jj=-nf,nf
-               do kk=-nf,nf
+               do jj=-nflav,nflav
+               do kk=-nflav,nflav
                   msqs(jj,kk)=msqs(jj,kk)+msqc(nd,jj,kk)
                enddo
                enddo
             endif
+c            write(6,*) 'nd,jets,msqc(nd,2,-1)',nd,jets,msqc(nd,2,-1)
          enddo
 
 c--- find smallest value of msq
-         debugsmall=1d0
-         debuglarge=0d0
-         do jj=-nf,nf
-         do kk=-nf,nf
+         debugsmall=msq(0,0)
+         debuglarge=msq(0,0)
+         do jj=-nflav,nflav
+         do kk=-nflav,nflav
            if ((msq(jj,kk) .lt. debugsmall)
      .     .and. (msq(jj,kk) .gt. 0d0)) debugsmall=msq(jj,kk)        
            if ((msq(jj,kk) .gt. debuglarge)
@@ -136,9 +156,8 @@ c           goto 68
 c         if (debuglarge/debugsmall .lt. xtoler*1d2) 
 c     .       debugsmall=debuglarge/xtoler
 
-         do jj=-nf,nf
-         do kk=-nf,nf
-         
+         do jj=-nflav,nflav
+         do kk=-nflav,nflav
          if (msq(jj,kk) .eq. 0d0) then
             if (msqs(jj,kk) .eq. 0d0) then
                goto 69

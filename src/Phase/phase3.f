@@ -7,6 +7,8 @@ c----with all 2 pi's (ie 1/(2*pi)^5)
 c----(p4,p5) are dummies
       implicit none
       include 'constants.f'
+      include 'masses.f'
+      include 'process.f'
       include 'mxdim.f'
 
       integer j
@@ -14,7 +16,14 @@ c----(p4,p5) are dummies
       double precision p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4)
       double precision p12(4),p34(4),smin
       double precision wt,wt125,wt34,wt0,m5
-      parameter(wt0=1d0/twopi,m5=0d0)
+      parameter(wt0=1d0/twopi)
+
+      m5=0d0
+      if (case .eq. 'W_cjet') then 
+         m5=mc
+      elseif (case .eq. 'W_tndk') then 
+         m5=mt
+      endif
 
       do j=1,4
       p12(j)=-p1(j)-p2(j)

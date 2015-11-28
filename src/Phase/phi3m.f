@@ -27,6 +27,8 @@ c     factor of (2*pi)^4 included in definition of phase space
        return 1
       endif
 
+      if (dsqrt(s)-m1-m2 .lt. 0d0) return 1 
+
       roots=dsqrt(s)
       m1sq=m1**2
       m2sq=m2**2

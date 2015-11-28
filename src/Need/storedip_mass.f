@@ -6,7 +6,7 @@ c--- each parton configuration
       include 'constants.f'
       include 'msq_cs.f'
       include 'msqv_cs.f'
-      integer i,j,k,n
+      integer i,j,k
       double precision 
      . msq_dip(0:2,-nf:nf,-nf:nf),msq_dipv(0:2,-nf:nf,-nf:nf)
       

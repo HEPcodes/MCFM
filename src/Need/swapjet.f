@@ -3,7 +3,7 @@ c--- swaps jets i..j in pjet
       implicit none
       include 'constants.f'
       include 'jetlabel.f'
-      integer i,j,k,itmp,jetindex(mxpart)
+      integer i,j,k,jetindex(mxpart)
       double precision pjet(mxpart,4),tmp
       character*2 chartmp
  
@@ -16,12 +16,6 @@ c--- swaps jets i..j in pjet
       chartmp=jetlabel(i)
       jetlabel(i)=jetlabel(j)
       jetlabel(j)=chartmp
-      
-c      if ((jetlabel(i) .ne. 'pp') .and. (jetlabel(j) .ne. 'pp')) then
-c      itmp=jetindex(i)
-c      jetindex(i)=jetindex(j)
-c      jetindex(j)=itmp
-c      endif
       
       return
       end

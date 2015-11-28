@@ -1,9 +1,10 @@
-      logical function gencuts(p,pjet,njets)
+      logical function gencuts(pjet,njets)
 ************************************************************************
 *   Author: J.M. Campbell, 5th December 2001                           *
 *                                                                      *
 *   This routine imposes a generic set of cuts that can be applied     *
-*   to all processes in process.DAT                                    *
+*   to all processes in process.DAT, using the parton momenta in pjet  *
+*   which have already passed through the jet clustering algorithm     *
 *                                                                      *
 *   Only a basic set of variables is tested:                           *
 *     pt(lepton) > leptpt, eta(lepton) < leptrap, missing Et > misspt  *
@@ -25,23 +26,27 @@
       implicit none
       include 'bbproc.f'
       include 'constants.f'
-      include 'jetlabel.f'
       include 'jetcuts.f'
+      include 'process.f'
       logical first,passedlept
       character*2 plabel(mxpart)
       integer njets,j,k,countb,bindex(mxpart),jindex,kindex,ib1,ib2
       integer countlept,leptindex(mxpart),countgamm,gammindex(mxpart),
-     . countjet,jetindex(mxpart),pntr,lbjscheme
-      double precision p(mxpart,4),pjet(mxpart,4),etvec(4)
+     . countjet,jetindex(mxpart),pntr,lbjscheme,maxparts
+      double precision pjet(mxpart,4),etvec(4)
       double precision leptpt,leptrap,misspt,jetpt,jetrap,gammpt,gammrap
       double precision pt,etarap,etmiss,evtmisset,R,Rcut,gammcone,
      . gammcut,etaj,etak,etalept
       double precision Rjlmin,Rllmin,delyjjmin,leptpt2,leptrap2
       double precision delta(mxpart),discr,ptjet(mxpart),etabuffer
-      logical newinput,jetsopphem
+c    . ,MJJ
+      logical jetsopphem
 c      integer nu
 c      double precision sumjetpt(2)
-      common/newinput/newinput
+      double precision ht,qeta,mlbnu,merecon,reconcorr
+      character*30 runstring
+      common/runstring/runstring
+      common/stopvars/ht,qeta,mlbnu,merecon,reconcorr
       common/leptcuts/leptpt,leptrap,misspt,Rjlmin,Rllmin,delyjjmin,
      . leptpt2,leptrap2,gammpt,gammrap,gammcone,gammcut,
      . lbjscheme,jetsopphem
@@ -55,6 +60,16 @@ c      double precision sumjetpt(2)
 
       gencuts=.false.
       
+      if (runstring(1:4) .eq. 'stop') then
+c--- do single-top search cuts instead
+        maxparts=4+njets
+        if ((case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh'))
+     .    maxparts=6+njets
+        call stopcuts(pjet,maxparts,ht,qeta,mlbnu,merecon,reconcorr)  
+        if (ht .lt. 0d0) gencuts=.true.
+        return
+      endif
+       
 c--- Look for particles that should be treated as jets,
 c--- so far only b decays from Z-bosons and
 c--- hadronic decay of the W in diboson processes
@@ -72,24 +87,24 @@ c--- write-out the cuts we are using
       if (first) then
       first=.false.
       
-      if (newinput .eqv. .false.) then
+c      if (newinput .eqv. .false.) then
 c--- read-in cuts from file gencuts.DAT
-        open(unit=21,file='gencuts.DAT',status='old',err=999)
-        call checkversion(21,'gencuts.DAT')
-        read(21,*) leptpt
-        read(21,*) leptrap
-        read(21,*) misspt
-        read(21,*) leptpt2
-        read(21,*) leptrap2
-        read(21,*) Rjlmin
-        read(21,*) Rllmin
-        read(21,*) delyjjmin
-        read(21,*) gammpt
-        read(21,*) gammrap
-        read(21,*) gammcone
-        read(21,*) gammcut
-        close(21)
-      endif
+c        open(unit=21,file='gencuts.DAT',status='old',err=999)
+c        call checkversion(21,'gencuts.DAT')
+c        read(21,*) leptpt
+c        read(21,*) leptrap
+c        read(21,*) misspt
+c        read(21,*) leptpt2
+c        read(21,*) leptrap2
+c        read(21,*) Rjlmin
+c        read(21,*) Rllmin
+c        read(21,*) delyjjmin
+c        read(21,*) gammpt
+c        read(21,*) gammrap
+c        read(21,*) gammcone
+c        read(21,*) gammcut
+c        close(21)
+c      endif
       
       write(6,*)
       write(6,*)  '****************** Generic cuts ********************'
@@ -239,7 +254,7 @@ c--- if there are no cuts on the jets - or no jets - we are done
 c--- identify the jets
       countjet=0      
       do j=3,mxpart
-        if (     (plabel(j) .eq. 'pp') .or. (plabel(j) .eq. 'pj')
+        if (     (plabel(j) .eq. 'pp') .or. (plabel(j) .eq. 'qj')
      .      .or. (plabel(j) .eq. 'bq') .or. (plabel(j) .eq. 'ba')) then
           countjet=countjet+1
           jetindex(countjet)=j
@@ -336,7 +351,7 @@ c--- jet-jet rapidity separation
 c--- j and k point to the two highest pt ('tagging') jets
         j=1
         k=2
-        if (njets. eq. 3) then
+        if (njets .eq. 3) then
           if     ( pt(jetindex(1),pjet) .lt.
      .      min(pt(jetindex(2),pjet),pt(jetindex(3),pjet)) ) then
             j=2
@@ -374,7 +389,26 @@ c--- Cut to require lepton to be between jets
               gencuts=.true.
               return
             endif
+c--- DEBUG
+c--- hack for our WBF selection
+c             if ( ((etaj .gt. 1.6d0) .and. (etaj .lt. 4.4d0))
+c     .        .or.((etak .gt. 1.6d0) .and. (etak .lt. 4.4d0)) ) then
+c             else
+c             gencuts=.true.
+c             endif             
+c--- hack for invariant mass cut
+c            MJJ=(pjet(jetindex(j),4)+pjet(jetindex(k),4))**2
+c     .         -(pjet(jetindex(j),1)+pjet(jetindex(k),1))**2
+c     .         -(pjet(jetindex(j),2)+pjet(jetindex(k),2))**2
+c     .         -(pjet(jetindex(j),3)+pjet(jetindex(k),3))**2
+c            MJJ=dsqrt(MJJ)
+c            if (MJJ .lt. 800d0) then
+c              gencuts=.true.
+c              return
+c            endif
           enddo
+          
+          
         endif
 
       endif

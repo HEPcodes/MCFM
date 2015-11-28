@@ -1,6 +1,6 @@
       block data electroweak_input
 ************************************************************************
-*     Calculation scheme for EW couplings                              *
+*     Calculational scheme for EW couplings                            *
 ************************************************************************
 c
 c     ewscheme=-1  : MCFM default 
@@ -33,74 +33,72 @@ c
       end
 ************************************************************************
 
-      block data properties
+
+************************************************************************
+*     Masses, widths and initial-state flavour information             *
+************************************************************************
+      block data block_properties
       implicit none
       include 'masses.f'
-      data md,mu,ms,mc,mb,mt/5d-3,5d-3,1d-1,1.5d0,4.2d0,175d0/
-      data mel,mmu,mtau/0.510997d-3,0.105658389d0,1.777d0/
-      data hmass,hwidth/100d0,0.0017d0/
-      data wmass,wwidth/80.41d0,2.06d0/
-      data zmass,zwidth/91.187d0,2.49d0/
-      data twidth/1.55666215d0/
-      data tauwidth/2.269d-12/
-C---below are the values of the masses at about 100 GeV
-c---fudged so as to get the Higgs-branching ratio right
-c      data mtausq,mcsq,mbsq/3.1602d0,0.4d0,10.7d0/
+      include 'nflav.f'
+c--- Masses: note that "mtausq", "mcsq" and "mbsq" are typically used
+c--- throughout the program to calculate couplings that depend on the
+c--- mass, while "mtau","mc" and "mb" are the masses that appear in
+c--- the rest of the matrix elements and phase space (and may be set
+c--- to zero in the program, depending on the process number) 
       data mtausq,mcsq,mbsq/3.157729d0,2.25d0,17.64d0/
+      data mtau/1.777d0/
+      data mc,mb,mt/1.5d0,4.2d0,178d0/
+c--- Widths: note that the top width is calculated in the program
+      data wwidth,zwidth/2.06d0,2.49d0/
+      data tauwidth/2.269d-12/
+c--- Number of active flavours in the initial state: this parameter
+c--- may be changed in the program for some processes
+      data nflav/5/
+c--- Masses below here are currently unused      
+      data md,mu,ms/5d-3,5d-3,1d-1/
+      data mel,mmu/0.510997d-3,0.105658389d0/
       end
+************************************************************************
 
-      block data block_bH
-      implicit none
-      include 'runmb.f'
-      include 'susycoup.f'
-c-- whether or not to run mb (false makes no sense)      
-      data runmb/.true./
-c--susycoup is the deviation of Higgs coupling 
-c-- from the standard model value
-      data susycoup/1d0/
-      end
 
-      block data blckm
+************************************************************************
+*     CKM matrix entries                                               *
+************************************************************************
+      block data block_ckm
       implicit none
       double precision Vud,Vus,Vub,Vcd,Vcs,Vcb
-      common/cabib/Vud,Vus,Vub,
-     &             Vcd,Vcs,Vcb
-c---full matrix not used at present
-c       data Vud,    Vus,    Vub,
-c     &      Vcd,    Vcs,    Vcb
-c     &    /0.9751d0,0.2220d0,0.0035d0,
-c     &     0.2220d0,0.9743d0,0.0410d0/
-c---Vub=Vcb=0
-
-c       data Vud,    Vus,    Vub,
-c     &      Vcd,    Vcs,    Vcb
-c     &    /0.975d0,0.22220486d0,0.0d0,
-c     &     0.22220486d0,0.975d0,0.0d0/
-
-       data Vud,    Vus,    Vub,
-     &      Vcd,    Vcs,    Vcb
-     &    /1d0,0d0,0.0d0,
-     &     0d0,1d0,0.0d0/
-
+      common/cabib/Vud,Vus,Vub,Vcd,Vcs,Vcb
+      data  Vud  ,  Vus  ,  Vub  ,
+     .      Vcd  ,  Vcs  ,  Vcb
+     .   /0.975d0,0.222d0,0.000d0,
+     .    0.222d0,0.975d0,0.000d0/
       end
+************************************************************************
 
-c      block data block8
-c      implicit none
-c      double precision aemmz
-c      common/em/aemmz
-c--- This is the preferred value, aemmz = 1/128.89  
-c      data aemmz/7.7585538055706D-03/
-c--- Use this value for comparing with MADGRAPH, aemmz = 1/128
-c      data aemmz/7.8125D-03/
-c--- Use this value for aemmz = 1/137
-c      data aemmz/7.2992901D-03/
-c      end 
 
-      block data ep
+************************************************************************
+*     Relevant for the H+b process only : the deviation of the Higgs   *
+*      coupling from the Standard Model value (S.M. = 1d0)             *
+************************************************************************
+      block data block_bH
+      implicit none
+      include 'susycoup.f'
+      data susycoup/1d0/
+      end
+************************************************************************
+
+
+************************************************************************
+*     Dim. Reg. parameter epsilon, used for checking the proper        *
+*      operation of the NLO code in the program                        *
+************************************************************************
+      block data block_epinv
       implicit none
       include 'epinv.f'
       include 'epinv2.f'
       data epinv/ 1d3/
       data epinv2/1d3/
       end
+************************************************************************
 

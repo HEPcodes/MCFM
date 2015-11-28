@@ -90,7 +90,6 @@ c---  when delg1=0, delk=0, lambda=0
       integer j1,j2,j3,j4,j5,j6
       integer i1,i2,i3,i4
       double complex z2,a6b_1,a6b_2,a6b_3,a6b_4
-      double precision xfac
 
 c--- statement function
       z2(i1,i2,i3,i4)=za(i1,i2)*zb(i2,i4)+za(i1,i3)*zb(i3,i4)
@@ -132,7 +131,7 @@ c---  when delg1=0, delk=0, lambda=0
       integer j1,j2,j3,j4,j5,j6,j7
       integer i1,i2,i3,i4
       double complex z2,a7b_1,a7b_2,a7b_3,a7b_4
-      double precision t127,xfac
+      double precision t127
 
 c--- statement function
       z2(i1,i2,i3,i4)=za(i1,i2)*zb(i2,i4)+za(i1,i3)*zb(i3,i4)

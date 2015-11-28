@@ -22,11 +22,13 @@
       include 'qqgg.f'
       include 'ptilde.f'
       include 'alfacut.f'
+      include 'process.f'
       double precision p(mxpart,4),ptrans(mxpart,4),sub(4),subv,vecsq
       double precision x,omx,z,omz,y,omy,u,omu,sij,sik,sjk,dot,vec(4)
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),vtilde
       integer nd,ip,jp,kp,nu,j,k
-      logical includedipole,incldip(0:maxd)
+c--      logical includedipole
+      logical incldip(0:maxd)
       common/incldip/incldip
       external subr_born,subr_corr
       
@@ -102,7 +104,12 @@ c--- alfa cut fails here
 C---Modification so that only close to singular subtracted
 C---Do not set incldip because initial-final can fail 
 C---but final initial needs still to be tested
-        if (u .gt. aif) return
+
+        if ((case .eq. 'H_1jet') .and. (ip.eq.1) .and. (jp.eq.6)) then
+c--- do nothing
+        else
+          if (u .gt. aif) return
+        endif
         
         do nu=1,4
            vec(nu)=p(jp,nu)/u-p(kp,nu)/omu
@@ -127,7 +134,7 @@ c--- for msq, although msqv must be recalculated each time
         omx=-sij/(sjk+sik)
 C---Modification so that only close to singular subtracted
         if (omx .gt. afi) return
-
+        
         x=one-omx
         z=sik/(sik+sjk)
         omz=sjk/(sik+sjk)

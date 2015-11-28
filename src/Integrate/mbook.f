@@ -1,4 +1,4 @@
-C**********************************************************************
+**********************************************************************
 C    SIMPLE HISTOGRAMMING PACKAGE --  SIMPLIFIED VERSION OF HBOOK
 C    BY Michelangelo Mangano    NOVEMBER 1988
 C    LAST REVISED NOVEMBER 9, 1988  
@@ -83,15 +83,8 @@ C itself. Before calling MTOP,
 C     OPEN(UNIT=99,NAME='NAME.TOP',STATUS='NEW')
 c Empty histograms are not put out by MTOP.
 C--------------------------------------------------------------------------
-      SUBROUTINE MBOOK(N,TIT,DEL,XMIN,XMAX)
-      IMPLICIT REAL*8 (A-H,O-Z)
-      IMPLICIT INTEGER (I-N)
-      CHARACTER TITLE*100,BOOK*3
-      CHARACTER*(*) TIT
-      COMMON/HISTO/HIST(100,100),XHIS(100,100),HDEL(100),HMIN(100)
-     &,HMAX(100),NBIN(100),IHIS(100,100),IUSCORE(100),IOSCORE(100)
-     &,IENT(100),HAVG(100),HINT(100),HSIG(100),BOOK(100),TITLE(100)
-     &,NHIST                               
+      BLOCK DATA HISTOSET
+      include 'histo.f'
       data book/
      & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
      & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
@@ -103,6 +96,13 @@ C--------------------------------------------------------------------------
      & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
      & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
      & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO'/
+      END
+
+      SUBROUTINE MBOOK(N,TIT,DEL,XMIN,XMAX)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT INTEGER (I-N)
+      CHARACTER*(*) TIT
+      include 'histo.f'
       NHIST=MAX(N,NHIST)
       TITLE(N)='   '//TIT                     
       BOOK(N)='YES'
@@ -129,11 +129,7 @@ C--------------------------------------------------------------------------
       SUBROUTINE MFILL(N,X,Y)
       IMPLICIT REAL*8 (A-H,O-Z)
       IMPLICIT INTEGER (I-N)
-      CHARACTER TITLE*100,BOOK*3
-      COMMON/HISTO/HIST(100,100),XHIS(100,100),HDEL(100),HMIN(100)
-     &,HMAX(100),NBIN(100),IHIS(100,100),IUSCORE(100),IOSCORE(100)
-     &,IENT(100),HAVG(100),HINT(100),HSIG(100),BOOK(100),TITLE(100)
-     &,NHIST
+      include 'histo.f'
       I=INT((X-HMIN(N))/HDEL(N)+1)
       IF(I.GT.0.AND.I.LE.NBIN(N))  THEN
       IENT(N)=IENT(N)+1
@@ -150,12 +146,8 @@ c     we are renormalising the weights by the bin width
       SUBROUTINE MOPERA(I,OPER,J,K,X,Y)
       IMPLICIT REAL*8 (A-H,O-Z)
       IMPLICIT INTEGER (I-N)
-      CHARACTER TITLE*100,BOOK*3
       CHARACTER OPER*1
-      COMMON/HISTO/HIST(100,100),XHIS(100,100),HDEL(100),HMIN(100)
-     &,HMAX(100),NBIN(100),IHIS(100,100),IUSCORE(100),IOSCORE(100)
-     &,IENT(100),HAVG(100),HINT(100),HSIG(100),BOOK(100),TITLE(100)
-     &,NHIST
+      include 'histo.f'
       IF(NBIN(I).NE.NBIN(J).AND.(OPER.EQ.'+'.OR.OPER.EQ.'-'.OR.OPER.EQ.
      &'*'.OR.OPER.EQ.'/'.OR.OPER.EQ.'M')) GO TO 10
       DO L=1,NBIN(I)
@@ -223,11 +215,7 @@ c     we are renormalising the weights by the bin width
       SUBROUTINE MZERO(N)
       IMPLICIT REAL*8 (A-H,O-Z)
       IMPLICIT INTEGER (I-N)
-      CHARACTER TITLE*100,BOOK*3
-      COMMON/HISTO/HIST(100,100),XHIS(100,100),HDEL(100),HMIN(100)
-     &,HMAX(100),NBIN(100),IHIS(100,100),IUSCORE(100),IOSCORE(100)
-     &,IENT(100),HAVG(100),HINT(100),HSIG(100),BOOK(100),TITLE(100)
-     &,NHIST
+      include 'histo.f'
       BOOK(N)='RES'
       IENT(N)=0
       IUSCORE(N)=0
@@ -241,26 +229,18 @@ c     we are renormalising the weights by the bin width
       SUBROUTINE MRESET(N)
       IMPLICIT REAL*8 (A-H,O-Z)
       IMPLICIT INTEGER (I-N)
-      CHARACTER TITLE*100,BOOK*3
-      COMMON/HISTO/HIST(100,100),XHIS(100,100),HDEL(100),HMIN(100)
-     &,HMAX(100),NBIN(100),IHIS(100,100),IUSCORE(100),IOSCORE(100)
-     &,IENT(100),HAVG(100),HINT(100),HSIG(100),BOOK(100),TITLE(100)
-     &,NHIST
+      include 'histo.f'
       BOOK(N)='RES'
       END
 
       SUBROUTINE MFINAL(N)
       IMPLICIT REAL*8 (A-H,O-Z)
       IMPLICIT INTEGER (I-N)
-      CHARACTER TITLE*100,BOOK*3
-      COMMON/HISTO/HIST(100,100),XHIS(100,100),HDEL(100),HMIN(100)
-     &,HMAX(100),NBIN(100),IHIS(100,100),IUSCORE(100),IOSCORE(100)
-     &,IENT(100),HAVG(100),HINT(100),HSIG(100),BOOK(100),TITLE(100)
-     &,NHIST
+      include 'histo.f'
       IF(BOOK(N).NE.'YES') RETURN
       AVG=0.d0
       XIN=0.d0                                
-      SIG=0.d0
+c      SIG=0.d0
       DO 1, J=1,NBIN(N)
       AVG=AVG+HIST(N,J)*XHIS(N,J)
    1  XIN=XIN+HIST(N,J)
@@ -277,11 +257,7 @@ c      IF(SIG.GE.0.)HSIG(N)=SQRT(SIG/XIN)
       SUBROUTINE MNORM(N,X)
       IMPLICIT REAL*8 (A-H,O-Z)
       IMPLICIT INTEGER (I-N)
-      CHARACTER TITLE*100,BOOK*3
-      COMMON/HISTO/HIST(100,100),XHIS(100,100),HDEL(100),HMIN(100)
-     &,HMAX(100),NBIN(100),IHIS(100,100),IUSCORE(100),IOSCORE(100)
-     &,IENT(100),HAVG(100),HINT(100),HSIG(100),BOOK(100),TITLE(100)
-     &,NHIST
+      include 'histo.f'
       IF(BOOK(N).NE.'YES')RETURN
       DO 1, I=1,NBIN(N)
     1 HIST(N,I)=HIST(N,I)/HINT(N)*X
@@ -291,11 +267,7 @@ c      IF(SIG.GE.0.)HSIG(N)=SQRT(SIG/XIN)
       SUBROUTINE MPRINT(N)
       IMPLICIT REAL*8 (A-H,O-Z)
       IMPLICIT INTEGER (I-N)
-      CHARACTER TITLE*100,BOOK*3,CTIME*8
-      COMMON/HISTO/HIST(100,100),XHIS(100,100),HDEL(100),HMIN(100)
-     &,HMAX(100),NBIN(100),IHIS(100,100),IUSCORE(100),IOSCORE(100)
-     &,IENT(100),HAVG(100),HINT(100),HSIG(100),BOOK(100),TITLE(100)
-     &,NHIST
+      include 'histo.f'
 c      DATA INI/0/
 c      IF(INI.EQ.0) THEN
 c      CALL IDATE(IMON,IDAY,IYEAR)
@@ -312,7 +284,7 @@ c      WRITE(98,7) N,IYEAR,IMON,IDAY,CTIME(1:5)
       WRITE(98,10) (XHIS(N,I),HIST(N,I),I=1,NBIN(N))
       WRITE(98,15) HAVG(N),HSIG(N),HINT(N)
       WRITE(98,20) IENT(N),IUSCORE(N),IOSCORE(N)
-    7 FORMAT(4X,'HIST = ',I3,'   19',I2,'-',I2,'-',I2,1X,A5/)
+c    7 FORMAT(4X,'HIST = ',I3,'   19',I2,'-',I2,'-',I2,1X,A5/)
     8 FORMAT(4X,'HIST = ',I3)
    10 FORMAT(4X,2G13.6)
    15 FORMAT(/' AVG =',E10.3,4X,' RMS =',E10.3,' INTEGRAL =',E10.3,/)
@@ -323,13 +295,8 @@ c      WRITE(98,7) N,IYEAR,IMON,IDAY,CTIME(1:5)
       SUBROUTINE MTOP(N,M,BTIT,LTIT,SCALE)
       IMPLICIT REAL*8 (A-H,O-Z)
       IMPLICIT INTEGER (I-N)
-      CHARACTER TITLE*100,BOOK*3
-c    & ,CTIME*8
       CHARACTER*(*) LTIT,BTIT,SCALE
-      COMMON/HISTO/HIST(100,100),XHIS(100,100),HDEL(100),HMIN(100)
-     &,HMAX(100),NBIN(100),IHIS(100,100),IUSCORE(100),IOSCORE(100)
-     &,IENT(100),HAVG(100),HINT(100),HSIG(100),BOOK(100),TITLE(100)
-     &,NHIST
+      include 'histo.f'
 c      DATA INI/0/
 c      IF(INI.EQ.0) THEN
 c      CALL IDATE(IMON,IDAY,IYEAR)

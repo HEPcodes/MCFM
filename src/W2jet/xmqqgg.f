@@ -52,8 +52,8 @@ c      mm1=-abs(qla(-1,-1))**2*ninth
 
 c      qla(+1,-1)=xla(+1,-1)+yla(+1,-1)
 c      qla(-1,+1)=xla(-1,+1)+yla(-1,+1)
-c      if ((dreal(za(5,6)*zb(6,5)) .lt. 30d0) .and.
-c     . (dreal(za(1,5)*zb(5,1)) .gt. -30d0)) then
+c      if ((dble(za(5,6)*zb(6,5)) .lt. 30d0) .and.
+c     . (dble(za(1,5)*zb(5,1)) .gt. -30d0)) then
 c      write(*,*) 'Perm ',i
 c      write(*,*) 'x',abs(xla(+1,+1))**2+abs(xla(+1,-1))**2
 c     .              +abs(xla(-1,+1))**2+abs(xla(-1,-1))**2

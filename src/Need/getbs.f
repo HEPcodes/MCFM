@@ -1,4 +1,5 @@
       subroutine getbs(pjet,nbq,nba)
+      implicit none
       include 'constants.f'
       include 'jetlabel.f'
       integer i,nbq,nba

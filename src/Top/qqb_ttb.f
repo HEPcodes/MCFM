@@ -16,12 +16,12 @@ C     q(-p1) +qbar(-p2)=bbar(p6)+e-(p7)+nubar(p8)+b(p5)+nu(p3)+e+(p4)  *
       include 'masses.f'
       include 'process.f'
       integer j,k,nu
-      double precision msq(-nf:nf,-nf:nf),q(mxpart,4),plab(4,10)
+      double precision msq(-nf:nf,-nf:nf),q(mxpart,4),PLAB(4,10)
       double precision RMT,RGT,RMW,RGW,RMB,RMTLO,RMTUP
       double precision GW_KS,GS_KS,wtqqb,wtqbq,wtgg,fac
       COMMON/COUPS/GW_KS,GS_KS
       COMMON/PARS/RMT,RGT,RMW,RGW,RMB,RMTLO,RMTUP
-      COMMON/MOM/plab
+      COMMON/MOM/PLAB
       logical first
       data first/.true./       
 c---- Fill common blocks for Kleiss and Stirling   
@@ -93,8 +93,9 @@ C---fill qb-q, gg and q-qb elements
       elseif (j .gt. 0) then
           msq(j,-j)=fac*wtqqb
       endif
-c      write(6,*) j,msq(j,j)
+c      write(6,*) j,msq(j,-j)
       enddo
+
 c      pause
       return
       end

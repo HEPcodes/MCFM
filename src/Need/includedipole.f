@@ -39,7 +39,7 @@ c--- if the number of jets is not correct, then do not include dipole
       else
 c--- otherwise, if it is correct, check the lepton cuts
         if (makecuts) then
-          failedgencuts=gencuts(ptrans,pjet,jets)
+          failedgencuts=gencuts(pjet,jets)
           if (failedgencuts) includedipole=.false.
         endif
       endif

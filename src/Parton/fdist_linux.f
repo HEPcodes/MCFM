@@ -205,12 +205,11 @@ C   2      CTEQ3D   Standard DIS scheme     0.116
              fx(-5)=Ctq3df(mode,-5,x,xmu,Irt)/x
              fx(-4)=Ctq3df(mode,-4,x,xmu,Irt)/x
              fx(-3)=Ctq3df(mode,-3,x,xmu,Irt)/x
-
              fx(0)=Ctq3df(mode,0,x,xmu,Irt)/x
 
-             fx(+3)=Ctq3df(mode,+3,x,xmu,Irt)/x
-             fx(+4)=Ctq3df(mode,+4,x,xmu,Irt)/x
-             fx(+5)=Ctq3df(mode,+5,x,xmu,Irt)/x
+             fx(+3)=fx(-3)
+             fx(+4)=fx(-4)
+             fx(+5)=fx(-5)
              if (ih.eq.1) then      
                fx(-1)=Ctq3df(mode,-2,x,xmu,Irt)/x
                fx(-2)=Ctq3df(mode,-1,x,xmu,Irt)/x
@@ -222,6 +221,7 @@ C   2      CTEQ3D   Standard DIS scheme     0.116
                fx(-1)=Ctq3df(mode,+2,x,xmu,Irt)/x+fx(1)
                fx(-2)=Ctq3df(mode,+1,x,xmu,Irt)/x+fx(2)
              endif
+
              return
 
 
@@ -435,4 +435,11 @@ c-----assign to standard grid
       end
 
   
+      subroutine InitPDF(dummy)
+      integer dummy
 
+c--- this is a dummy routine that exists in LHAPDF only
+      
+      return
+      end
+      

@@ -89,7 +89,7 @@ C        put a warning for calling extra flavor.
       Endif
 
       Ctq6Pdf = PartonX6 (Iparton, X, Q)
-      if(Ctq6Pdf.lt.0.D0)  Ctq6Pdf = 0.D0
+      if(Ctq6Pdf.lt.0D0)  Ctq6Pdf = 0D0
 
       Return
 
@@ -252,7 +252,7 @@ c
 
       Dimension fvec(4), fij(4)
       Dimension xvpow(0:mxx)
-      Data OneP / 1.00001 /
+      Data OneP / 1.00001d0 /
       Data xpow / 0.3d0 /       !**** choice of interpolation variable
       Data nqvec / 4 /
       Data ientry / 0 /
@@ -270,7 +270,7 @@ c store the powers used for interpolation on first call...
 
       X = XX
       Q = QQ
-      tt = log(log(Q/Al))
+      tt = dlog(dlog(Q/Al))
 
 c      -------------    find lower end of interval containing x, i.e.,
 c                       get jx such that xv(jx) .le. x .le. xv(jx+1)...

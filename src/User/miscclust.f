@@ -39,7 +39,7 @@ C--- calculate the beam proto-jet separation see NPB406(1993)187, Eqn. 7
 C--- in  practice this is just the minimum ptsq of protojets       
       implicit none
       include 'constants.f'
-      double precision p(mxpart,4),pjet(mxpart,4),dkmin,dk,ptjet
+      double precision p(mxpart,4),pjet(mxpart,4),dkmin,dk,pt
       integer pjetmin,pjetmax,nk,i
       logical dkerror
       
@@ -47,7 +47,7 @@ C--- in  practice this is just the minimum ptsq of protojets
       dkerror=.true.
       
       do i=pjetmin,pjetmax
-        dk=ptjet(i,p,pjet)
+        dk=pt(i,pjet)
         if (dk .lt. dkmin) then
           dkmin=dk
           nk=i
@@ -68,11 +68,11 @@ C---calculate the proto-jet separation see NPB406(1993)187, Eqn. 7
       implicit none
       include 'constants.f'
       integer i,j
-      double precision p(mxpart,4),pjet(mxpart,4),pti,ptj,ptjet,r
+      double precision p(mxpart,4),pjet(mxpart,4),pti,ptj,pt,r
 c      double precision etarap,yi,yj,phii,phij
       
-      pti=ptjet(i,p,pjet)
-      ptj=ptjet(j,p,pjet)
+      pti=pt(i,pjet)
+      ptj=pt(j,pjet)
 
 c--- old method - bad because (phii-phij) can be > pi       
 c      yi=etarap(i,pjet)
@@ -130,6 +130,11 @@ c--Run II prescription
         jetlabel(i)='ba'
         return
       endif
+      if (((jetlabel(i) .eq. 'qj') .and. (jetlabel(j) .eq. 'pp'))
+     ..or.((jetlabel(j) .eq. 'pp') .and. (jetlabel(i) .eq. 'qj'))) then
+        jetlabel(i)='qj'
+        return
+      endif
 
       return
       end
@@ -140,11 +145,11 @@ c      include 'constants.f'
 c      include 'jetlabel.f'
 c      integer i,j
 c      double precision p(mxpart,4),pjet(mxpart,4),ptjetij,yjet,phijet,
-c     . ejet,ptjet,etarap,pti,ptj,yi,yj,phii,phij
+c     . ejet,pt,etarap,pti,ptj,yi,yj,phii,phij
       
 C----Snowmass style prescripton 
-c      pti=ptjet(i,p,pjet)
-c      ptj=ptjet(j,p,pjet)
+c      pti=pt(i,pjet)
+c      ptj=pt(j,pjet)
       
 c      yi=etarap(i,pjet)
 c      yj=etarap(j,pjet)
@@ -223,18 +228,18 @@ c--- swaps jets i..j in pjet
       return
       end
       
-      double precision function ptjet(j,p,pjet)
-      implicit none
-      include 'constants.f'
-      integer j
-      double precision p(mxpart,4),pjet(mxpart,4)
+c      double precision function ptjet(j,p,pjet)
+c      implicit none
+c      include 'constants.f'
+c      integer j
+c      double precision p(mxpart,4),pjet(mxpart,4)
 c--- This is the formula for pt
-      ptjet=dsqrt(pjet(j,1)**2+pjet(j,2)**2)
+c      ptjet=dsqrt(pjet(j,1)**2+pjet(j,2)**2)
 c--- This is the formula for Et
 c      ptjet=dsqrt(pjet(j,1)**2+pjet(j,2)**2)
 c     . *pjet(j,4)/dsqrt(pjet(j,1)**2+pjet(j,2)**2+pjet(j,3)**2)
-      return
-      end
+c      return
+c      end
 
       double precision function dotjet(p,i,pjet,j)
 C---Dot the ith vector p with the jth vector pjet

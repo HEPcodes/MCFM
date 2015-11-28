@@ -1,0 +1,357 @@
+FTNCHEK_ P3
+file /home/ellis/Res/MCFM/src/Topg/qqb_ttb_g.f
+ entries 1
+ entry QQB_TTB_G class 1 type 10 size 0 flags 0 0 0 0 0 0 0 0
+ defn
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Topg/qqb_ttb_g.f line 1 top 1 class 1 type 10 size 0 flags 1 0 0 0
+ args 2
+ arg 1 name P
+ class 0 type 3 size 0 dims 2 elts 48 cblk - cndx 0 same 0 flags 1 1 0 0 1 0 0 0
+ arg 2 name MSQ
+ class 0 type 3 size 0 dims 2 elts 121 cblk - cndx 0 same 1 flags 1 1 1 0 1 0 0 0
+ end
+
+ externals 8
+ external SPINORU class 1 type 0 size 0 flags 1 0 0 0 0 0 0 0
+ call
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Topg/qqb_ttb_g.f line 25 top 25 class 1 type 10 size 0 flags 0 1 0 0
+ args 4
+ arg 1 name 9
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 0 flags 0 1 0 0 0 0 0 0
+ arg 2 name P
+ class 0 type 3 size 0 dims 2 elts 48 cblk - cndx 0 same 1 flags 1 1 0 0 1 0 0 0
+ arg 3 name ZA
+ class 0 type 5 size 0 dims 2 elts 144 cblk ZPRODS cndx 1 same 2 flags 1 1 0 0 1 0 0 0
+ arg 4 name ZB
+ class 0 type 5 size 0 dims 2 elts 144 cblk ZPRODS cndx 2 same 3 flags 1 1 0 0 1 0 0 0
+ end
+ external DIAGG1 class 1 type 0 size 0 flags 1 0 0 0 0 0 0 0
+ call
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Topg/qqb_ttb_g.f line 28 top 28 class 1 type 10 size 0 flags 0 1 0 0
+ args 5
+ arg 1 name 1
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 0 flags 0 1 0 0 0 0 0 0
+ arg 2 name 2
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 1 flags 0 1 0 0 0 0 0 0
+ arg 3 name 9
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 2 flags 0 1 0 0 0 0 0 0
+ arg 4 name B
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 3 flags 1 1 1 0 0 0 0 0
+ arg 5 name T1
+ class 0 type 5 size 0 dims 2 elts 4 cblk - cndx 0 same 4 flags 1 0 0 0 1 0 0 0
+ call
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Topg/qqb_ttb_g.f line 54 top 54 class 1 type 10 size 0 flags 0 1 0 0
+ args 5
+ arg 1 name 2
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 0 flags 0 1 0 0 0 0 0 0
+ arg 2 name 1
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 1 flags 0 1 0 0 0 0 0 0
+ arg 3 name 9
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 2 flags 0 1 0 0 0 0 0 0
+ arg 4 name B
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 3 flags 1 1 1 0 0 0 0 0
+ arg 5 name T1
+ class 0 type 5 size 0 dims 2 elts 4 cblk - cndx 0 same 4 flags 1 1 0 0 1 0 0 0
+ call
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Topg/qqb_ttb_g.f line 80 top 80 class 1 type 10 size 0 flags 0 1 0 0
+ args 5
+ arg 1 name 1
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 0 flags 0 1 0 0 0 0 0 0
+ arg 2 name 9
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 1 flags 0 1 0 0 0 0 0 0
+ arg 3 name 2
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 2 flags 0 1 0 0 0 0 0 0
+ arg 4 name B
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 3 flags 1 1 1 0 0 0 0 0
+ arg 5 name T1
+ class 0 type 5 size 0 dims 2 elts 4 cblk - cndx 0 same 4 flags 1 1 0 0 1 0 0 0
+ end
+ external DIAGG2 class 1 type 0 size 0 flags 1 0 0 0 0 0 0 0
+ call
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Topg/qqb_ttb_g.f line 29 top 29 class 1 type 10 size 0 flags 0 1 0 0
+ args 5
+ arg 1 name 1
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 0 flags 0 1 0 0 0 0 0 0
+ arg 2 name 2
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 1 flags 0 1 0 0 0 0 0 0
+ arg 3 name 9
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 2 flags 0 1 0 0 0 0 0 0
+ arg 4 name B
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 3 flags 1 1 1 0 0 0 0 0
+ arg 5 name T2
+ class 0 type 5 size 0 dims 2 elts 4 cblk - cndx 0 same 4 flags 1 0 0 0 1 0 0 0
+ call
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Topg/qqb_ttb_g.f line 55 top 55 class 1 type 10 size 0 flags 0 1 0 0
+ args 5
+ arg 1 name 2
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 0 flags 0 1 0 0 0 0 0 0
+ arg 2 name 1
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 1 flags 0 1 0 0 0 0 0 0
+ arg 3 name 9
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 2 flags 0 1 0 0 0 0 0 0
+ arg 4 name B
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 3 flags 1 1 1 0 0 0 0 0
+ arg 5 name T2
+ class 0 type 5 size 0 dims 2 elts 4 cblk - cndx 0 same 4 flags 1 1 0 0 1 0 0 0
+ call
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Topg/qqb_ttb_g.f line 81 top 81 class 1 type 10 size 0 flags 0 1 0 0
+ args 5
+ arg 1 name 1
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 0 flags 0 1 0 0 0 0 0 0
+ arg 2 name 9
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 1 flags 0 1 0 0 0 0 0 0
+ arg 3 name 2
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 2 flags 0 1 0 0 0 0 0 0
+ arg 4 name B
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 3 flags 1 1 1 0 0 0 0 0
+ arg 5 name T2
+ class 0 type 5 size 0 dims 2 elts 4 cblk - cndx 0 same 4 flags 1 1 0 0 1 0 0 0
+ end
+ external DIAGG3 class 1 type 0 size 0 flags 1 0 0 0 0 0 0 0
+ call
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Topg/qqb_ttb_g.f line 30 top 30 class 1 type 10 size 0 flags 0 1 0 0
+ args 5
+ arg 1 name 1
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 0 flags 0 1 0 0 0 0 0 0
+ arg 2 name 2
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 1 flags 0 1 0 0 0 0 0 0
+ arg 3 name 9
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 2 flags 0 1 0 0 0 0 0 0
+ arg 4 name B
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 3 flags 1 1 1 0 0 0 0 0
+ arg 5 name T3
+ class 0 type 5 size 0 dims 2 elts 4 cblk - cndx 0 same 4 flags 1 0 0 0 1 0 0 0
+ call
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Topg/qqb_ttb_g.f line 56 top 56 class 1 type 10 size 0 flags 0 1 0 0
+ args 5
+ arg 1 name 2
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 0 flags 0 1 0 0 0 0 0 0
+ arg 2 name 1
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 1 flags 0 1 0 0 0 0 0 0
+ arg 3 name 9
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 2 flags 0 1 0 0 0 0 0 0
+ arg 4 name B
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 3 flags 1 1 1 0 0 0 0 0
+ arg 5 name T3
+ class 0 type 5 size 0 dims 2 elts 4 cblk - cndx 0 same 4 flags 1 1 0 0 1 0 0 0
+ call
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Topg/qqb_ttb_g.f line 82 top 82 class 1 type 10 size 0 flags 0 1 0 0
+ args 5
+ arg 1 name 1
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 0 flags 0 1 0 0 0 0 0 0
+ arg 2 name 9
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 1 flags 0 1 0 0 0 0 0 0
+ arg 3 name 2
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 2 flags 0 1 0 0 0 0 0 0
+ arg 4 name B
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 3 flags 1 1 1 0 0 0 0 0
+ arg 5 name T3
+ class 0 type 5 size 0 dims 2 elts 4 cblk - cndx 0 same 4 flags 1 1 0 0 1 0 0 0
+ end
+ external DIAGG4 class 1 type 0 size 0 flags 1 0 0 0 0 0 0 0
+ call
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Topg/qqb_ttb_g.f line 31 top 31 class 1 type 10 size 0 flags 0 1 0 0
+ args 5
+ arg 1 name 1
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 0 flags 0 1 0 0 0 0 0 0
+ arg 2 name 2
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 1 flags 0 1 0 0 0 0 0 0
+ arg 3 name 9
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 2 flags 0 1 0 0 0 0 0 0
+ arg 4 name B
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 3 flags 1 1 1 0 0 0 0 0
+ arg 5 name T4
+ class 0 type 5 size 0 dims 2 elts 4 cblk - cndx 0 same 4 flags 1 0 0 0 1 0 0 0
+ call
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Topg/qqb_ttb_g.f line 57 top 57 class 1 type 10 size 0 flags 0 1 0 0
+ args 5
+ arg 1 name 2
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 0 flags 0 1 0 0 0 0 0 0
+ arg 2 name 1
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 1 flags 0 1 0 0 0 0 0 0
+ arg 3 name 9
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 2 flags 0 1 0 0 0 0 0 0
+ arg 4 name B
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 3 flags 1 1 1 0 0 0 0 0
+ arg 5 name T4
+ class 0 type 5 size 0 dims 2 elts 4 cblk - cndx 0 same 4 flags 1 1 0 0 1 0 0 0
+ call
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Topg/qqb_ttb_g.f line 83 top 83 class 1 type 10 size 0 flags 0 1 0 0
+ args 5
+ arg 1 name 1
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 0 flags 0 1 0 0 0 0 0 0
+ arg 2 name 9
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 1 flags 0 1 0 0 0 0 0 0
+ arg 3 name 2
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 2 flags 0 1 0 0 0 0 0 0
+ arg 4 name B
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 3 flags 1 1 1 0 0 0 0 0
+ arg 5 name T4
+ class 0 type 5 size 0 dims 2 elts 4 cblk - cndx 0 same 4 flags 1 1 0 0 1 0 0 0
+ end
+ external DIAGG5 class 1 type 0 size 0 flags 1 0 0 0 0 0 0 0
+ call
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Topg/qqb_ttb_g.f line 32 top 32 class 1 type 10 size 0 flags 0 1 0 0
+ args 5
+ arg 1 name 1
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 0 flags 0 1 0 0 0 0 0 0
+ arg 2 name 2
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 1 flags 0 1 0 0 0 0 0 0
+ arg 3 name 9
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 2 flags 0 1 0 0 0 0 0 0
+ arg 4 name B
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 3 flags 1 1 1 0 0 0 0 0
+ arg 5 name T5
+ class 0 type 5 size 0 dims 2 elts 4 cblk - cndx 0 same 4 flags 1 0 0 0 1 0 0 0
+ call
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Topg/qqb_ttb_g.f line 58 top 58 class 1 type 10 size 0 flags 0 1 0 0
+ args 5
+ arg 1 name 2
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 0 flags 0 1 0 0 0 0 0 0
+ arg 2 name 1
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 1 flags 0 1 0 0 0 0 0 0
+ arg 3 name 9
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 2 flags 0 1 0 0 0 0 0 0
+ arg 4 name B
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 3 flags 1 1 1 0 0 0 0 0
+ arg 5 name T5
+ class 0 type 5 size 0 dims 2 elts 4 cblk - cndx 0 same 4 flags 1 1 0 0 1 0 0 0
+ call
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Topg/qqb_ttb_g.f line 84 top 84 class 1 type 10 size 0 flags 0 1 0 0
+ args 5
+ arg 1 name 1
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 0 flags 0 1 0 0 0 0 0 0
+ arg 2 name 9
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 1 flags 0 1 0 0 0 0 0 0
+ arg 3 name 2
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 2 flags 0 1 0 0 0 0 0 0
+ arg 4 name B
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 3 flags 1 1 1 0 0 0 0 0
+ arg 5 name T5
+ class 0 type 5 size 0 dims 2 elts 4 cblk - cndx 0 same 4 flags 1 1 0 0 1 0 0 0
+ end
+ external DIAGG6 class 1 type 0 size 0 flags 1 0 0 0 0 0 0 0
+ call
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Topg/qqb_ttb_g.f line 33 top 33 class 1 type 10 size 0 flags 0 1 0 0
+ args 5
+ arg 1 name 1
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 0 flags 0 1 0 0 0 0 0 0
+ arg 2 name 2
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 1 flags 0 1 0 0 0 0 0 0
+ arg 3 name 9
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 2 flags 0 1 0 0 0 0 0 0
+ arg 4 name B
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 3 flags 1 1 1 0 0 0 0 0
+ arg 5 name T6
+ class 0 type 5 size 0 dims 2 elts 4 cblk - cndx 0 same 4 flags 1 0 0 0 1 0 0 0
+ call
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Topg/qqb_ttb_g.f line 59 top 59 class 1 type 10 size 0 flags 0 1 0 0
+ args 5
+ arg 1 name 2
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 0 flags 0 1 0 0 0 0 0 0
+ arg 2 name 1
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 1 flags 0 1 0 0 0 0 0 0
+ arg 3 name 9
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 2 flags 0 1 0 0 0 0 0 0
+ arg 4 name B
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 3 flags 1 1 1 0 0 0 0 0
+ arg 5 name T6
+ class 0 type 5 size 0 dims 2 elts 4 cblk - cndx 0 same 4 flags 1 1 0 0 1 0 0 0
+ call
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Topg/qqb_ttb_g.f line 85 top 85 class 1 type 10 size 0 flags 0 1 0 0
+ args 5
+ arg 1 name 1
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 0 flags 0 1 0 0 0 0 0 0
+ arg 2 name 9
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 1 flags 0 1 0 0 0 0 0 0
+ arg 3 name 2
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 2 flags 0 1 0 0 0 0 0 0
+ arg 4 name B
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 3 flags 1 1 1 0 0 0 0 0
+ arg 5 name T6
+ class 0 type 5 size 0 dims 2 elts 4 cblk - cndx 0 same 4 flags 1 1 0 0 1 0 0 0
+ end
+ external DIAGG7 class 1 type 0 size 0 flags 1 0 0 0 0 0 0 0
+ call
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Topg/qqb_ttb_g.f line 34 top 34 class 1 type 10 size 0 flags 0 1 0 0
+ args 5
+ arg 1 name 1
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 0 flags 0 1 0 0 0 0 0 0
+ arg 2 name 2
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 1 flags 0 1 0 0 0 0 0 0
+ arg 3 name 9
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 2 flags 0 1 0 0 0 0 0 0
+ arg 4 name B
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 3 flags 1 1 1 0 0 0 0 0
+ arg 5 name T7
+ class 0 type 5 size 0 dims 2 elts 4 cblk - cndx 0 same 4 flags 1 0 0 0 1 0 0 0
+ call
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Topg/qqb_ttb_g.f line 60 top 60 class 1 type 10 size 0 flags 0 1 0 0
+ args 5
+ arg 1 name 2
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 0 flags 0 1 0 0 0 0 0 0
+ arg 2 name 1
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 1 flags 0 1 0 0 0 0 0 0
+ arg 3 name 9
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 2 flags 0 1 0 0 0 0 0 0
+ arg 4 name B
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 3 flags 1 1 1 0 0 0 0 0
+ arg 5 name T7
+ class 0 type 5 size 0 dims 2 elts 4 cblk - cndx 0 same 4 flags 1 1 0 0 1 0 0 0
+ call
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Topg/qqb_ttb_g.f line 86 top 86 class 1 type 10 size 0 flags 0 1 0 0
+ args 5
+ arg 1 name 1
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 0 flags 0 1 0 0 0 0 0 0
+ arg 2 name 9
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 1 flags 0 1 0 0 0 0 0 0
+ arg 3 name 2
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 2 flags 0 1 0 0 0 0 0 0
+ arg 4 name B
+ class 0 type 1 size 0 dims 0 elts 1 cblk - cndx 0 same 3 flags 1 1 1 0 0 0 0 0
+ arg 5 name T7
+ class 0 type 5 size 0 dims 2 elts 4 cblk - cndx 0 same 4 flags 1 1 0 0 1 0 0 0
+ end
+
+ comblocks 4
+ block FLAVINFO class 2 type 11
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Inc/constants.f line 40 top 14 flags 0 0 0 0
+ vars 2
+ var 1 name B0
+ class 0 type 3 size 0 dims 0 elts 1 flags 0 0 0 0 0 0 0 0
+ var 2 name NFLAV
+ class 0 type 1 size 0 dims 0 elts 1 flags 0 0 0 0 0 0 0 0
+ block EWCOUPLE class 2 type 11
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Inc/ewcouple.f line 2 top 15 flags 1 0 0 0
+ vars 6
+ var 1 name GF
+ class 0 type 3 size 0 dims 0 elts 1 flags 0 0 0 0 0 0 0 0
+ var 2 name GW
+ class 0 type 3 size 0 dims 0 elts 1 flags 0 0 0 0 0 0 0 0
+ var 3 name XW
+ class 0 type 3 size 0 dims 0 elts 1 flags 0 0 0 0 0 0 0 0
+ var 4 name GWSQ
+ class 0 type 3 size 0 dims 0 elts 1 flags 1 0 1 0 0 0 0 0
+ var 5 name ESQ
+ class 0 type 3 size 0 dims 0 elts 1 flags 0 0 0 0 0 0 0 0
+ var 6 name VEVSQ
+ class 0 type 3 size 0 dims 0 elts 1 flags 0 0 0 0 0 0 0 0
+ block QCDCOUPLE class 2 type 11
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Inc/qcdcouple.f line 2 top 16 flags 1 0 0 0
+ vars 4
+ var 1 name GSQ
+ class 0 type 3 size 0 dims 0 elts 1 flags 1 0 1 0 0 0 0 0
+ var 2 name AS
+ class 0 type 3 size 0 dims 0 elts 1 flags 0 0 0 0 0 0 0 0
+ var 3 name ASON2PI
+ class 0 type 3 size 0 dims 0 elts 1 flags 0 0 0 0 0 0 0 0
+ var 4 name ASON4PI
+ class 0 type 3 size 0 dims 0 elts 1 flags 0 0 0 0 0 0 0 0
+ block ZPRODS class 2 type 11
+ module QQB_TTB_G file /home/ellis/Res/MCFM/src/Inc/zprods_com.f line 2 top 17 flags 1 1 0 0
+ vars 2
+ var 1 name ZA
+ class 0 type 5 size 0 dims 2 elts 144 flags 1 1 0 0 0 0 0 0
+ var 2 name ZB
+ class 0 type 5 size 0 dims 2 elts 144 flags 1 1 0 0 0 0 0 0
+

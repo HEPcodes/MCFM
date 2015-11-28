@@ -53,7 +53,7 @@ C***************************************************************C
 
       subroutine mrst1(x,qsq,upv,dnv,usea,dsea,str,chm,bot,glu)
       implicit real*8(a-h,o-z)
-      parameter(nx=49,nq=37,np=8,nqc0=2,nqb0=11,nqc=35,nqb=26)
+      parameter(nx=49,nq=37,nqc0=2,nqb0=11,nqc=35,nqb=26)
       real*8 f1(nx,nq),f2(nx,nq),f3(nx,nq),f4(nx,nq),f5(nx,nq),
      .f6(nx,nq),f7(nx,nq),f8(nx,nq),fc(nx,nqc),fb(nx,nqb)
       real*8 qq(nq),xx(nx),cc1(nx,nq,4,4),cc2(nx,nq,4,4),
@@ -161,7 +161,7 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
  
       subroutine mrst2(x,qsq,upv,dnv,usea,dsea,str,chm,bot,glu)
       implicit real*8(a-h,o-z)
-      parameter(nx=49,nq=37,np=8,nqc0=2,nqb0=11,nqc=35,nqb=26)
+      parameter(nx=49,nq=37,nqc0=2,nqb0=11,nqc=35,nqb=26)
       real*8 f1(nx,nq),f2(nx,nq),f3(nx,nq),f4(nx,nq),f5(nx,nq),
      .f6(nx,nq),f7(nx,nq),f8(nx,nq),fc(nx,nqc),fb(nx,nqb)
       real*8 qq(nq),xx(nx),cc1(nx,nq,4,4),cc2(nx,nq,4,4),
@@ -269,7 +269,7 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
 
       subroutine mrst3(x,qsq,upv,dnv,usea,dsea,str,chm,bot,glu)
       implicit real*8(a-h,o-z)
-      parameter(nx=49,nq=37,np=8,nqc0=2,nqb0=11,nqc=35,nqb=26)
+      parameter(nx=49,nq=37,nqc0=2,nqb0=11,nqc=35,nqb=26)
       real*8 f1(nx,nq),f2(nx,nq),f3(nx,nq),f4(nx,nq),f5(nx,nq),
      .f6(nx,nq),f7(nx,nq),f8(nx,nq),fc(nx,nqc),fb(nx,nqb)
       real*8 qq(nq),xx(nx),cc1(nx,nq,4,4),cc2(nx,nq,4,4),
@@ -377,7 +377,7 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
 
       subroutine mrst4(x,qsq,upv,dnv,usea,dsea,str,chm,bot,glu)
       implicit real*8(a-h,o-z)
-      parameter(nx=49,nq=37,np=8,nqc0=2,nqb0=11,nqc=35,nqb=26)
+      parameter(nx=49,nq=37,nqc0=2,nqb0=11,nqc=35,nqb=26)
       real*8 f1(nx,nq),f2(nx,nq),f3(nx,nq),f4(nx,nq),f5(nx,nq),
      .f6(nx,nq),f7(nx,nq),f8(nx,nq),fc(nx,nqc),fb(nx,nqb)
       real*8 qq(nq),xx(nx),cc1(nx,nq,4,4),cc2(nx,nq,4,4),

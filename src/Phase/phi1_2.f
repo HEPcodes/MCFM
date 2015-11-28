@@ -8,6 +8,7 @@ c     ds2 ds3 d^4 p2 d^4 p3 (2 pi)^4 delta(p1-p2-p3)/(2 pi)^6
 c     delta(p2^2-s2) delta(p3^2-s3)
       implicit none
       include 'constants.f'
+      include 'heavyflav.f'
       include 'masses.f'
       include 'process.f'
       include 'zerowidth.f'
@@ -36,15 +37,25 @@ c      if (n3 .eq. 1) write(6,*) 'generating phase space with bw,n3=',n3
       s1=p1(4)**2-p1(1)**2-p1(2)**2-p1(3)**2  
       if (s1 .lt. 0d0) return 1
       m1=dsqrt(s1)
-      if (zerowidth .and. (sqrt(s1) .lt. mass2+mass3)) return 1
+      if (
+     . zerowidth 
+     . .and. (m1 .lt. mass2*dfloat(n2)+mass3*dfloat(n3))
+     .    ) return 1
 c      s2min=bbsqmin
 c      s2max=min(s1,bbsqmax)
       s2min=0d0
       s2max=s1
-      if ((case .eq. 'Wbbmas') .or. (case .eq. 'Zbbmas')
+      if (((case .eq. 'Wbbmas') .and. (flav .eq. 5))
+     ..or. (case .eq. 'Zbbmas')
      ..or.(case .eq. 'Zccmas') .or. (case .eq. 'vlchkm')
-     ..or. (case .eq. 'Wbbjet')) then
-      s2min=4d0*mb**2
+     ..or.(case .eq. 'Wbbjet') .or. (case .eq. 'Wbbjem')) then
+        s2min=4d0*mb**2
+      elseif ((case .eq. 'Wbbmas') .and. (flav .eq. 4)) then
+        s2min=4d0*mc**2
+      elseif (case .eq. 'W_cjet') then
+        s2min=mc**2
+      elseif (case .eq. 'W_tndk') then
+        s2min=mt**2
       endif
       if (s2min .gt. s2max) return 1
       if (n2 .eq. 0) then

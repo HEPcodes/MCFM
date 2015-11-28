@@ -18,6 +18,7 @@
       include 'zprods_com.f'
       include 'epinv.f'
       include 'scheme.f'
+      include 'nflav.f'
       integer j,k,
      . iqqbgLL(5),iqqbgLR(5),iqqbgRL(5),iqqbgRR(5),
      . iqgqLL(5),iqgqLR(5),iqgqRL(5),iqgqRR(5),
@@ -49,11 +50,6 @@ c--set msq=0 to initialize
       enddo
       enddo
 
-c-- if Gflag=.false. then only the endpoint contributions from the
-c-- 4-quark diagrams are included, ie. no pole subtraction for this
-c-- piece. Therefore return 0.
-c      if (Gflag .eqv. .false.) return
-
 c--calculate spinor and dot-products (using BDK type notation)
       call spinoru(5,p,za,zb)
 
@@ -65,7 +61,7 @@ c--- calculate lowest order
       
 c----UV counterterm contains the finite renormalization to arrive
 c----at MS bar scheme.      
-      subuv=ason2pi*xn*(epinv*(11d0-2d0*dble(nf)/xn)-1d0)/6d0
+      subuv=ason2pi*xn*(epinv*(11d0-2d0*dble(nflav)/xn)-1d0)/6d0
 
 c--   calculate propagator
       sz=s(3,4)
@@ -103,10 +99,8 @@ c--   calculate propagator
       qbgZqbLL=qgZqRL
       qbgZqbLR=qgZqRR
       
-
-
-      do j=-nf,nf
-      do k=-nf,nf
+      do j=-nflav,nflav
+      do k=-nflav,nflav
       if( j .ne. 0 .and. k .ne. 0 .and. j .ne. -k) goto 19
 
       if     ((j .eq. 0) .and. (k .eq. 0)) then

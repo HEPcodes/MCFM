@@ -6,8 +6,10 @@
 ************************************************************************
       implicit none
       include 'efficiency.f'
+      include 'PDFerrors.f'
       integer j,k
-      double precision xinteg,xinteg_err
+      double precision xinteg,xinteg_err,minPDFxsec,maxPDFxsec
+      double precision PDFerror,PDFperror,PDFnerror
       double precision lord_bypart(-1:1,-1:1),lordnorm
       character*4 part
       logical creatent,dswhisto
@@ -71,6 +73,51 @@ c--- through the jet and cut routines
    54 format(a20,f6.2,'%')
    55 format(4x,a9,' |',f15.5,f8.2,'%')
 
+c--- if we've calculated PDF errors, present results      
+      if (PDFerrors) then
+        write(6,*)
+        write(6,58) '************ PDF error analysis ************'
+        write(6,58) '*                                          *'
+        minPDFxsec=PDFxsec(0)
+        maxPDFxsec=PDFxsec(0)
+        PDFerror=0d0
+        do j=0,maxPDFsets
+          write(6,56) j,PDFxsec(j)
+          if     (PDFxsec(j) .lt. minPDFxsec) then
+            minPDFxsec=PDFxsec(j)
+          elseif (PDFxsec(j) .gt. maxPDFxsec) then
+            maxPDFxsec=PDFxsec(j)
+         endif
+         if ( (j .gt. 0) .and. (j/2 .eq. (j-1)/2) ) then
+           PDFerror=PDFerror+(PDFxsec(j)-PDFxsec(j+1))**2
+         endif
+         if ( (j .gt. 0) .and. (PDFxsec(j) .gt. PDFxsec(0)) ) then
+           PDFperror=PDFperror+(PDFxsec(j)-PDFxsec(0))**2
+         endif
+         if ( (j .gt. 0) .and. (PDFxsec(j) .lt. PDFxsec(0)) ) then
+           PDFnerror=PDFnerror+(PDFxsec(j)-PDFxsec(0))**2
+         endif
+        enddo
+        PDFerror=0.5d0*dsqrt(PDFerror)
+        PDFperror=dsqrt(PDFperror)
+        PDFnerror=dsqrt(PDFnerror)
+        write(6,58) '*                                          *'
+        write(6,58) '* --------------- SUMMARY ---------------- *'
+        write(6,58) '*                                          *'
+        write(6,57) 'Minimum value',minPDFxsec
+        write(6,57) 'Central value',PDFxsec(0)
+        write(6,57) 'Maximum value',maxPDFxsec
+        write(6,58) '*                                          *'
+        write(6,57) 'Err estimate +/-',PDFerror
+        write(6,57) '   +ve direction',PDFperror
+        write(6,57) '   -ve direction',PDFnerror
+        write(6,58) '********************************************'
+      endif
+      
+   56 format('* PDF error set ',i3,'  --->',f13.3,' fb  *')
+   57 format('*   ',a16,f14.3,' fb      *')
+   58 format(a44)
+ 
 c--- Finalize the histograms, if we're not filling ntuples instead
       if (creatent .eqv. .false.) then
         if (dswhisto .eqv. .false.) then
@@ -86,10 +133,10 @@ c--- DSW histograms - output and close file
           call dswclose
         endif
       else
-c        call dswhrout
-c        call dswclose
+        call dswhrout
+        call dswclose
       endif
-      
+
       return
       
       end

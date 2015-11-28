@@ -46,7 +46,7 @@ c
 c     CONSTANTS
 c
       double precision  One, Two, Three, Pi
-      parameter( One = 1.0d0, Two = 2.0d0, Three = 3.0d0 )
+      parameter( One = 1d0, Two = 2d0, Three = 3d0 )
       parameter( Pi = 3.14159265358979323846d0) 
 cc
 C
@@ -58,7 +58,7 @@ C
          nf = 5
       end if
 
-      beta0 = ( 11.0d0 - Two/Three *nf )/4d0
+      beta0 = ( 11d0 - Two/Three *nf )/4d0
       beta1 = ( 102d0  - 38d0/Three*nf )/16d0
       gamma0= one
       gamma1= ( 202d0/3d0  - 20d0/9d0*nf )/16d0

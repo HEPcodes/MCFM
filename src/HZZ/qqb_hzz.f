@@ -22,22 +22,6 @@ c---set msq=0 to initialize
       enddo
       enddo
 
-c--- Old code
-c      decay=4d0*gwsq*esq**2*(wmass/(one-xw))**2
-c     . *(((l1*l2)**2+(r1*r2)**2)*s(3,5)*s(4,6)
-c     .  +((r1*l2)**2+(r2*l1)**2)*s(3,6)*s(4,5))
-
-c      aw=gwsq/(4d0*pi)
-
-c      s12=s(1,2)
-c      gg=aw*as**2*V/(18d0*pi)*(s12/wmass)**2
-c---calculate propagators
-c      fac=one/((s(5,6)-zmass**2)**2+(zmass*zwidth)**2)
-c      fac=fac/((s(3,4)-zmass**2)**2+(zmass*zwidth)**2)
-c      fac=fac/((s12-hmass**2)**2+(hmass*hwidth)**2)
-c      msq(0,0)=avegg*fac*gg*decay
-
-c--- New code (consistent with gg_h.f etc.)
       s12=s(1,2)
 
       decay=gwsq**3*zmass**2*4d0*xw**2/(one-xw)*
@@ -46,7 +30,9 @@ c--- New code (consistent with gg_h.f etc.)
       decay=decay/((s(3,4)-zmass**2)**2+(zmass*zwidth)**2)
       decay=decay/((s(5,6)-zmass**2)**2+(zmass*zwidth)**2)
       decay=decay/((s12-hmass**2)**2+(hmass*hwidth)**2)
-
+c--- factor of one half to account for identical particles
+      decay=decay*half
+      
       Asq=(as/(3d0*pi))**2/vevsq
       gg=0.5d0*V*Asq*s12**2
 

@@ -11,12 +11,12 @@ c--all momenta incoming
       include 'qcdcouple.f'
       include 'ewcouple.f'
       include 'susycoup.f'
-      include 'runmb.f'
       include 'scale.f'
       integer j,k,j1,j2,j3
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),s,amp
       double precision fac,propsq,hdecay,coupsq,ghbb,coupsq_eff,ghbb_eff
-      double precision amz,alphas,mb_eff,mb_msbar,massfrun
+      double precision amz,mb_eff,mb_msbar,massfrun
+c      double precision alphas
       character*4 part
       logical first
       common/part/part
@@ -43,17 +43,17 @@ C---ur-amplitude is b(p1)+bbar(p2)+g(p3)+H(q)
 
 c--- calculate MS-bar mass from pole mass
 c      mb_msbar=mb/(1d0+cf*alphas(mb,amz,2)/pi)
+c--- mb(mb)=4.20 is our choice for the H+b paper
       mb_msbar=4.20d0
-c--- run mb to appropriate scale, if necessary
-      if (runmb) then
-        if (part .eq. 'lord') then
-          mb_eff=massfrun(mb_msbar,scale,amz,1)
-        else
-          mb_eff=massfrun(mb_msbar,scale,amz,2)
-        endif  
+c--- mb(mb)=4.25 is to agree with Spira for Les Houches write-up
+c      mb_msbar=4.25d0
+c--- run mb to appropriate scale
+      if (part .eq. 'lord') then
+        mb_eff=massfrun(mb_msbar,scale,amz,1)
       else
-        mb_eff=mb_msbar
-      endif
+        mb_eff=massfrun(mb_msbar,scale,amz,2)
+      endif  
+c       mb_eff=mb_msbar
             
       if (first) then
        first=.false.

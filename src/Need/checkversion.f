@@ -4,10 +4,10 @@
 *  "inpunit" agrees with the version number of the code                *
 ************************************************************************
       implicit none
+      include 'codeversion.f'
       integer inpunit,j,dat
-      character*6 fileversion,codeversion
+      character*6 fileversion
       character*(*) filename
-      common/versionnumber/codeversion
 
       read(inpunit,*) fileversion
       

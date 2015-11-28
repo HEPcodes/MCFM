@@ -312,19 +312,19 @@ c--- q(i) qb(j) --> W + g* (--> q(k) qb(k)) with k != i,j
 c--- q(i) qb(j) --> W + g* (--> q(i) qb(i)) i.e. k = i
         qqb_ijii(1)=abs(qqb1(1))**2+abs(qqb3(1))**2
         qqb_ijii(2)=abs(qqb2(2))**2+abs(qqb4(2))**2
-        qqb_ijii(0)=+2d0/xn*Dreal(qqb1(1)*Dconjg(qqb2(2)))
+        qqb_ijii(0)=+2d0/xn*dble(qqb1(1)*Dconjg(qqb2(2)))
 
         qbq_ijii(1)=abs(qbq1(1))**2+abs(qbq3(1))**2
         qbq_ijii(2)=abs(qbq2(2))**2+abs(qbq4(2))**2
-        qbq_ijii(0)=+2d0/xn*Dreal(qbq1(1)*Dconjg(qbq2(2)))
+        qbq_ijii(0)=+2d0/xn*dble(qbq1(1)*Dconjg(qbq2(2)))
 c--- q(i) qb(j) --> W + g* (--> q(j) qb(j)) i.e. k = j
         qqb_ijjj(1)=abs(qqb1(1))**2+abs(qqb3(1))**2
         qqb_ijjj(2)=abs(qqb2(3))**2+abs(qqb4(3))**2
-        qqb_ijjj(0)=2d0/xn*Dreal(qqb1(1)*Dconjg(qqb2(3)))
+        qqb_ijjj(0)=2d0/xn*dble(qqb1(1)*Dconjg(qqb2(3)))
 
         qbq_ijjj(1)=abs(qbq1(1))**2+abs(qbq3(1))**2
         qbq_ijjj(2)=abs(qbq2(3))**2+abs(qbq4(3))**2
-        qbq_ijjj(0)=2d0/xn*Dreal(qbq1(1)*Dconjg(qbq2(3)))
+        qbq_ijjj(0)=2d0/xn*dble(qbq1(1)*Dconjg(qbq2(3)))
 c--- q (i) qb(j) --> q(i) qb(j) ( --> W qb(k)) with k != i,j
         qqb_ijik(1)=zip
         qqb_ijik(2)=abs(qqb2(2))**2+abs(qqb4(2))**2 
@@ -352,19 +352,19 @@ c--- q(i) qb(j) --> g* --> q(l) (--> W q(k)) qb(l)
 c--- q(i) qb(i) --> g* --> q(j) (--> W q(i)) qb(j)
         qqb_iiij(1)=abs(qqb2(1))**2+abs(qqb4(1))**2            
         qqb_iiij(2)=abs(qqb1(3))**2+abs(qqb3(3))**2 
-        qqb_iiij(0)=2d0/xn*Dreal(qqb2(1)*Dconjg(qqb1(3)))          
+        qqb_iiij(0)=2d0/xn*dble(qqb2(1)*Dconjg(qqb1(3)))          
 
         qbq_iiij(1)=abs(qbq2(1))**2+abs(qbq4(1))**2            
         qbq_iiij(2)=abs(qbq1(3))**2+abs(qbq3(3))**2 
-        qbq_iiij(0)=2d0/xn*Dreal(qbq2(1)*Dconjg(qbq1(3)))  
+        qbq_iiij(0)=2d0/xn*dble(qbq2(1)*Dconjg(qbq1(3)))  
 c--- q(i) qb(i) --> g* --> q(j) qb(j) (--> W qb(i))
         qqb_iiji(1)=abs(qqb2(1))**2+abs(qqb4(1))**2            
         qqb_iiji(2)=abs(qqb1(2))**2+abs(qqb3(2))**2 
-        qqb_iiji(0)=2d0/xn*Dreal(qqb2(1)*Dconjg(qqb1(2))) 
+        qqb_iiji(0)=2d0/xn*dble(qqb2(1)*Dconjg(qqb1(2))) 
 
         qbq_iiji(1)=abs(qbq2(1))**2+abs(qbq4(1))**2            
         qbq_iiji(2)=abs(qbq1(2))**2+abs(qbq3(2))**2 
-        qbq_iiji(0)=2d0/xn*Dreal(qbq2(1)*Dconjg(qbq1(2)))  
+        qbq_iiji(0)=2d0/xn*dble(qbq2(1)*Dconjg(qbq1(2)))  
 
 c--- NEW: ADDED 7/17/01
 c--- q(i) qb(j) --> g* --> q(l) (--> W q(k)) qb(l)
@@ -378,35 +378,35 @@ c--- q(i) qb(j) --> g* --> q(l) (--> W q(k)) qb(l)
 c--- q(i) qb(i) --> g* --> q(j) (--> W q(i)) qb(j)
         qqbXiiij(1)=abs(qqb2(4))**2+abs(qqb4(4))**2            
         qqbXiiij(2)=abs(qqb1(6))**2+abs(qqb3(6))**2 
-        qqbXiiij(0)=2d0/xn*Dreal(qqb2(4)*Dconjg(qqb1(6)))          
+        qqbXiiij(0)=2d0/xn*dble(qqb2(4)*Dconjg(qqb1(6)))          
 
         qbqXiiij(1)=abs(qbq2(4))**2+abs(qbq4(4))**2            
         qbqXiiij(2)=abs(qbq1(6))**2+abs(qbq3(6))**2 
-        qbqXiiij(0)=2d0/xn*Dreal(qbq2(4)*Dconjg(qbq1(6)))  
+        qbqXiiij(0)=2d0/xn*dble(qbq2(4)*Dconjg(qbq1(6)))  
 c--- q(i) qb(i) --> g* --> q(j) qb(j) (--> W qb(i))
         qqbXiiji(1)=abs(qqb2(4))**2+abs(qqb4(4))**2            
         qqbXiiji(2)=abs(qqb1(5))**2+abs(qqb3(5))**2 
-        qqbXiiji(0)=2d0/xn*Dreal(qqb2(4)*Dconjg(qqb1(5))) 
+        qqbXiiji(0)=2d0/xn*dble(qqb2(4)*Dconjg(qqb1(5))) 
 
         qbqXiiji(1)=abs(qbq2(4))**2+abs(qbq4(4))**2            
         qbqXiiji(2)=abs(qbq1(5))**2+abs(qbq3(5))**2 
-        qbqXiiji(0)=2d0/xn*Dreal(qbq2(4)*Dconjg(qbq1(5)))  
+        qbqXiiji(0)=2d0/xn*dble(qbq2(4)*Dconjg(qbq1(5)))  
 c--- q(i) qb(j) --> W + g* (--> q(i) qb(i)) i.e. k = i
         qqbxijii(1)=abs(qqb1(4))**2+abs(qqb3(4))**2
         qqbxijii(2)=abs(qqb2(5))**2+abs(qqb4(5))**2
-        qqbxijii(0)=+2d0/xn*Dreal(qqb1(4)*Dconjg(qqb2(5)))
+        qqbxijii(0)=+2d0/xn*dble(qqb1(4)*Dconjg(qqb2(5)))
 
         qbqxijii(1)=abs(qbq1(4))**2+abs(qbq3(4))**2
         qbqxijii(2)=abs(qbq2(5))**2+abs(qbq4(5))**2
-        qbqxijii(0)=+2d0/xn*Dreal(qbq1(4)*Dconjg(qbq2(5)))
+        qbqxijii(0)=+2d0/xn*dble(qbq1(4)*Dconjg(qbq2(5)))
 c--- q(i) qb(j) --> W + g* (--> q(j) qb(j)) i.e. k = j
         qqbxijjj(1)=abs(qqb1(4))**2+abs(qqb3(4))**2
         qqbxijjj(2)=abs(qqb2(6))**2+abs(qqb4(6))**2
-        qqbxijjj(0)=2d0/xn*Dreal(qqb1(4)*Dconjg(qqb2(6)))
+        qqbxijjj(0)=2d0/xn*dble(qqb1(4)*Dconjg(qqb2(6)))
 
         qbqxijjj(1)=abs(qbq1(4))**2+abs(qbq3(4))**2
         qbqxijjj(2)=abs(qbq2(6))**2+abs(qbq4(6))**2
-        qbqxijjj(0)=2d0/xn*Dreal(qbq1(4)*Dconjg(qbq2(6)))
+        qbqxijjj(0)=2d0/xn*dble(qbq1(4)*Dconjg(qbq2(6)))
 c--- q (i) qb(j) --> q(i) qb(j) ( --> W qb(k)) with k != i,j
         qqbxijik(1)=zip
         qqbxijik(2)=abs(qqb2(5))**2+abs(qqb4(5))**2 
@@ -427,7 +427,7 @@ c--- q (i) qb(j) --> q(i) ( --> W q(k)) qb(j) with k != i,j
 c--- q(i) q(i) --> q(i) ( --> W q(j) ) q(i)
         qq_iiji(1)=abs(qq1(1))**2+abs(qq3(1))**2
         qq_iiji(2)=abs(qq1(2))**2+abs(qq3(2))**2
-        qq_iiji(0)=2d0/xn*Dreal(qq1(1)*Dconjg(qq1(2)))
+        qq_iiji(0)=2d0/xn*dble(qq1(1)*Dconjg(qq1(2)))
 c--- q(i) q(j) --> q(i) ( --> W q(k) ) q(j)
         qq_ijkj(1)=abs(qq1(1))**2+abs(qq3(1))**2
         qq_ijkj(2)=zip
@@ -439,16 +439,16 @@ c--- q(i) q(j) --> q(i) q(j) ( --> W q(k) )
 c--- q(i) q(j) --> q(i) ( --> W q(j) ) q(j)
         qq_ijjj(1)=abs(qq1(1))**2+abs(qq3(1))**2
         qq_ijjj(2)=abs(qq1(4))**2+abs(qq3(4))**2
-        qq_ijjj(0)=2d0/xn*Dreal(qq1(1)*Dconjg(qq1(4)))  
+        qq_ijjj(0)=2d0/xn*dble(qq1(1)*Dconjg(qq1(4)))  
 c--- q(i) q(j) --> q(i) q(j) ( --> W q(i) ) 
         qq_ijii(1)=abs(qq1(3))**2+abs(qq3(3))**2
         qq_ijii(2)=abs(qq1(2))**2+abs(qq3(2))**2
-        qq_ijii(0)=2d0/xn*Dreal(qq1(3)*Dconjg(qq1(2)))  
+        qq_ijii(0)=2d0/xn*dble(qq1(3)*Dconjg(qq1(2)))  
 c--- NEW: ADDED 7/17/01
 c--- q(i) q(i) --> q(i) ( --> W q(j) ) q(i)
         qq_iiij(1)=abs(qq1(4))**2+abs(qq3(4))**2
         qq_iiij(2)=abs(qq1(3))**2+abs(qq3(3))**2
-        qq_iiij(0)=2d0/xn*Dreal(qq1(4)*Dconjg(qq1(3)))
+        qq_iiij(0)=2d0/xn*dble(qq1(4)*Dconjg(qq1(3)))
 c--- q(i) q(j) --> q(i) q(j) ( --> W q(k) )
         qq_ijki(1)=abs(qq1(2))**2+abs(qq3(2))**2
         qq_ijki(2)=zip
@@ -461,7 +461,7 @@ c--- q(i) q(j) --> q(i) ( --> W q(k) ) q(j)
 c--- qb(i) qb(i) --> qb(i) ( --> W qb(j) ) qb(i)
         qbqb_iiji(1)=abs(qbqb1(1))**2+abs(qbqb3(1))**2
         qbqb_iiji(2)=abs(qbqb1(2))**2+abs(qbqb3(2))**2
-        qbqb_iiji(0)=2d0/xn*Dreal(qbqb1(1)*Dconjg(qbqb1(2)))
+        qbqb_iiji(0)=2d0/xn*dble(qbqb1(1)*Dconjg(qbqb1(2)))
 c--- qb(i) qb(j) --> qb(i) ( --> W qb(k) ) qb(j)
         qbqb_ijkj(1)=abs(qbqb1(1))**2+abs(qbqb3(1))**2
         qbqb_ijkj(2)=zip
@@ -473,16 +473,16 @@ c--- qb(i) qb(j) --> qb(i) qb(j) ( --> W qb(k) )
 c--- qb(i) qb(j) --> qb(i) ( --> W qb(j) ) qb(j)
         qbqb_ijjj(1)=abs(qbqb1(1))**2+abs(qbqb3(1))**2
         qbqb_ijjj(2)=abs(qbqb1(4))**2+abs(qbqb3(4))**2
-        qbqb_ijjj(0)=2d0/xn*Dreal(qbqb1(1)*Dconjg(qbqb1(4)))  
+        qbqb_ijjj(0)=2d0/xn*dble(qbqb1(1)*Dconjg(qbqb1(4)))  
 c--- qb(i) qb(j) --> qb(i) qb(j) ( --> W qb(i) ) 
         qbqb_ijii(2)=abs(qbqb1(2))**2+abs(qbqb3(2))**2
         qbqb_ijii(1)=abs(qbqb1(3))**2+abs(qbqb3(3))**2
-        qbqb_ijii(0)=2d0/xn*Dreal(qbqb1(2)*Dconjg(qbqb1(3)))  
+        qbqb_ijii(0)=2d0/xn*dble(qbqb1(2)*Dconjg(qbqb1(3)))  
 c--- NEW: ADDED 7/17/01
 c--- qb(i) qb(i) --> qb(i) ( --> W qb(j) ) qb(i)
         qbqb_iiij(1)=abs(qbqb1(4))**2+abs(qbqb3(4))**2
         qbqb_iiij(2)=abs(qbqb1(3))**2+abs(qbqb3(3))**2
-        qbqb_iiij(0)=2d0/xn*Dreal(qbqb1(4)*Dconjg(qbqb1(3)))
+        qbqb_iiij(0)=2d0/xn*dble(qbqb1(4)*Dconjg(qbqb1(3)))
 c--- qb(i) qb(j) --> qb(i) qb(j) ( --> W qb(k) )
         qbqb_ijki(1)=abs(qbqb1(2))**2+abs(qbqb3(2))**2
         qbqb_ijki(2)=zip

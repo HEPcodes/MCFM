@@ -53,7 +53,7 @@ C===========================================================================
       Implicit Double Precision (A-H,O-Z)
       Character Flnm(10)*11
       Common
-     > / CtqPar2 / Nx, Nt, NfMx
+     > / CtqPar_5_2 / Nx, Nt, NfMx
      > / QCDtable /  Alambda, Nfl, Iorder
       Data (Flnm(I), I=1,10)
      > / 'cteq4m.tbl ', 'cteq4d.tbl ', 'cteq4l.tbl '

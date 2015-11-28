@@ -3,6 +3,7 @@
       include 'constants.f'
       include 'mxdim.f'
       include 'limits.f'
+      include 'xmin.f'
 c---- generate phase space for 2-->2+n process
 c---- with (34) being a vector boson and 5,..,4+n the jets
 c---- r(mxdim),p1(4),p2(4) are inputs reversed in sign 
@@ -12,7 +13,7 @@ c---- with all 2 pi's (ie 1/(2*pi)^(4+2n))
       double precision r(mxdim)
       double precision p(mxpart,4),p3(4),p34(4),psumjet(4),pcm(4),Q(4)
       double precision wt
-      double precision xmin,xmax,delx,x,sqrts,pt,etamax,etamin,xx(2)
+      double precision hmin,hmax,delh,h,sqrts,pt,etamax,etamin,xx(2)
       double precision y,sinhy,coshy,phi,mv2,wtbw,mjets
       double precision ybar,ptsumjet2,ycm,sumpst,q0st,rshat
       double precision costh,sinth,dely
@@ -26,8 +27,8 @@ c---- with all 2 pi's (ie 1/(2*pi)^(4+2n))
       common/energy/sqrts
       common/breit/n2,n3,mass2,width2,mass3,width3
       common/x1x2/xx
-      common/reset/reset
-      logical reset
+      common/reset/reset,scalereset
+      logical reset,scalereset
       data first/.true./,xxerror/.false./
       save first,ptjetmin,etajetmin,etajetmax,pbreak,xxerror
 
@@ -69,11 +70,11 @@ c--- rapidity limited by E=pT*coshy
         wt=wt/16d0/pi**3
 c        xmin=2d0/sqrts
 c        xmax=1d0/ptjetmin
-        xmin=1d0/dsqrt((sqrts/2d0)**2+pbreak**2)
-        xmax=1d0/dsqrt(ptjetmin**2+pbreak**2)
-        delx=xmax-xmin
-        x=xmin+r(ijet)*delx
-        pt=dsqrt(1d0/x**2-pbreak**2)
+        hmin=1d0/dsqrt((sqrts/2d0)**2+pbreak**2)
+        hmax=1d0/dsqrt(ptjetmin**2+pbreak**2)
+        delh=hmax-hmin
+        h=hmin+r(ijet)*delh
+        pt=dsqrt(1d0/h**2-pbreak**2)
         etamax=sqrts/2d0/pt
         if (etamax**2 .le. 1d0) then
             write(6,*) 'etamax**2 .le. 1d0 in gen_njets.f',etamax**2 
@@ -90,7 +91,7 @@ c        xmax=1d0/ptjetmin
         coshy=dsqrt(1d0+sinhy**2)
         
         p(4+ijet,4)=pt*coshy
-        wt=wt*delx/x**3
+        wt=wt*delh/h**3
         
         phi=2d0*pi*r(2*njets+ijet)
         wt=wt*2d0*pi

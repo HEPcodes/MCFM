@@ -1,5 +1,5 @@
       subroutine mt(x,scale,mode,upv,dnv,sea,str,chm,bot,glu)
-      implicit real*8(a-h,o-z)
+      implicit double precision(a-h,o-z)
       dimension a(0:3,0:2,8),f(8)
       data init/0/
       if(init.ne.0) goto 10

@@ -37,11 +37,10 @@ c---if x's out of normal range alternative return
       p2(3)=+xx(2)*sqrts*half
 
 
-      if (case .eq. 't_bbar') then
-      write(6,*) 'higher order not implemented yet'
-      stop
-      elseif (case .eq. 'qg_tbb') then
+      if ((case .eq. 't_bbar').or.(case .eq. 'qg_tbb')) then
       call phase51(r,p1,p2,p3,p4,p5,p6,p7,pswt)
+      elseif (case .eq. 'W_twdk')  then  
+      call phase5a(r,p1,p2,p3,p4,p5,p6,p7,pswt)
       elseif (case .eq. 'vlchk5')  then  
       call phase5(r,p1,p2,p3,p4,p5,p6,p7,pswt)
       else

@@ -9,7 +9,6 @@ c---  averaged(summed) over initial(final) colours and spins
       include 'zprods_com.f'
       include 'zcouple.f'
       include 'ewcharge.f'
-      include 'hardscale.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
       integer j,k,nu,swap(4),h1,h3,h5,h6
@@ -55,12 +54,6 @@ C---Fill spinor products
       prop=s(3,4)/dcmplx((s(3,4)-zmass**2),zmass*zwidth)
       facgg=4d0*V*gsq**2*esq**2*xn*avegg
       facqq=4d0*V*gsq**2*esq**2*aveqq 
-
-c ensure that we have a hard process
-      if (
-     .      (s(5,6) .lt. four*hscalesq) 
-     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. hscalesq) 
-     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. hscalesq) ) return
 
       call spinoru(6,p12,za,zb)
       call mamps(1,2,3,4,5,6,qqb_a,qqb_b)

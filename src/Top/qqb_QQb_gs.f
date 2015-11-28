@@ -12,19 +12,13 @@ c--- The value of COLOURCHOICE determines which colour structures
 c--- are included in the subtraction terms for the QQGG piece
       implicit none 
       include 'constants.f'
-      include 'ckm.f'
-      include 'masses.f'
       include 'ptilde.f'
       include 'qqgg.f'
-      include 'flags.f'
-      include 'lc.f'
      
-      integer j,k,n,np6,np12,np18,np21,n2,n3
-      integer a(6),b(6),c(6),pntr(5:7,5:7)
+      integer j,k
 c --- remember: nd will count the dipoles
       integer nd
 c--- slightly obtuse notation, to simplify declaration lines      
-      logical first
       double precision p(mxpart,4),msqc(maxd,fn:nf,fn:nf)
       double precision
      & msq15_2(fn:nf,fn:nf),msq25_1(fn:nf,fn:nf),
@@ -41,8 +35,6 @@ c--- slightly obtuse notation, to simplify declaration lines
      & msq35_2v(fn:nf,fn:nf),msq45_2v(fn:nf,fn:nf),
      & msq35_4v(fn:nf,fn:nf),msq45_3v(fn:nf,fn:nf),
 
-     & dummy(fn:nf,fn:nf),dummyv(fn:nf,fn:nf),
-     & dsubv,dsub(4),
      & sub15_2(4),sub25_1(4),
      & sub15_3(4),sub15_4(4),
      & sub35_1(4),sub45_1(4),
@@ -75,10 +67,6 @@ c--- slightly obtuse notation, to simplify declaration lines
      & m35_4v(0:2,fn:nf,fn:nf),m45_3v(0:2,fn:nf,fn:nf)
 
 
-      double precision mqq(0:2,fn:nf,fn:nf),
-     . msqx(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf),mg(0:2,-nf:nf,-nf:nf),
-     . mvg(0:2,-nf:nf,-nf:nf),mvxg(-nf:nf,-nf:nf,-nf:nf,-nf:nf)
-    
       external qqb_QQb,qqb_QQb_gvec,donothing_gvec
 
       

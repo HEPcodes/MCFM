@@ -6,7 +6,7 @@
 *     produce q (-q1 + -q2 --> q3 ... qx .. q_(npart+1))               *
 *     by Lorentz transformation with jp denoting the vector            *
 *     which is removed (ie all components if q(jp) set to zero)        *
-*     ip is the emitter, kp is the specatator                          *
+*     ip is the emitter, kp is the spectator                           *
 *     Correct branch chosen automatically                              *
 *     x is x for ii,if,fi and y for ff                                 *
 ************************************************************************
@@ -14,9 +14,9 @@
       include 'constants.f'
       include 'npart.f'
       double precision p(mxpart,4),q(mxpart,4),BigQ(4),pij(4),
-     . x,omx,y,omy,k(4),kt(4),ks(4),kDk,ksDks,kDp(3:mxpart),
+     . x,omx,k(4),kt(4),ks(4),kDk,ksDks,kDp(3:mxpart),
      . ksDp(3:mxpart),Qsq,rat,misq,mjsq,mksq,mijsq
-      double precision pipsq,pjpsq,pijsq,QDpk,pktilde(4)
+      double precision pijsq,QDpk,pktilde(4)
       integer ip,kp,j,nu,jp,ipart
 
       do j=1,mxpart

@@ -32,7 +32,7 @@
       include 'ptilde.f'
       double precision p(mxpart,4),ptrans(mxpart,4),sub(4),subv,vecsq
       double precision x,omx,z,omz,y,omy,u,omu,sij,sik,sjk,dot,vec(4)
-      double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf)
+      double precision msq(-nf:nf,-nf:nf)
       double precision msqx(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf)
       double precision msqvx(0:2,-1:1,-1:1,-1:1,-1:1)
       integer nd,ip,jp,kp,nu,j,k

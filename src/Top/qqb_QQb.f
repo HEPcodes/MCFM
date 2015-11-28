@@ -16,7 +16,7 @@ C      q(P1) + qbar(P2) --> Q(-P3) + Qbar(-P4)
       include 'sprods_com.f'
       include 'msq_cs.f'
       
-      integer j,k,n2,n3
+      integer j,k,n2,n3,cs
       logical first
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4)
       double precision wtqqb,wtgg,t1,t2,ro,mass2,width2,mass3,width3
@@ -26,13 +26,16 @@ C      q(P1) + qbar(P2) --> Q(-P3) + Qbar(-P4)
 
       if (first) then
       first=.false.
-      write(6,*) 'mass2',mass2
+      write(6,*) 'Heavy Quark mass:',mass2
       endif 
 
 C----set all elements to zero
       do j=-nf,nf
       do k=-nf,nf
       msq(j,k)=0d0
+      do cs=0,2
+      msq_cs(cs,j,k)=0d0
+      enddo
       enddo
       enddo
       call dotem(4,p,s)

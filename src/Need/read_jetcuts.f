@@ -8,15 +8,13 @@
       double precision ptmin,etamax,ptmin_tev,etamax_tev,
      . ptmin_lhc,etamax_lhc
       logical useTevcuts,useLHCcuts
-      logical newinput
-      common/newinput/newinput
       
-      if (newinput) then
+c      if (newinput) then
         read_ptmin=ptjetmin
         read_etamin=etajetmin
         read_etamax=etajetmax
         return
-      endif
+c      endif
       
       nargs=iargc()
       if (nargs .eq. 2) then

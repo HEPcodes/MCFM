@@ -16,11 +16,13 @@ c--all momenta incoming
       include 'zprods_com.f'
       include 'msq_cs.f'
       include 'flags.f'
+      include 'nflav.f'
       integer i,j,k,pq,pl,nquark,swap(2),swap1(0:2),nup,ndo,
      . j1,j2,j3,icol
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac,faclo,
-     .   qqbZgg2(2,2),qbqZgg2(2,2),qgZqg2(2,2),
-     .   qbgZqbg2(2,2),gqbZqbg2(2,2),gqZqg2(2,2),ggZqbq2(2,2),
+     .   qqbZgg2(2,2),qgZqg2(2,2),
+c    .   qbqZgg2(2,2),qbgZqbg2(2,2),gqbZqbg2(2,2),
+     .   gqZqg2(2,2),ggZqbq2(2,2),
      .   qqbZgg2_cs(0:2,2,2),qbqZgg2_cs(0:2,2,2),
      .   qgZqg2_cs(0:2,2,2),gqZqg2_cs(0:2,2,2),
      .   qbgZqbg2_cs(0:2,2,2),gqbZqbg2_cs(0:2,2,2),
@@ -56,7 +58,7 @@ c--all momenta incoming
       enddo
 
 
-      call spinorU(6,p,za,zb)
+      call spinoru(6,p,za,zb)
 C---exclude the photon pole, 4*mbsq choosen as a scale approx above upsilon 
 c--debug
 c      if (s(3,4) .lt. 4d0*mbsq) return
@@ -75,9 +77,9 @@ c--- calculate 2-quark, 2-gluon amplitudes
 
         do j=1,2
         do k=1,2
-        qbqZgg2(j,k)=qqbZgg2(swap(j),k)
-        qbgZqbg2(j,k)=qgZqg2(swap(j),k)
-        gqbZqbg2(j,k)=gqZqg2(swap(j),k)
+c        qbqZgg2(j,k)=qqbZgg2(swap(j),k)
+c        qbgZqbg2(j,k)=qgZqg2(swap(j),k)
+c        gqbZqbg2(j,k)=gqZqg2(swap(j),k)
         do i=0,2
         qbqZgg2_cs(i,j,k)=qqbZgg2_cs(swap1(i),swap(j),k)
         qbgZqbg2_cs(i,j,k)=qgZqg2_cs(swap1(i),swap(j),k)
@@ -112,16 +114,16 @@ C --NB this is the matrix element for gg->Z qb(5) q(6)
 
         qqbZgg2(pq,pl) = qqbZgg2_cs(1,pq,pl)+qqbZgg2_cs(2,pq,pl)
      .                  +qqbZgg2_cs(0,pq,pl) 
-        qbqZgg2(pq,pl) = qbqZgg2_cs(1,pq,pl)+qbqZgg2_cs(2,pq,pl)
-     .                  +qbqZgg2_cs(0,pq,pl) 
         gqZqg2(pq,pl)  = gqZqg2_cs(1,pq,pl) +gqZqg2_cs(2,pq,pl)
      .                  +gqZqg2_cs(0,pq,pl)  
         qgZqg2(pq,pl)  = qgZqg2_cs(1,pq,pl)  +qgZqg2_cs(2,pq,pl)
      .                  +qgZqg2_cs(0,pq,pl)  
-        gqbZqbg2(pq,pl)= gqbZqbg2_cs(1,pq,pl)+gqbZqbg2_cs(2,pq,pl)
-     .                  +gqbZqbg2_cs(0,pq,pl)
-        qbgZqbg2(pq,pl)= qbgZqbg2_cs(1,pq,pl)+qbgZqbg2_cs(2,pq,pl)
-     .                  +qbgZqbg2_cs(0,pq,pl)
+c        qbqZgg2(pq,pl) = qbqZgg2_cs(1,pq,pl)+qbqZgg2_cs(2,pq,pl)
+c     .                  +qbqZgg2_cs(0,pq,pl) 
+c        gqbZqbg2(pq,pl)= gqbZqbg2_cs(1,pq,pl)+gqbZqbg2_cs(2,pq,pl)
+c     .                  +gqbZqbg2_cs(0,pq,pl)
+c        qbgZqbg2(pq,pl)= qbgZqbg2_cs(1,pq,pl)+qbgZqbg2_cs(2,pq,pl)
+c     .                  +qbgZqbg2_cs(0,pq,pl)
         ggZqbq2(pq,pl) = ggZqbq2_cs(1,pq,pl) +ggZqbq2_cs(2,pq,pl)
      .                  +ggZqbq2_cs(0,pq,pl) 
         enddo
@@ -196,9 +198,9 @@ c instead of calling ampqqb_qqb(6,1,2,5,qbqb_a,qbqb_b)
 
       if     ((j .eq. 0) .and. (k .eq. 0)) then
 
-           do icol=0,2
-           ggtemp(icol)=0d0
-           do nquark=1,nf
+          do icol=0,2
+          ggtemp(icol)=0d0
+          do nquark=1,nflav
            ggtemp(icol)=ggtemp(icol)
      .      +abs(Q(nquark)*q1+L(nquark)*l1*prop)**2*ggZqbq2_cs(icol,1,1)
      .      +abs(Q(nquark)*q1+R(nquark)*r1*prop)**2*ggZqbq2_cs(icol,2,2)
@@ -268,6 +270,11 @@ c---Statistical factor already included above
 
       do j=-nf,nf
       do k=-nf,nf
+      
+      do icol=0,2
+      mqq(icol,j,k)=zip
+      enddo
+      
           if ((j .gt. 0) .and. (k .gt. 0)) then
 c----QQ case
             if (j .ne. k) then
@@ -397,7 +404,7 @@ c----QbQb case
      .      +abs(b111)**2+abs(b112)**2+abs(b221)**2+abs(b222)**2
      .      +abs(b122)**2+abs(b212)**2+abs(b121)**2+abs(b211)**2)
             endif
-C---q-qbcase
+C---q-qb case
          elseif ((j .gt. 0) .and. (k .lt. 0)) then
              if (j .ne. -k) then 
             a111=(Q(+j)*q1+L(+j)*l1*prop)*qRb_a(1,1,1)
@@ -472,6 +479,8 @@ c--case where final state from annihilation diagrams is the same quark
            nup=1
            ndo=nf-2
        endif
+       if (nflav .le. 4) ndo=ndo-1
+       if (nflav .le. 3) nup=nup-1
             b111=(Q(+j)*q1+L(+j)*l1*prop)*qqb_a(1,1,1)
      .          +(Q(+1)*q1+L(+1)*l1*prop)*qqb_b(1,1,1)
             b112=(Q(+j)*q1+L(+j)*r1*prop)*qqb_a(1,1,2)
@@ -587,6 +596,8 @@ c  unequal to initial annihilating quarks
            nup=1
            ndo=nf-2
        endif
+       if (nflav .le. 4) ndo=ndo-1
+       if (nflav .le. 3) nup=nup-1
             b111=(Q(-j)*q1+L(-j)*l1*prop)*qbq_a(1,1,1)
      .          +(Q(+3)*q1+L(+3)*l1*prop)*qbq_b(1,1,1)
             b112=(Q(-j)*q1+L(-j)*r1*prop)*qbq_a(1,1,2)

@@ -351,76 +351,76 @@ c--- Add VIRTUAL terms
         if (j .eq. -k) 
      .  msqv(j,k)=msqv(j,k)+half*(aveqq/avegg)*(mmsq_qqb(polq,polz)*(
      .             cdabs(Q(j)*q1+vQ(j,polq)*v2(polz)*prop)**2)
-     .                     +mmsq_qqb_vec(polq,polz)*dreal(
+     .                     +mmsq_qqb_vec(polq,polz)*dble(
      .             (Q(j)*q1+vQ(j,polq)*v2(polz)*prop)
      .            *(Q(j)*q1+0.5d0*(vQ(j,1)+vQ(j,2))*v2(polz)*prop))
-     .                     +mmsq_qqb_ax(polq,polz)*dreal(
+     .                     +mmsq_qqb_ax(polq,polz)*dble(
      .             (Q(j)*q1+vQ(j,polq)*v2(polz)*prop)
      .            *(v2(polz)*prop)/sin2w))
       elseif ((j .lt. 0) .and. (k .gt. 0)) then
         if (j .eq. -k)
      .  msqv(j,k)=msqv(j,k)+half*(aveqq/avegg)*(mmsq_qbq(polq,polz)*(
      .             cdabs(Q(k)*q1+vQ(k,polq)*v2(polz)*prop)**2)
-     .                     +mmsq_qbq_vec(polq,polz)*dreal(
+     .                     +mmsq_qbq_vec(polq,polz)*dble(
      .             (Q(k)*q1+vQ(k,polq)*v2(polz)*prop)
      .            *(Q(k)*q1+0.5d0*(vQ(k,1)+vQ(k,2))*v2(polz)*prop))
-     .                     +mmsq_qbq_ax(polq,polz)*dreal(
+     .                     +mmsq_qbq_ax(polq,polz)*dble(
      .             (Q(k)*q1+vQ(k,polq)*v2(polz)*prop)
      .            *(v2(polz)*prop)/sin2w))
       elseif ((j .gt. 0) .and. (k .eq. 0)) then
         msqv(j,k)=msqv(j,k)+(aveqg/avegg)*(mmsq_qg(polq,polz)*(
      .             cdabs(Q(j)*q1+vQ(j,polq)*v2(polz)*prop)**2)
-     .                     +mmsq_qg_vec(polq,polz)*dreal(
+     .                     +mmsq_qg_vec(polq,polz)*dble(
      .             (Q(j)*q1+vQ(j,polq)*v2(polz)*prop)
      .            *(Q(j)*q1+0.5d0*(vQ(j,1)+vQ(j,2))*v2(polz)*prop))
-     .                     +mmsq_qg_ax(polq,polz)*dreal(
+     .                     +mmsq_qg_ax(polq,polz)*dble(
      .             (Q(j)*q1+vQ(j,polq)*v2(polz)*prop)
      .            *(v2(polz)*prop)/sin2w))
       elseif ((j .lt. 0) .and. (k .eq. 0)) then
 
         msqv(j,k)=msqv(j,k)+(aveqg/avegg)*(mmsq_qbg(polq,polz)*(
      .             cdabs(Q(-j)*q1+vQ(-j,polq)*v2(polz)*prop)**2)
-     .                     +mmsq_qbg_vec(polq,polz)*dreal(
+     .                     +mmsq_qbg_vec(polq,polz)*dble(
      .             (Q(-j)*q1+vQ(-j,polq)*v2(polz)*prop)
      .            *(Q(-j)*q1+0.5d0*(vQ(-j,1)+vQ(-j,2))*v2(polz)*prop))
-     .                     +mmsq_qbg_ax(polq,polz)*dreal(
+     .                     +mmsq_qbg_ax(polq,polz)*dble(
      .             (Q(-j)*q1+vQ(-j,polq)*v2(polz)*prop)
      .            *(v2(polz)*prop)/sin2w))
 
       elseif ((j .eq. 0) .and. (k .gt. 0)) then
         msqv(j,k)=msqv(j,k)+(aveqg/avegg)*(mmsq_gq(polq,polz)*(
      .             cdabs(Q(k)*q1+vQ(k,polq)*v2(polz)*prop)**2)
-     .                     +mmsq_gq_vec(polq,polz)*dreal(
+     .                     +mmsq_gq_vec(polq,polz)*dble(
      .             (Q(k)*q1+vQ(k,polq)*v2(polz)*prop)
      .            *(Q(k)*q1+0.5d0*(vQ(k,1)+vQ(k,2))*v2(polz)*prop))
-     .                     +mmsq_gq_ax(polq,polz)*dreal(
+     .                     +mmsq_gq_ax(polq,polz)*dble(
      .             (Q(k)*q1+vQ(k,polq)*v2(polz)*prop)
      .            *(v2(polz)*prop)/sin2w))
       elseif ((j .eq. 0) .and. (k .lt. 0)) then
         msqv(j,k)=msqv(j,k)+(aveqg/avegg)*(mmsq_gqb(polq,polz)*(
      .             cdabs(Q(-k)*q1+vQ(-k,polq)*v2(polz)*prop)**2)
-     .                     +mmsq_gqb_vec(polq,polz)*dreal(
+     .                     +mmsq_gqb_vec(polq,polz)*dble(
      .             (Q(-k)*q1+vQ(-k,polq)*v2(polz)*prop)
      .            *(Q(-k)*q1+0.5d0*(vQ(-k,1)+vQ(-k,2))*v2(polz)*prop))
-     .                     +mmsq_gqb_ax(polq,polz)*dreal(
+     .                     +mmsq_gqb_ax(polq,polz)*dble(
      .             (Q(-k)*q1+vQ(-k,polq)*v2(polz)*prop)
      .            *(v2(polz)*prop)/sin2w))
 
       elseif ((j .eq. 0) .and. (k .eq. 0)) then
         msqv(j,k)=msqv(j,k)+dfloat(ndo)*(mmsq_gg(polq,polz)*(
      .             cdabs(Q(1)*q1+vQ(1,polq)*v2(polz)*prop)**2)
-     .                     +mmsq_gg_vec(polq,polz)*dreal(
+     .                     +mmsq_gg_vec(polq,polz)*dble(
      .             (Q(1)*q1+vQ(1,polq)*v2(polz)*prop)
      .            *(Q(1)*q1+0.5d0*(vQ(1,1)+vQ(1,2))*v2(polz)*prop))
-     .                     +mmsq_gg_ax(polq,polz)*dreal(
+     .                     +mmsq_gg_ax(polq,polz)*dble(
      .             (Q(1)*q1+vQ(1,polq)*v2(polz)*prop)
      .            *(v2(polz)*prop)/sin2w))
         msqv(j,k)=msqv(j,k)+dfloat(nup)*(mmsq_gg(polq,polz)*(
      .             cdabs(Q(2)*q1+vQ(2,polq)*v2(polz)*prop)**2)
-     .                     +mmsq_gg_vec(polq,polz)*dreal(
+     .                     +mmsq_gg_vec(polq,polz)*dble(
      .             (Q(2)*q1+vQ(2,polq)*v2(polz)*prop)
      .            *(Q(2)*q1+0.5d0*(vQ(2,1)+vQ(2,2))*v2(polz)*prop))
-     .                     +mmsq_gg_ax(polq,polz)*dreal(
+     .                     +mmsq_gg_ax(polq,polz)*dble(
      .             (Q(2)*q1+vQ(2,polq)*v2(polz)*prop)
      .            *(v2(polz)*prop)/sin2w))
       endif

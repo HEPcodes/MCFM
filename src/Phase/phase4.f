@@ -1,6 +1,7 @@
       subroutine phase4(r,p1,p2,p3,p4,p5,p6,wt,*)
       implicit none
       include 'constants.f'
+      include 'heavyflav.f'
       include 'masses.f'
       include 'mxdim.f'
       include 'debug.f'
@@ -24,11 +25,16 @@ c p56 is the b-bbar system
       call phi1_2(r(1),r(2),r(3),r(4),p12,p56,p34,wt3456,*99)
       call phi3m0(r(7),r(8),p34,p3,p4,wt34,*99)
 
-      if ( (case .eq. 'Wbbmas') .or. (case .eq. 'Zbbmas')
+      if   ( ((case .eq. 'Wbbmas') .and. (flav .eq. 5))
+     ..or. (case .eq. 'Zbbmas')
      ..or. (case .eq. 'Zccmas') .or. (case .eq. 'vlchkm')) then
-      call phi3m(r(5),r(6),p56,p5,p6,mb,mb,wt56,*99)
+        call phi3m(r(5),r(6),p56,p5,p6,mb,mb,wt56,*99)
+      elseif ((case .eq. 'Wbbmas') .and. (flav .eq. 4)) then
+        call phi3m(r(5),r(6),p56,p5,p6,mc,mc,wt56,*99)
+      elseif (case .eq. 'W_cjet') then
+        call phi3m(r(5),r(6),p56,p5,p6,mc,zip,wt56,*99)
       else
-      call phi3m0(r(5),r(6),p56,p5,p6,wt56,*99)
+        call phi3m0(r(5),r(6),p56,p5,p6,wt56,*99)
       endif
       wt=wt0*wt3456*wt34*wt56
       if (debug) write(6,*) 'wt in phase4',wt

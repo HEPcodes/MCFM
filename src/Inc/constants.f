@@ -36,7 +36,5 @@ c-----------------------------------------------------
      . czip=(0d0,0d0),cone=(1d0,0d0))
 c-----------------------------------------------------
       integer nloop,nf,fn,mxpart
-      parameter(nloop=2,nf=5,fn=-5,mxpart=12)
-      double precision b0
-      parameter(b0=(xn*11d0-2d0*nf)/6d0)
+      parameter(nf=5,fn=-5,nloop=2,mxpart=12)
 

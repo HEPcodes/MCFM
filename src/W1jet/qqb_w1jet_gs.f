@@ -17,7 +17,7 @@ c   positively charged W only
       integer j,k,nd
 c --- remember: nd will count the dipoles
       
-      double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf),stat
+      double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf)
       double precision 
      & msq15_2(-nf:nf,-nf:nf),msq25_1(-nf:nf,-nf:nf),
      & msq16_2(-nf:nf,-nf:nf),msq26_1(-nf:nf,-nf:nf),
@@ -28,7 +28,7 @@ c --- remember: nd will count the dipoles
      & msq15_6v(-nf:nf,-nf:nf),msq16_2v(-nf:nf,-nf:nf),
      & msq16_5v(-nf:nf,-nf:nf),msq25_6v(-nf:nf,-nf:nf),
      & msq15_2v(-nf:nf,-nf:nf),msq25_1v(-nf:nf,-nf:nf),
-     & dummy(-nf:nf,-nf:nf),dummyv(-nf:nf,-nf:nf),
+     & dummy(-nf:nf,-nf:nf),
      & sub15_2(4),sub25_1(4),sub16_2(4),sub26_1(4),
      & sub15_6(4),sub16_5(4),sub25_6(4),sub26_5(4),
      & sub56_1(4),sub56_2(4),sub56_1v,sub56_2v,

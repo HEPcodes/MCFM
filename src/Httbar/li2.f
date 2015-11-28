@@ -5,7 +5,7 @@ c--complex dilogarithm (spence-function)
       double precision zeta2,zeta3
       common/const/zeta2,zeta3
       zero=1.d-8
-      xr=dreal(x)
+      xr=dble(x)
       xi=dimag(x)
       r2=xr*xr+xi*xi
       li2=0
@@ -14,26 +14,26 @@ c--complex dilogarithm (spence-function)
         return
       endif
       rr=xr/r2
-      if(r2.eq.1.d0.and.xi.eq.0.d0)then
-        if(xr.eq.1.d0)then
+      if ((r2.eq.1.d0) .and. (xi.eq.0.d0)) then
+        if (xr.eq.1.d0) then
           li2=dcmplx(zeta2)
         else
           li2=-dcmplx(zeta2/2.d0)
         endif
         return
-      elseif(r2.gt.1.d0.and.rr.gt.0.5d0)then
+      elseif ((r2.gt.1.d0) .and. (rr.gt.0.5d0)) then
         y=(x-1.d0)/x
         li2=cli2(y)+zeta2-cdlog(x)*cdlog(1.d0-x)+0.5d0*cdlog(x)**2
         return
-      elseif(r2.gt.1.d0.and.rr.le.0.5d0)then
+      elseif ((r2.gt.1.d0) .and. (rr.le.0.5d0))then
         y=1.d0/x
         li2=-cli2(y)-zeta2-0.5d0*cdlog(-x)**2
         return
-      elseif(r2.le.1.d0.and.xr.gt.0.5d0)then
+      elseif ((r2.le.1.d0) .and. (xr.gt.0.5d0)) then
         y=1.d0-x
         li2=-cli2(y)+zeta2-cdlog(x)*cdlog(1.d0-x)
        return
-      elseif(r2.le.1.d0.and.xr.le.0.5d0)then
+      elseif ((r2.le.1.d0) .and. (xr.le.0.5d0)) then
         y=x
         li2=cli2(y)
         return

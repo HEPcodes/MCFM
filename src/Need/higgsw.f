@@ -6,7 +6,7 @@
       double precision wff,mfsq,br
 c-----approximate form for the width of the standard model higgs
 c-----valid for low masses
-      wff(mfsq)=sqrt(2d0)/8d0/pi*gf*hmass*mfsq
+      wff(mfsq)=dsqrt(2d0)/8d0/pi*gf*hmass*mfsq
      & *(1d0-4d0*mfsq/hmass**2)**1.5d0
 
       hwidth=3d0*(wff(mbsq)+wff(mcsq))+wff(mtausq)
