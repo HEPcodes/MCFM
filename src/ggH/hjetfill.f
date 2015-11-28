@@ -1,7 +1,6 @@
       subroutine hjetfill(s,t,u,virtgg,virtqa,virtaq,virtqg,virtgq)
       implicit none
       include 'constants.f'
-      include 'masses.f'
       include 'epinv.f'
       include 'scale.f'
       double precision virtgg,virtqa,virtaq,virtqg,virtgq,

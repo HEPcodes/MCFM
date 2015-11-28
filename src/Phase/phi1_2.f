@@ -21,7 +21,7 @@ c     delta(p2^2-s2) delta(p3^2-s3)
       logical first
       common/breit/n2,n3,mass2,width2,mass3,width3
       common/lambda/lambda,s1,s2,s3
-      parameter(wt0=one/8.d0/pi)
+      parameter(wt0=one/8d0/pi)
       data first/.true./
       save first
       if (verbose) then
@@ -35,7 +35,7 @@ c      if (n3 .eq. 1) write(6,*) 'generating phase space with bw,n3=',n3
       wt=0d0
       s1=p1(4)**2-p1(1)**2-p1(2)**2-p1(3)**2  
       if (s1 .lt. 0d0) return 1
-      m1=sqrt(s1)
+      m1=dsqrt(s1)
       if (zerowidth .and. (sqrt(s1) .lt. mass2+mass3)) return 1
 c      s2min=bbsqmin
 c      s2max=min(s1,bbsqmax)
@@ -54,7 +54,7 @@ c      s2max=min(s1,bbsqmax)
          call breitw(x1,s2min,s2max,mass2,width2,s2,w2)       
       endif
 
-      m2=sqrt(s2)
+      m2=dsqrt(s2)
       s3min=1d-15
       s3max=(m2-m1)**2
       if (s3max-s3min .lt. 1d-12) return 1
@@ -67,12 +67,12 @@ c      s2max=min(s1,bbsqmax)
 
       costh=two*x3-one      
       phi=twopi*x4
-      sinth=sqrt(one-costh**2)
-      cphi=cos(phi)
-      sphi=sin(phi)
+      sinth=dsqrt(one-costh**2)
+      cphi=dcos(phi)
+      sphi=dsin(phi)
       lambda=((s1-s2-s3)**2-4d0*s2*s3)
 
-      if (lambda .lt. 0.d0) then
+      if (lambda .lt. 0d0) then
 c      write(6,*) '(lambda .lt. 0) in phi1_2.f',lambda
 c      write(6,*) 'sqrt(s1)',sqrt(s1)
 c      write(6,*) 'sqrt(s2)',sqrt(s2)
@@ -92,9 +92,9 @@ c      write(6,*) s3min,s3,s3max,m1,m2,sqrt(s1),sqrt(s2)
       do j=1,4
       p2(j)=p1(j)-p3(j)
       enddo
-      if (  (p1(4) .lt. 0.d0) 
-     & .or. (p2(4) .lt. 0.d0) 
-     & .or. (p3(4) .lt. 0.d0)) then 
+      if (  (p1(4) .lt. 0d0) 
+     & .or. (p2(4) .lt. 0d0) 
+     & .or. (p3(4) .lt. 0d0)) then 
        if (case(1:5) .ne. 'vlchk') then 
         write(6,*) 'p1',p1(4),p1(4)**2-p1(1)**2-p1(2)**2-p1(3)**2,s1
         write(6,*) 'p2',p2(4),p2(4)**2-p2(1)**2-p2(2)**2-p2(3)**2,s2

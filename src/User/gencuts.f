@@ -23,19 +23,24 @@
 *                                                                      *
 ************************************************************************
       implicit none
+      include 'bbproc.f'
       include 'constants.f'
+      include 'jetlabel.f'
+      include 'jetcuts.f'
       logical first,passedlept
       character*2 plabel(mxpart)
-      integer njets,j,k,nu,countb,bindex(mxpart),jindex,kindex
+      integer njets,j,k,countb,bindex(mxpart),jindex,kindex,ib1,ib2
       integer countlept,leptindex(mxpart),countgamm,gammindex(mxpart),
      . countjet,jetindex(mxpart),pntr
-      double precision p(mxpart,4),pjet(mxpart,4),etvec(4),sumjetpt(2)
+      double precision p(mxpart,4),pjet(mxpart,4),etvec(4)
       double precision leptpt,leptrap,misspt,jetpt,jetrap,gammpt,gammrap
       double precision pt,etarap,etmiss,evtmisset,R,Rcut,gammcone,
      . gammcut
       double precision Rjlmin,Rllmin,delyjjmin,leptpt2,leptrap2
-      double precision rapj,delta(mxpart),discr,ptjet(mxpart)
+      double precision delta(mxpart),discr,ptjet(mxpart)
       logical newinput
+c      integer nu
+c      double precision sumjetpt(2)
       common/newinput/newinput
       common/leptcuts/leptpt,leptrap,misspt,Rjlmin,Rllmin,delyjjmin,
      . leptpt2,leptrap2,gammpt,gammrap,gammcone,gammcut
@@ -348,8 +353,40 @@ c--- j and k point to the two highest pt jets
           gencuts=.true.
           return
         endif
+c--- Also require that jets be in opposite hemispheres in this case
+c        if ((etarap(jetindex(j),pjet)*etarap(jetindex(k),pjet) .gt. 0d0)
+c     .     .and. (delyjjmin .gt. 0d0)) then
+c          gencuts=.true.
+c          return
+c        endif
+c--- Extra pt cut on the two highest pt jets
+c        if ((pt(jetindex(j),pjet) .lt. 20d0)
+c     . .or. (pt(jetindex(k),pjet) .lt. 20d0)) then
+c          gencuts=.true.
+c          return
+c        endif
+
+c--- Cut to require lepton to be between jets
+c        do pntr=1,countlept
+c          if ((etarap(leptindex(pntr),pjet) .lt. 
+c     .     min(etarap(jetindex(j),pjet),etarap(jetindex(k),pjet))+Rcut) .or.
+c     .        (etarap(leptindex(pntr),pjet) .gt. 
+c     .     max(etarap(jetindex(j),pjet),etarap(jetindex(k),pjet))-Rcut))then 
+c            gencuts=.true.
+c            return
+c          endif
+c        enddo
       endif
       
+c-- cuts on b-quarks
+      if (bbproc) then
+        call getbs(pjet,ib1,ib2)
+        if ( (abs(etarap(ib1,pjet)) .gt. etabjetmax)
+     .  .or. (pt(ib1,pjet) .lt. ptbjetmin) ) gencuts=.true. 
+        if ( (abs(etarap(ib2,pjet)) .gt. etabjetmax)
+     .  .or. (pt(ib2,pjet) .lt. ptbjetmin) ) gencuts=.true. 
+      endif
+
 c--- completed basic cuts
 C--- if there are jet-like particles (see above), do more cuts
       if (countb .gt. 0) then

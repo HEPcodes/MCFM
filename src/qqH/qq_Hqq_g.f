@@ -14,7 +14,7 @@ c                           ---> b(p3)+bbar(p4)
       include 'qcdcouple.f'
       include 'ckm.f'
       include 'sprods_com.f'
-      integer j,k,m,n,pn(-nf:nf),x1(2),x2(2)
+      integer j,k,m,n,pn(-nf:nf)
       double precision p(mxpart,4),facqq,facqg,s34
       double precision msq(-nf:nf,-nf:nf),hdecay,
      . msqll,msqlr,msqzzin,msqwzin,msqwl,
@@ -24,7 +24,6 @@ c                           ---> b(p3)+bbar(p4)
       logical includeall
       
       data pn/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      data x1/1,2/,x2/2,1/
 
 c--- This flag decides whether or not to include all types of diagrams:
 c---  FALSE --> only diagrams that look like WBF
@@ -317,7 +316,6 @@ c        endif
       include 'masses.f'
       include 'sprods_com.f'
       include 'ewcouple.f'
-      include 'zcouple.f'
       double precision zll,zLR,zzLL,wzll,wll,htheta
       double precision msqll_a,msqlr_a,msqinterf_a
       double precision msqll_b,msqlr_b,msqinterf_b,msqll_c,msqll_d

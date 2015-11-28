@@ -21,12 +21,14 @@
       include 'process.f'
       include 'maxwt.f'
       include 'limits.f'
+      include 'jetlabel.f'
+      include 'pdlabel.f'
       double precision mqq(0:2,fn:nf,fn:nf)
       double precision msqx(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf)
       double precision msqx_cs(0:2,-nf:nf,-nf:nf)
       double precision AP(-1:1,-1:1,3)
 
-      integer ih1,ih2,j,k,cs,jets,nvec,is,ia,ib,ic
+      integer ih1,ih2,j,k,cs,nvec,is,ia,ib,ic
       double precision p(mxpart,4),pjet(mxpart,4),r(mxdim),W,sqrts,xmsq,
      . val,fx1(-nf:nf),fx2(-nf:nf),fx1z(-nf:nf),fx2z(-nf:nf)
       double precision pswt,xjac,scalestart,pdfscale,
@@ -34,21 +36,14 @@
      . msq_qq,msq_aa,msq_aq,msq_qa,msq_qg,msq_gq
       double precision xx(2),z,x1onz,x2onz,flux,vol,taumin,omz,
      . BrnRat,xmsq_old,tmp
-      double precision rcut     
-      integer nqcdjets,nqcdstart,nshot,rvcolourchoice
-      character pdlabel*7,jetlabel(mxpart)*2
-      common/nqcdjets/nqcdjets,nqcdstart
-      common/parts/jets,jetlabel
-      logical bin,makecuts,gencuts,first,includedipole
+      integer nshot,rvcolourchoice
+      logical bin,first,includedipole
       common/density/ih1,ih2
       common/energy/sqrts
-      common/pdlabel/pdlabel
       common/bin/bin
       common/x1x2/xx
       common/taumin/taumin
       common/BrnRat/BrnRat
-      common/makecuts/makecuts
-      common/rcut/rcut
       common/rvcolourchoice/rvcolourchoice
       data p/48*0d0/
       data nshot/1/
@@ -105,6 +100,8 @@ c          call gen2jet(r,p,pswt,*999)
       elseif (
      .        (case .eq. 'W_2jet')
      .   .or. (case .eq. 'Z_2jet')
+     .   .or. (case .eq. 'Wbbbar')
+     .   .or. (case .eq. 'Zbbbar')
      .   .or. (case .eq. 'qq_Hqq')
 c     .   .or. (case .eq. 'WW_Hqq')
 c     .   .or. (case .eq. 'ZZ_Hqq')
@@ -155,19 +152,19 @@ c--- bother calculating the matrix elements for it, instead bail out
         pdfscale=scale
       endif   
             
-      call fdist(pdlabel,ih1,xx(1),pdfscale,fx1)
-      call fdist(pdlabel,ih2,xx(2),pdfscale,fx2)
+      call fdist(ih1,xx(1),pdfscale,fx1)
+      call fdist(ih2,xx(2),pdfscale,fx2)
 
       z=r(ndim)**2
       if (nshot .eq. 1) z=0.95d0
       xjac=two*sqrt(z)
       if (z .gt. xx(1)) then
          x1onz=xx(1)/z
-         call fdist(pdlabel,ih1,x1onz,pdfscale,fx1z)
+         call fdist(ih1,x1onz,pdfscale,fx1z)
       endif
       if (z .gt. xx(2)) then
          x2onz=xx(2)/z
-         call fdist(pdlabel,ih2,x2onz,pdfscale,fx2z)
+         call fdist(ih2,x2onz,pdfscale,fx2z)
       endif         
       
       omz=1d0-z
@@ -340,8 +337,8 @@ c--- point to restart from when checking epsilon poles
       elseif ((case .eq. 'tt_tot')
      .   .or. (case .eq. 'bb_tot')
      .   .or. (case .eq. 'cc_tot')) then
-      write(6,*) 'Virt corrections not yet included'
-         stop
+      write(6,*) 'Virtual corrections not yet included!'
+      pause
       elseif (case .eq. 'vlchk4') then
          taumin=0.0001d0
          bbsqmax=W
@@ -764,7 +761,7 @@ c        enddo
 c        enddo
 c        jets=nqcdjets
 c      else
-c        call genclust2(p,rcut,jets,pjet,jetlabel)
+c        call genclust2(p,rcut,pjet,0)
 c        if ((jets .ne. nqcdjets) .and. (nqcdjets .gt. 0)) then
 c          njetzero=njetzero+1
 c          goto 999

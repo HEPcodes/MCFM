@@ -8,6 +8,7 @@
       integer nqcdjets,nqcdstart
       common/nqcdjets/nqcdjets,nqcdstart
       data first/.true./
+      save first
 
       if (first) then
       first=.false.

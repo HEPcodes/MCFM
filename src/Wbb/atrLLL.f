@@ -11,7 +11,7 @@ c---(obtained from atree(pm) all right-handed)
       integer j1,j2,j3,j4,j5,j6
       double complex atree
       double precision prop
-      prop=s(5,6)/sqrt((s(5,6)-wmass**2)**2+(wmass*wwidth)**2)
+      prop=s(5,6)/dsqrt((s(5,6)-wmass**2)**2+(wmass*wwidth)**2)
 c---Note interchange of za,zb to effect complex conjugation
 c---to get from all right-handed to all left-handed
 

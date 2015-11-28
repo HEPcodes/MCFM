@@ -14,7 +14,6 @@ c---
       include 'zprods_com.f'
       include 'epinv.f'
       include 'scheme.f'
-      include 'flags.f'
       integer j,k,iqqbg(5),iqbqg(5),iqgq(5),igqq(5),
      . igqbqb(5),iqbgqb(5)
       double precision msq(-nf:nf,-nf:nf),msq0(-nf:nf,-nf:nf),

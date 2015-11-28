@@ -6,10 +6,10 @@ c     volume of massless phase space including all (2*pi)'s
       integer n,fac
       vol=twopi**(4-3*n)*(pi/two)**(n-1)*s**(n-2)
       vol=vol/dfloat(fac(n-1)*fac(n-2))
-c      if (n .eq. 6) vol=vol/(5.d0*4.d0*3.d0*2.d0)/(4.d0*3.d0*2.d0)
-c      if (n .eq. 5) vol=vol/(4.d0*3.d0*2.d0)     /(3.d0*2.d0)
-c      if (n .eq. 4) vol=vol/(3.d0*2.d0)          /(2.d0)
-c      if (n .eq. 3) vol=vol/(2.d0)               /(1.d0)
+c      if (n .eq. 6) vol=vol/(5d0*4d0*3d0*2d0)/(4d0*3d0*2d0)
+c      if (n .eq. 5) vol=vol/(4d0*3d0*2d0)    /(3d0*2d0)
+c      if (n .eq. 4) vol=vol/(3d0*2d0)        /(2d0)
+c      if (n .eq. 3) vol=vol/(2d0)            /(1d0)
       return
       end
       

@@ -1,6 +1,7 @@
-      subroutine pdfwrap(pdlabel)
+      subroutine pdfwrap
       implicit none
-      character*7 pdlabel
+      include 'nlooprun.f'
+      include 'pdlabel.f'
       double precision amz
       common/couple/amz
 
@@ -20,68 +21,93 @@ C  12    COR12  larger d/u            300      0.1175   0.00515  C
 
       if     (pdlabel .eq. 'mrs02nl') then
       amz=0.1197d0 
+      nlooprun=2
       elseif     (pdlabel .eq. 'mrs02nn') then
       amz=0.1154d0
+      nlooprun=2
       elseif     (pdlabel .eq. 'mrs0119') then
       amz=0.119d0
+      nlooprun=2
       elseif     (pdlabel .eq. 'mrs0117') then
       amz=0.117d0
+      nlooprun=2
       elseif     (pdlabel .eq. 'mrs0121') then
       amz=0.121d0
+      nlooprun=2
       elseif     (pdlabel .eq. 'mrs01_j') then
       amz=0.121d0
+      nlooprun=2
       elseif     (pdlabel .eq. 'mrs99_1') then
       amz=0.1175d0
+      nlooprun=2
       elseif (pdlabel .eq. 'mrs99_2') then
       amz=0.1175d0
+      nlooprun=2
       elseif (pdlabel .eq. 'mrs99_3') then
       amz=0.1175d0
+      nlooprun=2
       elseif (pdlabel .eq. 'mrs99_4') then
       amz=0.1125d0
+      nlooprun=2
       elseif (pdlabel .eq. 'mrs99_5') then
       amz=0.1225d0
+      nlooprun=2
       elseif (pdlabel .eq. 'mrs99_6') then
       amz=0.1178d0
+      nlooprun=2
       elseif (pdlabel .eq. 'mrs99_7') then
       amz=0.1171d0
+      nlooprun=2
       elseif (pdlabel .eq. 'mrs99_8') then
       amz=0.1175d0
+      nlooprun=2
       elseif (pdlabel .eq. 'mrs99_9') then
       amz=0.1175d0
+      nlooprun=2
       elseif (pdlabel .eq. 'mrs9910') then
       amz=0.1175d0
+      nlooprun=2
       elseif (pdlabel .eq. 'mrs9911') then
       amz=0.1175d0
+      nlooprun=2
       elseif (pdlabel .eq. 'mrs9912') then
       amz=0.1175d0
+      nlooprun=2
       elseif (pdlabel .eq. 'mrs98z1') then
       amz=0.1175d0
+      nlooprun=2
       elseif (pdlabel .eq. 'mrs98z2') then
       amz=0.1175d0
+      nlooprun=2
       elseif (pdlabel .eq. 'mrs98z3') then
       amz=0.1175d0
+      nlooprun=2
       elseif (pdlabel .eq. 'mrs98z4') then
       amz=0.1125d0
+      nlooprun=2
       elseif (pdlabel .eq. 'mrs98z5') then
       amz=0.1225d0
+      nlooprun=2
       elseif (pdlabel .eq. 'mrs98ht') then
-c-- real value
       amz=0.1170d0
-c-- modified - DEBUG
-      amz=0.1175d0
-      write(6,*) 'alpha_s(MZ) for mrs98ht has been modified from'
-      write(6,*) 'the inherent 0.1170 to a new value of 0.1175'    
-
+      nlooprun=2
+c      write(6,*) 'alpha_s(MZ) for mrs98ht has been modified from'
+c      write(6,*) 'the inherent 0.1170 to a new value of 0.1175'    
       elseif (pdlabel .eq. 'mrs98l1') then
       amz=0.125d0
+      nlooprun=1
       elseif (pdlabel .eq. 'mrs98l2') then
       amz=0.125d0
+      nlooprun=1
       elseif (pdlabel .eq. 'mrs98l3') then
       amz=0.125d0
+      nlooprun=1
       elseif (pdlabel .eq. 'mrs98l4') then
       amz=0.120d0
+      nlooprun=1
       elseif (pdlabel .eq. 'mrs98l5') then
       amz=0.130d0
+      nlooprun=1
 C     TEMPORARY NAMING SCHEME:                                   C
 C						                 C
 C  mode  set    comment             L(4)/MeV  a_s(M_Z)  grid#1   C
@@ -127,73 +153,98 @@ C   9      CTEQ4HJ  High Jet                0.116        1.6      cteq4hj.tbl
 C   10     CTEQ4LQ  Low Q0                  0.114        0.7      cteq4lq.tbl
       elseif (pdlabel .eq. 'cteq3_m') then
       amz=0.112d0
+      nlooprun=2
       elseif (pdlabel .eq. 'cteq3_l') then
-c---??????
       amz=0.112d0
+      nlooprun=1
       elseif (pdlabel .eq. 'cteq3_d') then
-c---??????
       amz=0.112d0
+      nlooprun=2
       elseif (pdlabel .eq. 'cteq4_m') then
       amz=0.116d0
+      nlooprun=2
       elseif (pdlabel .eq. 'cteq4_d') then
       amz=0.116d0
+      nlooprun=2
       elseif (pdlabel .eq. 'cteq4_l') then 
       amz=0.132d0
+      nlooprun=1
       elseif (pdlabel .eq. 'cteq4a1') then
       amz=0.110d0
+      nlooprun=2
       elseif (pdlabel .eq. 'cteq4a2') then
       amz=0.113d0
+      nlooprun=2
       elseif (pdlabel .eq. 'cteq4a3') then
       amz=0.116d0
+      nlooprun=2
       elseif (pdlabel .eq. 'cteq4a4') then
       amz=0.119d0
+      nlooprun=2
       elseif (pdlabel .eq. 'cteq4a5') then
       amz=0.122d0
+      nlooprun=2
       elseif (pdlabel .eq. 'cteq4hj') then
       amz=0.116d0
+      nlooprun=2
       elseif (pdlabel .eq. 'cteq4lq') then
       amz=0.114d0
+      nlooprun=2
       elseif (pdlabel .eq. 'cteq5_m') then
       Call SetCtq5(1)
       amz=0.118d0
+      nlooprun=2
       elseif (pdlabel .eq. 'cteq5_d') then
       Call SetCtq5(2)
       amz=0.118d0
+      nlooprun=2
       elseif (pdlabel .eq. 'cteq5_l') then
       Call SetCtq5(3)
       amz=0.127d0
+      nlooprun=1
       elseif (pdlabel .eq. 'cteq5l1') then
       amz=0.127d0
+      nlooprun=1
       elseif (pdlabel .eq. 'cteq5hj') then
       Call SetCtq5(4)
       amz=0.118d0
+      nlooprun=2
       elseif (pdlabel .eq. 'cteq5hq') then
       Call SetCtq5(5)
       amz=0.118d0
+      nlooprun=2
       elseif (pdlabel .eq. 'cteq5f3') then
       Call SetCtq5(6)
       amz=0.106d0
+      nlooprun=2
       elseif (pdlabel .eq. 'cteq5f4') then
       Call SetCtq5(7)
       amz=0.112d0
+      nlooprun=2
       elseif (pdlabel .eq. 'cteq5m1') then
       Call SetCtq5(8)
       amz=0.118d0
+      nlooprun=2
       elseif (pdlabel .eq. 'ctq5hq1') then
       Call SetCtq5(9)
       amz=0.118d0
+      nlooprun=2
       elseif (pdlabel .eq. 'cteq6_m') then
       amz=0.118d0
       Call SetCtq6(1)
+      nlooprun=2
       elseif (pdlabel .eq. 'cteq6_d') then
       amz=0.118d0
       Call SetCtq6(2)
+      nlooprun=2
       elseif (pdlabel .eq. 'cteq6_l') then
       amz=0.118d0
       Call SetCtq6(3)
+      nlooprun=1
       elseif (pdlabel .eq. 'cteq6l1') then
       amz=0.130d0
       Call SetCtq6(4)
+      nlooprun=1
 
 c--- NEW ATTEMPT
       elseif (pdlabel .eq. 'mtungb1') then

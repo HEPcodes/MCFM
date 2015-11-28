@@ -16,12 +16,12 @@
       parameter(xmin=1d-5)
 
       wt5=0d0
-      tau=exp(log(taumin)*r(9))
-      y=0.5d0*log(tau)*(1d0-2d0*r(10))
-      xjac=log(taumin)*tau*log(tau)
+      tau=dexp(dlog(taumin)*r(9))
+      y=0.5d0*dlog(tau)*(1d0-2d0*r(10))
+      xjac=dlog(taumin)*tau*dlog(tau)
 
-      xx(1)=sqrt(tau)*exp(+y)
-      xx(2)=sqrt(tau)*exp(-y)
+      xx(1)=dsqrt(tau)*dexp(+y)
+      xx(2)=dsqrt(tau)*dexp(-y)
 
 c---if x's out of normal range alternative return
       if   ((xx(1) .gt. 1d0) 
@@ -61,6 +61,8 @@ c---if x's out of normal range alternative return
       p(7,nu)=p7(nu)
       enddo 
       wt5=xjac*pswt
-      if(wt5 .eq. 0d0) return 1
+
+      if (wt5 .eq. 0d0) return 1
+      
       return
       end

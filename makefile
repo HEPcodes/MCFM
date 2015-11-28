@@ -1,12 +1,12 @@
 # Makefile routine.
 
 # Replace this with the location of Cernlib on your system (if desired)
-CERNLIB     = /home/johnmc/Fortran/Cernlib
+CERNLIB     = 
 # Replace this with the location of LHAPDF on your system (if desired)
-LHAPDFLIB   = /home/johnmc/Fortran/lhapdf
+LHAPDFLIB   = 
 
-MCFMHOME	= /home/ellis/Res/MCFM_3.4
-SOURCEDIR	= /home/ellis/Res/MCFM_3.4/src
+MCFMHOME        = /home/johnmc/MCFM-3.4.1
+SOURCEDIR       = /home/johnmc/MCFM-3.4.1/src
 VPATH		= $(DIRS)
 BIN		= $(MCFMHOME)/Bin
 INCPATH  	= $(SOURCEDIR)/Inc
@@ -46,7 +46,7 @@ DIRS	=	$(MCFMHOME):\
                 $(SOURCEDIR)/qqH:$(SOURCEDIR)/ggH
 
 FC = g77
-FFLAGS 	= -c -fno-f2c -malign-double -O2 -I$(INCPATH) 
+FFLAGS 	= -fno-automatic -fno-f2c -malign-double -O0 -I$(INCPATH)
 
 # -----------------------------------------------------------------------------
 # Specify the object files. 
@@ -118,16 +118,15 @@ li2.o \
 Htautau.o
 
 INTEGRATEFILES = \
-dvegas.o \
-lenocc.o \
+vegas.o \
 mbook.o \
 ran0.o \
 ran1.o \
 rn.o
 
 LIBFILES = \
-dclaus.o \
-ddilog.o
+ddilog.o \
+lenocc.o
 
 NEEDFILES = \
 angle.o \
@@ -142,6 +141,7 @@ chooser.o \
 ckmfill.o \
 coupling.o \
 couplz.o \
+dclaus.o \
 ddvdif.o \
 dipoles.o \
 dipoles_fac.o \
@@ -155,6 +155,7 @@ dotem.o \
 dotpr.o \
 etmiss.o \
 gasdev.o \
+getbs.o \
 getptildejet.o \
 gtperp.o \
 higgsp.o \
@@ -298,9 +299,6 @@ ggttww.o \
 qqb_QQb.o \
 qqb_ttb.o \
 ttbbww.o
-#qqb_QQb_v_amp.o \
-#qqb_QQb_decay.o \
-#qqb_QQb_v_decay.o
 
 TOPGFILES = \
 qqb_ttb_g.o \
@@ -334,7 +332,6 @@ mdata.o \
 miscclust.o \
 nplotter.o \
 # threebee.o
-# genclust.o \
 
 VOLFILES = \
 qqb_vol.o \
@@ -657,6 +654,7 @@ ifeq ($(PDFROUTINES),LHAPDF)
    PARTONFILES += \
    fdist_lhapdf.o \
    pdfwrap_lhapdf.o
+   LIBFILES =
    ifeq ($(NTUPLES),YES)
      LIBDIR += -L$(LHAPDFLIB)
    else
@@ -709,34 +707,20 @@ ALLMCFM = $(INTEGRATEFILES) $(LIBFILES) $(NEEDFILES) \
           $(DIRGAMFILES) $(COLLCHECKFILES) $(QQHFILES) $(GGHFILES) \
 	$(TOPFILES) $(TOPDKFILES) $(ZQFILES)
           
-DEBUGMCFM = $(Z2JETFILESMAD) $(Z2JETGFILESMAD) \
-            $(W2JETFILESMAD) $(W2JETGFILESMAD) \
-            $(BBHIGGSFILESMAD) $(WZBBMFILESMAD) $(JETFILESMAD) \
-            $(TOPFILESMAD) $(WGAMFILESMAD) $(ZGAMFILESMAD) \
-            $(DIRGAMFILESMAD) $(QQHFILESMAD)\
-            initialize.o
-
-ALLDEBUG = $(ALLMCFM) $(DEBUGMCFM) 
-
 # CERNLIB libraries for PDFLIB: -lpdflib804 -lmathlib -lpacklib 
 
 mcfm: $(ALLMCFM)
-	$(FC) -L$(LIBDIR) -o $@ \
-	$(patsubst %,obj/%,$(ALLMCFM))  $(LIBFLAGS) 
+	$(FC) $(FFLAGS) -L$(LIBDIR) -o $@ \
+	$(patsubst %,obj/%,$(ALLMCFM)) $(LIBFLAGS) 
 	mv mcfm Bin/mcfm
 	@echo $(PDFMSG)
 	@echo $(NTUPMSG)
-
-debug:	$(ALLDEBUG)
-	$(FC) -Wall -L/home/johnmc/madgraph/lib/ -o $@ \
-	$(patsubst %,obj/%,$(ALLDEBUG)) -ldhelas
-	mv debug Bin/debug
 
 # -----------------------------------------------------------------------------
 # Specify the dependencies of the .o files and the rules to make them.
 
 FTNCHEKPATH = /home/ellis/Fortran/Ftnchek/ftnchek-3.1.2
-FORCHKPATH = /usr/local/bin/
+FORCHKPATH = /home/ellis/forchk
 
 FOROPTS = -include=$(INCPATH) -nonovice -nopretty -quiet
 

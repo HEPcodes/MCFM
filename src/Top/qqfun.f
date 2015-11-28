@@ -72,7 +72,6 @@ c--debug
 
       function qqadel(t1,ro)  
       implicit double precision (a-h,o-z)
-      common/para1/s,xm2,xlf,xmu,rmuom2,naem,nbeam1,nbeam2
       external ddilog
       parameter (v=8.,xn=3.,xn4=5.,tr=0.5)
       data pi/3.141592653589793d0/
@@ -325,7 +324,6 @@ C
 
       function qqars(t1,t2,ro)   
       implicit double precision (a-h,o-z)
-      common/para1/s,xm2,xlf,xmu,rmuom2,naem,nbeam1,nbeam2
       parameter (v=8.,xn=3.,xn4=5.)
 
       omtx=t1+t2

@@ -13,7 +13,6 @@ C      q(P1) + qbar(P2) --> Q(-P3) + Qbar(-P4)
 ************************************************************************
       include 'constants.f'
       include 'qcdcouple.f'
-      include 'masses.f'
       include 'sprods_com.f'
       include 'msq_cs.f'
       
@@ -23,6 +22,7 @@ C      q(P1) + qbar(P2) --> Q(-P3) + Qbar(-P4)
       double precision wtqqb,wtgg,t1,t2,ro,mass2,width2,mass3,width3
       common/breit/n2,n3,mass2,width2,mass3,width3
       data first/.true./
+      save first
 
       if (first) then
       first=.false.

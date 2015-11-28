@@ -5,9 +5,9 @@
       implicit none
       include 'constants.f'
       include 'npart.f'
-      integer j,jlast1,jlast2,jets,nqcdjets,nqcdstart
+      include 'jetlabel.f'
+      integer j,jlast1,jlast2,nqcdjets,nqcdstart
       double precision p(mxpart,4),pjet(mxpart,4),s(mxpart,mxpart),rcut
-      character jetlabel(mxpart)*2
       common/nqcdjets/nqcdjets,nqcdstart
       common/rcut/rcut
       
@@ -25,7 +25,7 @@
         stop
       endif
       
-      call genclust2(p,rcut,jets,pjet,jetlabel)
+      call genclust2(p,rcut,pjet,0)
 c--- initial-final singularity
       if    ((-s(1,jlast1) .lt. 1d-1) .and. (jets .eq. nqcdjets)
      . .and. (-p(1,4) .gt. 1d1) .and. (p(jlast1,4) .gt. 1d0)) then

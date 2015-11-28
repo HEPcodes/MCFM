@@ -60,7 +60,7 @@ C===========================================================================
      > , 'cteq4a1.tbl', 'cteq4a2.tbl', 'cteq4m.tbl ', 'cteq4a4.tbl'
      > , 'cteq4a5.tbl', 'cteq4hj.tbl', 'cteq4lq.tbl' /
       Data Isetold, Isetmin, Isetmax / -987, 1, 10 /
-      save
+      save Flnm, Isetold, Isetmin, Isetmax
 
 C             If data file not initialized, do so.
       If(Iset.ne.Isetold) then

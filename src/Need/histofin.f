@@ -1,3 +1,9 @@
+      block data linlog_data
+      implicit none
+      include 'nplot.f'
+      data linlog/71*'lin',2*'log',19*'lin',7*'log'/
+      end
+
       subroutine histofin(xsec,xsec_err)
       implicit none
       include 'nplot.f'
@@ -6,17 +12,15 @@
       include 'verbose.f'
       include 'process.f'
       include 'workdir.f'
+      include 'pdlabel.f'
       integer j,nlength,lenocc
       character*30 runstring
       character*4 part
-      character*72 outlabel1,outlabel2,outfiledat,outfiletop
+      character*72 outlabel1,outlabel2,outfiledat,outfiletop,outlabeltmp
       character*3 strmh,strscale,getstr
-      character*7 pdlabel
       double precision xsec,xsec_err
       common/part/part
       common/runstring/runstring
-      common/pdlabel/pdlabel      
-      data linlog/71*'lin',2*'log',19*'lin',7*'log'/
 
       strscale=getstr(int(scale))
       if (  (case .eq. 'WHbbar')
@@ -35,7 +39,8 @@
 
 c--- add working directory, if necessary 
       if (workdir .ne. '') then
-        outlabel2=workdir(1:lenocc(workdir))//'/'//outlabel2
+        outlabeltmp=outlabel2
+        outlabel2=workdir(1:lenocc(workdir))//'/'//outlabeltmp
         nlength=nlength+1+lenocc(workdir)
       endif
       

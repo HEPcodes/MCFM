@@ -94,34 +94,37 @@ c---calculate the W propagator
       bpm=qcdbpm(j1,j2,j3,j4,j5,j6,j7,jb)
       ipm=qedipm(j1,j2,j3,j4,j5,j6,j7,jb)
       fpm=qedfpm(j1,j2,j3,j4,j5,j6,j7,jb)
-
-      pm=V*xn/eight*(abs(apm)**2+abs(bpm)**2)
-     &+V/(eight*xn)*(abs(ipm)**2+abs(fpm)**2-two*(abs(ipm+fpm))**2)
-
+      
+      pm=V*xn/eight*(cdabs(apm)**2+cdabs(bpm)**2)
+     &+V/(eight*xn)*(cdabs(ipm)**2+cdabs(fpm)**2
+     &-two*(cdabs(ipm+fpm))**2)
       
       amm=qcdamm(j1,j2,j3,j4,j5,j6,j7,jb)
       bmm=qcdbmm(j1,j2,j3,j4,j5,j6,j7,jb)
       imm=qedimm(j1,j2,j3,j4,j5,j6,j7,jb)
       fmm=qedfmm(j1,j2,j3,j4,j5,j6,j7,jb)
 
-      mm=V*xn/eight*(abs(amm)**2+abs(bmm)**2)
-     &+V/(eight*xn)*(abs(imm)**2+abs(fmm)**2-two*(abs(imm+fmm))**2)
+      mm=V*xn/eight*(cdabs(amm)**2+cdabs(bmm)**2)
+     &+V/(eight*xn)*(cdabs(imm)**2+cdabs(fmm)**2
+     &-two*(cdabs(imm+fmm))**2)
 
       amp=qcdamp(j1,j2,j3,j4,j5,j6,j7,jb)
       bmp=qcdbmp(j1,j2,j3,j4,j5,j6,j7,jb)
       imp=qedimp(j1,j2,j3,j4,j5,j6,j7,jb)
       fmp=qedfmp(j1,j2,j3,j4,j5,j6,j7,jb)
 
-      mp=V*xn/eight*(abs(amp)**2+abs(bmp)**2)
-     &+V/(eight*xn)*(abs(imp)**2+abs(fmp)**2-two*(abs(imp+fmp))**2)
+      mp=V*xn/eight*(cdabs(amp)**2+cdabs(bmp)**2)
+     &+V/(eight*xn)*(cdabs(imp)**2+cdabs(fmp)**2
+     &-two*(cdabs(imp+fmp))**2)
 
       app=qcdapp(j1,j2,j3,j4,j5,j6,j7,jb)
       bpp=qcdbpp(j1,j2,j3,j4,j5,j6,j7,jb)
       ipp=qedipp(j1,j2,j3,j4,j5,j6,j7,jb)
       fpp=qedfpp(j1,j2,j3,j4,j5,j6,j7,jb)
 
-      pp=V*xn/eight*(abs(app)**2+abs(bpp)**2)
-     &+V/(eight*xn)*(abs(ipp)**2+abs(fpp)**2-two*(abs(ipp+fpp))**2)
+      pp=V*xn/eight*(cdabs(app)**2+cdabs(bpp)**2)
+     &+V/(eight*xn)*(cdabs(ipp)**2+cdabs(fpp)**2
+     &-two*(cdabs(ipp+fpp))**2)
 
       redmsq=(pm+mm+pp+mp)/prop
       return

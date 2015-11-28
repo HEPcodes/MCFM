@@ -20,15 +20,15 @@
 
       wt7=0d0
 
-      lntaum=log(taumin)
-      tau=exp(lntaum*(one-r(18)))
+      lntaum=dlog(taumin)
+      tau=dexp(lntaum*(one-r(18)))
       xjac=-lntaum*tau
 
 c      tau=(one-taumin)*r(14)**2+taumin
 c      xjac=2*r(13)*(one-taumin)
 
       x1mx2=two*r(19)-one
-      surd=sqrt(x1mx2**2+four*tau) 
+      surd=dsqrt(x1mx2**2+four*tau) 
            
       xx(1)=half*(+x1mx2+surd)
       xx(2)=half*(-x1mx2+surd)

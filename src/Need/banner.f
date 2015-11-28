@@ -1,3 +1,10 @@
+      block data codeversion_data
+      implicit none
+      character*6 codeversion
+      common/versionnumber/codeversion
+      data codeversion/'3.4.1'/      
+      end
+
       subroutine banner
 ************************************************************************
 *  Set the version number of MCFM and write out the banner heading     *
@@ -7,19 +14,17 @@
       character*50 line
       integer vlength,lenocc
       common/versionnumber/codeversion
-      data codeversion/'3.4'/      
 
       line='**************************************************'
       vlength=lenocc(codeversion)
       vlength=vlength+17   
-      write(6,*) vlength
       line(25-vlength/2:24+(vlength+1)/2)=
      . ' MCFM - version '//codeversion//' '
 
       write(6,*) line
       write(6,*) '*                                                *'
       write(6,*) '* MCFM, v'//codeversion//
-     . '              April 24th, 2003 *'
+     . '                  May 27th, 2003  *'
       write(6,*) '*                                                *'
       write(6,*) '* Authors: John Campbell, johnmc@hep.anl.gov     *'
       write(6,*) '*          Keith Ellis,   ellis@fnal.gov,        *'

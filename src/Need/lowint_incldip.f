@@ -16,6 +16,8 @@
       include 'efficiency.f'
       include 'facscale.f'
       include 'maxwt.f'
+      include 'jetlabel.f'
+      include 'pdlabel.f'
 c --- DSW. To store flavour information :
       include 'flavours.f'
 c --- DSW.
@@ -24,7 +26,7 @@ c --- To use VEGAS random number sequence :
       integer idum
       COMMON/ranno/idum
       double precision ran1
-      integer ih1,ih2,j,k,jets,nproc,nvec,sgnj,sgnk
+      integer ih1,ih2,j,k,nvec,sgnj,sgnk
       double precision r(mxdim),W,sqrts,xmsq,val,temp
       double precision fx1(-nf:nf),fx2(-nf:nf)
       double precision p(mxpart,4),pjet(mxpart,4)
@@ -32,29 +34,20 @@ c --- To use VEGAS random number sequence :
       double precision wgt,msq(-nf:nf,-nf:nf),m3,m4,m5,xmsqjk
       double precision msqa(-nf:nf,-nf:nf),n(4)
       double precision xx(2),flux,vol,vol_mass,vol3_mass,
-     . taumin,BrnRat,rcut
+     . taumin,BrnRat
       double precision xmsq_bypart(-1:1,-1:1),lord_bypart(-1:1,-1:1)
-      integer nqcdjets,nqcdstart,notag
-      common/parts/jets,jetlabel
-      common/nqcdjets/nqcdjets,nqcdstart
-      logical bin,makecuts,gencuts,first,includedipole
-      character pdlabel*7,jetlabel(mxpart)*2
+      logical bin,first,includedipole
       common/density/ih1,ih2
       common/energy/sqrts
-      common/pdlabel/pdlabel
       common/bin/bin
       common/x1x2/xx
       common/taumin/taumin
-      common/makecuts/makecuts
       common/BrnRat/BrnRat
-      common/nproc/nproc
-      common/rcut/rcut
       common/bypart/lord_bypart
-      common/notag/notag
       data p/48*0d0/
       data first/.true./
       save first,scalestart
-
+      
       if (first) then
          first=.false.
          scalestart=scale
@@ -90,6 +83,8 @@ c      call initialize
      .        (case .eq. 'qg_tbb') 
      .   .or. (case .eq. 'W_3jet') 
      .   .or. (case .eq. 'Z_3jet') 
+     .   .or. (case .eq. 'Wbbjet') 
+     .   .or. (case .eq. 'Zbbjet') 
      .   .or. (case .eq. 'qqHqqg')
 c     .   .or. (case .eq. 'WWHqqg')
 c     .   .or. (case .eq. 'ZZHqqg')
@@ -100,8 +95,7 @@ c     .   .or. (case .eq. 'VVHqqg')
           call gen_njets(r,3,p,pswt,*999)      
 c          call gen5(r,p,pswt,*999)
 c          call gen5a(r,p,pswt,*999)
-      elseif ((case .eq. 'Wbbjet')
-     .   .or. (case .eq. 'WWHqqg')
+      elseif ((case .eq. 'WWHqqg')
      .   .or. (case .eq. 'ZZHqqg')
      .   .or. (case .eq. 'VVHqqg')) then
           npart=5
@@ -141,7 +135,6 @@ c          endif
           npart=3
           m3=mt
           m4=mt
-          m5=0d0
           call gen3m_rap(r,p,m3,m4,pswt,*999)
       elseif (case .eq. 'threeb') then
           npart=3
@@ -183,6 +176,8 @@ c          endif
       elseif (
      .        (case .eq. 'W_2jet')
      .   .or. (case .eq. 'Z_2jet')
+     .   .or. (case .eq. 'Wbbbar')
+     .   .or. (case .eq. 'Zbbbar')
      .   .or. (case .eq. 'ggfus2')
      .   .or. (case .eq. 'qq_Hqq')
 c     .   .or. (case .eq. 'WW_Hqq')
@@ -238,12 +233,12 @@ c--- bother calculating the matrix elements for it, instead bail out
       endif   
       
       if (case(1:4) .ne. 'vlch') then      
-      call fdist(pdlabel,ih1,xx(1),pdfscale,fx1)
-      call fdist(pdlabel,ih2,xx(2),pdfscale,fx2)
+      call fdist(ih1,xx(1),pdfscale,fx1)
+      call fdist(ih2,xx(2),pdfscale,fx2)
       endif
 
       flux=fbGeV2/(2d0*xx(1)*xx(2)*W)
-
+      
       if     (case .eq. 'Wbbbar') then
       call qqb_Wbb(p,msq)
       elseif (case .eq. 'Wbbjet') then
@@ -517,44 +512,12 @@ c      if ((j.ne.0) .and. (k.ne.0)) goto 20
       enddo
       enddo
 
-c--- cluster partons (nqcdstart) to (nqcdstart+nqcdjets-1)
-c--- if nqcdjets=0, no clustering is performed and pjet=p  
-c      if (clustering .eqv. .false.) then
-c        do j=1,mxpart
-c        do k=1,4
-c          pjet(j,k)=p(j,k)
-c        enddo
-c        enddo
-c        jets=nqcdjets
-c      else
-c        call genclust2(p,rcut,jets,pjet,jetlabel)
-c        if((nproc .eq. 152) .or. (nproc .eq. 161))then
-c          if (jets .ne. 2) then
-c            njetzero=njetzero+1
-c            goto 999
-c          endif
-c        else
-c          if ((jets .ne. nqcdjets-notag) .and. (nqcdjets .gt. 0)
-c     .        .and. clustering) then
-c            njetzero=njetzero+1
-c            goto 999
-c          endif
-c        endif       
-c      endif
-      
       call getptildejet(0,pjet)
       
       call dotem(nvec,pjet,s)
 
-c--- Apply the event cuts
-c      if (makecuts) then
-c        if (gencuts(p,pjet,jets)) then
-c          ncutzero=ncutzero+1
-c          goto 999
-c         endif
-c      endif
-      
       lowint=flux*pswt*xmsq/BrnRat
+
       do j=-1,1
       do k=-1,1
         lord_bypart(j,k)=lord_bypart(j,k)+
@@ -595,7 +558,7 @@ c         write(6,*) 'Keep event with weight',val
      +            ' |weight| = ',newwt
           endif
 c ---     just in case the weight was negative :
-          newwt = newwt*dsign(1.0d0,val)
+          newwt = newwt*dsign(1d0,val)
           call nplotter(r,s,pjet,newwt,0)
 c ---     DSW. If I'm storing the event, I need to make a decision
 c ---     about the flavours :
@@ -603,8 +566,6 @@ c ---     about the flavours :
           call storeevent(pjet,newwt,pflav,pbarflav)
         endif
       endif
-
-c     write(6,*) 'lowint : val = ',val
 
       return
 

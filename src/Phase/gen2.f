@@ -45,15 +45,15 @@ c----udif==tanh(ydif)
       xjac=xjac*w3
       phi=2d0*pi*r(4)
 
-      pt=rtshat/(2d0*cosh(ydif))
-      xx(1)=rtshat/sqrts*exp(+yave)
-      xx(2)=rtshat/sqrts*exp(-yave)
+      pt=rtshat/(2d0*dcosh(ydif))
+      xx(1)=rtshat/sqrts*dexp(+yave)
+      xx(2)=rtshat/sqrts*dexp(-yave)
 
       if   ((xx(1) .gt. 1d0) 
      & .or. (xx(2) .gt. 1d0)
      & .or. (xx(1) .lt. xmin)
      & .or. (xx(2) .lt. xmin)) then
-c      write(6,*) 'problems with xx(1),xx(2) in gen2',xx(1),xx(2)  
+        write(6,*) 'problems with xx(1),xx(2) in gen2',xx(1),xx(2)  
       return 1 
       endif
 	  
@@ -67,15 +67,15 @@ c      write(6,*) 'problems with xx(1),xx(2) in gen2',xx(1),xx(2)
       p(2,2)=0d0
       p(2,3)=+0.5d0*xx(2)*sqrts
 
-      p(3,4)=+pt*cosh(y3)
-      p(3,1)=+pt*sin(phi)
-      p(3,2)=+pt*cos(phi)
-      p(3,3)=+pt*sinh(y3)
+      p(3,4)=+pt*dcosh(y3)
+      p(3,1)=+pt*dsin(phi)
+      p(3,2)=+pt*dcos(phi)
+      p(3,3)=+pt*dsinh(y3)
 
-      p(4,4)=+pt*cosh(y4)
-      p(4,1)=-pt*sin(phi)
-      p(4,2)=-pt*cos(phi)
-      p(4,3)=+pt*sinh(y4)
+      p(4,4)=+pt*dcosh(y4)
+      p(4,1)=-pt*dsin(phi)
+      p(4,2)=-pt*dcos(phi)
+      p(4,3)=+pt*dsinh(y4)
 
       wt2=wt0*xjac/sqrts**2
       return

@@ -5,8 +5,10 @@ c--- returns dijmin and indices of minimum in (nmin1,nmin2)
       include 'constants.f'
       double precision p(mxpart,4),pjet(mxpart,4),dijmin,dij,d
       integer pjetmin,pjetmax,nmin1,nmin2,i,j
-      
+      logical dijerror
+
       dijmin=1d9
+      dijerror=.true.
 
       do i=pjetmin,pjetmax
         do j=i+1,pjetmax
@@ -16,12 +18,13 @@ c--- returns dijmin and indices of minimum in (nmin1,nmin2)
               dijmin=d
               nmin1=i
               nmin2=j
+              dijerror=.false.
             endif
           endif
         enddo
       enddo
       
-      if (dijmin .eq. 1d9) then
+      if (dijerror) then
         write(*,*) 'Error in dij minimum-finding routine'
         stop
       endif
@@ -38,18 +41,21 @@ C--- in  practice this is just the minimum ptsq of protojets
       include 'constants.f'
       double precision p(mxpart,4),pjet(mxpart,4),dkmin,dk,ptjet
       integer pjetmin,pjetmax,nk,i
+      logical dkerror
       
       dkmin=1d9
+      dkerror=.true.
       
       do i=pjetmin,pjetmax
         dk=ptjet(i,p,pjet)
         if (dk .lt. dkmin) then
           dkmin=dk
           nk=i
+          dkerror=.false.
         endif
       enddo
       
-      if (dkmin .eq. 1d9) then
+      if (dkerror) then
         write(*,*) 'Error in dk minimum-finding routine'
         stop
       endif
@@ -62,8 +68,8 @@ C---calculate the proto-jet separation see NPB406(1993)187, Eqn. 7
       implicit none
       include 'constants.f'
       integer i,j
-      double precision p(mxpart,4),pjet(mxpart,4),pti,ptj,phii,phij,
-     . yi,yj,ptjet,etarap,r
+      double precision p(mxpart,4),pjet(mxpart,4),pti,ptj,ptjet,r
+c      double precision etarap,yi,yj,phii,phij
       
       pti=ptjet(i,p,pjet)
       ptj=ptjet(j,p,pjet)
@@ -85,12 +91,12 @@ c--- new method - r() calculates true value of 0 < (phi-phij) < pi
       return
       end
       
-      subroutine combine(p,pjet,i,j,jetlabel)
+      subroutine combine(pjet,i,j)
       implicit none
       include 'constants.f'
+      include 'jetlabel.f'
       integer i,j
-      double precision p(mxpart,4),pjet(mxpart,4)
-      character jetlabel(mxpart)*2
+      double precision pjet(mxpart,4)
       
 c--Run II prescription
       pjet(i,1)=pjet(i,1)+pjet(j,1)
@@ -128,13 +134,13 @@ c--Run II prescription
       return
       end
       
-c      subroutine combine_snowmass(p,pjet,i,j,jetlabel)
+c      subroutine combine_snowmass(p,pjet,i,j)
 c      implicit none
 c      include 'constants.f'
+c      include 'jetlabel.f'
 c      integer i,j
 c      double precision p(mxpart,4),pjet(mxpart,4),ptjetij,yjet,phijet,
 c     . ejet,ptjet,etarap,pti,ptj,yi,yj,phii,phij
-c      character jetlabel(mxpart)*2
       
 C----Snowmass style prescripton 
 c      pti=ptjet(i,p,pjet)
@@ -195,13 +201,14 @@ c      enddo
 c      return
 c      end
       
-      subroutine swap(pjet,jetlabel,i,j)
+      subroutine swap(pjet,i,j)
 c--- swaps jets i..j in pjet
       implicit none
       include 'constants.f'
+      include 'jetlabel.f'
       integer i,j,k
       double precision pjet(mxpart,4),tmp
-      character jetlabel(mxpart)*2,chartmp*2
+      character*2 chartmp
       
       do k=1,4
         tmp=pjet(i,k)
@@ -220,7 +227,7 @@ c--- swaps jets i..j in pjet
       implicit none
       include 'constants.f'
       integer j
-      double precision p(mxpart,4),pjet(mxpart,4),dotjet
+      double precision p(mxpart,4),pjet(mxpart,4)
 c--- This is the formula for pt
       ptjet=dsqrt(pjet(j,1)**2+pjet(j,2)**2)
 c--- This is the formula for Et
@@ -242,12 +249,12 @@ C---Dot the ith vector p with the jth vector pjet
       return
       end
       
-      double precision function bclustmass(jets,pjet,jetlabel)
+      double precision function bclustmass(pjet)
       implicit none
       include 'constants.f'
-      integer i,jets,nbq,nba
+      include 'jetlabel.f'
+      integer i,nbq,nba
       double precision pjet(mxpart,4)
-      character jetlabel(mxpart)*2
       
 c--- note: this function ASSUMES that there is at most one b-quark
 c--- and one anti-b-quark, returning zero if there are less than this

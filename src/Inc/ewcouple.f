@@ -1,2 +1,2 @@
-      double precision gw,xw,gwsq,esq
-      common/ewcouple/gw,xw,gwsq,esq
+      double precision Gf,gw,xw,gwsq,esq,vevsq
+      common/ewcouple/Gf,gw,xw,gwsq,esq,vevsq

@@ -1,6 +1,7 @@
       subroutine higgsw(br)
       implicit none
       include 'constants.f'
+      include 'ewcouple.f'
       include 'masses.f'
       double precision wff,mfsq,br
 c-----approximate form for the width of the standard model higgs

@@ -1,22 +1,3 @@
-      block data wsalam1
-      implicit none
-      include 'constants.f'
-      include 'ewcharge.f'
-      data Q(-5)/+0.333333333333333d0/
-      data Q(-4)/-0.666666666666667d0/
-      data Q(-3)/+0.333333333333333d0/
-      data Q(-2)/-0.666666666666667d0/
-      data Q(-1)/+0.333333333333333d0/
-      data Q(0)/+0d0/
-      data Q(+1)/-0.333333333333333d0/
-      data Q(+2)/+0.666666666666667d0/
-      data Q(+3)/-0.333333333333333d0/
-      data Q(+4)/+0.666666666666667d0/
-      data Q(+5)/-0.333333333333333d0/
-      data tau/1d0,-1d0,1d0,-1d0,1d0,0d0,-1d0,1d0,-1d0,1d0,-1d0/
-      end 
-
-
       subroutine coupling
       implicit none
       include 'constants.f'
@@ -25,123 +6,167 @@
       include 'qcdcouple.f'
       include 'scale.f'
       include 'verbose.f'
+      include 'nlooprun.f'
+      include 'pdlabel.f'
+      include 'ewinput.f'
       character*4 part
       common/part/part
-      character*7 pdlabel
-      integer nproc
+      integer nproc,i
       common/nproc/nproc
       double precision BigA,aemmz,alphas,amz,cmass,bmass
       double precision Vud,Vus,Vub,Vcd,Vcs,Vcb
+      character*3 inlabel(10)
       common/cabib/Vud,Vus,Vub,
      &             Vcd,Vcs,Vcb
       common/qmass/cmass,bmass
-      common/pdlabel/pdlabel
       common/em/aemmz
       common/couple/amz
 
-C---Effective field theory approach: good for all except couplings
-C---to b-quarks (can be added later); Valid for scales below t-mass
-C---see Georgi--NPB 363 (1991) 301 
-      BigA=pi*aemmz/(sqrt(2d0)*gf)
-      xw=BigA/wmass**2
-c      xw=half*(one-sqrt(one-four*BigA/wmass**2*(one-BigA/wmass**2)))
-c      is equal to the above
+c--- blank out labels that indicate input parameters
+      do i=1,10
+        inlabel(i)='   '
+      enddo
+      inlabel(3)='(+)'
+      inlabel(4)='(+)'
+      inlabel(8)='(+)'
 
-      gwsq=fourpi*aemmz/xw
-      
-      esq=gwsq*xw
-      gw=sqrt(gwsq)
-      call couplz(xw)
+      if (ewscheme .eq. -1) then
+c--- This is the MCFM default, corresponding to an effective
+c--- field theory approach valid for scales below the top-mass
+C--- (see Georgi, Nucl. Phys. B 363 (1991) 301).
+c--- There are 4 inputs here instead of the usual 3 ...
+         Gf = Gf_inp
+         aemmz  = aemmz_inp
+         wmass  = wmass_inp
+         zmass  = zmass_inp
+         inlabel(5)='(+)'
+         inlabel(6)='(+)'
+         inlabel(1)='(+)'
+         inlabel(2)='(+)'
+         inlabel(8)='   '
+c--- ... and as result, both xw and mtop are derived
+         xw  = fourpi*aemmz/(8d0*wmass**2*Gf/rt2)
+         mt  = dsqrt(16d0*pisq/3d0/rt2/Gf*(
+     .          wmass**2/zmass**2/(1-xw)-1d0))
 
-      if ((nproc .eq. 80) .and. (pdlabel .eq. 'hmrs90b')) then 
-c----for check with Nason
-c---ZZ
-      zmass=91.18d0
-      xw=0.228d0
-      wmass=sqrt(zmass**2*(1d0-xw))
+      elseif (ewscheme .eq. 0) then
+c------------------------------------------------------------
+c     option=0 : MadEvent default (= AlpGen with iewopt=2)
+c------------------------------------------------------------
 
-      aemmz=1d0/128d0      
-      gwsq=fourpi*aemmz/xw
-      esq=gwsq*xw
-      gw=sqrt(gwsq)
-      scale=zmass
-      musq=scale**2
-      write(6,*) 'zmass for Frix/Nas',zmass
-      write(6,*) 'wmass for Frix/Nas',wmass
-      write(6,*) 'gwsq for Frix/Nas',gwsq
-      write(6,*) 'gw for Frix/Nas',gw
-      write(6,*) 'xw for Frix/Nas',xw
+c-- equal to the input values
+         xw  = xw_inp
+         aemmz  = aemmz_inp
+         zmass  = zmass_inp
+         inlabel(7)='(+)'
+         inlabel(6)='(+)'
+         inlabel(1)='(+)'
+c-- derived
+         wmass  = zmass * dsqrt( One - xw )
+         Gf = aemmz * Fourpi/xw/(8d0*wmass**2/Rt2)
 
-      elseif((pdlabel .eq. 'hmrs90b').and.(nproc .eq. 60)) then
-c----for check with Frixione WW
-      zmass=91.17d0
-      wmass=80.0d0      
-      xw=1d0-(wmass/zmass)**2
-      aemmz=1d0/128d0      
-      gwsq=fourpi*aemmz/xw
-      esq=gwsq*xw
-      gw=sqrt(gwsq)
-      scale=wmass
-      musq=scale**2
-      call couplz(xw)
-      write(6,*) 'zmass for Frix/Nas',zmass
-      write(6,*) 'wmass for Frix/Nas',wmass
-      write(6,*) 'gwsq for Frix/Nas',gwsq
-      write(6,*) 'gw for Frix/Nas',gw
-      write(6,*) 'xw for Frix/Nas',xw
+      elseif (ewscheme .eq. 1) then
+c-----------------------------------------------------
+c     option=1 : LUSIFER and AlpGen (iewopt=3) default
+c-----------------------------------------------------
 
-      elseif((pdlabel .eq. 'hmrs90b').and.
-     . ((nproc .eq. 70) .or. (nproc .eq. 75))) then
-c--wz
-      zmass=91.17d0
-      wmass=80.0d0
-      xw=1d0-(wmass/zmass)**2
-      aemmz=1d0/128d0      
-      gwsq=fourpi*aemmz/xw
-      gw=sqrt(gwsq)
-      esq=gwsq*xw
-      scale=0.5d0*(wmass+zmass)
-      musq=scale**2
-      write(6,*) 'zmass for Frix/Nas',zmass
-      write(6,*) 'wmass for Frix/Nas',wmass
-      write(6,*) 'gwsq for Frix/Nas',gwsq
-      write(6,*) 'gw for Frix/Nas',gw
-      write(6,*) 'xw for Frix/Nas',xw
+c-- equal to the input values
+         zmass  = zmass_inp
+         wmass  = wmass_inp
+         Gf = Gf_inp
+         inlabel(1)='(+)'
+         inlabel(2)='(+)'
+         inlabel(5)='(+)'
+c-- derived
+         xw  = One-(wmass/zmass)**2
+         aemmz  = Rt2*Gf*wmass**2*xw/pi
+
+      elseif (ewscheme .eq. 2) then
+c-------------------------------------------------------------------
+c     option=2 : W and Z mass are derived from couplings
+c-------------------------------------------------------------------
+
+c-- equal to the input values
+         Gf = Gf_inp
+         aemmz  = aemmz_inp
+         xw  = xw_inp
+         inlabel(5)='(+)'
+         inlabel(6)='(+)'
+         inlabel(7)='(+)'
+c-- derived
+         wmass  = dsqrt(aemmz*pi/xw/Gf/Rt2)
+         zmass  = wmass/dsqrt(One-xw)
+
+      elseif (ewscheme .eq. 3) then
+c-----------------------------------------------------------------
+c     option=3 : USER choice : you should know what you're doing!!
+c-----------------------------------------------------------------
+         Gf = Gf_inp
+         aemmz  = aemmz_inp
+         xw  = xw_inp
+         wmass  = wmass_inp
+         zmass  = zmass_inp
+         inlabel(5)='(+)'
+         inlabel(6)='(+)'
+         inlabel(7)='(+)'
+         inlabel(1)='(+)'
+         inlabel(2)='(+)'
+
+      else
+         write(6,*) 'ewscheme=',ewscheme,' is not a valid input.'
+         stop
       endif
-      
-c      write(6,*) 'zmass',zmass
-c      write(6,*) 'wmass',wmass
-c      write(6,*) 'gwsq',gwsq
-c      write(6,*) 'gw',gw
-c      write(6,*) 'xw',xw
+
+c--- Now set up the other derived parameters
+      gwsq=fourpi*aemmz/xw
+      esq=gwsq*xw
+      gw=dsqrt(gwsq)
+      call couplz(xw)
+
+c--- Calculate the appropriate Higgs vacuum expectation value.
+c--- This vevsq is defined so that gwsq/(4*wmass**2)=Gf*rt2=1/vevsq
+c--- (ie differs from definition in ESW)
+      vevsq=1d0/rt2/Gf
+
       write(6,*) '************** Electroweak parameters **************'
       write(6,*) '*                                                  *'
-      write(6,75) 'zmass',zmass,'wmass',wmass
-      write(6,75) 'zwidth',zwidth,'wwidth',wwidth
-      write(6,75) 'gwsq',gwsq,'gw',gw
-      write(6,75) 'xw',xw,'1/alpha',1d0/aemmz
-      write(6,76) 'esq',esq
+      write(6,75) 'zmass',inlabel(1),zmass,'wmass',inlabel(2),wmass
+      write(6,75) 'zwidth',inlabel(3),zwidth,'wwidth',inlabel(4),wwidth
+      write(6,76) 'Gf',inlabel(5),gf,'1/aemmz',inlabel(6),1d0/aemmz
+      write(6,75) 'xw',inlabel(7),xw,'mtop',inlabel(8),mt
+      write(6,75) 'gwsq',inlabel(9),gwsq,'esq',inlabel(10),esq
+      write(6,*) '*                                                  *'
+      write(6,*) '* Parameters marked (+) are input, others derived  *'
       write(6,*) '****************************************************'
 
-   75 format(' *  ',a6,f13.8,7x,a7,f13.8,'  *')
-   76 format(' *  ',a6,f13.8,27x,'  *')
+   75 format(' * ',a6,a3,f13.7,3x,a7,a3,f12.7,'  *')
+   76 format(' * ',a6,a3,d13.6,3x,a7,a3,f12.7,'  *')
+c   76 format(' *  ',a6,d12.7,27x,'  *')
 
-      call pdfwrap(pdlabel)      
+c--- initialize the pdf set
+      nlooprun=0
+      call pdfwrap      
 
-      cmass=sqrt(mcsq)
-      bmass=sqrt(mbsq)
+      cmass=dsqrt(mcsq)
+      bmass=dsqrt(mbsq)
       musq=scale**2
-      if (part .eq. 'lord') then
-        as=alphas(abs(scale),amz,1)
-      else
-        as=alphas(abs(scale),amz,2)
+ 
+c--- set the number of loops to use in the running of alpha_s
+c--- if it hasn't been set by pdfwrap already
+      if (nlooprun .eq. 0) then
+        if (part .eq. 'lord') then
+          nlooprun=1
+        else
+          nlooprun=2
+        endif
       endif
-      
+
+c--- initialize alpha_s
+      as=alphas(abs(scale),amz,nlooprun)
+
       ason2pi=as/twopi
       ason4pi=as/fourpi
       gsq=fourpi*as
-
-      call couplz(xw)
 
 ***************************************
 
@@ -184,13 +209,33 @@ c--- diagonal since we're not interested in these small effects
       write(6,*) '*  Dynamic scale - alpha_s changed event-by-event  *'
       write(6,49) 'alpha_s (zmass)',amz
       endif
+      write(6,50) ' (using ',nlooprun,'-loop running of alpha_s)'  
       write(6,*) '****************************************************'
  49   format(' *  ',a20,f12.8,16x,'*')
+ 50   format(' *  ',6x,a8,i1,a25,8x,'*')
       endif
       
       return
       end
 
+
+      block data wsalam1
+      implicit none
+      include 'constants.f'
+      include 'ewcharge.f'
+      data Q(-5)/+0.333333333333333d0/
+      data Q(-4)/-0.666666666666667d0/
+      data Q(-3)/+0.333333333333333d0/
+      data Q(-2)/-0.666666666666667d0/
+      data Q(-1)/+0.333333333333333d0/
+      data Q(0)/+0d0/
+      data Q(+1)/-0.333333333333333d0/
+      data Q(+2)/+0.666666666666667d0/
+      data Q(+3)/-0.333333333333333d0/
+      data Q(+4)/+0.666666666666667d0/
+      data Q(+5)/-0.333333333333333d0/
+      data tau/1d0,-1d0,1d0,-1d0,1d0,0d0,-1d0,1d0,-1d0,1d0,-1d0/
+      end 
 
 
 

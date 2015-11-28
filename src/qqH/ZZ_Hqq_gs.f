@@ -14,7 +14,7 @@
       include 'masses.f'
       include 'ptilde.f'
       include 'qqgg.f'
-      integer j,k,m,n,msgn,nsgn,nd,pn(-nf:nf)
+      integer j,k,nd
 
       double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf)
       double precision msq17_5(-nf:nf,-nf:nf),msq27_6(-nf:nf,-nf:nf),
@@ -27,8 +27,6 @@
      . sub16_7(4),
      . dummy(-nf:nf,-nf:nf),dummyv(-nf:nf,-nf:nf),dsubv,stat
       external ZZ_Hqq,donothing_gvec
-
-      data pn/-1,-2,-1,-2,-1,0,1,2,1,2,1/
 
       ndmax=5
 

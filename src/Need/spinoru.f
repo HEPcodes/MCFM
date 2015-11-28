@@ -17,7 +17,7 @@ c---if one of the vectors happens to be zero this routine fails.
          zb(j,j)=za(j,j)
 
 C-----positive energy case
-         if (p(j,4) .gt. 0.d0) then
+         if (p(j,4) .gt. 0d0) then
             rt(j)=dsqrt(p(j,4)+p(j,1))
             c23(j)=dcmplx(p(j,3),-p(j,2))
             f(j)=cone

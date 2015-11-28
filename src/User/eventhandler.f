@@ -97,7 +97,6 @@ c        1         2         3         4         5         6         7
       include 'maxwt.f'
       include 'eventbuffer.f'
 
-      external vegas1
       
       double precision p(mxpart,4)
       double precision wt 
@@ -128,7 +127,7 @@ c ---   Call integration loop again, this time unweighting :
         unweight = .true.
         numstored=0
         numused=0
- 10     call mcfm_vegas(vegas1,itmx2,ncall2,.true.,integ,integ_err)
+ 10     call mcfm_vegas(1,itmx2,ncall2,.true.,integ,integ_err)
         write(6,*) 'After event generation, numstored = ',numstored
         if (numstored.eq.0) goto 10
         do i=1,numstored

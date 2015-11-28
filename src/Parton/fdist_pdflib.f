@@ -1,6 +1,5 @@
-      subroutine fdist(pdlabel,ih,x,xmu,fx)
+      subroutine fdist(ih,x,xmu,fx)
       implicit none
-      character pdlabel*7
       double precision fx(-5:5),x,xmu
       double precision u_val,d_val,u_sea,d_sea,s_sea,c_sea,
      . b_sea,t_sea,gluon

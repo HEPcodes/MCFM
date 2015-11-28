@@ -24,11 +24,11 @@ c      double precision Eg
       integer j
       integer jbranch
 c      logical first
-      parameter(wt0=one/8.d0/pi)
+      parameter(wt0=one/8d0/pi)
       data jbranch/1/
       data xjac,rtxth/1d0,1d0/
 c      data first/.true./
-      save jbranch,xexp
+      save jbranch,xexp,rtxth,xjac
 c      if (first) then
 c      first=.false.
 c      write(6,*) 'Enter exponent for reweighting'
@@ -39,7 +39,7 @@ c      endif
       wt=0d0
       s1=p1(4)**2-p1(1)**2-p1(2)**2-p1(3)**2  
       if (s1 .lt. 0d0) return 1
-      m1=sqrt(s1)
+      m1=dsqrt(s1)
       s2=m2**2
       s3max=(m2-m1)**2
       if (s3min .gt. s3max) return 1
@@ -47,7 +47,7 @@ c      endif
       xx=1d0
       call breitw(x3,s3min,s3max,bwmass,bwwidth,s3,w3) 
 
-      m3=sqrt(s3)
+      m3=dsqrt(s3)
 
 
       if (jbranch .eq. 1) then
@@ -64,9 +64,9 @@ c      endif
 
       costh=two*rtxth-one      
       phi=twopi*xphi
-      sinth=sqrt(one-costh**2)
-      cphi=cos(phi)
-      sphi=sin(phi)
+      sinth=dsqrt(one-costh**2)
+      cphi=dcos(phi)
+      sphi=dsin(phi)
       lambda=((s1-s2-s3)**2-4d0*s2*s3)
       if ((lambda .lt. 0d0) .or. debug) then
       write(6,*) 'lambda in phi1_2m_bw',lambda
@@ -113,9 +113,9 @@ c      pause
       enddo
 
 
-      if (  (p1(4) .lt. 0.d0) 
-     & .or. (p2(4) .lt. 0.d0) 
-     & .or. (p3(4) .lt. 0.d0)) then  
+      if (  (p1(4) .lt. 0d0) 
+     & .or. (p2(4) .lt. 0d0) 
+     & .or. (p3(4) .lt. 0d0)) then  
       return 1
       endif
       return

@@ -3,11 +3,12 @@
       include 'constants.f'
       include 'masses.f'
       include 'ewcharge.f'
+      include 'ewcouple.f'
       integer j
       double precision arg,fac,x(6)
       double complex temp,Isubq,Isubw
 C     calculates the width of the SM Higgs into gamma-gamma      
-      fac=aem**2*Gf*hmass**3/(128d0*sqrt(2d0)*pi**3)
+      fac=aem**2*Gf*hmass**3/(128d0*dsqrt(2d0)*pi**3)
       x(1)=(md/hmass)**2
       x(2)=(mu/hmass)**2
       x(3)=(ms/hmass)**2
@@ -45,12 +46,12 @@ C     calculates the width of the SM Higgs into gamma-gamma
       double precision x,fourx,arg
       fourx=4d0*x
       if (fourx .ge. 1d0) then
-          arg=sqrt(0.25d0/x)
-          Fgaga=-2d0*asin(arg)
+          arg=dsqrt(0.25d0/x)
+          Fgaga=-2d0*dasin(arg)
       elseif ((fourx .lt. 1d0) .and. (fourx .gt. 0d0)) then
-          arg=sqrt(1d0-fourx)
+          arg=dsqrt(1d0-fourx)
           arg=(1d0+arg)/(1d0-arg)
-          Fgaga=dcmplx(0.5d0*log(arg),pi)
+          Fgaga=dcmplx(0.5d0*dlog(arg),pi)
       else 
           Fgaga=czip
       endif

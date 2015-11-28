@@ -27,16 +27,16 @@ c     factor of (2*pi)^4 included in definition of phase space
        return 1
       endif
 
-      roots=sqrt(s)
+      roots=dsqrt(s)
       m1sq=m1**2
       m2sq=m2**2
       costh=two*xth-one    
-      sinth=sqrt(one-costh**2)
+      sinth=dsqrt(one-costh**2)
       phi=twopi*xphi
 
-      lambda2=((s+m1sq-m2sq)**2-4.d0*m1sq*s)
+      lambda2=((s+m1sq-m2sq)**2-4d0*m1sq*s)
 
-      if (lambda2 .lt. 0.d0) then
+      if (lambda2 .lt. 0d0) then
       write(6,*) 'phi3m:lambda2=', lambda2
       return 1
       endif
@@ -45,8 +45,8 @@ c     factor of (2*pi)^4 included in definition of phase space
       wt=wt0*lambda/s
 
       p1cm(4)=roots/two*(s+m1sq-m2sq)/s
-      p1cm(1)=roots/two*lambda/s*sinth*sin(phi)
-      p1cm(2)=roots/two*lambda/s*sinth*cos(phi)
+      p1cm(1)=roots/two*lambda/s*sinth*dsin(phi)
+      p1cm(2)=roots/two*lambda/s*sinth*dcos(phi)
       p1cm(3)=roots/two*lambda/s*costh
 
 c      write(6,*) 'e',roots/two*(s+m1sq-m2sq)/s
@@ -63,9 +63,9 @@ c      pause
       enddo
 
 
-      if (  (p0(4) .lt. 0.d0) 
-     & .or. (p1(4) .lt. 0.d0) 
-     & .or. (p2(4) .lt. 0.d0)) then  
+      if (  (p0(4) .lt. 0d0) 
+     & .or. (p1(4) .lt. 0d0) 
+     & .or. (p2(4) .lt. 0d0)) then  
       write(6,*) 'p0',p0(4),p0(4)**2-p0(1)**2-p0(2)**2-p0(3)**2,s
       write(6,*) 'p1',p1(4),p1(4)**2-p1(1)**2-p1(2)**2-p1(3)**2,m1sq
       write(6,*) 'p2',p2(4),p2(4)**2-p2(1)**2-p2(2)**2-p2(3)**2,m2sq

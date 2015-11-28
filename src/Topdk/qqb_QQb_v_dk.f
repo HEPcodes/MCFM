@@ -95,21 +95,21 @@ c--- calculate the gg piece
       if (scheme .eq. 'tH-V') then
 c--- lowest order has O(ep) and O(ep**2) pieces to interfere with poles
       wtgg=
-     . +gdkbasisae0(1,2)*(gcoeffae2()*EPINV**2+gcoeffae1()*EPINV)
-     . +gdkbasisae1(1,2)*(gcoeffae2()*EPINV+gcoeffae1())
-     . +gdkbasisae2(1,2)*gcoeffae2()
+     . +gdkbasisae0*(gcoeffae2()*EPINV**2+gcoeffae1()*EPINV)
+     . +gdkbasisae1*(gcoeffae2()*EPINV+gcoeffae1())
+     . +gdkbasisae2*gcoeffae2()
 
-     . +gdkbasisbe0(1,2)*(gcoeffbe2()*EPINV**2+gcoeffbe1()*EPINV)
-     . +gdkbasisbe1(1,2)*(gcoeffbe2()*EPINV+gcoeffbe1())
+     . +gdkbasisbe0*(gcoeffbe2()*EPINV**2+gcoeffbe1()*EPINV)
+     . +gdkbasisbe1*(gcoeffbe2()*EPINV+gcoeffbe1())
 
-     . +gdkbasisce0(1,2)*(gcoeffce2()*EPINV**2+gcoeffce1()*EPINV)
-     . +gdkbasisce1(1,2)*(gcoeffce2()*EPINV+gcoeffce1())
+     . +gdkbasisce0*(gcoeffce2()*EPINV**2+gcoeffce1()*EPINV)
+     . +gdkbasisce1*(gcoeffce2()*EPINV+gcoeffce1())
       else
 c--- scheme is 'dred' and lowest order is calculated in 4 dimensions 
       wtgg=
-     . +gdkbasisae0(1,2)*(gcoeffae2()*EPINV**2+gcoeffae1()*EPINV)
-     . +gdkbasisbe0(1,2)*(gcoeffbe2()*EPINV**2+gcoeffbe1()*EPINV)
-     . +gdkbasisce0(1,2)*(gcoeffce2()*EPINV**2+gcoeffce1()*EPINV)
+     . +gdkbasisae0*(gcoeffae2()*EPINV**2+gcoeffae1()*EPINV)
+     . +gdkbasisbe0*(gcoeffbe2()*EPINV**2+gcoeffbe1()*EPINV)
+     . +gdkbasisce0*(gcoeffce2()*EPINV**2+gcoeffce1()*EPINV)
       endif
 
 c--- finite pieces, independent of scheme      

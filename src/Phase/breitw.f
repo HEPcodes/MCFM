@@ -15,10 +15,10 @@ c     wt is the jacobian between integration in msq and integration in x1
           almax=+pi/two
           almin=-pi/two
       else
-          almin=atan((mminsq-rmass**2)/rmass/rwidth)
-          almax=atan((mmaxsq-rmass**2)/rmass/rwidth)
+          almin=datan((mminsq-rmass**2)/rmass/rwidth)
+          almax=datan((mmaxsq-rmass**2)/rmass/rwidth)
           al=(almax-almin)*x1+almin
-          tanal=tan(al)
+          tanal=dtan(al)
       endif
 
       msq=rmass**2+rmass*rwidth*tanal

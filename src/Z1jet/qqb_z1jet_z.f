@@ -9,7 +9,6 @@
       include 'scale.f'
       include 'PR_new.f'
       include 'agq.f'
-      include 'flags.f'
       integer is
       double precision z,xl12,xl15,xl25,p(mxpart,4),dot
       double precision ii_qq,ii_qg,ii_gq,ii_gg,

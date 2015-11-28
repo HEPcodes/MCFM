@@ -12,7 +12,8 @@ c--all momenta incoming
       include 'masses.f'
       include 'flags.f'
       include 'msq_cs.f'
-      integer i,j,k,n,jets,nqcdjets,nqcdstart,a(6),b(6),c(6),qq
+      include 'jetlabel.f'
+      integer i,j,k,n,nqcdjets,nqcdstart,a(6),b(6),c(6),qq
       integer perm(5:7,5:7)
       double precision P(mxpart,4),msq(-nf:nf,-nf:nf),pjet(mxpart,4),
      . msq0(-nf:nf,-nf:nf),s(mxpart,mxpart),Rcut
@@ -25,9 +26,7 @@ c--all momenta incoming
      .                 eikcb_a(6),eikbc_2(6),eik2c_b(6),
      .                 eik1b_2(6),eik2b_1(6),eikf,eikc,
      .                 msq_ac(6,0:2,-nf:nf,-nf:nf),p_ac(mxpart,4)
-      character jetlabel(mxpart)*2
       common/nqcdjets/nqcdjets,nqcdstart
-      common/parts/jets,jetlabel
       common/rcut/rcut
       double precision mqq(0:2,-nf:nf,-nf:nf)
       double precision 
@@ -77,7 +76,7 @@ c      data swapbc/2,1,6,5,4,3/
         p_ac(7,k)=0d0
       enddo
       call qqb_w2jet(p_ac,msq0)
-      call genclust2(p_ac,rcut,jets,pjet,jetlabel)
+      call genclust2(p_ac,rcut,pjet,0)
       do i=0,2
       do j=-nf,nf
       do k=-nf,nf

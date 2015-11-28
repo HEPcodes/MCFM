@@ -33,16 +33,16 @@ c--- DSW histograms - call hbook filling routine
       subroutine nplotter(vector,s,p,wt,switch)
       implicit none
       include 'constants.f'
-      include 'masses.f'
       include 'mxdim.f'
       include 'npart.f'
       include 'clustering.f'
       include 'bbproc.f'
-      integer idum,n,switch,jets,i5,i6,i7
-      character tag*4,jetlabel(mxpart)*2
+      include 'jetlabel.f'
+      integer idum_gasdev,n,switch,i5,i6,i7
+      character tag*4
       double precision m56,m56_5,m56_10,m56_11,m56_12,m56_13,m56_15,
      . sigma,m34,m345,m346,m3456,m678,m47,etmiss,misset,m35,m45,
-     . s(mxpart,mxpart),p(mxpart,4),eta,root,wt1
+     . s(mxpart,mxpart),p(mxpart,4),eta,root,wt1,mtw
       double precision eta3,eta4,eta5,eta6,eta7,eta8,eta34,eta56
       double precision r34,r35,r45,r36,r46,r56,pt345
       double precision pt3,pt4,pt5,pt6,pt7,pt8,pt34,pt56,pt34a,pt34b
@@ -57,13 +57,14 @@ c--- DSW histograms - call hbook filling routine
       double precision dsigdy,dsigdytmp,transm345,transm435
       double precision es17,es27,es56,es57,es67,etbin,etdoublebin
       double precision deta53,deta54,r57,r67
-      integer nproc,eventpart
+      double precision mbb,etab1,etab2,etanob,ptb1,ptb2,ptnob,rbb
+      double precision detatags,dphitags
+      integer nproc,eventpart,ib1,ib2
       logical first
       logical creatent,dswhisto
       common/outputflags/creatent,dswhisto
-      common/parts/jets,jetlabel
       common/nproc/nproc
-      data idum/34265765/
+      data idum_gasdev/34265765/
       data first/.true./
       save first,eta
       save es17,es27,es56,es57,es67
@@ -103,6 +104,14 @@ c--- ensure we initialize all possible histograms
         r67=0d0
         misset=0d0
         etbin=0d0
+        mbb=0d0
+        etab1=0d0
+        etab2=0d0
+        etanob=0d0
+        ptb1=0d0
+        ptb2=0d0
+        ptnob=0d0
+        rbb=0d0
         goto 99
       else
         tag='plot'
@@ -151,18 +160,20 @@ c      pause
 
         if (bbproc .and. clustering) then
 c--- returns zero cluster mass if two b's are in one jet
-          m56clust=dsqrt(bclustmass(jets,p,jetlabel))
+          m56clust=dsqrt(bclustmass(p))
         else
           m56clust=dsqrt((p(5,4)+p(6,4))**2
      .                  -(p(5,1)+p(6,1))**2
      .                  -(p(5,2)+p(6,2))**2
      .                  -(p(5,3)+p(6,3))**2)
         endif  
-        r56=r(p,5,6)
-        r35=r(p,3,5)
-        r36=r(p,3,6)
+
+c        r56=r(p,5,6)
+c        r35=r(p,3,5)
+c        r36=r(p,3,6)
+
 c--generate a gaussian kick only for event
-        if (switch .eq. 0) eta=gasdev(idum)
+        if (switch .eq. 0) eta=gasdev(idum_gasdev)
         sigma=5d0
         m56_5=m56clust+sigma*eta
         sigma=10d0
@@ -261,7 +272,10 @@ c--- two-jet processes are 22 and 44
 c--- three-jet process is 23
 
 c--- case where we have 2 jets to order
-      if ( (((nproc .eq. 22).or.(nproc .eq. 44))
+      if ( (((nproc .eq. 22)
+     .    .or.(nproc .eq. 27)
+     .    .or.(nproc .eq. 44)
+     .    .or.(nproc .eq. 217))
      .    .and. (jets .eq. 2))
      . .or.(((nproc .eq. 11).or.(nproc .eq. 46).or.(nproc .eq. 41)
      .                      .or.(nproc .eq. 42).or.(nproc .eq. 43))
@@ -274,12 +288,18 @@ c--- case where we have 2 jets to order
           eta5=eta6
           eta6=swap
         endif
+        detatags = abs(eta6-eta5)
+        dphitags = fphi(5,6,p)
       endif
       
 c--- case where we have 3 jets to order
-      if ( (((nproc .eq. 22).or.(nproc .eq. 44))
+      if ( (((nproc .eq. 22)
+     .    .or.(nproc .eq. 27)
+     .    .or.(nproc .eq. 44)
+     .    .or.(nproc .eq. 217))
      .    .and. (jets .eq. 3))
-     . .or.  (nproc .eq. 23) ) then
+     . .or.  ((nproc .eq. 23).or.(nproc .eq. 28)
+     . .or.  (nproc .eq. 218)) ) then
         if ((pt5 .gt. pt6) .and. (pt5 .gt. pt7)) then
            i5=5
           if (pt6 .gt. pt7) then
@@ -323,7 +343,84 @@ c--- case where we have 3 jets to order
      .                -(p(i5,1)+p(i6,1))**2
      .                -(p(i5,2)+p(i6,2))**2
      .                -(p(i5,3)+p(i6,3))**2)
+        if ( abs(eta6-eta5).gt.abs(eta7-eta6) .and.
+     .       abs(eta6-eta5).gt.abs(eta7-eta5) ) then
+          detatags = abs(eta6-eta5)
+          dphitags = fphi(5,6,p)
+        elseif ( abs(eta7-eta5).gt.abs(eta7-eta6) .and.
+     .           abs(eta7-eta5).gt.abs(eta6-eta5) ) then
+          detatags = abs(eta7-eta5)
+          dphitags = fphi(5,7,p)
+        else
+          detatags = abs(eta7-eta6)
+          dphitags = fphi(6,7,p)
+        endif
       endif
+
+c--- set-up variables to catch b's
+        if (bbproc) then
+          if     (jets .eq. 1) then
+            write(6,*) 'Error: bbproc set, but only 1 jet in nplotter.f'
+            stop
+          elseif (jets .eq. 2) then
+            mbb=m56clust
+            ptb1=pt5
+            ptb2=pt6
+            etab1=eta5
+            etab2=eta6
+            rbb=r56
+          elseif (jets .eq. 3) then
+            call getbs(p,ib1,ib2)
+            if     (ib1 .eq. 5) then
+              ptb1=pt5
+              etab1=eta5
+            elseif (ib1 .eq. 6) then
+              ptb1=pt6
+              etab1=eta6
+            elseif (ib1 .eq. 7) then
+              ptb1=pt7
+              etab1=eta7
+            endif
+            if     (ib2 .eq. 5) then
+              ptb2=pt5
+              etab2=eta5
+            elseif (ib2 .eq. 6) then
+              ptb2=pt6
+              etab2=eta6
+            elseif (ib2 .eq. 7) then
+              ptb2=pt7
+              etab2=eta7
+            endif
+            if (ptb2 .gt. ptb1) then
+              swap=ptb1
+              ptb1=ptb2
+              ptb2=swap
+              swap=etab1
+              etab1=etab2
+              etab2=swap
+            endif
+            if     (ib1+ib2 .eq. 11) then
+              mbb=dsqrt((p(5,4)+p(6,4))**2-(p(5,1)+p(6,1))**2
+     .                 -(p(5,2)+p(6,2))**2-(p(5,3)+p(6,3))**2)
+              ptnob=pt7
+              etanob=eta7
+            elseif (ib1+ib2 .eq. 12) then
+              mbb=dsqrt((p(5,4)+p(7,4))**2-(p(5,1)+p(7,1))**2
+     .                 -(p(5,2)+p(7,2))**2-(p(5,3)+p(7,3))**2)
+              ptnob=pt6
+              etanob=eta6
+            elseif (ib1+ib2 .eq. 13) then
+              mbb=dsqrt((p(6,4)+p(7,4))**2-(p(6,1)+p(7,1))**2
+     .                 -(p(6,2)+p(7,2))**2-(p(6,3)+p(7,3))**2)
+              ptnob=pt5
+              etanob=eta5
+            endif
+            rbb=r(p,ib1,ib2)
+          else
+            write(6,*) 'Unforeseen # of jets and b-quarks in nplotter.f'
+            stop
+          endif
+        endif
 
       if ((nproc .eq. 60) .or. (nproc .eq. 61)) then
         etbin=etdoublebin(pt4,pt5)
@@ -338,21 +435,21 @@ c--- only fill the histograms if we're not creating n-tuples
 c --- Histograms to monitor the weight distributions :
       call bookplot(n,tag,'      wt',wt,1.0d0,-1d-2,1d-2,2d-4,'lin')
       n=n+1
-      call bookplot(n,tag,' log10wt',log10(abs(wt)),
-     . 1.0d0,-2d0,0d0,0.1d0,'lin')
+c      call bookplot(n,tag,' log10wt',dlog10(dabs(wt)),
+c     . 1.0d0,-2d0,0d0,0.1d0,'lin')
      
       n=n+1
-      call bookplot(n,tag,'      eta3',eta3,wt,-5d0,5d0,0.5d0,'lin')
+      call bookplot(n,tag,'    eta3',eta3,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
       call bookplot(n,tag,'     pt3',pt3,wt,0d0,150d0,5d0,'log')
       n=n+1
-      call bookplot(n,tag,'      eta4',eta4,wt,-5d0,5d0,0.5d0,'lin')
+      call bookplot(n,tag,'    eta4',eta4,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
       call bookplot(n,tag,'     pt4',pt4,wt,0d0,150d0,5d0,'log')
       n=n+1
-      call bookplot(n,tag,'     eta34',eta34,wt,-5d0,5d0,0.5d0,'lin')
+      call bookplot(n,tag,'   eta34',eta34,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
-      call bookplot(n,tag,'     eta34',eta34,wt,-5d0,5d0,0.2d0,'lin')
+      call bookplot(n,tag,'   eta34',eta34,wt,-5d0,5d0,0.2d0,'lin')
       n=n+1
       call bookplot(n,tag,'    pt34',pt34,wt,0d0,200d0,5d0,'log')
       n=n+1
@@ -365,12 +462,16 @@ c --- Histograms to monitor the weight distributions :
       n=n+1
       call bookplot(n,tag,'pt34,eta=0',pt34a,wt,20d0,480d0,40d0,'log')
       n=n+1
-      call bookplot(n,tag,'     m34',m34,wt,5d0,140d0,5d0,'lin')
+      call bookplot(n,tag,'     m34',m34,wt,10d0,140d0,2d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'    mT34',mtw,wt,20d0,120d0,2d0,'lin')
       n=n+1
       call bookplot(n,tag,'     r34',r34,wt,0d0,4d0,0.1d0,'lin')
       n=n+1
+      call bookplot(n,tag,'  misset',misset,wt,0d0,100d0,2d0,'lin')
+      n=n+1
       if (eventpart .gt. 4) then
-      call bookplot(n,tag,'      eta5',eta5,wt,-5d0,5d0,0.5d0,'lin')
+      call bookplot(n,tag,'    eta5',eta5,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
       call bookplot(n,tag,'     pt5',pt5,wt,0d0,200d0,5d0,'log')
       n=n+1
@@ -392,15 +493,22 @@ c --- Histograms to monitor the weight distributions :
       n=n+1
       endif
       if (eventpart .gt. 5) then
-      call bookplot(n,tag,'      eta6',eta6,wt,-5d0,5d0,0.5d0,'lin')
+      call bookplot(n,tag,'    eta6',eta6,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
       call bookplot(n,tag,'     pt6',pt6,wt,0d0,200d0,5d0,'log')
-      n=n+1
-      call bookplot(n,tag,'     eta56',eta56,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
       call bookplot(n,tag,'   eta56',eta56,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
       call bookplot(n,tag,'    pt56',pt56,wt,10d0,150d0,10d0,'log')
+      n=n+1
+      call bookplot(n,tag,'|y5-y6|',
+     .                    abs(eta5-eta6),wt,0d0,10d0,0.5d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'dphi(56)',fphi(5,6,p),wt,0d0,4d0,0.2d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'detatags',detatags,wt,0d0,10d0,0.2d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'dphitags',dphitags,wt,0d0,4d0,0.2d0,'lin')
       n=n+1
       call bookplot(n,tag,'     r36',r36,wt,0d0,4d0,0.1d0,'lin')
       n=n+1
@@ -408,13 +516,17 @@ c --- Histograms to monitor the weight distributions :
       n=n+1
       call bookplot(n,tag,'     r56',r56,wt,0d0,4d0,0.1d0,'lin')
       n=n+1
-      call bookplot(n,tag,'     m56',m56clust,wt,0d0,200d0,4d0,'log')
+      call bookplot(n,tag,'     m56',m56clust,wt,0d0,200d0,5d0,'log')
       n=n+1
-      call bookplot(n,tag,'     m56',m56clust,wt,0d0,200d0,8d0,'log')
+      call bookplot(n,tag,'     m56',m56clust,wt,0d0,1000d0,10d0,'log')
+      n=n+1
+      call bookplot(n,tag,'     m56',m56clust,wt,0d0,1000d0,50d0,'log')
+      n=n+1
+      call bookplot(n,tag,'     m56',m56clust,wt,0d0,200d0,10d0,'log')
       n=n+1
       call bookplot(n,tag,'     m56',m56clust,wt,0d0,400d0,10d0,'log')
       n=n+1
-      call bookplot(n,tag,'     m56',m56clust,wt,84d0,117d0,3d0,'lin')
+      call bookplot(n,tag,'     m56',m56clust,wt,71d0,111d0,2d0,'lin')
       n=n+1
       call bookplot(n,tag,'   m56_5',m56_5,wt,20d0,160d0,5d0,'lin')
       n=n+1
@@ -436,8 +548,6 @@ c --- Histograms to monitor the weight distributions :
       n=n+1
       call bookplot(n,tag,'   m3456',m3456,wt,50d0,250d0,10d0,'lin')
       n=n+1
-      call bookplot(n,tag,'  misset',misset,wt,0d0,100d0,10d0,'lin')
-      n=n+1
 c      call bookplot(n,tag,'  mttbar',mttbar,wt,300d0,1d3,20d0,'lin')
 c      n=n+1
 c      call bookplot(n,tag,'  transm',transm,wt,20d0,200d0,20d0,'lin')
@@ -446,13 +556,36 @@ c      call bookplot(n,tag,' transcm',transcm,wt,20d0,200d0,20d0,'lin')
 c      n=n+1
       endif
 
+      if (bbproc) then
+      call bookplot(n,tag,'   etab1',etab1,wt,-5d0,5d0,0.5d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'    ptb1',ptb1,wt,0d0,200d0,5d0,'log')
+      n=n+1
+      call bookplot(n,tag,'   etab2',etab2,wt,-5d0,5d0,0.5d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'    ptb2',ptb2,wt,0d0,200d0,5d0,'log')
+      n=n+1
+      call bookplot(n,tag,'     mbb',mbb,wt,0d0,200d0,10d0,'log')
+      n=n+1
+      call bookplot(n,tag,'     rbb',rbb,wt,0d0,4d0,0.1d0,'lin')
+      n=n+1
+      endif
+
       if ((nproc .eq. 60) .or. (nproc .eq. 61)) then
       call bookplot(n,tag,'   etbin',etbin,wt,0.5d0,25.5d0,1d0,'lin')
       n=n+1
       endif
 
       if (eventpart .gt. 6) then
-      call bookplot(n,tag,'      eta7',eta7,wt,-5d0,5d0,0.5d0,'lin')
+
+      if (bbproc) then
+      call bookplot(n,tag,'  etanob',etanob,wt,-5d0,5d0,0.5d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'   ptnob',ptnob,wt,0d0,200d0,5d0,'log')
+      n=n+1
+      endif
+
+      call bookplot(n,tag,'    eta7',eta7,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
       call bookplot(n,tag,'     pt7',pt7,wt,0d0,100d0,5d0,'lin')
       n=n+1
@@ -463,7 +596,7 @@ c      n=n+1
       endif      
 
       if (eventpart .gt. 7) then
-      call bookplot(n,tag,'      eta8',eta8,wt,-5d0,5d0,0.5d0,'lin')
+      call bookplot(n,tag,'    eta8',eta8,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
       call bookplot(n,tag,'     pt8',pt8,wt,0d0,100d0,5d0,'lin')
       endif      
@@ -538,12 +671,12 @@ c      double precision function smearp(i,j,p,sd)
 c      implicit none
 c      include 'constants.f'
 c      include 'masses.f'     
-c      integer i,j,k,idum
+c      integer i,j,k,idum_gasdev
 c      double precision p(mxpart,4),r1(4),r2(4),gasdev,sm1,sm2,sd
-c      data idum/56735345/
+c      data idum_gasdev/56735345/
 
-c      sm1=1d0+gasdev(idum)/sd
-c      sm2=1d0+gasdev(idum)/sd
+c      sm1=1d0+gasdev(idum_gasdev)/sd
+c      sm2=1d0+gasdev(idum_gasdev)/sd
 
 c      do k=1,4
 c        r1(k)=p(i,k)*sm1
@@ -556,25 +689,25 @@ c     . +mb**2)
 c      return
 c      end
       
-c      double precision function fphi(n1,n2,p)
-c      implicit none
-c      include 'constants.f'
-c      integer n1,n2
-c      double precision p(mxpart,4)
+      double precision function fphi(n1,n2,p)
+      implicit none
+      include 'constants.f'
+      integer n1,n2
+      double precision p(mxpart,4)
     
-c      fphi=p(n1,1)*p(n2,1)+p(n1,2)*p(n2,2)
-c      fphi=fphi/dsqrt(p(n1,1)**2+p(n1,2)**2)
-c      fphi=fphi/dsqrt(p(n2,1)**2+p(n2,2)**2)
-c      if (fphi .gt. 1d0) then
-c        fphi=0d0
-c      elseif (fphi .lt. -1d0) then
-c        fphi=pi
-c      else
-c        fphi=dacos(fphi)
-c      endif
+      fphi=p(n1,1)*p(n2,1)+p(n1,2)*p(n2,2)
+      fphi=fphi/dsqrt(p(n1,1)**2+p(n1,2)**2)
+      fphi=fphi/dsqrt(p(n2,1)**2+p(n2,2)**2)
+      if (fphi .gt. 1d0) then
+        fphi=0d0
+      elseif (fphi .lt. -1d0) then
+        fphi=pi
+      else
+        fphi=dacos(fphi)
+      endif
 
-c      return
-c      end
+      return
+      end
           
 c      double precision function ftheta(n1,n2,p)
 c      implicit none

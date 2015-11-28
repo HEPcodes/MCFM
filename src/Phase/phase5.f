@@ -38,9 +38,9 @@ c--- a Breit-Wigner at mH, otherwise just linearly
       
       call phi1_2(r(1),r(2),r(3),r(4),p127,p56,p34,wt3456,*99)
       if (case .eq. 'Wbbjet') then
-      call phi3m(r(5),r(6),p56,p5,p6,mb,mb,wt56,*99)
+        call phi3m(r(5),r(6),p56,p5,p6,mb,mb,wt56,*99)
       else
-      call phi3m0(r(5),r(6),p56,p5,p6,wt56,*99)
+        call phi3m0(r(5),r(6),p56,p5,p6,wt56,*99)
       endif
       call phi3m0(r(7),r(8),p34,p3,p4,wt34,*99)
       wt=wt0*wt127*wt3456*wt56*wt34

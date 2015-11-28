@@ -24,20 +24,19 @@
       include 'limits.f'
       include 'workdir.f'
       include 'jetcuts.f'
+      include 'lhapdf.f'
       include 'alfacut.f'
-      character*72 inputfile
+      include 'pdlabel.f'
+      character*72 inputfile,getinput
       character*90 line
       character*4 part
       character*30 runstring
-      character*7 pdlabel
-      character*50 PDFname
       integer nargs,iargc,lenocc,lenarg
       logical spira
       logical creatent,dswhisto,dryrun,makecuts
       integer nmin,nmax
       integer nproc,ih1,ih2,itmx1,itmx2,ncall1,ncall2,idum,origij
       integer NPTYPE,NGROUP,NSET
-      integer PDFmember
       double precision rtsmin,sqrts
       double precision mbbmin,mbbmax,Mwmin,Mwmax
       double precision Rcut
@@ -62,9 +61,7 @@
       common/ranno/idum
       common/dryrun/dryrun
       
-      common/pdlabel/pdlabel
       common/pdflib/NPTYPE,NGROUP,NSET
-      common/lhapdf/PDFmember,PDFname
       
       common/Rcut/Rcut
       common/makecuts/makecuts
@@ -133,21 +130,22 @@ c--- work out the name of the input file and open it
       endif
       
       lenarg=lenocc(inputfile)
-      if (inputfile(lenarg-3:lenarg) .eq. '.DAT') then
-        workdir=''
-      else
+
+      if ((lenarg.lt.4).or.(inputfile(lenarg-3:lenarg).ne.'.DAT')) then
         workdir=inputfile
 c--- truncate if the directory / is included
         if (workdir(lenarg:lenarg) .eq. '/') then
+           workdir(lenarg:lenarg)=' '
            lenarg=lenarg-1
-           workdir=workdir(1:lenarg)
         endif
         if (nargs .ge. 2) then
-          call getarg(2,inputfile)
-          inputfile=workdir(1:lenarg)//'/'//inputfile
+          call getarg(2,getinput)
+          inputfile=workdir(1:lenarg)//'/'//getinput
         else  
           inputfile=workdir(1:lenarg)//'/input.DAT'
         endif
+      else
+        workdir=''
       endif
             
       write(6,*) 'Using input file named ',inputfile
@@ -274,6 +272,10 @@ c--- jets and cuts options
       if (verbose) write(6,*) 'Rllmin',Rllmin
       read(20,*) delyjjmin
       if (verbose) write(6,*) 'delyjjmin',delyjjmin
+      read(20,*) ptbjetmin
+      if (verbose) write(6,*) 'ptbjetmin',ptbjetmin
+      read(20,*) etabjetmax
+      if (verbose) write(6,*) 'etabjetmax',etabjetmax
       read(20,*) gammpt
       if (verbose) write(6,*) 'gammpt',gammpt
       read(20,*) gammrap
@@ -331,15 +333,15 @@ c--- set-up mass window cuts
       wsqmax=Mwmax**2
 
 c--- set-up the variables for the process we wish to consider
-      call chooser(nproc)
+      call chooser
 
 c--- set-up the random number generator with a negative seed
       idum=-abs(origij)
       randummy=ran1(idum)
 
 c--- initialize masses for alpha_s routine
-      cmass=sqrt(mcsq)
-      bmass=sqrt(mbsq)
+      cmass=dsqrt(mcsq)
+      bmass=dsqrt(mbsq)
 
 c--- E-M gauge invariance requires that delg1_g=0
       delg1_g=0d0

@@ -18,7 +18,6 @@
       include 'zprods_com.f'
       include 'epinv.f'
       include 'scheme.f'
-      include 'flags.f'
       integer j,k,
      . iqqbgLL(5),iqqbgLR(5),iqqbgRL(5),iqqbgRR(5),
      . iqgqLL(5),iqgqLR(5),iqgqRL(5),iqgqRR(5),

@@ -1,10 +1,11 @@
-      subroutine swapjet(pjet,jetlabel,jetindex,i,j)
+      subroutine swapjet(pjet,jetindex,i,j)
 c--- swaps jets i..j in pjet
       implicit none
       include 'constants.f'
+      include 'jetlabel.f'
       integer i,j,k,itmp,jetindex(mxpart)
       double precision pjet(mxpart,4),tmp
-      character jetlabel(mxpart)*2,chartmp*2
+      character*2 chartmp
  
       do k=1,4
         tmp=pjet(i,k)

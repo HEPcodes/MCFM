@@ -20,7 +20,7 @@ c--- Weak Bosion Fusion : sums up WW and VV contributions
       call WW_Hqq_gs(p,msqc_ww)
       call ZZ_Hqq_gs(p,msqc_zz)
       
-      do nd=0,ndmax
+      do nd=1,ndmax
       do j=-nf,nf
       do k=-nf,nf
         msqc(nd,j,k)=msqc_ww(nd,j,k)+msqc_zz(nd,j,k)

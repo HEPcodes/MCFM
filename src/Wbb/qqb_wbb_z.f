@@ -10,12 +10,12 @@
       double precision xl12,xl15,xl16,xl25,xl26,xl56
       double precision ii_qq,ii_qg,if_qq,fi_qq,ff_qq,tempqg
 
-      xl12=log(two*dot(p,1,2)/musq)
-      xl15=log(-two*dot(p,1,5)/musq)
-      xl16=log(-two*dot(p,1,6)/musq)
-      xl25=log(-two*dot(p,2,5)/musq)
-      xl26=log(-two*dot(p,2,6)/musq)
-      xl56=log(+two*dot(p,5,6)/musq)
+      xl12=dlog(+two*dot(p,1,2)/musq)
+      xl15=dlog(-two*dot(p,1,5)/musq)
+      xl16=dlog(-two*dot(p,1,6)/musq)
+      xl25=dlog(-two*dot(p,2,5)/musq)
+      xl26=dlog(-two*dot(p,2,6)/musq)
+      xl56=dlog(+two*dot(p,5,6)/musq)
 
       do is=1,3
       Q1(q,q,a,is)=ason4pi

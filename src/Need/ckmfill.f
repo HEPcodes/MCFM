@@ -131,9 +131,9 @@ C case W-
       Vsq(j,k)=Vsq(k,j)
       glsq(j,k)=glsq(k,j)
       grsq(j,k)=grsq(k,j)
-      VV(j,k)=sqrt(Vsq(j,k))
-      gl(j,k)=sqrt(glsq(j,k))
-      gr(j,k)=sqrt(grsq(j,k))
+      VV(j,k)=dsqrt(Vsq(j,k))
+      gl(j,k)=dsqrt(glsq(j,k))
+      gr(j,k)=dsqrt(grsq(j,k))
       enddo
       enddo
       do j=1,5

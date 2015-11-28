@@ -182,7 +182,7 @@ c     we are renormalising the weights by the bin width
       ELSEIF(OPER.EQ.'S') THEN
       HIST(K,L)=X*HIST(I,L)**2
       ELSEIF(OPER.EQ.'l') THEN
-        IF(HIST(I,L).EQ.0.d0.OR.J.EQ.0.d0) THEN
+        IF(HIST(I,L).EQ.0.d0.OR.J.EQ.0) THEN
              HIST(K,L)=0.d0
              ELSE
              HIST(K,L)=X*LOG10(Y*HIST(I,L))

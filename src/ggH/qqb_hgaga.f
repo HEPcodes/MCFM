@@ -22,8 +22,10 @@ c---set msq=0 to initialize
       enddo
 
 
+
       decay=1d0
       s12=s(1,2)
+ 
 c---calculate propagators and decay
 c      decay=gwsq**3*wmass**2*s(3,5)*s(4,6)
 c      decay=decay/((s(3,4)-wmass**2)**2+(wmass*wwidth)**2)

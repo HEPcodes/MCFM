@@ -12,8 +12,6 @@ c                            -->b(p3)+bbar(p4)
       include 'constants.f'
       include 'ptilde.f'
       include 'qqgg.f'
-      include 'flags.f'
-      include 'ckm.f'
       integer j,k,nd
 c --- remember: nd will count the dipoles
       
@@ -28,13 +26,13 @@ c --- remember: nd will count the dipoles
      & msq15_6v(-nf:nf,-nf:nf),msq16_2v(-nf:nf,-nf:nf),
      & msq16_5v(-nf:nf,-nf:nf),msq25_6v(-nf:nf,-nf:nf),
      & msq15_2v(-nf:nf,-nf:nf),msq25_1v(-nf:nf,-nf:nf),
-     & dummy(-nf:nf,-nf:nf),dummyv(-nf:nf,-nf:nf),
+     & dummy(-nf:nf,-nf:nf),
      & sub15_2(4),sub25_1(4),sub16_2(4),sub26_1(4),
      & sub15_6(4),sub16_5(4),sub25_6(4),sub26_5(4),
      & sub56_1(4),sub56_2(4),sub56_1v,sub56_2v,
      & sub26_5v,sub26_1v,sub16_5v,sub16_2v,sub15_2v,sub15_6v,sub25_6v,
      & sub25_1v
-      external gg_hg,gg_hg_gvec,donothing_gvec
+      external gg_hg,gg_hg_gvec
       ndmax=6
 
 c--- calculate all the initial-initial dipoles

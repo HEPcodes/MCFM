@@ -19,12 +19,12 @@ c----p(5,i) and p(4,i) are set equal to zero
       data p7/0d0,0d0,0d0,0d0/
 
       wt3=0d0
-      tau=exp(log(taumin)*r(6))
-      y=0.5d0*log(tau)*(1d0-2d0*r(7))
-      xjac=log(taumin)*tau*log(tau)
+      tau=dexp(dlog(taumin)*r(6))
+      y=0.5d0*dlog(tau)*(1d0-2d0*r(7))
+      xjac=dlog(taumin)*tau*dlog(tau)
 
-      xx(1)=sqrt(tau)*exp(+y)
-      xx(2)=sqrt(tau)*exp(-y)
+      xx(1)=dsqrt(tau)*dexp(+y)
+      xx(2)=dsqrt(tau)*dexp(-y)
 
 c---if x's out of normal range alternative return
       if   ((xx(1) .gt. 1d0) 
@@ -55,6 +55,8 @@ c---if x's out of normal range alternative return
       p(7,nu)=p7(nu)
       enddo 
       wt3=xjac*pswt
+
       if(wt3 .eq. 0d0) return 1
+
       return
       end

@@ -28,6 +28,8 @@
       COMMON/MOM/PKS
       logical first
       data first/.true./       
+      save first
+
 c---- Fill common blocks for Kleiss and Stirling   
       if (first) then
          first=.false.

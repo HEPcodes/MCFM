@@ -4,7 +4,6 @@ C     Taken from Kauffman,Desai,Risal
 C     PRD 55 1997 (4009)
 C     and checked with hep-ph/9903330 
       include 'constants.f'
-      include 'masses.f'
       include 'zprods_com.f'
       include 'sprods_com.f'
       integer p1,p2,p3,p4,j1,j2,j3

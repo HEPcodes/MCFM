@@ -12,16 +12,12 @@ c                           ---> b(p3)+bbar(p4)
       include 'masses.f'
       include 'ewcouple.f'
       include 'zcouple.f'
-      include 'ckm.f'
       include 'sprods_com.f'
-      integer j,k,m,n,pn(-nf:nf),x1(2),x2(2)
+      integer j,k
       double precision p(mxpart,4),fac,s34
       double precision msq(-nf:nf,-nf:nf),hdecay,
      . ud_ud_LL,udb_udb_LL,ud_ud_LR,udb_udb_LR
       
-      data pn/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      data x1/1,2/,x2/2,1/
-
       do j=-nf,nf
       do k=-nf,nf
       msq(j,k)=0d0
@@ -78,9 +74,8 @@ c--- ub(1)+d(2) -> ub(5)+d(6)
       include 'masses.f'
       include 'sprods_com.f'
       include 'ewcouple.f'
-      include 'zcouple.f'
       double precision zll,zLR,htheta
-      double precision propw,propz,x
+      double precision propz,x
       integer i1,i2,i5,i6
 C--- define Heaviside theta function (=1 for x>0) and (0 for x < 0)
       htheta(x)=half+sign(half,x)

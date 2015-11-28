@@ -16,6 +16,8 @@
       include 'efficiency.f'
       include 'facscale.f'
       include 'maxwt.f'
+      include 'jetlabel.f'
+      include 'pdlabel.f'
 c --- DSW. To store flavour information :
       include 'flavours.f'
 c --- DSW.
@@ -24,7 +26,7 @@ c --- To use VEGAS random number sequence :
       integer idum
       COMMON/ranno/idum
       double precision ran1
-      integer ih1,ih2,j,k,jets,nproc,nvec,sgnj,sgnk
+      integer ih1,ih2,j,k,nproc,nvec,sgnj,sgnk
       double precision r(mxdim),W,sqrts,xmsq,val,temp
       double precision fx1(-nf:nf),fx2(-nf:nf)
       double precision p(mxpart,4),pjet(mxpart,4)
@@ -35,13 +37,10 @@ c --- To use VEGAS random number sequence :
      . taumin,BrnRat,rcut
       double precision xmsq_bypart(-1:1,-1:1),lord_bypart(-1:1,-1:1)
       integer nqcdjets,nqcdstart,notag
-      common/parts/jets,jetlabel
-      common/nqcdjets/nqcdjets,nqcdstart
       logical bin,makecuts,gencuts,first
-      character pdlabel*7,jetlabel(mxpart)*2
+      common/nqcdjets/nqcdjets,nqcdstart
       common/density/ih1,ih2
       common/energy/sqrts
-      common/pdlabel/pdlabel
       common/bin/bin
       common/x1x2/xx
       common/taumin/taumin
@@ -90,6 +89,8 @@ c      call initialize
      .        (case .eq. 'qg_tbb') 
      .   .or. (case .eq. 'W_3jet') 
      .   .or. (case .eq. 'Z_3jet') 
+     .   .or. (case .eq. 'Wbbjet') 
+     .   .or. (case .eq. 'Zbbjet') 
      .   .or. (case .eq. 'qqHqqg')
      .   .or. (case .eq. 'WWHqqg')
      .   .or. (case .eq. 'ZZHqqg')
@@ -99,9 +100,9 @@ c      call initialize
           call gen_njets(r,3,p,pswt,*999)      
 c          call gen5(r,p,pswt,*999)
 c          call gen5a(r,p,pswt,*999)
-      elseif  (case .eq. 'Wbbjet') then
-          npart=5
-          call gen5(r,p,pswt,*999)
+c      elseif  (case .eq. 'Wbbjet') then
+c          npart=5
+c          call gen5(r,p,pswt,*999)
       elseif ((case .eq. 'H_1jet')
      .   .or. (case .eq. 'Z_1jet')
      .   .or. (case .eq. 'W_1jet')
@@ -179,6 +180,8 @@ c          endif
       elseif (
      .        (case .eq. 'W_2jet')
      .   .or. (case .eq. 'Z_2jet')
+     .   .or. (case .eq. 'Wbbbar')
+     .   .or. (case .eq. 'Zbbbar')
      .   .or. (case .eq. 'ggfus2')
      .   .or. (case .eq. 'qq_Hqq')
      .   .or. (case .eq. 'WW_Hqq')
@@ -227,8 +230,8 @@ c----reject event if any s(i,j) is too small
       endif   
       
       if (case(1:4) .ne. 'vlch') then      
-      call fdist(pdlabel,ih1,xx(1),pdfscale,fx1)
-      call fdist(pdlabel,ih2,xx(2),pdfscale,fx2)
+      call fdist(ih1,xx(1),pdfscale,fx1)
+      call fdist(ih2,xx(2),pdfscale,fx2)
       endif
 
       flux=fbGeV2/(2d0*xx(1)*xx(2)*W)
@@ -520,7 +523,7 @@ c--- if nqcdjets=0, no clustering is performed and pjet=p
         enddo
         jets=nqcdjets
       else
-        call genclust2(p,rcut,jets,pjet,jetlabel)
+        call genclust2(p,rcut,pjet,0)
         if((nproc .eq. 152) .or. (nproc .eq. 161))then
           if (jets .ne. 2) then
             njetzero=njetzero+1

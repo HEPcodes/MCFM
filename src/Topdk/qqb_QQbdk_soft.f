@@ -15,11 +15,8 @@ C***********************************************************************
 ************************************************************************
 
       include 'constants.f'
-      include 'masses.f'
       include 'qcdcouple.f'
-      include 'ewcouple.f'
       include 'sprods_com.f'
-      include 'ckm.f'
       include 'msq_cs.f'
       integer j,k,nu
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),ps(mxpart,4)

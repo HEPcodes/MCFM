@@ -1,11 +1,11 @@
-      subroutine genclust_cone(q,R,njet,qfinal,jetlabel)
+      subroutine genclust_cone(q,R,qfinal,isub)
 c---  clusters momenta using plabel to determine which 
-c---  particles should be clustered. Forms njet jets according to
+c---  particles should be clustered. Forms 'jets' jets according to
 c---  the Run II cone algorithm with cone size R.
 c---  Furthermore, the clustered jets are only observed if
 c---  pT(jet) > ptjetmin and y(jet) < etajetmax
 c--- 
-c---  qfinal is the final vector q1,.... q(4+njets)
+c---  qfinal is the final vector q1,.... q(4+jets)
 c---  where non-jet four vectors are set equal to the incoming q 
       implicit none
       include 'constants.f'
@@ -13,12 +13,13 @@ c---  where non-jet four vectors are set equal to the incoming q
       include 'limits.f'
       include 'npart.f'
       include 'jetcuts.f'
+      include 'jetlabel.f'
       double precision q(mxpart,4),qjet(mxpart,4),qfinal(mxpart,4)
       double precision R,aetarap
       double precision bclustmass,ptjet,m56,m57,m67
-      integer njet,i,j,k,nu,iter,maxjet,
-     . ajet,jetindex(mxpart),nproc,countb
-      character jetlabel(mxpart)*2,plabel(mxpart)*2
+      integer i,j,k,nu,iter,maxjet,
+     . ajet,jetindex(mxpart),nproc,countb,nbq,nba,isub
+      character*2 plabel(mxpart)
       double precision protoq(mxpart,4),deltar,deltarj,et,etmax,net,
      . qshared(4),sharedet
       integer maxproto,protoc(mxpart,0:mxpart),eti,shared,
@@ -26,7 +27,7 @@ c---  where non-jet four vectors are set equal to the incoming q
       common/plabel/plabel
       common/nproc/nproc
 
-      njet=0
+      jets=0
       maxjet=0
 
       do i=1,mxpart
@@ -35,14 +36,14 @@ c---  where non-jet four vectors are set equal to the incoming q
         enddo
       enddo
 
-c--- pick out jets: note that we search to npart+2 and to prevent
-c--- extra gluons identified in 'chooser' contaminating lowest order
-c--- we check that the energy of the particle is not zero     
-      do i=3,npart+2
-      if (((plabel(i) .eq. 'pp') .or. (plabel(i) .eq. 'pj')
-     ..or.(plabel(i) .eq. 'bq') .or. (plabel(i) .eq. 'ba')
-     ..or.(plabel(i) .eq. 'qj'))
-     ..and. (q(i,4) .gt. 1d-10)) then
+
+c--- pick out jets: note that we search to npart+2-isub, to get the
+c--- number of particles right. Note that isub=0 for all calls except
+c--- the dipole contributions, where isub=1.   
+      do i=3,npart+2-isub
+      if ( (plabel(i) .eq. 'pp') .or. (plabel(i) .eq. 'pj')
+     . .or.(plabel(i) .eq. 'bq') .or. (plabel(i) .eq. 'ba')
+     . .or.(plabel(i) .eq. 'qj') ) then
         maxjet=maxjet+1
         jetindex(maxjet)=i
         jetlabel(maxjet)=plabel(i)
@@ -59,13 +60,13 @@ c--- for no partons, just switch q into qfinal
             qfinal(i,nu)=q(i,nu)
           enddo
         enddo
-        njet=0
+        jets=0
         return
       endif
 
 c--- skip clustering if we only have one parton  
       if (maxjet .eq. 1) then
-        njet=1
+        jets=1
         do nu=1,4
           qfinal(1,nu)=qjet(1,nu)
         enddo
@@ -126,7 +127,7 @@ c--- set up the proto-jets
 c      write(6,*) 'Found ',maxproto,' proto-jets'
 c      stop
       
-      njet=0
+      jets=0
       
       iter=0
 c--- loops through all the iterations of the algorithm      
@@ -165,9 +166,9 @@ c--- check to see if any partons are shared by this proto-jet
       
       if (shared .eq. 0) then
 c-- proto-jet does not share any partons - move it to qfinal and repeat
-        njet=njet+1
+        jets=jets+1
         do nu=1,4
-          qfinal(njet,nu)=protoq(eti,nu)
+          qfinal(jets,nu)=protoq(eti,nu)
         enddo
 c--- shuffle down the proto-jets
         do i=eti+1,maxproto
@@ -179,7 +180,7 @@ c--- shuffle down the proto-jets
           enddo
         enddo
         maxproto=maxproto-1
-c        write(6,*) 'Found jet number ',njet
+c        write(6,*) 'Found jet number ',jets
         goto 1
       endif
 
@@ -275,13 +276,13 @@ c      pause
  2    continue 
  
 c---- transfer qfinal --> qjet
-      do i=1,njet
+      do i=1,jets
         do nu=1,4
           qjet(i,nu)=qfinal(i,nu)
         enddo
       enddo
             
-c      write(6,*) 'Finished finding jets: got ',njet
+c      write(6,*) 'Finished finding jets: got ',jets
 c      pause
       
 c--- restore incoming partons
@@ -306,17 +307,17 @@ c--- set all other momenta to zero and restore leptons
 c----remove jets that are below the pT threhold or which lie outside
 c----the observable rapidity region
      
-c      write(*,*) 'AFTER CLUSTERING: Obtained ',njet,' jets'
+c      write(*,*) 'AFTER CLUSTERING: Obtained ',jets,' jets'
 
 c--- restore jets
       ajet=0
-      do i=1,njet
+      do i=1,jets
 c        write(*,*) 'Jet ',i,'(',jetlabel(i),')',jetindex(i)
 c        write(*,*) 'pt: ',ptjet(i,q,qjet),' vs min. ',ptjetmin
 c        write(*,*) 'ay: ',aetarap(i,qjet),' vs max. ',etajetmax
         if ((ptjet(i,q,qjet) .gt. ptjetmin) .and.
-     .      (aetarap(i,qjet)   .gt. etajetmin) .and.
-     .      (aetarap(i,qjet)   .lt. etajetmax)) then     
+     .      (aetarap(i,qjet) .gt. etajetmin) .and.
+     .      (aetarap(i,qjet) .lt. etajetmax)) then     
         ajet=ajet+1
         do nu=1,4
           qfinal(jetindex(ajet),nu)=qjet(i,nu)
@@ -325,18 +326,18 @@ c        write(*,*) 'ay: ',aetarap(i,qjet),' vs max. ',etajetmax
         endif
       enddo
       
-c--- if no jets are removed by eta and pt cuts, then njet=ajet
-      if (ajet .lt. njet) then
-        do i=ajet+1,njet
+c--- if no jets are removed by eta and pt cuts, then jets=ajet
+      if (ajet .lt. jets) then
+        do i=ajet+1,jets
           do nu=1,4
             qfinal(jetindex(i),nu)=0d0
           enddo
         enddo
-        njet=ajet
+        jets=ajet
       endif
       
-c      write(*,*) '... and ',njet,' jets after pt and eta cuts'
-c      do i=1,njet
+c      write(*,*) '... and ',jets,' jets after pt and eta cuts'
+c      do i=1,jets
 c        write(*,*) i,jetlabel(i)
 c      enddo
 c      pause
@@ -344,28 +345,30 @@ c      pause
 c--- check that 5 is a b (for bH process)
       if ((nproc/10 .eq. 14)) then
         countb=0
-        if ((njet.ge. 1) .and. ((jetlabel(1) .eq. 'bq')
+        if ((jets.ge. 1) .and. ((jetlabel(1) .eq. 'bq')
      .    .or. (jetlabel(1) .eq. 'ba'))) countb=1
-        if ((njet.eq. 2) .and. ((jetlabel(2) .eq. 'bq')
+        if ((jets.eq. 2) .and. ((jetlabel(2) .eq. 'bq')
      .    .or. (jetlabel(2) .eq. 'ba'))) countb=countb+1
-        if ((njet .eq. 1) .and. (countb .eq. 0)) njet=-1
-        if ((nproc .eq. 142) .and. (njet .eq. 2)
-     .      .and. (countb .ne. 1)) njet=-1
-        if ((nproc .eq. 145) .and. (njet .eq. 2)
-     .      .and. (countb .ne. 2)) njet=-1
+        if ((jets .eq. 1) .and. (countb .eq. 0)) jets=-1
+        if ((nproc .eq. 142) .and. (jets .eq. 2)
+     .      .and. (countb .ne. 1)) jets=-1
+        if ((nproc .eq. 145) .and. (jets .eq. 2)
+     .      .and. (countb .ne. 2)) jets=-1
       endif
       
 c--- check that 5 and 6 are b and b-bar (if appropriate)
-      if ((bbproc) .and. (bclustmass(njet,qfinal,jetlabel) .eq. 0d0))
-     .  njet=-1    
-
+      if (bbproc) then
+        call getbs(qfinal,nbq,nba)
+        if ((nbq .eq. 0) .or. (nba .eq. 0)) jets=-1    
+      endif
+      
 c--- perform m56 mass cut if there are 2 or more jets
-      if (njet .ge. 2) then
+      if (jets .ge. 2) then
         m56=(qfinal(5,4)+qfinal(6,4))**2
      .     -(qfinal(5,1)+qfinal(6,1))**2
      .     -(qfinal(5,2)+qfinal(6,2))**2
      .     -(qfinal(5,3)+qfinal(6,3))**2
-        if (njet .ge. 3) then
+        if (jets .ge. 3) then
         m57=(qfinal(5,4)+qfinal(7,4))**2
      .     -(qfinal(5,1)+qfinal(7,1))**2
      .     -(qfinal(5,2)+qfinal(7,2))**2
@@ -377,12 +380,12 @@ c--- perform m56 mass cut if there are 2 or more jets
         m56=max(m56,max(m57,m67))
         endif
         if ((m56 .lt. bbsqmin) .or. (m56 .gt. bbsqmax)) then
-          njet=-1
+          jets=-1
         endif
       endif
 
 c      if (nproc .eq. 140) then
-c      write(6,*) njet
+c      write(6,*) jets
 c      write(6,*) 'jetlabel(1)',jetlabel(1)
 c      write(6,*) 'jetlabel(2)',jetlabel(2)
 c      write(6,*) 'jetlabel(3)',jetlabel(3)
@@ -390,20 +393,20 @@ c      write(6,*) 'jetlabel(4)',jetlabel(4)
 c      write(6,*) 'jetlabel(5)',jetlabel(5)
 c      write(6,*) 'jetlabel(6)',jetlabel(6)
 c      write(6,*) 'jetlabel(7)',jetlabel(7)
-c      write(6,*) 'threebee(njet,jetlabel)',threebee(njet,jetlabel)
+c      write(6,*) 'threebee()',threebee()
 
-c      if (threebee(njet,jetlabel) .eqv. .false.) njet=-1    
+c      if (threebee() .eqv. .false.) jets=-1    
 
 c      endif
 
        
             
-c      do i=1,njet
+c      do i=1,jets
 c        write(*,*) i,jetlabel(i)
 c      enddo
 c      pause
-c      write(*,*) 'Started with ',njet+nremoved,' and now have ',njet
-c      write(*,*) 'Found ',njet,' jets'
+c      write(*,*) 'Started with ',jets+nremoved,' and now have ',jets
+c      write(*,*) 'Found ',jets,' jets'
 
       return
       end

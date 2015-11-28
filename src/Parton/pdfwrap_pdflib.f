@@ -1,10 +1,9 @@
 *****************
 * PDFLIB version*
 *****************
-      subroutine pdfwrap(pdlabel)
+      subroutine pdfwrap
       implicit none
       include 'masses.f'
-      character*7 pdlabel
       double precision amz
 * PDFLIB variables
       integer NPTYPE,NGROUP,NSET

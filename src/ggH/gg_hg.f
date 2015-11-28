@@ -8,7 +8,7 @@ c     g(-p1)+g(-p2)-->H(-->  b(p3)+b~(p4))+g(p5)
       include 'masses.f'
       include 'qcdcouple.f'
       include 'ewcouple.f'
-      integer j,k,cs,iglue
+      integer j,k,iglue
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4)
       double precision ss,tt,uu,mhsq,hdecay,s(mxpart,mxpart)
       double precision s34,Asq,fac

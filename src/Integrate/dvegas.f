@@ -1,11 +1,21 @@
          block data vegas_data
          implicit  double precision (a-h,o-z)
-         implicit integer*4 (i-n)
+         implicit integer (i-n)
          include 'vegas_common.f'
-         data ncall/10000/,itmx/15/,nprn/1000/,acc/-1.d0/,
-     1   xl/mxdim*0.d0/
-     2   xu/mxdim*1.d0/
+         include 'maxwt.f'
+         parameter(mprod=50*mxdim)
+         common/bveg2/xi(50,mxdim),si,si2,swgt,schi,ndo,it
+c
+         data ncall/10000/,itmx/15/,nprn/1000/,acc/-1d0/,
+     1   xl/mxdim*0d0/
+     2   xu/mxdim*1d0/
+c
+         data XI/mprod*1d0/
+c
+         data wtmax/0d0/
+c
          end
+
 C
 C
 C        NCALL IS THE NUMBER OF CALLS TO VEGAS.
@@ -20,7 +30,7 @@ c        routine performs n dim Monte Carlo Integration
 c        written by G. P. Lepage
 c
          implicit double precision (a-h,o-z)
-         implicit integer*4 (i-n)
+         implicit integer (i-n)
          include 'vegas_common.f' 
          include 'gridinfo.f'
          include 'maxwt.f'
@@ -30,12 +40,7 @@ c
          dimension d(50,mxdim),di(50,mxdim),xin(50),r(50),
      1   dx(mxdim),dt(mxdim),x(mxdim),kg(mxdim),ia(mxdim)
          data ndmx/50/,alph/1.5d0/,one/1d0/,mds/1/
-         data wtmax/0d0/
-cc
-cc
-         data XI/mprod*1.D0/
 
-c
          if(ndim .gt. mxdim) then
          write(6,*) 'ndim',ndim
          write(6,*) 'mxdim',mxdim
@@ -60,7 +65,7 @@ c        no initialisation
          nd=ndmx
          ng=1
          if(mds.eq.0)go to 2
-         ng=(ncall/2d0)**(1d0/ndim)
+         ng=int((dble(ncall)/2d0)**(1d0/dble(ndim)))
          mds=1
          if((2*ng-ndmx).lt.0)go to 2
          mds=-1
@@ -70,10 +75,10 @@ c        no initialisation
  2       k=ng**ndim
          npg=ncall/k
          if(npg.lt.2)npg=2
-         calls=npg*k
+         calls=dble(npg*k)
          dxg=one/ng
-         dv2g=(calls*dxg**ndim)**2/npg/npg/(npg-one)
-         xnd=nd
+         dv2g=(calls*dxg**ndim)**2/dble(npg)/dble(npg)/dble(npg-one)
+         xnd=dble(nd)
          ndm=nd-1
          dxg=dxg*xnd
          xjac=one/calls
@@ -101,7 +106,7 @@ c--- read-in grid if necessary
 
          if(nd.eq.ndo)go to 8
          rc=ndo/xnd
-         do 7 J=1,ndim
+         do 7 j=1,ndim
          k=0
          xn=0d0
          dr=xn
@@ -127,7 +132,7 @@ c
          entry vegas3(fxn,avgi,sd,chi2a)
 c         main integration loop
  9       it=it+1
-          ti=0d0
+         ti=0d0
          tsi=ti
          do 10 j=1,ndim
          kg(j)=1
@@ -141,18 +146,19 @@ c
  12      k=k+1
          wgt=xjac
          do 15 j=1,ndim
-         xn=(kg(j)-ran1(idum))*dxg+one
-         ia(j)=xn
+         xn=(dble(kg(j))-ran1(idum))*dxg+one
+         ia(j)=int(xn)
          if(ia(j).gt.1)go to 13
          xo=xi(ia(j),j)
-         rc=(xn-ia(j))*xo
+         rc=(xn-dble(ia(j)))*xo
          go to 14
 13       xO=xi(ia(j),j)-xi(ia(j)-1,j)
-         rc=xi(ia(j)-1,j)+(xn-ia(j))*xo
+         rc=xi(ia(j)-1,j)+(xn-dble(ia(j)))*xo
  14      x(j)=xl(j)+rc*dx(j)
  15      wgt=wgt*xo*xnd
 c
          f=wgt
+c         write(6,FMT='(a20,2F20.16)') 'xo,xnd in dvegas: ',xo,xnd
          f=f*fxn(x,wgt)
          f2=f*f
          fb=fb+f
@@ -190,8 +196,8 @@ c
         schi=schi+ti2*wgt
 995    FORMAT(1X,'SWGT',G14.6,'SI2',G14.6)
         avgi=si/swgt
-        sd=swgt*it/si2
-        chi2a=sd*(schi/swgt-avgi*avgi)/(it-.999d0)
+        sd=swgt*dble(it)/si2
+        chi2a=sd*(schi/swgt-avgi*avgi)/(dble(it)-.999d0)
         sd=dsqrt(one/sd)
 c
         if(nprn.eq.0)go to 21
@@ -223,7 +229,7 @@ c
         rc=0d0
         do 24 i=1,nd
         r(i)=0d0
-        if(d(i,j).le.0.)go to 24
+        if(d(i,j).le.0d0)go to 24
         xo=dt(j)/d(i,j)
         r(i)=((xo-one)/xo/dlog(xo))**alph
  24     rc=rc+r(i)
@@ -284,9 +290,10 @@ c     3  24x,'std dev =',g14.8 / 24x,'chi**2 per it''n =',g10.4)
  203    format(/(5z16))
         return
         end
+
         subroutine save(ndim)
         implicit double precision (a-h,o-z)
-        implicit integer*4 (i-n)
+        implicit integer (i-n)
         include 'mxdim.f'
         common/bveg2/xi(50,mxdim),si,si2,swgt,schi,ndo,it
 c

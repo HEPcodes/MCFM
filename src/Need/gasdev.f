@@ -9,7 +9,7 @@
         V2=2d0*RN(IDUM)-1d0
         RSQ=V1**2+V2**2
         IF((RSQ.GE.1d0).OR.(RSQ.EQ.0d0))GO TO 1
-        FAC=SQRT(-2d0*LOG(RSQ)/RSQ)
+        FAC=DSQRT(-2d0*LOG(RSQ)/RSQ)
         GSET=V1*FAC
         GASDEV=V2*FAC
         ISET=1

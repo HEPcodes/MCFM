@@ -5,7 +5,6 @@ c--- the Higgs mass
       include 'constants.f'
       include 'mxdim.f'
       include 'debug.f'
-      include 'process.f'
       include 'masses.f'
       integer nu
 
@@ -16,7 +15,6 @@ c--- the Higgs mass
       double precision xx(2),xmin,s3456,wt3456,ymax,yave
 
       common/energy/sqrts
-      common/pext/p1ext,p2ext
       common/x1x2/xx
       parameter(xmin=1d-5)
 

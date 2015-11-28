@@ -27,7 +27,7 @@ C---p1+p2 --> p3+p4
       vs=(vsqmax-vsqmin)*r(3)+vsqmin
       s34=1/vs
       w3=(vsqmax-vsqmin)*s34**2
-      rtshat=sqrt(s34)
+      rtshat=dsqrt(s34)
       ymax=dlog(sqrts/rtshat)
       yave=ymax*(two*r(1)-1d0)
       

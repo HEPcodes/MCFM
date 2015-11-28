@@ -72,7 +72,7 @@ c-- rapidities of 100 will be rejected by any sensible cuts
       implicit none
       include 'constants.f'
       integer j
-      double precision p(mxpart,4),dot
+      double precision p(mxpart,4)
 c--- This is the formula for pt
       pt=dsqrt(p(j,1)**2+p(j,2)**2)
 c--- This is the formula for Et 

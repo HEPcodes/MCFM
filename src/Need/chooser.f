@@ -1,4 +1,4 @@
-      subroutine chooser(nproc)
+      subroutine chooser
 c---- Note added 4/21/03
 c---- plabel set to 'ig' (for 'ignore') means that this
 c---- particle should not be subject to any cuts, so that the
@@ -23,12 +23,12 @@ c---- total cross-section comes out correctly when the BR is removed
       double precision br,BrnRat,brwen,brzee,brtau,brtop
       double precision mass2,width2,mass3,width3
       common/breit/n2,n3,mass2,width2,mass3,width3
-      integer nproc,nnproc,mproc,j,n2,n3,nqcdjets,nqcdstart,isub,notag
+      integer nproc,mproc,j,n2,n3,nqcdjets,nqcdstart,isub,notag
       logical spira
       character*66 pname
       character*2 plabel(mxpart)
       character*72 string
-      common/nproc/nnproc
+      common/nproc/nproc
       common/BrnRat/BrnRat
       common/spira/spira
       common/nqcdjets/nqcdjets,nqcdstart
@@ -42,14 +42,13 @@ c---- total cross-section comes out correctly when the BR is removed
 c set-up twidth
       x=wmass/mt
       y=mb/mt
-      lambda=sqrt((1d0-(x+y)**2)*(1d0-(x-y)**2))
-      twidth=gf*mt**3/(8d0*pi*sqrt(2d0))
+      lambda=dsqrt((1d0-(x+y)**2)*(1d0-(x-y)**2))
+      twidth=gf*mt**3/(8d0*pi*dsqrt(2d0))
      . *((1d0-x**2)*(1d0+2d0*x**2)-y**2*(2d0-x**2-y**2))*lambda
       string='process.DAT' 
       open(unit=21,file=string,status='old',err=43)
       call checkversion(21,string)
       
-      nnproc=nproc
       write(6,*) 'Chooser:process chosen by nproc=',nproc
 
       do j=1,400

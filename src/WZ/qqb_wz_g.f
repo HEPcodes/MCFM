@@ -25,7 +25,7 @@ c   for the moment --- radiation only from initial line
       integer j,k,polg,polz,minus,mplus,jp,kp
       double precision FAC,FACM,FAC1
       double complex prop12,prop34,prop56
-      character plabel(mxpart)*2
+      character*2 plabel(mxpart)
       common/plabel/plabel
       common/pchoice/j,k
       double precision P(mxpart,4),qdks(mxpart,4),msq(-nf:nf,-nf:nf)

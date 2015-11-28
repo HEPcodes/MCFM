@@ -5,7 +5,7 @@
       include 'ewcouple.f'
 C  in is the label of the momentum contracted with n
       integer j,k,in
-      double precision msq(-nf:nf,-nf:nf),msqt(-nf:nf,-nf:nf)
+      double precision msq(-nf:nf,-nf:nf)
       double precision n(4),p(mxpart,4),dot,hdecay,s34,fac,
      . qqghn,ggghn,p1p2(-1:1,-1:1)
 
@@ -14,9 +14,6 @@ C  in is the label of the momentum contracted with n
       msq(j,k)=0d0
       enddo
       enddo
-
-c      nDn=n(4)**2-n(3)**2-n(2)**2-n(1)**2
-c      call gg_hg(p,msqt)
 
 C   Deal with Higgs decay to b-bbar
       s34=2d0*Dot(p,3,4)+2d0*mb**2
@@ -69,13 +66,6 @@ C   Deal with Higgs decay to b-bbar
       enddo
       enddo
  
-c      do j=-nf,nf
-c      msq(0,j)=-0.5d0*nDn*msqt(0,j)      
-c      msq(j,0)=-0.5d0*nDn*msqt(j,0)      
-c      msq(j,-j)=-0.5d0*nDn*msqt(j,-j)      
-c      enddo
-c      msq(0,0)=-0.5d0*nDn*msqt(0,0)      
-
       return
       end
 
@@ -86,6 +76,7 @@ c   q(p1)+qbar(p2) --> H((p3+p4)+g(p5)
 c   contracted with the vector n(mu)
       include 'constants.f'
       include 'qcdcouple.f'
+      include 'ewcouple.f'
       integer j1,j2,j5
       double precision Asq,p(mxpart,4),n(4),nDn,nDp1,nDp2,nDp5,
      . dot,s,t,u
@@ -128,6 +119,7 @@ c   g(p1)+g(p2) --> H((p3+p4)+g(p5)
 c   contracted with the vector n(mu)
       include 'constants.f'
       include 'qcdcouple.f'
+      include 'ewcouple.f'
       integer j1,j2,j5
       double precision Asq,p(mxpart,4),n(4),nDn,nDp1,nDp2,nDp5,
      . dot,s,t,u,sh

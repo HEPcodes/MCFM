@@ -14,15 +14,13 @@
       include 'constants.f'
       include 'maxwt.f'
       include 'eventbuffer.f'
-      integer itmx1,ncall1,itmx2,ncall2,icall
+      integer itmx1,ncall1,itmx2,ncall2
       double precision integ,integ_err
       logical dryrun
       integer i,pflav,pbarflav
       double precision p(mxpart,4),wt
       common/iterat/itmx1,ncall1,itmx2,ncall2
       common/dryrun/dryrun
-      external vegas,vegas1,vegas2,vegas3
-      
 
 * basic variable initialization, print-out
       call mcfm_init
@@ -35,7 +33,7 @@
 * The Vegas parameters are those read from options.DAT for
 * the warm-up stage (itmx1,ncall1) and binning should only take
 * place if dryrun is set to true
-      call mcfm_vegas(vegas,itmx1,ncall1,dryrun,integ,integ_err)
+      call mcfm_vegas(0,itmx1,ncall1,dryrun,integ,integ_err)
       
 * This is the mcfm_vegas(accum) call
 * This takes place only if dryrun is false
@@ -44,7 +42,7 @@
 * wtmax may have been set during the dry run, so re-set here :
       wtmax = 0d0
       if (dryrun .eqv. .false.) then
-      call mcfm_vegas(vegas1,itmx2,ncall2,.true.,integ,integ_err)
+      call mcfm_vegas(1,itmx2,ncall2,.true.,integ,integ_err)
       endif
       
 * So far we have not used VEGAS to generate any events.

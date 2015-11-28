@@ -73,7 +73,7 @@ c      double complex Fa561243,Fa562143
       endif
       v2(1)=l1
       v2(2)=r1
-      cotw=sqrt((one-xw)/xw)
+      cotw=dsqrt((one-xw)/xw)
 
       do j=-nf,nf
       do k=-nf,nf

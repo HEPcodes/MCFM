@@ -3,7 +3,7 @@
 *  corresponding to the PDG/STDHEP representation of that particle     *
 ************************************************************************
       integer function jetlabel_to_stdhep(label)
-      character label*2
+      character*2 label
       
       if     (label .eq. 'nl') then
         jetlabel_to_stdhep=+12

@@ -1,8 +1,8 @@
-      logical function threebee(jets,jetlabel)
+      logical function threebee()
       implicit none
       include 'constants.f'
-      integer i,jets,nbq
-      character*2 jetlabel(mxpart)
+      include 'jetlabel.f'
+      integer i,nbq
       
 c--- note: this function returns true if there are three or more 
 c--- b-jets in the event

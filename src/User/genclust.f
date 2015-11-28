@@ -19,7 +19,8 @@ c--- first four vectors are set equal to the incoming q
       double precision bclustmass
       integer nparti,npartf,njet,i,nu,iter,nmin1,nmin2,maxjet,nk,
      . nqcdjets,nqcdstart,nremoved,nproc
-      character jetlabel(mxpart)*2,plabel(mxpart)*2
+      character*2 plabel(mxpart)
+      character*2 jetlabel(mxpart)
       common/plabel/plabel
       common/nqcdjets/nqcdjets,nqcdstart
       common/nproc/nproc
@@ -73,7 +74,7 @@ c--- step3: compare the two ...
       if (dijmin .lt. dkmin) then
 c---  ... if we should combine, go ahead
 c        write(*,*) 'Clustered ',nmin1,nmin2
-        call combine(q,qjet,nmin1,nmin2,jetlabel)
+        call combine(qjet,nmin1,nmin2)
 c--- combined object goes into nmin1, now shuffle nmin2 off the end 
         call swap(qjet,jetlabel,nmin2,maxjet)        
         maxjet=maxjet-1

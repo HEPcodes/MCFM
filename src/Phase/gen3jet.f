@@ -21,11 +21,11 @@ C---p1+p2 --> p3+p4+p5
       enddo     
 
       phi=2d0*pi*r(1)
-      cphi=cos(phi)
-      sphi=sin(phi)
+      cphi=dcos(phi)
+      sphi=dsin(phi)
       phi45=2d0*pi*r(2)
-      cphi45=cos(phi45)
-      sphi45=sin(phi45)
+      cphi45=dcos(phi45)
+      sphi45=dsin(phi45)
       xjac=sqrts**2
       ymax=5d0
       ymin=-5d0

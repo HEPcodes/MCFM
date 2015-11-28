@@ -11,10 +11,9 @@
 *                                                                      *
 ************************************************************************
       include 'constants.f'
-      include 'masses.f'
       include 'ptilde.f'
       include 'qqgg.f'
-      integer j,k,m,n,msgn,nsgn,nd,pn(-nf:nf)
+      integer j,k,nd
 
       double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf)
       double precision msq17_5(-nf:nf,-nf:nf),msq27_6(-nf:nf,-nf:nf),
@@ -28,10 +27,16 @@
      . dummy(-nf:nf,-nf:nf),dummyv(-nf:nf,-nf:nf),dsubv,stat
       external WW_Hqq,donothing_gvec
 
-      data pn/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-
       ndmax=5
 
+      do j=-nf,nf
+      do k=-nf,nf
+      do nd=1,ndmax
+      msq(nd,j,k)=0d0
+      enddo
+      enddo
+      enddo
+      
 c---- calculate the dipoles: initial-final and final-initial
 c---- note that we do not require the gg dipoles, so the v-type
 c---- entries are left as dummies
@@ -51,11 +56,10 @@ c---- entries are left as dummies
      . WW_Hqq,donothing_gvec)
       call dips(5,p,1,6,7,sub16_7,dsubv,msq16_7,dummyv,
      . WW_Hqq,donothing_gvec)
-      do j=-nf,nf
-      do k=-nf,nf
-      do nd=1,ndmax
-      msq(nd,j,k)=0d0
-      enddo
+
+c--- Only loop up to (nf-1) to avoid b->t transitions
+      do j=-(nf-1),nf-1
+      do k=-(nf-1),nf-1
 
       if  ((j .eq. 0) .and. (k .eq. 0)) then
          goto 20

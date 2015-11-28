@@ -1,2 +1,2 @@
-      double precision ptjetmin,etajetmin,etajetmax
-      common/jetcuts/ptjetmin,etajetmin,etajetmax
+      double precision ptjetmin,etajetmin,etajetmax,ptbjetmin,etabjetmax
+      common/jetcuts/ptjetmin,etajetmin,etajetmax,ptbjetmin,etabjetmax

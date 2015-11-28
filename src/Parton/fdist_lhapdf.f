@@ -1,9 +1,8 @@
 *****************
 * LHAPDF version*
 *****************
-      subroutine fdist(pdlabel,ih,x,xmu,fx)
+      subroutine fdist(ih,x,xmu,fx)
       implicit none
-      character pdlabel*7
       double precision fx(-5:5),x,xmu,fPDF(-6:6)
       integer Iprtn,ih,Irt
 c---  ih1=+1 proton 

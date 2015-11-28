@@ -26,16 +26,16 @@ c     delta(p2^2) delta(p3^2)
        return 1
       endif
 
-      roots=sqrt(s)
+      roots=dsqrt(s)
       costh=two*xth-one    
-      sinth=sqrt(one-costh**2)
+      sinth=dsqrt(one-costh**2)
       phi=twopi*xphi
 
       wt=wt0
 
       p1cm(4)=roots/two
-      p1cm(1)=roots/two*sinth*sin(phi)
-      p1cm(2)=roots/two*sinth*cos(phi)
+      p1cm(1)=roots/two*sinth*dsin(phi)
+      p1cm(2)=roots/two*sinth*dcos(phi)
       p1cm(3)=roots/two*costh
 
 c      write(6,*) 'e',roots/two*(s+m1sq-m2sq)/s
@@ -51,9 +51,9 @@ c      pause
       p2(j)=p0(j)-p1(j)
       enddo
 
-      if (  (p0(4) .lt. 0.d0) 
-     & .or. (p1(4) .lt. 0.d0) 
-     & .or. (p2(4) .lt. 0.d0)) then  
+      if (  (p0(4) .lt. 0d0) 
+     & .or. (p1(4) .lt. 0d0) 
+     & .or. (p2(4) .lt. 0d0)) then  
       write(6,*) 'p0',p0(4),p0(4)**2-p0(1)**2-p0(2)**2-p0(3)**2,s
       write(6,*) 'p1',p1(4),p1(4)**2-p1(1)**2-p1(2)**2-p1(3)**2
       write(6,*) 'p2',p2(4),p2(4)**2-p2(1)**2-p2(2)**2-p2(3)**2

@@ -10,32 +10,31 @@ c     delta(p2^2-s2) delta(p3^2-s3)
       double precision p1(4),p2(4),p3(4),p3cm(4)
       double precision x3,xth,xphi,costh,sinth,phi,cphi,sphi
       double precision wt,wt0,w3
-      double precision s3max,s3min,xx
+      double precision s3max,s3min
       double precision m1,m2,m3,s1,s2,s3,lambda,
      . mass2,width2,mass3,width3
       integer j,n2,n3
       common/breit/n2,n3,mass2,width2,mass3,width3
-      parameter(wt0=one/8.d0/pi)
+      parameter(wt0=one/8d0/pi)
 
       wt=0d0
       s1=p1(4)**2-p1(1)**2-p1(2)**2-p1(3)**2  
       if (s1 .lt. 0d0) return 1
-      m1=sqrt(s1)
+      m1=dsqrt(s1)
       s2=m2**2
       s3max=(m2-m1)**2
       if (s3min .gt. s3max) return 1
-         w3=s3max-s3min
-         s3=s3max*x3+s3min*(1d0-x3)
-         xx=0
+      w3=s3max-s3min
+      s3=s3max*x3+s3min*(1d0-x3)
 
-      m3=sqrt(s3)
+      m3=dsqrt(s3)
       costh=two*xth-one      
       phi=twopi*xphi
-      sinth=sqrt(one-costh**2)
-      cphi=cos(phi)
-      sphi=sin(phi)
+      sinth=dsqrt(one-costh**2)
+      cphi=dcos(phi)
+      sphi=dsin(phi)
       lambda=((s1-s2-s3)**2-4d0*s2*s3)
-      if (lambda .lt. 0.d0) then
+      if (lambda .lt. 0d0) then
       write(6,*) 'lambda in phi1_2m',lambda
       write(6,*) 's1 in phi1_2m',s1
       write(6,*) 's2 in phi1_2m',s2
@@ -43,7 +42,6 @@ c     delta(p2^2-s2) delta(p3^2-s3)
       write(6,*) 'm1 in phi1_2m',m1
       write(6,*) 'm2 in phi1_2m',m2
       write(6,*) 'm3 in phi1_2m',m3
-      write(6,*) 'xx in phi1_2m',xx
       write(6,*) 'x3 in phi1_2m',x3
       write(6,*) 'mass3 in phi1_2m',mass3
       return 1
@@ -59,9 +57,9 @@ c     delta(p2^2-s2) delta(p3^2-s3)
       do j=1,4
       p2(j)=p1(j)-p3(j)
       enddo
-      if (  (p1(4) .lt. 0.d0) 
-     & .or. (p2(4) .lt. 0.d0) 
-     & .or. (p3(4) .lt. 0.d0)) then  
+      if (  (p1(4) .lt. 0d0) 
+     & .or. (p2(4) .lt. 0d0) 
+     & .or. (p3(4) .lt. 0d0)) then  
       write(6,*) 'p1(4)',p1(4)
       write(6,*) 'p2(4)',p2(4)
       write(6,*) 'p3(4)',p3(4)

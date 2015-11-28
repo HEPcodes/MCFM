@@ -13,10 +13,10 @@ c---- with all 2 pi)
      . Estar,p(mxpart,4),a,E34st,
      . wt,p3(4),p4(4),p5(4),p345(4),p34(4),pstsq,
      . xmin,sqrts,pt5,xx(2),ymin,ymax,phi,wt34,
-     . sinth,dely,sinhy,coshy,y,rtshat,pt2,
+     . dely,sinhy,coshy,y,rtshat,pt2,
      . vs,vsqmax,vsqmin,s34,sinhy5,coshy5,y5,y5max,s34max,s34min,
      . m3,m4,xjac,w,wmax,wmin
-c      double precision p3cm(4),beta,costh
+c      double precision p3cm(4),beta,costh,sinth
       integer j,nu
       common/energy/sqrts
       common/x1x2/xx

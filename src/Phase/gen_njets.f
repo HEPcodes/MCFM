@@ -3,7 +3,6 @@
       include 'constants.f'
       include 'mxdim.f'
       include 'limits.f'
-      include 'cutoff.f'
 c---- generate phase space for 2-->2+n process
 c---- with (34) being a vector boson and 5,..,4+n the jets
 c---- r(mxdim),p1(4),p2(4) are inputs reversed in sign 
@@ -21,14 +20,14 @@ c---- with all 2 pi's (ie 1/(2*pi)^(4+2n))
       double precision plstar,estar,plstarsq,y5starmax,y5starmin
       double precision mass2,width2,mass3,width3
       integer j,nu,njets,ijet,n2,n3
-      logical first
+      logical first,xxerror
       character*4 part
       common/part/part
       common/energy/sqrts
       common/breit/n2,n3,mass2,width2,mass3,width3
       common/x1x2/xx
-      data first/.true./
-      save first,ptjetmin,etajetmin,etajetmax,pbreak
+      data first/.true./,xxerror/.false./
+      save first,ptjetmin,etajetmin,etajetmax,pbreak,xxerror
 
       if (first) then
         first=.false.
@@ -63,6 +62,11 @@ c        xmax=1d0/ptjetmin
         x=xmin+r(ijet)*delx
         pt=1d0/x
         etamax=sqrts/2d0/pt
+        if (etamax**2 .le. 1d0) then
+            write(6,*) 'etamax**2 .le. 1d0 in gen_njets.f',etamax**2 
+            wt=0d0
+            return 1
+        endif
         etamax=dlog(etamax+dsqrt(etamax**2-1d0))
         
         etamax=min(etamax,etajetmax)
@@ -91,7 +95,7 @@ c--- now generate Breit-Wigner
       wt=wt*wtbw/2d0/pi
 c--- invariant mass of jets
       mjets=psumjet(4)**2-psumjet(1)**2-psumjet(2)**2-psumjet(3)**2
-      mjets=dsqrt(abs(mjets))
+      mjets=dsqrt(dabs(mjets))
       
       ybar=0.5d0*dlog((psumjet(4)+psumjet(3))/(psumjet(4)-psumjet(3)))
       ptsumjet2=psumjet(1)**2+psumjet(2)**2
@@ -123,14 +127,16 @@ c--- now make the initial state momenta
       xx(1)=(pcm(4)+pcm(3))/sqrts
       xx(2)=(pcm(4)-pcm(3))/sqrts
       
-      if   (xx(1)*xx(2) .gt. 1d0) then
-      write(6,*) 'gen_njetsL:xx(1)*xx(2),xx(1),xx(2)',
-     . xx(1)*xx(2),xx(1),xx(2)  
+      if   ((xx(1)*xx(2) .gt. 1d0) .and. (xxerror .eqv. .false.)) then
+        xxerror=.true.
+        write(6,*) 'gen_njets: xx(1)*xx(2),xx(1),xx(2)',
+     .   xx(1)*xx(2),xx(1),xx(2)  
       endif
+
       if   ((xx(1) .gt. 1d0) .or. (xx(2) .gt. 1d0)
      & .or. (xx(1) .lt. xmin).or. (xx(2) .lt. xmin)) then
          wt=0d0
-        return 1
+         return 1
       endif 
       
       wt=wt*dely

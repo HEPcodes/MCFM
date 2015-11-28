@@ -13,7 +13,7 @@ C---'prods.f' includes both the declaration and the common for s and za,zb
       double precision s234,s256,prop
       s234=s(i2,i3)+s(i2,i4)+s(i3,i4)
       s256=s(i2,i6)+s(i2,i5)+s(i5,i6)
-      prop=s(i5,i6)*sqrt((s(i3,i4)-wmass**2)**2+(wmass*wwidth)**2)
+      prop=s(i5,i6)*dsqrt((s(i3,i4)-wmass**2)**2+(wmass*wwidth)**2)
       aqqb_wbb=
      & +za(i3,i2)*zb(i6,i1)*t2(i4,i2,i3,i5)/(prop*s234)
      & +za(i5,i2)*zb(i4,i1)*t2(i6,i2,i5,i3)/(prop*s256)

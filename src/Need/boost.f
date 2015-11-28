@@ -8,7 +8,7 @@ c     and convert to frame in which particle one has fourvector p1
       parameter(one=1d0)
       integer j,k
       gam=p1(4)/mass
-      bdotp=0.d0
+      bdotp=0d0
       do j=1,3
       beta(j)=-p1(j)/p1(4)
       bdotp=bdotp+p_in(j)*beta(j)

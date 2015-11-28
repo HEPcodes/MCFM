@@ -13,11 +13,11 @@
       phDph=dotpr(ph,ph)
 c---calculation of betaw
       s=phDph+pwDpw+2d0*pwDph
-      MH=sqrt(phDph)
-      MW=sqrt(pwDpw)
+      MH=dsqrt(phDph)
+      MW=dsqrt(pwDpw)
       
-      betaw=sqrt((s-(MW+MH)**2)*(s-(MW-MH)**2))/(s-MH**2+MW**2)
-      cosxi=costh*sqrt(1d0-betaw**2)/sqrt(1d0-(betaw*costh)**2)
+      betaw=dsqrt((s-(MW+MH)**2)*(s-(MW-MH)**2))/(s-MH**2+MW**2)
+      cosxi=costh*dsqrt(1d0-betaw**2)/dsqrt(1d0-(betaw*costh)**2)
 
 c      write(6,*) 'betaw in angle',betaw
 c      write(6,*) 'cosxi',cosxi
@@ -48,7 +48,7 @@ c---given pw,ph,p1 and cosxi contstruct nh_cmw
       double precision pwDph,pwDpw,pwDp1,phDp1,phDph
       integer j
 
-      sinxi=sqrt(1d0-cosxi**2)
+      sinxi=dsqrt(1d0-cosxi**2)
 
       pwDp1=dotpr(pw,p1)
       phDp1=dotpr(ph,p1)
@@ -65,8 +65,8 @@ c---given pw,ph,p1 and cosxi contstruct nh_cmw
       n2(j)=a*pw(j)+b*ph(j)+p1(j)
       enddo
 
-      norm1=sqrt(-dotpr(n1,n1))
-      norm2=sqrt(-dotpr(n2,n2))
+      norm1=dsqrt(-dotpr(n1,n1))
+      norm2=dsqrt(-dotpr(n2,n2))
       do j=1,4
       n1(j)=n1(j)/norm1
       n2(j)=n2(j)/norm2

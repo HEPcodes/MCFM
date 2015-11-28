@@ -1,14 +1,11 @@
 *****************
 * LHAPDF version*
 *****************
-      subroutine pdfwrap(pdlabel)
+      subroutine pdfwrap
       implicit none
       include 'masses.f'
-      character*7 pdlabel
+      include 'lhapdf.f'
       double precision amz,alphasPDF
-* LHAPDF variables
-      integer PDFmember
-      character*50 PDFname      
       logical newinput
       common/newinput/newinput
       common/lhapdf/PDFmember,PDFname
@@ -32,7 +29,7 @@
       write(6,99) 'PDFmember',PDFmember
       write(6,*) '**********************************'
 
-      call InitPDFset('PDFsets/'//PDFname)
+      call InitPDFset('PDFsets/'//PDFname(1:20))
       call InitPDF(PDFmember)
       amz=alphasPDF(zmass)
 

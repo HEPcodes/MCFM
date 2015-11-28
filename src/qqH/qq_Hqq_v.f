@@ -10,19 +10,17 @@
 *                                                                      *
 ************************************************************************
       include 'constants.f'
-      include 'ewcouple.f'
       include 'qcdcouple.f'
-      include 'zcouple.f'
-      include 'masses.f'
       include 'epinv.f'
       include 'epinv2.f'
       include 'scale.f'
       include 'scheme.f'
-      double precision fac,dot,p(mxpart,4),
+      double precision dot,p(mxpart,4),
      . msq0(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),xl15,xl26,facv
       integer j,k
       logical first
       data first/.true./       
+      save first
 
       if (first) then
         first=.false.

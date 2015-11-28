@@ -11,7 +11,7 @@
       del3=s1**2+s2**2+s3**2-two*(s1*s2+s2*s3+s3*s1)      
 
       if (del3 .gt. 0) then
-      rtdel3=sqrt(del3)
+      rtdel3=dsqrt(del3)
          if (smax .lt. 0) then
 c---case all negative
              flag=0d0
@@ -30,7 +30,7 @@ c---case two positive and one negative
              i3m=-i3m1b(-smax,-smid,-smin,rtdel3,flag)
          endif
       elseif (del3 .lt. 0) then 
-      rtdel3=sqrt(-del3)
+      rtdel3=dsqrt(-del3)
          if (smax .lt. 0) then
 c---case all negative
              i3m=+dcmplx(i3m1a(+s1,+s2,+s3,rtdel3))
@@ -82,11 +82,11 @@ c---case all positive
       stop
       endif
 
-      xlog=log(abs(argx))
-      ylog=log(abs(argy))
-      temp=xlog*ylog+pisq/3d0+(ylog-xlog)*log((one+argy)/(one+argx))
+      xlog=dlog(abs(argx))
+      ylog=dlog(abs(argy))
+      temp=xlog*ylog+pisq/3d0+(ylog-xlog)*dlog((one+argy)/(one+argx))
      & +two*(ddilog(argdlx)+ddilog(argdly))
-      I3m1b=Dcmplx(temp-abs(flag)*pisq)+impi*Dcmplx(flag*(xlog+ylog))
+      I3m1b=Dcmplx(temp-dabs(flag)*pisq)+impi*Dcmplx(flag*(xlog+ylog))
       I3m1b=-I3m1b/Dcmplx(rtdel)
       end
 

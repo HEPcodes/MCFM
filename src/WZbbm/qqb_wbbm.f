@@ -6,7 +6,6 @@ c---  averaged(summed) over initial(final) colours and spins
       include 'constants.f'
       include 'ckm.f'
       include 'sprods_com.f'
-      include 'hardscale.f'
       include 'qcdcouple.f'
       include 'ewcouple.f'
       integer j,k
@@ -24,12 +23,6 @@ C---Initialize to zero
 
 C---Fill dot-products
       call dotem(6,p,s)
-
-c ensure that we have a hard process
-c      if (
-c     .      (s(5,6) .lt. four*hscalesq) 
-c     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. hscalesq) 
-c     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. hscalesq) ) return
 
       qqb=faclo*sumsq(1,2,3,4,6,5)
       qbq=faclo*sumsq(2,1,3,4,6,5)

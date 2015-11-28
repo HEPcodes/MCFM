@@ -13,18 +13,17 @@
       include 'gridinfo.f'
       include 'limits.f'
       include 'jetcuts.f'
+      include 'lhapdf.f'
+      include 'pdlabel.f'
       integer unitno
       double precision xsec,xsec_err
       
       character*4 part
       character*30 runstring
-      character*7 pdlabel
-      character*50 PDFname
       logical creatent,dswhisto,dryrun,makecuts
       integer nproc,ih1,ih2,itmx1,itmx2,ncall1,ncall2,origij
       integer NPTYPE,NGROUP,NSET
-      integer PDFmember
-      double precision rtsmin,sqrts
+      double precision sqrts
       double precision Rcut
       double precision leptpt,leptrap,misspt,Rjlmin,Rllmin,delyjjmin,
      . leptpt2,leptrap2,gammpt,gammrap,gammcone,gammcut
@@ -39,9 +38,7 @@
       common/iterat/itmx1,ncall1,itmx2,ncall2
       common/dryrun/dryrun
       
-      common/pdlabel/pdlabel
       common/pdflib/NPTYPE,NGROUP,NSET
-      common/lhapdf/PDFmember,PDFname
       
       common/Rcut/Rcut
       common/makecuts/makecuts
@@ -131,8 +128,8 @@
       write(unitno,*)
       write(unitno,*) 
      . '( [How to resume/save a run] )'
-      write(unitno,99) readin,'readin'
-      write(unitno,99) writeout,'writeout'
+      write(unitno,98) readin,'readin'
+      write(unitno,98) writeout,'writeout'
       write(unitno,96) ingridfile,'ingridfile'
       write(unitno,96) outgridfile,'outgridfile'
 

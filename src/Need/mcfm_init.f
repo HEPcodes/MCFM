@@ -1,3 +1,10 @@
+      block data newinput_data
+      implicit none
+      logical newinput
+      common/newinput/newinput
+      data newinput/.true./
+      end
+
       subroutine mcfm_init
 ************************************************************************
 *                                                                      *
@@ -15,15 +22,15 @@
       logical creatent,dswhisto
       double precision taumin,rtsmin,sqrts,p1ext(4),p2ext(4),
      . vector(mxdim),p(mxpart,4),s(mxpart,mxpart),val
+      integer j,k
       logical newinput
       common/newinput/newinput
       common/taumin/taumin
       common/rtsmin/rtsmin
       common/energy/sqrts
       common/pext/p1ext,p2ext
-      data p/mxpart*0d0,mxpart*0d0,mxpart*0d0,mxpart*0d0/
+      data p/mxpart*3d0,mxpart*4d0,mxpart*0d0,mxpart*5d0/
       data vector/mxdim*0d0/
-      data newinput/.true./
 
 * Welcome banner
       call banner
@@ -69,6 +76,12 @@
       call dotem(8,p,s)
       val=1d-15   
       call nplotter(vector,s,p,val,1)
+       
+      do j=1,mxpart
+      do k=1,4
+      p(j,k)=0d0
+      enddo
+      enddo 
            
       return
       end

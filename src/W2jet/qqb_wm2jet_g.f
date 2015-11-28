@@ -19,7 +19,6 @@ c                           ---> f(p5)+f(p6)
       include 'ckm.f'
       include 'sprods_com.f'
       include 'zprods_com.f'
-      include 'zcouple.f'
       include 'ewcouple.f'
       include 'flags.f'
       include 'lc.f'
@@ -27,7 +26,7 @@ c                           ---> f(p5)+f(p6)
       double precision P(mxpart,4),msq(-nf:nf,-nf:nf)
       double precision mmsq_gg,mmsq_qqb,mmsq_qbq,mmsq_qg
       double precision mmsq_gq,mmsq_gqb,mmsq_qbg
-      double precision fac,LRb(2),Vfac
+      double precision fac,Vfac
       double precision propsq
       double precision 
      . QQ_ud_dd,QQ_us_ds,QQ_uu_du,QQ_du_dd,QQ_su_sd,QQ_uu_ud,
@@ -144,9 +143,6 @@ c--- note the factor of 4d0*xw**2 relative to wbb
 c--- extra factor of 2**3=8 to compensate for Ta normalization
       fac=fac*8d0
        
-      LRb(1)=L(1)
-      LRb(2)=R(1)
-
       do j=-nf,nf
       do k=-nf,nf
       

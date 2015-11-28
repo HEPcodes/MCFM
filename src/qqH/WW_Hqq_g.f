@@ -10,18 +10,15 @@ c                           |
 c                           ---> b(p3)+bbar(p4)
       include 'constants.f'
       include 'masses.f'
-      include 'ewcouple.f'
       include 'qcdcouple.f'
-      include 'zcouple.f'
-      include 'ckm.f'
+      include 'ewcouple.f'
       include 'sprods_com.f'
-      integer j,k,m,n,pn(-nf:nf),x1(2),x2(2)
+      integer j,k,pn(-nf:nf)
       double precision p(mxpart,4),facqq,facqg,s34
       double precision msq(-nf:nf,-nf:nf),hdecay,
      . ud_dug,uub_ddbg,ug_dudb,gu_uddb
       
       data pn/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      data x1/1,2/,x2/2,1/
 
       do j=-nf,nf
       do k=-nf,nf
@@ -86,11 +83,9 @@ c--- Only loop up to (nf-1) to avoid b->t transitions
       include 'constants.f'
       include 'masses.f'
       include 'sprods_com.f'
-      include 'ewcouple.f'
-      include 'zcouple.f'
-      double precision zll,zLR,zzLL,wzll,wll,htheta
+      double precision wll,htheta
       double precision msqll_c,msqll_d,msq_gsamehel
-      double precision propw,propz,x
+      double precision propw,x
       double precision s16,s25,s167,s257
       integer i1,i2,i5,i6,i7
 C--- define Heaviside theta function (=1 for x>0) and (0 for x < 0)

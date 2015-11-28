@@ -31,8 +31,8 @@ c----p(6,i) and p(7,i) are set equal to zero
       y=0.5d0*log(tau)*(1d0-2d0*r(7))
       xjac=log(taumin)*tau*log(tau)
 
-      xx(1)=sqrt(tau)*exp(+y)
-      xx(2)=sqrt(tau)*exp(-y)
+      xx(1)=dsqrt(tau)*exp(+y)
+      xx(2)=dsqrt(tau)*exp(-y)
 
 c---if x's out of normal range alternative return
       if   ((xx(1) .gt. 1d0) 

@@ -37,7 +37,7 @@ c     Notation to allow room for p3 --- gluon emission.
       double complex ZgL(-nf:nf),ZgR(-nf:nf),A6b_1,A6b_2,A6b_3,A6b_4
       double precision v2(2),cl1,cl2,en1,en2
       double precision ave,cotw,wwflag,xfac
-      character plabel(mxpart)*2
+      character*2 plabel(mxpart)
       common/plabel/plabel
       data cl1,cl2,en1,en2/4*1d0/
       double precision FAC,FACM

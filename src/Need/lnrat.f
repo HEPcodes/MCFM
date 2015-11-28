@@ -11,7 +11,7 @@ c     sign of x and y to get the right sign for epsilon                *
       double precision x,y,htheta
 C--- define Heaviside theta function (=1 for x>0) and (0 for x < 0)
       htheta(x)=half+half*sign(one,x)
-      Lnrat=dcmplx(log(abs(x/y)))-impi*dcmplx((htheta(-x)-htheta(-y)))
+      Lnrat=dcmplx(dlog(abs(x/y)))-impi*dcmplx((htheta(-x)-htheta(-y)))
       return
       end
 

@@ -7,11 +7,10 @@ c     g(-p1)+g(-p2) -->  H(p3)+g(p_iglue1=5)+g(p_iglue2=6)
       include 'constants.f'
       include 'masses.f'
       include 'ewcouple.f'
-      include 'zcouple.f'
       include 'qcdcouple.f'
       include 'sprods_com.f'
       include 'zprods_com.f'
-      integer j,k,h1,h2,h3,h4,iglue1,iglue2
+      integer j,k,iglue1,iglue2
       double precision p(mxpart,4),Asq,fac
       double precision Hgggg,Hqagg,Haqgg,Hgqgq,Hgaga,Hqgqg,Hagag,Hggqa
       double precision 
@@ -20,7 +19,6 @@ c     g(-p1)+g(-p2) -->  H(p3)+g(p_iglue1=5)+g(p_iglue2=6)
      . Hqarb,Hqaqa,Hqbqb,
      . Haqbr,Haqaq,Hbqbq
       double precision msq(-nf:nf,-nf:nf),hdecay,s34
-      double complex amp(6,2,2,2,2)
       parameter(iglue1=5,iglue2=6)
 
 C---fill spinor products upto maximum number

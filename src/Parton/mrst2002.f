@@ -91,8 +91,8 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
       call jeppe1(nx,nq,xxl,qql,f6,cc6)
       call jeppe1(nx,nq,xxl,qql,f8,cc8)
 
-      emc2=2.045
-      emb2=18.5
+      emc2=2.045d0
+      emb2=18.5d0
 
       do 44 m=1,nqc
       qqlc(m)=qql(m+nqc0)
@@ -199,8 +199,8 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
       call jeppe1(nx,nq,xxl,qql,f6,cc6)
       call jeppe1(nx,nq,xxl,qql,f8,cc8)
 
-      emc2=2.045
-      emb2=18.5
+      emc2=2.045d0
+      emb2=18.5d0
 
       do 44 m=1,nqc
       qqlc(m)=qql(m+nqc0)

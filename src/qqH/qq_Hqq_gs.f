@@ -10,7 +10,6 @@
 *                                                                      *
 ************************************************************************
       include 'constants.f'
-      include 'masses.f'
       include 'ptilde.f'
       include 'qqgg.f'
       integer j,k,m,n,nd

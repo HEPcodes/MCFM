@@ -2,7 +2,6 @@
       implicit none
       include 'constants.f'
       include 'masses.f'
-      include 'scale.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'sprods_com.f'

@@ -14,14 +14,14 @@ c---- with all 2 pi's (ie 1/(2*pi)^2)
       common/x1x2/xx
       common/energy/sqrts
       parameter(wt0=1d0/8d0/pi)
-      rtshat=sqrt(xx(1)*xx(2))*sqrts
+      rtshat=dsqrt(xx(1)*xx(2))*sqrts
 C write out vectors in +,-,T,T notation
       u=r(3)
       costh=2d0*u-1d0
-      sinth=sqrt(1d0-costh**2)
+      sinth=dsqrt(1d0-costh**2)
       phi=two*pi*r(4)
-      sinphi=sin(phi)
-      cosphi=cos(phi)
+      sinphi=dsin(phi)
+      cosphi=dcos(phi)
 
       p3(4)=+half*sqrts*(u*xx(1)+(1d0-u)*xx(2))
       p3(1)=+half*sinth*sinphi*rtshat

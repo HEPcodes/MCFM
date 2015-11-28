@@ -13,7 +13,6 @@ c                            -->l(p3)+a(p4)                            *
       include 'constants.f'
       include 'ptilde.f'
       include 'qqgg.f'
-      include 'flags.f'
       integer j,k,nd
 c --- remember: nd will count the dipoles
       
@@ -35,7 +34,7 @@ c --- remember: nd will count the dipoles
      & sub56_1(4),sub56_2(4),sub56_1v,sub56_2v,
      & sub26_5v,sub25_1v,sub26_1v,sub16_5v,sub16_2v,sub15_2v,sub15_6v,
      & sub25_6v
-      external qqb_z1jet,qqb_z_gvec,donothing_gvec
+      external qqb_z1jet,qqb_z_gvec
       ndmax=6
 
 c--- calculate all the initial-initial dipoles

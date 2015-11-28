@@ -1,3 +1,12 @@
+      block data reader_data
+      implicit none
+      include 'impsample.f'
+      logical msbar
+      common/msbar/msbar
+      data impsample/.false./
+      data msbar/.false./
+      end
+
       subroutine reader
       implicit none  
       include 'masses.f'
@@ -19,16 +28,16 @@
       include 'verbose.f'
       include 'process.f'
       include 'limits.f'
+      include 'pdlabel.f'
       integer ih1,ih2,itmx1,itmx2,ncall1,ncall2,idum,nmin,nmax
       integer nproc,nargs,iargc
       double precision sqrts,Rcut,randummy,ran1
       double precision cmass,bmass
-      character*7 pdlabel
       character*72 optionsfile
       character*30 runstring
       character*4 part
       logical makecuts,dryrun,creatent,dswhisto
-      logical msbar,spira
+      logical spira
       double precision rtsmin
       double precision mbbmin,mbbmax,Mwmin,Mwmax
       common/iterat/itmx1,ncall1,itmx2,ncall2
@@ -46,19 +55,13 @@
       common/qmass/cmass,bmass
 
       common/density/ih1,ih2
-      common/pdlabel/pdlabel
 
       common/rtsmin/rtsmin
       common/nmin/nmin
       common/nmax/nmax
-      common/msbar/msbar
       
       common/outputflags/creatent,dswhisto
  
-      data new_pspace/.false./
-      data impsample/.false./
-      data msbar/.false./
-
       nargs=iargc()
       if (nargs .ge. 1) then
       call getarg(1,optionsfile)
@@ -167,7 +170,7 @@ c      endif
         stop
       endif
 
-      call chooser(nproc)
+      call chooser
 
       write(6,*)
       write(6,*) '****************'
@@ -180,18 +183,14 @@ c--- read in grid options file
       if (verbose) write(6,*) 'readin',readin
       read(21,*) writeout
       if (verbose) write(6,*) 'writeout',writeout
-      read(21,*) ingridfile
-      read(21,*) outgridfile
+      read(21,99) ingridfile
+      read(21,99) outgridfile
 
       if (ingridfile .eq. '') then
         ingridfile=case//'_'//part//'_grid'
-      else
-        ingridfile=ingridfile(1:16)
       endif
       if (outgridfile .eq. '') then
         outgridfile=case//'_'//part//'_grid'
-      else
-        outgridfile=outgridfile(1:16)
       endif
 
       if (verbose) write(6,*) 'ingridfile =',ingridfile
@@ -248,8 +247,8 @@ c--- set-up the random number generator with a negative seed
       randummy=ran1(idum)
 
 c---initialize masses for alpha_s routine
-      cmass=sqrt(mcsq)
-      bmass=sqrt(mbsq)
+      cmass=dsqrt(mcsq)
+      bmass=dsqrt(mbsq)
 
 
       bbsqmin=mbbmin**2
@@ -261,8 +260,10 @@ c---initialize masses for alpha_s routine
 c
 
 c-----stange-marciano formula for resolution
-c      deltam=sqrt(0.64d0*hmass+0.03d0**2*hmass**2)
+c      deltam=dsqrt(0.64d0*hmass+0.03d0**2*hmass**2)
 c      if (verbose) write(6,*) 'delta m',deltam
+
+  99  format(a16)
 
       return
 

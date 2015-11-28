@@ -2,8 +2,9 @@
       implicit none
       include 'constants.f'
       include 'npart.f'
-      integer j,countjet,jets
-      character*2 plabel(mxpart),jetlabel(mxpart)*2
+      include 'jetlabel.f'
+      integer j,countjet
+      character*2 plabel(mxpart)
       double precision p(mxpart,4),pjet(mxpart,4),pt,rcut
       common/plabel/plabel
       common/rcut/rcut
@@ -11,7 +12,7 @@
       aveptjet=0
 
 c-- cluster jets      
-      call genclust2(p,rcut,jets,pjet,jetlabel)
+      call genclust2(p,rcut,pjet,0)
       
       countjet=0
       do j=3,npart+2

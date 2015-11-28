@@ -19,7 +19,9 @@
       include 'facscale.f'
       include 'maxwt.f'
       include 'process.f'
-      integer ih1,ih2,j,k,nd,nmax,nmin,jets,nvec     
+      include 'jetlabel.f'
+      include 'pdlabel.f'
+      integer ih1,ih2,j,k,nd,nmax,nmin,nvec     
       double precision vector(mxdim),W,val,xint,reweight,n(4)
       double precision sqrts,fx1(-nf:nf),fx2(-nf:nf)
       double precision p(mxpart,4),pjet(mxpart,4),p1ext(4),p2ext(4)
@@ -32,12 +34,10 @@
       double precision m3,m4,m5
       double precision s19,s29,s3459,s6789
       integer nqcdjets,nqcdstart
-      character pdlabel*7,jetlabel(mxpart)*2
       integer n2,n3
       double precision mass2,width2,mass3,width3
       common/breit/n2,n3,mass2,width2,mass3,width3
       common/nqcdjets/nqcdjets,nqcdstart
-      common/parts/jets,jetlabel
       common/xreal/xreal,xreal2
       logical bin,makecuts,first,failed,gencuts
       external qqb_w2jet_g,qqb_w2jet_gs,qqb_z2jet_g,qqb_z2jet_gs,
@@ -50,7 +50,6 @@
      . gg_Hg,gg_H_gs,gg_Hgg,gg_Hg_gs
       common/density/ih1,ih2
       common/energy/sqrts
-      common/pdlabel/pdlabel
       common/bin/bin
       common/makecuts/makecuts
       common/Pext/p1ext,p2ext
@@ -117,6 +116,8 @@ c          call gen4(vector,p,pswt,*999)
           endif
       elseif ((case .eq. 'W_2jet')
      .   .or. (case .eq. 'Z_2jet')
+     .   .or. (case .eq. 'Wbbbar')
+     .   .or. (case .eq. 'Zbbbar')
      .       ) then
           npart=5
           call gen_njets(vector,3,p,pswt,*999)
@@ -138,7 +139,7 @@ c          call gen4(vector,p,pswt,*999)
           endif
       endif
       nvec=npart+2
-      
+
       call dotem(nvec,p,s)
 
 c---impose cuts on final state
@@ -170,8 +171,8 @@ c----calculate the x's for the incoming partons from generated momenta
         pdfscale=scale
       endif   
             
-      call fdist(pdlabel,ih1,xx1,pdfscale,fx1)
-      call fdist(pdlabel,ih2,xx2,pdfscale,fx2)
+      call fdist(ih1,xx1,pdfscale,fx1)
+      call fdist(ih2,xx2,pdfscale,fx2)
       
       flux=fbGeV2/(two*xx1*xx2*W)
 
@@ -283,10 +284,13 @@ c        call singcheck(qqb_Hg_g,qqb_Hg_gs,p)       ! Checked 19/02/02
         write(6,*) 'case=',case
         stop
       elseif ((case .eq. 'ttbdkl') .or .(case .eq. 'ttbdkh')) then
+        write(6,*) 'No real correction to t_bbar yet'
+        write(6,*) 'case=',case
+        stop
       elseif ((case .eq. 'tt_tot') .or. (case .eq. 'cc_tot')
      .   .or. (case .eq. 'bb_tot')) then
-      write(6,*) 'Real corrections not yet included'
-      stop
+       write(6,*) 'Real corrections not yet included!'
+       stop
       elseif (case .eq. 't_bbar') then
         call qqb_tbb(p,msq)
       endif
@@ -359,7 +363,7 @@ c--- if nqcdjets=0, no clustering is performed and pjet=p
           q(j,k)=p(j,k)
           enddo
           enddo
-          call genclust2(q,rcut,jets,pjet,jetlabel)
+          call genclust2(q,rcut,pjet,0)
           if (((jets .ne. nqcdjets) .and. (inclusive .eqv. .false.))
      .    .or.((jets .lt. nqcdjets) .and. (inclusive .eqv. .true.)))then
             njetzero=njetzero+1
@@ -385,7 +389,7 @@ c---call clustering for counter-event
           enddo
 c--- cluster partons (nqcdstart) to (nqcdstart+nqcdjets-1)
 c--- if nqcdjets=0, no clustering is performed and pjet=p      
-          call genclust2(q,rcut,jets,pjet,jetlabel)
+          call genclust2(q,rcut,pjet,1)
         endif
         endif
 
@@ -454,7 +458,7 @@ c      do k=1,4
 c      q(j,k)=p(j,k)
 c      enddo
 c      enddo
-c      call genclust2(q,rcut,jets,pjet,jetlabel)
+c      call genclust2(q,rcut,pjet,0)
 c      realint=realint*reweight(pjet)
 c--- end re-weight
 

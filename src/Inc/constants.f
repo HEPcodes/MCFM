@@ -5,15 +5,15 @@
       parameter(fourpi=4d0*pi)
       parameter(pion4=7.853981633974483d-1)  
       parameter(pion10=pi/10d0)      
-      parameter(pisqm8=pisq-8.d0)
+      parameter(pisqm8=pisq-8d0)
 c sqrt(2d0/pi)
       parameter(rt2onpi=0.797884560802865d0)
 c-----------------------------------------------------
-      double precision cf,ca,xn,xnsq,xn4,v,tr,qu,qd,qe,gf,aem,Von4,ninth
+      double precision cf,ca,xn,xnsq,xn4,v,tr,qu,qd,qe,aem,Von4,ninth
       parameter(cf=4d0/3d0,ca=3d0,xn=3d0,xnsq=9d0,v=8d0,tr=0.5d0)
       parameter(Von4=2d0,ninth=1d0/9d0,xn4=xnsq-4d0)
       parameter(qu=2d0/3d0,qd=-1d0/3d0,qe=-1d0)
-      parameter(gf=1.16639d-5,aem=1d0/137.035989d0)
+      parameter(aem=1d0/137.035989d0)
       double precision spinave,aveqq,aveqg,avegg
       parameter(spinave=0.25d0)
       parameter(aveqq=0.25d0/xnsq,aveqg=0.25d0/xn/v,avegg=0.25d0/v**2)
@@ -23,10 +23,6 @@ c-----------------------------------------------------
       parameter(three=3d0,four=4d0,eight=8d0)
       double precision rt2,twort2,fourrt2
       parameter(rt2=1.4142135624d0,twort2=two*rt2,fourrt2=four*rt2)
-      double precision vevsq
-      parameter(vevsq=1d0/rt2/gf)
-C     This vevsq is defined so that gwsq/(4*wmass**2)=Gf*rt2=1/vevsq
-C     (ie differs from definition in ESW)
       double precision dfbGeV2,fbGeV2,pbGeV2,nbGeV2,overa
       parameter(nbGeV2=0.389379d6)
       parameter(pbGeV2=0.389379d9)

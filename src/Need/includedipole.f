@@ -4,20 +4,25 @@
       include 'clustering.f'
       include 'npart.f'
       include 'ptilde.f'
+      include 'jetlabel.f'
       double precision ptrans(mxpart,4),pjet(mxpart,4),rcut
-      integer i,j,nd,nqcdjets,nqcdstart,jets,notag
-      character jetlabel(mxpart)*2
+      integer i,j,nd,nqcdjets,nqcdstart,notag,isub
       logical gencuts,failedgencuts,makecuts
 
       common/nqcdjets/nqcdjets,nqcdstart
-      common/parts/jets,jetlabel
       common/rcut/rcut
       common/makecuts/makecuts
       common/notag/notag
       
       includedipole=.true.
 
-      call genclust2(ptrans,rcut,jets,pjet,jetlabel)
+      if (nd .gt. 0) then
+        isub=1
+      else
+        isub=0
+      endif
+
+      call genclust2(ptrans,rcut,pjet,isub)
       do j=1,4
         do i=1,npart+2
         ptildejet(nd,i,j)=pjet(i,j)

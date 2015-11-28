@@ -70,7 +70,7 @@ C===========================================================================
       Implicit Double Precision (A-H,O-Z)
       Logical Warn
       Common
-     > / CtqPar2 / Nx, Nt, NfMx
+     > / CtqPar_5_2 / Nx, Nt, NfMx
      > / QCDtable /  Alambda, Nfl, Iorder
 
       Data Warn /.true./
@@ -106,7 +106,7 @@ C                             ********************
       FUNCTION PartonX (IPRTN, X, Q)
 C
 C   Given the parton distribution function in the array Upd in
-C   COMMON / CtqPar1 / , this routine fetches u(fl, x, q) at any value of
+C   COMMON / CtqPar_5_1 / , this routine fetches u(fl, x, q) at any value of
 C   x and q using Mth-order polynomial interpolation for x and Ln(Q/Lambda).
 C
       IMPLICIT DOUBLE PRECISION (A-H, O-Z)
@@ -117,8 +117,8 @@ C
 C
       Logical First
       Common 
-     > / CtqPar1 / Al, XV(0:MXX), QL(0:MXQ), UPD(MXPQX)
-     > / CtqPar2 / Nx, Nt, NfMx
+     > / CtqPar_5_1 / Al, XV(0:MXX), QL(0:MXQ), UPD(MXPQX)
+     > / CtqPar_5_2 / Nx, Nt, NfMx
      > / XQrange / Qini, Qmax, Xmin
 C
       Dimension Fq(M1), Df(M1)
@@ -246,8 +246,8 @@ C                             ********************
       PARAMETER (MXX = 105, MXQ = 25, MXF = 6)
       PARAMETER (MXPQX = (MXF *2 +2) * MXQ * MXX)
       Common 
-     > / CtqPar1 / Al, XV(0:MXX), QL(0:MXQ), UPD(MXPQX)
-     > / CtqPar2 / Nx, Nt, NfMx
+     > / CtqPar_5_1 / Al, XV(0:MXX), QL(0:MXQ), UPD(MXPQX)
+     > / CtqPar_5_2 / Nx, Nt, NfMx
      > / XQrange / Qini, Qmax, Xmin
      > / QCDtable /  Alambda, Nfl, Iorder
      > / Masstbl / Amass(6)

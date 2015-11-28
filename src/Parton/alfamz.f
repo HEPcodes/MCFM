@@ -93,18 +93,18 @@ C---     DEL=SQRT(4*C2-C1**2)
       IF (Q .GT. CMASS) J=4
       IF (Q .GT. BMASS) J=5
       EP=.001D0
-      QP=Q*(1.D0+EP)
-      QM=Q*(1.D0-EP)
+      QP=Q*(1D0+EP)
+      QM=Q*(1D0-EP)
       IF (NLOOP .EQ.1) THEN 
       BETA(J)=-B0(J)*X1**2
       DIFF1=(ALPHAS(QP,AMZ,1)-ALPHAS(QM,AMZ,1))/4d0/EP/BETA(J)
       ENDIF
       IF (NLOOP .EQ.2) THEN 
-      BETA(J)=-B0(J)*X2**2*(1.D0+C1(J)*X2)
+      BETA(J)=-B0(J)*X2**2*(1D0+C1(J)*X2)
       DIFF1=(ALPHAS(QP,AMZ,2)-ALPHAS(QM,AMZ,2))/4d0/EP/BETA(J)
       ENDIF
       IF (NLOOP .EQ.3) THEN 
-      BETA(J)=-B0(J)*X3**2*(1.D0+C1(J)*X3+C2(J)*X3**2)
+      BETA(J)=-B0(J)*X3**2*(1D0+C1(J)*X3+C2(J)*X3**2)
       DIFF1=(ALPHAS(QP,AMZ,3)-ALPHAS(QM,AMZ,3))/4d0/EP/BETA(J)
       ENDIF
       WRITE(6,*) Q,DIFF1,NLOOP

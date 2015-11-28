@@ -12,7 +12,7 @@ c---with couplings for W included
       double precision faclo
       faclo=V*gsq**2*gwsq**2*aveqq
       msqwbb=faclo
-     &*(abs(aqqb_wbb(i1,i2,i5,i6,3,4))**2
-     & +abs(aqqb_wbb(i1,i2,i6,i5,3,4))**2)
+     &*(cdabs(aqqb_wbb(i1,i2,i5,i6,3,4))**2
+     & +cdabs(aqqb_wbb(i1,i2,i6,i5,3,4))**2)
       return 
       end

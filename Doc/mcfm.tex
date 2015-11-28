@@ -6,7 +6,7 @@
 \thispagestyle{empty}
 \vspace*{3cm}
 \begin{center}
-{\Huge MCFM v3.4} \\
+{\Huge MCFM v3.4.1} \\
 \vspace*{0.5cm}
 \Large{A Monte Carlo for FeMtobarn} \\
 \Large{processes at Hadron Colliders} \\
@@ -18,7 +18,7 @@
 J. M. Campbell ({\tt johnmc@hep.anl.gov}) \\
 R. K. Ellis ({\tt ellis@fnal.gov}) \\
 \vspace*{2.5cm}
-{\it \small Updated: 24th April 2003}
+{\it \small Updated: 29th May 2003}
 \end{center}
 
 \newpage
@@ -45,53 +45,85 @@ and various essential files -- notably the options file {\tt input.DAT}.
 \end{itemize}
 
 \section{Input parameters}
-The default input parameters are given in Table~\ref{default}.
+
+{\tt MCFM} now allows the user to choose between a number of schemes
+for defining the electroweak couplings. These choices are summarized
+in Table~\ref{ewscheme}. The scheme is selected by modifying the
+value of {\tt ewscheme} in {\tt src/User/mdata.f}, which also contains
+the values of all input parameters (see also Table~\ref{default}).
+
 \begin{table}
 \begin{center}
-\begin{tabular}{|c|c|c|c|} \hline
-Parameter & Fortran name & Default value & Location where set:
-{\tt src/} \ldots                \\ 
-\hline
-$m_t$            & {\tt mt}      & 175 GeV             &{\tt User/mdata.f}   \\
-$m_\tau$         & {\tt mtau}      & 1.777 GeV           &{\tt User/mdata.f}   \\
-$m^2_\tau(Q=100\GeV)$& {\tt mtausq}  & 3.1602 GeV$^2$      &{\tt User/mdata.f}   \\
-$m^2_c(Q=100\GeV)$   & {\tt mcsq}    & 0.4  GeV$^2$        &{\tt User/mdata.f}   \\
-$m^2_b(Q=100\GeV)$   & {\tt mbsq}    & 10.7 GeV$^2$        &{\tt User/mdata.f}   \\
-$\Gamma_\tau$    & {\tt tauwidth}& 2.269$\times$10$^{-12}$~GeV
-                                                       &{\tt User/mdata.f}   \\
-$M_Z$            & {\tt zmass}   & 91.187 GeV          &{\tt User/mdata.f}   \\
-$\Gamma_Z$       & {\tt zwidth}  & 2.49 GeV            &{\tt User/mdata.f}   \\
-$M_W$            & {\tt wmass}   & 80.41 GeV           &{\tt User/mdata.f}   \\
-$\Gamma_W$       & {\tt wwidth}  & 2.06 GeV            &{\tt User/mdata.f}   \\
-$\alpha(M_Z)$    & {\tt aemmz}   & 1/128.89            &{\tt User/mdata.f}   \\
-$G_F$            & {\tt gf}      & 1.16639$\times$10$^{-5}$
-                                                       &{\tt Inc/constants.f}\\
-$\sin^2 \theta_w$& {\tt xw}      & Calculated          & See text             \\
-$g^2_w$          & {\tt gwsq}    & Calculated          & See text             \\
-$V_{ud}$         & {\tt Vud}     & 0.975               &{\tt User/mdata.f}   \\
-$V_{us}$         & {\tt Vus}     & 0.22220486          &{\tt User/mdata.f}   \\
-$V_{ub}$         & {\tt Vub}     & 0.                  &{\tt User/mdata.f}   \\
-$V_{cd}$         & {\tt Vcd}     & 0.22220486          &{\tt User/mdata.f}   \\
-$V_{cs}$         & {\tt Vcs}     & 0.975               &{\tt User/mdata.f}   \\
-$V_{cb}$         & {\tt Vcb}     & 0.                  &{\tt User/mdata.f}   \\
+\begin{tabular}{|c|c|c|c|c|c|c|} \hline
+ Paramter & Name & Input Value
+ & \multicolumn{4}{c|}{Output Value determined by \tt ewscheme} \\
+\cline{4-7}
+& ({\tt \_inp}) & & {\tt -1} & {\tt 0} & {\tt 1} & {\tt 2} \\ \hline
+$G_F$            & {\tt Gf}      & 1.16639$\times$10$^{-5}$ 
+ & input & calculated & input & input \\
+$\alpha(M_Z)$    & {\tt aemmz}   & 1/128.89                 
+ & input & input & calculated & input \\
+$\sin^2 \theta_w$& {\tt xw}      & 0.2312               
+ & calculated & input & calculated & input \\
+$M_W$            & {\tt wmass}   & 80.419 GeV                
+ & input & calculated & input & calculated \\
+$M_Z$            & {\tt zmass}   & 91.188 GeV               
+ & input & input & input & calculated \\
+$m_t$            & {\tt mt}      & 175 GeV                  
+ & calculated & input & input & input \\
 \hline
 \end{tabular}
-\caption{Default parameters in {\tt MCFM}.}
+\caption{Different options for the scheme used to fix the electroweak
+parameters of the Standard Model and the corresponding default input
+values.}
+\label{ewscheme}
+\end{center}
+\end{table}
+
+For the default scheme ({\tt ewscheme=-1}), we use the effective field
+theory approach, which is valid for scales below the top mass. In this
+approach there are 4 independent parameters (which we choose to be
+$G_F$, $\alpha(M_Z)$, $M_W$ and $M_Z$). For further details,
+see Georgi, {\it Nucl. Phys.} {\bf B363} (1991) 301. 
+
+For the alternative schemes ({\tt ewscheme=0,1,2}) the top mass is simply
+an additional input parameter and there are 3 other independent
+parameters from the remaining 5. The variable {\tt ewscheme} then performs
+exactly the same role as {\tt idef} in MadEvent~\cite{Maltoni:2002qb}.
+{\tt ewscheme=0} is the old MadEvent default and {\tt ewscheme=1} is the
+new MadEvent default, which is also the same as that used in Alpgen and
+LUSIFER. 
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|c|c|} \hline
+Parameter & Fortran name & Default value \\ 
+\hline
+$m_\tau$         & {\tt mtau}      & 1.777 GeV            \\
+$m^2_\tau(Q=100\GeV)$& {\tt mtausq}  & 3.1602 GeV$^2$     \\
+$m^2_c(Q=100\GeV)$   & {\tt mcsq}    & 0.4  GeV$^2$       \\
+$m^2_b(Q=100\GeV)$   & {\tt mbsq}    & 10.7 GeV$^2$       \\
+$\Gamma_\tau$    & {\tt tauwidth}& 2.269$\times$10$^{-12}$~GeV \\
+$\Gamma_W$       & {\tt wwidth}  & 2.06 GeV               \\
+$\Gamma_Z$       & {\tt zwidth}  & 2.49 GeV               \\
+$V_{ud}$         & {\tt Vud}     & 0.975                  \\
+$V_{us}$         & {\tt Vus}     & 0.22220486             \\
+$V_{ub}$         & {\tt Vub}     & 0.                     \\
+$V_{cd}$         & {\tt Vcd}     & 0.22220486             \\
+$V_{cs}$         & {\tt Vcs}     & 0.975                  \\
+$V_{cb}$         & {\tt Vcb}     & 0.                     \\
+\hline
+\end{tabular}
+\caption{Default values for the remaining parameters in {\tt MCFM}.}
 \label{default} 
 \end{center}
 \end{table}
-We use the effective field theory approach, which is good for all
-except couplings to $b$-quarks (this may be added later). This is
-valid for scales below the top mass.
-      $$e^2 =  4 \pi \alpha(M_Z)$$
-      $$g_w^2 =  8 M^2_W  \frac{G_F}{\sqrt{2}} $$
-      $$\sin \theta_w =  \frac{e^2}{g_w^2}$$
-For further details, see Georgi, {\it Nucl. Phys.} {\bf B363} (1991)
-301. 
 
 \subsection{Parton distributions}
 The value of $\alpha_S(M_Z)$ is not adjustable; it is hardwired with the
-parton distribution. The default mode of operation is to choose from a
+parton distribution. In addition, the parton distribution also specifies
+the number of loops that should be used in the running of $\alpha_S$.
+The default mode of operation is to choose from a
 collection of modern parton distribution functions that are included with
 MCFM.  The distributions, together with their associated $\alpha_S(M_Z)$
 values, are given in the table below. For the older distributions, where the
@@ -179,7 +211,7 @@ Command executed && Location of input file \\
 {\tt mcfm}                      && {\tt input.DAT} \\
 {\tt mcfm myfile.DAT}           && {\tt myfile.DAT} \\
 {\tt mcfm mydir}                && {\tt mydir/input.DAT} \\
-{\tt mcfm myfile.DAT mydir}     && {\tt mydir/myfile.DAT} \\
+{\tt mcfm mydir myfile.DAT}     && {\tt mydir/myfile.DAT} \\
 \end{tabular}
 \end{center}
 \caption{Summary of command line options for running {\tt mcfm}.}
@@ -440,10 +472,7 @@ parameter should be set equal to the putative value of $M_H$.
 of the renormalization and factorization scale. This is the scale
 at which $\alpha_S$ is evaluated and will typically be set to
 a mass scale appropriate to the process ($M_W$, $M_Z$, $M_t$ for
-instance). For a lowest order calculation, the value of $\alpha_S$ at
-this scale is obtained from $\alpha_S(M_Z)$ via $1$-loop running, but
-for any value of {\tt part} other than {\tt lord}, $2$-loop
-running is used.
+instance).
 For the case where particles $3$ and $4$ are produced by the decay of
 a vector boson $V$, there are two special scale choices. Setting
 {\tt scale} equal to {\tt -1d0} selects a scale equal to the mass of
@@ -573,6 +602,11 @@ must be separated by $\Delta R >$~{\tt R(lept,lept)\_min}.
 \item {\tt Deltay(jet,jet)\_min}. This enforces a rapidity gap between
 the two hardest jets, so that
 $|y^{\rm jet~1} - y^{\rm jet~2}| >$~{\tt Deltay(jet,jet)\_min}.
+
+\item {\tt ptmin\_bjet,  etamax\_bjet}. If {\tt makecuts} is {\tt .true.}
+and a process involving $b$-quarks is being calculated, then these can
+be used to specify {\em stricter} values of $p_T^{\rm min}$
+and $|\eta|^{\rm max}$ for $b$-jets.
 
 \item {\tt ptminphoton, etamaxphoton}. These specify the values
 of $p_T^{\rm min}$ and $|y|^{\rm max}$ for any photons produced.
@@ -748,6 +782,14 @@ and \cite{Glosser:2002gm}.
 
 \begin{thebibliography}{99}
 %
+%\cite{Maltoni:2002qb}
+\bibitem{Maltoni:2002qb}
+F.~Maltoni and T.~Stelzer,
+%``MadEvent: Automatic event generation with MadGraph,''
+JHEP {\bf 0302}, 027 (2003)
+[arXiv:hep-ph/0208156].
+%%CITATION = HEP-PH 0208156;%%
+
 %\cite{deFlorian:1999zd}
 \bibitem{deFlorian:1999zd}
 D.~de Florian, M.~Grazzini and Z.~Kunszt,

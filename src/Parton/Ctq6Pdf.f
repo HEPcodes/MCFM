@@ -63,7 +63,7 @@ C===========================================================================
       Implicit Double Precision (A-H,O-Z)
       Logical Warn
       Common
-     > / CtqPar2 / Nx, Nt, NfMx
+     > / CtqPar_6_2 / Nx, Nt, NfMx
      > / QCDtable /  Alambda, Nfl, Iorder
 
       Data Warn /.true./
@@ -138,8 +138,8 @@ C                             ********************
       PARAMETER (MXX = 96, MXQ = 20, MXF = 5)
       PARAMETER (MXPQX = (MXF + 3) * MXQ * MXX)
       Common
-     > / CtqPar1 / Al, XV(0:MXX), TV(0:MXQ), UPD(MXPQX)
-     > / CtqPar2 / Nx, Nt, NfMx
+     > / CtqPar_6_1 / Al, XV(0:MXX), TV(0:MXQ), UPD(MXPQX)
+     > / CtqPar_6_2 / Nx, Nt, NfMx
      > / XQrange / Qini, Qmax, Xmin
      > / QCDtable /  Alambda, Nfl, Iorder
      > / Masstbl / Amass(6)
@@ -246,8 +246,8 @@ c
       Parameter (MXQX= MXQ * MXX,   MXPQX = MXQX * (MXF+3))
 
       Common
-     > / CtqPar1 / Al, XV(0:MXX), TV(0:MXQ), UPD(MXPQX)
-     > / CtqPar2 / Nx, Nt, NfMx
+     > / CtqPar_6_1 / Al, XV(0:MXX), TV(0:MXQ), UPD(MXPQX)
+     > / CtqPar_6_2 / Nx, Nt, NfMx
      > / XQrange / Qini, Qmax, Xmin
 
       Dimension fvec(4), fij(4)

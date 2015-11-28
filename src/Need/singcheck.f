@@ -14,12 +14,12 @@
       include 'npart.f'
       include 'ptilde.f'
       include 'process.f'
-      integer j,k,jj,kk,jmax,kmax,nd,jets,nqcdjets,nqcdstart
+      include 'jetlabel.f'
+      integer j,k,jj,kk,jmax,kmax,nd,nqcdjets,nqcdstart
       double precision p(mxpart,4),q(mxpart,4),pjet(mxpart,4),
      . msq(-nf:nf,-nf:nf),msqs(-nf:nf,-nf:nf),msqc(maxd,-nf:nf,-nf:nf),
      . s(mxpart,mxpart),rcut,debugsmall,debuglarge,xtoler
       character*32 debugmsg
-      character jetlabel(mxpart)*2
       external real_g,sub_gs
       common/nqcdjets/nqcdjets,nqcdstart
       common/rcut/rcut
@@ -76,7 +76,7 @@
          enddo
          enddo
          call dotem(7,p,s)
-         call genclust2(p,rcut,jets,pjet,jetlabel)
+         call genclust2(p,rcut,pjet,0)
          if (jets .eq. -1) then
            write(6,*) 'This point does not have a final state b-jet'
            do jj=-nf,nf
@@ -100,7 +100,7 @@ c     .                      -(pjet(5,3)+pjet(6,3))**2
             enddo
             enddo
             call dotem(7,q,s)
-            call genclust2(q,rcut,jets,pjet,jetlabel)
+            call genclust2(q,rcut,pjet,1)
             if (jets .eq. nqcdjets) then
 c            write(6,*) nd,jets,msqc(nd,2,0),(pjet(5,4)+pjet(6,4))**2
 c     .                        -(pjet(5,1)+pjet(6,1))**2

@@ -1,11 +1,11 @@
-      subroutine mcfm_vegas(vegas_ent,myitmx,myncall,mybin,xinteg,xerr)
+      subroutine mcfm_vegas(myinit,myitmx,myncall,mybin,xinteg,xerr)
 ************************************************************************
 *                                                                      *
-*  This routine should perform the sweeps of Vegas                     *
+*  This routine should perform the sweeps of vegasnr                     *
 *                                                                      *
 *    Input parameters:                                                 *
-*    vegas_ent  :  the Vegas routine (entry point)                     *
-*       myitmx  :  the number of Vegas sweeps                          *
+*       myinit  :  the vegasnr routine entry point                       *
+*       myitmx  :  the number of vegasnr sweeps                          *
 *      myncall  :  the number of iterations per sweep                  *
 *          bin  :  whether or not the results should be histogrammed   *
 *                                                                      *
@@ -18,7 +18,7 @@
       include 'gridinfo.f'
       include 'realwt.f'
       include 'vegas_common.f'
-      integer myitmx,myncall
+      integer myitmx,myncall,myinit,i
       logical mybin,bin
       double precision sig,sd,chi,sigr,sdr,chir,
      . xreal,xreal2,xinteg,xerr,adjust
@@ -27,8 +27,9 @@
       common/bin/bin
       common/xreal/xreal,xreal2
       double precision lowint,virtint,realint
+      double precision region(2*mxdim)
       logical first
-      external vegas_ent,lowint,virtint,realint
+      external lowint,virtint,realint
       data first/.true./
       save first
            
@@ -41,14 +42,16 @@ c--- total of virt and real may be combined at the end for 'tota'
       xreal=0d0
       xreal2=0d0
       
-c--- Put the Vegas parameters in the common block
+c--- Put the vegasnr parameters in the common block
       itmx=myitmx
       ncall=myncall
       bin=mybin
       
 c--- Basic lowest-order integration
       if (part .eq. 'lord') then
-        call vegas_ent(lowint,sig,sd,chi)
+       call boundregion(ndim,region)
+       call vegasnr(region,ndim,lowint,myinit,myncall,myitmx,
+     .               0,sig,sd,chi)
       endif
 
 c--- Store value of part in mypart, which will be retained;
@@ -72,9 +75,9 @@ c--- Virtual integration should have one extra dimension
 c--- (added and then taken away)
       if ((mypart .eq. 'virt') .or. (mypart .eq. 'tota'))  then
         part='virt'
-        ndim=ndim+1
-        call vegas_ent(virtint,sig,sd,chi) 
-        ndim=ndim-1
+        call boundregion(ndim+1,region)
+        call vegasnr(region,ndim+1,virtint,myinit,myncall,myitmx,
+     .              0,sig,sd,chi)
       endif
             
 c--- If we're doing the tota integration, then set up the grid info
@@ -101,10 +104,10 @@ c---   unsubtracted real emission weight)
         endif
         xreal=0d0
         xreal2=0d0
-        ndim=ndim+3
-        call vegas_ent(realint,sigr,sdr,chir)
+        call boundregion(ndim+3,region)
+        call vegasnr(region,ndim+3,realint,myinit,myncall,myitmx,
+     .              0,sigr,sdr,chi)
         write(6,*) 
-        ndim=ndim-3
         ncall=myncall
         if (realwt) then
           sigr=xreal
@@ -121,13 +124,13 @@ c---   unsubtracted real emission weight)
         endif
         xreal=0d0
         xreal2=0d0
-        ndim=ndim+3
-        adjust=(dfloat(ndim)+3d0)/(dfloat(ndim)+1d0)
+        adjust=(dfloat(ndim+3))/(dfloat(ndim+1))
         ncall=int(dfloat(myncall)**adjust)
         write(6,*) 'Adjusting number of points for real to',ncall
-        call vegas_ent(realint,sigr,sdr,chir)
+        call boundregion(ndim+3,region)
+        call vegasnr(region,ndim+3,realint,myinit,myncall,myitmx,
+     .              0,sigr,sdr,chi)
         write(6,*) 
-        ndim=ndim-3
         ncall=myncall
 
         if (realwt) then
@@ -149,4 +152,22 @@ c--- return part to its real value
       
       return
       end
+      
+      
+      subroutine boundregion(idim,region)
+c--- Initializes integration region [0,1] for each variable
+c--- in the idim-dimensional integration range
+      implicit none
+      include 'mxdim.f'
+      integer i,idim
+      double precision region(2*mxdim)
+      
+      do i=1,idim
+      region(i)=0d0
+      region(i+idim)=1d0
+      enddo
+      
+      return
+      end
+      
       

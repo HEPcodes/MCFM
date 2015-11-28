@@ -32,4 +32,6 @@ c-----This is an implementation of BDKW Eq.(3.10)
 c---this is not a real tree amplitude but it is an auxiliary quantity.
          atree=-tree(j3,j1,j2,j4,j5,j6)
       endif
+
+      return 
       end

@@ -12,11 +12,11 @@
       include 'ewcouple.f'
       include 'ckm.f'
       include 'sprods_com.f'
-      include 'zprods_com.f'
+      include 'zprods_decl.f'
       include 'scheme.f'
       include 'hardscale.f'
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),
-     . p(mxpart,4),q(mxpart,4),srke(mxpart,mxpart),faclo,fac,
+     . p(mxpart,4),q(mxpart,4),faclo,fac,
      . qqb,qbq
       double complex atrLLL,atrLRL,a61LLL,a61LRL
       double complex tLLL,tLRL,fLLL,fLRL
@@ -49,10 +49,11 @@ c---  q-(-p4)+Q+(-p2)+l-(-p5) ---> q+(p1)+Q-(p3)+l+(p6)
       q(5,nu)=p(4,nu)
       q(6,nu)=p(3,nu)
       enddo      
+
       call spinoru(6,q,za,zb)
       faclo=V*aveqq*gw**4*gsq**2
       fac=faclo*xn*0.5d0*ason2pi
-
+      
 c----do whatever needs to be done q-qb case
       tLLL=atrLLL(1,2,3,4,5,6,za,zb)
       fLLL=a61LLL(1,2,3,4,5,6,za,zb)

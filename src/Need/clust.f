@@ -42,10 +42,10 @@ c--added by RKE
       do i=1,npar
          jp(i)=i+4
          j=jp(i)
-         pjet(5,j)=sqrt(pjet(1,j)**2+pjet(2,j)**2)
-         theta=atan2(pjet(5,j),pjet(3,j))
-         pjet(6,j)=-log(abs(tan(theta/2.0d0)))
-         pjet(7,j)=atan2(pjet(1,j),pjet(2,j))
+         pjet(5,j)=dsqrt(pjet(1,j)**2+pjet(2,j)**2)
+         theta=datan2(pjet(5,j),pjet(3,j))
+         pjet(6,j)=-dlog(dabs(dtan(theta/2d0)))
+         pjet(7,j)=datan2(pjet(1,j),pjet(2,j))
       enddo
 * cluster the partons
       if(npar.gt.1)then
@@ -71,9 +71,9 @@ c--added by RKE
                   elseif (rar.gt.1d0) then 
                       delfi=0d0
                   else
-                      delfi=acos(rar)
+                      delfi=dacos(rar)
                   endif
-                  delr=sqrt(dely**2+delfi**2)
+                  delr=dsqrt(dely**2+delfi**2)
                   if (delr.lt.delrjj) then
                      icol=1
                      ji=j1
@@ -91,9 +91,9 @@ c--added by RKE
                    elseif (rar.gt.1d0) then 
                       delfi=0d0
                    else
-                      delfi=acos(rar)
+                      delfi=dacos(rar)
                    endif
-                   delr=sqrt(dely**2+delfi**2)
+                   delr=dsqrt(dely**2+delfi**2)
                  endif
                  if(jalg2.eq.1.or.jalg2.eq.3.or.jalg2.eq.4)then
                    pt1=pjet(5,j1)
@@ -109,10 +109,10 @@ c--added by RKE
                    elseif(jalg2.eq.3)then 
                      etjet=pt
                    elseif(jalg2.eq.4)then 
-                     etjet=ee*sin(theta)
+                     etjet=ee*dsin(theta)
                    endif
-                   etajet=-log(abs(tan(theta/2.0d0)))
-                   phijet=atan2(px,py)
+                   etajet=-dlog(dabs(dtan(theta/2.0d0)))
+                   phijet=datan2(px,py)
                    rar=(pjet(1,j1)*px+pjet(2,j1)*py)
      .                 /pt1/pt
                    if (rar.lt.-1d0) then 
@@ -120,7 +120,7 @@ c--added by RKE
                    elseif (rar.gt.1d0) then 
                       delfi1=0d0
                    else
-                      delfi1=acos(rar)
+                      delfi1=dacos(rar)
                    endif
                    rar=(pjet(1,j2)*px+pjet(2,j2)*py)
      .                 /pt2/pt
@@ -129,7 +129,7 @@ c--added by RKE
                    elseif (rar.gt.1d0) then 
                       delfi2=0d0
                    else
-                      delfi2=acos(rar)
+                      delfi2=dacos(rar)
                    endif
                  endif
                  if(jalg2.eq.2)then
@@ -145,15 +145,15 @@ c--added by RKE
                    elseif (rar.gt.1d0) then 
                       delfi=0d0
                    else
-                      delfi=acos(rar)
+                      delfi=dacos(rar)
                    endif
                    delfi1= pjet(5,j2)*delfi/etjet ! phi_1 - phijet 
                    delfi2=-pjet(5,j1)*delfi/etjet ! phi_2 - phijet
                  endif
                  dely1=pjet(6,j1)-etajet
                  dely2=pjet(6,j2)-etajet
-                 delr1=sqrt(dely1**2+delfi1**2)
-                 delr2=sqrt(dely2**2+delfi2**2)
+                 delr1=dsqrt(dely1**2+delfi1**2)
+                 delr2=dsqrt(dely2**2+delfi2**2)
                  if ((delr1.lt.delrjj).and.(delr2.lt.delrjj)) then
                    if(jalg1.eq.2)then
                      icol=1
@@ -175,9 +175,9 @@ c--added by RKE
                   elseif (rar.gt.1d0) then 
                      delfi=0d0
                   else
-                     delfi=acos(rar)
+                     delfi=dacos(rar)
                   endif
-                  delr=sqrt(dely**2+delfi**2)
+                  delr=dsqrt(dely**2+delfi**2)
                   et=dmin1(pjet(5,j1),pjet(5,j2))
                   if(et**2*delr**2.lt.dij)then
                     ji=j1
@@ -215,14 +215,14 @@ c----Added by RKE
              theta=atan2(pp,pjet(3,ji))
              if(jalg2.eq.1)then
                pjet(5,ji)=pjet(5,ji)+pjet(5,jj)
-               pjet(4,ji)=pjet(5,ji)/sin(theta)
+               pjet(4,ji)=pjet(5,ji)/dsin(theta)
              elseif(jalg2.eq.3)then
-               pjet(5,ji)=sqrt(pjet(1,ji)**2+pjet(2,ji)**2)
+               pjet(5,ji)=dsqrt(pjet(1,ji)**2+pjet(2,ji)**2)
              elseif(jalg2.eq.4)then
-               pjet(5,ji)=pjet(4,ji)*sin(theta)
+               pjet(5,ji)=pjet(4,ji)*dsin(theta)
              endif
-             pjet(6,ji)=-log(abs(tan(theta/2.0d0)))
-             pjet(7,ji)=atan2(pjet(1,ji),pjet(2,ji))
+             pjet(6,ji)=-dlog(dabs(dtan(theta/2.0d0)))
+             pjet(7,ji)=datan2(pjet(1,ji),pjet(2,ji))
              pjet(4,jj)=-1d0
         endif
         if(jalg2.eq.2)then
@@ -244,11 +244,11 @@ c----Added by RKE
              elseif (rar.gt.1d0) then 
                   delfi=0d0
              else
-                  delfi=acos(rar)
+                  delfi=dacos(rar)
              endif
              delfi1= pjet(5,jj)*delfi/etjet ! phi_1 - phijet 
-             cde=cos(delfi1)
-             sde=sin(delfi1)
+             cde=dcos(delfi1)
+             sde=dsin(delfi1)
              if (pjet(2,ji)*pjet(1,jj).gt.pjet(2,jj)*pjet(1,ji))
      .       sde=-sde
              cphi=(pjet(1,ji)*cde-pjet(2,ji)*sde)/pjet(5,ji)
