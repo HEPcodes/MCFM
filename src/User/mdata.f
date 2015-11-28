@@ -34,6 +34,19 @@ c
 ************************************************************************
 
 
+      block data transversedefn
+************************************************************************
+*     Definition to use for computing transverse quantities            *
+*         useEt=.false.    transverse momentum [previous default]      *
+*         useEt=.true.     transverse energy                           *
+************************************************************************
+      implicit none
+      include 'useet.f'
+      data useEt/.false./
+      end
+************************************************************************
+
+
 ************************************************************************
 *     Masses, widths and initial-state flavour information             *
 ************************************************************************

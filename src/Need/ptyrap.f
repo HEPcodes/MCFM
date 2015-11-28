@@ -1,3 +1,30 @@
+      double precision function pt(j,p)
+c--- This routine is now just a wrapper to getet, which
+c--- computes either pt or et, depending on the value of useEt      
+      implicit none
+      include 'constants.f'
+      integer j
+      double precision p(mxpart,4),getet
+      
+      pt=getet(p(j,4),p(j,1),p(j,2),p(j,3))
+
+      return
+      end
+
+      double precision function pttwo(j,k,p)
+c--- This routine is now just a wrapper to getet, which
+c--- computes either pt or et, depending on the value of useEt      
+      implicit none
+      include 'constants.f'
+      integer j,k
+      double precision p(mxpart,4),getet
+
+      pttwo=getet(p(j,4)+p(k,4),p(j,1)+p(k,1),
+     .            p(j,2)+p(k,2),p(j,3)+p(k,3))
+
+      return
+      end
+
       double precision function etarap(j,p)
       implicit none
 C---returns the value of the pseudorapidity
@@ -69,28 +96,6 @@ c-- rapidities of 100 will be rejected by any sensible cuts
       return
       end
  
-      double precision function pt(j,p)
-      implicit none
-      include 'constants.f'
-      integer j
-      double precision p(mxpart,4)
-c--- This is the formula for pt
-      pt=dsqrt(p(j,1)**2+p(j,2)**2)
-c--- This is the formula for Et 
-c      pt=dsqrt(p(j,1)**2+p(j,2)**2)
-c     . *p(j,4)/dsqrt(p(j,1)**2+p(j,2)**2+p(j,3)**2)
-      return
-      end
-
-      double precision function pttwo(j,k,p)
-      implicit none
-      include 'constants.f'
-      integer j,k
-      double precision p(mxpart,4)
-      pttwo=dsqrt((p(j,1)+p(k,1))**2+(p(j,2)+p(k,2))**2)
-      return
-      end
-
 c--- this is the rapidity of pair j,k
       double precision function yraptwo(j,k,p)
       implicit none

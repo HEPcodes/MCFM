@@ -85,6 +85,7 @@ c--- Traditional MCFM histograms
       include 'removebr.f'
       include 'nodecay.f'
       include 'masses.f'
+      include 'useet.f'
 
 cz Add single-top b fraction, Z. Sullivan 1/25/05
       double precision bwgt
@@ -159,6 +160,7 @@ cz //
       integer nproc,eventpart,ib1,ib2,nqcdjets,nqcdstart
       logical first,jetmerge
       logical creatent,dswhisto,jetevent
+      character*2 ptet
       character*30 runstring
       common/runstring/runstring
       common/outputflags/creatent,dswhisto
@@ -173,7 +175,15 @@ cz //
       common/realeventp/realeventp
       data first/.true./
       save first
-       if (first) then
+
+c--- Set up string for pt or Et
+      if (useEt) then
+        ptet='Et'
+      else
+        ptet='pt'
+      endif
+      
+      if (first) then
         tag='book'
 c--- ensure we initialize all possible histograms
         eventpart=npart+3
@@ -808,19 +818,19 @@ c --- Histograms to monitor exclusive/inclusive cross-sections:
       if (nodecay .eqv. .false.) then
       call bookplot(n,tag,'eta3',eta3,wt,wt2,-4d0,4d0,0.2d0,'lin')
       n=n+1
-      call bookplot(n,tag,'pt3',pt3,wt,wt2,0d0,150d0,5d0,'log')
+      call bookplot(n,tag,ptet//'3',pt3,wt,wt2,0d0,150d0,5d0,'log')
       n=n+1      
       call bookplot(n,tag,'eta4',eta4,wt,wt2,-4d0,4d0,0.2d0,'lin')
       n=n+1
-      call bookplot(n,tag,'pt4',pt4,wt,wt2,25d0,50d0,0.5d0,'lin')
+      call bookplot(n,tag,ptet//'4',pt4,wt,wt2,25d0,50d0,0.5d0,'lin')
       n=n+1
-      call bookplot(n,tag,'pt4',pt4,wt,wt2,0d0,150d0,5d0,'log')
+      call bookplot(n,tag,ptet//'4',pt4,wt,wt2,0d0,150d0,5d0,'log')
       n=n+1
       call bookplot(n,tag,'eta34',eta34,wt,wt2,-4d0,4d0,0.4d0,'lin')
       n=n+1
       call bookplot(n,tag,'y34',y34,wt,wt2,-4d0,4d0,0.4d0,'lin')
       n=n+1
-      call bookplot(n,tag,'pt34',pt34,wt,wt2,0d0,100d0,2d0,'log')
+      call bookplot(n,tag,ptet//'34',pt34,wt,wt2,0d0,100d0,2d0,'log')
       call ebookplot(n,tag,pt34,wt)
       n=n+1
       call bookplot(n,tag,'m34',m34,wt,wt2,0d0,200d0,5d0,'lin')
@@ -836,9 +846,9 @@ c --- Histograms to monitor exclusive/inclusive cross-sections:
       n=n+1
       call bookplot(n,tag,'eta5',eta5,wt,wt2,-10d0,10d0,0.5d0,'lin')
       n=n+1
-      call bookplot(n,tag,'pt5',pt5,wt,wt2,0d0,500d0,5d0,'log')
+      call bookplot(n,tag,ptet//'5',pt5,wt,wt2,0d0,500d0,5d0,'log')
       n=n+1
-      call bookplot(n,tag,'pt5',pt5,wt,wt2,0d0,100d0,2d0,'log')
+      call bookplot(n,tag,ptet//'5',pt5,wt,wt2,0d0,100d0,2d0,'log')
       n=n+1
       call bookplot(n,tag,'m345',m345,wt,wt2,108d0,308d0,2d0,'log')
       n=n+1
@@ -870,13 +880,13 @@ c     . wt,wt2,-5d0,5d0,0.4d0,'lin')
 c      n=n+1
       call bookplot(n,tag,'eta6',eta6,wt,wt2,-4d0,4d0,0.2d0,'lin')
       n=n+1
-      call bookplot(n,tag,'pt6',pt6,wt,wt2,0d0,500d0,5d0,'log')
+      call bookplot(n,tag,ptet//'6',pt6,wt,wt2,0d0,500d0,5d0,'log')
       n=n+1
-      call bookplot(n,tag,'pt6',pt6,wt,wt2,0d0,200d0,2d0,'log')
+      call bookplot(n,tag,ptet//'6',pt6,wt,wt2,0d0,200d0,2d0,'log')
       n=n+1
       call bookplot(n,tag,'eta56',eta56,wt,wt2,-4d0,4d0,0.2d0,'lin')
       n=n+1
-      call bookplot(n,tag,'pt56',pt56,wt,wt2,10d0,150d0,10d0,'log')
+      call bookplot(n,tag,ptet//'56',pt56,wt,wt2,10d0,150d0,10d0,'log')
       n=n+1
       call bookplot(n,tag,'r56',r56,wt,wt2,0d0,4d0,0.1d0,'lin')
       n=n+1
@@ -889,11 +899,16 @@ c      n=n+1
       call bookplot(n,tag,'eta5-eta6',eta5-eta6,
      . wt,wt2,-6d0,6d0,0.2d0,'lin')
       n=n+1
-      if ((jets .ge. 2) .or. (tag .eq. 'book')) then
-      call bookplot(n,tag,'delta(eta)',deltaeta,
+      if ((jets .eq. 2) .or. (tag .eq. 'book')) then
+      call bookplot(n,tag,'delta(eta) - 2 jets',deltaeta,
      . wt,wt2,0d0,10d0,0.5d0,'lin')
-      n=n+1      
       endif
+      n=n+1      
+      if ((jets .eq. 3) .or. (tag .eq. 'book')) then
+      call bookplot(n,tag,'delta(eta) - 3 jets',deltaeta,
+     . wt,wt2,0d0,10d0,0.5d0,'lin')
+      endif
+      n=n+1      
       endif
 
       if (bbproc) then
@@ -912,11 +927,11 @@ c--- Delta_R(b,b), 2 b-jets, bins of 0.2 from 0.35 to 4.95
       n=n+1
       call bookplot(n,tag,'etab1',etab1,wt,wt2,-4d0,4d0,0.2d0,'lin')
       n=n+1
-      call bookplot(n,tag,'ptb1',ptb1,wt,wt2,0d0,200d0,5d0,'log')
+      call bookplot(n,tag,ptet//'b1',ptb1,wt,wt2,0d0,200d0,5d0,'log')
       n=n+1
       call bookplot(n,tag,'etab2',etab2,wt,wt2,-4d0,4d0,0.2d0,'lin')
       n=n+1
-      call bookplot(n,tag,'ptb2',ptb2,wt,wt2,0d0,200d0,5d0,'log')
+      call bookplot(n,tag,ptet//'b2',ptb2,wt,wt2,0d0,200d0,5d0,'log')
       n=n+1
       call bookplot(n,tag,'mbb',mbb,wt,wt2,0d0,200d0,10d0,'log')
       n=n+1
@@ -936,10 +951,10 @@ c--- Delta_R(b,b), 2 b-jets, bins of 0.2 from 0.35 to 4.95
       endif
       
       if (case .eq. 'Z_bjet') then
-      call bookplot(n,tag,'pt b leading',ptleadingb,
+      call bookplot(n,tag,ptet//' b leading',ptleadingb,
      .               wt,wt2,0d0,500d0,20d0,'log')
       n=n+1
-      call bookplot(n,tag,'pt non-b leading',ptleadingnonb,
+      call bookplot(n,tag,ptet//' non-b leading',ptleadingnonb,
      .               wt,wt2,0d0,500d0,20d0,'log')
       n=n+1
       endif
@@ -952,13 +967,13 @@ c--- Non b-jet Et, 5 GeV bins from 15 to 200
       n=n+1
       call bookplot(n,tag,'etanob',etanob,wt,wt2,-4d0,4d0,0.2d0,'lin')
       n=n+1
-      call bookplot(n,tag,'ptnob',ptnob,wt,wt2,0d0,200d0,5d0,'log')
+      call bookplot(n,tag,ptet//'nob',ptnob,wt,wt2,0d0,200d0,5d0,'log')
       n=n+1
       endif
 
       call bookplot(n,tag,'eta7',eta7,wt,wt2,-4d0,4d0,0.2d0,'lin')
       n=n+1
-      call bookplot(n,tag,'pt7',pt7,wt,wt2,0d0,100d0,5d0,'lin')
+      call bookplot(n,tag,ptet//'7',pt7,wt,wt2,0d0,100d0,5d0,'lin')
       n=n+1
       call bookplot(n,tag,'r57',r57,wt,wt2,0d0,4d0,0.1d0,'lin')
       n=n+1
@@ -974,7 +989,7 @@ c--- Non b-jet Et, 5 GeV bins from 15 to 200
       if (eventpart .gt. 7) then
       call bookplot(n,tag,'eta8',eta8,wt,wt2,-4d0,4d0,0.2d0,'lin')
       n=n+1
-      call bookplot(n,tag,'pt8',pt8,wt,wt2,0d0,100d0,5d0,'lin')
+      call bookplot(n,tag,ptet//'8',pt8,wt,wt2,0d0,100d0,5d0,'lin')
       n=n+1
       call bookplot(n,tag,'m348',m348,wt,wt2,108d0,308d0,2d0,'log')
       n=n+1

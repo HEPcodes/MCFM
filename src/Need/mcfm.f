@@ -12,6 +12,7 @@
 ************************************************************************
       implicit none
       include 'constants.f'
+      include 'efficiency.f'
       include 'maxwt.f'
       include 'eventbuffer.f'
       include 'gridinfo.f'
@@ -44,6 +45,11 @@
 
       if ((dryrun .eqv. .false.) .or. 
      .    ((dryrun) .and. (readin .eqv. .false.))) then
+* Initialize efficiency variables      
+        njetzero=0
+        ncutzero=0
+        ntotzero=0
+        ntotshot=0
         call mcfm_vegas(0,itmx1,ncall1,dryrun,integ,integ_err)
         itmxplots=itmx1
       endif
@@ -55,6 +61,11 @@
       wtmax = 0d0
       if ((dryrun .eqv. .false.) .or. 
      .    ((dryrun) .and. (readin .eqv. .true.))) then
+* Initialize efficiency variables      
+        njetzero=0
+        ncutzero=0
+        ntotzero=0
+        ntotshot=0
         call mcfm_vegas(1,itmx2,ncall2,.true.,integ,integ_err)
         itmxplots=itmx2
       endif

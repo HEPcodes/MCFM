@@ -1,7 +1,7 @@
       block data codeversion_data
       implicit none
       include 'codeversion.f'
-      data codeversion/'5.5'/      
+      data codeversion/'5.6'/      
       data      prelim/.false./      ! if true, print warning message
       end
 
@@ -44,7 +44,7 @@ c--- warning message, if necessary
 
       write(6,*) '*                                                *'
       write(6,*) '* MCFM, v'//codeversion//
-     . '                  June 2nd, 2009  *'
+     . '                 June 17th, 2009  *'
       write(6,*) '*                                                *'
       write(6,*) '* Authors: John Campbell, Keith Ellis            *'
       write(6,*) '* (J.Campbell@physics.gla.ac.uk, ellis@fnal.gov) *'

@@ -173,9 +173,10 @@ c--- note the factor of 4d0*xw**2 relative to wbb
       fac=4d0*gsq**3*esq**2*8d0
 c--- extra factor of 2**3=8 to compensate for Ta normalization
 
+c--- note: the following two arrays end up being overall 1<->2 symmetric
       call msq_ZqqQQg(5,1,2,6,7,4,3,msqn_qqbs,msqi_qqbs)
       call msq_ZqqQQg(1,6,5,2,7,4,3,msqn_qbqs,msqi_qbqs)
-
+      
       call msq_ZqqQQg(2,1,5,6,7,4,3,msqn_qqb,msqi_qqb)
       call msq_ZqqQQg(1,2,5,6,7,4,3,msqn_qbq,msqi_qbq)
 

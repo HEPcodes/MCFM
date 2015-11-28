@@ -22,7 +22,7 @@ c     q(-p1)+qbar(-p2)--> g(p5)+ g(p6)+Z(f(p3)+af(p4))
 C ip is the label of the emitter
 C in is the label of the contracted line
       integer j,k,pq,pl,nquark,in,icol
-      double precision fac,n(4)
+      double precision fac,n(4),tmp
       double complex prop,zab(mxpart,mxpart),zba(mxpart,mxpart)
       double precision msqv(-nf:nf,-nf:nf),p(mxpart,4),ggtemp(0:2),
      . qqbZgg_cs(0:2,2,2),qbqZgg_cs(0:2,2,2),qgZqg_cs(0:2,2,2),
@@ -79,6 +79,15 @@ C                       (4) outgoing gluon line contracted with n
       elseif (in .eq. 2)  then
            call z2jetsqn(5,6,1,2,p,n,za,zb,zab,zba,ggZqbq)
            call storezcsv(ggZqbq_cs)
+c--- since we have interchanged 1 and 2 to get the gg matrix element,
+c---  the colour structures should be interchanged too
+           do pq=1,2
+           do pl=1,2
+	   tmp=ggZqbq_cs(1,pq,pl)
+	   ggZqbq_cs(1,pq,pl)=ggZqbq_cs(2,pq,pl)
+	   ggZqbq_cs(2,pq,pl)=tmp
+	   enddo
+	   enddo
            call z2jetsqn(5,1,6,2,p,n,za,zb,zab,zba,qbgZqbg)
            call storezcsv(qbgZqbg_cs)
            call z2jetsqn(1,5,6,2,p,n,za,zb,zab,zba,qgZqg)

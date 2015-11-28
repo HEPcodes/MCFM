@@ -29,7 +29,7 @@ C in is the label of the contracted line
       integer j,k,pq,pl,in,ics
       double precision fac,n(4)
       double complex zab(mxpart,mxpart),zba(mxpart,mxpart),prop
-      double precision msq(-nf:nf,-nf:nf),p(mxpart,4),ggqqb(2,2)
+      double precision msq(-nf:nf,-nf:nf),p(mxpart,4),ggqqb(2,2),tmp
 
 
       do j=-nf,nf
@@ -60,10 +60,19 @@ C arguments 1-4 represent (1) incoming quark line
 C                         (2) incoming quark line
 C                         (3) outgoing gluon line
 C                         (4) outgoing gluon line contracted with n
-      if (in .eq. 1) then
+      if     (in .eq. 1) then
         call zbbsqn(5,6,2,1,p,n,za,zb,zab,zba,ggqqb)
       elseif (in .eq. 2)  then
         call zbbsqn(5,6,1,2,p,n,za,zb,zab,zba,ggqqb)
+c--- since we have interchanged 1 and 2 to get the gg matrix element,
+c---  the colour structures should be interchanged too
+        do pq=1,2
+        do pl=1,2
+        tmp=mmsqv_cs(1,pq,pl)
+        mmsqv_cs(1,pq,pl)=mmsqv_cs(2,pq,pl)
+        mmsqv_cs(2,pq,pl)=tmp
+        enddo
+        enddo
       endif
 
       prop=s(3,4)/dcmplx((s(3,4)-zmass**2),zmass*zwidth)

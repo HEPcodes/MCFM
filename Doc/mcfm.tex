@@ -21,7 +21,7 @@
 \thispagestyle{empty}
 \vspace*{3cm}
 \begin{center}
-{\Huge MCFM v5.5} \\
+{\Huge MCFM v5.6} \\
 \vspace*{0.5cm}
 \Large{A Monte Carlo for FeMtobarn} \\
 \Large{processes at Hadron Colliders} \\
@@ -33,7 +33,7 @@
 J. M. Campbell ({\tt J.Campbell@physics.gla.ac.uk}) \\
 R. K. Ellis ({\tt ellis@fnal.gov}) \\
 \vspace*{2.5cm}
-{\it \small Updated: 4th June 2009}
+{\it \small Updated: 11th August 2009}
 \end{center}
 
 \newpage
@@ -115,10 +115,10 @@ released in the future.
   Phys. Rev. Lett. {\bf 98}, 252002 (2007)
   [arXiv:hep-ph/0703113].
 \item R.~K.~Ellis, K.~Melnikov and G.~Zanderighi,\\
-  {\it ``Generalized unitarity at work: first NLO QCD results for hadronic $W^+$3jet production,''}
+  {\it ``Generalized unitarity at work: first NLO QCD results for hadronic $W+$~3 jet production,''}
   arXiv:0901.4101 [hep-ph].
 \item J.~M.~Campbell, R.~Frederix, F.~Maltoni and F.~Tramontano,\\
-  {\it $t^-$ channel single-top production at hadron colliders,''}
+  {\it $t$-channel single-top production at hadron colliders,''}
   arXiv:0903.0005 [hep-ph].
 \end{itemize}
 
@@ -235,6 +235,18 @@ $V_{cb}$         & {\tt Vcb}     & 0.                     \\
 \end{center}
 \end{table}
 
+In the same file ({\tt mdata.f}) one can also choose the definition
+that the program uses for computing transverse quantities, namely
+transverse momentum or transverse energy. These are defined by,
+\begin{eqnarray}
+\mbox{transverse momentum:} & \sqrt{p_x^2+p_y^2} \; ,\nonumber \\
+\mbox{transverse energy:}   &
+ \frac{E \sqrt{p_x^2+p_y^2}}{\sqrt{p_x^2+p_y^2+p_z^2}} \; .
+\end{eqnarray}
+The two definitions of course coincide for massless particles.
+The chosen definition is used for all cuts that are applied to the
+process and it is the one that is used in the default set of histograms.
+
 \subsection{Parton distributions}
 The value of $\alpha_S(M_Z)$ is not adjustable; it is hardwired with the
 parton distribution. In addition, the parton distribution also specifies
@@ -252,12 +264,12 @@ some calculation and/or guesswork.
 \hline
 {\tt mstw8lo}  & 0.1394       & \mstwoheight &
 {\tt mstw8nl}  & 0.1202       & \mstwoheight \\
-{\tt mstw8nn}  & 0.1083       & \mstwoheight &
+{\tt mstw8nn}  & 0.1171       & \mstwoheight &
 {\tt mrs02nl}  & 0.1197       & \mrstohtwo \\
 {\tt mrs02nn}  & 0.1154       & \mrstohtwo &
-{\tt mrs4nf3}  & 0.1066       & \mrstff \\
+{\tt mrs4nf3}  & 0.1083       & \mrstff \\
 {\tt mrs4lf3}  & 0.1186       & \mrstff &
-{\tt mrs4nf4}  & 0.1136       & \mrstff \\
+{\tt mrs4nf4}  & 0.1153       & \mrstff \\
 {\tt mrs4lf4}  & 0.1251       & \mrstff &
 {\tt mrs0119}  & 0.119        & \mrstohone \\
 {\tt mrs0117}  & 0.117        & \mrstohone &
@@ -683,7 +695,7 @@ increased when performing the {\tt real} calculation. In practice,
 it may be more efficient to do run the pieces separately by hand, 
 (c.f. {\tt ncall} below.
 \item {\tt todk}
-Processes 161,166,171,176,181,186 only, see sctions~\ref{subsec:stop} and
+Processes 161,166,171,176,181,186 only, see sections~\ref{subsec:stop} and
 \ref{subsec:wt} below.
 \end{itemize}
 
@@ -726,7 +738,7 @@ that determines the method used to calculate the scale:
   \begin{itemize}
   \item {\tt 1d0} : $\mu^2 = M_V^2+p_T(V)^2$ -- only appropriate for
   processes involving a vector boson $V$
-  \item {\tt 2d0} : $\mu^2 = <p_T^{jet}>^2$ -- only appropriate for
+  \item {\tt 2d0} : $\mu^2 = \langle p_T^{jet} \rangle^2$ -- only appropriate for
   processes involving jets
   \item {\tt 3d0} : $\mu^2 = \hat{s}$, the partonic centre of mass energy
   \item {\tt 4d0} : $\mu^2 = H_T^2$, where $H_T$ is the scalar sum of
@@ -823,7 +835,7 @@ cross-section contains the same number of jets at next-to-leading
 order as at leading order. An {\em inclusive} cross-section may
 instead contain an extra jet at NLO.
 
-\item {\tt algorithm} This specifies the jet-finding algorithm that
+\item {\tt algorithm.} This specifies the jet-finding algorithm that
 is used, and can take the values
 {\tt ktal} (for the Run II $k_T$-algorithm), {\tt cone} (for
 a midpoint cone algorithm), {\tt hqrk} (for a simplified cone
@@ -938,6 +950,105 @@ the {\tt VEGAS} grid at the end of the run, to the file specified by
 \end{itemize}
 
 The final section of the input file contains settings for various technical parameters that should not normally need to be changed. Prior to version 5.5, these were set in {\tt technical.DAT}. For backwards compatibility they may still be specified in that file too, although they will be over-ridden by any settings here.
+\begin{center}
+\{blank line\} \\
+{\tt [Technical parameters that should not normally be changed]}
+\end{center}
+\begin{itemize}
+\item {\tt debug}.  
+A logical variable which can be used during a 
+debugging phase to mandate special behaviours. 
+Passed by common block \\
+{\tt common/debug/debug}.
+\item {\tt verbose}.  
+A logical variable which can be used during a debugging phase to write 
+special information. Passed in common block \\
+{\tt common/verbose/verbose}.
+\item {\tt new\_pspace}.  
+A logical variable which can be used during a debugging phase to test altenative versions of the phase space.
+Passed in common block {\tt common/new\_pspace/new\_pspace}.
+\item {\tt virtonly}.  
+A logical variable. The default value for this variable is false.
+If virtonly is set to true, during the running of the real part,
+the effect of real radiation is neglected, and only the effect of the
+integrated dipoles is retained. 
+\item {\tt realonly}.  
+A logical variable. The default value for this variable is false.
+If realonly is set to true, during the running of the real part,
+the effect of integrated dipoles is neglected, and only the effect of the
+real radiation is retained. 
+\item {\tt spira}.  
+A logical variable. If {\tt spira} is true, we calculate the 
+width of the Higgs boson by interpolating from a table
+calculated using the NLO code of M. Spira.
+Otherwise the LO value valid for low Higgs masses only is used.
+\item {\tt noglue}.  
+A logical variable. 
+The default value is false. If set to true, no processes
+involving initial gluons are included.
+\item {\tt ggonly}.  
+A logical variable. 
+The default value is false. If set to true, 
+only the processes
+involving initial gluons in both hadrons are included.
+\item {\tt gqonly}.  
+The default value is false. If set to true, 
+only the processes
+involving an initial gluon in one hadron and an initial quark
+or antiquark in the other hadron (or vice versa) are included.
+\item {\tt vanillafiles}.  
+A logical variable. The default value is false. If set to true, 
+the output files have the generic names 
+{\tt mcfm-output.top} and {\tt mcfm-output.dat}. In addition
+the path to the parton distribution files is truncated so that
+they are expected to be found in the same directory as the executable
+{\tt mcfm}.
+\item {\tt nmin}
+A technical parameter used in alternative phase space generating routines.
+\item {\tt nmax}
+A technical parameter used in alternative phase space generating routines.
+\item {\tt clustering}
+This logical parameter determines whether clustering is performed to yield
+jets. Only during a debugging phase should this variable be set to false. 
+\item {\tt realwt}.  
+This is a logical paramter that in general should be set to false.
+If set to true, mcfm samples the integral according to the
+unsubtracted real emission weight.
+\item {\tt colourchoice}.  
+If colourchoice=0, all colour structure are included ($W,Z+2$~jets).
+If colourchoice=1, only the leading 
+colour structure is included ($W,Z+2$~jets).
+\item {\tt rtsmin}.  
+A minimum value of $\sqrt{s_{12}}$, which ensures that the invariant mass
+of the incoming partons can never be less than {\tt rtsmin}.
+\item {\tt cutoff}.  
+A minimum value of $s_{ij}$, which ensures that the invariant mass squared
+of any pair of partons can never be less than {\tt cutoff}.
+\item {\tt aii}.  
+A double precision variable which can be used to
+limit the kinematic range for the subtraction of initial-initial dipoles
+as suggested by Trocsanyi and Nagy~\cite{Nagy:2003tz}.   
+The value {\tt aii=1d0} corresponds 
+to standard Catani-Seymour subtraction.
+\item {\tt aif}.  
+A double precision variable which can be used to
+limit the kinematic range for the subtraction of initial-final dipoles
+as suggested by Trocsanyi and Nagy~\cite{Nagy:2003tz}.   
+The value {\tt afi=1d0} corresponds 
+to standard Catani-Seymour subtraction.
+\item {\tt afi}.  
+A double precision variable which can be used to
+limit the kinematic range for the subtraction of final-initial dipoles
+as suggested by Trocsanyi and Nagy~\cite{Nagy:2003tz}.   
+The value {\tt afi=1d0} corresponds 
+to standard Catani-Seymour subtraction.
+\item {\tt aff}. 
+A double precision variable which can be used to
+limit the kinematic range for the subtraction of final-final dipoles
+as suggested by Trocsanyi and Nagy~\cite{Nagy:2003tz}.   
+The value {\tt aff=1d0} corresponds 
+to standard Catani-Seymour subtraction.
+\end{itemize}
 
 \section{Nuclear collisions}
 \label{sec:nucleus}
@@ -2032,6 +2143,15 @@ C.~J.~Glosser and C.~R.~Schmidt,
 JHEP {\bf 0212}, 016 (2002)
 [arXiv:hep-ph/0209248].
 %%CITATION = HEP-PH 0209248;%%
+
+%\cite{Nagy:2003tz}
+\bibitem{Nagy:2003tz}
+  Z.~Nagy,
+  %``Next-to-leading order calculation of three jet observables in hadron hadron
+  %collision,''
+  Phys.\ Rev.\  D {\bf 68}, 094002 (2003)
+  [arXiv:hep-ph/0307268].
+  %%CITATION = PHRVA,D68,094002;%%
 
 \end{thebibliography}
 

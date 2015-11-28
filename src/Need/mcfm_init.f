@@ -8,7 +8,6 @@
       implicit none
       include 'constants.f'
       include 'cutoff.f'
-      include 'efficiency.f'
       include 'limits.f'
       include 'npart.f'
       include 'phasemin.f'
@@ -30,11 +29,6 @@ C -- GZ
       call reader_input
 
       first_time = .true. 
-* Initialize efficiency variables      
-      njetzero=0
-      ncutzero=0
-      ntotzero=0
-      ntotshot=0
       
       if (verbose) then
       write(6,*)

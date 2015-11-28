@@ -277,7 +277,7 @@ c        call singcheck(qqb_wbb_g,qqb_wbb_gs,p)     ! Checked 11/30/01
         if (includereal) call qqb_wbb_g(p,msq)      
         call qqb_wbb_gs(p,msqc)      
       elseif (case .eq. 'W_2jet') then      
-c        call singcheck(qqb_w2jet_g,qqb_w2jet_gs,p) ! Re-checked 4/26/05
+c        call singcheck(qqb_w2jet_g,qqb_w2jet_gs,p) ! Re-checked June 09
         if (includereal)  call qqb_w2jet_g(p,msq)  
         call qqb_w2jet_gs(p,msqc)
       elseif (case .eq. 'Z_only') then
@@ -289,7 +289,7 @@ c        call singcheck(qqb_z2jet,qqb_z1jet_gs,p)   ! Checked 11/16/01
         if (includereal) call qqb_z2jet(p,msq)      
         call qqb_z1jet_gs(p,msqc)  
       elseif (case .eq. 'Z_2jet') then
-c        call singcheck(qqb_z2jet_g,qqb_z2jet_gs,p) ! Checked 11/16/01
+c        call singcheck(qqb_z2jet_g,qqb_z2jet_gs,p) ! Re-checked June 09
         if (includereal) call qqb_z2jet_g(p,msq)  
         call qqb_z2jet_gs(p,msqc) 
       elseif (case .eq. 'Zbbbar') then
