@@ -143,7 +143,8 @@
 *	data
 *
 	data ii4 /5,6,7,8,9,10/
-*
+!$omp threadprivate(ii4)
+
 *  #] declarations: 
 *  #[ initialisations:
 *
@@ -443,6 +444,8 @@
      +	 2,1,6,5,4,3, 7,12,11,10,9,8, 18,17,16,15,14,13, 20,19,21,
      +	 1,6,5,4,3,2, 12,11,10,9,8,7, 17,16,15,14,13,18, 19,21,20/
 	data init /0/
+!$omp threadprivate(inew,init,lcon)
+
 *  #] declarations: 
 *  #[ open console for some activity on screen:
 	if ( init .eq. 0 ) then

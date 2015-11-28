@@ -173,6 +173,7 @@
 *	data
 *
 	data ii4 /5,6,7,8,9,10/
+!$omp threadprivate(ii4)
 *
 *  #] declarations:
 *  #[ initialisations:
@@ -497,6 +498,9 @@
 *	data
 *
 	data locwrt /.FALSE./
+	save locwrt
+!$omp threadprivate(locwrt)
+
 *  #] declarations:
 *  #[ check input:
 	if ( ltest ) call ffxhck(xpi,dpipj,15,ier)
@@ -1071,6 +1075,7 @@
      +		+1,+1,+1,+1, +1,+1,+1,+1, +1,-1, +1,
      +		+1,+1,+1,+1, +1,+1,+1,+1, -1,-1, +1,
      +		+1,+1,+1,+1, +1,+1,+1,+1, -1,+1, +1/
+!$omp threadprivate(iplace,isigns)
 *  #] declarations:
 *  #[ distribute:
 *
@@ -1175,6 +1180,8 @@
      +		5,3,2,4,1, 13,7,12,14,10,15,8,6,9,11, -17,16,19,-18,20,
      +	      1,3,5,2,4, 11,13,15,12,14,10,7,9,6,8,-20,-17,-19,-16,-18/
 	data init /0/
+!$omp threadprivate(init,inew,lcon)
+
 *  #] declarations:
 *  #[ open console for some activity on screen:
 	if ( init .eq. 0 ) then

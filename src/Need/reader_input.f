@@ -49,17 +49,19 @@
       include 'anom_higgs.f'
       include 'vdecayid.f'
       include 'runstring.f'
+      include 'energy.f'
+      include 'nproc.f'
 c--- APPLgrid - flag using grid
-      include 'ptilde.f'
-      include 'APPLinclude.f'
+c      include 'ptilde.f'
+c      include 'APPLinclude.f'
 c--- APPLgrid - end
       character*72 workdir,inputfile
       character*90 line
-      logical spira,dryrun,makecuts
+      logical spira,dryrun,makecuts,creategrid
       integer nmin,nmax,ii
-      integer nproc,ih1,ih2,itmx1,itmx2,ncall1,ncall2,idum,origij
+      integer ih1,ih2,itmx1,itmx2,ncall1,ncall2,idum,origij
       integer NPTYPE,NGROUP,NSET
-      double precision rtsmin,sqrts,factor
+      double precision rtsmin,factor
       double precision mbbmin,mbbmax,Mwmin,Mwmax
       double precision Rcut
       logical technicalincluded
@@ -72,8 +74,6 @@ c--- APPLgrid - end
       common/nmax/nmax
       common/rtsmin/rtsmin 
 
-      common/nproc/nproc
-      common/energy/sqrts
       common/density/ih1,ih2
       common/iterat/itmx1,ncall1,itmx2,ncall2
       common/ranno/idum
@@ -276,6 +276,10 @@ c--- jets and cuts options
       if (mbbmax .gt. sqrts) Mbbmax=sqrts ! physical cap on m56max
       bbsqmax=mbbmax**2
       if (verbose) call writeinput(6,' * ',' ','m56max')
+      read(20,*) m3456min 
+      if (verbose) call writeinput(6,' * ',' ','m3456min')
+      read(20,*) m3456max 
+      if (verbose) call writeinput(6,' * ',' ','m3456max')
       read(20,*) inclusive
       if (verbose) call writeinput(6,' * ',' ','inclusive')
       read(20,*) algorithm
@@ -332,6 +336,7 @@ c--- settings for photon processes
       read(20,*) fragset
       if (verbose) call writeinput(6,' * ',' ','fragset')
       read(20,*) frag_scale
+      frag_scalestart=frag_scale
       if (verbose) call writeinput(6,' * ',' ','frag_scale')
       read(20,*) gammpt
       if (verbose) call writeinput(6,' * ',' ','gammpt')
@@ -584,6 +589,7 @@ c--- this is an allowed combination
      &      .or. (case .eq. 'gamgam') .or. (case .eq. 'dirgam')
      &      .or. (case .eq. 'dm_gam')
      &      .or. (case .eq. 'gmgmjt') .or .(case .eq. 'trigam')
+     &      .or. (case .eq. 'fourga')
      &      .or. (case .eq. 'Z_2gam') .or. (case .eq. 'Zgajet')
      &      .or. (case .eq. 'W_2gam')) ) then
 c--- this is an allowed combination

@@ -1,13 +1,12 @@
       subroutine comparenum(nleg,cmax,coeff)
       implicit none
       integer nleg,cmax,corder(cmax),h1,h2,i
-      integer corder2(7),corder3(12),corder4(6)
       double complex coeff(2,2,cmax)
 c--- writes out integral coefficients in the same order as in
 c--- the output of the numerical code
-      data corder2/6,1,2,4,3,5,7/
-      data corder3/12,1,7,11,8,2,6,3,9,10,4,5/
-      data corder4/5,1,6,2,3,4/
+      integer,parameter:: corder2(7)=(/6,1,2,4,3,5,7/),
+     & corder3(12)=(/12,1,7,11,8,2,6,3,9,10,4,5/),
+     & corder4(6)=(/5,1,6,2,3,4/)
       
       if (nleg .eq. 2) then
         do i=1,cmax

@@ -18,9 +18,10 @@ c     q(-p1)+qbar(-p2)-->q'(p5)+bar{q'}(p6)+n(p3)+ebar(p4)
       include 'zcouple.f'
       include 'ewcharge.f'
       include 'anomcoup.f'
+      include 'xanomcoup.f'
       include 'srdiags.f'
       include 'plabel.f'
-      double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),mp(nf),
+      double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),
      . p(mxpart,4),qdks(mxpart,4),facnlo
       double complex AWWM,AWWP,BWWM,BWWP
       double complex prop12,prop34,prop56
@@ -38,7 +39,7 @@ c     q(-p1)+qbar(-p2)-->q'(p5)+bar{q'}(p6)+n(p3)+ebar(p4)
       double complex clgamz(2),crgamz(2),clz(2),crz(2)
       double precision FAC,xfac
       integer j,k,jk
-      data mp/-1d0,+1d0,-1d0,+1d0,-1d0/
+      double precision, parameter :: mp(nf)=(/-1d0,+1d0,-1d0,+1d0,-1d0/)
 
       scheme='dred'
       FAC=gw**8*xn*aveqq

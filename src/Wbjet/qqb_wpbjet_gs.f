@@ -62,12 +62,12 @@ c--- slightly obtuse notation, to simplify declaration lines
      & m27_6(0:2,fn:nf,fn:nf),
      & mqq(0:2,fn:nf,fn:nf)
      
-      integer jj(-nf:nf),kk(-nf:nf)
       common/isub/isub    
       external qqb_wbjet,donothing_gvec
 
-      data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      data kk/-1,-2,-1,-2,-1,0,1,2,1,2,1/
+      integer,parameter::jj(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
+      integer,parameter::kk(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
+
       if (isub .eq. 2) then
         ndmax=6
       else

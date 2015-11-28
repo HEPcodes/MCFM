@@ -15,6 +15,7 @@ C     for the process H --> q(p1)+a(p2)+q(p3)+a(p4)
       integer i1,i2,i3,i4
       logical CheckEGZ
       common/CheckEGZ/CheckEGZ
+!$omp threadprivate(/CheckEGZ/)
  
 c      double complex function L0(x,y)
 c      double complex function L1(x,y)

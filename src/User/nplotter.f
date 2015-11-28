@@ -15,16 +15,16 @@ c---          (if applicable), otherwise equal to zero
       include 'constants.f'
       include 'process.f'
       include 'nplot.f'
+      include 'nproc.f'
 
 c--- APPLgrid - use of grids
-      include 'ptilde.f'
-      include 'APPLinclude.f'
+c      include 'ptilde.f'
+c      include 'APPLinclude.f'
 c--- APPLgrid - end
 
 
       double precision p(mxpart,4),wt,wt2
-      integer switch,nproc,nd
-      common/nproc/nproc
+      integer switch,nd
       
 c--- This routine simply picks out a process-specific plotting routine
 c---  (if available) and falls back to the generic routine otherwise.
@@ -115,6 +115,11 @@ c--- photon processes also need to know the dipole number
          call nplotter_dm_monj(p,wt,wt2,switch)
       elseif ((case .eq. 'dm_gam').or.(case.eq.'dm_gaj')) then 
          call nplotter_dm_mongam(p,wt,wt2,switch,nd)
+      elseif ((case.eq.'qqZZqq').or.(case.eq.'qqWWqq') 
+     &   .or. (case.eq.'qqVVqq').or.(case.eq.'qqWWss')
+     &   .or. (case.eq.'qqWZqq').or.(case.eq.'WpmZjj')
+     &   .or.(case.eq.'qq_ttg')) then 
+         call nplotter_qqZZqq(p,wt,wt2,switch)
       elseif ((case .eq. 'HZZ_4l')
      & .or.   (case .eq. 'HZZ_tb')
      & .or.   (case .eq. 'HZZint')
@@ -133,7 +138,7 @@ c         call nplotter_generic(p,wt,wt2,switch)
       endif
       
 c--- APPLgrid - filling applgrid
-      if (creategrid) call fill_grid(p)
+c      if (creategrid) call fill_grid(p)
 c--- APPLgrid - end
 
       return

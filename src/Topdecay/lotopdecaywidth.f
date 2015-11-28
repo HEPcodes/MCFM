@@ -24,6 +24,7 @@
       data cachemass,cachewidth,tiny/0d0,0d0,1d-8/
       common/transfer/mt1,besq,xi,ga
       save cachemass,cachewidth,tiny
+!$omp threadprivate(cachemass,cachewidth,tiny,/transfer/)
       external Gamma0int
 
 

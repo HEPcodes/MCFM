@@ -16,6 +16,7 @@
       logical photo_iso_phys,photo_iso_z!,photo_iso,iso_old
       data first/.true./
       save first
+!$omp threadprivate(first)
 
 c--- imode: set the behaviour of the isolation requirement (default: imode=0)
 c---   imode=0 : scaling cut for epsilon_h < 1, fixed cut for epsilon_h > 1

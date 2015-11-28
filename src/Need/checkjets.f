@@ -12,10 +12,10 @@ c--- returns logical 'failed'
       include 'process.f'
       include 'removebr.f'
       include 'npart.f'
+      include 'nproc.f'
       double precision qfinal(mxpart,4),m56,m57,m67
       logical failed
-      integer nproc,countb,jetsfound,nbq,nba,isub
-      common/nproc/nproc
+      integer countb,jetsfound,nbq,nba,isub
       
       failed=.false.
 

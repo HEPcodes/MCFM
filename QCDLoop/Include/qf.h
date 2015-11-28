@@ -170,3 +170,5 @@
       common /qpffcdot/ cfpij2,cfpij3,cfpij4,cfpij5,cfpij6
       common /qpffcdel/ fodel2,fodel3,cfdl4s,fodel4,fodl3i,fod3ij,fodl4i
       common /qpffsmug/ lsmug,lnasty,idum93,cmipj,c2sisj,ca1
+!$omp threadprivate(/qpffsign/,/qpffprec/,/qpffflag/,/qpffcnst/,/qpffrota/,
+!$omp& /qpffdot/,/qpffdel/,/qpffidel/,/qpffcdot/,/qpffsmug/)

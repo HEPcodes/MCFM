@@ -1,17 +1,18 @@
- ************** MCFM - version 6.8 ****************
+ ************** MCFM - version 7.0 ****************
  *                                                *
- * MCFM, v6.8                   April 26th, 2014  *
+ * MCFM, v7.0                   March 20th, 2015  *
  *                                                *
  * Authors: John Campbell, Keith Ellis,           *
- *          Ciaran Williams                       *
+ *          Walter Giele, Ciaran Williams         *
  *         (johnmc@fnal.gov, ellis@fnal.gov,      *
- *          ciaran@fnal.gov)                      *
+ *          giele@fnal.gov,ciaran@fnal.gov)       *
  *                                                *
  * For details see:                               *
  *                                                *
- *  arXiv:1403.2641 (Triphoton production)        *
- *  arXiv:1312.1628 (gg->WW, Higgs interference)  *
- *  arXiv:1311.3589 (gg->ZZ, Higgs interference)  *
+ *  arXiv:1502.02990 (VBF and VBS Higgs)          *
+ *  arXiv:1403.2641  (Triphoton production)       *
+ *  arXiv:1312.1628  (gg->WW, Higgs interference) *
+ *  arXiv:1311.3589  (gg->ZZ, Higgs interference) *
  *  Phys.Rev.D87:114006, arXiv:1302.3856          *
  *  (tZ, tH -- with R. Rontsch)                   *
  *  arXiv:1211.6390 (DM, P. Fox and C. Williams)  *

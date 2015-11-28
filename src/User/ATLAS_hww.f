@@ -4,6 +4,7 @@
       implicit none 
       include 'constants.f' 
       include 'masses.f'
+      include 'first.f'
       double precision p(mxpart,4)
       logical failed_cuts 
       double precision pt,etarap,m45
@@ -13,8 +14,6 @@
       double precision eta_max_s,eta_hard,eta_soft
       double precision mtmin,mtmax,mt45,ptsq,p3456(2)
       integer i 
-      logical first 
-      data first/.true./
       common/HWW_Cuts/pts,pth,mllmax,phimax,etmiss_min,
      &     eta_max_h,eta_max_s
       double precision tiny 

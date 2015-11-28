@@ -18,7 +18,8 @@ c     u(-p1)+b(p2)->h(p3,p4)+t(p5)+d(p6)
       include 'TRtensorcontrol.f'
       include 'tensorinfo.f'
       include 'anomHiggs.f'
-      integer nu,icross,i1(4),i2(4),i6(4),u_b,b_u,db_b,b_db
+      include 'first.f'
+      integer nu,icross,u_b,b_u,db_b,b_db
       integer origitotal,origibadpoint,origipolesfailed
       double precision p(mxpart,4),msq(-nf:nf,-nf:nf),fac,
      & virt(4),q(mxpart,4),hdecay,msqgamgam
@@ -27,14 +28,11 @@ c     u(-p1)+b(p2)->h(p3,p4)+t(p5)+d(p6)
      & vlower(2,-2:0),vmiddle(2,-2:0),vscalar(2,-2:0)
       double complex lotot(2)
       integer j5,h5
-      logical first,failed
+      logical failed
       parameter(u_b=1,b_u=2,db_b=3,b_db=4)
-      data first/.true./
-      data i1/1,2,6,6/
-      data i2/2,1,2,1/
-      data i6/6,6,1,2/
-      save first
-            
+      integer, parameter:: i1(4)=(/1,2,6,6/)
+      integer, parameter:: i2(4)=(/2,1,2,1/)
+      integer, parameter:: i6(4)=(/6,6,1,2/)
       scheme='dred'
 
       msq(:,:)=zip
@@ -58,7 +56,6 @@ C   Deal with Higgs decay
       stop
       endif
       hdecay=hdecay/((s34-hmass**2)**2+(hmass*hwidth)**2)
-
 
 c--- fill strings of gamma matrices on first pass
       if (first) then
@@ -119,7 +116,7 @@ c----- top spin h5
       endif
 
       call scalarh(p,first,xscalar)
-      call middleh(p,first,xmiddle)      
+      call middleh(p,first,xmiddle)
       call lowerh(p,first,xlower)
 
 c --   include anomalous Yukawa and EW couplings for the Higgs

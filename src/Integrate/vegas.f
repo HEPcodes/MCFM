@@ -1,306 +1,364 @@
-      SUBROUTINE vegasnr(region,ndim,fxn,init,ncall,itmx,nprn,tgral,sd,
-     *chi2a)
-      implicit none
-      include 'mxdim.f'
-      include 'gridinfo.f'
-      include 'maxwt.f'
-      include 'TRtensorcontrol.f'
-      include 'tensorinfo.f'
-      INTEGER init,itmx,ncall,ndim,nprn,NDMX
-      DOUBLE PRECISION tgral,chi2a,sd,region(2*mxdim),fxn,ALPH,TINY
-c--- Note: NDMX increased to 100 (from 50) compared with versions 5.1 and
-c---  earlier, to aid calculation of H+2 jets process
-      PARAMETER (ALPH=1.5d0,NDMX=100,TINY=1d-30)
-c--- DEBUG: no adapting
-c      PARAMETER (ALPH=0d0,NDMX=100,TINY=1d-30)
-      EXTERNAL fxn
-C     USES fxn,ran2,rebin
-      INTEGER i,idum,it,j,k,jj,mds,nd,ndo,ng,npg,ia(MXDIM),kg(MXDIM)
-      DOUBLE PRECISION calls,dv2g,dxg,f,f2,f2b,fb,rc,ti,tsi,wgt,xjac,xn,
-     *xnd,xo,
-     *d(NDMX,MXDIM),di(NDMX,MXDIM),dt(MXDIM),dx(MXDIM),r(NDMX),x(MXDIM),
-     *xi(NDMX,MXDIM),xin(NDMX),ran2
-      DOUBLE PRECISION schi,si,swgt
-      character*255 runname
-      integer nlength
-      logical bin,dorebin,dryrun
-      common/bin/bin
-      common/runname/runname
-      common/nlength/nlength
-      common/dryrun/dryrun
-      COMMON /ranno/ idum
-      SAVE
-      dorebin=.true.  
-      mds=1
-      if(init.le.0)then
-        ndo=1
-        do 11 j=1,ndim
-          xi(1,j)=1d0
-11      continue
-      endif
-      if (init.le.1)then
-        si=0d0
-        swgt=0d0
-        schi=0d0
-      endif
-      if (init.le.2)then
-        nd=NDMX
-        ng=1
-c--- DEBUG
-c        write(6,*) 'DEBUG: Setting mds to zero'
-c        mds=0
-c--- DEBUG
-        if(mds.ne.0)then
-          ng=(ncall/2d0+0.25d0)**(1d0/ndim)
-          mds=1
-          if((2*ng-NDMX).ge.0)then
-            mds=-1
-            npg=ng/NDMX+1
-            nd=ng/npg
-            ng=npg*nd
-          endif
-        endif
-        k=ng**ndim
-        npg=max(ncall/k,2)
-        calls=npg*k
-        dxg=1d0/ng
-        dv2g=(calls*dxg**ndim)**2/npg/npg/(npg-1d0)
-        xnd=nd
-        dxg=dxg*xnd
-        xjac=1d0/calls
-        do 12 j=1,ndim
-          dx(j)=region(j+ndim)-region(j)
-          xjac=xjac*dx(j)
-12      continue
+	subroutine Vegas_Pomp(integrand,result,absacc,relacc,ndim,ncall,
+     >                        maxiter,init)
+! Uses kahan summation to guarantee identical results independent of number of threads
+	implicit none
+	include 'nf.f'
+	include 'lc.f'
+	include 'mxdim.f'
+	include 'mxpart.f'
+        include 'phasemin.f'
+        include 'cutoff.f'
+        include 'jetcuts.f'
+        include 'breit.f'
+        include 'zerowidth.f'
+        include 'srdiags.f'
+        include 'interference.f'
+        include 'qcdcouple.f'
+        include 'ewcouple.f'
+        include 'masses.f'
+        include 'ipsgen.f'
+	include 'facscale.f'
+	include 'scale.f'
+	include 'stopscales.f'
+        include 'gridinfo.f'
+	include 'qlfirst.f'
+	include 'ptilde.f'
+	include 'bitflags.f'
+	include 'flags.f'
+	include 'lastphot.f'
+	include 'b0.f'
+	include 'nodecay.f'
+	include 'swapxz.f'
+	include 'heavyflav.f'
+	include 'nflav.f'
+	include 'notag.f'
+	include 'reset.f'
+	double precision result, relacc, absacc,integrand
+	integer ndim, ncall, maxiter, neval,init,i
+	external integrand
+	double precision fun, sfun, sfun2
+	double precision sint,sint2,sweight
+	double precision fun2, weight
+	double precision r, dr, xo, xn, err,ran2
+	double precision Ingrid,Incall
+	integer iter, calls, dim, grid, g, c, cmax
+	integer ngrid,j,jj
+	parameter (ngrid = 10)
+	double precision xi(ngrid, MXDIM), d(ngrid, MXDIM)
+	double precision x(mxdim), imp(ngrid), tmp(ngrid - 1)
+	integer pos(NDIM)
+	double precision t,dt,cfun,cfun2,cd(ngrid,MXDIM)
+        double precision p1ext(4),p2ext(4)
+
+	character*255 runname
+	integer nlength
+	logical bin,dryrun
+	common/bin/bin
+	common/runname/runname
+	common/nlength/nlength
+	common/dryrun/dryrun
+        common/pext/p1ext,p2ext
+        save xi
+!$omp threadprivate(/pext/)
+	bin=.false.
+	if(init.le.0)then
+	   do i=1,ndim
+	      xi(1,i)=1d0
+           enddo
+*       define the initial distribution of intervals
+	   Ingrid=1d0/dble(ngrid)
+	   do dim = 1, ndim
+	      do grid = 1, ngrid
+	         r = dble(grid)*Ingrid
+	         xi(grid, dim) = r
+	      enddo
+	   enddo
+	endif
+	if (init.le.1)then
+	   neval = 0
+	   sint=0d0
+	   sweight=0d0
+	   sint2=0d0
+	   iter=0
+	endif
+
 
 c--- read-in grid if necessary
         if (readin) then
            if (dryrun) then
-             open(unit=11,file=ingridfile,status='unknown')
+	      open(unit=11,file=ingridfile,status='unknown')
            else
-             open(unit=11,file=runname(1:nlength)//'_'
+	      open(unit=11,file=runname(1:nlength)//'_'
      .             //ingridfile,status='unknown')
            endif
-        write(6,*)'****************************************************'
-        write(6,*)'* Reading in vegas grid from ',runname(1:nlength)//
-     .   '_'//ingridfile,' *'
-        write(6,*)'****************************************************'
+
+	   write(6,*)'*********************************************'
+	   write(6,*)'* Reading in vegas grid from ',
+     .     	runname(1:nlength)//'_'//ingridfile,' *'
+           write(6,*)'*********************************************'
            call flush(6)
            do j=1,ndim
-             read(11,203) jj,(xi(i,j),i=1,nd)
+             read(11,203) jj,(xi(i,j),i=1,ngrid)
            enddo
            close(11)
-           ndo=nd
            readin=.false.
-c--- do not continue to adapt grid when using a small number of calls
-           if (calls .lt. 1d3) then
-             write(6,*)
-             write(6,*) '--> Small number of calls, so the grid is not',
-     .        ' being adjusted after each iteration <--'
-             write(6,*)
-             call flush(6) 
-             dorebin=.false.
-           endif
-        endif
+	endif
 
-        if(nd.ne.ndo)then
-          do 13 i=1,nd
-            r(i)=1d0
-13        continue
-          do 14 j=1,ndim
-            call rebin(ndo/xnd,nd,r,xin,xi(1,j))
-14        continue
-          ndo=nd
-        endif
-        if(nprn.ge.0) write(6,200) ndim,calls,it,itmx,nprn,ALPH,mds,nd,
-     *(j,region(j),j,region(j+ndim),j=1,ndim)
-        call flush(6)
-      endif
+*       iterations loop
+ 1	continue
+	iter = iter + 1
+*       initialize iteration variables
+	sfun = 0d0
+	sfun2 = 0d0
+	d(:,:)=0d0
+	cfun = 0d0
+	cfun2 = 0d0
+	cd(:,:)=0d0
+	Incall=1d0/dble(ncall)
+!$omp  parallel do
+!$omp& schedule(dynamic)
+!$omp& default(private)
+!$omp& shared(incall,xi,ncall,ndim,sfun,sfun2,d,cfun,cfun2,cd)
+!$omp& copyin(/xmin/,/taumin/,/cutoff/,/jetcuts/,/breit/,/zerowidth/)
+!$omp& copyin(/srdiags/,/vsymfact/,/qcdcouple/,/ewcouple/,/masses/)
+!$omp& copyin(/interference/,/facscale/,/mcfmscale/,/stopscales/)
+!$omp& copyin(/ipsgen/,/pext/,/ColC/,/qlfirst/,/ptildes/)
+!$omp& copyin(/bitflags/,/flags/,/lastphot/)
+!$omp& copyin(/QCDb0/,/nodecay/,/swapxz/,/heavyflav/)
+!$omp& copyin(/notag/,/nflav/,/reset/)
+	do calls = 1, ncall
+	   weight = Incall
+!$omp critical
+           do i=1,ndim
+              x(i)=ran2()
+           enddo
+!	   call GetRandom(x)
+!$omp end critical
+	   do dim = 1, ndim+2
+	      r = x(dim)*ngrid + 1
+	      grid = int(r)
+	      xo = 0
+	      if( grid .gt. 1 ) xo = xi(grid - 1, dim)
+	      xn = xi(grid, dim) - xo
+	      x(dim) = xo + (r - grid)*xn
+	      pos(dim) = grid
+	      weight = weight*xn*ngrid
+	   enddo
+*       compute the integrand
+	   fun=integrand(x,weight)
+	   fun = fun*weight
+	   fun2 = fun**2
+!$omp critical
+           t=sfun+fun
+	   if (abs(sfun).ge.abs(fun)) then
+	      cfun=cfun+((sfun-t)+fun)
+	   else
+	      cfun=cfun+((fun-t)+sfun)
+	   endif
+	   sfun=t
+           t=sfun2+fun2
+	   if (abs(sfun2).ge.abs(fun2)) then
+	      cfun2=cfun2+((sfun2-t)+fun2)
+	   else
+	      cfun2=cfun2+((fun2-t)+sfun2)
+	   endif
+	   sfun2=t
+	   do dim = 1, ndim
+	      i=pos(dim)
+	      dt=d(i,dim)
+	      t=dt+fun2
+	      if (abs(dt).ge.abs(fun2)) then
+		 cd(i,dim)=cd(i,dim)+((dt-t)+fun2)
+	      else
+		 cd(i,dim)=cd(i,dim)+((fun2-t)+dt)
+	      endif
+	      d(i,dim)=t
+	   enddo
+!$omp end critical
+ 666	   continue
+	enddo
+!$omp end parallel do
+	sfun=sfun+cfun
+	sfun2=sfun2+cfun2
+	d(:,:)=d(:,:)+cd(:,:)
+	neval = neval + ncall
+*       compute the integral and error values
+	err = 0
+	fun2 = sfun**2
+	sint2 = sint2 + fun2
+	r = sfun2*ncall - fun2
+	if( r .ne. 0 ) then
+	   weight = fun2/abs(r)*(ncall - 1)
+	   sweight = sweight + weight
+	   sint = sint + sfun*weight
+	endif
+	if( sweight .eq. 0 ) then
+	   result = 0
+	else
+	   r = sint/sweight
+	   result = r
+*       if the integrand is very close to zero, it is pointless (and costly)
+*       to insist on a certain relative accuracy
+	   if( abs(r) .gt. absacc ) then
+              r = sint2/(sint*r)
+	      if( r .gt. err ) then
+		 err = r
+	      endif
+	   endif
+	endif
+	err = sqrt(err/iter)
 
-      do 28 it=1,itmx
-        ti=0d0
-        tsi=0d0
-        do 16 j=1,ndim
-          kg(j)=1
-          do 15 i=1,nd
-            d(i,j)=0d0
-            di(i,j)=0d0
-15        continue
-16      continue
-10      continue
-          fb=0d0
-          f2b=0d0
-!$OMP DO
-          do 19 k=1,npg
-            wgt=xjac
-            do 17 j=1,ndim
-              xn=(kg(j)-ran2())*dxg+1d0
-              ia(j)=max(min(int(xn),NDMX),1)
-              if(ia(j).gt.1)then
-                xo=xi(ia(j),j)-xi(ia(j)-1,j)
-                rc=xi(ia(j)-1,j)+(xn-ia(j))*xo
-              else
-                xo=xi(ia(j),j)
-                rc=(xn-ia(j))*xo
-              endif
-              x(j)=region(j)+rc*dx(j)
-              wgt=wgt*xo*xnd
-17          continue
-            f=wgt*fxn(x,wgt)
-            f2=f*f
-            fb=fb+f
-            f2b=f2b+f2
-            do 18 j=1,ndim
-              di(ia(j),j)=di(ia(j),j)+f
-              if(mds.ge.0) d(ia(j),j)=d(ia(j),j)+f2
-18          continue
-19        continue
-!$OMP ENDDO 
-          f2b=dsqrt(f2b*npg)
-          f2b=(f2b-fb)*(f2b+fb)
-          if (f2b.le.0d0) f2b=TINY
-          ti=ti+fb
-          tsi=tsi+f2b
-          if(mds.lt.0)then
-            do 21 j=1,ndim
-              d(ia(j),j)=d(ia(j),j)+f2b
-21          continue
-          endif
-        do 22 k=ndim,1,-1
-          kg(k)=mod(kg(k),ng)+1
-          if(kg(k).ne.1) goto 10
-22      continue
-        tsi=tsi*dv2g
-        wgt=1d0/tsi
-        si=si+dble(wgt)*dble(ti)
-        schi=schi+dble(wgt)*dble(ti)**2
-        swgt=swgt+dble(wgt)
-        tgral=si/swgt
-        chi2a=max((schi-si*tgral)/(it-.99d0),0d0)
-        sd=dsqrt(1d0/swgt)
-        tsi=dsqrt(tsi)
-        if(nprn.ge.0)then
-c          write(6,201) it,ti,tsi,tgral,sd,chi2a
-          write(6,201) it,ti,tgral,tsi,sd,wtmax,chi2a
-          if (TRtensorcontrol .gt. 0) then
-          write(6,301) dfloat(ibadpoint)/dfloat(itotal),
-     &                 dfloat(ipolesfailed)/dfloat(itotal),
-     &                 dfloat(ibadpoint+ipolesfailed)/dfloat(itotal)
-          endif
-          call flush(6)
-         if(nprn.ne.0)then
-            do 23 j=1,ndim
-              write(6,202) j,(xi(i,j),di(i,j),i=1+nprn/2,nd,nprn)
-23          continue
-          endif
+        print *, "iteration ", iter, ":",result,"+/-",result*err
+        if (abs(result) .lt. 1d-9) then
+          print *, "integral is zero, exiting"
+          return
         endif
-        if (abs(tgral) .lt. 1d-9) then
-          write(6,*) '******** Integral is zero, no more iterations '
-     &      //'required *********'
-          write(6,*)
-          tgral=0d0
-          sd=0d0
-          call flush(6)
-          exit ! bail early (28) if result is zero
-        endif
-        do 25 j=1,ndim
-          xo=d(1,j)
-          xn=d(2,j)
-          d(1,j)=(xo+xn)/2d0
-          dt(j)=d(1,j)
-          do 24 i=2,nd-1
-            rc=xo+xn
-            xo=xn
-            xn=d(i+1,j)
-            d(i,j)=(rc+xn)/3d0
-            dt(j)=dt(j)+d(i,j)
-24        continue
-          d(nd,j)=(xo+xn)/2d0
-          dt(j)=dt(j)+d(nd,j)
-25      continue
-        do 27 j=1,ndim
-          rc=0d0
-          do 26 i=1,nd
-            if(d(i,j).lt.TINY) d(i,j)=TINY
-            r(i)=((1d0-d(i,j)/dt(j))/(dlog(dt(j))-dlog(d(i,j))))**ALPH
-            rc=rc+r(i)
-26        continue
-          if (dorebin) call rebin(rc/xnd,nd,r,xin,xi(1,j))
-27      continue
+!	if( err .le. relacc ) then
+!	   print *, "iteration ", iter, ":",result,"+/-",result*err
+!	   call Outhist(iter)
+!	   return
+!	endif
+
+*       redefine the grid (importance sampling)
+*       - smooth the f^2 value stored for each interval
+	do dim = 1, ndim
+	   xo = d(1, dim)
+	   xn = d(2, dim)
+	   d(1, dim) = .5D0*(xo + xn)
+	   x(dim) = d(1, dim)
+	   do grid = 2, ngrid - 1
+	      r = xo + xn
+	      xo = xn
+	      xn = d(grid + 1, dim)
+	      d(grid, dim) = (r + xn)/3D0
+	      x(dim) = x(dim) + d(grid, dim)
+	   enddo
+	   d(ngrid, dim) = .5D0*(xo + xn)
+	   x(dim) = x(dim) + d(ngrid, dim)
+	enddo
+
+*       - compute the importance function of each interval
+	do dim = 1, ndim
+	   r = 0
+	   do grid = 1, ngrid
+	      imp(grid) = 0
+	      if( d(grid, dim) .gt. 0 ) then
+		 xo = x(dim)/d(grid, dim)
+		 imp(grid) = ((xo - 1)/xo/log(xo))**1.5D0
+	      endif
+	      r = r + imp(grid)
+	   enddo
+	   r = r/ngrid
+
+*       - redefine the size of each interval
+	   dr = 0
+	   xn = 0
+	   g = 0
+	   do grid = 1, ngrid - 1
+	      do while( dr .lt. r )
+		 g = g + 1
+		 dr = dr + imp(g)
+		 xo = xn
+		 xn = xi(g, dim)
+	      enddo
+	      dr = dr - r
+	      tmp(grid) = xn - (xn - xo)*dr/imp(g)
+	   enddo
+	   do grid = 1, ngrid - 1
+	      xi(grid, dim) = tmp(grid)
+	   enddo
+	   xi(ngrid, dim) = 1
+	enddo
 c--- added to write out intermediate results
-      if ((bin) .and. (it .lt. itmx)) then
-        write(6,*) 'Writing out intermediate results for iteration',it
-        call histofin(tgral,sd,it,itmx) 
-      endif
-28    continue
-
+!	if ((bin) .and. (iter .lt. maxiter)) then
+!	   write(6,*)'Writing out intermediate results for iteration',iter
+!	   call histofin(tgral,sd,iter,maxiter) 
+!	endif
+ 28	continue
 c--- write-out grid if necessary
-         if (writeout) then
+	if (writeout) then
            open(unit=11,file=runname(1:nlength)//'_'
      .           //outgridfile,status='unknown')
-        write(6,*)'****************************************************'
-        write(6,*)'* Writing out vegas grid to ',runname(1:nlength)//'_'
-     .           //outgridfile,'  *'
-        write(6,*)'****************************************************'
+	   write(6,*)'***********************************************'
+	   write(6,*)'* Writing out vegas grid to ',
+     .               runname(1:nlength)//'_'//outgridfile,'  *'
+           write(6,*)'***********************************************'
            call flush(6)
            do j=1,ndim
-             write(11,203) j,(xi(i,j),i=1,nd)
+             write(11,203) j,(xi(i,j),i=1,ngrid)
            enddo
            close(11)
          endif
 
-      return
+	if( iter .ge. maxiter ) then
+!	   print *,"iterations reached set maximum of ",maxiter
+!	   print *, "iteration ", iter, ":",result,"+/-",result*err
+	   return
+	endif
 
-200   FORMAT(/' input parameters for vegas:  ndim=',i3,'  ncall=',
-     *f8.0/28x,'  it=',i5,'  itmx=',i5/28x,'  nprn=',i3,'  alph=',
-     *f5.2/28x,'  mds=',i3,'   nd=',i4/(30x,'xl(',i2,')= ',g11.4,' xu(',
-     *i2,')= ',g11.4))
-c201   FORMAT(/' iteration no.',I3,': ','integral =',g14.7,'+/- ',g9.2/
-c     *' all iterations:   integral =',g14.7,'+/- ',g9.2,' chi**2/iter',
-c     * g9.2)
- 201    format(/'************* Integration by Vegas (iteration ',i3,
-     .   ') **************' / '*',63x,'*'/,
-     .   '*  integral  = ',g14.8,2x,
-     .   ' accum. integral = ',g14.8,'*'/,
-     .   '*  std. dev. = ',g14.8,2x,
-     .   ' accum. std. dev = ',g14.8,'*'/,
-     .   '*   max. wt. = ',g14.6,35x,'*'/,'*',63x,'*'/,
-     .   '**************   chi**2/iteration = ',
-     .   g10.4,'   ****************' /)     
-301     format('> TensorRed:   TensF',e9.2,
-     &    ' / PolF',e9.2,' / TotalF',e9.2,' <'/)
-202   FORMAT(/' data for axis ',I2/'    X       delta i       ',
-     *'   x       delta i       ','    x       delta i       ',/(1x,
-     *f7.5,1x,g11.4,5x,f7.5,1x,g11.4,5x,f7.5,1x,g11.4))
-203   FORMAT(/(5z16))
-      END
-C  (C) Copr. 1986-92 Numerical Recipes Software =v1.9"217..
+	goto 1
+203     FORMAT(/(5z16))
+
+	end
 
 
-      SUBROUTINE rebin(rc,nd,r,xin,xi)
-      implicit none
-      INTEGER nd
-      DOUBLE PRECISION rc,r(*),xi(*),xin(*)
-      INTEGER i,k
-      DOUBLE PRECISION dr,xn,xo
-      k=0
-      xn=0d0
-      dr=0d0
-      do 11 i=1,nd-1
-1       if(rc.gt.dr)then
-          k=k+1
-          dr=dr+r(k)
-          xo=xn
-          xn=xi(k)
-        goto 1
-        endif
-        dr=dr-rc
-        xin(i)=xn-(xn-xo)*dr/r(k)
-11    continue
-      do 12 i=1,nd-1
-        xi(i)=xin(i)
-12    continue
-      xi(nd)=1d0
-      return
-      END
-C  (C) Copr. 1986-92 Numerical Recipes Software =v1.9"217..
+
+
+
+
+
+
+************************************************************************
+*       * IniRandom sets up the random-number generator to produce at most
+*       * max dims-dimensional quasi-random vectors
+
+	subroutine IniRandom(dims)
+	implicit none
+	integer max, dims
+
+	integer ndim,a,b,ni(55),n(55)
+	data ni /
+     1  980629335, 889272121, 422278310,1042669295, 531256381,
+     2  335028099,  47160432, 788808135, 660624592, 793263632,
+     3  998900570, 470796980, 327436767, 287473989, 119515078,
+     4  575143087, 922274831,  21914605, 923291707, 753782759,
+     5  254480986, 816423843, 931542684, 993691006, 343157264,
+     6  272972469, 733687879, 468941742, 444207473, 896089285,
+     7  629371118, 892845902, 163581912, 861580190,  85601059,
+     8  899226806, 438711780, 921057966, 794646776, 417139730,
+     9  343610085, 737162282,1024718389,  65196680, 954338580,
+     1  642649958, 240238978, 722544540, 281483031,1024570269,
+     2  602730138, 915220349, 651571385, 405259519, 145115737 /
+	common /rngdata/ ndim,a,b,n
+
+	a=55
+	b=31
+	n(:)=ni(:)
+	ndim = dims
+	end
+
+
+************************************************************************
+*       * GetRandom is a subtractive Mitchell-Moore random-number generator.
+*       * The algorithm is n(i) = (n(i - 24) - n(i - 55)) mod m, implemented
+*       * as a circular array with n(i + 55) = n(i) and m = 2^30 in this
+*       * version.  The array n has been initialized by setting n(i) = i and
+*       * running the algorithm 100,000 times.  Code by Ronald Kleiss.
+
+	subroutine GetRandom(array)
+	implicit none
+	double precision array(*)
+	integer ndim
+	integer dim, a, b, j, m, n(55)
+	common /rngdata/ ndim,a,b,n
+	parameter (m = 2**30)
+
+	do dim = 1, ndim
+	   a = mod(a, 55) + 1
+	   b = mod(b, 55) + 1
+	   j = n(b) - n(a)
+	   if( j .lt. 0 ) j = j + m
+	   n(a) = j
+	   array(dim) = dble(j)/m
+	enddo
+	end

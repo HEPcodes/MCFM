@@ -6,5 +6,6 @@
      & C00save(Ncmax,-2:0),tau3save(Ncmax,4,-2:0)
       common/ovCsave/FC0save,FC1save,FC2save,FC3save,
      & C00save,tau3save
+!$omp threadprivate(/ovCsave/)      
      
       

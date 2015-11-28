@@ -27,8 +27,8 @@ c     f(-p1)+f(-p2)--> W^-(e^-(p3)+nbar(p4))+ c(p5) + f(p6)
 c--- we label the amplitudes by helicity (qqb1 ... qqb4)
 c--- and by type of contribution qqb(1) ... qqb(n)
       integer i,j,k
+!$omp threadprivate(/facgg/)
       
-
 c--- initialize matrix elements
       do j=-nf,nf
       do k=-nf,nf

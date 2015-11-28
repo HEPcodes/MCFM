@@ -34,10 +34,8 @@ c---            calculates C00iiii components of rank 6
      . Bzero5(z5max,-2:0),Bzero4(z4max,-2:0),
      . Bzero3(z3max,-2:0),Bzero2(z2max,-2:0),Bzero1(z1max,-2:0),
      . Bzero0(-2:0)
- 
-      logical first
-      data first/.true./
-      save first
+      logical,save:: first=.true.
+!$omp threadprivate(first)
 
       if (first) then
         first=.false.

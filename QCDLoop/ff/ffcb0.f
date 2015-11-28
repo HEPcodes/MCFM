@@ -48,6 +48,8 @@
 	data init,initc /2*0/
 *
 *  #] declarations: 
+!$omp threadprivate(init,initc)
+
 *  #[ check input:
 *
 	if ( lwrite ) then
@@ -264,12 +266,19 @@
 	data initeq /0/
 	data initn1 /0/
 	data init /0/
+
+	save xprceq,xprcn1,xprcn2
 *
 *	statement function
 *
 	absc(c) = abs(DBLE(c)) + abs(DIMAG(c))
 *
-*  #] declarations: 
+*  #] declarations:
+!$omp threadprivate(initeq,initn1,xpneq,xpnn1,init)
+!$omp threadprivate(xprceq,bdeq01,bdeq05,bdeq11,bdeq17,bdeq25,
+!$omp& 		    xprcn1,bdn101,bdn105,bdn110,bdn115,
+!$omp&		    xprnn2,bdn201,bdn205,bdn210,bdn215)
+ 
 *  #[ check input:
 *
 	if (ltest) then

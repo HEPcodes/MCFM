@@ -18,7 +18,8 @@ c     u(-p1)+b(p2)->h(p3,p4)+t(nu(p5)+e+(p6)+b(p7))+d(p6)
       include 'TRtensorcontrol.f'
       include 'tensorinfo.f'
       include 'anomHiggs.f'
-      integer nu,icross,i1(4),i2(4),i8(4),u_b,b_u,db_b,b_db
+      include 'first.f'
+      integer nu,icross,u_b,b_u,db_b,b_db
       integer origipolesfailed,origitotal,origibadpoint
       double precision p(mxpart,4),msq(-nf:nf,-nf:nf),fac,
      & virt(4),q(mxpart,4),p_dk(mxpart,4),hdecay,msqgamgam
@@ -27,13 +28,11 @@ c     u(-p1)+b(p2)->h(p3,p4)+t(nu(p5)+e+(p6)+b(p7))+d(p6)
      & vlower(2,-2:0),vmiddle(2,-2:0),vscalar(2,-2:0)
       double complex lotot(2)
       integer j5,h5
-      logical first,failed
+      logical failed
       parameter(u_b=1,b_u=2,db_b=3,b_db=4)
-      data first/.true./
-      data i1/1,2,8,8/
-      data i2/2,1,2,1/
-      data i8/8,8,1,2/
-      save first
+      integer,parameter:: i1(4)=(/1,2,8,8/)
+      integer,parameter:: i2(4)=(/2,1,2,1/)
+      integer,parameter:: i8(4)=(/8,8,1,2/)
 ! RR added
       double complex mdecaymb(2,2), mdecay
             

@@ -5,6 +5,7 @@
       include 'dm_params.f'
       include 'zprods_com.f'
       include 'sprods_com.f'
+      include 'first.f'
 !------ amplitudes=> ME's for q(i1)+Qb(i5)+Q(i6)+qb(i2)+x(3)+x~(4) 
       double precision p(mxpart,4),q(mxpart,4)
       integer i1,i2,i5,i6 
@@ -20,9 +21,6 @@
       double precision bp,beta,s34
 
 !      double complex tc1(2,2,2,2),Rc2(2,2,2,2)
-      logical first 
-      data first /.true./
-      save first
       
       do h1=1,2
          do h2=1,2

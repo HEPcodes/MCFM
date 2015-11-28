@@ -6,3 +6,4 @@
       common/kininvc/p25,p34,p134,p1346,p346,p16,p234,p345,p235,
      &     s34,s25,s346,s134,s16,s234,s345,p156,s156,s235,p12,p26,s12,
      & s26
+!$omp threadprivate(/kininvc/)

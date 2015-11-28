@@ -5,13 +5,11 @@ C--    Nucl. Phys. B309 (1988) 202
       include 'constants.f'
       include 'masses.f'
       include 'scale.f'
-      logical first
+      include 'first.f'
       double precision p1(4),p2(4),p3(4),p4(4),ss,tt,uu,
      & p3sq,p4sq,mQsq,mhsq
       double complex triangle(1,2),box(1,2),gauge(1,2),
      & D123,D213,D132,C12,C23,C13,C34,qlI4,qlI3
-      data first/.true./
-      save first
 
 c--- initialize QCDLoop, if necessary
       if (first) then

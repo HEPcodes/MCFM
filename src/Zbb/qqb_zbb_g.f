@@ -21,6 +21,7 @@ c                         ---> bb(p5)+b(p6)
       include 'noglue.f'
       include 'heavyflav.f'
       include 'nflav.f'
+      include 'first.f'
       integer j,k,hq,Qh,hg,lh
       double precision P(mxpart,4),msq(-nf:nf,-nf:nf),mmsq(2,2)
       double precision fac,LRq(2),LRb(2),lr1(2),scalesq
@@ -28,9 +29,7 @@ c                         ---> bb(p5)+b(p6)
      .                 msq_qg(2,2,2,2,4),msq_qbg(2,2,2,2,4),
      .                 msq_gqb(2,2,2,2,4),msq_gq(2,2,2,2,4)
       double complex prop,czq,czb
-      logical first
-      data first/.true./
-      save first,scalesq
+      save scalesq
 
       if (first) then
        if     (flav .eq. 5) then

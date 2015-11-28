@@ -13,13 +13,12 @@
       include 'constants.f'
       include 'ptilde.f'
       include 'qqgg.f'
+      include 'incldip.f'
       double precision msqc(maxd,-nf:nf,-nf:nf),p(mxpart,4)
       double precision 
      & msq57_6(-nf:nf,-nf:nf),msq67_5(-nf:nf,-nf:nf),
      & dummyv(-nf:nf,-nf:nf),sub57_6(4),sub67_5(4),dsubv
       integer j,k,nd
-      logical incldip(0:maxd)
-      common/incldip/incldip
       external qqb_ww,donothing_gvec
 
       ndmax=2

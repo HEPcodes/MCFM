@@ -9,32 +9,32 @@ c--- the Higgs mass
       include 'phasemin.f'
       include 'process.f'
       include 'breit.f'
+      include 'x1x2.f'
       integer nu
       double precision r(mxdim)
       double precision wt5,p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4)
-      double precision p(mxpart,4),sqrts,rtshat
+      double precision p(mxpart,4),rtshat
       double precision pswt,xjac
-      double precision xx(2),s12,wt12,ymax,yave
-      common/energy/sqrts
-      common/x1x2/xx
+      double precision s12,wt12,ymax,yave
+      include 'energy.f'
 
       wt5=0d0
 
       if (case .ne. 'HZZqgI') then
 c--- this is the usual case      
-        call breitw(r(12),0d0,sqrts**2,hmass,hwidth,s12,wt12)
+        call breitw(r(9),0d0,sqrts**2,hmass,hwidth,s12,wt12)
       else
 c--- this is the HZZqgI case (cf. gen4handc.f)     
         if (hmass .lt. mass2+mass3-hwidth*5d0) then
-          call breitw(r(12),0d0,sqrts**2,hmass,10d0,s12,wt12)
+          call breitw(r(9),0d0,sqrts**2,hmass,10d0,s12,wt12)
         else
-          call breitw(r(12),0d0,sqrts**2,hmass,hwidth,s12,wt12)
+          call breitw(r(9),0d0,sqrts**2,hmass,hwidth,s12,wt12)
         endif
       endif
             
       rtshat=dsqrt(s12)
       ymax=dlog(sqrts/rtshat)
-      yave=ymax*(two*r(13)-1d0)
+      yave=ymax*(two*r(10)-1d0)
       xjac=two*ymax*wt12
            
       xx(1)=rtshat/sqrts*exp(+yave)

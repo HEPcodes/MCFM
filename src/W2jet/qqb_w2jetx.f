@@ -20,6 +20,7 @@ c--- and returns the result in msqx(col,i,j,k,l)
       include 'flags.f'
       include 'lc.f'
       include 'part.f'
+      include 'first.f'
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),
      .                 facgg,facqq,prop,Vfac
       double precision qqbWgg2,qbqWgg2,qgWqg2,qbgWqbg2,
@@ -55,11 +56,9 @@ c--- and returns the result in msqx(col,i,j,k,l)
       double precision msqx_cs(0:2,-nf:nf,-nf:nf)
 c--- we label the amplitudes by helicity (qqb1 ... qqb4)
 c--- and by type of contribution qqb(1) ... qqb(n)
-      integer i,j,k,l,m,n1,n2,sw(0:2)
-      logical first,rGflag
-      data sw/0,2,1/
-      data first/.true./
-      save first
+      integer i,j,k,l,m,n1,n2
+      integer, parameter :: sw(0:2)=(/0,2,1/)
+      logical rGflag
 
       if (first) then
       first=.false.
@@ -112,6 +111,9 @@ c--- initialize matrix elements
       msq(j,k)=0d0
       enddo
       enddo
+      mqq=0d0
+      msqx=0d0
+      msqx_cs=0d0
 
 c--- set up spinors
       call spinoru(6,p,za,zb)

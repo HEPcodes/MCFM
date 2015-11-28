@@ -4,6 +4,7 @@ C  interpolating the Spira tables br.sm1 br.sm2
 C  Other branching ratios could be added.
       implicit none
       include 'masses.f'
+      include 'first.f'
       integer npt
       parameter(npt=1000)
       integer j,nlo
@@ -12,9 +13,7 @@ C  Other branching ratios could be added.
      . width(npt)
       double precision xmh(npt),brbb(npt),brtautau(npt),brss,brcc,brmumu
      . ,brtt,brgg,brgamgam(npt),brzgam(npt),brww(npt),brzz(npt)
-      logical first
-      data first/.true./
-      save first,brbb,brww,brzz,width
+      save brbb,brww,brzz,width
 
       if (first) then
       first=.false.

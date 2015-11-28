@@ -13,7 +13,7 @@ c--- AVAILABLE AT LEADING ORDER ONLY
       double precision p(mxpart,4),mu0
       double precision b1scale,q2scale,q1scale,b2scale
       common/bqscale/b1scale,q2scale,q1scale,b2scale
-
+!$omp threadprivate(/bqscale/)
       if((case .eq. 'bq_tpq') .or.
      &   (case .eq. 'qg_tbq')) then
         if (case .eq. 'bq_tpq') then

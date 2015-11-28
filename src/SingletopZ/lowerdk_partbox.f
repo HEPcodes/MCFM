@@ -5,7 +5,7 @@
       include 'metric0.f'
       include 'masses.f'
       include 'scale.f'
-      include 'ydef.f' 
+      include 'TRydef.f' 
       include 'currentdecl.f'
       include 'tensordecl.f'
       integer fi,nu,ro,si,om,ep,h3

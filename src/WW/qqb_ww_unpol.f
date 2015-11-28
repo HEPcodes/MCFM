@@ -26,11 +26,10 @@ c--- unpolarized W-pairs
       double complex a126543(-1:1,-1:1),b126543(-1:1,-1:1)
       double complex a216543(-1:1,-1:1),b216543(-1:1,-1:1)
 
-      double precision fac,mp(nf)
-      integer j,k,jk,minus,mplus,hel34,hel56,n34max,n34min,
-     . n56max,n56min
-      data minus,mplus/1,2/
-      data mp/-1d0,+1d0,-1d0,+1d0,-1d0/
+      double precision fac
+      integer j,k,jk,hel34,hel56,n34max,n34min,n56max,n56min
+      integer, parameter :: minus=1,mplus=2
+      double precision, parameter :: mp(nf)=(/-1d0,+1d0,-1d0,+1d0,-1d0/)
       fac=gw**8*xn*aveqq
 C---multiply by factor for c-sbar+u-dbar hadronic decay
       if (plabel(5) .eq. 'qj') fac=2d0*xn*fac

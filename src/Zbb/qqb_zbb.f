@@ -15,17 +15,17 @@ c---  averaged(summed) over initial(final) colours and spins
       include 'mmsq_cs.f'
       include 'heavyflav.f'
       include 'nflav.f'
-      integer j,k,nu,ics,j1,j2,j3,swap(2)
+      include 'first.f'
+      integer j,k,nu,ics,j1,j2,j3
       double precision p(mxpart,4),msq(-nf:nf,-nf:nf),mmsq(2,2),
      . pswap(mxpart,4),faclo,scalesq
       double complex tamp,prop
 c      double complex qqb5,qbq5,qqb6,qbq6,qqb7,qbq7,qqb8,qbq8
       double complex qqb_a(2,2,2),qqb_b(2,2,2)
       double complex qbq_a(2,2,2),qbq_b(2,2,2)
-      logical first
       character qflav
-      data swap/2,1/,first/.true./
-      save first,swap,scalesq
+      integer,parameter::swap(2)=(/2,1/)
+      save scalesq
       
       if (first) then
        if     (flav .eq. 5) then

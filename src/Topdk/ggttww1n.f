@@ -10,6 +10,7 @@ c     g(-p1)+g(-p2)--> t(p3,p4,p5)+tb(p6,p7,p8)
       include 'masses.f'
       double complex zanb(mxpart,mxpart)
       common/zprodsgvec/zanb
+!$omp threadprivate(/zprodsgvec/)
       integer in,p1,p2,q3,q4,q5,q6,q7,q8,icol,j
       double precision s1t,s2t,s12,c6,c8,mtsq,res(0:2)
       double complex loab(2),loba(2),loqed(2)

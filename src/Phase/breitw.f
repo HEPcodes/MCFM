@@ -31,6 +31,12 @@ c--- in case the maximum msq is very small, just generate linearly for safety
       msq=rmass**2+rmass*rwidth*tanal
 c---- bw=(1d0+tanal**2)*rmass**2*rwidth**2
       wt=(almax-almin)*rmass*rwidth*(1d0+tanal**2)
+
+      if (msq .lt. 0d0) then
+        msq=mminsq
+        wt=0d0
+      endif
+      
       return
       end
 

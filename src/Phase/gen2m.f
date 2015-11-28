@@ -8,14 +8,14 @@ C---p1+p2 --> p3+p4
       include 'hdecaymode.f'
       include 'masses.f'
       include 'breit.f'
+      include 'x1x2.f'
       integer j,nu
 
-      double precision r(mxdim),p(mxpart,4),xx(2),mass
-      double precision sqrts,ymax,yave,ydif,xjac,y3,y4,phi,wt0,wt2,w3,vs
+      double precision r(mxdim),p(mxpart,4),mass
+      double precision ymax,yave,ydif,xjac,y3,y4,phi,wt0,wt2,w3,vs
       double precision vsqmin,vsqmax,pt,s34,xmin,rtshat,udif,trmass,beta
-      common/energy/sqrts
+      include 'energy.f'
       parameter(wt0=1d0/16d0/pi)
-      common/x1x2/xx
 
       do j=1,mxpart     
       do nu=1,4     
@@ -28,6 +28,7 @@ C---p1+p2 --> p3+p4
       if (n3 .eq. 1) then
 c--- generate s34 according to a Breit-Wigner, for gg->H 
         call breitw(r(3),wsqmin,wsqmax,mass3,width3,s34,w3)
+        xmin=0d0
       if     (hdecaymode .eq. 'bqba') then
         mass=mb
       elseif (hdecaymode .eq. 'tlta') then
@@ -65,6 +66,7 @@ c----udif=tanh(ydif)
       xx(1)=rtshat/sqrts*exp(+yave)
       xx(2)=rtshat/sqrts*exp(-yave)
       trmass=rtshat/(2d0*dcosh(ydif))
+
 
       if   ((xx(1) .gt. 1d0) 
      & .or. (xx(2) .gt. 1d0)

@@ -32,6 +32,7 @@ c      qbq=aveqq*fac*ampsq_3gam1g(6,3,4,5,2,1,za,zb)
 c      qbg=aveqg*fac*ampsq_3gam1g(2,3,4,5,6,1,za,zb)
 c      gqb=aveqg*fac*ampsq_3gam1g(1,3,4,5,6,2,za,zb)
 
+      msq(:,:)=0d0
       do j=1,nf
         cfac=Q(j)**6
         msq(j,-j)=cfac*qqb

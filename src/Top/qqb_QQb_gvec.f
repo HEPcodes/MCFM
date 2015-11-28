@@ -14,11 +14,10 @@
       include 'sprods_com.f'
       include 'msqv_cs.f'
       include 'breit.f'
+      include 'first.f'
       integer j,k,in
 C--in is the label of the parton dotted with n
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),n(4),msqn(0:2)
-      logical first
-      data first/.true./
 
       if (first) then
       first=.false.

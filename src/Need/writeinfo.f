@@ -7,21 +7,21 @@
       include 'process.f'
       include 'outputflags.f'
       include 'runstring.f'
+      include 'bypart.f'
+      include 'energy.f'
+      include 'nproc.f'
       integer unitno,j,k,itno
       double precision xsec,xsec_err
-      double precision lord_bypart(-1:1,-1:1),lordnorm,rescale
+      double precision lordnorm,rescale
       double precision ggpart,gqpart,qgpart,qqpart,qqbpart,
      . gqbpart,qbgpart,qbqbpart,qbqpart
       
       character*2 commchars
       logical dryrun,makecuts
-      integer nproc,ih1,ih2,itmx1,itmx2,ncall1,ncall2,origij
+      integer ih1,ih2,itmx1,itmx2,ncall1,ncall2,origij
       integer NPTYPE,NGROUP,NSET
-      double precision sqrts
       double precision Rcut 
 
-      common/nproc/nproc
-      common/energy/sqrts
       common/density/ih1,ih2
       common/iterat/itmx1,ncall1,itmx2,ncall2
       common/dryrun/dryrun
@@ -33,8 +33,8 @@
 
       common/origij/origij
 
-      common/bypart/lord_bypart
-      common/finalpart/ggpart,gqpart,qgpart,qqpart,qqbpart
+      common/finalpart/ggpart,gqpart,qgpart,qqpart,qqbpart,
+     & gqbpart,qbgpart,qbqbpart,qbqpart
 
       if (itno .gt. 0) then
 c--- write warning that result is only intermediate; populate the
@@ -217,11 +217,11 @@ c      write(unitno,99)
       return
 
 c--- 55 format
-   55 format(a20,f24.10,a4,f24.10,a1)
+   55 format(a20,G24.6,a4,G24.6,a1)
 c--- 56 character format
    56 format('( PDF error set ',i3,'  --->',f13.3,' fb  )')
 c--- 95 character format
-   95 format(a2,5x,a9,' |',f18.5,f8.2,'%')
+   95 format(a2,5x,a9,' |',G18.5,f8.2,'%')
 c--- 96 character format      
    96 format(' (',a20,12x,'[',a,']',' )')  
 c--- 97 integer format      

@@ -81,6 +81,8 @@ c
 *  #] declarations:
 *  #[ initialisations:
 	data xprec /-1./
+!$omp threadprivate(xprec,bndtay)
+
 	if ( xprec .ne. precx ) then
 	    xprec = precx
 	    bndtay = ffbnd(2,18,xn2inv)

@@ -1,4 +1,4 @@
-      subroutine multichan(x1,x2,x3,pin,pout,wtdip,*)
+      subroutine multichan(x1,x2,x3,x4,pin,pout,wtdip,*)
 ************************************************************************
 *                                                                      *
 *     Given a n-parton phase space point, generate an (n+1)-parton     *
@@ -6,6 +6,7 @@
 *     dipole structure of the process at hand                          *
 *                                                                      *
 *     x1,x2,x3: random numbers uniform on [0,1]                        *
+*     x4: random number uniform on [0,1], used for choosing channel    *
 *                                                                      *
 *     Author: J.M.Campbell                                             *
 *       Date: 19th March 2009                                          *
@@ -23,7 +24,7 @@
       include 'npart.f'
       include 'ptilde.f'
       integer maxdip,dipconfig(maxd,3),ichan,ip,jp,kp,nu,m,iskip,kpp,mp
-      double precision x1,x2,x3,pin(mxpart,4),pout(mxpart,4),wtdip,
+      double precision x1,x2,x3,x4,pin(mxpart,4),pout(mxpart,4),wtdip,
      . tiny,ranchan,ran2,vtilde,x,u,z,y,phi,sik,pt,v1(4),v2(4),vperp(4),
      . qi(4),qj(4),qk(4),dot,k(4),kt(4),ks(4),kDk,ksDks,ktDp,ksDp,
      . dotpr,xjac,sij,sjk,sim,sjm,qm(4)
@@ -47,7 +48,7 @@ c--- Step 1: obtain number of dipoles and their configurations
             
 c--- Step 2: choose dipole channel
 c---  (note: this is uniform and not chosen adaptively) 
-      ranchan=ran2()*dfloat(maxdip)-tiny
+      ranchan=x4*dfloat(maxdip)-tiny
       ichan=int(ranchan)+1
       
       if ((ichan .lt. 1) .or. (ichan .gt. maxdip)) then

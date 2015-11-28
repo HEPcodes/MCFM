@@ -9,8 +9,8 @@
       double precision wt0,p12(4),p34(4),p3(4),p4(4),p5(4)
       double precision  p1(4),p2(4)
       double precision tau,xx(2),xmin,xmax,xjac,lnxmin
-      double precision Qsq,wt345,wt34,sqrts
-      common/energy/sqrts
+      double precision Qsq,wt345,wt34
+      include 'energy.f'
       parameter(wt0=one/twopi) 
 
       wt=wt0

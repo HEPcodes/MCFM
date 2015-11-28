@@ -24,59 +24,47 @@
       include 'outputoptions.f'
       include 'outputflags.f'
       include 'runstring.f'
-c      include 'ewcorr.f'
+      include 'energy.f'
+      include 'VVstrong.f'
       include 'dm_params.f'
-c---- SSbegin                                                                                                                      
+      include 'initialscales.f'
+c---- SSbegin
       include 'reweight.f'
-c---- SSend                                                                                                                        
+c---- SSend
 c --- DSW. To store flavour information :
       include 'nflav.f'
-c      include 'b0.f'
 c --- DSW.
-c--- APPLgrid - to use grids
-      include 'ptilde.f'
-      include 'APPLinclude.f'
-      include 'qcdcouple.f'
-      double precision psCR
-c--- APPLgrid - end
+      include 'x1x2.f'
+      include 'bypart.f'
       integer pflav,pbarflav
 c--- To use VEGAS random number sequence :
       double precision ran2
-      integer ih1,ih2,j,k,nvec,sgnj,sgnk,ii
-      double precision r(mxdim),W,sqrts,xmsq,val,val2,ptmp,
+      integer ih1,ih2,j,k,nvec,sgnj,sgnk,ii,i1,i2,i3,i4
+      integer i,t
+      double precision r(mxdim),W,xmsq,val,val2,ptmp,
      . fx1(-nf:nf),fx2(-nf:nf),p(mxpart,4),pjet(mxpart,4),
      . pswt,rscalestart,fscalestart,
      . fx1_H(-nf:nf),fx2_H(-nf:nf),fx1_L(-nf:nf),fx2_L(-nf:nf),
      . fxb1(-nf:nf),fxb2(-nf:nf),xmsq_array(-nf:nf,-nf:nf)
       double precision wgt,msq(-nf:nf,-nf:nf),m3,m4,m5,xmsqjk
-      double precision msq1(-nf:nf,-nf:nf)
-      double precision xx(2),flux,vol,vol_mass,vol3_mass,vol_wt,BrnRat
-      double precision xmsq_bypart(-1:1,-1:1),lord_bypart(-1:1,-1:1)
-      logical bin,first,includedipole,checkpiDpjk
+      double precision msq1(-nf:nf,-nf:nf),
+     & msq4(-nf:nf,-nf:nf,-nf:nf,-nf:nf)
+      double precision flux,vol,vol_mass,vol3_mass,vol_wt,BrnRat
+      double precision xmsq_bypart(-1:1,-1:1)
+      logical bin,includedipole,checkpiDpjk
       double precision b1scale,q2scale,q1scale,b2scale
       external qg_tbq,BSYqqb_QQbdk_gvec,qqb_QQbdk,qg_tbqdk,qg_tbqdk_gvec,
      & qqb_Waa,qqb_Waa_mad
      & qqb_Zbbmas,qqb_Zbbmas,qqb_totttZ,qqb_totttZ_mad
       common/density/ih1,ih2
-      common/energy/sqrts
       common/bin/bin
-      common/x1x2/xx
       common/BrnRat/BrnRat
-      common/bypart/lord_bypart
       common/bqscale/b1scale,q2scale,q1scale,b2scale
-      data p/56*0d0/
-      data first/.true./
-      save first,rscalestart,fscalestart
       external qq_tchan_ztq,qq_tchan_ztq_mad
       external qq_tchan_htq,qq_tchan_htq_mad,qq_tchan_htq_amp
       external qqb_gamgam_g,qqb_gmgmjt_gvec
-      
-      if (first) then
-         first=.false.
-         rscalestart=scale
-         fscalestart=facscale
-      endif
-      
+!$omp threadprivate(/bqscale/)
+
       ntotshot=ntotshot+1
       lowint=0d0
 c--- ensure isolation code does not think this is fragmentation piece
@@ -86,10 +74,10 @@ c--- ensure isolation code does not think this is fragmentation piece
       p(:,:)=0d0
 
       call gen_lops(r,p,pswt,*999)
-      nvec=npart+2
 
+      nvec=npart+2
       call dotem(nvec,p,s)
-      
+
 c--- (moved to includedipole) impose cuts on final state
 c      if (case .ne. 'vlchk6' .and. case .ne. 'tautau') then
 c        call masscuts(p,*999)
@@ -105,12 +93,12 @@ c--- bother calculating the matrix elements for it, instead bail out
 
 c      call writeout(p)
 c      stop
-      if (dynamicscale) call scaleset(rscalestart,fscalestart,p)
+      if (dynamicscale) call scaleset(initscale,initfacscale,p)
       
       xx(1)=-2d0*p(1,4)/sqrts
       xx(2)=-2d0*p(2,4)/sqrts
 
-      if (debug) write(*,*) 'Reconstructed x1,x2 ',xx(1),xx(2)      
+      if (debug) write(*,*) 'Reconstructed x1,x2 ',xx(1),xx(2)
 
 c--- Calculate the required matrix elements      
       if     (case .eq. 'W_only') then
@@ -191,6 +179,74 @@ c        call qqb_zgam_g(p,msq)      ! Old routine
         call qqb_WZbb(p,msq)
       elseif (case .eq. 'WZbbar') then
         call qqb_wz(p,msq)
+
+
+      elseif (case .eq. 'WW_jet') then
+        call qqb_ww_g(p,msq)
+c--- Check of gvec routine
+c       n(1)=1d0
+c       n(2)=0d0
+c       n(3)=0d0
+c       n(4)=0d0
+c       call qqb_ww_gvec(p,n,2,msqn)
+c       n(1)=0d0
+c       n(2)=1d0
+c       n(3)=0d0
+c       n(4)=0d0
+c       call qqb_ww_gvec(p,n,2,msqmad)
+c--- polarization vectors in general (for p7)
+c       n(1)=p(7,2)/dsqrt(p(7,1)**2+p(7,2)**2)
+c       n(2)=-p(7,1)/dsqrt(p(7,1)**2+p(7,2)**2)
+c       n(3)=0d0
+c       n(4)=0d0       
+c       call qqb_ww_gvec(p,n,7,msqn)
+c       n(1)=p(7,1)*p(7,3)/p(7,4)/dsqrt(p(7,1)**2+p(7,2)**2)
+c       n(2)=p(7,2)*p(7,3)/p(7,4)/dsqrt(p(7,1)**2+p(7,2)**2)
+c       n(3)=-dsqrt(p(7,1)**2+p(7,2)**2)/p(7,4)
+c       n(4)=0d0       
+c       call qqb_ww_gvec(p,n,7,msqmad)
+c       do j=-2,2
+c       do k=-2,2
+c       if (msq(j,k) .ne. 0d0) write(6,'(2i3,2e18.8,f16.9)') 
+c     .    j,k,msq(j,k),msqmad(j,k)+msqn(j,k),
+c     .    msq(j,k)/(msqmad(j,k)+msqn(j,k))
+c       enddo
+c       enddo
+c       pause
+c--- Madgraph check
+c        call qqb_ww_g_mad(p,msqmad)
+c       do j=-4,4
+c       do k=-4,4
+c       if (msq(j,k) .ne. 0d0)
+c     .    write(6,'(2i3,2e18.8,f16.9)')
+c     .    j,k,msq(j,k),msqmad(j,k),msq(j,k)/msqmad(j,k)
+c       enddo
+c       enddo
+c       pause
+
+c      elseif (case .eq. 'WW2jet') then
+c        call qqb_wwg_g(p,msq)
+
+c        call qqb_ww_gg_mad(p,msqmad)
+c       do j=-4,4
+c       do k=-4,4
+c       if (msqmad(j,k) .ne. 0d0) write(6,'(2i3,2e18.8,f16.9)') 
+c     .    j,k,msq(j,k),msqmad(j,k),msq(j,k)/msqmad(j,k)
+c       enddo
+c       enddo
+c       pause
+      elseif (case .eq. 'WpWp2j') then
+        call qqb_wpwp_qqb(p(1:12,:),msq(-5:5,-5:5))
+      elseif (case .eq. 'WpWp3j') then
+        call qqb_wpwp_qqb_g(p(1:12,:),msq(-5:5,-5:5))
+      elseif (case .eq. 'WpmZjj') then
+        call qqb_WZjj(p,msq)
+      elseif (case .eq. 'WpmZbj') then
+        call qqb_WZbj(p,msq)
+      elseif (case .eq. 'WpmZbb') then
+        call qqb_WZbb(p,msq)
+      elseif (case .eq. 'WZbbar') then
+        call qqb_wz(p,msq)
       elseif (case .eq. 'ZZlept') then
         call qqb_zz(p,msq)
       elseif (case .eq. 'ZZ_jet') then
@@ -222,6 +278,8 @@ c      call checkgvec(-1, 1,5,p,qqb_gamgam_g,qqb_gmgmjt_gvec)
          call qqb_gmgmjt(p,msq)
       elseif (case .eq. 'trigam') then
         call qqb_trigam(p,msq)
+      elseif (case .eq. 'fourga') then 
+         call qqb_fourgam(p,msq)
       elseif (case .eq. 'gamjet') then
         call qqb_dirgam_g(p,msq)
       elseif (case .eq. 'WH__WW') then
@@ -287,7 +345,7 @@ c      call checkgvec(-1, 1,5,p,qqb_gamgam_g,qqb_gmgmjt_gvec)
       elseif (case .eq. 'tt_bbu') then
         call qqb_QQbdku(p,msq)
       elseif (case .eq. 'qq_ttg') then
-        call qqb_QQbdk_g(p,msq)
+       call qqb_QQbdk_g(p,msq)
       elseif (case .eq. 'tt_tot') then
         call qqb_QQb(p,msq)
       elseif (case .eq. 'bb_tot') then
@@ -295,7 +353,7 @@ c      call checkgvec(-1, 1,5,p,qqb_gamgam_g,qqb_gmgmjt_gvec)
       elseif (case .eq. 'cc_tot') then
         call qqb_QQb(p,msq)
       elseif (case .eq. 'tt_glu') then
-        call qqb_QQb_g(p,msq)
+         call qqb_QQb_g(p,msq)
       elseif (case .eq. 'bq_tpq') then
         call bq_tpq(p,msq)
       elseif (case .eq. 'ttdkay') then
@@ -363,10 +421,52 @@ c      call checkgvec(-1, 1,5,p,qqb_gamgam_g,qqb_gmgmjt_gvec)
 c--- Check of gvec routines
 c      call checkgvec(+2,0,2,p,qg_tbq,qg_tbq_gvec)
 c      call checkgvec(-1,0,2,p,qg_tbq,qg_tbq_gvec)
+      elseif (case .eq. 'qqZZqq') then
+c        call getvbfpoint(p)
+        if (VVstrong) then
+          call qq_ZZqqstrong(p,msq)
+        else
+          call qq_ZZqq(p,msq)
+        endif
+c        call comparevbf(msq)
+      elseif (case .eq. 'qqWWqq') then
+c        call getvbfpoint(p)
+        if (VVstrong) then
+          call qq_WWqqstrong(p,msq)
+        else
+          call qq_WWqq(p,msq)
+        endif
+c        call comparevbf(msq)
+      elseif (case .eq. 'qqVVqq') then
+c        call getvbfpoint(p)
+        if (VVstrong) then
+c          call qq_VVqqstrong(p,msq)
+          write(6,*) 'Not yet implemented'
+          stop
+        else
+          call qq_VVqq(p,msq)
+        endif
+c        call comparevbf(msq)
+      elseif (case .eq. 'qqWWss') then
+c        call getvbfpoint(p)
+        if (VVstrong) then
+          call qq_WWssstrong(p,msq)
+        else
+          call qq_WWss(p,msq)
+        endif
+c        call comparevbf(msq)
+      elseif (case .eq. 'qqWZqq') then
+c        call getvbfpoint(p)
+        if (VVstrong) then
+          call qq_WZqqstrong(p,msq)
+        else
+          call qq_WZqq(p,msq)
+        endif
+c        call comparevbf(msq)
       elseif (case .eq. 'qgtbqq') then
         call qg_tbq_g(p,msq)
       elseif (case .eq. '4ftwdk') then
-      call qg_tbqdk(p,msq)
+        call qg_tbqdk(p,msq)
       elseif (case .eq. '4ftjet') then
         call qg_tbqdk_g(p,msq)
       elseif (case .eq. 'qq_tbg') then
@@ -525,26 +625,11 @@ c      call checkgvec(-1,2,5,p,qq_tbg,qq_tbg_gvec)
       enddo
       enddo 
 
-c--- APPLgrid - initialize array
-      if (creategrid.and.bin) then
-         do j=-nf,nf
-            do k=-nf,nf
-               weightb(j,k) = 0d0
-            enddo
-         enddo
-         weightfactor = 1d0
-      endif
-c--- APPLgrid - end
-
       currentPDF=0
 
 c--- do not calculate the flux if we're only checking the volume      
       if (case(1:4) .ne. 'vlch') then      
         flux=fbGeV2/(2d0*xx(1)*xx(2)*W)
-c--- for mlm study, divide by (Ecm)**2=W
-c      if (runstring(1:3) .eq. 'mlm') then
-c        flux=flux/W
-c      endif
       endif
       
 c--- initialize a PDF set here, if calculating errors
@@ -572,19 +657,6 @@ c--- for single top + b, make sure to use two different scales
         endif
       enddo
       elseif (case(1:4) .ne. 'vlch') then
-cc--- for comparison with C. Oleari's e+e- --> QQbg calculation
-c        if (runstring(1:5) .eq. 'carlo') then
-c          flux=1d0/2d0/W/(as/twopi)
-cc--- divide out by (ason2pi) and then the "LO" massless DY process
-c        flux=flux/(aveqq*xn*fourpi*(gwsq/fourpi)**2/3d0/sqrts**2)
-c        flux=flux/(xn/8d0)
-c        do j=-nf,nf
-c        fx1(j)=0d0
-c        fx2(j)=0d0
-c        enddo
-c        fx1(0)=1d0
-c        fx2(0)=1d0
-c        endif
         if ((case .eq. 'bq_tpq') .or. (case .eq. 'qg_tbq')) then   
 c--- single top: allow for different scales on each leg  
 c---  (applies only if dynstring = 'DDIS')
@@ -666,12 +738,6 @@ c--- DEFAULT
 
       if (currentPDF .eq. 0) then
         xmsq_bypart(sgnj,sgnk)=xmsq_bypart(sgnj,sgnk)+xmsqjk
-c--- APPLgrid - save weight
-        if(creategrid.and.bin)then
-c---- print*,j,k,msq(j,k)
-           weightb(j,k) =  weightb(j,k) + msq(j,k)
-        endif
-c--- APPLgrid - end
       endif
       
  20   continue
@@ -691,7 +757,6 @@ c--- loop over all PDF error sets, if necessary
         if (currentPDF .le. maxPDFsets) goto 777
       endif    
 
-c      if (creatent) then
         wt_gg=xmsq_bypart(0,0)*wgt*flux*pswt/BrnRat/dfloat(itmx)
         wt_gq=(xmsq_bypart(+1,0)+xmsq_bypart(-1,0)
      .        +xmsq_bypart(0,+1)+xmsq_bypart(0,-1)
@@ -700,91 +765,50 @@ c      if (creatent) then
      .        )*wgt*flux*pswt/BrnRat/dfloat(itmx)
         wt_qqb=(xmsq_bypart(+1,-1)+xmsq_bypart(-1,+1)
      .        )*wgt*flux*pswt/BrnRat/dfloat(itmx)
-c      endif
 
       call getptildejet(0,pjet)
       
       call dotem(nvec,pjet,s)
 
+      val=wgt*flux*pswt/BrnRat
       do j=-1,1
-      do k=-1,1
+         do k=-1,1
+!$omp atomic            
         lord_bypart(j,k)=lord_bypart(j,k)+
-     .       wgt*flux*pswt*xmsq_bypart(j,k)/BrnRat
+     .       val*xmsq_bypart(j,k)
       enddo
       enddo
 
       val=lowint*wgt
       val2=val**2
-c---  SSbegin                                                                                                                      
+c---  SSbegin
       lowint = lowint*reweight
-c---  SSend                                                                                                                        
+c---  SSend
 c--- update the maximum weight so far, if necessary
 c---  but not if we are already unweighting ...
       if ((.not.unweight) .and. (dabs(val) .gt. wtmax)) then
+!$omp critical(MaxWgt)
         wtmax=dabs(val)
+!$omp end critical(MaxWgt)
       endif
 
-c      if(rescale) then 
-c         call rescale_pjet(pjet)
-c      endif
 
       if (bin) then
-c     APPLgrid - multiply by totalFactor
-            if (creategrid) then ! P.S. scale with factor
-               psCR = 1d0
-               if ( (case .eq. 'tt_tot')
-     &         .or. (case .eq. 'bb_tot')
-     &         .or. (case .eq. 'cc_tot') 
-     &         .or. (case .eq. 'tt_bbl')
-     &         .or. (case .eq. 'tt_ldk')
-     &         .or. (case .eq. 'tt_bbu')
-     &         .or. (case .eq. 'tt_udk')
-     &         .or. (case .eq. 'tt_bbh')
-     &         .or. (case .eq. 'tt_hdk')
-     &         .or. (case .eq. 'tthWdk')
-     &         .or. (case .eq. 'qq_ttg') ) then
-                  psCR = (1d0/ason2pi)**2
-               elseif ( (case .eq. 'W_cjet')) then
-                  psCR = (1d0/ason2pi)
-               endif
-               do j=-nflav,nflav
-                  do k=-nflav,nflav
-                    weightb(j,k)=weightb(j,k)*psCR
-                 enddo
-              enddo           
-              contrib      = 100
-              weightfactor = flux*pswt*wgt/BrnRat/dfloat(itmx)
-              ag_xx1       = xx(1)
-              ag_xx2       = xx(2)
-              ag_scale     = facscale
-              refwt        = val/dfloat(itmx)
-              refwt2       = val2/dfloat(itmx)
-C     print*,"  *******************************************"
-C     print*, "meWeightFactor = ", weightfactor,
-C     *             " me(2,-1) = " ,  weightb(2 ,-1) ," ", msq(2,-1),
-C     *             " me(-1,2) = " ,  weightb(-1 ,2) ," ", msq(-1,2),
-C     *             " me(1,-1) = " ,  weightb(1 ,-1) ," ", msq(1,-1),
-C     *             " me(-2,2) = " ,  weightb(-2 ,2) ," ", msq(-2,2)
-C     print*, " x1 = ",xx(1)," x2 = ",xx(2)," sca = ",facscale
-C     print *, "rewt = ", refwt
-C     print*,"  *********************************************"
-C     flush(6)
-              
-           endif
-c---  APPLgrid - end
-
-        call nplotter(pjet,val,val2,0)
-c--- POWHEG-style output if requested
-        if (writepwg) then
+         call nplotter(pjet,val,val2,0)
+c---  POWHEG-style output if requested
+         if (writepwg) then
+!$omp critical(pwhgplotter)
             call pwhgplotter(p,pjet,val,0)
-        endif
-       endif
+!$omp end critical(pwhgplotter)
+         endif
+      endif
 
 c --- Check weights :
       if (unweight) then
 c       write(6,*) 'Test weight ',val,' against max ',wtmax
         wtabs = dabs(val)
-        if (ran2() .lt. (wtabs/wtmax)) then
+c--- note that r(ndim+2) is reserved for new_pspace in real, so unused at LO
+        if (r(ndim+2) .lt. (wtabs/wtmax)) then
 c         write(6,*) 'Keep event with weight',val
           if (wtabs.lt.wtmax) then
             newwt = 1d0
@@ -797,25 +821,17 @@ c         write(6,*) 'Keep event with weight',val
           endif
 c ---     just in case the weight was negative :
           newwt = newwt*dsign(1d0,val)
-c          call nplotter(pjet,newwt,newwt,0)
-
-c--- APPLgrid
-c          if (creategrid) then
-c            print*,"@@@@@@@@@@@@@@@@@@@@############################"
-c          endif
-c--- APPLgrid - end
-c ---     DSW. If I'm storing the event, I need to make a decision
-c ---     about the flavours :
-c          call decide_flavour(pflav,pbarflav)
-c          call storeevent(pjet,newwt,pflav,pbarflav)
-c          call write_gg_lhe(pjet,newwt)
+c         call nplotter(pjet,newwt,newwt,0)
+!$omp critical(LowintWriteLHE)
           call mcfm_writelhe(pjet,xmsq_array,newwt)
-          endif
+!$omp end critical(LowintWriteLHE)
+        endif
       endif
 
       return
 
  999  continue
+      lowint=0d0
       ntotzero=ntotzero+1
       
       return

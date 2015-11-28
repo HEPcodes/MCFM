@@ -2,6 +2,7 @@
       implicit none
       include 'constants.f'
       include 'mxdim.f'
+      include 'x1x2.f'
 c---- generate phase space for 2-->2 process
 c---- r(mxdim),p1(4),p2(4) are inputs reversed in sign 
 c---- from physical values 
@@ -9,10 +10,9 @@ c---- phase space for -p1-p2 --> p3+p4
 c---- with all 2 pi's (ie 1/(2*pi)^2)
       double precision r(mxdim)
       double precision p1(4),p2(4),p3(4),p4(4)
-      double precision xx(2),cosphi,sinphi,u,phi,rtshat,costh,sinth
-      double precision wt,wt0,sqrts
-      common/x1x2/xx
-      common/energy/sqrts
+      double precision cosphi,sinphi,u,phi,rtshat,costh,sinth
+      double precision wt,wt0
+      include 'energy.f'
       parameter(wt0=1d0/8d0/pi)
       rtshat=dsqrt(xx(1)*xx(2))*sqrts
 C write out vectors in +,-,T,T notation

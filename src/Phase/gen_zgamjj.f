@@ -14,7 +14,7 @@
       parameter(wt0=one/twopi**2) 
       double precision wt34567,wt567,wt67,wt34
       double precision sqrts
-      common/energy/sqrts
+      include 'energy.f'
 
       wt=wt0
 

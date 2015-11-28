@@ -31,13 +31,13 @@ C     Author: R.K.Ellis (January 2013)
      &tau3_1(4,-2:0),tau3_2(4,-2:0),tau3_3(4,-2:0),tau3_4(4,-2:0),
      &tmp(4,-2:0),RHS(3),inRHS(3),tmpRHS(3,y3max)
       integer n1,n2,n3,n4,ep,indx(3)
-      logical first,failed,iterate,dosvd
-      data first/.true./
-      save first
-      double precision para(Pdd),tableD(Pdd,Ndmax)      
-      integer Nstore,jtable,j,Ntrue
-      data Nstore/0/
-      save tableD,Nstore
+      logical failed,iterate,dosvd
+      double precision para(Pdd)
+      logical,save:: first=.true.
+      double precision,save::tableD(Pdd,Ndmax)      
+      integer jtable,j,Ntrue
+      integer, save:: Nstore=0
+!$omp threadprivate(first,Nstore,tableD)
 
 c--- controls whether or not to iterate the solution by LU decomposition
       iterate=.false.

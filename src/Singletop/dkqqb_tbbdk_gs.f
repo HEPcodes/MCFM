@@ -25,12 +25,11 @@
       include 'ptilde.f'
       include 'qcdcouple.f'
       include 'alfacut.f'
+      include 'incldip.f'
       double precision msq(-nf:nf,-nf:nf),msqc(maxd,-nf:nf,-nf:nf),
      . p(mxpart,4),q(mxpart,4),omz,z,fac,ptDpg,pbDpg,ptDpb,pwsq,xr,
      . y,ymax,dot
       integer j,k
-      logical incldip(0:maxd)
-      common/incldip/incldip
 
       do j=-nf,nf
       do k=-nf,nf

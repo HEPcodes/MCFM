@@ -63,9 +63,13 @@
      +		2,1,3,5,4, 6,11,13,9,12,7,10,8,15,14, 20,18,-17,19,-16,
      +		5,3,2,4,1, 13,7,12,14,10,15,8,6,9,11, -17,16,19,-18,20,
      +	      1,3,5,2,4, 11,13,15,12,14,10,7,9,6,8,-20,-17,-19,-16,-18/
+!$omp threadprivate(inew,inew5,iinx,/ffcut/)
+
 	nevent = 0
 *  #] declarations:
 *  #[ read input:
+
+
 	call ffini
 	open(ifile,file='ffinput',status='old')
 	rewind(ifile)

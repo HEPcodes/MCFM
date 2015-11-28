@@ -15,22 +15,23 @@ C     m1,m2,m3,m4 are the masses squared of internal lines
       include 'pvrecurflags.f'
       include 'pvforcerecalc.f'
       integer C234,C134,C124,C123,np,ep,epmj,N,j,perm(3),pvCcache
-      integer icall,irecur,irecur2,irecur3,irecur4
       parameter(np=3)
       double precision p1,p2,p3,p4,p1p2,p2p3,m1,m2,m3,m4,f1,f2,f3
       double complex G(np,np),csum(-2:0),c1sum(-2:0),c2sum(-2:0),
      . c0sum(-2:0),in(3,-2:0),trI4
       double complex c11sum(-2:0),c00sum(-2:0),c12sum(-2:0),c22sum(-2:0)
-      double precision idp2(0:2),idp1(0:2),id(0:2),
-     . idm1(0:2),idm2(0:2),idm3(0:2)
-      logical first,exceptional
+      logical exceptional
+      logical,save:: first=.true.
       double precision q1save(4),q2save(4),q3save(4)
       double precision triq1save(4),triq2save(4)
       common/q123save/q1save,q2save,q3save  
       common/q12save/triq1save,triq2save  
-      data first/.true./
-      save first,idp1,id,idm1,idm2,idm3,
-     & icall,irecur,irecur2,irecur3,irecur4
+!$omp threadprivate(first,/q123save/,/q12save/)
+      double precision,save:: idp2(0:2),idp1(0:2),id(0:2),idm1(0:2),
+     & idm2(0:2),idm3(0:2)
+!$omp threadprivate(idp2,idp1,id,idm1,idm2,idm3)
+      integer,save:: icall,irecur,irecur2,irecur3,irecur4
+!$omp threadprivate(icall,irecur,irecur2,irecur3,irecur4)
      
       if (first) then
       first=.false.

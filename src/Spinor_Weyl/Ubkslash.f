@@ -7,9 +7,9 @@ C     Energy component in MCFM notation = k(4)
       double complex sp(4),k(4),f(4),czip,im,kslash(4,4),E,kx,ky,kz
       integer i,j
       parameter(czip=(0d0,0d0),im=(0d0,1d0))
-
       logical,save::first
       data first/.true./
+!$omp threadprivate(first)
 
       if (first) then
       write(6,*) 'Ubkslash:swapxz=',swapxz

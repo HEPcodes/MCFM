@@ -17,9 +17,6 @@
       include 'zprods_com.f'
       INTEGER I1,I2,I3,I4,I5
       DOUBLE PRECISION       MSQ      
-c      DOUBLE PRECISION       S(5,5)  
-c      DOUBLE COMPLEX         ZA(5,5),ZB(5,5)
-c      COMMON/PRODS/S,    ZA,     ZB     
 
       MSQ=
      . +s(i1,i2)+s(i1,i3)+s(i1,i4)+s(i1,i5)

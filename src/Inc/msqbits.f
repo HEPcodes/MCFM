@@ -13,5 +13,5 @@ c--- contributions in gmgmjt process
      & dbd_ddb=7,dbd_ssb=8,dbd_uub=9,
      & ubu_uub=10,ubu_ccb=11,ubu_ddb=12)
      
-     
+!$omp threadprivate(/msqbits/)     
      

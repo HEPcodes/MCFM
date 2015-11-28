@@ -22,6 +22,7 @@ c---- any partons lie in cone Rij < delta_0
       integer photindex(npart),nphotons,j
       integer softjet
       common/jetmerge/jetmerge
+!$omp threadprivate(/jetmerge/)
 
 c--- this flag tells the algorithm whether or not to be inclusive of jets
 c--- inside the photon isolation cone; this should be set to TRUE for an
@@ -91,6 +92,7 @@ c---- Pick out jets
  2    continue 
       jets=jets+1
 
+      pfinal(:,:)=0d0
       do i=1,2
          do nu=1,4
             pfinal(i,nu)=pin(i,nu) 

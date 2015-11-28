@@ -5,9 +5,10 @@ c--- binning the weights in the real contribution
       include 'nplot.f'
       integer nplotmax,j
       common/nplotmax/nplotmax
+ccccc!$omp threadprivate(/nplotmax/)
       
       do j=1,nplotmax
-      call mzero(3*maxhisto+j)
+      call tmpmzero(j)
       enddo
       
       return
@@ -16,31 +17,50 @@ c--- binning the weights in the real contribution
 
       subroutine addrealhistos(wgt)
 c--- add temporay histograms to the cumulative ones
-      IMPLICIT REAL*8 (A-H,O-Z)
-      IMPLICIT INTEGER (I-N)
+       implicit none
+c      IMPLICIT REAL*8 (A-H,O-Z)
+c      IMPLICIT INTEGER (I-N)
+      integer I,L
       include 'histo.f'
       double precision wgt
       integer nplotmax
       logical added
       common/nplotmax/nplotmax
+ccccc!$omp threadprivate(/nplotmax/)
 
-c--- loop over plots      
+      DOUBLE PRECISION TMPHIST(maxhisto,maxnbin),
+     & TMPXHIS(maxhisto,maxnbin),TMPHDEL(maxhisto),TMPHMIN(maxhisto),
+     & TMPHMAX(maxhisto),TMPHAVG(maxhisto),TMPHINT(maxhisto),
+     & TMPHSIG(maxhisto)
+      COMMON/TMPHISTOR/TMPHIST,TMPXHIS,TMPHDEL,TMPHMIN,TMPHMAX,
+     & TMPHAVG,TMPHINT,TMPHSIG
+
+      CHARACTER TMPTITLE*100,TMPBOOK*3
+      COMMON/TMPHISTOC/TMPBOOK(maxhisto),TMPTITLE(maxhisto)
+      INTEGER TMPNBIN(maxhisto),TMPIHIS(maxhisto,maxnbin),
+     & TMPIUSCORE(maxhisto),TMPIOSCORE(maxhisto),TMPIENT(maxhisto),
+     & TMPNHIST
+      COMMON/TMPHISTOI/TMPNBIN,TMPIHIS,TMPIUSCORE,TMPIOSCORE,
+     & TMPIENT,TMPNHIST
+!$omp threadprivate(/TMPHISTOR/,/TMPHISTOC/,/TMPHISTOI/)
+
+c--- loop over plots
       do I=1,nplotmax
 
       added=.false.
 
       DO L=1,NBIN(I)
 
-c--- add weights      
-      HIST(I,L)=HIST(I,L) + HIST(3*maxhisto+I,L)
+c--- add weights
+      HIST(I,L)=HIST(I,L) + TMPHIST(I,L)
 c--- add errors
       HIST(maxhisto+I,L)=HIST(maxhisto+I,L)
-     . + HIST(3*maxhisto+I,L)**2*HDEL(I)
+     & + TMPHIST(I,L)**2*HDEL(I)
 c--- the extra factor of HDEL(I) is to account for the normalization
 c--- by the bin width (c.f. MFILL in mbook.f)
       
 c--- count entries
-      if (IHIS(3*maxhisto+I,L) .GT. 0) then
+      if (TMPIHIS(I,L) .GT. 0) then
         IHIS(I,L)=IHIS(I,L)+1
         IHIS(maxhisto+I,L)=IHIS(maxhisto+I,L)+1
         added=.true.
@@ -56,10 +76,10 @@ c--- if any bin has been filled, increment histogram counter
         IENT(maxhisto+I)=IENT(maxhisto+I)+1
 c--- otherwise, increment out of bounds counters if necessary
       else
-        if     (IUSCORE(3*maxhisto+I) .GT. 0) then
+        if     (TMPIUSCORE(maxhisto+I) .GT. 0) then
           IUSCORE(I)=IUSCORE(I)+1      
-          IUSCORE(maxhisto+I)=IUSCORE(maxhisto+I)+1      
-        elseif (IOSCORE(3*maxhisto+I) .GT. 0) then
+          IUSCORE(maxhisto+I)=IUSCORE(maxhisto+I)+1
+        elseif (TMPIOSCORE(maxhisto+I) .GT. 0) then
           IOSCORE(I)=IOSCORE(I)+1      
           IOSCORE(maxhisto+I)=IOSCORE(maxhisto+I)+1
         endif

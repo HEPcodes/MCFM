@@ -7,12 +7,12 @@ c--- routine returns FALSE if event does not pass the process-specific cuts
       include 'constants.f'
       include 'clustering.f'
       include 'jetlabel.f'
-      integer nproc,notag,nqcdjets,nqcdstart
+      include 'nqcdjets.f'
+      include 'nproc.f'
+      include 'notag.f'
       logical jetmerge,veto3jets
-      common/nproc/nproc
       common/jetmerge/jetmerge
-      common/nqcdjets/nqcdjets,nqcdstart
-      common/notag/notag
+!$omp threadprivate(/jetmerge/)
 
 c--- setting this to true vetoes 3-jet events (c.f. CDF analysis)   
       veto3jets=.true.

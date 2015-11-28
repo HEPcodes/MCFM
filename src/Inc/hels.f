@@ -14,3 +14,5 @@
       DATA (NHEL(IHEL, 14),IHEL=1,5) / +1, +1, -1, -1, +1/
       DATA (NHEL(IHEL, 15),IHEL=1,5) / +1, +1, -1, +1, -1/
       DATA (NHEL(IHEL, 16),IHEL=1,5) / +1, +1, +1, -1, -1/
+      save NHEL
+!$omp threadprivate(NHEL)

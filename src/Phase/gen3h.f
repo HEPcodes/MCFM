@@ -13,15 +13,13 @@ c---- are required
       include 'phasemin.f'
       include 'nodecay.f'
       include 'masses.f'
+      include 'x1x2.f'
+      include 'energy.f'
       integer nu
 
-      double precision r(mxdim),sqrts,s12,wt3,wtbw,rdk1,rdk2,
+      double precision r(mxdim),s12,wt3,wtbw,rdk1,rdk2,
      . p(mxpart,4),p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4)
-      double precision pswt,xjac,xx(2),tau,y
-      common/energy/sqrts
-      common/x1x2/xx
-      data p6/0d0,0d0,0d0,0d0/
-      data p7/0d0,0d0,0d0,0d0/
+      double precision pswt,xjac,tau,y
 
       wt3=0d0
       
@@ -74,7 +72,10 @@ c---if x's out of normal range alternative return
       enddo 
       wt3=xjac*pswt
 
-      if(wt3 .eq. 0d0) return 1
+      if(wt3 .eq. 0d0) then
+      p(:,:)=0d0
+      return 1
+      endif
 
       return
       end

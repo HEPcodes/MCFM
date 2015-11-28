@@ -14,6 +14,8 @@
       double precision msq0(-nf:nf,-nf:nf)
       double precision D(0:5),fsq
       common/D/D
+!$omp threadprivate(/D/)
+
 c-----initialize MSQ
       do j=-nf,nf
       do k=-nf,nf

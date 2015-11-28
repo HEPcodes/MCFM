@@ -10,6 +10,7 @@ C     Energy component in MCFM notation = k(4)
       integer j
       logical,save::first
       data first/.true./
+!$omp threadprivate(first)
 
       if (first) then
       write(6,*) 'Ubkslash:swapxz=',swapxz

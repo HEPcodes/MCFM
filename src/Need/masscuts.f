@@ -5,13 +5,13 @@
       include 'process.f'
       include 'cutoff.f'
       include 'interference.f'
-      logical first
-      double precision p(mxpart,4),s34,s56,s36,s45
-      integer nqcdjets,nqcdstart,nproc
-      common/nqcdjets/nqcdjets,nqcdstart 
-      common/nproc/nproc
+      include 'nqcdjets.f'
+      include 'nproc.f'
+      logical first,VBSprocess
+      double precision p(mxpart,4),s34,s56,s36,s45,s3456,s78
       data first/.true./
-      save first
+      save first,VBSprocess
+!$omp threadprivate(first,VBSprocess)
 
       if (first) then
       first=.false.
@@ -29,16 +29,27 @@ c--- do not allow a cut on m34 for direct photon process, or tau pairs
         wsqmax=81d8
       endif
 
-!---- do not allow cuts on m34 if doing gamma gamma (will be done elsewhere) 
+c---- do not allow cuts on m34 if doing gamma gamma (will be done elsewhere) 
       if(case .eq. 'gamgam') then 
          return 
+      endif
+     
+c---- check to see whether this is a VBS process
+      if ( ((nproc .ge. 220) .and. (nproc .le. 229))
+     & .or. (nproc .eq. 2201) .or. (nproc .eq. 2221)
+     & .or. (nproc .eq. 2231) .or. (nproc .eq. 2241)
+     & .or. (nproc .eq. 2251) .or. (nproc .eq. 2281)
+     & .or. (nproc .eq. 2291) ) then
+        VBSprocess=.true.
+      else
+        VBSprocess=.false.
       endif
      
       write(6,*)
       write(6,*) '****************** Basic mass cuts *****************'
       write(6,*) '*                                                  *'
       write(6,99) dsqrt(wsqmin),'m34',dsqrt(wsqmax)
-      if (nqcdjets .lt. 2) then
+      if ((nqcdjets .lt. 2) .or. (VBSprocess)) then
       write(6,99) dsqrt(bbsqmin),'m56',dsqrt(bbsqmax)
       else
       write(6,98) dsqrt(bbsqmin),'m(jet1,jet2)',dsqrt(bbsqmax)
@@ -46,6 +57,10 @@ c--- do not allow a cut on m34 for direct photon process, or tau pairs
       if (interference) then
       write(6,99) dsqrt(wsqmin),'m36',dsqrt(wsqmax)
       write(6,99) dsqrt(wsqmin),'m45',dsqrt(wsqmax)
+      endif
+      write(6,97) m3456min,'m3456',m3456max
+      if (VBSprocess) then
+       write(6,*)'*               m(jet1,jet2) > 100 GeV             *'
       endif
       write(6,*) '****************************************************'
       endif
@@ -79,6 +94,20 @@ c--- do not accept s56<cutoff either
         if ((s36 .lt. bbsqmin) .or. (s36 .gt. bbsqmax)) return 1
       endif
 
+      s3456=+(p(3,4)+p(4,4)+p(5,4)+p(6,4))**2
+     &      -(p(3,1)+p(4,1)+p(5,1)+p(6,1))**2
+     &      -(p(3,2)+p(4,2)+p(5,2)+p(6,2))**2
+     &      -(p(3,3)+p(4,3)+p(5,3)+p(6,3))**2
+      if (s3456 .lt. m3456min**2) return 1
+      if (s3456 .gt. m3456max**2) return 1
+
+      if (VBSprocess) then
+        s78=+(p(7,4)+p(8,4))**2-(p(7,1)+p(8,1))**2
+     &      -(p(7,2)+p(8,2))**2-(p(7,3)+p(8,3))**2
+        if (s78 .lt. 1d4) return 1
+      endif
+
+   97 format(' *         ',f8.2,'  <   ',a5,'  < ',f8.2,'          *')
    98 format(' *      ',f8.2,'  <   ',a12,'  < ',f8.2,'      *')
    99 format(' *          ',f8.2,'  <   ',a3,'  < ',f8.2,'           *')
 

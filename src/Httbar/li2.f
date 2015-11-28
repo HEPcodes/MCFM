@@ -1,13 +1,11 @@
       double complex function li2(x)
 c--complex dilogarithm (spence-function)
       implicit double precision (a-h,o-z)
+      include 'first.f'
       double complex x,y,cli2
       double precision zeta2,zeta3
       common/const/zeta2,zeta3
-      logical first
-      data first/.true./
-      save first
-
+      
       if (first) then
       first=.false.
       call bernini

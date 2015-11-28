@@ -43,6 +43,7 @@
       integer j,k,nd
       double precision oldmass2
       common/subv_ff/subv_gg,subv_gq
+!$omp threadprivate(/subv_ff/)
       external qq_tbg,qq_tbg_gvec,donothing_gvec
 
       ndmax=10

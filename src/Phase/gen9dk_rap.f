@@ -9,18 +9,15 @@
       double precision wt9,p(mxpart,4),tp(4),tm(4),bp(4),bm(4),n(4),e(4)
       double precision bmg(4),g(4),ep(4),em(4),nn(4),nb(4),wp(4),wm(4)
       double precision wtttw,wttp,wttm,wtbmg,wtwp,wtwm,s3min,wt0
-      logical first 
       parameter(wt0=1d0/twopi**5)
-      data wp,wm,ep,em,nn,nb,bp,bm/32*0d0/
-      data first/.true./
       
-      if (first) then
+c--- alternate radiation between decay of top (=1) and antitop (=2) quarks;
+c--- use additional (always uniform) variable to determine choice
+      if (r(24) .lt. 0.5d0) then
         decay1q2a=1
-        first=.false.
+      else
+        decay1q2a=2
       endif
-
-c--- alternate radiation between decay of top (=1) and antitop (=2) quarks
-      decay1q2a=3-decay1q2a
 
 *     q(-p1) +qbar(-p2)=t(nu(p3)+e^+(p4)+b(p5))                        *
 *                       +t~(b~(p6)+e^-(p7)+nu(p8)+g(p11))              *
@@ -72,14 +69,14 @@ c--- from top and anti-top quarks at the same time
           p(8,nu)=nn(nu)
         endif
         p(9,nu)=n(nu)
-        p(10,nu)=e(nu)      
+        p(10,nu)=e(nu)
         p(11,nu)=g(nu)
       enddo
 
       return
 
  999  wt9=0d0
-      decay1q2a=3-decay1q2a
+      p(:,:)=0d0
       return 1
       
       end

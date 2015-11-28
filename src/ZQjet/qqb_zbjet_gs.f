@@ -31,7 +31,6 @@ c     . c176,c671,c176v,c671v,
 c     . c275,c572,c275v,c572v,
 c     . c276,c672,c276v,c672v
       integer j,k,n,np6,np12,np18,np21,nd
-      integer a(6),b(6),c(6),pntr(5:7,5:7)
 c--- slightly obtuse notation, fn=-nf, to simplify declaration lines      
       double precision p(mxpart,4),msq(maxd,fn:nf,fn:nf)
       double precision 
@@ -75,13 +74,12 @@ c--- slightly obtuse notation, fn=-nf, to simplify declaration lines
       
       integer isub
       common/isub/isub
-    
+      integer, parameter :: a(6)=(/5,5,7,6,6,7/),b(6)=(/6,7,5,7,5,6/),
+     & c(6)=(/7,6,6,5,7,5/),
+     & pntr(5:7,5:7)=reshape((/0,2,2,1,0,2,1,1,0/),(/3,3/))
+
       external qqb_zbjet,qqb_zbjet_gvec
 
-      data a/5,5,7,6,6,7/
-      data b/6,7,5,7,5,6/
-      data c/7,6,6,5,7,5/
-      data pntr/0,2,2,1,0,2,1,1,0/
 
       ndmax=24
 

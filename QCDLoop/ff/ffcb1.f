@@ -118,6 +118,7 @@
 	DOUBLE PRECISION ffbnd
 	DOUBLE COMPLEX zfflo1,zfflo3
 	DOUBLE PRECISION rm1,rm2,rp,rm1m2,rm1p,rm2p,rpiDpj(3,3),sprec
+
 	save cprec,bnd101,bnd105,bnd110,bnd115,init
 *FOR ABSOFT ONLY
 *	DOUBLE COMPLEX csqrt
@@ -133,9 +134,11 @@
 *
 *	data
 *
-	data cprec /0./
+	data cprec,init /0.,0./
 *
 *  #] declarations:
+!$omp threadprivate(cprec,bnd101,bnd105,bnd110,bnd115,init)
+
 *  #[ the real cases:
 *
 	if ( DIMAG(xm1) .eq. 0 .and. DIMAG(xm2) .eq. 0 ) then

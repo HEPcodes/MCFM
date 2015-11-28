@@ -9,15 +9,15 @@
       include 'process.f'
       include 'phasemin.f'
       include 'limits.f' 
+      include 'x1x2.f'
       integer nu,j
-      double precision r(mxdim),sqrts,wt4,wt3456,wt34,wt56
+      double precision r(mxdim),wt4,wt3456,wt34,wt56
       double precision m3,m4,m5,m6
       double precision p(mxpart,4),
      . p1(4),p2(4),p3(4),p4(4),p5(4),p6(4)
       double precision p34(4),p56(4),p12(4)
-      double precision xjac,xx(2),tau,y
-      common/energy/sqrts
-      common/x1x2/xx
+      double precision xjac,tau,y
+      include 'energy.f'
       double precision wt0
       parameter(wt0=one/twopi**2)
       

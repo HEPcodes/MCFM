@@ -13,12 +13,12 @@ c                           ---> b(p3)+bbar(p4)
       include 'ewcouple.f'
       include 'sprods_com.f'
       include 'hdecaymode.f'
-      integer j,k,pn(-nf:nf)
+      integer j,k
       double precision p(mxpart,4),fac,s34
       double precision msq(-nf:nf,-nf:nf),hdecay,
      . ud_du,uub_ddb,msqgamgam
       
-      data pn/-1,-2,-1,-2,-1,0,1,2,1,2,1/
+      integer,parameter::pn(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
 
       do j=-nf,nf
       do k=-nf,nf

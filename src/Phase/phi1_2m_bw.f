@@ -18,24 +18,10 @@ c     delta(p2^2-m2) delta(p3^2-s3)
       double precision x3,xth,xphi,costh,sinth,phi,cphi,sphi
       double precision wt,wt0,w3
       double precision s3max,s3min,xx,xexp
-      double precision m1,m2,m3,s1,s2,s3,lambda,xjac,rtxth,
-     . bwmass,bwwidth
-c      double precision Eg
+      double precision m1,m2,m3,s1,s2,s3,lambda,bwmass,bwwidth
       integer j
-      integer jbranch
-c      logical first
       parameter(wt0=one/8d0/pi)
-      data jbranch/1/
-      data xjac,rtxth/1d0,1d0/
-c      data first/.true./
-      save jbranch,xexp,rtxth,xjac
-c      if (first) then
-c      first=.false.
-c      write(6,*) 'Enter exponent for reweighting'
-c      read(5,*) xexp
-c      write(6,*) 'xexp',xexp
-c      endif
-      xexp=1d0
+
       wt=0d0
       s1=p1(4)**2-p1(1)**2-p1(2)**2-p1(3)**2  
       if (s1 .lt. 0d0) return 1
@@ -49,25 +35,13 @@ c      endif
 
       m3=dsqrt(s3)
 
-
-      if (jbranch .eq. 1) then
-        jbranch=2
-        rtxth=xth**xexp 
-        xjac=1d0/(xexp*xth**(xexp-1d0))
-      elseif (jbranch .eq. 2) then 
-        jbranch=1
-        rtxth=1d0-xth**xexp
-        xjac=1d0/(xexp*xth**(xexp-1d0))
-      endif
-
-
-
-      costh=two*rtxth-one      
+      costh=two*xth-one
       phi=twopi*xphi
       sinth=dsqrt(one-costh**2)
       cphi=dcos(phi)
       sphi=dsin(phi)
       lambda=((s1-s2-s3)**2-4d0*s2*s3)
+      
       if ((lambda .lt. 0d0) .or. debug) then
       write(6,*) 'lambda in phi1_2m_bw',lambda
       write(6,*) 's1 in phi1_2m_bw',s1
@@ -84,22 +58,10 @@ c      endif
       return 1
       endif
       lambda=dsqrt(lambda)
-c      Eg=s1+s2-s3
 
-      wt=wt0*w3*lambda/s1/xjac
-
-c      write(6,*) 'xjac',xjac
-c      write(6,*) 'wt in phi1_2m',wt
-c      pause
+      wt=wt0*w3*lambda/s1
 
       if(debug) write(6,*) 'wt in phi1_2m_bw',wt
-c      write(6,*) 'xjac',xjac
-c      write(6,*) 'lambda',lambda
-c      write(6,*) 'Eg',Eg
-c      write(6,*) 'xjac',xjac
-c      write(6,*) 'wt in phi1_2m',wt
-c      write(6,*) jbranch
-c      pause
 
       p3cm(4)=m1/two*(s1+s3-s2)/s1
       p3cm(1)=m1/two*lambda/s1*sinth*sphi

@@ -21,12 +21,13 @@ c   for the moment --- radiation only from initial line
       include 'zerowidth.f'
       include 'ewcharge.f'
       include 'anomcoup.f'
+      include 'xanomcoup.f'
       include 'nwz.f'
       include 'plabel.f'
-      integer j,k,polg,polz,minus,mplus,jp,kp
+      include 'pchoice.f'
+      integer polg,polz,minus,mplus,jp,kp
       double precision FAC,FACM,FAC1
       double complex prop12,prop34,prop56
-      common/pchoice/j,k
       double precision P(mxpart,4),qdks(mxpart,4),msq(-nf:nf,-nf:nf)
       double precision ave,cotw,s127,wwflag
       double complex 
@@ -35,11 +36,7 @@ c   for the moment --- radiation only from initial line
      .  props,propw,propz,cprop,A(2,2)
       double precision v2(2),cl1,cl2,en1,en2,xfac
       double complex ZgLR(nf,2),c1(2),c2(2)
-      common/xanomcoup/xdelg1_z,xdelg1_g,xlambda_g,xlambda_z,
-     . xdelk_g,xdelk_z
-      data minus,mplus/1,2/
-      data cl1,cl2,en1,en2/4*1d0/
-
+      parameter(minus=1,mplus=2)
       FAC=-2D0*gwsq*esq
       FAC1=two*gsq*cf
       if ((nwz.eq.1) .or. (nwz .eq. -1)) then

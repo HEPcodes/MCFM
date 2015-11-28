@@ -5,13 +5,13 @@ c----i7 label of generated vector
       include 'constants.f'
       include 'debug.f'
       include 'impsample.f'
+      include 'x1x2.f'
       integer i1,i2,i7,j,k
       double precision p(mxpart,4),rtalbe,c(4),d(4),phi,phit,jacbit
-      double precision qtDp(mxpart),qsDp(mxpart),dot,xx(2),r1,r2
+      double precision qtDp(mxpart),qsDp(mxpart),dot,r1,r2
       double precision q(4),qs(4),qt(4),beta,alpha,qsDqs,qtDqt
       double precision a,oma,x,omx,omxmin,wt0,wt5_4
       parameter(wt0=1d0/8d0/pisq)
-      common/x1x2/xx
 
       phi=twopi*phit
 c      omxmin=one-xmin

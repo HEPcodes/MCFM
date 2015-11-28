@@ -1,7 +1,11 @@
-FC = gfortran
-FFLAGS 	= -g 
-HERE = $(PWD)
-INCDIR = $(HERE)/../Include/
+# Makefile routine.
+VPATH		= $(PWD)/obj
+INCPATH = $(PWD)/../Include/
+OUTPUT_OPTION	= -o $(PWD)/obj/$@ 
+
+FC = gfortran 
+FFLAGS 	= -O2 -fno-f2c -g -I$(INCPATH) -Iobj -Jobj
+
 LIBRARY	      = libff.a
 
 
@@ -41,13 +45,9 @@ OBJS	      = \
 
 
 $(LIBRARY):	$(OBJS) 
-		ar cru $(LIBRARY) $(OBJS) 
+		ar cru $(LIBRARY) $(patsubst %,obj/%,$(OBJS)) 
 		ranlib $(LIBRARY)
  
-
-.f.o:	
-		$(FC) $(F77FLAGS) -I $(INCDIR) -c $*.f
-
 
 # -----------------------------------------------------------------------------
 
@@ -57,9 +57,6 @@ all:		$(LIBRARY)
 
 
 # -----------------------------------------------------------------------------
-
-PRJS =      $(OBJS:.o=.f) 
-PRJSF =      $(OBJS:.o=.f) 
 
 clean:
 	- rm -f *.o *.s *.prj *.a *~ core

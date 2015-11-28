@@ -9,7 +9,7 @@ c--- routine to write out contents of res common block
       parameter(imt0=1,imt2=2,imt4=3)
       parameter(ipp=1,imp=2)
       common/ggZZcaptureres/res
-      
+!$omp threadprivate(/ggZZcaptureres/)
       iunit=11
 
       if (iunit .ne. 6) then

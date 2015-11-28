@@ -79,6 +79,7 @@
 *  #] call ffxc0a:
 *###] ffxc0:
 	end
+
 *###[ ffxc0a:
 	subroutine ffxc0a(cc0,xpi,dpipj,ier)
 ***#[*comment:***********************************************************
@@ -109,7 +110,6 @@
 	DOUBLE COMPLEX c
 	DOUBLE PRECISION xqi(6),dqiqj(6,6),qiDqj(6,6),absc,delta0,
      +		dum66(6,6),rloss,xnul,xmax
-	save inew,delta0
 *
 *	common blocks:
 *
@@ -122,7 +122,7 @@
 	integer iermem(memory),ialmem(memory),memind,ierini
 	DOUBLE PRECISION xpimem(6,memory),dl2mem(memory)
 	DOUBLE COMPLEX cc0mem(memory)
-	save memind,iermem,ialmem,xpimem,dl2mem,cc0mem
+	save memind,iermem,ialmem,xpimem,dl2mem,cc0mem,delta0,inew
 	data memind /0/
 *
 *	statement function:
@@ -138,6 +138,8 @@
      +		   1,3,2,6,5,4,
      +		   3,2,1,5,4,6,
      +		   2,1,3,4,6,5/
+!$omp threadprivate (inew,memind,iermem,ialmem,xpimem,dl2mem,cc0mem,
+!$omp&               delta0,/ffcut/)
 *  #] declarations:
 *  #[ initialisations:
 	if ( lmem .and. memind .eq. 0 ) then
@@ -368,12 +370,14 @@
 	include 'ff.h'
 	DOUBLE PRECISION delta
 	common /ffcut/ delta
+!$omp threadprivate(/ffcut/)
 *
 *	statement function:
 *
 	absc(c) = abs(DBLE(c)) + abs(DIMAG(c))
 *
 *  #] declarations:
+
 *  #[ check input:
 	if ( lwrite ) then
 	    print *,'input: xqi,dqiqj'
@@ -617,6 +621,7 @@
      +		   1,3,2,6,5,4,
      +		   3,2,1,5,4,6,
      +		   2,1,3,4,6,5/
+!$omp threadprivate(inew)
 *  #] declarations:
 *  #[ check input:
 	if ( ltest .and. ns .ne. 6 ) print *,'ffrot3: error: ns /= 6'
@@ -774,6 +779,7 @@
      +		   3,2,1,5,4,6,
      +		   2,1,3,4,6,5/
 *
+!$omp threadprivate(inew)
 *  #] declarations:
 *  #[ check input:
 	if ( ns .ne. 6 ) print *,'ffdot3: error: ns /= 6 '
@@ -945,6 +951,7 @@
 	data inew /1,2,3,4,5,6,
      +		   1,3,2,6,5,4/
 	data init /0/
+!$omp threadprivate(inew,init,lcon)
 *  #] declarations:
 *  #[ open console for some activity on screen:
 	if ( init .eq. 0 ) then

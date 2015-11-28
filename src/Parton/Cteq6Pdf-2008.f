@@ -253,7 +253,6 @@ C                             ********************
       Character Flnm(Isetmax0)*6, nn*3, Tablefile*40
       character*72 filename,checkpath
       Logical fmtpds
-      Common /Setchange/ Isetch
       Data (Flnm(I), I=1,Isetmax0)
      > / 'cteq6m', 'cteq6d', 'cteq6l', 'cteq6l','ctq61.','cteq6s'
      >  ,'ctq65.', 'ctq66.' /
@@ -348,7 +347,6 @@ C                                                   (Cteq6.6AS)  460 - 463
  21     Call Readpds (IU,fmtpds)
         Close (IU)
         Isetold=Iset
-        Isetch=1
       Endif
       Return
 
@@ -433,7 +431,6 @@ c
      > / CtqPar1 / Al, XV(0:MXX), TV(0:MXQ), UPD(MXPQX)
      > / CtqPar2 / Nx, Nt, NfMx, MxVal
      > / XQrange / Qini, Qmax, Xmin
-     > /Setchange/ Isetch
 
       Dimension fvec(4), fij(4)
       Dimension xvpow(0:mxx)
@@ -442,11 +439,17 @@ c
       Data nqvec / 4 /
       Data ientry / 0 /
       Data X, Q, JX, JQ /-1D0, -1D0, 0, 0/
+      data Isetch /1/
       Save xvpow
       Save X, Q, JX, JQ, JLX, JLQ
       Save ss, const1, const2, const3, const4, const5, const6
       Save sy2, sy3, s23, tt, t12, t13, t23, t24, t34, ty2, ty3
       Save tmp1, tmp2, tdet
+      save Isetch
+!$omp threadprivate(Isetch,X,Q,JX,JQ,JLX,JLQ)     
+!$omp threadprivate(ss,const1,const2,const3,const4,const5,const6)
+!$omp threadprivate(sy2,sy3,s23,tt,t12,t13,t23,t24,t34,ty2,ty3)
+!$omp threadprivate(tmp1, tmp2, tdet)
 
       If((XX.eq.X).and.(QQ.eq.Q)) goto 99
 c store the powers used for interpolation on first call...

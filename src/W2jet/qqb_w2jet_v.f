@@ -34,6 +34,7 @@
       include 'msq_cs.f'
       include 'lc.f'
       include 'noglue.f'
+      include 'first.f'
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),fac,
      . mmsq_qqb,mmsq_qbq,mmsq_gq,mmsq_gqb,mmsq_qg,mmsq_qbg,mmsq_gg,
      . p(mxpart,4),q(mxpart,4),pswap(mxpart,4)
@@ -52,13 +53,11 @@
      .                 qq_ijii,qq_ijjj,qq_iiij,qq_iiji,
      .                 qbqb_ijkk,qbqb_iikl,qbqb_ijkj,qbqb_ijik,
      .                 qbqb_ijii,qbqb_ijjj,qbqb_iiij,qbqb_iiji
-      logical first
 c      character*30 runstring
 c      common/runstring/runstring
       common/mqq/mqq
       common/rvcolourchoice/rvcolourchoice
-      data first/.true./
-      save first
+!$omp threadprivate(/mqq/,/rvcolourchoice/)
 
       if (first) then
         first=.false.

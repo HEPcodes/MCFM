@@ -35,14 +35,15 @@ c----No statistical factor of 1/2 included.
       double complex aqqb,aqbq,bqqb,bqbq,Vpole,Vpole12,suppl
       double complex prop12,prop34,prop56
         
-      integer j,k,polq,pol1,pol2,ii,nmax,i4(2),i5(2),jkswitch(-nf:nf)
+      integer j,k,polq,pol1,pol2,ii,nmax
+      integer,parameter::i4(2)=(/4,5/),i5(2)=(/5,4/),
+     & jkswitch(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
 
       double complex aqqb_SAVE(-nf:nf,-nf:nf,2,2,2)
       double complex bqqb_SAVE(-nf:nf,-nf:nf,2,2,2)
       double complex aqbq_SAVE(-nf:nf,-nf:nf,2,2,2)
       double complex bqbq_SAVE(-nf:nf,-nf:nf,2,2,2)
-      data i4/4,5/,i5/5,4/,jkswitch/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      save i4,i5,jkswitch
+
       scheme='dred'
       
       fac=-4D0*esq**2

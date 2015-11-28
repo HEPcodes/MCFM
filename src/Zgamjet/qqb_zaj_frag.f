@@ -16,6 +16,7 @@
       double precision msq_z2j(-nf:nf,-nf:nf) 
       integer m,n,icol
       double precision qcd_z2j(-nf:nf,-nf:nf,-nf:nf,-nf:nf)
+!$omp threadprivate(/D/)
 
       fsq=frag_scale**2
 c---- Generate array D(j) corresponding to MCFM notation 0=gluon 1=down 2=up ....

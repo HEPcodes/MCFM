@@ -21,6 +21,9 @@
 
       data first /.true. /
 
+      save first
+!$omp threadprivate(first)
+
 !---- use this to change n in Frixione isolation 
       n_pow = 1
       passed=.true. 

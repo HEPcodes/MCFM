@@ -11,17 +11,17 @@
       include 'jetlabel.f'
       include 'npart.f'
       include 'outputflags.f'
+      include 'nqcdjets.f'
       integer n,switch,i7,i8,i9,nu,nplotmax
       character tag*4
       double precision PT,WT,WT2,p(mxpart,4),fphi,etarap,etaraptwo
       double precision tmp7(4),tmp8(4),tmp9(4)
-      integer eventpart,nqcdjets,nqcdstart
+      integer eventpart
       logical first,jetmerge
       common/nplotmax/nplotmax
-      common/nqcdjets/nqcdjets,nqcdstart
       common/jetmerge/jetmerge
       data first/.true./
-      save first
+      save first,eventpart
       !------------
       double precision tomphill, tommtww,tompt4,tompt5
       double precision tometa4,tometa5,tometa45,tompt7
@@ -30,8 +30,18 @@
       double precision tometmiss,tomHT,tomHTTOT,tomHTJET
       double precision tomptmiss(4),tomptemu(4),tommemusq,tometemu
       double precision rttommemusq,tomMetmiss
-      
-       if (first) then
+      save tomphill,tommtww,tompt4,tompt5,tometa4,tometa5,tometa45
+      save tompt7,tometa7,tompt8,tometa8,tometa78,tompt9,tometa9
+      save tometa79,tometa89,tomHTJET,tometmiss,tomHT,tomHTTOT
+!$omp threadprivate(first,eventpart)
+!$omp threadprivate(tomphill,tommtww,tompt4,tompt5,tometa4,tometa5)
+!$omp threadprivate(tompt7,tometa7,tompt8,tometa8,tometa78,tompt9)
+!$omp threadprivate(tometa79,tometa89,tomHTJET,tometmiss,tomHT,tomHTTOT)
+!$omp threadprivate(tometa45,tometa9)
+!$omp threadprivate(/jetmerge/)      
+ccccc!$omp threadprivate(/nplotmax/)      
+
+      if (first) then
 
         tag='book'
 
@@ -60,7 +70,7 @@
 
         jetmerge=.true.
         jets=nqcdjets
-      eventpart = 4+jets
+        eventpart = 4+jets
         goto 99
       else
         tag='plot'

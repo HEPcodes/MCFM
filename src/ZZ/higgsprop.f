@@ -8,11 +8,10 @@ c--- otherwise it takes the usual Breit-Wigner form
       include 'constants.f'
       include 'masses.f'
       include 'cpscheme.f'
-      logical first
+      include 'first.f'
       double precision s,mhbarsq,mhbar,gammahbar
       double complex cfac
-      save first,mhbarsq,cfac
-      data first/.true./
+      save mhbarsq,cfac
 
       if (CPscheme) then
 c--- complex pole scheme propagator      

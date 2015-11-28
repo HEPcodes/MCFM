@@ -17,8 +17,8 @@ c---- with all 2 pi's (ie 1/(2*pi)^26)
      . ph(4),smin,wt,wt0,wt12,wtxh,wt345,wt678,wt34,wt78,wth,wt910,
      & wt1112
       parameter(wt0=1d0/twopi**8)
-      data iflip/0/
-      save iflip
+!      data iflip/0/
+!      save iflip
 
       wt=0d0
       do j=1,4
@@ -39,23 +39,23 @@ c---- with all 2 pi's (ie 1/(2*pi)^26)
         mass3=hmass
         width3=hwidth
       else
-        write(6,*) 'Process not supported in phase8.f: ',case
+        write(6,*) 'Process not supported in phase10.f: ',case
       stop
       endif
 
-      if (iflip .eq. 0) then
-        iflip=1
+!      if (iflip .eq. 0) then
+!        iflip=1
         call phi1_2(r(5),r(6),r(7),r(8),pa,p345,ph,wtxh,*99)
         do nu=1,4
         p678(nu)=pb(nu)
         enddo
-      elseif (iflip .eq. 1) then 
-        iflip=0
-        call phi1_2(r(5),r(6),r(7),r(8),pa,p678,ph,wtxh,*99)
-        do nu=1,4
-        p345(nu)=pb(nu)
-        enddo
-      endif 
+!      elseif (iflip .eq. 1) then 
+!        iflip=0
+!        call phi1_2(r(5),r(6),r(7),r(8),pa,p678,ph,wtxh,*99)
+!        do nu=1,4
+!        p345(nu)=pb(nu)
+!        enddo
+!      endif 
 
       mass2=wmass
       width2=wwidth

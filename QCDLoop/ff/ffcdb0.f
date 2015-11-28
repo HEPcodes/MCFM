@@ -154,6 +154,11 @@
 	data xprcn3 /-1./
 	data xprcn5 /-1./
 	data initeq /0/
+!$omp threadprivate(initeq,xpneq,init,initir,
+!$omp&		xprceq,bdeq01,bdeq05,bdeq11,bdeq17,bdeq25,
+!$omp&		xprcn3,bdn301,bdn305,bdn310,bdn315,
+!$omp&		xprcn5,bdn501,bdn505,bdn510,bdn515,
+!$omp&		xprec0,bdn001,bdn005,bdn010,bdn015,bdn020,/ffcut/)
 *
 *	statement function
 *

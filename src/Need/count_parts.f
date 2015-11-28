@@ -5,6 +5,7 @@
       include 'constants.f'
       integer j
       logical is_photon
+      external is_photon
 
       count_photo=0
       do j=1,mxpart
@@ -23,6 +24,7 @@
       include 'npart.f'
       integer j
       logical is_hadronic
+      external is_hadronic
 
 c---- Count final state jets
       count_jets=0

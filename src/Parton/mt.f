@@ -3,6 +3,8 @@
       dimension a(0:3,0:2,8),f(8)
       character*72 filename,checkpath
       data init/0/
+      save init,q0,qcdl,a
+!$omp threadprivate(init,q0,qcdl,a)
       if(init.ne.0) goto 10
       if(mode.eq.1)then
         filename=checkpath('Pdfdata/MTS1.DAT')
@@ -21,6 +23,7 @@
         open(unit=1,file=filename,status='old')
       endif
 c 2=uv 1=dv 3=glue 4=(ubar+dbar)/2 5=sbar 6=cbar 7=bbar 8=ttbar
+!$omp critical(CteqRead)
       read(1,49)q0,qcdl
 *      write(6,49)q0,qcdl
   49  format(2f6.3)
@@ -31,6 +34,7 @@ c 2=uv 1=dv 3=glue 4=(ubar+dbar)/2 5=sbar 6=cbar 7=bbar 8=ttbar
   50  format(8f6.2)
   20  continue
       close(1)
+!$omp end critical(CteqRead)
       init=1
   10  continue
       t=log(log(scale/qcdl)/log(q0/qcdl))

@@ -39,9 +39,9 @@ c---            calculates metric tensor components of rank 6
      . csum11222(-2:0),csum12222(-2:0),csum22222(-2:0),
      . csum001(-2:0),csum002(-2:0),csum0011(-2:0),
      . csum0012(-2:0),csum0022(-2:0),csum0000(-2:0)
-      logical first
-      data first/.true./
-      save first
+      logical,save:: first=.true.
+!$omp threadprivate(first)
+
 
       if (first) then
         first=.false.

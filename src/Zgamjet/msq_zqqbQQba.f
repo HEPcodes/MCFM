@@ -72,7 +72,7 @@ c-----square them up and sum them up
          msqAA(qi,qj)=msqAA(qi,qj)+cdabs(m70hA(qi,qj,i))**2
          msqBB(qi,qj)=msqBB(qi,qj)+cdabs(m70hB(qi,qj,i))**2
          msqAB(qi,qj)= msqAB(qi,qj)
-     .   +2d0*realpart(dconjg(m70hA(qi,qj,i))*m70hB(qi,qj,i))
+     .   +2d0*dreal(dconjg(m70hA(qi,qj,i))*m70hB(qi,qj,i))
       enddo
       do i=1,16
          if (ipsgen.eq.1) then
@@ -189,30 +189,30 @@ c-----square them up
          m70hsqAA(ihel)=
      .   +8D0*( cdabs(m70hA(1,hq,Qh,hg,lh))**2
      .         +cdabs(m70hA(2,hq,Qh,hg,lh))**2)
-     .   +(-8D0/3D0)*2D0*realpart( m70hA(1,hq,Qh,hg,lh)
+     .   +(-8D0/3D0)*2D0*dreal( m70hA(1,hq,Qh,hg,lh)
      .                            *Dconjg(m70hA(2,hq,Qh,hg,lh)))
          m70hsqBB(ihel)=
      .   +8D0*( cdabs(m70hB(1,hq,Qh,hg,lh))**2
      .         +cdabs(m70hB(2,hq,Qh,hg,lh))**2)
-     .   +(-8D0/3D0)*2D0*realpart( m70hB(1,hq,Qh,hg,lh)
+     .   +(-8D0/3D0)*2D0*dreal( m70hB(1,hq,Qh,hg,lh)
      .                            *Dconjg(m70hB(2,hq,Qh,hg,lh)))
          m70hsqAB(ihel)=
-     .   +8D0*( 2D0*realpart( 
+     .   +8D0*( 2D0*dreal( 
      .           Dconjg(m70hA(1,hq,Qh,hg,lh))*m70hB(1,hq,Qh,hg,lh)
      .          +Dconjg(m70hA(2,hq,Qh,hg,lh))*m70hB(2,hq,Qh,hg,lh)))
-     .   +(-8D0/3D0)*2D0*realpart( 
+     .   +(-8D0/3D0)*2D0*dreal( 
      .           Dconjg(m70hA(1,hq,Qh,hg,lh))*m70hB(2,hq,Qh,hg,lh)
      .          +Dconjg(m70hB(1,hq,Qh,hg,lh))*m70hA(2,hq,Qh,hg,lh))
          ihel=ihel+1
       elseif (hq.ne.Qh) then
          m70hsqAA(ihel)=8D0*cdabs(m70hA(1,hq,Qh,hg,lh))**2
          m70hsqBB(ihel)=8D0*cdabs(m70hB(1,hq,Qh,hg,lh))**2
-         m70hsqAB(ihel)=8D0*2D0*realpart( Dconjg(m70hA(1,hq,Qh,hg,lh))
+         m70hsqAB(ihel)=8D0*2D0*dreal( Dconjg(m70hA(1,hq,Qh,hg,lh))
      .                                   *m70hB(1,hq,Qh,hg,lh) )
          ihel=ihel+1
          m70hsqAA(ihel)=8D0*cdabs(m70hA(2,hq,Qh,hg,lh))**2
          m70hsqBB(ihel)=8D0*cdabs(m70hB(2,hq,Qh,hg,lh))**2
-         m70hsqAB(ihel)=8D0*2D0*realpart( Dconjg(m70hA(2,hq,Qh,hg,lh))
+         m70hsqAB(ihel)=8D0*2D0*dreal( Dconjg(m70hA(2,hq,Qh,hg,lh))
      .                                   *m70hB(2,hq,Qh,hg,lh) )
          ihel=ihel+1
       else

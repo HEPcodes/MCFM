@@ -18,13 +18,13 @@ C
       include 'swapxz.f'
       include 'msbarmasses.f'
       include 'msq_cs.f'
+      include 'first.f'
       
       integer j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),
      & wtqqb,wtgg1,wtgg2,wtgg0,massfrun,mt_eff,facqq,facgg,ytsq
-      logical first
-      data first/.true./
-      save first,mt_eff
+      save mt_eff
+!$omp threadprivate(mt_eff) 
       if (first) then
 c--- run mt to appropriate scale
         if (part .eq. 'lord') then

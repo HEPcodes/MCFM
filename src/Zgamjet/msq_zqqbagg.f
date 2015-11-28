@@ -125,13 +125,13 @@ c-----square them up
       CF2=-8D0/3D0
       do i=1,32
          m70hsqAA(i)=CF1*(cdabs(m70hA(1,i))**2+cdabs(m70hA(2,i))**2)
-     .              +CF2*two*realpart(m70hA(1,i)*dconjg(m70hA(2,i)))
+     .              +CF2*two*dreal(m70hA(1,i)*dconjg(m70hA(2,i)))
          m70hsqBB(i)=CF1*(cdabs(m70hB(1,i))**2+cdabs(m70hB(2,i))**2)
-     .              +CF2*two*realpart(m70hB(1,i)*dconjg(m70hB(2,i)))
-         m70hsqAB(i)=CF1*( 2D0*realpart(dconjg(m70hA(1,i))*m70hB(1,i))
-     .                    +2D0*realpart(dconjg(m70hA(2,i))*m70hB(2,i)) )
-     .              +CF2*( two*realpart(dconjg(m70hA(1,i))*m70hB(2,i))
-     .                    +two*realpart(dconjg(m70hB(1,i))*m70hA(2,i)) )
+     .              +CF2*two*dreal(m70hB(1,i)*dconjg(m70hB(2,i)))
+         m70hsqAB(i)=CF1*( 2D0*dreal(dconjg(m70hA(1,i))*m70hB(1,i))
+     .                    +2D0*dreal(dconjg(m70hA(2,i))*m70hB(2,i)) )
+     .              +CF2*( two*dreal(dconjg(m70hA(1,i))*m70hB(2,i))
+     .                    +two*dreal(dconjg(m70hB(1,i))*m70hA(2,i)) )
       enddo
       do i=1,32
 c         m70hsq(i)=m70hsqAA(i)+m70hsqBB(i)+m70hsqAB(i)

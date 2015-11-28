@@ -14,14 +14,14 @@ c---  ('none') to perform no clustering at all
       include 'bbproc.f'
       include 'process.f'
       include 'part.f'
+      include 'nqcdjets.f'
       double precision q(mxpart,4),qfinal(mxpart,4),
-     & qreorder(mxpart,4),R,Rbbmin
-      integer nqcdjets,nqcdstart,isub,i,nu
+     & qreorder(mxpart,4),R
+      integer isub,i,nu
       logical first
-      common/nqcdjets/nqcdjets,nqcdstart
-      common/Rbbmin/Rbbmin
       data first/.true./
       save first
+!$omp threadprivate(first)
       
       if ((first) .and. ((nqcdjets .gt. 0).or.(part .eq. 'real'))) then
         first=.false.
@@ -55,7 +55,7 @@ c---  ('none') to perform no clustering at all
       write(6,79) ' * |pseudo-rap(b-jet)| < ',etabjetmax   
       endif
       if (algorithm .eq. 'hqrk') then
-      write(6,79) ' *   b-bbar separation : ',Rbbmin
+c      write(6,79) ' *   b-bbar separation : ',Rbbmin
       write(6,79) ' *        cone size, R : ',R      
       else
       write(6,79) ' * pseudo-cone size, R : ',R
@@ -84,7 +84,7 @@ c---  ('none') to perform no clustering at all
          return 
 c        call genclust_cone(q,R,qfinal,isub)
       elseif (algorithm .eq. 'hqrk') then
-         write(6,*) 'ERROR CONE ALGORITHM NOT IMPLEMENTED' 
+         write(6,*) 'ERROR HQRK ALGORITHM NOT IMPLEMENTED' 
          return 
 c        call genclust_hqrk(q,R,qfinal,isub)
       elseif (algorithm .eq. 'none') then

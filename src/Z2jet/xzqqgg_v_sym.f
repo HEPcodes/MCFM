@@ -12,20 +12,19 @@
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'lc.f'
-      integer i1(2),i2(2),i3(2),i4(2),i5(2),i6(2),j,lh,h2,h3,hq,h(2:3)
+      integer j,lh,h2,h3,hq,h(2:3)
       double precision fac
       double complex m(2),mqqb_ax(2,2)
       double complex ml1_ax(2),ml2_ax(2)
       double complex a6treeg1,a64ax,a65ax
-      character*9 st1(2,2),st3(2,2)
-      data i1/1,4/
-      data i2/2,3/
-      data i3/3,2/
-      data i4/4,1/
-      data i5/6,5/
-      data i6/5,6/
-      data st1/'q+g-g-qb-','q+g-g+qb-','q+g+g-qb-','q+g+g+qb-'/
-      data st3/'q+qb-g-g-','q+qb-g-g+','q+qb-g+g-','q+qb-g+g+'/
+      integer,parameter::i1(2)=(/1,4/),i2(2)=(/2,3/),i3(2)=(/3,2/),
+     &                   i4(2)=(/4,1/),i5(2)=(/6,5/),i6(2)=(/5,6/)
+      character*9,parameter:: st1(2,2)=
+     & reshape((/'q+g-g-qb-','q+g-g+qb-','q+g+g-qb-','q+g+g+qb-'/)
+     & ,(/2,2/))
+      character*9,parameter:: st3(2,2)=
+     & reshape((/'q+qb-g-g-','q+qb-g-g+','q+qb-g+g-','q+qb-g+g+'/)
+     & ,(/2,2/))
       
       fac=avegg*8d0*gsq**2*esq**2*cf*xn**3*ason2pi
 c--- no extra factor here since colour algebra is already done in (2.12)

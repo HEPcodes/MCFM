@@ -1,6 +1,3 @@
-
-
-
       subroutine qqb_dm_monojet_v(p,msq) 
 !----- routine for calcuating the virtual corrections to monojet production 
       implicit none 
@@ -22,16 +19,13 @@
       double precision p(mxpart,4),msq(-nf:nf,-nf:nf) 
       integer j,k 
       double precision msq0(-nf:nf,-nf:nf),fac,subuv 
-      logical check_QED 
-      common/check_QED/check_QED 
+!      logical check_QED 
+!      common/check_QED/check_QED
       double precision fac_dm,s34
       double complex cprop
       double precision propsq
-      logical first 
-      data first /.true./
-      save first
 
-      check_QED=.false. 
+!      check_QED=.false. 
       
 !      if(check_QED) then 
 !------ make factor into photon propogator for testing 
@@ -107,7 +101,6 @@
          call qqb_dm_monojet_v_Vamps(p,2,5,1,3,4,qbqg)
          call qqb_dm_monojet_v_Vamps(p,2,1,5,3,4,gqqb)  
          call qqb_dm_monojet_v_Vamps(p,5,1,2,3,4,gqbq)
-         if(first) first=.false.
       elseif(dm_mediator.eq.'axvect') then 
          call qqb_dm_monojet_v_Axamps(p,1,2,5,3,4,qgqb)  
          call qqb_dm_monojet_v_Axamps(p,5,2,1,3,4,qbgq)
@@ -122,7 +115,6 @@
          call qqb_dm_monojet_nf_ax(p,2,5,1,3,4,qbqg_nf)
          call qqb_dm_monojet_nf_ax(p,2,1,5,3,4,gqqb_nf)  
          call qqb_dm_monojet_nf_ax(p,5,1,2,3,4,gqbq_nf)  
-         if(first) first=.false.
       elseif(dm_mediator.eq.'scalar') then 
          call qqb_dm_monojet_v_Samps(p,1,2,5,3,4,qgqb)  
          call qqb_dm_monojet_v_Samps(p,5,2,1,3,4,qbgq)
@@ -131,11 +123,6 @@
          call qqb_dm_monojet_v_Samps(p,2,1,5,3,4,gqqb)  
          call qqb_dm_monojet_v_Samps(p,5,1,2,3,4,gqbq)
          fac=fac/4d0
-         
-         if(first) then 
-            first=.false.
-            call set_scalar_coups
-         endif
       elseif(dm_mediator.eq.'pseudo') then 
          call qqb_dm_monojet_v_PSamps(p,1,2,5,3,4,qgqb)  
          call qqb_dm_monojet_v_PSamps(p,5,2,1,3,4,qbgq)
@@ -143,15 +130,8 @@
          call qqb_dm_monojet_v_PSamps(p,2,5,1,3,4,qbqg)
          call qqb_dm_monojet_v_PSamps(p,2,1,5,3,4,gqqb)  
          call qqb_dm_monojet_v_PSamps(p,5,1,2,3,4,gqbq)
-         fac=fac/4d0
-         if(first) then 
-            first=.false.
-            call set_scalar_coups
-            call check_dmAxC
-         endif
-   
+         fac=fac/4d0   
       elseif(dm_mediator.eq.'gluonO') then 
-         if(first) first=.false.
          call gg_dm_monojet_v(p,msq) 
          return 
       endif

@@ -13,6 +13,8 @@
       include 'useet.f'
       include 'plabel.f'
       include 'outputflags.f'
+      include 'nqcdjets.f'
+      include 'nproc.f'
 cz Add single-top b fraction, Z. Sullivan 1/25/05
       double precision bwgt
       common/btagging/ bwgt
@@ -92,19 +94,19 @@ cz //
 c      double precision langle,plep(4),plep_wrest(4),pw(4),pw_wrest(4)
       integer ssi(4),tmpi,j,k
       double precision ssd(4),tmpd
-      integer nproc,eventpart,ib1,ib2,nqcdjets,nqcdstart
+      integer eventpart,ib1,ib2
       logical first,jetmerge
       logical jetevent
       character*2 ptet
       common/nplotmax/nplotmax
-      common/nproc/nproc
-      common/nqcdjets/nqcdjets,nqcdstart
       common/jetmerge/jetmerge
       common/hwwvars/dphi_ll,m_ll,mtrans,scut1,scut2
 c      double precision ycut001,ycut005,ycut010,ycut015,ycut020,
 c     . y32,y43,z3,z4,z5,z6
       data first/.true./
       save first
+ccccc!$omp threadprivate(first,/nplotmax/)
+!$omp threadprivate(/jetmerge/)
       
 c--- Check for special plotting instructions
 c      if (runstring(1:4) .eq. 'cfmt') then

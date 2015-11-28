@@ -5,7 +5,7 @@ c----p are the output momenta
       implicit none
       include 'constants.f'
       include 'debug.f'
-      integer nmin,nmax,j,iseed,i1(8),i2(8),k
+      integer nmin,nmax,j,iseed,k
       double precision p(mxpart,4),q(mxpart,4),z,rtalpha,phit,
      . wt3_2,msq(-nf:nf,-nf:nf)
       double precision sum(0:8),wtc(8),apweight(8),jac,ran0,myran
@@ -13,8 +13,8 @@ c----p are the output momenta
       common/nmin/nmin
       common/nmax/nmax
       data iseed/1768/
-      data i1/1,2,1,2,1,2,5,6/
-      data i2/2,1,5,5,6,6,6,5/
+      integer,parameter:: i1(8)=(/1,2,1,2,1,2,5,6/)
+      integer,parameter:: i2(8)=(/2,1,5,5,6,6,6,5/)
 
 c      if (debug) call writeout(q)     
 

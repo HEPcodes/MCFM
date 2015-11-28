@@ -5,3 +5,4 @@
       integer z1max,z2max,z3max,z4max,z5max,z6max,z7max
       parameter(z1max=2,z2max=3,z3max=4,z4max=5,z5max=6,z6max=7,
      .          z7max=8)
+!$omp threadprivate(/Carraydef/)

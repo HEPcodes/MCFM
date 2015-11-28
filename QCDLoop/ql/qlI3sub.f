@@ -38,7 +38,7 @@ C--------------two internal masses
            if   (qlzero(abs(Y(1,2))) 
      .     .and. qlzero(abs(Y(1,3)))) then  
                 call qltri6(psq(2),msq(2),msq(3),musq,Ival)
-            else
+            else 
                 call qlI3fin(Ival(0),xpi,ier)
             endif
 

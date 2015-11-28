@@ -7,6 +7,7 @@ c--- colour orderings (or both)
       integer igg_ab,igg_ba,igg_sym,iqq_a,iqq_b,iqq_i,
      . igggg_a,igggg_b,igggg_c,iqr
       common/msq_struc/msq_struc,msq_strucv
+!$omp threadprivate(/msq_struc/)
       parameter(igg_ab=4,igg_ba=5,igg_sym=6)
 c--- Note that the 4-quark and 4-gluon pieces are never needed simultaneously,
 c--- so we can reuse the same indices to save memory

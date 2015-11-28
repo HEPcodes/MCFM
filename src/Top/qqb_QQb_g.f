@@ -157,12 +157,10 @@ C      %%CITATION = NUPHA,B282,642;%%
       include 'constants.f'
       include 'sprods_com.f'
       include 'breit.f'
+      include 'first.f'
       integer i1,i2,i3,i4,i5
       double precision xm2,xm4,res
       double precision P13,P14,P15,P23,P24,P25,P12,P35,P34,P45,S12
-      logical first
-      data first/.true./
-      save first
 
       if (first) then
       first=.false.

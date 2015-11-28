@@ -20,13 +20,17 @@ c---    alternate return if generated point should be discarded
       include 'npart.f'
       include 'phasemin.f'
       include 'process.f'
+      include 'energy.f'
       logical vetow_2gam
       integer ii
       double precision r(mxdim),p(mxpart,4),pswt,
-     & ptmp,m3,m4,m5,sqrts
-      common/energy/sqrts
+     & ptmp,m3,m4,m5,wt34,wt345,wt346,wt3456,wtprop,
+     & s34,s345,s346,s3456,dot,wtips(4)
       
-c--- processes that use "gen3"     
+c--- statement function
+      wtprop(s34,wmass,wwidth)=(s34-wmass**2)**2+(wmass*wwidth)**2
+        
+c--- processes that use "gen3"
       if     ( (case .eq. 'W_only')
      .    .or. (case .eq. 'Z_only')
      .    .or. (case .eq. 'ggfus0')
@@ -242,7 +246,20 @@ c--- special treatment for Z+gamma+gamma
            stop
         endif
         if (case .eq. 'W_2gam') then
-          if (vetow_2gam(p)) goto 999 ! partition PS according to ipsgen
+c          if (vetow_2gam(p)) goto 999 ! partition PS according to ipsgen
+          s34=2d0*dot(p,3,4)
+          s345=s34+2d0*dot(p,3,5)+2d0*dot(p,4,5)
+          s346=s34+2d0*dot(p,3,6)+2d0*dot(p,4,6)
+          s3456=s345+s346-s34+2d0*dot(p,5,6)
+          wt34=wtprop(s34,wmass,wwidth)
+          wt345=wtprop(s345,wmass,wwidth)
+          wt346=wtprop(s346,wmass,wwidth)
+          wt3456=wtprop(s3456,wmass,wwidth)
+          wtips(1)=wt345*wt346*wt3456
+          wtips(2)=wt34*wt345*wt346
+          wtips(3)=wt34*wt346*wt3456
+          wtips(4)=wt34*wt345*wt3456
+          pswt=pswt*wtips(ipsgen)/(wtips(1)+wtips(2)+wtips(3)+wtips(4))
         endif
       elseif((case.eq.'dm_jet').or.(case.eq.'dm_gam')) then 
          m3=xmass

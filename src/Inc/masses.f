@@ -40,3 +40,4 @@ c      common/qmassq/mtausq,mcsq,mbsq
      & twidth,
      & tauwidth,
      & mtausq,mcsq,mbsq
+!$omp threadprivate(/masses/)

@@ -18,12 +18,11 @@ c
       double precision p(mxpart,4),wt,wt2,tiny
       integer n,nplotmax,j,m,i1,i2,i3,i4,ilomomenta
       character*4 tag
-      logical first
       common/ilomomenta/ilomomenta
       common/nplotmax/nplotmax
       parameter(tiny=1d-8)
-      data first/.true./
-      save first
+      logical, save::first=.true.
+ccccc!$omp threadprivate(first,/nplotmax/)
 
 ************************************************************************
 *                                                                      *
@@ -87,8 +86,9 @@ c--- two-particle plots
         m=mcfmplotinfo(j)
         if     (m .lt. 10) then
 c--- one-particle plots
-          call autoplot1(p,i1,tag,wt,wt2,n)
+          i1=m
           if (i1 .eq. 0) i1=10   ! special code: 0 -> 10
+          call autoplot1(p,i1,tag,wt,wt2,n)
         elseif (m .lt. 100) then
 c--- two-particle plots
           i1=m/10

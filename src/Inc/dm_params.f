@@ -1,4 +1,3 @@
-
       double precision xmass,medmass,dm_lam
       double precision medwidth
       double precision gdm,g_dmx,g_dmq

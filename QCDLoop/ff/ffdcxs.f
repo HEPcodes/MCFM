@@ -73,6 +73,9 @@ c
 *	data
 *
 	data iepsi /-2,+2,+2,-2/
+
+!$omp threadprivate(iepsi)
+
 *
 *	statement function
 *

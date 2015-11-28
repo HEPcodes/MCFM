@@ -76,6 +76,7 @@ C     ub(-p1)+d(-p2)=e-(p3)+nu~(p4)+gamma(p5)+g(p6)
       include 'zprods_decl.f'
       include 'zerowidth.f'
       include 'anomcoup.f'
+      include 'xanomcoup.f'
       integer p1,p2,p3,p4,p5,p6
       double complex aLL,aRR,aRL,aLR,prp34,prp345,zazb
       double precision s345,s156,s256,xfac

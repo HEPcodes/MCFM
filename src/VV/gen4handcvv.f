@@ -12,17 +12,15 @@ c--- better map the continuum contribution
       include 'breit.f'
       include 'interference.f'
       include 'ipsgen.f'
-      logical first
+      include 'x1x2.f'
+      include 'energy.f'
+      include 'first.f'
       integer nu
       double precision r(mxdim)
       double precision wt4,p1(4),p2(4),p3(4),p4(4),p5(4),p6(4)
-      double precision p(mxpart,4),sqrts,rtshat
+      double precision p(mxpart,4),rtshat
       double precision pswt,xjac,pswidth,s34,s56,s45,s36,wt_ww,wt_zz
-      double precision xx(2),s3456,wt3456,ymax,yave
-      common/energy/sqrts
-      common/x1x2/xx
-      data first/.true./
-      save first
+      double precision s3456,wt3456,ymax,yave
       
       wt4=0d0
 

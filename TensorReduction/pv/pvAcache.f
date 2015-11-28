@@ -4,10 +4,10 @@
       include 'TRclear.f'
       include 'TRonshellcutoff.f'
       double precision para(Paa),m1sq
-      double precision tableA(Paa,Namax)  
-      integer Nstore,j,jtable,Ntrue    
-      data Nstore/0/
-      save tableA,Nstore
+      double precision,save:: tableA(Paa,Namax)  
+      integer,save:: Nstore=0
+      integer::j,jtable,Ntrue    
+!$omp threadprivate(tableA,Nstore)
 
       if (clear(1)) then
       clear(1)=.false.

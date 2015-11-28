@@ -36,11 +36,11 @@ c---                1  --> counterterm for real radiation
      & ptt,pttbar,etat,etatbar,DRttbar,DRtZ,DRtbarZ
       double precision pb4dk(mxpart,4)
       character*4 tag
-      logical first
       parameter(tiny=1d-8)
+      logical, save::first=.true.
       common/nplotmax/nplotmax
-      data first/.true./
-      save first
+ccccc!$omp threadprivate(first,/nplotmax/)
+
 
 ************************************************************************
 *                                                                      *

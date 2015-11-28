@@ -27,6 +27,7 @@
       include 'dipolescale.f'
       include 'facscale.f'
       include 'breit.f'
+      include 'incldip.f'
       double precision p(mxpart,4),ptrans(mxpart,4),sub(4),subv,vecsq,
      . x,omx,z,omz,y,omy,u,omu,pij,pik,pjk,dot,q(4),qsq,qij(4),qijsq,
      . vec(4),root,vtilde,pold(mxpart,4),pext(mxpart,4)
@@ -35,15 +36,13 @@
      . muijsq,kappa,vijk,vtijk,viji,ztmi,ztmj,muk,mqsq,subv_gg,subv_gq
       double precision yp
       integer nd,ip,jp,kp,nu,j,jproc,ipt
-      logical incldip(0:maxd)
-      common/incldip/incldip
 c--- common block to handle the possibility of multiple definitions
 c--- of subv in the final-final section
       common/subv_ff/subv_gg,subv_gq
       external subr_born,subr_corr
       parameter(kappa=0d0)
-      logical first
-      data first/.true./
+      logical, save :: first = .TRUE.
+!$omp threadprivate(first,/subv_ff/)                                                                                                                  
 
       if (first) then
         first=.false.

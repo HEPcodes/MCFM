@@ -14,18 +14,19 @@ c---  ('none') to perform no clustering at all
       include 'bbproc.f'
       include 'process.f'
       include 'part.f'
+      include 'nqcdjets.f'
+      include 'notag.f'
       character*4 mypart
       double precision q(mxpart,4),qfinal(mxpart,4),
      & qreorder(mxpart,4),R,Rbbmin
-      integer nqcdjets,nqcdstart,notag,isub,i,nu,njetsmin,njetsmax
+      integer isub,i,nu,njetsmin,njetsmax
       logical first
-      common/nqcdjets/nqcdjets,nqcdstart
-      common/notag/notag
       common/Rbbmin/Rbbmin
       common/mypart/mypart
       data first/.true./
       save first
-      
+!$omp threadprivate(first)      
+ 
       if ((first) .and.
      &   ((nqcdjets .gt. 0).or.(part .eq. 'real').or.(notag.gt.0))) then
         first=.false.

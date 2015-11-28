@@ -33,7 +33,7 @@
 *	arguments
 *
 	DOUBLE COMPLEX cs4(175),cfac
-	integer ipi12(26),isoort(16),ier
+	integer ipi12(28),isoort(16),ier
 	logical ldel2s
 	DOUBLE PRECISION xpi(10),dpipj(10,10),piDpj(10,10),
      +		xqi(10),dqiqj(10,10),qiDqj(10,10),ai(4),daiaj(4,4)
@@ -71,6 +71,8 @@
 	data jj/1,2,4,5,10,8,1,2,4,5,10,8/
 *
 *  #] declarations:
+!$omp threadprivate(ii,jj,/ffcut/)
+
 *  #[ check input:
 	if ( ltest ) then
 *	    call ffxhck(xpi,dpipj,10,ier)
@@ -538,6 +540,8 @@
      +		   1,3,4,9,7,8,
      +		   1,2,4,5,10,8,
      +		   1,2,3,5,6,9/
+!$omp threadprivate(iinx)
+
 *  #] declarations:
 *  #[ calculations:
 *	if ( lscale ) then
@@ -596,6 +600,9 @@
 *	data
 *
 	data ip/5,6,8,5,6/
+	save ip
+!$omp threadprivate(ip)
+
 *  #] declarations:
 *  #[ calculations:
 	if ( ii .eq. 3 ) return
@@ -695,6 +702,9 @@
 *	data
 *
 	data ip/5,6,8,5,6/
+	save ip
+!$omp threadprivate(ip)
+
 *
 *	statement function
 *
@@ -793,6 +803,8 @@
      +		   1,3,4,9,7,8,
      +		   1,2,4,5,10,8,
      +		   1,2,3,5,6,9/
+!$omp threadprivate(iinx)
+
 *
 *  #] declarations:
 *  #[ parcel out:

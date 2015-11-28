@@ -8,9 +8,8 @@ c---- In addition one can set choose either Set I or Set II of BFG (hep-ph/97044
       integer set_flag, parton_id,parton_flag,j
       double precision frag_func
       double precision pert_part,NP_part
-      integer parton_mcfm(6),parton_BFG(6) 
-      data parton_mcfm /0,1,2,3,4,5/ 
-      data parton_BFG /1,3,2,4,5,6/
+      integer,parameter::parton_mcfm(6)=(/0,1,2,3,4,5/) 
+      integer,parameter::parton_BFG(6)=(/1,3,2,4,5,6/)
 
       parton_id=100
 

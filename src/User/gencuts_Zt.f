@@ -10,9 +10,10 @@ c -- R. Rontsch 2103-03-01
       include 'masses.f'
       include 'nwz.f'
       include 'runstring.f'
+      include 'notag.f'
       integer njets
       double precision pjet(mxpart,4)
-      integer leptindex(3), jetindex(mxpart),countjet,notag
+      integer leptindex(3), jetindex(mxpart),countjet
       integer j,k,jj,kk, Zpair1(2),Zpair2(2),Wpair1(2),Wpair2(2),
      &     Wpair(2),Zpair(2),nuindex
       logical first, diffflav
@@ -25,7 +26,6 @@ c -- R. Rontsch 2103-03-01
      &     mZjmax=250d0,mWbmin=100d0,mWbmax=250d0,STmin=250d0)
       character*4 cut_id
       data first/.true./
-      common/notag/notag
 
       gencuts_Zt=.false.
 c -- allows for same flavors of leptons from Z decay and semi-leptonic top decay

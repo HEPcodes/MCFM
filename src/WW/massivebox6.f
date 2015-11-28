@@ -6,14 +6,14 @@
       include 'sprods_com.f'
       include 'zprods_decl.f'
       include 'docheck.f'
+      include 'first.f'
       double complex d(2,2,6),box(2,2,-2:0),
      & qlI4,Dint(6),D1six,D2six,D3six,D4six
       double precision s12,s34,s56,s134,s156,mtsq
       integer j,k1,k2,k3,k4,k5,k6,h1,h2
       common/transferbox/d
-      logical first
-      data first/.true./ 
-      save first
+!$omp threadprivate(/transferbox/)
+
       mtsq=mt**2
       if (first) then
       first=.false. 
@@ -79,7 +79,6 @@ C----for boxes 1-4 we convert to sixdim box
       Dint(4)=D4six(k1,k2,k3,k4,k5,k6)
       Dint(5)=qlI4(s34,0d0,0d0,s56,s134,s12,0d0,mtsq,mtsq,mtsq,musq,0)
       Dint(6)=qlI4(s56,0d0,0d0,s34,s156,s12,0d0,mtsq,mtsq,mtsq,musq,0)
-
       do h1=1,2
       do h2=1,2
       box(h1,h2,-2)=czip

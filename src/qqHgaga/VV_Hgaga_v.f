@@ -16,12 +16,10 @@
       include 'epinv2.f'
       include 'scale.f'
       include 'scheme.f'
+      include 'first.f'
       double precision dot,p(mxpart,4),
      . msq0(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),xl15,xl26,facv
       integer j,k
-      logical first
-      data first/.true./       
-      save first
 
       if (first) then
         first=.false.

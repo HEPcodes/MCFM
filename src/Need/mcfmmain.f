@@ -1,4 +1,4 @@
-      subroutine mcfmmain(inputfile,workdir)
+      subroutine mcfmmain(inputfile,workdir,r,er)
 ************************************************************************
 *                                                                      *
 *  This is the main program for MCFM                                   *
@@ -21,7 +21,7 @@
       include 'vegas_common.f'
       include 'ipsgen.f'
       integer itmx1,ncall1,itmx2,ncall2,itmxplots
-      double precision integ,integ_err
+      double precision integ,integ_err,r,er
       logical dryrun
       integer i,pflav,pbarflav
       double precision p(mxpart,4),wt
@@ -107,8 +107,9 @@ c        enddo
       endif
 
 * final processing and print-out
+      r=integ
+      er=integ_err
       call mcfm_exit(itmxplots,integ,integ_err)
-      
-      stop
+!      stop
       end
        

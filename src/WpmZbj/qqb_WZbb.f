@@ -8,6 +8,9 @@
 
       call spinoru(8,p,za,zb)
 
+c--- initialize matrix elements to zero
+      msq(:,:)=0d0
+
       if (nwz .eq. 1) then
       msq(+2,-1)=WZbbmsq(1,2,3,4,5,6,7,8)
       msq(-1,+2)=WZbbmsq(2,1,3,4,5,6,7,8)

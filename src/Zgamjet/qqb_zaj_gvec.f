@@ -16,9 +16,9 @@ C--in is the label of the parton dotted with n
       double complex agqn(2,8),agqbn(2,8)
       double precision qqbn(2),qbqn(2),qgn(2),qbgn(2),gqn(2),gqbn(2)
       integer in,i,j,k
-      integer jj(-nf:nf),kk(-nf:nf)
-      data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      data kk/-1,-2,-1,-2,-1,0,1,2,1,2,1/
+      integer, parameter::jj(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
+      integer, parameter::kk(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
+
 c-----initialized matelem2 for each subprocess
       do j=1,2
          qqbn(j)=zip
@@ -156,9 +156,9 @@ c-----(-+xx-+)
       enddo
 c-----square the helicity amplitudes
       do i=1,8
-         m6sqnhAA(i)=realpart(m6nhA(i)*dconjg(m6nhA(i)))
-         m6sqnhBB(i)=realpart(m6nhB(i)*dconjg(m6nhB(i)))
-         m6sqnhAB(i)=2D0*realpart(m6nhA(i)*dconjg(m6nhB(i)))
+         m6sqnhAA(i)=dreal(m6nhA(i)*dconjg(m6nhA(i)))
+         m6sqnhBB(i)=dreal(m6nhB(i)*dconjg(m6nhB(i)))
+         m6sqnhAB(i)=2D0*dreal(m6nhA(i)*dconjg(m6nhB(i)))
       enddo
       do i=1,8
 c         m6sqnh(i)=m6sqnhAA(i)+m6sqnhBB(i)+m6sqnhAB(i)

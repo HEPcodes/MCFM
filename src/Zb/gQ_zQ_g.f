@@ -20,7 +20,7 @@
       include 'sprods_com.f'
       include 'zprods_com.f'
       include 'heavyflav.f'
-      integer j,k,pq,pl,swap(2),j1,j2,j3,isub
+      integer j,k,pq,pl,j1,j2,j3,isub
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac,faclo,
      . qgZqg2(2,2),qbgZqbg2(2,2),gqbZqbg2(2,2),gqZqg2(2,2),ggZqbq2(2,2)
       double precision mqq(fn:nf,fn:nf)
@@ -49,8 +49,7 @@ c      double complex qbq_a(2,2,2),qbq_b(2,2,2)
       
       common/isub/isub
       
-      data swap/2,1/
-      save swap
+      integer,parameter::swap(2)=(/2,1/)
 
       do j=-nf,nf
       do k=-nf,nf

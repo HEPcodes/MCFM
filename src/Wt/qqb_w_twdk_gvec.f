@@ -98,6 +98,7 @@ c--- set up lepton variables depending on whether it's t or tbar
       double complex amp
       double complex zab(mxpart,mxpart),zba(mxpart,mxpart)
       common/zabprods/zab,zba
+!$omp threadprivate(/zabprods/)
 
       call checkndotp(p,vec,ig)
 
@@ -129,6 +130,8 @@ c--- set up lepton variables depending on whether it's t or tbar
       integer ig,is,ie,in,je,jn,jb
       double complex zab(mxpart,mxpart),zba(mxpart,mxpart)
       common/zabprods/zab,zba
+!$omp threadprivate(/zabprods/)
+
       taugs=two*dot(p,ig,is)
       taugt=two*(dot(p,ig,jn)+dot(p,ig,je)+dot(p,ig,jb))
       amp= za(ig,ie)*za(jn,jb)*zb(is,in)*zb(je,jn)*zab(jn,ig)*

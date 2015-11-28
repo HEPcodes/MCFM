@@ -647,7 +647,7 @@ c   Corrections At The One Loop Level And Results For W Physics At Lep-200,''
 c   Fortsch.\ Phys.\  {\bf 41}, 307 (1993).
 c   %%CITATION = FPYKA,41,307;%%
 
-      integer i,j,k,jj(0:2),kk(0:2)
+      integer i,j,k
       double precision lambda,alpha,y0(0:2),xp(0:2),xm(0:2),
      & yip(0:2),yim(0:2),alphai(0:2),x,y,z,s,qsq,mc2,ms2
       double precision psq(0:2,0:2),msq(0:2),I3mer,I3mei
@@ -655,8 +655,8 @@ c   %%CITATION = FPYKA,41,307;%%
       double precision ddilog,polylog
       double precision aa,bb,cc,dd
 
-      data jj/1,2,0/
-      data kk/2,0,1/
+      integer,parameter:: jj(0:2)=(/1,2,0/)
+      integer,parameter:: kk(0:2)=(/2,0,1/)
 
       polylog(y,z)=ddilog((y-1d0)/z)-ddilog(y/z)
       lambda(x,y,z)=sqrt(x**2+y**2+z**2-2d0*(x*y+y*z+z*x))

@@ -3,3 +3,4 @@
 ************************************************************************
       logical nodecay
       common/nodecay/nodecay
+!$omp threadprivate(/nodecay/)

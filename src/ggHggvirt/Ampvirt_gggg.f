@@ -21,6 +21,8 @@
       i3(3)=j2      
       i4(3)=j3      
 
+      A=0d0
+
       do j=1,3
       A(j,2,2,2,2)=A1Hggggpppp(i1(j),i2(j),i3(j),i4(j),za,zb)
       A(j,1,1,1,1)=A1Hggggpppp(i1(j),i2(j),i3(j),i4(j),zb,za)
@@ -43,6 +45,6 @@
       A(j,1,2,1,2)=A1Hggggmpmp(i1(j),i2(j),i3(j),i4(j),za,zb)
       A(j,2,1,2,1)=A1Hggggmpmp(i2(j),i3(j),i4(j),i1(j),za,zb)
       enddo
-      
+
       return
       end

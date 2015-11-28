@@ -1,8 +1,12 @@
-FORCHKPATH = /usr/local/bin/
-FFLAGS 	= -O2 -g
-HERE = $(PWD)
-INCDIR = $(HERE)/../..//Include/ $(HERE)/../Include
+# Makefile routine.
+VPATH		= $(PWD)/obj
+INCPATH1 = $(PWD)/../Include/
+INCPATH2 = $(PWD)/../../Include/
+OUTPUT_OPTION	= -o $(PWD)/obj/$@ 
+
 FC = gfortran 
+FFLAGS 	= -O2 -fno-f2c -g -I$(INCPATH1) -I$(INCPATH2) -Iobj -Jobj
+
 LIBRARY	      = libsmallY.a
 
 
@@ -95,15 +99,10 @@ runY_i1i2i3i4i5.o
 
 
 $(LIBRARY):	$(OBJS) 
-		ar cru $(LIBRARY) $(OBJS) 
+		ar cru $(LIBRARY) $(patsubst %,obj/%,$(OBJS)) 
 		ranlib $(LIBRARY)
 		mv $(LIBRARY) ..
  
-
-.f.o:	
-		$(FC) $(F77FLAGS) $(addprefix -I,$(INCDIR)) -c $*.f
-
-
 # -----------------------------------------------------------------------------
 
 
@@ -113,18 +112,8 @@ all:		$(LIBRARY)
 
 # -----------------------------------------------------------------------------
 
-PRJS =      $(OBJS:.o=.f) 
-PRJSF =      $(OBJS:.o=.f) 
-
-check:      $(PRJS) 
-		$(FTNCHEKPATH)/ftnchek -include=$(INCDIR) $(FOROPTS) $(PRJS)
-
-checkf:      
-		$(FORCHKPATH)/forchk -I $(INCDIR) $(PRJSF)
-
-
 clean:
-	- rm -f *.o *.s *.prj *.a *~ core
+	- rm -f obj/*.o *.s *.prj *.a *~ core
 
 # -----------------------------------------------------------------------------
 

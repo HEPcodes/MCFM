@@ -7,17 +7,15 @@
       include 'debug.f'
       include 'masses.f'
       include 'jetcuts.f'
+      include 'x1x2.f'
       integer nu
       double precision r(mxdim)
       double precision wt7,q(mxpart,4)
       double precision p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4),p8(4),
      . p9(4),pswt,xjac
-      double precision xx(2),tau,sqrts,y,vs,vsqmax,vsqmin,s34,rtshat,
+      double precision tau,y,vs,vsqmax,vsqmin,s34,rtshat,
      . ymax,yave
-      common/x1x2/xx
-      common/energy/sqrts
-      data p1,p2,p3,p4,p5,p6,p7,p8,p9/36*0d0/
-
+      include 'energy.f'
       wt7=0d0
 
       if     (((case .eq. 'HWW2jt') .or. (case .eq. 'HZZ2jt')
@@ -117,6 +115,8 @@ c---if x's out of normal range alternative return
       
       return
 
- 999  return 1
+ 999  wt7=0d0
+      q(:,:)=0d0
+      return 1
       end
 

@@ -36,6 +36,8 @@ C                                                                C
 C****************************************************************C
       implicit real*8(a-h,o-z)
       data xmin,xmax,qsqmin,qsqmax/1d-5,1d0,1.25d0,1d7/
+      save xmin,xmax,qsqmin,qsqmax
+!$omp threadprivate(xmin,xmax,qsqmin,qsqmax)
       q2=q*q
       if(q2.lt.qsqmin.or.q2.gt.qsqmax) print 99
       if(x.lt.xmin.or.x.gt.xmax)       print 98
@@ -76,11 +78,15 @@ C****************************************************************C
       data xmin,xmax,qsqmin,qsqmax/1d-5,1d0,1.25d0,1d7/
       data n0/3,4,5,9,9,9,9,9/
       data init/0/
-      save
+      save xmin,xmax,qsqmin,qsqmax,n0,init
+!$omp threadprivate(xmin,xmax,qsqmin,qsqmax,n0,init)
+      common /mrs98c/f,xx,qq
+!$omp threadprivate(/mrs98c/) 
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
         filename=checkpath('Pdfdata/lo05a.dat')
+!$omp critical(MrsRead)
         open(unit=1,file=filename,status='old')
         do 20 n=1,nx-1
         do 20 m=1,nq
@@ -90,6 +96,7 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
         do 25 i=1,np
   25     f(i,n,m)=f(i,n,m)/(1d0-xx(n))**n0(i)
   20  continue
+!$omp end critical(MrsRead)
       do 31 j=1,ntenth-1
       xx(j)=dlog10(xx(j)/xx(ntenth))+xx(ntenth)
       do 31 i=1,8
@@ -101,6 +108,7 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
       do 40 i=1,np
       do 40 m=1,nq
   40  f(i,nx,m)=0d0
+      close(unit=1)
       init=1
   10  continue
       if(x.lt.xmin) x=xmin
@@ -161,11 +169,15 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
       data xmin,xmax,qsqmin,qsqmax/1d-5,1d0,1.25d0,1d7/
       data n0/3,4,5,9,9,9,9,9/
       data init/0/
-      save
+      save xmin,xmax,qsqmin,qsqmax,n0,init
+!$omp threadprivate(xmin,xmax,qsqmin,qsqmax,n0,init)
+      common /mrs98c/f,xx,qq
+!$omp threadprivate(/mrs98c/) 
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
         filename=checkpath('Pdfdata/lo09a.dat')
+!$omp critical(MrsRead)
         open(unit=1,file=filename,status='old')
         do 20 n=1,nx-1
         do 20 m=1,nq
@@ -175,6 +187,7 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
         do 25 i=1,np
   25     f(i,n,m)=f(i,n,m)/(1d0-xx(n))**n0(i)
   20  continue
+!$omp end critical(MrsRead)
       do 31 j=1,ntenth-1
       xx(j)=dlog10(xx(j)/xx(ntenth))+xx(ntenth)
       do 31 i=1,8
@@ -186,6 +199,7 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
       do 40 i=1,np
       do 40 m=1,nq
   40  f(i,nx,m)=0d0
+      close(unit=1)
       init=1
   10  continue
       if(x.lt.xmin) x=xmin
@@ -246,20 +260,25 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
       data xmin,xmax,qsqmin,qsqmax/1d-5,1d0,1.25d0,1d7/
       data n0/3,4,5,9,9,9,9,9/
       data init/0/
-      save
+      save xmin,xmax,qsqmin,qsqmax,n0,init
+!$omp threadprivate(xmin,xmax,qsqmin,qsqmax,n0,init)
+      common /mrs98c/f,xx,qq
+!$omp threadprivate(/mrs98c/) 
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
-        filename=checkpath('Pdfdata/lo10a.dat')
-        open(unit=1,file=filename,status='old')
-        do 20 n=1,nx-1
-        do 20 m=1,nq
-        read(1,50)f(1,n,m),f(2,n,m),f(3,n,m),f(4,n,m),
+      filename=checkpath('Pdfdata/lo10a.dat')
+!$omp critical(MrsRead)
+      open(unit=1,file=filename,status='old')
+      do 20 n=1,nx-1
+         do 20 m=1,nq
+            read(1,50)f(1,n,m),f(2,n,m),f(3,n,m),f(4,n,m),
      .            f(5,n,m),f(7,n,m),f(6,n,m),f(8,n,m)
 c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
         do 25 i=1,np
   25     f(i,n,m)=f(i,n,m)/(1d0-xx(n))**n0(i)
   20  continue
+!$omp end critical(MrsRead)
       do 31 j=1,ntenth-1
       xx(j)=dlog10(xx(j)/xx(ntenth))+xx(ntenth)
       do 31 i=1,8
@@ -271,6 +290,7 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
       do 40 i=1,np
       do 40 m=1,nq
   40  f(i,nx,m)=0d0
+      close(unit=1)
       init=1
   10  continue
       if(x.lt.xmin) x=xmin
@@ -332,11 +352,15 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
       data xmin,xmax,qsqmin,qsqmax/1d-5,1d0,1.25d0,1d7/
       data n0/3,4,5,9,9,9,9,9/
       data init/0/
-      save
+      save xmin,xmax,qsqmin,qsqmax,n0,init
+!$omp threadprivate(xmin,xmax,qsqmin,qsqmax,n0,init)
+      common /mrs98c/f,xx,qq
+!$omp threadprivate(/mrs98c/) 
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
         filename=checkpath('Pdfdata/lo01a.dat')
+!$omp critical(MrsRead)
         open(unit=1,file=filename,status='old')
         do 20 n=1,nx-1
         do 20 m=1,nq
@@ -346,6 +370,7 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
         do 25 i=1,np
   25     f(i,n,m)=f(i,n,m)/(1d0-xx(n))**n0(i)
   20  continue
+!$omp end critical(MrsRead)
       do 31 j=1,ntenth-1
       xx(j)=dlog10(xx(j)/xx(ntenth))+xx(ntenth)
       do 31 i=1,8
@@ -357,6 +382,7 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
       do 40 i=1,np
       do 40 m=1,nq
   40  f(i,nx,m)=0d0
+      close(unit=1)
       init=1
   10  continue
       if(x.lt.xmin) x=xmin
@@ -417,11 +443,15 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
       data xmin,xmax,qsqmin,qsqmax/1d-5,1d0,1.25d0,1d7/
       data n0/3,4,5,9,9,9,9,9/
       data init/0/
-      save
+      save xmin,xmax,qsqmin,qsqmax,n0,init
+!$omp threadprivate(xmin,xmax,qsqmin,qsqmax,n0,init)
+      common /mrs98c/f,xx,qq
+!$omp threadprivate(/mrs98c/) 
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
         filename=checkpath('Pdfdata/lo07a.dat')
+!$omp critical(MrsRead)
         open(unit=1,file=filename,status='old')
         do 20 n=1,nx-1
         do 20 m=1,nq
@@ -431,6 +461,7 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
         do 25 i=1,np
   25     f(i,n,m)=f(i,n,m)/(1d0-xx(n))**n0(i)
   20  continue
+!$omp end critical(MrsRead)
       do 31 j=1,ntenth-1
       xx(j)=dlog10(xx(j)/xx(ntenth))+xx(ntenth)
       do 31 i=1,8
@@ -442,6 +473,7 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
       do 40 i=1,np
       do 40 m=1,nq
   40  f(i,nx,m)=0d0
+      close(unit=1)
       init=1
   10  continue
       if(x.lt.xmin) x=xmin

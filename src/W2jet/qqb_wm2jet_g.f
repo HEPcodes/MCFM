@@ -22,6 +22,7 @@ c                           ---> f(p5)+f(p6)
       include 'ewcouple.f'
       include 'flags.f'
       include 'lc.f'
+      include 'first.f'
       integer j,k,n1,n2
       double precision P(mxpart,4),msq(-nf:nf,-nf:nf)
       double precision mmsq_gg,mmsq_qqb,mmsq_qbq,mmsq_qg
@@ -39,12 +40,8 @@ c                           ---> f(p5)+f(p6)
      . GQ_d_ddu,GQ_d_dsc,GQ_u_ddd,GQ_u_dcc,GQ_u_duu,GQ_u_udu,
      . QbG_d_ddu,QbG_u_ucs,QbG_u_uud,QbG_d_uuu,QbG_d_ucc,QbG_d_udd,
      . GQb_d_ddu,GQb_u_ucs,GQb_u_uud,GQb_d_udd,GQb_d_ucc,GQb_d_uuu
-      logical first
-      integer jj(-nf:nf),kk(-nf:nf)
-      data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      data kk/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      data first/.true./
-      save first
+      integer,parameter :: jj(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
+      integer,parameter :: kk(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
 
       if (first) then
       first=.false.

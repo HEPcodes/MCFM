@@ -18,12 +18,15 @@ c---                    ipow = +1 (normal kt), ipow = -1 ("anti-kt")
       include 'jetcuts.f'
       include 'jetlabel.f'
       include 'plabel.f'
+      include 'is_functions_com.f'
+
       double precision q(mxpart,4),qjet(mxpart,4),qfinal(mxpart,4)
       double precision pt,Rmin,dijmin,dkmin,ayrap
       integer i,nu,iter,nmin1,nmin2,maxjet,nk,
      . ajet,jetindex(mxpart),isub,ipow
       logical jetmerge,failed,is_hadronic
       common/jetmerge/jetmerge
+!$omp threadprivate(/jetmerge/)
 
       jets=0
       maxjet=0
@@ -140,7 +143,9 @@ c----the observable rapidity region
 c      write(*,*) 'AFTER CLUSTERING: Obtained ',jets,' jets'
      
 c--- restore jets
+
       ajet=0
+
       do i=1,jets
 
 c        write(*,*) 'Jet ',i,'(',jetlabel(i),')',jetindex(i)

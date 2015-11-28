@@ -12,6 +12,7 @@ c--- Using the results of Frizzo and Company
       include 'zprods_com.f'
       include 'nflav.f'
       include 'hdecaymode.f'
+      include 'bitflags.f'
       integer j,k,nu
       double precision p(mxpart,4),Asq,fac,q(mxpart,4)
       double precision Hggggg,msqgamgam,
@@ -26,9 +27,6 @@ c--- Using the results of Frizzo and Company
       double precision dummy
        
       double precision msq(-nf:nf,-nf:nf),hdecay,s34
-      double precision f0q,f2q,f4q
-      common/bitflags/f0q,f2q,f4q
-      
       s34=(p(3,4)+p(4,4))**2
      & -(p(3,1)+p(4,1))**2-(p(3,2)+p(4,2))**2-(p(3,3)+p(4,3))**2
 

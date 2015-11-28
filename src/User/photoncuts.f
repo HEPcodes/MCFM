@@ -19,14 +19,16 @@
       include 'z_dip.f'
       include 'jetlabel.f'
       logical first,is_lepton,is_photon,is_hadronic
-      integer j,k
-      double precision ptm,pt3
+      integer i,j,k,im1,im2
+      double precision ptm,ptm1,ptm2,pt3,pt4
       integer countlept,leptindex(mxpart),countgamm,gammindex(mxpart),
      & countjet,jetindex(mxpart)
       double precision pjet(mxpart,4),pt,etarap,R,pt1,pt2,pth,pts,s34
       data first/.true./
       save first,countlept,countgamm,countjet,
      & leptindex,gammindex,jetindex
+!$omp threadprivate(first,countlept,countgamm,countjet)
+!$omp threadprivate(leptindex,gammindex,jetindex)
       
       photoncuts=.false.
 
@@ -40,8 +42,12 @@ c--- write-out the cuts we are using
      &                '                *'
       write(6,99) '*   pt(photon 2)         >   ',gammpt2,
      &                '                *'
-      if(case.eq.'trigam') then 
+      if((case.eq.'trigam') .or. (case.eq.'fourga'))then 
          write(6,99) '*   pt(photon 3)         >   ',gammpt3,
+     &        '                *'
+      endif
+      if(case.eq.'fourga') then 
+         write(6,99) '*   pt(photon 4)         >   ',gammpt3,
      &        '                *'
       endif
       write(6,99) '*   eta(photon)          <   ',gammrap,
@@ -116,6 +122,40 @@ C     Basic pt and rapidity cuts for photon
      &       (abs(etarap(gammindex(1),pjet)) .gt. gammrap) .or.
      &       (abs(etarap(gammindex(2),pjet)) .gt. gammrap) .or.
      &       (abs(etarap(gammindex(3),pjet)) .gt. gammrap) ) then
+          photoncuts=.true.
+          return
+        endif
+      endif
+
+      if (countgamm .eq. 4) then
+        pt1=pt(gammindex(1),pjet) 
+        pt2=pt(gammindex(2),pjet)
+        pt3=pt(gammindex(3),pjet)
+        pt4=pt(gammindex(4),pjet)
+        pth=max(pt1,pt2,pt3,pt4)
+        pts=min(pt1,pt2,pt3,pt4)
+        do i=1,4 
+           if((pt(gammindex(i),pjet).ne.pth)
+     &          .and.(pt(gammindex(i),pjet).ne.pts)) then
+           im1=i
+           endif
+        enddo
+        do i=1,4 
+           if((pt(gammindex(i),pjet).ne.pth)
+     &          .and.(pt(gammindex(i),pjet).ne.pts).and.(i.ne.im1)) then
+           im2=i
+        endif
+        enddo
+        ptm1=max(pt(gammindex(im1),pjet),pt(gammindex(im2),pjet))
+        ptm2=min(pt(gammindex(im1),pjet),pt(gammindex(im2),pjet))
+        if ( ( pth .lt. gammpt) .or.
+     &       ( ptm1 .lt. gammpt2) .or.
+     &       ( ptm2 .lt. gammpt3) .or.
+     &       ( pts .lt. gammpt3) .or.
+     &       (abs(etarap(gammindex(1),pjet)) .gt. gammrap) .or.
+     &       (abs(etarap(gammindex(2),pjet)) .gt. gammrap) .or.
+     &       (abs(etarap(gammindex(3),pjet)) .gt. gammrap) .or.
+     &       (abs(etarap(gammindex(4),pjet)) .gt. gammrap) ) then
           photoncuts=.true.
           return
         endif

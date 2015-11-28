@@ -7,13 +7,13 @@ c--- a given final state, by contracting a final-final dipole
       include 'constants.f'
       include 'qcdcouple.f'
       include 'debug.f'
-      integer i4,i5,j4(2),j5(2),j,k,nperms
+      integer i4,i5,j,k,nperms
       double precision p(mxpart,4),z,dot,q(mxpart,4),
      . msq(-nf:nf,-nf:nf),wt4,wt5_4
       double precision facq,wt,s3i4,y,omy,jacbit,wt0
       parameter(wt0=1d0/eight/pisq)
-      data j4/4,5/
-      data j5/5,4/
+      integer,parameter:: j4(2)=(/4,5/)
+      integer,parameter:: j5(2)=(/5,4/)
 
       i4=j4(nperms)
       i5=j5(nperms)

@@ -4,16 +4,16 @@
       include 'mxdim.f'
       include 'phasemin.f'
       include 'debug.f'
+      include 'x1x2.f'
       integer nu
       double precision r(mxdim)
       double precision wt10,q(mxpart,4)
       double precision p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4),p8(4),
      . p9(4),p10(4),p11(4),p12(4),pswt,xjac,p1ext(4),p2ext(4)
-      double precision xx(2),tau,x1mx2,surd
+      double precision tau,x1mx2,surd
       double precision lntaum
       common/pext/p1ext,p2ext
-      common/x1x2/xx
-      data p3/0d0,0d0,0d0,0d0/
+!$omp threadprivate(/pext/)
 
       wt10=0d0
 
@@ -63,6 +63,8 @@ c      xjac=2*r(13)*(one-taumin)
       if (debug) write(6,*) 'wt10 in gen10',wt10
       return
 
- 999  return 1
+ 999  q(:,:)=0d0
+      wt10=0d0
+      return 1
       end
 

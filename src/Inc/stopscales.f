@@ -10,4 +10,4 @@
      .                  renscale_H,renscale_L,
      .                  as_H,as_L,
      .                  msqLH,msqHL
-      
+!$omp threadprivate(/stopscales/)      

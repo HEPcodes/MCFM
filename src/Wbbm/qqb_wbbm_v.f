@@ -29,6 +29,7 @@
       double complex a61mm,a61mp,a61pm,a61pp
       logical numcheck
       common/numcheck/numcheck
+!$omp threadprivate(/numcheck/)
       
       scheme='dred'
 

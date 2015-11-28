@@ -23,10 +23,10 @@
      . aq_gg(2),qa_gg(2),
      . ag_ag(2),qg_qg(2),ga_ag(2),gq_qg(2),
      . gg_qa(2)
-      integer j,k,jj(-nf:nf),kk(-nf:nf)
-      data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      data kk/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      
+      integer j,k
+      integer,parameter::jj(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
+      integer,parameter::kk(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
+
       call dotem(5,p,s)
 
       do j=1,2

@@ -28,9 +28,8 @@ c---
      & qgZZ(2,2,2,2),qggamZ(2,2,2,2),qgZgam(2,2,2,2),
      & gqZZ(2,2,2,2),gqgamZ(2,2,2,2),gqZgam(2,2,2,2),
      & gqbZZ(2,2,2,2),gqbgamZ(2,2,2,2),gqbZgam(2,2,2,2)   
-      integer jj(-nf:nf),kk(-nf:nf)
-      data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      data kk/-1,-2,-1,-2,-1,0,1,2,1,2,1/
+      integer,parameter::jj(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
+      integer,parameter::kk(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
       
 c--set msq=0 to initialize
       do j=-nf,nf

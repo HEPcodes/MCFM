@@ -182,21 +182,21 @@ c-----square the helicity amplitudes
       do i=1,16
          if (ipsgen .eq. 1) then
          m6sq0hAA(i)=cdabs(m60hA(i))**2
-         m6sq0hAB(i)=2d0*realpart(m60hA(i)*dconjg(m60hB(i)))
+         m6sq0hAB(i)=2d0*dreal(m60hA(i)*dconjg(m60hB(i)))
          endif
          if (ipsgen .eq. 2) then
          m6sq0hBB(i)=cdabs(m60hB(i))**2
-         m6sq0hBC(i)=2d0*realpart(m60hB(i)*dconjg(m60hC(i)))
+         m6sq0hBC(i)=2d0*dreal(m60hB(i)*dconjg(m60hC(i)))
          endif
          if (ipsgen .eq. 3) then
          m6sq0hCC(i)=cdabs(m60hC(i))**2
-         m6sq0hAC(i)=2d0*realpart(m60hA(i)*dconjg(m60hC(i)))
-         m6sq0hCD(i)=2d0*realpart(m60hC(i)*dconjg(m60hD(i)))
+         m6sq0hAC(i)=2d0*dreal(m60hA(i)*dconjg(m60hC(i)))
+         m6sq0hCD(i)=2d0*dreal(m60hC(i)*dconjg(m60hD(i)))
          endif
          if (ipsgen .eq. 4) then
          m6sq0hDD(i)=cdabs(m60hD(i))**2
-         m6sq0hAD(i)=2d0*realpart(m60hA(i)*dconjg(m60hD(i)))
-         m6sq0hBD(i)=2d0*realpart(m60hB(i)*dconjg(m60hD(i)))
+         m6sq0hAD(i)=2d0*dreal(m60hA(i)*dconjg(m60hD(i)))
+         m6sq0hBD(i)=2d0*dreal(m60hB(i)*dconjg(m60hD(i)))
          endif
       enddo
       do i=1,16

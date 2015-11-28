@@ -62,6 +62,8 @@ c
 *	data
 *
 	data init /0/
+!$omp threadprivate(init)
+
 *
 *  #] declarations:
 *  #[ check input:
@@ -821,6 +823,7 @@ c
 *	the external threepoint vertices on which we have enough information
 *
 	data iperm/5,6,9, 6,7,10, 7,8,9, 8,5,10/
+!$omp threadprivate(iperm)
 *
 *  #] declarations:
 *  #[ get dotproducts:

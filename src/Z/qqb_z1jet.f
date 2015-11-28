@@ -15,13 +15,12 @@ c---
       include 'sprods_com.f'
       include 'zprods_decl.f'
       include 'nflav.f'
-      integer j,k,hq,hl,swap(2)
+      integer j,k,hq,hl
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac
       double complex prop
       double precision AqqbZg2(2,2),AqbqZg2(2,2),AqgZq2(2,2),
      .               AqbgZqb2(2,2),AgqbZqb2(2,2),AgqZq2(2,2)
-      data swap/2,1/
-      save swap
+      integer,parameter:: swap(2)=(/2,1/)
 
       do j=-nf,nf
       do k=-nf,nf

@@ -70,6 +70,8 @@
 	data init/0/
 *
 *  #] declarations:
+!$omp threadprivate(init)
+
 *  #[ the real case:
 *
 *	take a faster route if all masses are real or nschem < 3
@@ -209,6 +211,8 @@
      +		   1,3,2,6,5,4/
 	data init /0/
 *  #] declarations:
+!$omp threadprivate(inew,init,lcon)
+
 *  #[ open console for some activity on screen:
 	if ( init .eq. 0 ) then
 	    init = 1
@@ -290,7 +294,7 @@
 	DOUBLE COMPLEX cpimem(6,memory)
 	DOUBLE COMPLEX cc0mem(memory)
 	DOUBLE PRECISION dl2mem(memory)
-	save memind,iermem,ialmem,cpimem,cc0mem
+	save memind,iermem,ialmem,cpimem,cc0mem,inew,initlo
 	data memind /0/
 *
 *	statement function:
@@ -306,6 +310,8 @@
      +		   3,2,1,5,4,6,
      +		   2,1,3,4,6,5/
 	data initlo /0/
+!$omp threadprivate(inew,initlow,memind,iermem,ialmem,cpimem,cc0mem)
+
 *
 *  #] declarations:
 *  #[ initialisations:
@@ -762,6 +768,7 @@
 	DOUBLE PRECISION a1,a2,a3,xpimax,absc
 	DOUBLE COMPLEX c
 	integer i,j,inew(6,6),ier0
+
 	save inew
 *
 *	common blocks
@@ -776,12 +783,14 @@
      +		   1,3,2,6,5,4,
      +		   3,2,1,5,4,6,
      +		   2,1,3,4,6,5/
+!$omp threadprivate(inew)
 *
 *	statement function
 *
 	absc(c) = abs(DBLE(c)) + abs(DIMAG(c))
 *
 *  #] declarations:
+
 *  #[ get largest cancellation:
 	if ( iflag .eq. 1 ) then
 	    a1 = absc(cdpipj(6,4))/max(absc(cpi(6)+cpi(4)),xclogm)

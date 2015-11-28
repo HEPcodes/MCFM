@@ -61,7 +61,9 @@
      +		   1,2,4,5,10,8,
      +		   1,2,3,5,6,9/
 *
-*  #] declarations: 
+*  #] declarations:
+!$omp threadprivate(itest,iinx,/ffcut/)
+ 
 *  #[ check input:
 	if ( ltest ) then
 	    if ( xpip(3).ne.0 .or. xpip(4).ne.0 .or. xpip(7).ne.0 )

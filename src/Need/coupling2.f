@@ -18,7 +18,7 @@ c      include 'ewinput.f'
       include 'fourthgen.f'
       include 'couple.f'
       include 'part.f'
-      integer nproc
+      include 'nproc.f'
       double precision alphas,cmass,bmass
       double precision Vud,Vus,Vub,Vcd,Vcs,Vcb
       common/cabib/Vud,Vus,Vub,
@@ -26,7 +26,6 @@ c      include 'ewinput.f'
       common/qmass/cmass,bmass
 c      common/em/aemmz
 c      common/mypart/mypart
-      common/nproc/nproc
 
 c--- set up the beta-function
       b0=(xn*11d0-2d0*nflav)/6d0

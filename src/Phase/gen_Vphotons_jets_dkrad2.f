@@ -24,10 +24,12 @@ c---- with all 2 pi's (ie 1/(2*pi)^(4+2n))
       include 'part.f'
       include 'process.f'
       include 'ipsgen.f'
+      include 'x1x2.f'
+      include 'first.f'
       double precision r(mxdim)
       double precision p(mxpart,4),p3(4),psumjet(4),pcm(4),Q(4)
       double precision wt
-      double precision hmin,hmax,delh,h,sqrts,pt,etamax,etamin,xx(2)
+      double precision hmin,hmax,delh,h,pt,etamax,etamin
       double precision y,sinhy,coshy,phi,mv2,wtbw,mjets
       double precision ybar,ptsumjet2,ycm,sumpst,q0st,rshat,dely
       double precision ptjetmin,etajetmin,etajetmax,pbreak
@@ -36,13 +38,13 @@ c---- with all 2 pi's (ie 1/(2*pi)^(4+2n))
       double precision p4(4),p5(4),p6(4),wt35,wt46,wt3456,p35(4),p46(4)
       double precision ymax,yave
       integer j,nu,nphots,njets,nphotsjets,ijet
-      logical first,xxerror,flatreal
-      integer branch
-      common/energy/sqrts
-      common/x1x2/xx
+      logical xxerror,flatreal
+      include 'energy.f'
       parameter(flatreal=.false.)
-      data first/.true./,xxerror/.false./,branch/1/
-      save first,ptjetmin,etajetmin,etajetmax,pbreak,xxerror,branch
+      data xxerror/.false./
+      save ptjetmin,etajetmin,etajetmax,pbreak,xxerror
+!$omp threadprivate(ptjetmin,etajetmin,etajetmax,pbreak)
+!$omp threadprivate(xxerror)
       
       if (first .or. reset) then
         first=.false.
@@ -170,16 +172,8 @@ c--- favour small pt region
    
    77 continue
       
-      if (case .eq. 'W_2gam') then
-c---- this routine should only generate BW around region that was
-c---- vetoed at the end of gen_phots_jets  
-        call breitw(r(3*nphotsjets+1),(mass3-5d0*width3)**2,
-     &   (mass3+5d0*width3)**2,mass3,width3,mv2,wtbw)
-      else    
-c--- now generate Breit-Wigner        
-        call breitw(r(3*nphotsjets+1),wsqmin,sqrts**2,
-     &   mass3,width3,mv2,wtbw)
-      endif
+      call breitw(r(3*nphotsjets+1),wsqmin,sqrts**2,
+     &  mass3,width3,mv2,wtbw)
       wt=wt*wtbw/2d0/pi
 
 c--- catch special case
@@ -269,10 +263,10 @@ c--- now decay Q into 3,4,5,6
      & p35,p3,p5,wt35,*999)
       call phi3m0(r(3*nphotsjets+9),r(3*nphotsjets+10),
      & p46,p4,p6,wt46,*999)
-      wt=wt*wt3456*wt35*wt46/twopi**2     
+      wt=wt*wt3456*wt35*wt46/twopi**2
 
       do nu=1,4
-      if (branch .eq. 1) then
+      if (r(3*nphotsjets+11) .lt. 0.5d0) then
         p(3,nu)=p3(nu)
         p(4,nu)=p4(nu)
       else
@@ -282,13 +276,7 @@ c--- now decay Q into 3,4,5,6
       p(5,nu)=p5(nu)
       p(6,nu)=p6(nu)
       enddo
-      branch=3-branch
 
-c      call writeout(p)
-c      pause
-
-c      wt=wt/8d0/pi
-            
       return
       
   999 wt=0d0

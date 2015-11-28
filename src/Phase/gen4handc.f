@@ -10,23 +10,24 @@ c--- better map the continuum contribution
       include 'phasemin.f'
       include 'breit.f'
       include 'interference.f'
-      logical first
+      include 'x1x2.f'
+      include 'first.f'
       integer nu
-      integer icount
+C      integer,save::icount=1
+C!$omp threadprivate(icount)
       double precision r(mxdim)
       double precision wt4,p1(4),p2(4),p3(4),p4(4),p5(4),p6(4)
-      double precision p(mxpart,4),sqrts,rtshat
+      double precision p(mxpart,4),rtshat
       double precision pswt,xjac,pswidth
-      double precision xx(2),s3456,wt3456,ymax,yave,lntaum,tau
-      common/energy/sqrts
-      common/x1x2/xx
-      data first/.true./
-      data icount/1/
-      save icount,first,pswidth
+      double precision s3456,wt3456,ymax,yave,lntaum,tau
+      include 'energy.f'
+      save pswidth
+!$omp threadprivate(pswidth)
 
       wt4=0d0
       
       if (first) then
+         first=.false.
 c--- width to use in generation of PS: if too far from threshold, just
 c--- use a width of 10 GeV in the B.W. to sample PS adequately
         if (hmass .lt. mass2+mass3-hwidth*5d0) then
@@ -77,17 +78,17 @@ c      write(6,*) 'problems with xx(1),xx(2) in gen4h',xx(1),xx(2)
       enddo 
 
       if (interference) then
-        if (icount .eq. 1) then
+!        if (icount .eq. 1) then
           bw34_56=.true.
-          icount=icount-1
-        else
-          bw34_56=.false.
-          do nu=1,4
-            p(4,nu)=p6(nu)
-            p(6,nu)=p4(nu)
-          enddo 
-          icount=icount+1
-        endif
+!          icount=icount-1
+!        else
+!          bw34_56=.false.
+!          do nu=1,4
+!            p(4,nu)=p6(nu)
+!            p(6,nu)=p4(nu)
+!          enddo 
+!          icount=icount+1
+!        endif
       endif
       
       wt4=xjac*pswt/sqrts**2

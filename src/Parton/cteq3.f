@@ -209,7 +209,9 @@ c
 
       save Ist, Lp, Qsto
       save SB, SB2, SB3
-
+      save Iord,Isch,Nqrk,Alm,Vlm,Qms,Xmn,Qmn,Qmx
+!$omp threadprivate(Ist, Lp, Qsto,SB, SB2, SB3)
+!$omp threadprivate(Iord,Isch,Nqrk,Alm,Vlm,Qms,Xmn,Qmn,Qmx)
       X  = XX
       Irt = 0
       if(Iset.eq.Ist .and. Qsto.eq.QQ) then

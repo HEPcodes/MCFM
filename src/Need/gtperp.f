@@ -27,8 +27,8 @@ C-----------------------------------------------------------------------
       DOUBLE PRECISION FUNCTION EPS4(I,A,B,C)
       IMPLICIT NONE
       DOUBLE PRECISION EPS3,A(4),B(4),C(4),AA(3),BB(3),CC(3)
-      INTEGER I,J,K,S(4)
-      DATA S/+1,-1,+1,+1/
+      INTEGER::I,J,K
+      INTEGER,PARAMETER::S(4)=(/+1,-1,+1,+1/)
       J=1
       DO K=1,3
         IF (I.EQ.J) J=J+1
@@ -47,8 +47,8 @@ C-----------------------------------------------------------------------
       DOUBLE PRECISION FUNCTION EPS3(I,A,B)
       IMPLICIT NONE
       DOUBLE PRECISION A(3),B(3),AA(2),BB(2)
-      INTEGER I,J,K,S(3)
-      DATA S/+1,-1,+1/
+      INTEGER I,J,K
+      INTEGER,PARAMETER::S(3)=(/+1,-1,+1/)
       J=1
       DO K=1,2
         IF (I.EQ.J) J=J+1

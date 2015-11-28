@@ -15,7 +15,8 @@ c     u(-p1)+b(p2)->e-(p3)+e+(p4)+t(p5)+d(p6)
       include 'TRbadpoint.f'
       include 'TRtensorcontrol.f'
       include 'tensorinfo.f'
-      integer nu,icross,i1(4),i2(4),i6(4),u_b,b_u,db_b,b_db
+      include 'first.f'
+      integer nu,icross,u_b,b_u,db_b,b_db
       integer origitotal,origibadpoint,origipolesfailed
       double precision p(mxpart,4),msq(-nf:nf,-nf:nf),fac,
      & virt(4),q(mxpart,4),pswap(mxpart,4)
@@ -25,13 +26,11 @@ c     u(-p1)+b(p2)->e-(p3)+e+(p4)+t(p5)+d(p6)
      & upper_tri(2,2,-2:0), lower_tri(2,2,-2:0)
       double complex lotot(2,2)
       integer j3,j5,h3,h5
-      logical first,failed
+      logical failed
       parameter(u_b=1,b_u=2,db_b=3,b_db=4)
-      data first/.true./
-      data i1/1,2,6,6/
-      data i2/2,1,2,1/
-      data i6/6,6,1,2/
-      save first
+      integer, parameter:: i1(4)=(/1,2,6,6/)
+      integer, parameter:: i2(4)=(/2,1,2,1/)
+      integer, parameter:: i6(4)=(/6,6,1,2/)
        
       scheme='dred'
 
@@ -87,9 +86,9 @@ c --- swap momenta p3 <-> p4 for tbar
       endif
       
       if (nwz .eq. 1) then
-         call ubtzdamp(p,1,2,3,4,6,lotot)         
+         call ubtzdamp(p,1,2,3,4,6,lotot)
       elseif (nwz .eq. -1) then
-         call ubtzdamp(p,1,2,4,3,6,lotot)         
+         call ubtzdamp(p,1,2,4,3,6,lotot)
       endif
 
 c--- setup currents
@@ -128,7 +127,7 @@ c --- Upper and lower: analytic for remaining contributions
       call lower_parttri(pswap,lower_tri,first)
       vlower(:,:,:)=vlower(:,:,:)+lower_tri(:,:,:)
 
-c --- Scalar, middle, extra: analytic only      
+c --- Scalar, middle, extra: analytic only
       call scalar(pswap,vscalar)
       call middle(pswap,vmiddle)
       call extra(pswap,vextra)

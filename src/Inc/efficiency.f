@@ -11,3 +11,4 @@ c---            (dependent on 'cutoff') due to 'masscuts' and 'smalls'
 
       integer njetzero,ncutzero,ntotzero,ntotshot
       common/efficiency/njetzero,ncutzero,ntotzero,ntotshot
+!$omp threadprivate(/efficiency/)

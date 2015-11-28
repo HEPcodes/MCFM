@@ -18,7 +18,7 @@
 *	l4also: in C0 (and higher), also consider the algorithm with 16
 *	        dilogs                                .TRUE.
 *	ldc3c4: in D0 (and higher), also consider possible cancellations
-*	        between the C0's                      .TRUE.
+*	        between the C0s                      .TRUE.
 *	lmem:   before computing the C0 and higher, first check whether
 *	        it has already been done recently     .FALSE.
 *	lwarn:  give warning messages (concerning numerical stability)
@@ -167,3 +167,6 @@
 	common /ffcdot/ cfpij2,cfpij3,cfpij4,cfpij5,cfpij6
 	common /ffcdel/ fodel2,fodel3,cfdl4s,fodel4,fodl3i,fod3ij,fodl4i
 	common /ffsmug/ lsmug,lnasty,idum93,cmipj,c2sisj,ca1
+
+!$omp threadprivate(/ffsign/,/ffprec/,/ffflag/,/ffcnst/,/ffrota/,
+!$omp&  /ffdot/,/ffdel/,/ffidel/,/ffcdot/,/ffcdel/,/ffsmug/)

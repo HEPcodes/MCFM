@@ -21,3 +21,4 @@ c---  g=0, q=1, a=-1, r=2, b=-2 --- "f" for final
       double precision 
      . S1(-1:1,-1:1,-1:1,8,0:2,3),S2(-1:1,-1:1,-1:1,8,0:2,3)
       common/SP_twojet/S1,S2
+!$omp threadprivate(/SP_twojet/)

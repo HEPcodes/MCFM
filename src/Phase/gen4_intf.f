@@ -10,10 +10,9 @@ c--- generated using the standard VV routine gen4.f
       include 'masses.f'
       include 'mxdim.f'
       include 'limits.f'
-      logical first,useHiggsBW
+      include 'first.f'
+      logical, save::useHiggsBW
       double precision r(mxdim),p(mxpart,4),wt,threshold
-      data first/.true./
-      save first,useHiggsBW
 
 c--- initialization on first call      
       if (first) then

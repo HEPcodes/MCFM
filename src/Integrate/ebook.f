@@ -13,15 +13,15 @@ c      COMMON/HISTOI/NBIN,IHIS,IUSCORE,IOSCORE,IENT,NHIST
 
 
 
-      block data einitialize
+c      block data einitialize
 c--- This is the EBOOK common block - note that most entries are not
 c--- present here, to save on storage space. The maximum number of
 c--- histograms that may be calculated with errors is 4 and the
 c--- maximum number of PDF error sets is 1000
-      include 'nplot.f'
-      include 'ehisto.f'
-      data IHISTOMATCH/100*0/,ICOUNTHISTO/0/
-      end
+c      include 'nplot.f'
+c      include 'ehisto.f'
+c      data IHISTOMATCH/100*0/,ICOUNTHISTO/0/
+c      end
 
 c--- sets up the histogram
       subroutine ebook(N)

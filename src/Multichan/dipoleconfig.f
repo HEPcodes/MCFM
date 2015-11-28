@@ -24,7 +24,8 @@
         dipconfig(1,:)= (/ 1,5,2 /)
         dipconfig(2,:)= (/ 2,5,1 /)
       elseif ((case .eq. 'WWqqbr') .or. (case .eq. 'WWnpol')
-     .   .or. (case .eq. 'WZbbar') .or. (case .eq. 'ZZlept')) then
+     .   .or. (case .eq. 'WZbbar') .or. (case .eq. 'ZZlept')
+     .   .or. (case .eq. 'HZZ_4l') .or. (case .eq. 'HmZZ4l')) then
         maxdip=2
         dipconfig(1,:)= (/ 1,7,2 /)
         dipconfig(2,:)= (/ 2,7,1 /)
@@ -181,6 +182,30 @@
         dipconfig(1,:)= (/ 1,6,2 /)
         dipconfig(2,:)= (/ 2,6,1 /)
         maxdip=2
+      elseif (case .eq. 'WW_jet') then
+        dipconfig(1,:)= (/ 1,7,2 /)
+        dipconfig(2,:)= (/ 2,7,1 /)
+        dipconfig(3,:)= (/ 1,8,2 /)
+        dipconfig(4,:)= (/ 2,8,1 /)
+        dipconfig(5,:)= (/ 1,7,8 /)
+        dipconfig(6,:)= (/ 7,8,1 /)
+        dipconfig(7,:)= (/ 1,8,7 /)
+        dipconfig(8,:)= (/ 2,8,7 /)
+        dipconfig(9,:)= (/ 7,8,2 /)
+        dipconfig(10,:)=(/ 2,7,8 /)
+        maxdip=10
+      elseif(case.eq.'fourga') then 
+        dipconfig(1,:)= (/ 1,7,2 /)
+        dipconfig(2,:)= (/ 2,7,1 /)
+        if (frag) then
+           dipconfig(3,:)= (/ 3,7,1 /)
+           dipconfig(4,:)= (/ 4,7,1 /)
+           dipconfig(5,:)= (/ 5,7,1 /)
+           dipconfig(6,:)= (/ 6,7,1 /)
+           maxdip=6
+        else
+           maxdip=2
+        endif
       else
         write(6,*) 'Dipole configurations for this process not'
         write(6,*) 'properly specified in dipoleconfig.f'

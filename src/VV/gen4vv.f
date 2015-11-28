@@ -11,18 +11,17 @@ c--- Z(34) Z(56) or W(54) W(36)
       include 'breit.f'
       include 'interference.f'
       include 'ipsgen.f'
-      integer nu,icount,nproc
+      include 'x1x2.f'
+      include 'energy.f'
+      include 'nproc.f'
+      integer nu,icount
       double precision r(mxdim)
       double precision wt4,p1(4),p2(4),p3(4),p4(4),p5(4),p6(4)
       double precision p(mxpart,4)
       double precision pswt,xjac,s34,s56,s45,s36,wt_ww,wt_zz
-      double precision xx(2),tau,x1mx2,surd
-      double precision lntaum,sqrts
-      common/energy/sqrts
-      common/x1x2/xx
-      common/nproc/nproc
-      data icount/1/
-      save icount
+      double precision tau,x1mx2,surd
+      double precision lntaum
+
       wt4=0d0
 
       lntaum=dlog(taumin)

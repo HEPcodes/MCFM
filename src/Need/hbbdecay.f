@@ -31,10 +31,10 @@
       include 'part.f'
       include 'msbarmasses.f'
       include 'ewcouple.f'
+      include 'first.f'
       double precision mb_eff,massfrun
-      logical first
-      data first/.true./
-      save first,mb_eff
+      save mb_eff
+!$omp threadprivate(mb_eff)
 
       if (first) then
 c--- run mb to appropriate scale

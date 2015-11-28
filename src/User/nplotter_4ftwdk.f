@@ -17,16 +17,16 @@ c---                1  --> counterterm for real radiation
       include 'constants.f'
       include 'histo.f'
       include 'outputflags.f'
+      include 'nqcdjets.f'
       double precision p(mxpart,4),wt,wt2,pt
       double precision tiny,swap,costheta,ylight
-      integer switch,n,nplotmax,nqcdjets,nqcdstart,j
+      integer switch,n,nplotmax,j
       character*4 tag
-      logical first,failed
-      common/nplotmax/nplotmax
-      common/nqcdjets/nqcdjets,nqcdstart
+      logical failed
       parameter(tiny=1d-8)
-      data first/.true./
-      save first
+      logical, save::first=.true.
+      common/nplotmax/nplotmax
+ccccc!$omp threadprivate(first,/nplotmax/)
 
 ************************************************************************
 *                                                                      *

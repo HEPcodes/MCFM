@@ -33,9 +33,11 @@
       include 'part.f'
       include 'outputflags.f'
       include 'runstring.f'
+      include 'energy.f'
+      include 'nproc.f'
       integer ih1,ih2,itmx1,itmx2,ncall1,ncall2,idum,nmin,nmax
-      integer nproc,nargs
-      double precision sqrts,Rcut,randummy,ran2
+      integer nargs
+      double precision Rcut,randummy,ran2
       double precision cmass,bmass
       character*72 optionsfile
       logical makecuts,dryrun
@@ -43,7 +45,6 @@
       double precision rtsmin
       double precision mbbmin,mbbmax,Mwmin,Mwmax
       common/iterat/itmx1,ncall1,itmx2,ncall2
-      common/nproc/nproc
       common/spira/spira
       common/ranno/idum
       common/Rcut/Rcut
@@ -51,7 +52,6 @@
 
       common/makecuts/makecuts
       common/dryrun/dryrun
-      common/energy/sqrts
       common/qmass/cmass,bmass
 
       common/density/ih1,ih2

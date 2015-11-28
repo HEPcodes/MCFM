@@ -7,6 +7,8 @@ C-----m1sq<m2sq<m3sq
       data x1/3,1,2/
       data x2/2,3,1/
       save x1,x2
+!$omp threadprivate(x1,x2)
+
       do j=1,3
       msqtmp(j)=msq(j)
       psqtmp(j)=psq(j)

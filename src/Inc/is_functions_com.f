@@ -9,4 +9,3 @@
       common/is_functions_com/
      & ishadarray,isphotarray,isleptarray,iselectronarray,ismuonarray,
      & isneutarray,isdmarray
-     

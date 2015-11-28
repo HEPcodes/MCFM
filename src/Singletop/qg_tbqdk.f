@@ -17,7 +17,7 @@
 *                                                                      *
 *     NOTE: this routine is a replacement for qg_tbqdk_old.f,          *
 *           including the effect of the b-quark mass. In the massive   *
-*           case it is approximately 10% slower than that routine      *
+*           case it is approximately 10% slower than that routine.     *
 *                                                                      *
 ************************************************************************
       include 'constants.f'
@@ -53,15 +53,15 @@ C----set all elements to zero
         call adecay(p,3,4,5,manti)
       endif
       
-      if (nwz .eq. +1) then
+      mtotqg(:,:,:)=czip
+      mtotgq(:,:,:)=czip
+      mtotqbg(:,:,:)=czip
+      mtotgqb(:,:,:)=czip
 
+      if (nwz .eq. +1) then
       do hb=1,hbmax
       do h2=1,2
       do hc=1,2
-      mtotqg(hb,h2,hc)=czip
-      mtotgq(hb,h2,hc)=czip
-      mtotqbg(hb,h2,hc)=czip
-      mtotgqb(hb,h2,hc)=czip
       do ht=1,htmax
       mtotqg(hb,h2,hc)=mtotqg(hb,h2,hc)
      & +mtop(hb,ht)*mqg(ht,h2,hc)
@@ -81,10 +81,6 @@ C----set all elements to zero
       do hb=1,2
       do h2=1,2
       do hc=hcmin,2
-      mtotqg(hb,h2,hc)=czip
-      mtotgq(hb,h2,hc)=czip
-      mtotqbg(hb,h2,hc)=czip
-      mtotgqb(hb,h2,hc)=czip
       do ha=hamin,2
       mtotqg(hb,h2,hc)=mtotqg(hb,h2,hc)
      & +mqg(hb,h2,ha)*manti(ha,hc)

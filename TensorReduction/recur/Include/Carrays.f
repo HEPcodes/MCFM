@@ -6,3 +6,4 @@
       common/carrays/ci,cii,ciii,ciiii,ciiiii,ciiiiii,ciiiiiii,
      . czzi,czzii,czziii,czziiii,czzzzi,czzzzii,
      . czziiiii,czzzziii,czzzzzzi
+!$omp threadprivate(/carrays/)

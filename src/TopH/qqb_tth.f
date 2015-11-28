@@ -21,6 +21,7 @@ C
       include 'plabel.f'
       include 'msbarmasses.f'
       include 'hdecaymode.f'
+      include 'first.f'
       
       integer j,k,nu
       double precision msq(-nf:nf,-nf:nf),pin(mxpart,4),p(mxpart,4)
@@ -34,10 +35,8 @@ C
       double precision p1Dr,p2Dr,p1Db,p2Db,p4Dq,p7Da,msqgamgam
       integer q4,a7,r1,r2,b1,b2
       parameter(q4=3,a7=5,r1=6,r2=8,b1=9,b2=10)
-      logical first
-      data first/.true./
-      save first,mt_eff
-
+      save mt_eff
+!$omp threadprivate(mt_eff)
       if (first) then
 c--- run mt to appropriate scale
         if (part .eq. 'lord') then

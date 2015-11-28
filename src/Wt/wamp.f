@@ -12,6 +12,7 @@ c     g(-p1)+s(-p2) --> e^-(ie)+n(in)+Pn(jn)+Pe^+(je)+b(jb)
       double precision propp,propd,propt,taugt,tsq,mq,qwidth
       double complex zab(mxpart,mxpart),zba(mxpart,mxpart)
       common/zabprods/zab,zba
+!$omp threadprivate(/zabprods/)
 
       propp=dsqrt((s(ie,in)-wmass**2)**2+(wmass*wwidth)**2)
       propd=dsqrt((s(je,jn)-wmass**2)**2+(wmass*wwidth)**2)

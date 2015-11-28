@@ -21,6 +21,7 @@ c                            --> e^-(p3) + nubar(p4)
 c--- we label the amplitudes by helicity (qqb1 ... qqb4)
 c--- and by type of contribution qqb(1) ... qqb(n)
       integer i,j,k,n1,n2
+!$omp threadprivate(/facgg/)
 
 c--- initialize matrix elements
       do j=-nf,nf

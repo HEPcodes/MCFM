@@ -17,6 +17,7 @@ c--- note that non-leptonic W decays do not include scattering diagrams
       include 'zcouple.f'
       include 'ewcharge.f'
       include 'anomcoup.f'
+      include 'xanomcoup.f'
       include 'srdiags.f'
       include 'plabel.f'
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),qdks(mxpart,4)
@@ -29,10 +30,11 @@ c--- note that non-leptonic W decays do not include scattering diagrams
       double complex Fa341256,Fa653421,Fa346521,Fa651243
       double complex Fa342156,Fa653412,Fa346512,Fa652143
       double complex cs_z(2,2),cs_g(2,2),cgamz(2,2),cz(2,2)
-      double precision fac,mp(nf),xfac
+      double precision fac,xfac
+      double precision, parameter :: mp(nf)=(/-1d0,+1d0,-1d0,+1d0,-1d0/)
       integer j,k,jk,tjk,minus,mplus
-      data minus,mplus/1,2/
-      data mp/-1d0,+1d0,-1d0,+1d0,-1d0/
+      parameter(minus=1,mplus=2)
+c      data mp/-1d0,+1d0,-1d0,+1d0,-1d0/
       fac=gw**8*xn*aveqq
 C---multiply by factor for c-sbar+u-dbar hadronic decay
       if (plabel(5) .eq. 'qj') fac=2d0*xn*fac

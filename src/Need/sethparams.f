@@ -91,7 +91,10 @@ c--- Set up anomalous width of the Higgs boson if required
      &   .or.(case .eq. 'HZZqgI') .or. (case .eq. 'HWW_tb')
      &   .or.(case .eq. 'HWWint') .or. (case .eq. 'HWWH+i')
      &   .or.(case .eq. 'ggWW4l') .or. (case .eq. 'HVV_tb')
-     &   .or.(case .eq. 'ggVV4l')) then
+     &   .or.(case .eq. 'ggVV4l') .or. (case .eq. 'HZZ_jj')
+     &   .or.(case .eq. 'HZZ+jt') .or. (case .eq. 'qqWWqq')
+     &   .or.(case .eq. 'qqZZqq') .or. (case .eq. 'qqWWss')
+     &   .or.(case .eq. 'qqWZqq')) then
           anom_Higgs=.true.
           keep_SMhiggs_norm=.true.
           hwidth=hwidth*hwidth_ratio

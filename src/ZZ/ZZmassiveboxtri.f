@@ -10,7 +10,7 @@ c--- (-,+) and (+,-) helicities of gluons only
       include 'ggZZintegrals.f'
       include 'ZZdlabels.f'
       include 'ZZclabels.f'
-      logical first
+      include 'first.f'
       integer j1,j2,j3,j4,j5,j6,h1,h2,h3,h4,j,itot,irat
       double precision mt,mtsq
       double complex Xpp(2,2),Xmp(2,2),Xpm(2,2),Xmm(2,2),
@@ -18,8 +18,6 @@ c--- (-,+) and (+,-) helicities of gluons only
      & box(2,2,2,2,-2:0),tri(2,2,2,2,-2:0),d(2,2,2,2,5),c(2,2,2,2,6),
      & Xrat(2,2,2,2),drat(2,2,2,2,3),crat(2,2,2,2,6)
       parameter(itot=1,irat=2)
-      data first/.true./ 
-      save first
       
       mtsq=mt**2
       

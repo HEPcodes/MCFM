@@ -91,6 +91,7 @@
 	DOUBLE PRECISION xpj(13),absc,big
         DOUBLE COMPLEX cd0i(5),cdxj(120),ccxj(140),cbxj(60),caxj(20),cc
 	DOUBLE PRECISION mdxj(120),mcxj(140),mbxj(60),maxj(20)
+
 	save iplace
 *
 *	common blocks
@@ -112,6 +113,8 @@
      +          1,2,3,4, 06,07,08,14, 11,12, 16/
 *
 *  #] declarations:
+!$omp threadprivate(iplace)
+
 *  #[ init:
 *
 *	initialize to something ridiculous so that one immediately 
@@ -272,8 +275,11 @@
      +		    4,4,2,  4,4,3,
      +		    1,2,3,  1,2,4,
      +		    1,3,4,  2,3,4/
+!$omp threadprivate(ij2k,m2ijk)
+
 *
 *  #] declarations:
+
 *  #[ kinematical quatities for 5pv-red:
 *
 *	inverse kinematical matrix xi5  (4X4)

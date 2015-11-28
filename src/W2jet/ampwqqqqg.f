@@ -9,6 +9,7 @@ c--- amplitudes for the production of a W, four quarks and a gluon
       include 'qcdcouple.f'
       include 'ewcouple.f'
       include 'lc.f' 
+      include 'first.f' 
 
       double precision ofac,xmsqLR,xmsq1LR,xmsqLL,xmsqiLL,xmsqiiLL,
      .  xmsqRL
@@ -39,9 +40,6 @@ c     .               fLL7,fLL8,fLL9,fLL10,fLL11,fLL12
       double complex fiLLa1,fiLLa2,fiLLna1,fiLLna2
 
       integer j1,j2,j3,j4,j5,j6,j7
-      logical first
-      data first/.true./
-      save first 
 
       t2(j1,j2,j3,j4)=zb(j1,j2)*za(j2,j4)+zb(j1,j3)*za(j3,j4)
       s67=s(j6,j7)

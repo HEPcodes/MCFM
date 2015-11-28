@@ -23,11 +23,11 @@ c---                1  --> counterterm for real radiation
      & etmiss,vecmet(4),binindex,METHTdoublebin
       integer switch,n,nplotmax,j
       character*4 tag
-      logical first
-      common/nplotmax/nplotmax
       parameter(tiny=1d-8)
-      data first/.true./
-      save first
+      logical, save::first=.true.
+      common/nplotmax/nplotmax
+ccccc!$omp threadprivate(first,/nplotmax/)
+
 
 ************************************************************************
 *                                                                      *

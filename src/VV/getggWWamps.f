@@ -24,17 +24,16 @@ c--- Triangle (axial) pieces cancel for massless isodoublets
       include 'zprods_decl.f'
       include 'Higgsint.f'
       include 'noglue.f'
+      include 'first.f'
       integer j,h1,h2,nu,del1,del2,k12h,k34h,k56h11,k34h11,e
       double precision p(mxpart,4)
       double complex Alight(2,2),Agen3(2,2),sum(2,2,-2:0),
      & box(2,2,-2:0),triang(2,2,-2:0),bub(2,2,-2:0),a64v,props
       double precision dot,s12,s34,s56,dot1256,afac,bfac,gden,delta,
      & dot1234,dot3456,pttwo,ptWsafetycut_massive,ptWsafetycut_massless
-      logical includegens1and2,includegen3,first
+      logical includegens1and2,includegen3
       parameter(del1=7,del2=8)
       parameter(k12h=9,k34h=10,k56h11=11,k34h11=12)
-      data first/.true./ 
-      save first
       
 c--- omit massive loops for pt(W) < "ptWsafetycut_massive" (for num. stability)
       ptWsafetycut_massive=2d0

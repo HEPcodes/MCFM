@@ -13,10 +13,7 @@ c---
       integer j,k,h12,h34,h5
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac,qqb(2),qbq(2)
       double complex qbqamp(2,2,2,2),qqbamp(2,2,2,2)
-
-      integer jj(-nf:nf),kk(-nf:nf)
-      data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      data kk/-1,-2,-1,-2,-1,0,1,2,1,2,1/
+      integer,parameter::jj(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
       
 c--set msq=0 to initialize
       do j=-nf,nf
@@ -54,7 +51,7 @@ c--set msq=0 to initialize
           elseif ((j .gt. 0) .and. (k .lt. 0)) then
             msq(j,k)=qqb(jj(j))
           elseif ((j .lt. 0) .and. (k .gt. 0)) then
-            msq(j,k)=qbq(kk(k))
+            msq(j,k)=qbq(jj(k))
           endif
       enddo
 

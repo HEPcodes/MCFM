@@ -29,7 +29,6 @@ c--- are included in the subtraction terms for the QQGG piece
       include 'lc.f'
      
       integer j,k,n,np6,np12,np18,np21
-      integer a(6),b(6),c(6),pntr(5:7,5:7)
 c --- remember: nd will count the dipoles
       integer nd
 c--- slightly obtuse notation, to simplify declaration lines      
@@ -95,7 +94,6 @@ c--- slightly obtuse notation, to simplify declaration lines
      . sub1b_2(6,4),sub2b_1(6,4),
      . msq1b_2v(6,0:2,fn:nf,fn:nf),msq2b_1v(6,0:2,fn:nf,fn:nf),
      . sub1b_2v(6),sub2b_1v(6)
-      integer jj(-nf:nf),kk(-nf:nf)
       double precision m57_1g(0:2,fn:nf,fn:nf),m57_1vg(0:2,fn:nf,fn:nf),
      .                 m57_1vx(fn:nf,fn:nf,fn:nf,fn:nf),
      .                 m57_2vx(fn:nf,fn:nf,fn:nf,fn:nf),
@@ -131,12 +129,13 @@ c--- slightly obtuse notation, to simplify declaration lines
       external qqb_w2jet,qqb_w2jet_gvec,
      .         qqb_w2jetx,qqb_w2jet_gvecx,donothing_gvecx
 
-      data a/5,5,7,6,6,7/
-      data b/6,7,5,7,5,6/
-      data c/7,6,6,5,7,5/
-      data pntr/0,2,2,1,0,2,1,1,0/
-      data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      data kk/-1,-2,-1,-2,-1,0,1,2,1,2,1/
+      integer,parameter::jj(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
+      integer,parameter::kk(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
+      integer,parameter:: a(6)=(/5,5,7,6,6,7/)
+      integer,parameter:: b(6)=(/6,7,5,7,5,6/)
+      integer,parameter:: c(6)=(/7,6,6,5,7,5/)
+      integer,parameter:: 
+     & pntr(5:7,5:7)=reshape((/0,2,2,1,0,2,1,1,0/),(/3,3/))
 
       if (Qflag .and. Gflag) then
         write(6,*) 'Both Qflag and Gflag cannot be true'

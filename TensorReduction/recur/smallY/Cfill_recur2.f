@@ -42,10 +42,8 @@ c---     numerical precision
      . Bzero3(z3max,-2:0),Bzero2(z2max,-2:0),Bzero1(z1max,-2:0),
      . Bzero0(-2:0)
       logical exceptional
- 
-      logical first
-      data first/.true./
-      save first
+      logical,save :: first=.true.
+!$omp threadprivate(first)
 
       exceptional=.false.
 

@@ -27,7 +27,7 @@ c     f(-p1)+f(-p2)--> W^-(e^-(p3)+nbar(p4))+ c(p5) + f(p6)
 c--- we label the amplitudes by helicity (qqb1 ... qqb4)
 c--- and by type of contribution qqb(1) ... qqb(n)
       integer i,j,k
-      
+!$omp threadprivate(/facgg/)
 
 c--- initialize matrix elements
       do j=-nf,nf
@@ -79,40 +79,6 @@ c--- calculate 2-quark, 2-gluon amplitudes
 
         call w2jetsq_mass(1,5,3,4,2,6,p,qgWqg2)
         call storecs(qgWqg2_cs)
-
-c--- the code commented out below is only appropriate for W+t where
-c---- confusion with the tt~ process is important
-
-cc--- alternative calculation of gg->Wtb piece
-c      if (nores .eqv. .false.) then
-c        call BBamps_nores(p,1,2,3,4,5,6,ampgg_ag)
-c        call BBamps_nores(p,2,1,3,4,5,6,ampgg_ga)
-cc        call BBamps(p,1,2,3,4,5,6,ampgg_ag)
-cc        call BBamps(p,2,1,3,4,5,6,ampgg_ga)
-c        msq_gg=0d0
-cc--- sum over helicities of gluons and massive quarks
-c          do ib=1,2
-c          do it=1,2
-c          do ia=1,2
-c          do ig=1,2
-c            msq_gg=msq_gg+xn*cf**2*(
-c     .            + abs(ampgg_ag(ia,ig,ib,it))**2
-c     .            + abs(ampgg_ga(ig,ia,ib,it))**2
-c     .            - one/xn/cf*dble(ampgg_ag(ia,ig,ib,it)
-c     .                     *dconjg(ampgg_ga(ig,ia,ib,it))))
-c          enddo
-c          enddo
-c          enddo
-c          enddo
-c
-cc-- veto b-jet contribution if doing subtraction and pt(b)>ptbjetmin GeV
-c          if (dsqrt(p(6,1)**2+p(6,2)**2) .gt. ptbjetmin) then
-c            msq_gg=0d0
-c          endif
-c      
-c          ggWqqb2=avegg*gsq**2*gwsq**2*msq_gg*(prop/s34**2)          
-c      endif
-cc--- end of alternative calculation
 
         call w2jetsq_mass(6,5,3,4,1,2,p,ggWqqb2)
         call storecs(ggWqqb2_cs)        

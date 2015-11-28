@@ -10,8 +10,6 @@ c---  implemented according to arXiv:0906.0008, Eq. (2.23)
       double complex A0ab(2,2,2),A0ba(2,2,2),
      & A41ab(2,2,2),A41ba(2,2,2),A43ab(2,2,2),A43ba(2,2,2)
       double precision temp,ren,H4prenorm
-c      logical CheckEGZ
-c      common/CheckEGZ/CheckEGZ
       
       call   Amplo_AQgg(j1,j2,j3,j4,A0ab,A0ba)
       call Ampvirt_AQgg(j1,j2,j3,j4,A41ab,A41ba,A43ab,A43ba)

@@ -81,12 +81,11 @@ C     arXiv:0704.3914v3, Eq.(3.24) (factor of C_\Gamma removed)
       include 'scprods_com.f'
       include 'zprods_decl.f'
       include 'nflav.f'
-      integer j1,j2,j3,j4,i,ii(7)
+      integer j1,j2,j3,j4,i
       double complex A0phiggggmmpp,Born,F31m,F42me,F41m,sum,
      . BGRL3hat,BGRL1,zab2,zba2
       double precision Np,bb0
-      data ii/1,2,3,4,1,2,3/
-      save ii
+      integer,parameter::ii(7)=(/1,2,3,4,1,2,3/)
 
       zab2(j1,j2,j3,j4)=za(j1,j2)*zb(j2,j4)+za(j1,j3)*zb(j3,j4)
       zba2(j1,j2,j3,j4)=zb(j1,j2)*za(j2,j4)+zb(j1,j3)*za(j3,j4)
@@ -155,12 +154,11 @@ C     arXiv:0704.3914v3, Eq.(3.24) (factor of C_\Gamma removed)
       include 'scprods_com.f'
       include 'zprods_decl.f'
       include 'nflav.f'
-      integer j1,j2,j3,j4,i,ii(7)
+      integer j1,j2,j3,j4,i
       double complex A0phiggggmmpp,Born,F31m,F42me,F41m,sum,
      . BGRL3,BGRL1,zab2,zba2
       double precision Np,bb0
-      data ii/1,2,3,4,1,2,3/
-      save ii
+      integer,parameter::ii(7)=(/1,2,3,4,1,2,3/)
 
       zab2(j1,j2,j3,j4)=za(j1,j2)*zb(j2,j4)+za(j1,j3)*zb(j3,j4)
       zba2(j1,j2,j3,j4)=zb(j1,j2)*za(j2,j4)+zb(j1,j3)*za(j3,j4)
@@ -301,12 +299,11 @@ C     arXiv:0704.3914v3, Eq.(3.22) (factor of C_\Gamma removed)
       include 'scprods_com.f'
       include 'zprods_decl.f'
       include 'nflav.f'
-      integer j1,j2,j3,j4,i,ii(7)
+      integer j1,j2,j3,j4,i
       double complex A0phiggggmmpp,Born,F31m,F42me,F41m,sum,
      . BGRL3,BGRL2,BGRL1,trm,trm1432,trm2341
       double precision Np,bb0
-      data ii/1,2,3,4,1,2,3/
-      save ii
+      integer,parameter::ii(7)=(/1,2,3,4,1,2,3/)
       trm(j1,j2,j3,j4)=za(j1,j2)*zb(j2,j3)*za(j3,j4)*zb(j4,j1)
 
 

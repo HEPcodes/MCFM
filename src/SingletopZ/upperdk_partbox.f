@@ -5,7 +5,7 @@
       include 'alpha1.f'
       include 'masses.f'
       include 'zcouple.f'
-      include 'ydef.f' 
+      include 'TRydef.f' 
       include 'currentdecl.f'
       include 'tensordecl.f'
       include 'decl_kininv.f'

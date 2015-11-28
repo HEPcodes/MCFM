@@ -12,3 +12,4 @@ c--- dipole contributions
       double precision 
      . Q1(-1:1,-1:1,-1:1,3),Q2(-1:1,-1:1,-1:1,3)
       common/RP_new/Q1,Q2
+!$omp threadprivate(/RP_new/)

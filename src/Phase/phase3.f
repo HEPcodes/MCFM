@@ -40,7 +40,6 @@ c---generate p5 and p34,
 c---smin is the minimum inv mass of 34 system
 c---m5 is the mass of p5
       call phi1_2m(m5,r1,r2,r3,smin,p12,p5,p34,wt125,*99)
-
 c---decay 34-system
       if (hdecaymode == 'tlta') then
       call phi3m(r6,r7,p34,p3,p4,mtau,mtau,wt34,*99)

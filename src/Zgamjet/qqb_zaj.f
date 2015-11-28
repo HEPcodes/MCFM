@@ -15,9 +15,8 @@
       double complex aqbg(4,16),agq(4,16),agqb(4,16)
       double precision qqb(2),qbq(2),qg(2),qbg(2),gq(2),gqb(2)
       integer i,j,k
-      integer jj(-nf:nf),kk(-nf:nf)
-      data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      data kk/-1,-2,-1,-2,-1,0,1,2,1,2,1/
+      integer, parameter::jj(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
+      integer, parameter::kk(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
 c-----swap momenta
 c-----implemented (ala bdk)
 c----- 0 -> q(p1) + qb(p4) + g(p2) + gam(p3) + lb(p5) + l(p6)
@@ -177,9 +176,9 @@ c-----(-+xx-+)
 
 c-----square the helicity amplitudes
       do i=1,16
-         m6sq0hAA(i)=realpart(m60hA(i)*dconjg(m60hA(i)))
-         m6sq0hBB(i)=realpart(m60hB(i)*dconjg(m60hB(i)))
-         m6sq0hAB(i)=2d0*realpart(m60hA(i)*dconjg(m60hB(i)))
+         m6sq0hAA(i)=dreal(m60hA(i)*dconjg(m60hA(i)))
+         m6sq0hBB(i)=dreal(m60hB(i)*dconjg(m60hB(i)))
+         m6sq0hAB(i)=2d0*dreal(m60hA(i)*dconjg(m60hB(i)))
       enddo
       do i=1,16
 c         m6sq0h(i)=m6sq0hAA(i)+m6sq0hBB(i)+m6sq0hAB(i)

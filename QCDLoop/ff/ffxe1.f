@@ -49,6 +49,8 @@
 *	data
 *
 	data init /0/
+!$omp threadprivate(ii,init)
+
 *
 *  #] declarations:
 *  #[ check input:
@@ -294,6 +296,8 @@
      +		              7,8,5,10,           5,10,6,7,
      +		              7,8,9,5,            9,5,6,7,
      +		    6,7,8,9,  7,8,9,10, 8,9,10,6, 9,10,6,7, 10,6,7,8/
+!$omp threadprivate(ipermp,memarr,inow,jnow,memind)
+
 *  #] declarations:
 *  #[ check input:
 	if ( lwrite ) then

@@ -27,6 +27,7 @@ c    Calculation is fully analytic
       double precision Hggggvsqanal
       logical CheckEGZ
       common/CheckEGZ/CheckEGZ
+!$omp threadprivate(/CheckEGZ/)
 C*************************************************** 
       scheme='tH-V'
 C*************************************************** 
@@ -174,7 +175,6 @@ C      write(6,*) 'aaaa',aaaa
       if ((j.eq.0).and.(k.eq.0)) then
 C---gg - all poles cancelled
          msq(j,k)=fac*avegg*(half*gggg+dfloat(nflav)*ggqa)
-
       elseif ((j.gt.0).and.(k.gt.0)) then
 C---qq - all poles cancelled
          if (j.eq.k) then

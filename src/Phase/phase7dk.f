@@ -12,7 +12,7 @@ c******* generate phase space for 2-->7 process
 c******* r(mxdim),p1(4),p2(4) are inputs reversed in sign from physical values 
 c---- phase space for -p1-p2 --> p3+p4+p5+p6+p7+p8+p9
 c---- with all 2 pi's (ie 1/(2*pi)^14)
-      logical oldzerowidth,first
+      logical oldzerowidth
       integer j,nu
       double precision r(mxdim)
       double precision p1(4),p2(4),p5(4),p6(4),p3(4),p4(4),p7(4),p8(4),
@@ -22,15 +22,14 @@ c---- with all 2 pi's (ie 1/(2*pi)^14)
       double precision wt,wt0,wt12,wt678,wt3459,wt34,wt78,
      & wt59,wt349,tmp
       parameter(wt0=1d0/twopi**5)
-      data first/.true./
-      
-      if (first) then
-        decay1q2a=1
-      first=.false.
-      endif
 
-c--- alternate radiation between decay of top (=1) and antitop (=2) quarks
-      decay1q2a=3-decay1q2a
+c--- alternate radiation between decay of top (=1) and antitop (=2) quarks;
+c--- use additional (always uniform) variable to determine choice
+      if (r(20) .lt. 0.5d0) then
+        decay1q2a=1
+      else
+        decay1q2a=2
+      endif
 
 c--- DEBUG
 c      decay1q2a=2 ! always radiation in anti-top decay
@@ -44,11 +43,11 @@ c      decay1q2a=1 ! DEBUG: always radiation in top decay
       enddo
       smin=zip
 
-c---- calculate momenta of top and bbbar      
+c---- calculate momenta of top and bbbar
       n2=1
       n3=1
       
-c--- specific to ttbar including radiation in decay      
+c--- specific to ttbar including radiation in decay
       mass2=mt
       width2=twidth
       mass3=mt
@@ -72,7 +71,7 @@ c--- radiation from hadronic decay of W
 c--- top decay including radiation
         n3=1
         call phi1_2m(mb,r(5),r(6),r(7),smin,p3459,p5,p349,wt3459,*99)
-      n3=0
+        n3=0
         call phi1_2m(zip,r(8),r(18),r(19),smin,p349,p9,p34,wt349,*99)
         call phi3m0(r(11),r(12),p34,p3,p4,wt34,*99)
 c--- anti-top decay
@@ -112,7 +111,6 @@ c--- perform swap (3,4,5) -> (8,7,6)
       return
  99   wt=0d0
       zerowidth=oldzerowidth
-      decay1q2a=3-decay1q2a
       
       return 1
       end

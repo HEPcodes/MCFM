@@ -23,14 +23,13 @@ c---                1  --> counterterm for real radiation
 c---  Z->e+e-(31) or b bbar(33): both measured, rapidities and momenta of 3 and 4 can
 c---  be calculated, also the invariant mass m34
       double precision y3,y4,y5,y34,pt3,pt4,pt5,pt34,m34,r35
-      double precision ylep, yjet, ptlep, ptjet,costheta,
-     & p3(4),p4(4),p34(4)
+      double precision costheta,p3(4),p4(4),p34(4)
       integer switch,n,nplotmax
       character*4 tag
-      logical first
+      logical, save::first=.true.
       common/nplotmax/nplotmax
-      data first/.true./
-      save first    
+ccccc!$omp threadprivate(first,/nplotmax/,y4,y5,y34,pt3,pt4,pt5,pt34,m34,r35)
+
 
 ************************************************************************
 *                                                                      *
@@ -42,7 +41,7 @@ c---  be calculated, also the invariant mass m34
 c--- Initialize histograms, without computing any quantities; instead
 c--- set them to dummy values
         tag='book'
-      y3=1d3
+        y3=1d3
         y4=1d3
         y5=1d3
         y34=1d3
@@ -53,11 +52,6 @@ c--- set them to dummy values
         m34=0d0
         r35=1d3
         jets=1
-c---  (Upper) limits for the plots
-        ylep=6d0
-        yjet=3.2d0
-        ptlep=80d0
-        ptjet=100d0
         goto 99
       else
 c--- Add event in histograms
@@ -123,15 +117,15 @@ c---     xmax:  highest value to bin
 c---       dx:  bin width
 c---   llplot:  equal to "lin"/"log" for linear/log scale
            
-      call bookplot(n,tag,'y3',y3,wt,wt2,-ylep,ylep,0.2d0,'lin')
+      call bookplot(n,tag,'y3',y3,wt,wt2,-6d0,6d0,0.2d0,'lin')
       n=n+1
-      call bookplot(n,tag,'y4',y4,wt,wt2,-ylep,ylep,0.2d0,'lin')
+      call bookplot(n,tag,'y4',y4,wt,wt2,-6d0,6d0,0.2d0,'lin')
       n=n+1
-      call bookplot(n,tag,'y34',y34,wt,wt2,-ylep,ylep,0.2d0,'lin')
+      call bookplot(n,tag,'y34',y34,wt,wt2,-6d0,6d0,0.2d0,'lin')
       n=n+1
-      call bookplot(n,tag,'pt3',pt3,wt,wt2,0d0,ptlep,2d0,'lin')
+      call bookplot(n,tag,'pt3',pt3,wt,wt2,0d0,80d0,2d0,'lin')
       n=n+1
-      call bookplot(n,tag,'pt4',pt4,wt,wt2,0d0,ptlep,2d0,'lin')
+      call bookplot(n,tag,'pt4',pt4,wt,wt2,0d0,80d0,2d0,'lin')
       n=n+1
       call bookplot(n,tag,'pt34',pt34,wt,wt2,0d0,50d0,2d0,'lin')
       n=n+1
@@ -139,9 +133,9 @@ c---   llplot:  equal to "lin"/"log" for linear/log scale
       n=n+1
       call bookplot(n,tag,'DeltaR35',r35,wt,wt2,0d0,5d0,0.1d0,'lin')
       n=n+1
-      call bookplot(n,tag,'y5',y5,wt,wt2,-yjet,yjet,0.5d0,'lin')
+      call bookplot(n,tag,'y5',y5,wt,wt2,-3.2d0,3.2d0,0.5d0,'lin')
       n=n+1
-      call bookplot(n,tag,'pt5',pt5,wt,wt2,0d0,ptjet,2d0,'lin')
+      call bookplot(n,tag,'pt5',pt5,wt,wt2,0d0,100d0,2d0,'lin')
       n=n+1
       
 c--- compute lepton asymmetry as a function of m34  
@@ -163,7 +157,7 @@ c--- these histograms must be kept
      &   m34,wt,wt2,40d0,200d0,5d0,'lin')
       endif
       n=n+1
-c--- now compute asymmetry - histograms n+1 and n+2 are only temporary      
+c--- now compute asymmetry - histograms n+1 and n+2 are only temporary
       if (tag .eq. 'book') then
         call bookplot(n, tag,'lepton FB asymmetry',
      &   m34,wt,wt2,40d0,200d0,5d0,'lin')

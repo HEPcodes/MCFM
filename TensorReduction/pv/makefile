@@ -1,10 +1,12 @@
-FORCHKPATH = /home/ellis/bin/
-FFLAGS 	= -O2 -g
-HERE = $(PWD)
-INCDIR = $(HERE)/../Include/
-FC = gfortran 
-LIBRARY	      = libpv.a
+# Makefile routine.
+VPATH		= $(PWD)/obj
+INCPATH = $(PWD)/../Include/
+OUTPUT_OPTION	= -o $(PWD)/obj/$@ 
 
+FC = gfortran 
+FFLAGS 	= -O2 -fno-f2c -g -I$(INCPATH) -Iobj -Jobj
+
+LIBRARY	      = libpv.a
 
 # -----------------------------------------------------------------------------
 # Specify the object files. 
@@ -55,30 +57,17 @@ pvswap.o
 
 
 $(LIBRARY):	$(OBJS) 
-		ar cru $(LIBRARY) $(OBJS) 
+		ar cru $(LIBRARY) $(patsubst %,obj/%,$(OBJS)) 
 		ranlib $(LIBRARY)
  
-.f.o:	
-		$(FC) $(F77FLAGS) -I$(INCDIR) -c $*.f
-
 # -----------------------------------------------------------------------------
 
 all:		$(LIBRARY)
 
 # -----------------------------------------------------------------------------
 
-PRJS =      $(OBJS:.o=.f) 
-PRJSF =      $(OBJS:.o=.f) 
-
-check:      $(PRJS) 
-		$(FTNCHEKPATH)/ftnchek -include=$(INCDIR) $(FOROPTS) $(PRJS)
-
-checkf:      
-		$(FORCHKPATH)/forchk -I $(INCDIR) $(PRJSF)
-
-
 clean:
-	- rm -f *.o *.s *.prj *.a *~ core
+	- rm -f obj/*.o obj_omp/*.o *.s *.prj *.a *~ core
 
 # -----------------------------------------------------------------------------
 

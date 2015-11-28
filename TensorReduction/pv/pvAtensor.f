@@ -4,16 +4,15 @@
       include 'pvAnames.f'
       include 'pvAv.f'
       include 'TRydef.f'
+      include 'TRmetric.f'
       double complex FA0(-2:0),FA1(y1max,-2:0),
      . FA2(y2max,-2:0),FA3(y3max,-2:0),FA4(y4max,-2:0),FA5(y5max,-2:0),
      . FA6(y6max,-2:0)
       double precision m1s
       double precision pvSDDDD,pvSDDDDDD
       integer n1,n2,n3,n4,n5,n6,ep,A0i,pvAcache
-      logical first
-      include 'TRmetric.f'
-      data first/.true./
-      save first
+      logical,save:: first=.true.
+!$omp threadprivate(first)
       if (first) then
       first=.false.
       call pvarraysetup

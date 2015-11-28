@@ -10,6 +10,10 @@
       include 'masses.f'
       include 'breit.f'
       include 'part.f'
+      include 'x1x2.f'
+      include 'notag.f'
+      include 'energy.f'
+      include 'first.f'
 c---- generate phase space for 2-->2+n process
 c---- with (34) being a vector boson and 5,..,4+n the jets
 c---- r(mxdim),p1(4),p2(4) are inputs reversed in sign 
@@ -23,20 +27,18 @@ c---- are required
       double precision r(mxdim),rdk1,rdk2
       double precision p(mxpart,4),p3(4),p34(4),psumjet(4),pcm(4),Q(4)
       double precision wt
-      double precision hmin,hmax,delh,h,sqrts,pt,etamax,etamin,xx(2)
+      double precision hmin,hmax,delh,h,pt,etamax,etamin
       double precision y,sinhy,coshy,phi,mv2,wtbw,mjets
       double precision ybar,ptsumjet2,ycm,sumpst,q0st,rshat
       double precision costh,sinth,dely,xjac
       double precision ptjetmin,etajetmin,etajetmax,pbreak
       double precision plstar,estar,plstarsq,y5starmax,y5starmin,mf,beta
-      integer j,nu,njets,ijet,notag
-      logical first,xxerror,flatreal
-      common/energy/sqrts
-      common/x1x2/xx
-      common/notag/notag
+      integer j,nu,njets,ijet
+      logical xxerror,flatreal
       parameter(flatreal=.false.)
-      data first/.true./,xxerror/.false./
-      save first,ptjetmin,etajetmin,etajetmax,pbreak,xxerror
+      data xxerror/.false./
+      save ptjetmin,etajetmin,etajetmax,pbreak,xxerror
+!$omp threadprivate(ptjetmin,etajetmin,etajetmax,pbreak,xxerror)
       
       if (first .or. reset) then
         first=.false.
@@ -102,7 +104,6 @@ c        endif
           call genpt(r(ijet),ptjetmin,.true.,pt,xjac)
         endif
         wt=wt*xjac
-
         etamax=sqrts/2d0/pt
         if (etamax**2 .le. 1d0) then
           write(6,*) 'etamax**2 .le. 1d0 in gen_njets.f',etamax**2 
@@ -131,7 +132,7 @@ c        endif
           psumjet(nu)=psumjet(nu)+p(4+ijet,nu)
         enddo
       enddo
-c--- now generate Breit-Wigner        
+c--- now generate Breit-Wigner       
       call breitw(r(3*njets+1),wsqmin,wsqmax,mass3,width3,mv2,wtbw)
       wt=wt*wtbw/2d0/pi
 c--- invariant mass of jets
@@ -227,6 +228,7 @@ c--- decay boson into leptons, in boson rest frame
       p34(1)=beta*p34(4)*sinth*dcos(phi)
       p34(2)=beta*p34(4)*sinth*dsin(phi)
       p34(3)=beta*p34(4)*costh
+
       
 c--- boost into lab frame    
       call boost(dsqrt(mv2),Q,p34,p3)
@@ -236,7 +238,7 @@ c--- boost into lab frame
       enddo
 
       wt=wt*beta/8d0/pi
-            
+
       return
       end
       

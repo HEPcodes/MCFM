@@ -5,10 +5,8 @@ c--- writes an error message and aborts
       implicit none
       include 'frag.f'
       include 'part.f'
-      integer nproc
+      include 'nproc.f'
       character*1 order
-
-      common/nproc/nproc
 
 c--- special cases where there is no LO calculation
       if ((part .ne. 'real') .and. (order .eq. 'R')) then 

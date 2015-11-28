@@ -328,10 +328,9 @@ c--- output:msq_swap (array of matrix elements after 4<->5 swap)
       include 'constants.f'
       include 'ptilde.f'
       include 'z_dip.f'
+      include 'incldip.f'
       integer nd
-      logical incldip(0:maxd)
       double precision pdip(mxpart,4),msq_swap(-nf:nf,-nf:nf)
-      common/incldip/incldip
       
       if (incldip(nd)) then
         call getptilde(nd,pdip)

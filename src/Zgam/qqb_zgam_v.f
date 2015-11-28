@@ -15,10 +15,7 @@ c     q(-p1)+qbar(-p2)-->e^-(p3)+e-(p4)+gamma(p5)
       double precision fac
       double complex qbqlo(2,2,2,2),qqblo(2,2,2,2),
      .              qbqnlo(2,2,2,2),qqbnlo(2,2,2,2)
-
-      integer jj(-nf:nf)
-      data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      save jj
+      integer,parameter::jj(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
 
       scheme='dred'
 
@@ -44,10 +41,9 @@ c     q(-p1)+qbar(-p2)-->e^-(p3)+e-(p4)+gamma(p5)
       qqb(j)=fac*qqb(j)
       enddo
 
+      msqv(:,:)=0d0
       do j=-nf,nf
-        if     (j .eq. 0) then
-          msqv(0,0)=0d0
-        elseif (j .gt. 0) then
+        if     (j .gt. 0) then
           msqv(j,-j)=qqb(jj(j))
         elseif (j .lt. 0) then
           msqv(j,-j)=qbq(-jj(j))

@@ -1,6 +1,6 @@
       include 'nplot.f'
       integer maxnbin
-      parameter(maxnbin=1000)
+      parameter(maxnbin=200)
       DOUBLE PRECISION HIST(nplot,maxnbin),XHIS(nplot,maxnbin),
      & HDEL(nplot),
      & HMIN(nplot),HMAX(nplot),HAVG(nplot),HINT(nplot),HSIG(nplot)

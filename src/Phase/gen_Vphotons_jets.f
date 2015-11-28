@@ -26,10 +26,13 @@ c---- are required
       include 'part.f'
       include 'process.f'
       include 'ipsgen.f'
+      include 'x1x2.f'
+      include 'energy.f'
+      include 'first.f'
       double precision r(mxdim),rdk1,rdk2,mflatsq
       double precision p(mxpart,4),p3(4),p34(4),psumjet(4),pcm(4),Q(4)
       double precision wt,dot,s345,s346
-      double precision hmin,hmax,delh,h,sqrts,pt,etamax,etamin,xx(2)
+      double precision hmin,hmax,delh,h,pt,etamax,etamin
       double precision y,sinhy,coshy,phi,mv2,wtbw,mjets
       double precision ybar,ptsumjet2,ycm,sumpst,q0st,rshat
       double precision costh,sinth,dely,xjac
@@ -37,12 +40,11 @@ c---- are required
       double precision ptmin_part,etamax_part,pbreak_part
       double precision plstar,estar,plstarsq,y5starmax,y5starmin
       integer j,nu,nphots,njets,nphotsjets,ijet
-      logical first,xxerror,flatreal
-      common/energy/sqrts
-      common/x1x2/xx
+      logical xxerror,flatreal
       parameter(flatreal=.false.)
-      data first/.true./,xxerror/.false./
-      save first,ptjetmin,etajetmin,etajetmax,pbreak,xxerror
+      data xxerror/.false./
+      save ptjetmin,etajetmin,etajetmax,pbreak,xxerror
+!$omp threadprivate(ptjetmin,etajetmin,etajetmax,pbreak,xxerror)
       
       if (first .or. reset) then
         first=.false.
@@ -72,14 +74,18 @@ c--- for processes in which it is safe to jet ptmin to zero at NLO
 c--- total number of photons and jets
       nphotsjets=nphots+njets
 
-      do nu=1,4
-        do j=1,4+nphotsjets
-          p(j,nu)=0d0
-        enddo
-        Q(nu)=0d0 
-        psumjet(nu)=0d0
-        pcm(nu)=0d0
-      enddo 
+!      do nu=1,4
+!        do j=1,4+nphotsjets
+!          p(j,nu)=0d0
+!        enddo
+!        Q(nu)=0d0 
+!        psumjet(nu)=0d0
+!        pcm(nu)=0d0
+!      enddo 
+      p(:,:)=0d0
+      Q(:)=0d0
+      psumjet(:)=0d0
+      pcm(:)=0d0
 
       wt=2d0*pi
                        
@@ -280,7 +286,7 @@ c        endif
 c      endif
 
       wt=wt/8d0/pi
-            
+
       return
       end
       

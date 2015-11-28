@@ -16,8 +16,8 @@ c---- with all 2 pi's (ie 1/(2*pi)^20)
      . p345(4),p678(4),p34(4),p78(4),
      . ph(4),smin,wt,wt0,wt12,wtxh,wt345,wt678,wt34,wt78,wth,dkmass
       parameter(wt0=1d0/twopi**6)
-      data iflip/0/
-      save iflip
+!      data iflip/0/
+!      save iflip
 
       wt=0d0
       do j=1,4
@@ -51,19 +51,19 @@ c---- with all 2 pi's (ie 1/(2*pi)^20)
         stop
       endif
 
-      if (iflip .eq. 0) then
-        iflip=1
+!      if (iflip .eq. 0) then
+!        iflip=1
         call phi1_2(r(5),r(6),r(7),r(8),pa,p345,ph,wtxh,*99)
         do nu=1,4
         p678(nu)=pb(nu)
         enddo
-      elseif (iflip .eq. 1) then 
-        iflip=0
-        call phi1_2(r(5),r(6),r(7),r(8),pa,p678,ph,wtxh,*99)
-        do nu=1,4
-        p345(nu)=pb(nu)
-        enddo
-      endif 
+!      elseif (iflip .eq. 1) then 
+!        iflip=0
+!        call phi1_2(r(5),r(6),r(7),r(8),pa,p678,ph,wtxh,*99)
+!        do nu=1,4
+!        p345(nu)=pb(nu)
+!        enddo
+!      endif 
 
       mass3=wmass
       width3=wwidth

@@ -31,10 +31,10 @@ c      parameter(xa=0.25d0/xn,xb=0.25d0/xn,xc=0.25d0/xn,xd=0.25d0/xn)
 c--- Note that the definition of matrix DJK here differs from the one
 c--- in (B.22) of the paper by an overall factor of Cf which is
 c--- restored in the sum below
-      integer i3(6),i4(6),i5(6),j,k,h1,h3,h4,h5,p1,p2,p3,p4,p5,n(5)
-      data i3/3,3,4,4,5,5/
-      data i4/4,5,3,5,3,4/
-      data i5/5,4,5,3,4,3/
+      integer j,k,h1,h3,h4,h5,p1,p2,p3,p4,p5,n(5)
+      integer, parameter, dimension(6) :: i3=(/3,3,4,4,5,5/)
+      integer, parameter, dimension(6) :: i4=(/4,5,3,5,3,4/)
+      integer, parameter, dimension(6) :: i5=(/5,4,5,3,4,3/)
 
       DATA  (DJK(J,1),J=1,6)/xa,xb,xb,xc,xc,xd/
       DATA  (DJK(J,2),J=1,6)/xb,xa,xc,xd,xb,xc/
@@ -42,6 +42,9 @@ c--- restored in the sum below
       DATA  (DJK(J,4),J=1,6)/xc,xd,xb,xa,xc,xb/
       DATA  (DJK(J,5),J=1,6)/xc,xb,xd,xc,xa,xb/
       DATA  (DJK(J,6),J=1,6)/xd,xc,xc,xb,xb,xa/
+
+      save djk
+!$omp threadprivate(djk)
 
       n(1)=p1
       n(2)=p2

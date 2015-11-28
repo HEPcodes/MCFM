@@ -51,6 +51,8 @@
 	data memarr /mem*0,mem*0,mem*1/
 	data inow /1/
 	data init /0/
+!$omp threadprivate(iperm,memind,memarr,inow,init)
+
 *
 *	read permutations from file ffperm5.dat.  Included as DATA
 *	statements they generated too much code in Absoft (54K)
@@ -396,6 +398,9 @@
      +		+1,-1,+1,-1,-1,+1,-1,-1,+1,-1,+1,-1,-1,+1,+1,+1,
      +		+1,-1,+1,-1,-1,+1,-1,-1,+1,-1,+1,-1,-1/
 *  #] data:
+!$omp threadprivate(ipermp,iperms,iplace,minus,memarr,
+!$omp&              inow,jnow,memind)
+
 *  #[ check input:
 	if ( ltest ) then
 	    if ( miss.gt.5 .or. miss.lt.1 ) then

@@ -21,9 +21,8 @@
       double precision pbdk(mxpart,4)
       double precision qqb(2),qbq(2),qg(2),qbg(2),gq(2),gqb(2)
       integer i,j,k
-      integer jj(-nf:nf),kk(-nf:nf)
-      data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      data kk/-1,-2,-1,-2,-1,0,1,2,1,2,1/
+      integer,parameter:: jj(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
+      integer,parameter:: kk(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
 c-----set scheme
       scheme='dred'
 c-----calculate lowest order for UV renormalization

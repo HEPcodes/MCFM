@@ -22,6 +22,7 @@
       common/D/D
       integer i 
       double precision conv_P0qqP0qgam,conv_P0qqDqgam
+!$omp threadprivate(/D/)
 
       qbqg_sum=0d0 
       qqbg_sum=0d0 

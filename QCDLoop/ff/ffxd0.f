@@ -163,7 +163,6 @@ c
 	DOUBLE COMPLEX c,cs1,cs2
 	DOUBLE PRECISION absc,xmax,xpip(13),dpipjp(10,13),piDpjp(10,10),
      +		qiDqj(10,10),del2s,delta0,xnul,rloss,vgl
-	save ini2ir,delta0
 *
 *	common blocks:
 *
@@ -179,7 +178,7 @@ c
 	DOUBLE PRECISION xpimem(10,memory),dl4mem(memory)
 	DOUBLE COMPLEX csmem(memory),cfcmem(memory)
 	save memind,iermem,ialmem,xpimem,dl4mem,nscsav,onssav,csmem,
-     +		cfcmem
+     +		cfcmem,ini2ir,delta0
 *
 *	statement function:
 *
@@ -190,6 +189,8 @@ c
 	data memind /0/
 	data ini2ir /0/
 	data delta0 /0./
+!$omp  threadprivate(memind,iermem,ialmem,xpimem,dl4mem,nscsav,onssav,
+!$omp&		     csmem,cfcmem,ini2ir,delta0,/ffcut/)
 *
 *  #] declarations:
 *  #[ initialisations:
@@ -468,7 +469,7 @@ c
      +		ipi123(2),ipi12t,idone
 	DOUBLE PRECISION absc,sdel2s,ai(4),daiaj(4,4),aai(4),
      +		dt3t4,xqi(10),dqiqj(10,10),qiDqj(10,10),xfac
-	save maxlos
+	save init,maxlos
 *
 *	common blocks:
 *
@@ -481,6 +482,7 @@ c
 *	data
 *
 	data init /0/
+!$omp threadprivate(init,maxlos)
 *  #] declarations:
 *  #[ check for IR 4point function:
 	if ( lir ) then
@@ -760,6 +762,7 @@ c
      +		   4,2,3,1,10,6,9,8,7,5,12,11,13,
      +		   1,3,2,4,9,6,10,8,5,7,12,11,13/
 	data init /0/
+!$omp threadprivate(inew,init,lcon)
 *  #] declarations:
 *  #[ open console for some activity on screen:
 	if ( init .eq. 0 ) then

@@ -16,13 +16,10 @@
       double complex cprop
       double precision propsq
       double precision s34 
-      logical check_QED 
-      common/check_QED/check_QED 
-      logical first 
-      data first /.true./ 
-      save first 
+!      logical check_QED 
+!      common/check_QED/check_QED 
 
-      check_QED=.false. 
+!      check_QED=.false. 
 
 !      if(check_QED) then 
 !------ make factor into photon propogator for testing 
@@ -87,10 +84,6 @@
          call qqb_dm_monojet_Axamps(p,2,5,1,3,4,qbqg)
          call qqb_dm_monojet_Axamps(p,2,1,5,3,4,gqqb)  
          call qqb_dm_monojet_Axamps(p,5,1,2,3,4,gqbq)  
-         if(first) then 
-            first = .false. 
-            call check_dmAxC
-         endif         
       elseif(dm_mediator.eq.'scalar') then 
          call qqb_dm_monojet_Samps(p,1,2,5,3,4,qgqb)  
          call qqb_dm_monojet_Samps(p,5,2,1,3,4,qbgq)
@@ -99,10 +92,6 @@
          call qqb_dm_monojet_Samps(p,2,1,5,3,4,gqqb)  
          call qqb_dm_monojet_Samps(p,5,1,2,3,4,gqbq)
          fac=fac/4d0
-         if(first) then 
-            first=.false.
-            call set_scalar_coups
-         endif
       elseif(dm_mediator.eq.'pseudo') then 
          call qqb_dm_monojet_PSamps(p,1,2,5,3,4,qgqb)  
          call qqb_dm_monojet_PSamps(p,5,2,1,3,4,qbgq)
@@ -111,19 +100,12 @@
          call qqb_dm_monojet_PSamps(p,2,1,5,3,4,gqqb)  
          call qqb_dm_monojet_PSamps(p,5,1,2,3,4,gqbq) 
          fac=fac/4d0
-         if(first) then 
-            first = .false. 
-            call set_scalar_coups            
-            call check_dmAxC
-         endif         
       elseif(dm_mediator.eq.'gluonO') then 
 !---------- Fill msq elsewhere 
-         first=.false.
          call gg_dm_monojet(p,msq) 
          return   
       elseif(dm_mediator.eq.'scalmt') then 
 !---------- Fill msq elsewhere 
-         first=.false.
          call gg_dm_top(p,msq) 
          return 
       endif
@@ -210,90 +192,3 @@
       end 
 
 
-      subroutine check_dmAxC
-      implicit none 
-      include 'constants.f' 
-      include 'dm_params.f' 
-!----- check that dmL = -dmR for axial coupling 
-      integer j 
-      logical reset 
-
-      reset=.false. 
-      
-
-      do j=1,nf
-         if(dabs(dmL(j)+dmR(j)).gt.1d-8) then 
-          dmR(j)=-dmL(j)
-          reset=.true. 
-          endif
-      enddo
-
-      
-      if(reset) then 
-         write(6,*) 'Found that dmL is not equal to -dm R as required ' 
-         write(6,*) 'Fixing dmR = -dmL (input) ' 
-         write(6,*) 'to ensure correct axial behaviour ' 
-         write(6,*) 'check manual for details'         
-      endif
-
-      return 
-      end 
-      
-
-      
-      subroutine set_scalar_coups
-      implicit none 
-      include 'dm_params.f' 
-      include 'masses.f' 
-      include 'ewcouple.f' 
-      integer j 
-      logical first 
-      data first /.true./
-      save first
-      double precision inv_v
-!----- inv v = 1/v = dsqrt(gwsq/4m_W^2) 
-      inv_v=dsqrt(gwsq/(4d0*wmass**2)) 
-
-      if(yukawa_scal) then 
-      if(effective_th) then 
-         dmL(1)=0d0 
-         dmL(2)=0d0 
-         dmL(3)=0d0 
-         dmL(4)=mc/dm_lam 
-         dmL(5)=mb/dm_lam 
-         do j=1,5 
-            dmR(j)=dmL(j) 
-         enddo
-         if(first) then 
-            write(6,*) 'Setting up Scalar Yukawa Couplings to DM' 
-            write(6,*) 'Couplings are as follows ' 
-            write(6,44) 'dm L :',dmL
-            write(6,44) 'dm R :',dmR 
-            first=.false.
-         endif
-      else
-         dmL(1)=0d0 
-         dmL(2)=0d0 
-         dmL(3)=0d0 
-         dmL(4)=mc*inv_v/g_dmq
-         dmL(5)=mb*inv_v/g_dmq
-         do j=1,5 
-            dmR(j)=dmL(j) 
-         enddo
-         if(first) then 
-            write(6,*) 'Setting up Scalar Yukawa Couplings to DM'
-            write(6,*) 'We are in full theory now, have removed factor'
-            write(6,*) 'g_dmq from input (since fixed by UV)'
-            write(6,*) 'Output below is m_q/v/g_dmq(input) ' 
-            write(6,44) 'dm L :',dmL(1:5)
-            write(6,44) 'dm R :',dmR(1:5) 
-            first=.false.
-         endif
-
-      endif
-      endif
-      
- 44   format(1x,a10,5(f8.4,' '))
-      return 
-      end 
-      

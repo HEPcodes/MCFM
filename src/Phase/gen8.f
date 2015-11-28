@@ -4,19 +4,16 @@
       include 'mxdim.f'
       include 'phasemin.f'
       include 'debug.f'
+      include 'x1x2.f'
       integer nu
-      double precision r(mxdim)
-      double precision wt8,q(mxpart,4)
-      double precision p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4),p8(4),
-     . p9(4),p10(4),pswt,xjac,p1ext(4),p2ext(4)
-      double precision xx(2),tau,x1mx2,surd
-      double precision lntaum
+      double precision r(mxdim),wt8,q(mxpart,4),
+     & p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4),p8(4),
+     & p9(4),p10(4),pswt,xjac,tau,x1mx2,surd,lntaum
+      double precision p1ext(4),p2ext(4)
       common/pext/p1ext,p2ext
-      common/x1x2/xx
-      data p3/0d0,0d0,0d0,0d0/
-
+!$omp threadprivate(/pext/)
       wt8=0d0
-
+      q(:,:)=0d0
       lntaum=log(taumin)
       tau=exp(lntaum*(one-r(21)))
       xjac=-lntaum*tau
@@ -61,6 +58,7 @@ c      xjac=2*r(13)*(one-taumin)
       if (debug) write(6,*) 'wt8 in gen8',wt8
       return
 
+      wt8=0d0 
  999  return 1
       end
 

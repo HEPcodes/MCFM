@@ -13,9 +13,9 @@
       double complex a70h1(2,2,2,2,2),a70h2(2,2,2,2,2)
       double complex a70h3(2,2,2,2,2),a70h4(2,2,2,2,2)
       double precision qqb(2),qbq(2),qg(2),qbg(2),gq(2),gqb(2)
-      integer jj(-nf:nf),kk(-nf:nf)
-      data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      data kk/-1,-2,-1,-2,-1,0,1,2,1,2,1/
+      integer,parameter::jj(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
+      integer,parameter::kk(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
+
 c-----convert to Nagy-Trocsanyi momentum convention
       do i=1,4
          pnt(1,i)=p(2,i)
@@ -275,21 +275,21 @@ c-----choose part
       do i=1,32
          if (ipsgen.eq.1) then
          msqAA(i)=cdabs(m70hA(i))**2
-         msqAB(i)=2d0*realpart(dconjg(m70hA(i))*m70hB(i))
+         msqAB(i)=2d0*dreal(dconjg(m70hA(i))*m70hB(i))
          endif
          if (ipsgen.eq.2) then
          msqBB(i)=cdabs(m70hB(i))**2
-         msqBC(i)=2d0*realpart(dconjg(m70hB(i))*m70hC(i))
+         msqBC(i)=2d0*dreal(dconjg(m70hB(i))*m70hC(i))
          endif
          if (ipsgen.eq.3) then
          msqCC(i)=cdabs(m70hC(i))**2
-         msqAC(i)=2d0*realpart(dconjg(m70hA(i))*m70hC(i))
-         msqCD(i)=2d0*realpart(dconjg(m70hC(i))*m70hD(i))
+         msqAC(i)=2d0*dreal(dconjg(m70hA(i))*m70hC(i))
+         msqCD(i)=2d0*dreal(dconjg(m70hC(i))*m70hD(i))
          endif
          if (ipsgen.eq.4) then
          msqDD(i)=cdabs(m70hD(i))**2
-         msqAD(i)=2d0*realpart(dconjg(m70hA(i))*m70hD(i))
-         msqBD(i)=2d0*realpart(dconjg(m70hB(i))*m70hD(i))
+         msqAD(i)=2d0*dreal(dconjg(m70hA(i))*m70hD(i))
+         msqBD(i)=2d0*dreal(dconjg(m70hB(i))*m70hD(i))
          endif
       enddo
       do i=1,32

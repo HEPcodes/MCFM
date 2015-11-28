@@ -21,11 +21,10 @@ c---                1  --> counterterm for real radiation
       include 'constants.f'
       include 'histo.f'
       include 'outputflags.f'
+      include 'nproc.f'
 c-----
       character*4 mypart
       common/mypart/mypart
-      integer nproc
-      common/nproc/nproc
 c-----
       double precision p(mxpart,4),wt,wt2
       double precision r,etmiss
@@ -39,10 +38,10 @@ c-----
       integer switch,n,nplotmax
       character*4 tag
       integer nd
-      logical first
+      logical, save::first=.true.
       common/nplotmax/nplotmax
-      data first/.true./
-      save first
+ccccc!$omp threadprivate(first,/nplotmax/)
+
   
 ************************************************************************
 *                                                                      *

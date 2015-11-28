@@ -6,6 +6,7 @@ c--- the following are set by the input file
       double precision frag_scale ! fragmentation scale
       double precision cone_ang   ! cone size for Frixione isolation
       double precision epsilon_h  ! energy fraction for isolation
+      double precision frag_scalestart ! frag. scale value in input file
 
 c-- the following is used when computing fragmentation processes
       double precision z_frag ! energy fraction carried by photon
@@ -13,8 +14,10 @@ c-- the following is used when computing fragmentation processes
 c      double precision p_phys(mxpart,4) ! Physical momenta with jets
 c                                        ! rescaled by factor of z to photons
       
-      common/fraginputs/frag_scale,cone_ang,epsilon_h,frag,fragset
+      common/fraginputs/frag_scale,cone_ang,epsilon_h,frag_scalestart,
+     & frag,fragset
       common/fragvars/z_frag,rescale
 !===== logical variable to specific fragintmore 
       logical fragint_mode 
       common/fragint_mode/fragint_mode
+!$omp threadprivate(/fragvars/)

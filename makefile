@@ -5,12 +5,27 @@ CERNLIB     =
 # Replace this with the location of LHAPDF on your system (if desired)
 LHAPDFLIB   = 
 
+# Flag for compiling with OpenMP (YES) or not (anything else)
+USEOMP = YES
+ifeq ($(USEOMP),YES)
+  OBJNAME=obj_omp
+  OMPFLAG=-fopenmp
+  LIBEXT=_omp
+  MAIN = mcfm_omp.o
+else
+  OBJNAME=obj
+  OMPFLAG=
+  LIBEXT=
+  MAIN = mcfm.o
+endif
+
 MCFMHOME        = $(PWD)
 SOURCEDIR       = $(MCFMHOME)/src
 VPATH		= $(DIRS)
+OBJDIR		= $(MCFMHOME)/$(OBJNAME)
+OUTPUT_OPTION	= -o $(OBJDIR)/$@
 BIN		= $(MCFMHOME)/Bin
 INCPATH  	= $(SOURCEDIR)/Inc
-OUTPUT_OPTION	= -o $(MCFMHOME)/obj/$@
 QLDIR		= $(MCFMHOME)/QCDLoop/ql
 FFDIR		= $(MCFMHOME)/QCDLoop/ff
 TENSORREDDIR	= $(MCFMHOME)/TensorReduction
@@ -38,11 +53,11 @@ PDFROUTINES = NATIVE
 NTUPLES = NO
 
 FC = gfortran
-FFLAGS 	= -fno-automatic -fno-f2c -O2 -g -I$(INCPATH) -I$(TENSORREDDIR)/Include -Iobj
-
 F90 = gfortran
-F90FLAGS = -fno-automatic -fno-f2c  -g -I$(INCPATH) -Iobj -Jobj
 
+# Flags for compilation
+FFLAGS 	=  -fno-f2c $(OMPFLAG) -O2 -I$(INCPATH) -I$(TENSORREDDIR)/Include -I$(OBJNAME)
+F90FLAGS = -fno-f2c $(OMPFLAG) -I$(INCPATH) -I$(OBJNAME) -J$(OBJNAME)
 
 # If using FROOT package for ROOT ntuples, first specify C++ compiler:
 CXX = g++
@@ -57,7 +72,7 @@ ROOTINCLUDE     := -I `root-config --prefix=$(ROOTDIR) --incdir`
 
 
 DIRS	=	$(MCFMHOME):\
-		$(MCFMHOME)/obj:\
+		$(OBJDIR):\
 		$(SOURCEDIR)/User:$(SOURCEDIR)/Procdep:$(SOURCEDIR)/Vol:\
 		$(SOURCEDIR)/Need:$(SOURCEDIR)/Lib:$(SOURCEDIR)/Phase:\
 		$(SOURCEDIR)/Parton:$(SOURCEDIR)/Integrate:\
@@ -98,13 +113,71 @@ DIRS	=	$(MCFMHOME):\
                 $(SOURCEDIR)/DM/Vec_DM:$(SOURCEDIR)/DM/GG_DM:\
                 $(SOURCEDIR)/DM/Ax_DM:$(SOURCEDIR)/DM/Scal_DM:\
                 $(SOURCEDIR)/DM/PS_DM:$(SOURCEDIR)/Trigam:  \
-                $(SOURCEDIR)/VV:  \
+                $(SOURCEDIR)/VV:$(SOURCEDIR)/Fourgam:  \
                 $(SOURCEDIR)/Trigam/Mad:  \
 		$(SOURCEDIR)/pwgplots:$(SOURCEDIR)/Multichan:$(SOURCEDIR)/TopH/Store/Mad\
-		$(SOURCEDIR)/UTools
+		$(SOURCEDIR)/UTools:$(SOURCEDIR)/WBFZZ\
+                $(SOURCEDIR)/WBFWW:$(SOURCEDIR)/WBFWpWp:$(SOURCEDIR)/WBFWZ
 
 # -----------------------------------------------------------------------------
 # Specify the object files. 
+
+WBFFILES = \
+getvbfpoint.o \
+comparevbf.o \
+qq_WZqqstrong.o \
+qqWZggampf.o \
+qqWZggamp.o \
+jonezstrong.o \
+jZexch2strong.o \
+jww.o \
+jWexch2.o \
+jZexch2.o \
+ampmidWZ.o \
+jonewWZ.o \
+qq_WZqq.o \
+jonez.o \
+qq_WWss.o \
+qq_WWssstrong.o \
+ampBdiags.o \
+ampmidWpWp.o \
+jtwodiagsWpWp.o \
+jonewWpWp.o \
+ampvbf.o \
+jtwoWW.o \
+jtwoWWstrong.o \
+jZWZ.o \
+jtwodiags.o \
+jtwoWexch.o \
+jonew.o \
+jonewstrong.o \
+ampmidWW.o \
+qq_VVqq.o \
+qq4lggampf.o \
+qq4lggamp.o \
+qq2l2nuggamp.o \
+qq_WWqq.o \
+qq_WWqqstrong.o \
+ampmid.o \
+nplotter_qqZZqq.o \
+scaleset_s-hat.o \
+setupmom.o \
+setupzprops.o \
+averageovertwoZ.o \
+pgen.o \
+pgen2.o \
+qq_ZZqq.o \
+qq_ZZqq_both.o \
+qq_ZZqqstrong.o \
+WWZZ.o \
+ZZHZZamp.o \
+spinorcurr.o \
+jzero.o \
+jone.o \
+jtwo.o \
+jtwo3456.o \
+ZZSingleres.o \
+ZZ_HZZ1.o
 
 UTOOLSFILES=\
 defpeta_bubs.o\
@@ -117,6 +190,28 @@ dipoleconfig.o \
 getperp.o \
 multichan.o
 
+FOURGAMFILES= \
+qqb_fourgam.o \
+qqb_fourgam_fragdips.o \
+qqb_fourgam_frag.o \
+qqb_fourgam_g.o \
+qqb_fourgam_gs.o \
+qqb_fourgam_v.o \
+qqb_fourgam_z.o \
+real_aaaaj.o \
+real_aaajj_fill.o \
+aaaa_fill.o \
+aaaa_MHV_b_init.o \
+aaaa_MHV_c_init.o \
+aaaa_MHV_d_init.o \
+aaaa_MHV_r_init.o \
+aaaa_NMHV_b_init.o \
+aaaa_NMHV_c_init.o \
+aaaa_NMHV_d_init.o \
+aaaa_NMHV_r_init.o \
+Bubint_init.o \
+Triint_init.o \
+Boxint_init.o \
 
 TRIGAMFILES=\
 checkgvec.o \
@@ -649,6 +744,7 @@ dgauss.o \
 vegas.o \
 ebook.o \
 mbook.o \
+tmpmbook.o \
 ran0.o \
 ran1.o \
 rn.o
@@ -691,6 +787,7 @@ basic_Vfrix.o \
 boost.o \
 boostx.o \
 branch.o \
+cdotpr.o \
 checkndotp.o \
 checkversion.o \
 checkjets.o \
@@ -730,7 +827,8 @@ mcfmmain.o \
 mcfmsub.o \
 mcfm_exit.o \
 mcfm_init.o \
-mcfm_vegas.o \
+mcfm_vegasnr.o \
+vegasnr.o \
 mfrun.o \
 ptyrap.o \
 r.o \
@@ -758,6 +856,7 @@ setmb_msbar.o \
 setrunname.o \
 setvdecay.o \
 smalls.o \
+smarthistos.o \
 spinork.o \
 spinoru.o \
 spinorz.o \
@@ -864,6 +963,8 @@ phase7m.o \
 phase8.o \
 phi1_2.o \
 phi1_2bis.o \
+phi1_2bw.o \
+phi1_2nobw.o \
 phi1_2m.o \
 phi1_2m_bw.o \
 phi1_2m_nobw.o \
@@ -1162,7 +1263,9 @@ cdfhwwcuts.o \
 cms_higgsWW.o \
 ATLAS_hww.o \
 ATLAS_hww2013.o \
+ATLAS_ss.o \
 CMS_hzz.o \
+CMS_hzz_vbf.o \
 dm_cuts.o\
 deltarj.o \
 durhamalg.o \
@@ -1222,6 +1325,7 @@ nplotter_zgamjet.o \
 nplotter_Ztj.o \
 nplotter_Ztjdk.o \
 nplotter_ZZlept.o \
+fasthist.o \
 idjet.o \
 photo_iso.o \
 photo_iso_z.o \
@@ -1233,6 +1337,7 @@ setnotag.o \
 singletopreconstruct.o \
 stopcuts.o \
 topreconstruct.o \
+VBS.o \
 wbfcuts.o \
 wbfcuts_jeppe.o \
 wconstruct.o
@@ -1821,11 +1926,9 @@ USERFILES += gridwrap.o
 # endif
 
 LIBDIR=.
-LIBFLAGS=-lqcdloop -lff -lov -lpv -lsmallG -lsmallY -lsmallP -lsmallF
+LIBFLAGS=-lqcdloop$(LIBEXT) -lff$(LIBEXT) -lov$(LIBEXT) -lpv$(LIBEXT) -lsmallG$(LIBEXT) -lsmallY$(LIBEXT) -lsmallP$(LIBEXT) -lsmallF$(LIBEXT)
 
 # the files that do not go into the library                                                      
-MAIN = mcfm.o
-
 NONLIB= \
 $(MAIN) \
 usercode_f77.o  
@@ -1928,6 +2031,7 @@ ifeq ($(LINKONELOOP),YES)
   LIBFLAGS += -lavh_olo
 else
   NONLIB += olo_dummy.o
+  NONLIBOMP += olo_dummy.o
 endif
 
 # Master program.
@@ -1935,6 +2039,8 @@ endif
 #              -ldhelas
 
 #LIBFLAGS += -ldhelas
+
+OMPTEST = $(PARTONFILES) testff.o
 
 OURCODE = $(LIBFILES) $(NEEDFILES)  $(PROCDEPFILES) $(SPINORFILES) \
           $(PHASEFILES) $(SINGLETOPFILES) \
@@ -1959,55 +2065,64 @@ OURCODE = $(LIBFILES) $(NEEDFILES)  $(PROCDEPFILES) $(SPINORFILES) \
 	  $(GGHZGAFILES) $(ZGAMJETFILES) $(ZGAMGAMFILES) \
 	  $(WGAMGAMFILES) $(HHFILES) \
 	  $(SINGLETOPHFILES) $(SINGLETOPZFILES) \
-	  $(DMFILES) $(TRIGAMFILES) \
+	  $(DMFILES) $(TRIGAMFILES) $(FOURGAMFILES) \
 	  $(WPMZBJFILES) $(MULTICHANFILES) \
 	  $(PWGPLOTSFILES) \
-	  $(CHECKINGFILES) $(UTOOLSFILES)
+	  $(CHECKINGFILES) $(UTOOLSFILES) $(WBFFILES)
           
 OTHER = $(INTEGRATEFILES) $(PARTONFILES) $(WPWP2JFILES) $(F90FILES) 
 
 ALLMCFM = $(OURCODE) $(OTHER) $(NONLIB)
+ALLMCFMOMP = $(OURCODE) $(OTHER) $(NONLIBOMP)
 MCFMLIB = $(OURCODE) $(OTHER) 
 
           
 
 # CERNLIB libraries for PDFLIB: -lpdflib804 -lmathlib -lpacklib 
 
-mcfm: $(ALLMCFM)
+mcfm$(LIBEXT): $(ALLMCFM)
 	$(FC) $(FFLAGS) -L$(LIBDIR) -L$(QLDIR) -L$(FFDIR) -L$(PVDIR) -L$(RECURDIR) -L$(OVDIR) -o $@ \
-	$(patsubst %,obj/%,$(ALLMCFM)) $(LIBFLAGS) 
-	mv mcfm Bin/
+	$(patsubst %,$(OBJNAME)/%,$(ALLMCFM)) $(LIBFLAGS) 
+	mv mcfm$(LIBEXT) Bin/
+	@echo $(PDFMSG)
+	@echo $(NTUPMSG)
+	@echo "   ----> Executable is mcfm$(LIBEXT) <----"
+
+test: $(OMPTEST)
+	$(FC) -Wall $(FFLAGS) -L$(QLDIR) -L$(FFDIR)  -o $@ \
+	$(patsubst %,$(OBJNAME)/%,$(OMPTEST)) -lqcdloop -lff  
+	mv test Bin/
 	@echo $(PDFMSG)
 	@echo $(NTUPMSG)
 
 mcfmalt: mcfmlib $(NONLIB)
 	$(FC) $(FFLAGS) -L$(LIBDIR) -L$(QLDIR) -L$(FFDIR) -L$(PVDIR) -L$(RECURDIR) -L$(OVDIR) -o $@ \
-	$(patsubst %,obj/%,$(NONLIB)) -lmcfm $(LIBFLAGS) 
+	$(patsubst %,$(OBJNAME)/%,$(NONLIB)) -lmcfm $(LIBFLAGS) 
 	mv mcfmalt Bin/mcfm
 	@echo $(PDFMSG)
 	@echo $(NTUPMSG)
 
 mcfmcc: mcfmlib $(MAIN) cxxusercode.o
 	$(FC) $(FFLAGS) -L$(LIBDIR) -L$(QLDIR) -L$(FFDIR) -L$(PVDIR) -L$(RECURDIR) -L$(OVDIR) -o $@ \
-	$(patsubst %,obj/%,$(MAIN)) obj/cxxusercode.o -lmcfm $(LIBFLAGS) \
+	$(patsubst %,$(OBJNAME)/%,$(MAIN)) $(OBJNAME)/cxxusercode.o -lmcfm $(LIBFLAGS) \
 	`fastjet-config` --libs -lstdc++
 	mv mcfmcc Bin/
 	@echo $(PDFMSG)
 	@echo $(NTUPMSG)
 
 mcfmlib: $(MCFMLIB)
-	ar -r libmcfm.a $(patsubst %,obj/%,$(MCFMLIB))
+	ar -r libmcfm.a $(patsubst %,$(OBJNAME)/%,$(MCFMLIB))
 	ranlib libmcfm.a
 
 # for FROOT package
 %.co: %.c
-	$(CXX) -c $(CXXFLAGS) $(DMYROOT) $(ROOTINCLUDE) -o obj/$@ $<
+	$(CXX) -c $(CXXFLAGS) $(DMYROOT) $(ROOTINCLUDE) -o $(OBJNAME)/$@ $<
 # TM Include F90 files too
 %.o: %.f90
-	$(F90) $(F90FLAGS) -c -o obj/$@ $<
+	$(F90) $(F90FLAGS) -c -o $(OBJDIR)/$@ $<
 
 %.o: %.cc
-	$(CXX) -c $(CXXFLAGS) `fastjet-config --cxxflags` -o obj/$@ $<
+	$(CXX) -c $(CXXFLAGS) `fastjet-config --cxxflags` -o $(OBJNAME)/$@ $<
 
 # for c++ targets
 #%.o: %.cxx
@@ -2045,7 +2160,7 @@ checkf:
 		$(FORCHKPATH)/forchk -I $(INCPATH) $(PRJSF)
 
 clean:
-	- rm -f *.o obj/*.o obj/*.mod Bin/mcfm QCDLoop/*/*.o *.s *.prj *~ core
+	- rm -f *.o obj/*.o obj/*.mod obj_omp/*.o obj_omp/*.mod Bin/mcfm QCDLoop/*/*.o *.s *.prj *~ core
 
 # -----------------------------------------------------------------------------
 

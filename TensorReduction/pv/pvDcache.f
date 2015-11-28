@@ -8,10 +8,11 @@
       include 'pvDitry.f'
       double precision para(Pdd),p1s,p2s,p3s,p4s,p1p2,p2p3,
      . m1s,m2s,m3s,m4s
-      double precision tableD(Pdd,Ndmax)
-      integer Nstore,j,jtable,Ntrue
-      data Nstore/0/
-      save tableD,Nstore
+      integer j,jtable,Ntrue
+      double precision,save:: tableD(Pdd,Ndmax)
+      integer,save:: Nstore=0
+!$omp threadprivate(tableD,Nstore)
+
       if (clear(4)) then
       clear(4)=.false.
       Nstore=0

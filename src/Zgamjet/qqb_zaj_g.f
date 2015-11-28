@@ -17,9 +17,8 @@
       double precision qiqj(2,2),qjqi(2,2),qbiqbj(2,2),qbjqbi(2,2)
       double precision qiqbj(2,2),qjqbi(2,2),qbiqj(2,2),qbjqi(2,2)
       integer i,j,k
-      integer jj(-nf:nf),kk(-nf:nf)
-      data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      data kk/-1,-2,-1,-2,-1,0,1,2,1,2,1/
+      integer,parameter::jj(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
+      integer,parameter::kk(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
 c-----call squared matrix elements from each subprocesses
       call msq_zqqbgamgg(p,qqb_gg,qbq_gg,gg_qqb,
      .qg_qg,qbg_qbg,gq_gq,gqb_gqb)

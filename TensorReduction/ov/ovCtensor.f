@@ -27,13 +27,13 @@ C     Author: R.K.Ellis (January 2013)
      & C00(-2:0),B00_1(-2:0),B00_2(-2:0),B00_3(-2:0),trI3,
      & tau3(4,-2:0),RHS(2),inRHS(2)
       integer n1,n2,n3,ep,indx(2)
-      logical first,failed,iterate,dosvd
-      data first/.true./
-      save first
-      double precision para(Pcc),tableC(Pcc,Ncmax)      
-      integer Nstore,jtable,j,Ntrue
-      data Nstore/0/
-      save tableC,Nstore
+      logical failed,iterate,dosvd
+      double precision para(Pcc)
+      integer jtable,j,Ntrue
+      logical,save:: first=.true.
+      double precision,save:: tableC(Pcc,Ncmax)      
+      integer,save :: Nstore=0
+!$omp threadprivate(first,tableC,Nstore)
 
 c--- controls whether or not to iterate the solution by LU decomposition
       iterate=.false.

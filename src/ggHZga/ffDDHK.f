@@ -35,14 +35,14 @@ C-----suitably generalized to allow off-shell Z-line
       include 'zcouple.f'
       include 'couple.f'
       include 'part.f'
+      include 'first.f'
       include 'msbarmasses.f'
       integer top
       double complex ffDDHK,fWDDHK
       double precision s12,s34,cotw,mtsq,mwsq,mt_eff,massfrun
-      logical first
       parameter(top=2)
-      data first/.true./
-      save first,mt_eff
+      save mt_eff
+!$omp threadprivate(mt_eff)
                        
       if (first) then           
 c--- run mt to appropriate scale

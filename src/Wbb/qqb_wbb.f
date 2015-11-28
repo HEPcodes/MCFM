@@ -8,12 +8,10 @@ c---  averaged(summed) over initial(final) colours and spins
       include 'sprods_com.f'
       include 'zprods_com.f'
       include 'masses.f'
+      include 'first.f'
       integer j,k
       double precision p(mxpart,4),msq(-nf:nf,-nf:nf),msqwbb
       double precision qqb,qbq
-      logical first
-      data first/.true./
-      save first
       
       if (first) then
        write(6,*)

@@ -1,5 +1,3 @@
-
-
       subroutine read_dm_params
       implicit none 
       include 'dm_params.f' 
@@ -27,7 +25,7 @@
       read(35,*) medwidth
       read(35,*) g_dmx
       read(35,*) g_dmq
-
+      close(35)
 
       write(6,*) '************** DM PARAMETERS ****************' 
       write(6,43) '* DM Mass ',xmass,'          *' 
@@ -45,12 +43,112 @@
  !     write(6,43) '* Mediator Mass ',medmass,'        *' 
       write(6,*) '***************************************' 
 
+c--- for scalar or pseudoscalar mediator, set scalar couplings
+      if (  (dm_mediator .eq. 'scalar')
+     & .or. (dm_mediator .eq. 'pseudo') ) then
+        call set_scalar_coups()
+      endif
+      
+c--- for axial-vector or pseudoscalar mediator, check couplings
+      if (  (dm_mediator .eq. 'axvect')
+     & .or. (dm_mediator .eq. 'pseudo') ) then
+        call check_dmAxC()
+      endif
+
  43   format(1x,a10,f8.3,a20) 
 
  44   format(1x,a20,5(f8.4,' '),a4)
       return 
- 440  write(6,*) 'Couldnt open dm_parameters.DAT' 
+ 440  write(6,*) 'Could not open dm_parameters.DAT' 
       stop 
       
       return 
       end 
+
+
+
+
+      subroutine check_dmAxC
+      implicit none 
+      include 'constants.f' 
+      include 'dm_params.f' 
+!----- check that dmL = -dmR for axial coupling 
+      integer j 
+      logical reset 
+
+      reset=.false. 
+
+      do j=1,nf
+         if(dabs(dmL(j)+dmR(j)).gt.1d-8) then 
+          dmR(j)=-dmL(j)
+          reset=.true. 
+          endif
+      enddo
+
+      
+      if(reset) then 
+         write(6,*) 'Found that dmL is not equal to -dm R as required'
+         write(6,*) 'Fixing dmR = -dmL (input) '
+         write(6,*) 'to ensure correct axial behaviour.'
+         write(6,*) 'Check manual for details.'
+      endif
+
+      return 
+      end 
+      
+
+      
+      subroutine set_scalar_coups
+      implicit none 
+      include 'dm_params.f' 
+      include 'masses.f' 
+      include 'ewcouple.f' 
+      include 'first.f' 
+      integer j 
+      double precision inv_v
+!----- inv v = 1/v = dsqrt(gwsq/4m_W^2) 
+      inv_v=dsqrt(gwsq/(4d0*wmass**2)) 
+
+      if(yukawa_scal) then 
+      if(effective_th) then 
+         dmL(1)=0d0 
+         dmL(2)=0d0 
+         dmL(3)=0d0 
+         dmL(4)=mc/dm_lam 
+         dmL(5)=mb/dm_lam 
+         do j=1,5 
+            dmR(j)=dmL(j) 
+         enddo
+c         if(first) then 
+            write(6,*) 'Setting up Scalar Yukawa Couplings to DM' 
+            write(6,*) 'Couplings are as follows ' 
+            write(6,44) 'dm L :',dmL
+            write(6,44) 'dm R :',dmR 
+c            first=.false.
+c         endif
+      else
+         dmL(1)=0d0 
+         dmL(2)=0d0 
+         dmL(3)=0d0 
+         dmL(4)=mc*inv_v/g_dmq
+         dmL(5)=mb*inv_v/g_dmq
+         do j=1,5 
+            dmR(j)=dmL(j) 
+         enddo
+c         if(first) then 
+            write(6,*) 'Setting up Scalar Yukawa Couplings to DM'
+            write(6,*) 'We are in full theory now, have removed factor'
+            write(6,*) 'g_dmq from input (since fixed by UV)'
+            write(6,*) 'Output below is m_q/v/g_dmq(input) ' 
+            write(6,44) 'dm L :',dmL(1:5)
+            write(6,44) 'dm R :',dmR(1:5) 
+c            first=.false.
+c         endif
+
+      endif
+      endif
+      
+ 44   format(1x,a10,5(f8.4,' '))
+      return 
+      end 
+      

@@ -24,10 +24,7 @@
       double precision gamq4,gama7,dot
       double precision facqqb,p4Dq,p7Da
       double complex propz
-      integer jj(-nf:nf)
-      data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      save jj
-      
+      integer,parameter::jj(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
       
 C----set all elements to zero
       do j=-nf,nf

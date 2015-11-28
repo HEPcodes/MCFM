@@ -22,12 +22,7 @@
       double precision z,p(mxpart,4),k(mxpart,4),dot,metric,Q34sq,
      & xl13,xl14,xl23,xl24,xl34,xl15,xl25,xl15h,xl25h,
      & mbar13,mbar14,mbar23,mbar24,mbar34a,mbar34b,tempgq1,tempgq2,
-     & if_mgg,
-     & fi_mqq,
-     & ff_2mqq,
-     & if_qg,if_gq,
-     & if_qq,fi_qq,
-     & ason4pi_H,ason4pi_L
+     & if_mgg,fi_mqq,ff_2mqq,if_qg,if_gq,if_qq,fi_qq,ason4pi_H,ason4pi_L
       integer is,nu
 
 c--- define momentum array k from p, such that the identities

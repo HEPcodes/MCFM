@@ -20,5 +20,6 @@
      .     ag_xx1,ag_xx2,ag_x1z,ag_x2z,
      .     ag_scale,refwt,refwt2,
      .     contrib,dipole
+!$omp threadprivate(/gridweight/,/gridevent/)
       
 

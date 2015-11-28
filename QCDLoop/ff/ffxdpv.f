@@ -58,6 +58,8 @@
      + 		    +1,+1,+1,-1,+1,+1,
      + 		    +1,+1,+1,+1,+1,+1,
      + 		    +1,+1,+1,+1,+1,+1/
+!$omp threadprivate(inx43,sgn43)
+
 *
 *	statement function
 *	

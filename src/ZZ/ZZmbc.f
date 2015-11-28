@@ -14,6 +14,7 @@ c----after performing a transformation
      & oldfuncb134mp,oldfuncb34mp
       double precision IDelta
       common/ggZZuse6d/ggZZuse6d
+!$omp threadprivate(/ggZZuse6d/)
 
 C----statement functions
       zab2(j1,j2,j3,j4)=+za(j1,j2)*zb(j2,j4)+za(j1,j3)*zb(j3,j4)

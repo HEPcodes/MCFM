@@ -25,9 +25,6 @@ C--in is the label of the parton dotted with n
       double precision qgqb(2),qbgq(2)
       double complex cprop
       double precision propsq,s34,fac_dm
-      logical first 
-      data first /.true./ 
-      save first 
 
       do j=-nf,nf
       do k=-nf,nf
@@ -115,10 +112,6 @@ c      p1p2(:,:)=0d0
          elseif (in .eq. 5) then      
             call dmmonojn_ax(2,1,5,p,n,qbqg)
             call dmmonojn_ax(1,2,5,p,n,qqbg)
-            if(first) then 
-            first = .false. 
-            call check_dmAxC
-         endif         
 !     p1p2(-1,1)=+aveqq*fac*dmmonojn(2,1,5,p,n)
 !      p1p2(1,-1)=+aveqq*fac*dmmonojn(1,2,5,p,n)
          endif
@@ -140,11 +133,6 @@ c      p1p2(:,:)=0d0
 !     p1p2(1,-1)=+aveqq*fac*dmmonojn(1,2,5,p,n)
          endif
          fac=fac/4d0
-         
-         if(first) then 
-            first=.false.
-            call set_scalar_coups
-         endif
       elseif(dm_mediator.eq.'pseudo') then 
          if (in .eq. 1) then
             call dmmonojn_Pscal(5,2,1,p,n,gqqb)
@@ -161,10 +149,6 @@ c      p1p2(:,:)=0d0
             call dmmonojn_Pscal(1,2,5,p,n,qqbg)
 !     p1p2(-1,1)=+aveqq*fac*dmmonojn(2,1,5,p,n)
 !     p1p2(1,-1)=+aveqq*fac*dmmonojn(1,2,5,p,n)
-         endif
-         if(first) then 
-            first = .false. 
-            call check_dmAxC
          endif
          fac=fac/4d0
       endif

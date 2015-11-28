@@ -43,6 +43,7 @@
       include 'initialscales.f'
       include 'dipolescale.f'
       include 'facscale.f'
+      include 'incldip.f'
       double precision p(mxpart,4),ptrans(mxpart,4),sub(4),subv,vecsq
       double precision x,omx,z,omz,y,omy,u,omu,sij,sik,sjk,dot,vec(4)
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),vtilde
@@ -53,8 +54,6 @@
       double precision mvxg(-nf:nf,-nf:nf,-nf:nf,-nf:nf)
       integer nd,ip,jp,kp,nu,j,k
 c--      logical includedipole
-      logical incldip(0:maxd)
-      common/incldip/incldip
       external subr_born,subr_corr
       
 C---Initialize the dipoles to zero
@@ -63,6 +62,11 @@ C---Initialize the dipoles to zero
       enddo
       subv=0d0
       call zeromsq(msq,msqv)
+      mqq=0d0
+      msqx=0d0
+      mg=0d0
+      mvg=0d0
+      mvxg=0d0
       incldip(nd)=.true.
 
       sij=two*dot(p,ip,jp)

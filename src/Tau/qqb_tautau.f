@@ -16,6 +16,7 @@
       include 'ewcouple.f'
       include 'zcouple.f'
       include 'ewcharge.f'
+      include 'first.f'
       integer j,k,nu
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),pks(4,10)
       double precision RMT,RGT,RMW,RGW,RMB,RMTLO,RMTUP
@@ -26,9 +27,7 @@
       COMMON/COUPS/GW_KS,GS_KS
       COMMON/PARS/RMT,RGT,RMW,RGW,RMB,RMTLO,RMTUP
       COMMON/MOM/PKS
-      logical first
-      data first/.true./       
-      save first
+!$omp threadprivate(/COUPS/,/PARS/,/MOM/)  
 
 c---- Fill common blocks for Kleiss and Stirling   
       if (first) then

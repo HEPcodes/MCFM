@@ -31,7 +31,7 @@
       double complex ampgg_ga(2,2,2),ampgg_ag(2,2,2),
      .               ampgg_ag_mb(2,2,2,2),ampgg_ga_mb(2,2,2,2),
      .               ampld(2)
-      common/nearmt/nearmt
+!      common/nearmt/nearmt
 
       do j=-nf,nf
       do k=-nf,nf

@@ -10,23 +10,25 @@
       include 'PDFerrors.f'
       include 'part.f'
       include 'outputflags.f'
+      include 'bypart.f'
 
 c--- APPLgrid - to use grids
-      include 'constants.f'
-      include 'ptilde.f'
-      include 'APPLinclude.f'
+c      include 'constants.f'
+c      include 'ptilde.f'
+c      include 'APPLinclude.f'
 c--- APPLgrid -end
-
+      
+      logical bin
       integer j,k,itmx,iu
       double precision xinteg,xinteg_err,minPDFxsec,maxPDFxsec
       double precision PDFarray(0:1000),PDFcentral,PDFerror,PDFperror,
      & PDFnerror
-      double precision lord_bypart(-1:1,-1:1),lordnorm,rescale
+      double precision lordnorm,rescale
       double precision ggpart,gqpart,qgpart,qqpart,qqbpart,
-     . gqbpart,qbgpart,qbqbpart,qbqpart
-      common/bypart/lord_bypart
-      common/finalpart/ggpart,gqpart,qgpart,qqpart,qqbpart
-
+     & gqbpart,qbgpart,qbqbpart,qbqpart
+      common/finalpart/ggpart,gqpart,qgpart,qqpart,qqbpart,
+     & gqbpart,qbgpart,qbqbpart,qbqpart
+      common/bin/bin
       double precision PDFMCav, PDFMCer, sum1,sum2
       
 c--- Print-out the value of the integral and its error
@@ -59,7 +61,7 @@ c---  normalized by sigma(gg->H, finite mt)/sigma(gg->H, mt-> infinity)
         write(6,'(a25,f7.3,a2)') '   (Rescaling factor is ',rescale,')'  
       endif
      
-   53 format(a15,a4,a12,f14.4,a4,f11.4,a3)
+   53 format(a15,a4,a12,G14.6,a4,G14.6,a3)
 
 c--- Print-out a summary of the effects of jets and cuts
       write(6,*) 
@@ -111,7 +113,7 @@ c--- through the jet and cut routines
       call flush(6)
 
    54 format(a20,f6.2,'%')
-   55 format(4x,a9,' |',f18.5,f8.2,'%')
+   55 format(4x,a9,' |',G18.5,f8.2,'%')
 
 c--- If we've calculated PDF errors, present results using   
 c--- new implementation of PDF uncertainty (9/2013)
@@ -149,29 +151,26 @@ c------ loop over output units
    59 format('*   ',a16,f14.3,'         *')
    60 format('*   ',a16,f14.2,' %       *')
  
+      if (bin) then
 c--- Finalize the histograms, if we're not filling ntuples instead
-      if (creatent .eqv. .false.) then
-        if (dswhisto .eqv. .false.) then
-c--- Traditional MCFM histograms
-          call histofin(xinteg,xinteg_err,0,itmx)
-        else
-c--- DSW histograms - store the information
-          call dswhbook(200,'Sigma   ',1.0d0,0.0d0,10.0d0)
-          call dswhfill(200,0.5d0,xinteg)
-          call dswhfill(200,1.5d0,xinteg_err)
-c--- DSW histograms - output and close file
-          call NTfinalize
-        endif
-      else
-c--- ADDED - to produce normal histograms as well
-        call histofin(xinteg,xinteg_err,0,itmx)
-        call NTfinalize
+         if (creatent .eqv. .false.) then
+            if (dswhisto .eqv. .false.) then
+c---  Traditional MCFM histograms
+               call histofin(xinteg,xinteg_err,0,itmx)
+            else
+c---  DSW histograms - store the information
+               call dswhbook(200,'Sigma   ',1.0d0,0.0d0,10.0d0)
+               call dswhfill(200,0.5d0,xinteg)
+               call dswhfill(200,1.5d0,xinteg_err)
+c---  DSW histograms - output and close file
+               call NTfinalize
+            endif
+         endif
       endif
-
 c--- APPLgrid - creating grid
-      if (creategrid)then
-       call write_grid(xinteg)
-      endif
+c      if (creategrid)then
+c       call write_grid(xinteg)
+c      endif
 c--- APPLgrid - end
 
       return

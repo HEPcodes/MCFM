@@ -6,6 +6,7 @@ c-- for the W2jet_gvec matrix elements into elements (..,i,j) of q1q2
       integer i,j,k
       double precision q1q2(0:2,-1:1,-1:1)
       common/q1q2/q1q2
+!$omp threadprivate(/q1q2/)
       
       do k=0,2
         q1q2(k,i,j)=mmsqv_cs(k,+1,+1)

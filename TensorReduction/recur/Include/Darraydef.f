@@ -5,3 +5,4 @@
       integer z1max,z2max,z3max,z4max,z5max,z6max,z7max
       parameter(z1max=3,z2max=6,z3max=10,z4max=15,z5max=21,z6max=28,
      .          z7max=36)
+!$omp threadprivate(/Darraydef/)

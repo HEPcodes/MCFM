@@ -6,6 +6,7 @@
       include 'ggZZintegrals.f'
       include 'ZZclabels.f'
       include 'docheck.f'
+C      include 'first.f'
 C---Indices of coefficients are CLL(integral,h1,h2,h3,h5)
       double complex CLL(6,2,2,2,2)
 c      double complex CLR(6,2,2,2,2),CRL(6,2,2,2,2),CRR(6,2,2,2,2)
@@ -15,8 +16,6 @@ C---Indices of xpp etc are xpp(h3,h5)
      & totrat(2,2,2,2),tri12_34rat(2,2,2,2),tri(2,2,2,2,-2:0)
       double precision mt
       integer k1,k2,k3,k4,k5,k6,h1,h2,h3,h5,j
-c      logical,save::first
-c      data first/.true./
 
 c--- QCDLoop already initialized from call to massivebox
 c      if (first) then

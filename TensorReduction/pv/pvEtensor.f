@@ -35,9 +35,8 @@ C****   m1s,m2s,m3s,m4s,m5s are the internal masses squared.
       integer nu,n1,n2,n3,n4,n5,nn,ep
       logical pvGramsing,singmat
       common/singmat/singmat      
-      logical first
-      data first/.true./
-      save first
+      logical,save:: first=.true.
+!$omp threadprivate(first,/singmat/)
 
       if (first) then
       first=.false.

@@ -27,13 +27,10 @@ c---                1  --> counterterm for real radiation
       integer switch,n,nplotmax
       character*4 tag
       integer nd
-      integer my_count 
-      common/my_count/my_count 
-      logical first
+      logical, save::first=.true.
       common/nplotmax/nplotmax
-      data first/.true./
-      save first
-  
+ccccc!$omp threadprivate(first,/nplotmax/)
+
 ************************************************************************
 *                                                                      *
 *     INITIAL BOOKKEEPING                                              *

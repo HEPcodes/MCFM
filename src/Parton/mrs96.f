@@ -34,7 +34,8 @@ C                                                               C
 C***************************************************************C
       implicit real*8(a-h,o-z)
       data xmin,xmax,qsqmin,qsqmax/1d-5,1d0,1.25d0,1d7/
-
+      save xmin,xmax,qsqmin,qsqmax
+!$omp threadprivate(xmin,xmax,qsqmin,qsqmax)
       q2=q*q
       if(q2.lt.qsqmin.or.q2.gt.qsqmax) then
       print 99
@@ -79,7 +80,8 @@ C***************************************************************C
       data xmin,xmax,qsqmin,qsqmax/1d-5,1d0,1.25d0,1d7/
       data n0/3,4,5,9,9,9,9,9/
       data init/0/
-      save
+      save xx,qq,xmin,xmax,qsqmin,qsqmax,n0,init,f
+!$omp threadprivate(xx,qq,xmin,xmax,qsqmin,qsqmax,n0,init,f)
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
@@ -165,7 +167,8 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
       data xmin,xmax,qsqmin,qsqmax/1d-5,1d0,1.25d0,1d7/
       data n0/3,4,5,9,9,9,9,9/
       data init/0/
-      save
+      save xx,qq,xmin,xmax,qsqmin,qsqmax,n0,init,f
+!$omp threadprivate(xx,qq,xmin,xmax,qsqmin,qsqmax,n0,init,f)
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
@@ -190,6 +193,7 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
       do 40 i=1,np
       do 40 m=1,nq
   40  f(i,nx,m)=0d0
+      close(unit=1)
       init=1
   10  continue
       if(x.lt.xmin) x=xmin
@@ -250,7 +254,8 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
       data xmin,xmax,qsqmin,qsqmax/1d-5,1d0,1.25d0,1d7/
       data n0/3,4,5,9,9,9,9,9/
       data init/0/
-      save
+      save xx,qq,xmin,xmax,qsqmin,qsqmax,n0,init,f
+!$omp threadprivate(xx,qq,xmin,xmax,qsqmin,qsqmax,n0,init,f)
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
@@ -275,6 +280,7 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
       do 40 i=1,np
       do 40 m=1,nq
   40  f(i,nx,m)=0d0
+      close(unit=1)
       init=1
   10  continue
       if(x.lt.xmin) x=xmin
@@ -335,7 +341,8 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
       data xmin,xmax,qsqmin,qsqmax/1d-5,1d0,1.25d0,1d7/
       data n0/3,4,5,9,9,9,9,9/
       data init/0/
-      save
+      save xx,qq,xmin,xmax,qsqmin,qsqmax,n0,init,f
+!$omp threadprivate(xx,qq,xmin,xmax,qsqmin,qsqmax,n0,init,f)
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
@@ -360,6 +367,7 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
       do 40 i=1,np
       do 40 m=1,nq
   40  f(i,nx,m)=0d0
+      close(unit=1)
       init=1
   10  continue
       if(x.lt.xmin) x=xmin

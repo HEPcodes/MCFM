@@ -13,7 +13,6 @@ c-----  treated in the massless approximation
 
 c--- initalize to zero
       msq(:,:)=0d0
-
       call dotem(3,p,s)
       fac=4d0*V*gsq*esq
 

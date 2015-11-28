@@ -11,15 +11,14 @@ C-----Matrix element squared for the Higgs going to l^-(p3) l^+(p5) Gamma(p5)
       include 'sprods_com.f'
       include 'msbarmasses.f'
       include 'part.f'
+      include 'first.f'
       double precision s12,s34,s35,s45
       double precision v1(2),vfbar,Qf,mtsq,mwsq,cotw,fac,
      & mt_eff,massfrun
       double complex F(2),FfDDHK,fWDDHK,prop34
       integer j,top,p3,p4,p5
-      logical first
       parameter(top=2)
-      data first/.true./
-      save first,mt_eff
+      save mt_eff
                         
       if (first) then            
 c--- run mt to appropriate scale

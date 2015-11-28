@@ -19,9 +19,9 @@
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),
      & Cgamgam,ggtogagag,qa_gagag(2),
      & ag_gagaa(2),qg_gagaq(2),ga_gagaa(2),gq_gagaq(2),gg_gaga
-      integer j,k,jj(-nf:nf),kk(-nf:nf)
-      data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      data kk/-1,-2,-1,-2,-1,0,1,2,1,2,1/
+      integer j,k
+      integer,parameter::jj(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
+      integer,parameter::kk(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
       
       call spinoru(5,p,za,zb)
 c      call dotem(5,p,s)

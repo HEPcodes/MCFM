@@ -21,10 +21,6 @@
       integer j1,j2,j3,j4,j5,j6,j7
       double precision mqqb,m1,m2,m0,fac
       double complex tempm0,m(6),amp_qqggg
-      data i2/2,2,4,3,3,4/
-      data i3/3,4,2,4,2,3/
-      data i4/4,3,3,2,4,2/
-     
       mqqb=0d0
       
       fac=avegg*gsq**3*esq**2*xn**3*cf*8d0

@@ -13,8 +13,11 @@ c   for the moment --- radiation only from initial line
       include 'zcouple.f'
       include 'ewcharge.f'
       include 'anomcoup.f'
+      include 'xanomcoup.f'
       include 'plabel.f'
-      integer j,k,jk,tjk,polg,polq,minus,mplus,jp,kp,jtype
+      include 'pchoice.f'
+      integer jk,tjk,polg,polq,minus,mplus,jp,kp,jtype
+      parameter(minus=1,mplus=2)
       double precision P(mxpart,4),qdks(mxpart,4),msq(-nf:nf,-nf:nf),
      . ave,s127,fac,fac1,offsh,xfac
       double complex ct(2,2),cs_z(2,2),cs_g(2,2),
@@ -23,12 +26,7 @@ c   for the moment --- radiation only from initial line
      .               u_g(5,2,2), d_g(5,2,2), g_ub(5,2,2),g_db(5,2,2),
      .               ub_g(5,2,2),db_g(5,2,2),g_u(5,2,2),g_d(5,2,2),
      .               amp(5),propwp,propwm,propzg,prop12,cprop,A(2,2)
-      double precision mp(nf)
-      common/xanomcoup/xdelg1_z,xdelg1_g,xlambda_g,xlambda_z,
-     . xdelk_g,xdelk_z
-      common/pchoice/j,k
-      data minus,mplus/1,2/
-      data mp/-1d0,+1d0,-1d0,+1d0,-1d0/
+      double precision, parameter :: mp(nf)=(/-1d0,+1d0,-1d0,+1d0,-1d0/)
 
       do jp=-nf,nf
       do kp=-nf,nf

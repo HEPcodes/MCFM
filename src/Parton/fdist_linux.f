@@ -458,7 +458,7 @@ C   10     CTEQ4LQ  Low Q0                  0.114        0.7      cteq4lq.tbl
              fx(-5)=CT10Pdf(-5,x,xmu)
              fx(-4)=CT10Pdf(-4,x,xmu)
              fx(-3)=CT10Pdf(-3,x,xmu)
- 
+
              fx(0)=CT10Pdf(0,x,xmu)
 
              fx(+3)=CT10Pdf(+3,x,xmu)

@@ -64,6 +64,7 @@ c--set msq=0 to initalize
       include 'masses.f'
       include 'zerowidth.f'
       include 'anomcoup.f'
+      include 'xanomcoup.f'
       double precision xfac
       double complex prp12,prp34
       integer p1,p2,p3,p4,p5,hgamma

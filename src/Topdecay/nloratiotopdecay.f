@@ -35,6 +35,7 @@ c---- %%CITATION = PHLTA,B252,467;%%
       data cachemass,cacheratio,tiny/0d0,0d0,1d-8/
       common/transfer/mt1,besq,xi,ga
       save cachemass,cacheratio,tiny
+!$omp threadprivate(cachemass,cacheratio,tiny,/transfer/)
       external Gamma0int,asGamma1int
 
 c--- check to see if result has already been computed

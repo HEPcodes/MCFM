@@ -25,6 +25,7 @@ C ip is the label of the emitter
       double precision fac,prop,p1p2(0:2,-1:1,-1:1),n(4),Vfac
       double complex zab(mxpart,mxpart),zba(mxpart,mxpart)
       common/p1p2/p1p2
+!$omp threadprivate(/p1p2/)
 c--- note that we will use the first index of p1p2 to label
 c--- the colour structure of the squared matrix element:
 c---     0 --> -ninth*(qed piece)
@@ -239,6 +240,7 @@ c-- for the W2jet_gvec matrix elements into elements (..,i,j) of p1p2
       integer i,j,k
       double precision p1p2(0:2,-1:1,-1:1)
       common/p1p2/p1p2
+!$omp threadprivate(/p1p2/)
       
       do k=0,2
         p1p2(k,i,j)=mmsqv_cs(k,+1,+1)

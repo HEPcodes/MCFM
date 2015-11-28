@@ -20,10 +20,9 @@ c---                1  --> counterterm for real radiation
       double precision p(mxpart,4),wt,wt2,pt,pord(mxpart,4),pt3,pt4,pt5
       integer switch,n,nplotmax
       character*4 tag
-      logical first
+      logical, save::first=.true.
       common/nplotmax/nplotmax
-      data first/.true./
-      save first
+ccccc!$omp threadprivate(first,/nplotmax/)
 
 ************************************************************************
 *                                                                      *

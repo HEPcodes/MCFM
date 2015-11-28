@@ -4,6 +4,9 @@
       DOUBLE PRECISION ROOT(10)
       COMMON/CSTD/SPL,SMN
       COMMON/MOM/PLAB(4,10)
+!$omp threadprivate(/MOM/,/CSTD/)  
+
+
       DO 5 K=1,10
       SPL(K,K)=(0.D0,0.D0)
       SMN(K,K)=SPL(K,K)

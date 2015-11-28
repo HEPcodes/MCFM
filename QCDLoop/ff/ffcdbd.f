@@ -36,6 +36,7 @@ c
 *
 	integer i,j,k,l,m,ier0,ii(6),notijk(4,4,4),ir
 	DOUBLE COMPLEX dl3p
+
 	save notijk
 *
 *	common blocks
@@ -47,8 +48,11 @@ c
 	data notijk/
      +	0,0,0,0,0,0,4,3,0,4,0,2,0,3,2,0,0,0,4,3,0,0,0,0,4,0,0,1,3,0,1,0,
      +	0,4,0,2,4,0,0,1,0,0,0,0,2,1,0,0,0,3,2,0,3,0,1,0,2,1,0,0,0,0,0,0/
+!$omp threadprivate(notijk)
+
 *
 *  #] declarations:
+
 *  #[ work:
 *
 	ir = 1
@@ -208,7 +212,9 @@ c
      +		xmb,d,dfflo1
 	DOUBLE COMPLEX c,xxt(3),xx2(3),xx3(3),xm0,xm1,xm4,xlam,
      +		csi(21),z,zlg,zfflog,zfflo1,zxfflg
+
 	save init
+
 *for Absoft
 *	DOUBLE COMPLEX csqrt
 *	external csqrt
@@ -226,10 +232,14 @@ c
 *	data
 *
 	data init /0/
+!$omp threadprivate(init)
 *
 *  #] declarations:
+
 *  #[ check input:
 *
+!$omp threadprivate(/ffcut/)
+
 	if ( init .eq. 0 ) then
 	    init = 1
 	    print *,'ffcdbd: using IR cutoff delta = lam^2 = ',delta

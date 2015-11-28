@@ -37,9 +37,8 @@ c---            calculates metric tensor components of rank 6
      . bsum0011(-2:0),bsum0000(-2:0),
      . bsum00001(-2:0),bsum00111(-2:0),bsum11111(-2:0)
  
-      logical first
-      data first/.true./
-      save first
+      logical,save:: first=.true.
+!$omp threadprivate(first)
 
       if (first) then
         first=.false.

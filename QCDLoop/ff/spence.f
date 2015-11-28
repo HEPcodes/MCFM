@@ -25,6 +25,8 @@
 	integer init,ipi12,ier
 	DOUBLE COMPLEX zdilog,zdum
 	save init
+!$omp threadprivate(init)
+
 *
 *	common blocks
 *
@@ -33,6 +35,9 @@
 *  #] declarations:
 *  #[ initialisations:
 	data init /0/
+	save init
+!$omp threadprivate(init)
+
 	if ( init .eq. 0 ) then
 	    init = 1
 	    call ffini

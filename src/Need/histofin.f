@@ -1,9 +1,3 @@
-      block data linlog_data
-      implicit none
-      include 'nplot.f'
-      data linlog/nplot*'lin'/
-      end
-
       subroutine histofin(xsec,xsec_err,itno,itmx)
 c--- This outputs the final histograms for itno=0
 c--- For itno>0, this is an intermediate result only
@@ -32,6 +26,7 @@ c      character*255 outfilepwg
       common/nlength/nlength
       common/nplotmax/nplotmax
       common/scaleplots/scalefac,scaleplots
+ccccc!$omp threadprivate(/nplotmax/)
 
 c---- SSbegin                                                                                                        
       call userhistofin(xsec,xsec_err,itno,itmx)
@@ -87,13 +82,13 @@ c      outfilepwg(nlength+1:nlength+7)='pwg.top'
         open(unit=98,file=outfiledat,status='unknown')
       endif
       if (writetop) then
-      open(unit=99,file=outfiletop,status='unknown')
+        open(unit=99,file=outfiletop,status='unknown')
       endif
       if (writegnu) then
-      open(unit=97, file=outfilegnuplot,status='unknown')
+        open(unit=97, file=outfilegnuplot,status='unknown')
       endif
       if (writeroot) then
-      open(unit=96, file=outfilerootC, status='unknown')
+        open(unit=96, file=outfilerootC, status='unknown')
       endif
 c      if (writepwg) then
 c      open(unit=100,file=outfilepwg,status='unknown')
@@ -101,18 +96,18 @@ c      endif
       
 c--- write out run info to top of files
       if (writedat) then
-      call writeinfo(98,' (',xsec,xsec_err,itno)      
+        call writeinfo(98,' (',xsec,xsec_err,itno)      
       endif
       if (writetop) then
-      call writeinfo(99,' (',xsec,xsec_err,itno)      
+        call writeinfo(99,' (',xsec,xsec_err,itno)      
       endif
       if (writegnu) then
-      call writeinfo(97,'# ',xsec,xsec_err,itno) 
-      write(97,120) outfileps(1:nlength+3)
+        call writeinfo(97,'# ',xsec,xsec_err,itno) 
+        write(97,120) outfileps(1:nlength+3)
       endif
       if (writeroot) then
-      call writeinfo(96,'//',xsec,xsec_err,itno) 
-      write(96,121) outfileroot(1:nlength+5)
+        call writeinfo(96,'//',xsec,xsec_err,itno) 
+        write(96,121) outfileroot(1:nlength+5)
       endif
 
   120 FORMAT (/1x,

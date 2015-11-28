@@ -8,7 +8,6 @@ C---  matrix element squared for 0 --> H + g(j1)+g(j2)+g(j3)+g(j4)
       
       call   Amplo(j1,j2,j3,j4,Alo)
       call Ampvirt_gggg(j1,j2,j3,j4,Avirt)
-
 c--- get renormalization factor
       ren=H4prenorm()
 

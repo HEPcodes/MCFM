@@ -11,12 +11,11 @@ c--- If vdecayid = FALSE, returns without doing anything
       include 'plabel.f'
       include 'vdecayid.f'
       include 'zcouple.f'
+      include 'nqcdjets.f'
       integer idv,vcharge
-      integer nqcdjets,nqcdstart
       character*2 vdecay,decay1,decay2
       character*15 decaystring
       double precision decayq,decayl,decayr
-      common/nqcdjets/nqcdjets,nqcdstart
 
 c--- return if decay not specified in input file
       if (vdecayid .eqv. .false.) return

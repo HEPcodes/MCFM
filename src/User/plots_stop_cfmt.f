@@ -7,6 +7,7 @@ c--- of Campbell, Frederix, Maltoni and Tramontano
       include 'jetlabel.f'
       include 'nplot.f'
       include 'process.f'
+      include 'first.f'
       integer i,n,nplotmax,jet(2),jetswap,ibbar,inotb,ilight1,ilight2
       double precision p(mxpart,4),wt,wt2,getet,
      . pttop,etatop,ytop,bwgt,
@@ -15,12 +16,12 @@ c--- of Campbell, Frederix, Maltoni and Tramontano
      . wtbbar2,wtnotb2,wtlight12,wtlight22,
      . ptmin,ptmax,ptbin,rapmin,rapmax,rapbin
       character*4 tag
-      logical first,jetmerge
+      logical jetmerge
       common/jetmerge/jetmerge
       common/btagging/bwgt
       common/nplotmax/nplotmax
-      data first/.true./
-      save first
+!$omp threadprivate(/jetmerge/)
+ccccc!$omp threadprivate(/nplotmax/)
 
 c--- on the first call, initialize histograms
       if (first) then

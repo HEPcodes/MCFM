@@ -5,10 +5,10 @@ C---p1sq is the square of the momentum
       include 'TRclear.f'
       include 'TRonshellcutoff.f'
       double precision para(Pbb),p1sq,m1sq,m2sq
-      double precision tableB(Pbb,Nbmax)      
-      integer Nstore,jtable,j,Ntrue
-      data Nstore/0/
-      save tableB,Nstore
+      integer jtable,j,Ntrue
+      double precision,save:: tableB(Pbb,Nbmax)      
+      integer,save:: Nstore=0
+!$omp threadprivate(tableB,Nstore)
 
       if (clear(2)) then
       clear(2)=.false.

@@ -42,11 +42,10 @@ c---                1  --> counterterm for real radiation
       double precision pljet(mxpart,4),pbjet(mxpart,4),pbl(mxpart,4),
      &     ptljet(mxpart)
       character*4 tag
-      logical first
-      common/nplotmax/nplotmax
       parameter(tiny=1d-8)
-      data first/.true./
-      save first
+      logical, save::first=.true.
+      common/nplotmax/nplotmax
+ccccc!$omp threadprivate(first,/nplotmax/)
 
 ************************************************************************
 *                                                                      *

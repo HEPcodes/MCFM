@@ -21,14 +21,13 @@
       include 'msbarmasses.f'
       include 'swapxz.f'
       include 'msqv_cs.f'
+      include 'first.f'
 C in is the label of the contracted line
       integer j,k,in,icol
       double precision msqv(-nf:nf,-nf:nf),p(mxpart,4),res(0:2)
       double precision n(4),fac,massfrun,mt_eff,ytsq
-
-      logical first
-      data first/.true./
-      save first,mt_eff
+      save mt_eff
+!$omp threadprivate(mt_eff)
       if (first) then
 c--- run mt to appropriate scale
         if (part .eq. 'lord') then

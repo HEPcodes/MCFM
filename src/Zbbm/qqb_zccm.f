@@ -11,15 +11,14 @@ c---  averaged(summed) over initial(final) colours and spins
       include 'ewcharge.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
-      integer j,k,nu,swap(4),h1,h3,h5,h6
+      integer j,k,nu,h1,h3,h5,h6
       double precision p(mxpart,4),p12(mxpart,4),p21(mxpart,4),
      . msq(-nf:nf,-nf:nf),sumleptL,sumleptR,
      . facqq,facgg,p1Dp(5:6),p2Dp(5:6),lr(2)
       double complex tamp,prop,coupL,coupR
       double complex qqb_a(2,2,2,2,2),qqb_b(2,2,2,2,2)
       double complex qbq_a(2,2,2,2,2),qbq_b(2,2,2,2,2)
-      data swap/2,1,3,4/
-      save swap
+      integer,parameter::swap(4)=(/2,1,3,4/)
       
 c--initialize to zero
       do j=-nf,nf

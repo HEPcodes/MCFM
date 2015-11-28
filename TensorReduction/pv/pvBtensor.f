@@ -12,10 +12,10 @@ C     m1s,m2s are the squares of the internal masses
       double precision pvSDDP,pvSDDDD,pvSDDPP,pvSDDDDP,pvSDDPPP,
      . pvSDDDDPP,pvSDDPPPP,pvSDDDDDD
       integer n1,n2,n3,n4,n5,n6,ep,B0i,pvBcache
-      logical first
       include 'TRmetric.f'
-      data first/.true./
-      save first
+      logical,save:: first=.true.
+!$omp threadprivate(first)
+
       if (first) then
       first=.false.
       call pvarraysetup

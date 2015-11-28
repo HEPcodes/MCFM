@@ -8,18 +8,17 @@ c----initial-final subtraction.
       logical justjac
       
       integer i1,i2,i3,i4,i5,j,k,nperms
-      integer j1(4),j2(4),j3(4),j4(4),j5(4)
       double precision p(mxpart,4),u,z,dot,q(mxpart,4),
      . msq(-nf:nf,-nf:nf),omxmin
       double precision facq,si1i3,si1i4,si3i4,x,omx,wt0,
      . wt5_4,wt4,wt,jacbit
       parameter(wt0=one/eight/pisq)
       common/justjac/justjac
-      data j1/1,1,2,2/
-      data j2/2,2,1,1/
-      data j3/3,3,3,3/
-      data j4/4,5,4,5/
-      data j5/5,4,5,4/
+      integer,parameter:: j1(4)=(/1,1,2,2/)
+      integer,parameter:: j2(4)=(/2,2,1,1/)
+      integer,parameter:: j3(4)=(/3,3,3,3/)
+      integer,parameter:: j4(4)=(/4,5,4,5/)
+      integer,parameter:: j5(4)=(/5,4,5,4/)
 
       i1=j1(nperms)
       i2=j2(nperms)

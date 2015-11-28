@@ -17,8 +17,8 @@ c--all momenta incoming
       include 'msq_cs.f'
       include 'flags.f'
       include 'nflav.f'
-      integer i,j,k,pq,pl,nquark,swap(2),swap1(0:2),nup,ndo,
-     . j1,j2,j3,icol
+      integer i,j,k,pq,pl,nquark,nup,ndo,j1,j2,j3,icol
+      integer,parameter::swap(2)=(/2,1/),swap1(0:2)=(/0,2,1/)
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac,faclo,
      .   qqbZgg2(2,2),qgZqg2(2,2),
 c    .   qbqZgg2(2,2),qbgZqbg2(2,2),gqbZqbg2(2,2),
@@ -45,11 +45,9 @@ c    .   qbqZgg2(2,2),qbgZqbg2(2,2),gqbZqbg2(2,2),
 
       double precision mqq(0:2,fn:nf,fn:nf)
       common/mqq/mqq
+!$omp threadprivate(/mqq/)
       
-      data swap/2,1/
-      save swap
-      data swap1/0,2,1/
-      save swap1
+
 
       do j=-nf,nf
       do k=-nf,nf

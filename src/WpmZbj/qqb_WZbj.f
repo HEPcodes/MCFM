@@ -7,6 +7,7 @@
       double precision p(mxpart,4),msq(-nf:nf,-nf:nf),WZbbmsq
 
       call spinoru(8,p,za,zb)
+      msq(:,:)=0d0
 
       if (nwz .eq. 1) then
       msq(+2,+5)=WZbbmsq(1,8,3,4,5,6,7,2)

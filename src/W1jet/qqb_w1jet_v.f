@@ -15,26 +15,18 @@ c---
       include 'epinv.f'
       include 'scheme.f'
       include 'nflav.f'
-      integer j,k,iqqbg(5),iqbqg(5),iqgq(5),igqq(5),
-     . igqbqb(5),iqbgqb(5)
+      integer j,k
       double precision msq(-nf:nf,-nf:nf),msq0(-nf:nf,-nf:nf),
      . p(mxpart,4),fac,sw,prop,virt5,subuv,
      . qqbWg,qbqWg,qgWq,gqWq,qbgWqb,gqbWqb
 
-      data iqqbg/1,2,3,4,5/
-      data iqgq/1,5,3,4,2/
-      data igqq/2,5,3,4,1/
-
-      data iqbqg/2,1,3,4,5/
-      data iqbgqb/5,1,3,4,2/
-      data igqbqb/5,2,3,4,1/
+      integer,parameter:: 
+     & iqqbg(5)=(/1,2,3,4,5/),iqgq(5)=(/1,5,3,4,2/),
+     & igqq(5)=(/2,5,3,4,1/),iqbqg(5)=(/2,1,3,4,5/),
+     & iqbgqb(5)=(/5,1,3,4,2/),igqbqb(5)=(/5,2,3,4,1/)
 
 c--set msq=0 to initialize
-      do j=-nf,nf
-      do k=-nf,nf
-      msq(j,k)=0d0
-      enddo
-      enddo
+      msq(:,:)=0d0
       scheme='dred'
 
 c-- if Gflag=.false. then only the endpoint contributions from the

@@ -9,7 +9,7 @@
 *  #[ declarations:
 	implicit none
 	integer i,j,init,ioldp(13,12),isgrop(10,12),ji
-	save init
+	save init,ioldp,isgrop
 	DOUBLE PRECISION s,sold
 	DOUBLE COMPLEX cs
 	include 'ff.h'
@@ -41,7 +41,10 @@
      +		+1,+1,+1,+1, +1,+1,+1,-1, +1,-1,
      +		+1,+1,+1,+1, -1,+1,+1,-1, -1,-1,
      +		+1,+1,+1,+1, -1,-1,+1,+1, -1,-1/
+
 *  #] declarations:
+!$omp threadprivate(init,ioldp,isgrop,/ffcut/)
+
 *  #[ check:
 *	check whether tehre is anything to do
 	if ( init .ne. 0 ) return
@@ -389,6 +392,9 @@
 	include 'ff.h'
 *  #] declarations:
 *  #[ checks:
+!$omp threadprivate(/ffcut/)
+
+
 *
 *	calculate the coefficients of the series expansion
 *	li2(x) = sum bn*z^n/(n+1)!, z = -log(1-x), bn are the
@@ -476,6 +482,8 @@
 	data nomore /-1/
 	data noccur /nmax*0/
 	data init /0/
+!$omp threadprivate(error,noccur,init,locwrt,nomore)
+
 	if ( init.eq.0 ) then
 	    init = 1
 	    do 1 i=1,nmax
@@ -614,6 +622,9 @@
 *  #[ data:
 	data noccur /nmax*0/
 	data init /0/
+!$omp threadprivate(warn,noccur,init,xlosti,nermem,losmem,idmem,idsmem,
+!$omp&		    laseve,imem)
+
 	if ( init.eq.0 .and. nerr.ne.999 ) then
 	    init = 1
 	    do 1 i=1,nmax

@@ -426,6 +426,8 @@
 	data iadj /200*0/
 	data init /0/
 *  #] declarations:
+!$omp threadprivate(iadj,init)
+
 *  #[ initialisations:
 	if ( init .eq. 0 ) then
 	    init = 1

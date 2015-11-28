@@ -5,18 +5,18 @@
       include 'debug.f'
       include 'impsample.f'
       include 'npart.f'
+      include 'x1x2.f'
       logical justjac
-      integer i1,i2,j,k,nperms,j1(2),j2(2)
-      double precision p(mxpart,4),x,xx(2),dot,q(mxpart,4),alpha,
+      integer i1,i2,j,k,nperms
+      double precision p(mxpart,4),x,dot,q(mxpart,4),alpha,
      . msq(-nf:nf,-nf:nf)
       double precision omx,Pqq,Pqg,facq,facg,s13,omxmin,a,oma,jacbit
       double precision wt4,wt,wt5_4,wt0
       parameter(wt0=1d0/eight/pisq)
       common/justjac/justjac
-      common/x1x2/xx
 
-      data j1/1,2/
-      data j2/2,1/
+      integer,parameter:: j1(2)=(/1,2/)
+      integer,parameter:: j2(2)=(/2,1/)
 
       i1=j1(nperms)
       i2=j2(nperms)

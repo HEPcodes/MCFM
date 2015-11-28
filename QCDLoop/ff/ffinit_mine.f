@@ -9,7 +9,6 @@
 *  #[ declarations:
 	implicit none
 	integer i,j,init,ioldp(13,12),isgrop(10,12),ji
-	save init
 	DOUBLE PRECISION s,sold
 	DOUBLE COMPLEX cs
 	include 'ff.h'
@@ -41,6 +40,9 @@
      +		+1,+1,+1,+1, +1,+1,+1,-1, +1,-1,
      +		+1,+1,+1,+1, -1,+1,+1,-1, -1,-1,
      +		+1,+1,+1,+1, -1,-1,+1,+1, -1,-1/
+	save init,ioldp,isgrop
+!$omp threadprivate(init,ioldp,isgrop,/ffcut/)
+
 *  #] declarations:
 *  #[ check:
 *	check whether tehre is anything to do
@@ -468,7 +470,6 @@
 	character*80 error(nmax),error1
 	logical locwrt
 	integer noccur(nmax),init,i,ier,inone,nnerr,nomore
-	save error,noccur,init,locwrt,nomore
 	include 'ff.h'
 *  #] declarations:
 *  #[ data:
@@ -476,6 +477,9 @@
 	data nomore /-1/
 	data noccur /nmax*0/
 	data init /0/
+	save error,noccur,init,locwrt,nomore
+!$omp threadprivate(error,noccur,init,locwrt,nomore)
+
 	if ( init.eq.0 ) then
 	    init = 1
 	    do 1 i=1,nmax
@@ -605,6 +609,7 @@
 	DOUBLE PRECISION xlosti(nmax),xlost
 	save warn,noccur,init,xlosti,nermem,losmem,idmem,idsmem,
      +		laseve,imem
+
 *
 *	common blocks
 *
@@ -614,6 +619,9 @@
 *  #[ data:
 	data noccur /nmax*0/
 	data init /0/
+!$omp threadprivate(warn,noccur,init,xlosti,nermem,losmem,idmem,idsmem,
+!$omp&		    laseve,imem)
+
 	if ( init.eq.0 .and. nerr.ne.999 ) then
 	    init = 1
 	    do 1 i=1,nmax

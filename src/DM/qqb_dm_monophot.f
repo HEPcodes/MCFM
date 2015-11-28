@@ -5,6 +5,7 @@
       include 'dm_params.f'
       include 'ewcharge.f'
       include 'ewcouple.f'
+      include 'first.f'
       double precision p(mxpart,4),msq(-nf:nf,-nf:nf)
       double complex qqbg(2,2,2,2),qbqg(2,2,2,2)
       double precision qqbg_sum(nf),qbqg_sum(nf)
@@ -17,9 +18,7 @@
       double precision s34
         logical check_QED 
       common/check_QED/check_QED 
-      logical first 
-      data first /.true./
-      save first
+!$omp threadprivate(/check_QED/)
 
       check_QED=.false. 
 
@@ -65,27 +64,13 @@
          call qqb_dm_monojet_Axamps(p,2,5,1,3,4,qbqg)
 !        call qqb_dm_monojet_Axamps(p,2,1,5,3,4,gqqb)  
 !        call qqb_dm_monojet_Axamps(p,5,1,2,3,4,gqbq)  
-         if(first) then 
-            first = .false. 
-            call check_dmAxC
-         endif         
       elseif(dm_mediator.eq.'scalar') then 
          call qqb_dm_monojet_Samps(p,1,5,2,3,4,qqbg)  
          call qqb_dm_monojet_Samps(p,2,5,1,3,4,qbqg)
          fac=fac/4d0
-         if(first) then 
-            first=.false.
-            call set_scalar_coups
-         endif
-
       elseif(dm_mediator.eq.'pseudo') then 
          call qqb_dm_monojet_PSamps(p,1,5,2,3,4,qqbg)  
          call qqb_dm_monojet_PSamps(p,2,5,1,3,4,qbqg)
-         if(first) then 
-            first = .false. 
-            call set_scalar_coups
-            call check_dmAxC
-         endif         
          fac=fac/4d0
       endif
 

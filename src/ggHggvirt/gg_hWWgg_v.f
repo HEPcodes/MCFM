@@ -28,6 +28,7 @@ c    Calculation is fully analytic
       double precision Hggggvsqanal
       logical CheckEGZ
       common/CheckEGZ/CheckEGZ
+!$omp threadprivate(/CheckEGZ/)
       parameter(i5=7,i6=8)
 C*************************************************** 
       scheme='dred'

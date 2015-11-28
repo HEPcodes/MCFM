@@ -9,7 +9,7 @@
 *  #[ declarations:
 	implicit none
 	integer i,j,init,ioldp(13,12),isgrop(10,12),ji
-	save init
+	save init,ioldp,isgrop
 	DOUBLE PRECISION s,sold
 	DOUBLE COMPLEX cs
 	include 'ff.h'
@@ -42,6 +42,8 @@
      +		+1,+1,+1,+1, -1,+1,+1,-1, -1,-1,
      +		+1,+1,+1,+1, -1,-1,+1,+1, -1,-1/
 *  #] declarations:
+!$omp threadprivate(init,ioldp,isgrop)
+
 *  #[ check:
 *	check whether tehre is anything to do
 	if ( init .ne. 0 ) return
@@ -57,6 +59,8 @@
 	print *,'===================================================='
 *  #] check:
 *  #[ precision etc:
+!$omp threadprivate(/ffcut/)
+
 	lwrite = .TRUE.
 	nevent = -1
 *
@@ -476,6 +480,8 @@
 	data nomore /-1/
 	data noccur /nmax*0/
 	data init /0/
+!$omp threadprivate(error,noccur,init,locwrt,nomore)
+
 	if ( init.eq.0 ) then
 	    init = 1
 	    do 1 i=1,nmax
@@ -614,6 +620,9 @@
 *  #[ data:
 	data noccur /nmax*0/
 	data init /0/
+!$omp threadprivate(warn,noccur,init,xlosti,nermem,losmem,idmem,idsmem,
+!&omp&              laseve,imem)
+
 	if ( init.eq.0 .and. nerr.ne.999 ) then
 	    init = 1
 	    do 1 i=1,nmax

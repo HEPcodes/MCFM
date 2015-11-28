@@ -21,10 +21,11 @@ c*******************************************************************
       double complex mrll1,mrll2,mrrl1,mrrl2,mrlr1,mrlr2,mrrr1,mrrr2
       double complex bwf
       common/bwf/bwf
-
+!$omp threadprivate(/bwf/)
       double complex Lla(4,4,4,4),Lal(4,4,4,4)
       double complex Rla(4,4,4,4),Ral(4,4,4,4)
       common/basic/Lla,Lal,Rla,Ral
+!$omp threadprivate(/basic/)
 
       integer i(4)
       xzqqqq=0d0

@@ -4,12 +4,12 @@
       include 'masses.f'
       include 'sprods_com.f'
       include 'zprods_com.f'
-      integer p1,p2,p3,p4,t5,t6,swap(2)
+      integer p1,p2,p3,p4,t5,t6
       integer h1,h3,h5,h6
       double complex qqb_a(2,2,2,2,2),qqb_b(2,2,2,2,2)
       double precision al5,al6,s56,s125,s126,s134,s234,propa,propb,bit
       double precision mq
-      data swap/2,1/
+      integer,parameter::swap(2)=(/2,1/)
 
       al5=mq**2/s(p2,t5)
       s125=(1d0+al5)*s(p1,p2)+s(p1,t5)+s(p2,t5)

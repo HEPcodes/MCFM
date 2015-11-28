@@ -71,6 +71,8 @@
      +	0,7,4,5,9,8,4,5,10,9,4,6,8,7,4,6,9,7,4,6,8,9,4,6,8,10,4,6,9,10,4
      +	,7,10,8,4,7,10,9,4,8,9,10/
 *  #] data: 
+!$omp threadprivate(iperm,memind,memarr,inow,jnow)
+
 *  #[ get starting point from memory:
 *
 *	see if we know were to start, if not: go on as last time
@@ -298,6 +300,9 @@
      +		    1,2,6, 6,4,3, 3,1,6, 2,4,6,
      +		    2,5,3, 5,4,1, 1,3,5, 2,4,5,
      +		    1,6,5, 2,5,6, 3,6,5, 4,5,6/
+	save iperm
+!$omp threadprivate(iperm)
+
 *  #] declarations: 
 *  #[ check input:
 	if ( lwrite ) then

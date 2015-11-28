@@ -37,6 +37,7 @@ c---     0 -> q(k1) + qb(k4) + W(->e(k6)+nubar(k5)) + Q(k3) + Qbar(k2)
       parameter (checkcoeffs=.false.)
       common/numcheck/numcheck
       common/writescalars/writescalars
+!$omp threadprivate(/numcheck/,/writescalars/)
 
       writescalars=.false.
       swapxz=.true.

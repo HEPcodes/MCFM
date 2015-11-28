@@ -32,11 +32,12 @@
       include 'plabel.f'
       include 'masses.f'
       include 'jetlabel.f'
+      include 'notag.f'
       logical first,passedlept,is_lepton,is_photon,is_neutrino,
      & is_hadronic,failed
       integer njets,j,k,countb,bindex(mxpart),jindex,kindex,ib1,ib2
       integer countlept,leptindex(mxpart),countnu,
-     & countjet,jetindex(mxpart),pntr,notag,nuindex(mxpart)
+     & countjet,jetindex(mxpart),pntr,nuindex(mxpart)
       double precision pjet(mxpart,4),etvec(4),pZj(4),mZj
       double precision pt,etarap,etmiss,evtmisset,R,Rcut,etaj,etak,
      & etalept,mll,jetpt,jetrap,mnul,etabuffer
@@ -50,7 +51,6 @@
       common/stopvars/ht,qeta,mlbnu,merecon,reconcorr
       common/hwwvars/dphi_ll,m_ll,mtrans,scut1,scut2
       common/rcut/Rcut
-      common/notag/notag
 ************************************************************************
 *     Set-up the jet-like cut parameters here                          *
       parameter (jetpt=15d0,jetrap=2d0)

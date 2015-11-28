@@ -7,6 +7,9 @@
       include 'reset.f'
       include 'breit.f'
       include 'part.f'
+      include 'x1x2.f'
+      include 'first.f'
+      include 'energy.f'
 c---- generate phase space for 2-->2+n process
 c---- with (34) being a vector boson and 5,..,4+n the jets
 c---- r(mxdim),p1(4),p2(4) are inputs reversed in sign 
@@ -16,7 +19,7 @@ c---- with all 2 pi's (ie 1/(2*pi)^(4+2n))
       double precision r(mxdim)
       double precision p(mxpart,4),p3(4),p34(4),psumjet(4),pcm(4),Q(4)
       double precision wt,tmp(4)
-      double precision hmin,hmax,delh,h,sqrts,pt,etamax,etamin,xx(2)
+      double precision hmin,hmax,delh,h,pt,etamax,etamin
       double precision y,sinhy,coshy,phi,mv2,wtbw,mjets
       double precision ybar,ptsumjet2,ycm,sumpst,q0st,rshat
       double precision costh,sinth,dely
@@ -24,11 +27,10 @@ c---- with all 2 pi's (ie 1/(2*pi)^(4+2n))
       double precision plstar,estar,plstarsq,y5starmax,y5starmin
       integer j,nu,njets,ijet
       logical gen15,gen16,gen17,gen25,gen26,gen27,gen56,gen57,gen67
-      logical first,xxerror
-      common/energy/sqrts
-      common/x1x2/xx
-      data first/.true./,xxerror/.false./
-      save first,ptjetmin,etajetmin,etajetmax,pbreak,xxerror
+      logical xxerror
+      data xxerror/.false./
+      save ptjetmin,etajetmin,etajetmax,pbreak,xxerror
+!$omp threadprivate(ptjetmin,etajetmin,etajetmax,pbreak,xxerror)
 
       if (first .or. reset) then
         first=.false.

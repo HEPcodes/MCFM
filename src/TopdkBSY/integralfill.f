@@ -5,14 +5,11 @@ C-----Authors: John Campbell and Keith Ellis, November 2011
       include 'masses.f'
       include 'scale.f'
       include 'massiveintegrals.f'
+      include 'first.f'
       double precision p(mxpart,4)
       integer nu,p2,p3,j
       double precision mt2,xbeta2,s12,s13,s23,twop1Dp2,twop1Dp3,gram
       double complex qlI4,qlI3,qlI2
-      logical first
-      data first/.true./
-      save first
-
 
 
 c--- initialize QCDLoop on first pass

@@ -704,6 +704,8 @@
      +		 0,18,16, 0,15,13, 12, 0,11, 9, 0, 8,  0, 0, 0/
 *
 *  #] declarations:
+!$omp threadprivate(third)
+
 *  #[ work:
 	if ( lwrite ) then
 	    print *,'ff5ind: input:  ',ii

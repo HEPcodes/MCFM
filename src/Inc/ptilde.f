@@ -5,3 +5,4 @@
       double precision ptilde(0:maxd,mxpart,4)
       double precision ptildejet(0:maxd,mxpart,4)
       common/ptildes/ptilde,ptildejet,ndmax
+!$omp threadprivate(/ptildes/)

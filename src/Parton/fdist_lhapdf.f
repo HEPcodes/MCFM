@@ -15,8 +15,9 @@ C---set to zero if x out of range
           enddo
           return
       endif
- 
+!$omp critical(LHApdf) 
       call evolvePDF(x,xmu,fPDF)
+!$omp end critical(LHApdf) 
       if (ih.eq.1) then
         do Iprtn=-5,5
           fx(+Iprtn)=fPDF(+Iprtn)/x

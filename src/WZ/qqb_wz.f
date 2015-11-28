@@ -21,6 +21,7 @@ c     Notation to allow room for p3 --- gluon emission.
       include 'zerowidth.f'
       include 'ewcharge.f'
       include 'anomcoup.f'
+      include 'xanomcoup.f'
       include 'srdiags.f'
       include 'plabel.f'
       include 'nwz.f'
@@ -41,7 +42,6 @@ c     Notation to allow room for p3 --- gluon emission.
       double precision FAC,FACM
       integer j,k
       parameter(ave=0.25d0/xn)
-      data cl1,cl2,en1,en2/4*1d0/
 
       FAC=-two*gwsq*esq
       if ((nwz.eq.1) .or. (nwz .eq. -1)) then

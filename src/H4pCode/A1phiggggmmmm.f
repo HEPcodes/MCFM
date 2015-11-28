@@ -8,10 +8,8 @@ c--- so that this is the full cut-constructible result for the Higgs
       include 'scprods_com.f'
       include 'zprods_decl.f'
       double complex A0phiggggmmmm,F31m,F42me,F41m
-      integer j1,j2,j3,j4,i,ii(7)
-      data ii/1,2,3,4,1,2,3/
-      save ii
-
+      integer j1,j2,j3,j4,i
+      integer,parameter::ii(7)=(/1,2,3,4,1,2,3/)
 
 c--- set up 's-comma' products
       sc(1,1)=zip

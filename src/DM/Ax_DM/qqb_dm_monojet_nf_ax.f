@@ -6,9 +6,7 @@
       include 'zprods_decl.f'
       include 'sprods_com.f'
       include 'qcdcouple.f'
-      logical first 
-      data first /.true./
-      save first
+      include 'first.f'
     
       double precision p(mxpart,4),q(mxpart,4)
       integer i1,i2,i3,i4,i5

@@ -15,10 +15,9 @@
       include 'maxwt.f' 
       include 'eventbuffer.f'
       include 'runstring.f'
+      include 'nproc.f'
       double precision p(mxpart,4),xfac
       integer j,k,i,nu,it
-      integer nproc
-      common/nproc/nproc
       double precision dot
       logical first,store_wt
       common/store_wt/store_wt
@@ -150,12 +149,11 @@ c--- events with negative weight or events with weights that exceed wtmax
       include 'hepeup.f'
       include 'maxwt.f' 
       include 'xs_store_info.f'
+      include 'energy.f'
       integer nproc
       common/nproc/nproc
       integer iu,ih1,ih2 
       common/density/ih1,ih2 
-      double precision sqrts 
-      common/energy/sqrts
       
       idbmup(1)=isign(2212,ih1)
       idbmup(2)=isign(2212,ih2)

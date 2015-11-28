@@ -1,9 +1,9 @@
       subroutine ampqqb_qqb(i1,i2,i5,i6,qqbA,qqbB)
       implicit none
-      integer i1,i2,i5,i6,swap(2),j,k
+      integer i1,i2,i5,i6,j,k
       double complex aqqb_zbb_new
       double complex qqbA(2,2,2),qqbB(2,2,2)
-      data swap/2,1/
+      integer,parameter::swap(2)=(/2,1/)
 c--- also include diagrams where the Z is attached to b-bbar line  
 c--- notation: (qqb hel, bbb hel, outgoing lepton helicity is left-handed
 

@@ -9,6 +9,7 @@
       include 'scheme.f' 
       include 'ewcharge.f' 
       include 'ewcouple.f'
+      include 'first.f'
       double precision  qqbg(2),qbqg(2)
       double precision qqbg_sum(nf),qbqg_sum(nf) 
       double precision p(mxpart,4),msq(-nf:nf,-nf:nf) 
@@ -20,9 +21,7 @@
       logical check_QED 
       common/check_QED/check_QED 
       double precision fac_dm,s34
-      logical first 
-      data first /.true./
-      save first 
+!$omp threadprivate(/check_QED/)
 
 
       check_QED=.false. 
@@ -67,26 +66,13 @@
       elseif(dm_mediator.eq.'axvect') then 
          call qqb_dm_monophot_v_Axamps(p,1,5,2,3,4,qqbg)  
          call qqb_dm_monophot_v_Axamps(p,2,5,1,3,4,qbqg)
-         if(first) then 
-            first = .false. 
-            call check_dmAxC
-         endif       
       elseif(dm_mediator.eq.'scalar') then 
          call qqb_dm_monophot_v_Samps(p,1,5,2,3,4,qqbg)  
          call qqb_dm_monophot_v_Samps(p,2,5,1,3,4,qbqg)
          fac=fac/4d0
-         if(first) then 
-            first=.false.
-            call set_scalar_coups
-         endif
       elseif(dm_mediator.eq.'pseudo') then 
          call qqb_dm_monophot_v_PSamps(p,1,5,2,3,4,qqbg)  
          call qqb_dm_monophot_v_PSamps(p,2,5,1,3,4,qbqg)
-         if(first) then 
-            first = .false. 
-            call set_scalar_coups      
-            call check_dmAxC
-         endif       
          fac=fac/4d0
       endif
 

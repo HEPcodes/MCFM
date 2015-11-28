@@ -32,12 +32,8 @@ C****   m1s,m2s,m3s,m4s,m5s are the internal masses squared.
      & p12(4),p23(4),p34(4),p45(4),p51(4),p123(4),p1234(4)
       integer nu,n1,n2,n3,n4,n5,ep,indx(4)
       logical failed
-c      logical pvGramsing,singmat
-c      common/singmat/singmat      
-      logical first
-      data first/.true./
-      save first
-
+      logical,save:: first=.true.
+!$omp threadprivate(first)
       if (first) then
       first=.false.
       call ovarraysetup

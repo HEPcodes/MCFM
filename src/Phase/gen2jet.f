@@ -8,30 +8,28 @@ C---p1+p2 --> p3+p4
       include 'phasemin.f'
       include 'leptcuts.f'
       include 'part.f'
+      include 'x1x2.f'
+      include 'first.f'
+      include 'energy.f'
+      include 'nproc.f'
 !--- Modified July 11 by CW to switch between photons and jets appropriately 
       integer j,nu
-
-      double precision r(mxdim),p(mxpart,4),xx(2),zmin,zmax,z
-      double precision sqrts,yave,ydif,xjac,y3,y4,phi,wt0,wt2,
-     . ydifmin,ydifmax,yavemin,yavemax,xtsq,pt,xt
-      logical first
-      integer nproc
+      double precision r(mxdim),p(mxpart,4),zmin,zmax,z
+      double precision yave,ydif,xjac,y3,y4,phi,wt0,wt2,
+     & ydifmin,ydifmax,yavemin,yavemax,xtsq,pt,xt,ptpar
       parameter(wt0=1d0/16d0/pi)
-      common/energy/sqrts
-      common/nproc/nproc
-      common/x1x2/xx
-      data first/.true./
-      save first
+      save ptpar
+!$omp threadprivate(ptpar)
 
       if (first) then
         first=.false.
 c--- for dirgam, hflgam and gamgam, generate using photon pt as cutoff
         if ((nproc.eq.280) .or. (nproc.eq.285)
      &  .or.(nproc.eq.283) .or. (nproc.eq.284)) then 
-           ptjetmin=gammpt 
-           if ((part .eq. 'real').and.(nproc .eq. 285)) ptjetmin=gammpt2
+           ptpar=gammpt 
+           if ((part .eq. 'real').and.(nproc .eq. 285)) ptpar=gammpt2
         else
-           call read_jetcuts(ptjetmin,etajetmin,etajetmax)
+           call read_jetcuts(ptpar,etajetmin,etajetmax)
         endif
       endif        
 
@@ -60,9 +58,9 @@ c      xt=dsqrt(xtsq)
 c      pt=0.5d0*sqrts*xt
       
       if (part .eq. 'real') then
-        call genpt(r(3),ptjetmin,.false.,pt,xjac)
+        call genpt(r(3),ptpar,.false.,pt,xjac)
       else
-        call genpt(r(3),ptjetmin,.true.,pt,xjac)
+        call genpt(r(3),ptpar,.true.,pt,xjac)
       endif
       xjac=xjac*8d0/sqrts**2
       xt=2d0*pt/sqrts
@@ -97,7 +95,7 @@ c      pt=0.5d0*sqrts*xt
      & .or. (xx(1) .lt. xmin)
      & .or. (xx(2) .lt. xmin)
      & ) then
-c      write(6,*) 'problems with xx(1),xx(2) in gen2',xx(1),xx(2)  
+c      write(6,*) 'problems with xx(1),xx(2) in gen2jet',xx(1),xx(2)  
       return 1 
       endif
           

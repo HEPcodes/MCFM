@@ -39,6 +39,8 @@ c     c_ij= (N^2-1)*N^3/4*CIJ/2 in the GM normalization
       DATA  (CIJ(I,5),i=1,6)/2,4,0,2,8,4/
       DATA  (CIJ(I,6),i=1,6)/0,2,2,4,4,8/
 
+      save ip,cij
+!$omp threadprivate(ip,cij)
 
 C-----
 C  BEGIN CODE

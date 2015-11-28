@@ -45,44 +45,15 @@ c
       data useEt/.false./
       end
 ************************************************************************
-
-
+*
+*
+*
 ************************************************************************
 *     Masses, widths and initial-state flavour information             *
 ************************************************************************
-      block data block_properties
-      implicit none
-      include 'masses.f'
-      include 'nflav.f'
-      include 'nores.f'
-c--- if true, nores removes all of the gg contribution
-      data nores/.false./
-c--- Masses: note that "mtausq" is typically used throughout the
-c--- program to calculate couplings that depend on the mass, while
-c--- "mtau" is the mass that appears in the rest of the matrix
-c--- elements and phase space (and may be set to zero in the program,
-c--- depending on the process number) 
-
-      data mtau,mtausq/1.777d0,3.157729d0/
-c----   Note: after v5.6, the masses for top, bottom and charm quarks
-c----         are set in the input file
-
-c---  Widths: note that the top width is calculated in the program
-c---  The W width of 2.1054 is derived using the measured BR of
-c---    10.80 +/- 0.09 % (PDG) and the LO partial width calculation
-c---    for Mw=80.398 GeV
-      data wwidth,zwidth/2.1054d0,2.4952d0/
-      data tauwidth/2.269d-12/
-c--- Number of active flavours in the initial state: this parameter
-c--- may be changed in the program for some processes
-      data nflav/5/
-c--- Masses below here are currently unused      
-      data md,mu,ms/5d-3,5d-3,1d-1/
-      data mel,mmu/0.510997d-3,0.105658389d0/
-      end
-************************************************************************
-
-
+*
+* Moved to mcfm_init.f
+*
 ************************************************************************
 *     CKM matrix entries                                               *
 ************************************************************************
@@ -135,12 +106,8 @@ c     .    0d0,1d0,0.000d0/
 *     Dim. Reg. parameter epsilon, used for checking the proper        *
 *      operation of the NLO code in the program                        *
 ************************************************************************
-      block data block_epinv
-      implicit none
-      include 'epinv.f'
-      include 'epinv2.f'
-      data epinv/ 1d3/
-      data epinv2/1d3/
-      end
-************************************************************************
+*
+* moved to mcfm_init.f
+*
+
 

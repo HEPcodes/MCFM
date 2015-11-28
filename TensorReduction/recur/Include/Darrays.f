@@ -6,3 +6,4 @@
       common/darrays/di,dii,diii,diiii,diiiii,diiiiii,diiiiiii,
      . dzzi,dzzii,dzziii,dzziiii,dzzzzi,dzzzzii,
      . dzziiiii,dzzzziii,dzzzzzzi
+!$omp threadprivate(/darrays/)

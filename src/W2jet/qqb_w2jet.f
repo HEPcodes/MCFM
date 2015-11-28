@@ -18,6 +18,7 @@ c--- all momenta are incoming
       include 'msq_cs.f'
       include 'lc.f'
       include 'part.f'
+      include 'first.f'
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),
      .                 facgg,facqq,prop,Vfac
       double precision qqbWgg2,qbqWgg2,qgWqg2,qbgWqbg2,
@@ -44,9 +45,7 @@ c--- all momenta are incoming
 c--- we label the amplitudes by helicity (qqb1 ... qqb4)
 c--- and by type of contribution qqb(1) ... qqb(n)
       integer i,j,k,n1,n2
-      logical first
-      data first/.true./
-      save first
+!$omp threadprivate(/mqq/)
 
       if (first) then
       first=.false.

@@ -13,10 +13,12 @@ C    Attempt to implement the formula of Denner and Dittmaier
       integer N,Np,ep,A2,pvAcache,nl,in,iP
       double precision p1sq,m0sq,m1sq,f1,iep
       double complex xp,xm,rt,arg,arg1,pvfndd,cln,xpvfndd
-      logical first,scaleset,p1sqnonzero
-      double precision fac,facnp,idp1(0:2),id(0:2),idm1(0:2)
-      data first/.true./,scaleset/.false./
-      save scaleset,first,idp1,id,idm1
+      double precision fac,facnp
+      double precision,save:: idp1(0:2),id(0:2),idm1(0:2)
+      logical p1sqnonzero
+      logical,save:: first=.true.
+      logical,save:: scaleset=.false.
+!$omp threadprivate(first,scaleset,idp1,id,idm1)
 C-----statement functions
       fac(n)=(-1d0)**n/dfloat(n+1)
       facnp(in,iP)=(-1d0)**(iP-2*in-1)

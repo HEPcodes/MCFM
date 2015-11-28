@@ -30,6 +30,8 @@ c      parameter (Rsep=2.0d0)  ! Usual (e.g. Snowmass) definition
       common/jetmerge/jetmerge
       data first/.true./
       save first
+!$omp threadprivate(first)
+!$omp threadprivate(/jetmerge/)
       
       if (first) then
        write(6,*)

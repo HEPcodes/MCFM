@@ -18,6 +18,7 @@ c---  qqb_w_g routine modified for fragmentation C. Williams Dec 2010
       double precision qqbWg,qbqWg,qgWq,qbgWqb,gqbWqb,gqWq,w1jet
       double precision fsq,D(0:5)
       common/D/D
+!$omp threadprivate(/D/)
 
 c      fsq=wmass**2+half*((pttwo(3,4,p))**2+z_frag**2*pt(5,p)**2)
       fsq=frag_scale**2

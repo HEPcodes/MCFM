@@ -30,10 +30,9 @@ C     arXiv:0804.4149v3, Eq.(5.1) (factor of C_\Gamma removed)
       include 'sprods_com.f'
       include 'scprods_com.f'
       include 'zprods_decl.f'
-      integer j1,j2,j3,j4,i,ii(7)
+      integer j1,j2,j3,j4,i
       double complex C4mpmpsub,A0phiggggmpmp,F31m,F42me,F41m,sum
-      data ii/1,2,3,4,1,2,3/
-      save ii
+      integer,parameter::ii(7)=(/1,2,3,4,1,2,3/)
       
 c--- set up 's-comma' products
       sc(1,1)=zip

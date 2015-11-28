@@ -30,6 +30,8 @@
 	data notijk/
      +	0,0,0,0,0,0,4,3,0,4,0,2,0,3,2,0,0,0,4,3,0,0,0,0,4,0,0,1,3,0,1,0,
      +	0,4,0,2,4,0,0,1,0,0,0,0,2,1,0,0,0,3,2,0,3,0,1,0,2,1,0,0,0,0,0,0/
+!$omp threadprivate(notijk)
+
 *
 *  #] declarations:
 *  #[ work:
@@ -229,6 +231,8 @@
 	data init /0/
 *
 *  #] declarations:
+!$omp threadprivate(init,/ffcut/)
+
 *  #[ check input:
 *
 	if ( init .eq. 0 ) then
@@ -703,6 +707,8 @@
 	data init /0/
 *
 *  #] declarations:
+!$omp threadprivate(init,/ffcut/)
+
 *  #[ check input:
 *
 	if ( init .eq. 0 ) then

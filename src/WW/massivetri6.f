@@ -12,6 +12,7 @@
      & cred13,cred23
       integer j,k1,k2,k3,k4,k5,k6,e,h1,h2
       common/transferbox/d
+!$omp threadprivate(/transferbox/)
 
       mtsq=mt**2
 
@@ -118,7 +119,7 @@ c--- compare with numerical code
       if (docheck) then
         call comparenum(3,12,c)    
       endif
-      
+
 c      do e=-2,0
 c      Cint(1,e)=qlI3(0d0,0d0,s12,0d0,0d0,0d0,musq,e)
 c      enddo
@@ -150,7 +151,7 @@ c      enddo
       Cint(10,e)=qlI3(s34,0d0,s156,0d0,mtsq,mtsq,musq,e)
       enddo
       do e=-2,0
-      Cint(11,e)=qlI3(s56,s12,s34,0d0,mtsq,mtsq,musq,e)
+         Cint(11,e)=qlI3(s56,s12,s34,0d0,mtsq,mtsq,musq,e)
       enddo
       do e=-2,0
       Cint(12,e)=qlI3(s12,0d0,0d0,mtsq,mtsq,mtsq,musq,e)

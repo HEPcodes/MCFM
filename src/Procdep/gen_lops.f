@@ -10,6 +10,7 @@ c---
 c---    alternate return if generated point should be discarded
       implicit none
       include 'constants.f'
+      include 'breit.f'
       include 'dm_params.f'
       include 'ipsgen.f'
       include 'limits.f'
@@ -19,13 +20,17 @@ c---    alternate return if generated point should be discarded
       include 'phasemin.f'
       include 'process.f'
       include 'zerowidth.f'
+      include 'energy.f'
       logical vetow_2gam
       integer ii
       double precision r(mxdim),p(mxpart,4),pswt,
-     & ptmp,m3,m4,m5,sqrts
-      common/energy/sqrts
+     & ptmp,m3,m4,m5,wt34,wt345,wt346,wt3456,wtprop,
+     & s34,s345,s346,s3456,dot,wtips(4)
       
-c--- processes that use "gen2"     
+c--- statement function
+      wtprop(s34,wmass,wwidth)=(s34-wmass**2)**2+(wmass*wwidth)**2
+
+c--- processes that use "gen2"
       if     ( (case .eq. 'W_only')
      .    .or. (case .eq. 'Z_only')
      .    .or. (case .eq. 'Higaga')
@@ -112,6 +117,10 @@ c        call gen3jetgaga(r,p,pswt,*999)
 c        call gen_photons_jets(r,3,0,p,pswt,*999)
         call gen3(r,p,pswt,*999)
 
+      elseif(case .eq.'fourga') then 
+        npart=4
+        call gen_photons_jets(r,4,0,p,pswt,*999)
+
 c--- processes that use "gen_Vphotons_jets"     
 c--- special treatment for W+gamma+jet and Z+gamma+jet 
       elseif ( (case .eq. 'Wgajet') .or. (case .eq. 'Zgajet') ) then
@@ -152,7 +161,20 @@ c--- special treatment for Z+gamma+gamma
            stop
         endif
         if (case .eq. 'W_2gam') then
-          if (vetow_2gam(p)) goto 999 ! partition PS according to ipsgen
+c          if (vetow_2gam(p)) goto 999 ! partition PS according to ipsgen
+          s34=2d0*dot(p,3,4)
+          s345=s34+2d0*dot(p,3,5)+2d0*dot(p,4,5)
+          s346=s34+2d0*dot(p,3,6)+2d0*dot(p,4,6)
+          s3456=s345+s346-s34+2d0*dot(p,5,6)
+          wt34=wtprop(s34,wmass,wwidth)
+          wt345=wtprop(s345,wmass,wwidth)
+          wt346=wtprop(s346,wmass,wwidth)
+          wt3456=wtprop(s3456,wmass,wwidth)
+          wtips(1)=wt345*wt346*wt3456
+          wtips(2)=wt34*wt345*wt346
+          wtips(3)=wt34*wt346*wt3456
+          wtips(4)=wt34*wt345*wt3456
+          pswt=pswt*wtips(ipsgen)/(wtips(1)+wtips(2)+wtips(3)+wtips(4))
         endif
 
 c--- special treatment for Z+gamma+gamma+jet 
@@ -212,12 +234,12 @@ c--- processes that use "gen3m"
         
 c--- processes that use "gen3m"
       elseif (case .eq. 'tt_glu') then
-        m3=mt
-        m4=mt
+        m3=mass2
+        m4=mass2
         m5=0d0
         npart=3
         call gen3m(r,p,m3,m4,m5,pswt,*999)
-      
+
 c--- processes that use "gen3m"
       elseif ((case .eq. 'qg_tbq') .or. (case .eq. 'qq_tbg')) then
         m3=mt
@@ -351,6 +373,11 @@ c--- processes that use "gen6"
      .    .or. (case .eq. 'vlchwh')
      .    .or. (case .eq. 'qq_HWW')
      .    .or. (case .eq. 'qq_HZZ')
+     .    .or. (case .eq. 'qqWWqq')
+     .    .or. (case .eq. 'qqWWss')
+     .    .or. (case .eq. 'qqWZqq')
+     .    .or. (case .eq. 'qqZZqq')
+     .    .or. (case .eq. 'qqVVqq')
      .    .or. (case .eq. 'HWW2jt')
      .    .or. (case .eq. 'HZZ2jt')
      .    .or. (case .eq. 'WH__ZZ')
@@ -455,12 +482,15 @@ c--- DEFAULT: processes that use "gen4"
           wsqmax=sqrts**2
         endif
         npart=4
-        call gen4(r,p,pswt,*999)      
+        call gen4(r,p,pswt,*999)
       endif
 
+c--- ensure no entry beyond npart+2
+      p(npart+3,:)=0d0
+      
       return
 
-c--- alternate return      
+c--- alternate return
   999 continue   
       return 1
       

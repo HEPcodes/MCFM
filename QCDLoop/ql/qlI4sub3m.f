@@ -27,6 +27,7 @@ C     xpi(13) = +xpi(5)-xpi(6)+xpi(7)-xpi(8)+xpi(9)+xpi(10)
      . /
 
       save swap 
+!$omp threadprivate(swap)
 
       call qlxpicheck(xpi)
 

@@ -12,13 +12,13 @@ c---- are required
       include 'phasemin.f'
       include 'nodecay.f'
       include 'breit.f'
+      include 'x1x2.f'
       integer j,nu
-      double precision r(mxdim),p(mxpart,4),xx(2),rdk1,rdk2
-      double precision sqrts,ymax,yave,ydif,xjac,y3,y4,phi,wt0,wt2,w3
+      double precision r(mxdim),p(mxpart,4),rdk1,rdk2
+      double precision ymax,yave,ydif,xjac,y3,y4,phi,wt0,wt2,w3
       double precision pt,s34,rtshat,udif
-      common/energy/sqrts
+      include 'energy.f'
       parameter(wt0=1d0/16d0/pi)
-      common/x1x2/xx
 
       do j=1,mxpart     
       do nu=1,4     
@@ -43,7 +43,6 @@ c--- dummy values if there's no decay
       elseif (n3.eq.1) then 
          call breitw(r(1),wsqmin,wsqmax,mass3,width3,s34,w3)
       endif
-
       rtshat=dsqrt(s34)
       ymax=dlog(sqrts/rtshat)
       yave=ymax*(two*r(2)-1d0)
@@ -52,7 +51,6 @@ c----udif==tanh(ydif)
       udif=(two*rdk1-1d0)
       ydif=half*dlog((1d0+udif)/(1d0-udif))
       xjac=four*ymax
-          
       y3=yave+ydif
       y4=yave-ydif
           

@@ -5,16 +5,17 @@
       include 'process.f'
       include 'phasemin.f'
       include 'interference.f'
-      integer nu,icount,nproc
-      double precision r(mxdim),sqrts,wt5,
+      include 'x1x2.f'
+      include 'nproc.f'
+      integer nu,icount
+      double precision r(mxdim),wt5,
      . p(mxpart,4),p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4)
       double precision pswt,xjac
-      double precision xx(2),tau,y
-      common/energy/sqrts
-      common/x1x2/xx
-      common/nproc/nproc
+      double precision tau,y
+      include 'energy.f'
       data icount/1/
       save icount
+!$omp threadprivate(icount)
 
       wt5=0d0
       tau=dexp(dlog(taumin)*r(9))

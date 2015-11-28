@@ -84,25 +84,6 @@ C itself. Before calling MTOP,
 C     OPEN(UNIT=99,NAME='NAME.TOP',STATUS='NEW')
 c Empty histograms are not put out by MTOP.
 C--------------------------------------------------------------------------
-      BLOCK DATA HISTOSET
-      include 'histo.f'
-      data book/nplot*'NO'/
-c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO'/
-      END
 
       SUBROUTINE MBOOK(N,TIT,DEL,XMIN,XMAX)
       IMPLICIT REAL*8 (A-H,O-Z)
@@ -139,13 +120,19 @@ c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO'/
       include 'histo.f'
       I=INT((X-HMIN(N))/HDEL(N)+1)
       IF(I.GT.0.AND.I.LE.NBIN(N))  THEN
+!$omp atomic
       IENT(N)=IENT(N)+1
+!$omp atomic
       IHIS(N,I)=IHIS(N,I)+1
-      HIST(N,I)=HIST(N,I)+Y/hdel(n)
+      Yadd=Y/hdel(n)
+!$omp atomic
+      HIST(N,I)=HIST(N,I)+Yadd
 c     we are renormalising the weights by the bin width
       ELSEIF(I.LE.0) THEN
+!$omp atomic
       IUSCORE(N)=IUSCORE(N)+1
       ELSEIF(I.GT.NBIN(N)) THEN
+!$omp atomic
       IOSCORE(N)=IOSCORE(N)+1
       ENDIF
       END
@@ -380,10 +367,10 @@ c     &' SET ORDER X Y DY ')
       DO 1 J=1,NBIN(N)
 c      IF(HIST(N,J).EQ.0.) GO TO 1
       if (scaleplots) then
-      WRITE(99,'(3(2X,G13.6))')  
+      WRITE(99,'(3X,G13.6,2(2X,G13.4))')  
      & XHIS(N,J),scalefac*HIST(N,J),HIST(M,J)
       else
-      WRITE(99,'(3X,G13.6,2(2X,G13.6))')  
+      WRITE(99,'(3X,G13.6,2(2X,G13.4))')  
      &                            XHIS(N,J),HIST(N,J),HIST(M,J)
       endif
     1 CONTINUE

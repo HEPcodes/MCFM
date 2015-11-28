@@ -164,6 +164,13 @@
 *
 	absc(c) = abs(DBLE(c)) + abs(DIMAG(c))
 *  #] declarations:
+!$omp threadprivate(initeq,initn1,init,xpneq,xpnn1,
+!$omp&		xprceq,bdeq01,bdeq05,bdeq11,bdeq17,bdeq25,
+!$omp&		xprcn1,bdn101,bdn105,bdn110,bdn115,bdn120,
+!$omp&		xprnn2,bdn201,bdn205,bdn210,bdn215,bdn220,
+!$omp&		xprcn3,bdn301,bdn305,bdn310,bdn315,
+!$omp&		xprcn5,bdn501,bdn505,bdn510,bdn515)
+
 *  #[ check input:
 	if (ltest) then
 	    xcheck = xma - xmb - dmamb

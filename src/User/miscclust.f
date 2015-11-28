@@ -6,30 +6,21 @@ c--- returns dijmin and indices of minimum in (nmin1,nmin2)
       include 'constants.f'
       double precision p(mxpart,4),pjet(mxpart,4),dijmin,dij,d
       integer pjetmin,pjetmax,nmin1,nmin2,i,j,ipow
-      logical dijerror
-
-      dijmin=1d9
-      dijerror=.true.
 
       do i=pjetmin,pjetmax
         do j=i+1,pjetmax
-          if (i .ne. j) then
-            d=dij(p,pjet,i,j,ipow)
-            if (d .lt. dijmin) then
-              dijmin=d
-              nmin1=i
-              nmin2=j
-              dijerror=.false.
-            endif
+          d=dij(p,pjet,i,j,ipow)
+          if ((i == pjetmin) .and. (j == i+1)) then
+            dijmin=d
+            nmin1=i
+            nmin2=j
+          elseif (d < dijmin) then
+            dijmin=d
+            nmin1=i
+            nmin2=j
           endif
         enddo
       enddo
-      
-      if (dijerror) then
-        write(*,*) 'Error in dij minimum-finding routine'
-        call writeout(p)
-        stop
-      endif
       
       return
       end

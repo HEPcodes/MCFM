@@ -27,8 +27,8 @@ c     .                ,ggWqbq2_cs(0:2),ggWqqb2_cs(0:2),
 c--- we label the amplitudes by helicity (qqb1 ... qqb4)
 c--- and by type of contribution qqb(1) ... qqb(n)
       integer i,j,k,ia,ib,ig,it
+!$omp threadprivate(/facgg/)
       
-
 c--- initialize matrix elements
       do j=-nf,nf
       do k=-nf,nf

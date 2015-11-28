@@ -17,13 +17,12 @@ c---
       include 'epinv.f'
       include 'scheme.f'
       include 'nflav.f'
-      integer j,k,iqqbg(5),iqbqg(5),iqgq(5),igqq(5),
-     . igqbqb(5),iqbgqb(5)
+      integer j,k
       double precision msq(-nf:nf,-nf:nf),msq0(-nf:nf,-nf:nf),
      . p(mxpart,4),fac,sw,prop,virt5,subuv_lc,subuv_tr,
      . qqbWg_lc,qqbWg_slc,qbqWg,qgWq,gqWq,qbgWqb,gqbWqb
 
-      data iqqbg/4,3,2,1,5/
+      integer,parameter::iqqbg(5)=(/4,3,2,1,5/)
 
 c--set msq=0 to initialize
       do j=-nf,nf

@@ -35,12 +35,15 @@ c--- should be included
       include 'process.f'
       include 'frag.f'
       include 'phot_dip.f'
-c---- SSbegin                                                                                                        
+      include 'nqcdjets.f'
+      include 'nproc.f'
+      include 'notag.f'
+c---- SSbegin
       include 'reweight.f'
 c---- SSend  
 
       double precision ptrans(mxpart,4),pjet(mxpart,4),rcut
-      integer j,nd,nqcdjets,nqcdstart,notag,isub,nproc
+      integer j,nd,isub
       logical gencuts,failedgencuts,photoncuts,makecuts,filterWbbmas,
      & photonfailed,filterW_bjet,is_photon
       integer count_photo,nphotons
@@ -51,11 +54,8 @@ c      double precision dphizj,pt5sq,pt6sq,pt7sq
 
 c      character*30 runstring
 c      common/runstring/runstring
-      common/nqcdjets/nqcdjets,nqcdstart
       common/rcut/rcut
       common/makecuts/makecuts
-      common/notag/notag
-      common/nproc/nproc
 c---- SSbegin                                                                                                        
 c---- set default reweight to 1 (hence no reweighting)                                                                
       reweight = 1.0d0

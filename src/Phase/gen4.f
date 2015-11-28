@@ -6,19 +6,21 @@
       include 'process.f'
       include 'phasemin.f'
       include 'interference.f'
-      integer nu,icount,nproc
+      include 'x1x2.f'
+      include 'nproc.f'
+      integer nu,icount
       double precision r(mxdim)
       double precision wt4,p1(4),p2(4),p3(4),p4(4),p5(4),p6(4)
       double precision p(mxpart,4)
       double precision pswt,xjac
-      double precision xx(2),tau,x1mx2,surd
-      double precision lntaum,sqrts
-      common/energy/sqrts
-      common/x1x2/xx
-      common/nproc/nproc
-      data icount/1/
-      save icount
+      double precision tau,x1mx2,surd
+      double precision lntaum
+      include 'energy.f'
+!      data icount/1/
+!      save icount
+!!$omp threadprivate(icount)
       wt4=0d0
+
 
       lntaum=dlog(taumin)
       tau=dexp(lntaum*(one-r(9)))
@@ -32,6 +34,8 @@ c      xjac=2*r(9)*(one-taumin)
            
       xx(1)=half*(+x1mx2+surd)
       xx(2)=half*(-x1mx2+surd)
+!      write(*,*) r(1),r(9),r(10)
+!      write(*,*) xx(1),xx(2)
 
       xjac=xjac*two/surd
 
@@ -81,21 +85,20 @@ c      endif
       enddo 
 
       if (interference) then
-        if (icount .eq. 1) then
+!        if (icount .eq. 1) then
           bw34_56=.true.
-          icount=icount-1
-        else
-          bw34_56=.false.
-          do nu=1,4
-            p(4,nu)=p6(nu)
-            p(6,nu)=p4(nu)
-          enddo 
-          icount=icount+1
-        endif
+!          icount=icount-1
+!        else
+!          bw34_56=.false.
+!          do nu=1,4
+!            p(4,nu)=p6(nu)
+!            p(6,nu)=p4(nu)
+!          enddo 
+!          icount=icount+1
+!        endif
       endif
       
       wt4=xjac*pswt
-      
       if (debug) write(6,*) 'wt4 in gen4',wt4
       return
 

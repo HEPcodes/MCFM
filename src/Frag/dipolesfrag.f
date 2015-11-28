@@ -24,12 +24,12 @@
       include 'betacut.f'
       include 'process.f'
       include 'lastphot.f'
+      include 'incldip.f'
       double precision p(mxpart,4),ptrans(mxpart,4),sub
       double precision z,omz,sij,sik,sjk,dot,u,p_phys(mxpart,4)
       double precision msq(-nf:nf,-nf:nf),tmp
       integer nd,ip,jp,kp,j,k,ipt
-      logical incldip(0:maxd),check_nv,phot_pass
-      common/incldip/incldip
+      logical check_nv,phot_pass
       external subr_born
       z=0d0
       omz=1d0

@@ -8,6 +8,7 @@
       double complex bwf
       common/bwf/bwf
       common/decay/decay
+!$omp threadprivate(/bwf/,/decay/)
 
       decay=.true.
 
@@ -49,6 +50,7 @@
       double complex bwf
       common/bwf/bwf
       common/decay/decay
+!$omp threadprivate(/bwf/,/decay/)
       decay=.true.
       if (decay) then
           if (nwz .eq. 0) then

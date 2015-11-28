@@ -39,7 +39,9 @@
       include 'process.f'
       include 'ipsgen.f'
       include 'part.f'
-      integer myitmx,myncall,myinit,i,j,k,nproc,mynproc,myncall_save
+      include 'bypart.f'
+      include 'nproc.f'
+      integer myitmx,myncall,myinit,i,j,k,mynproc,myncall_save
       logical mybin,bin
       double precision sig,sd,chi,sigr,sdr,sigdk,sddk,chidk,
      & sigfrag,sdfrag,chifrag,sigWdk,sdWdk,chiWdk,
@@ -48,14 +50,12 @@
      & sigips(4),sdips(4),xcallwt
       character*4 mypart
       character*3 getstr,psgen
-      common/nproc/nproc
       common/mypart/mypart
       common/bin/bin
       common/xreal/xreal,xreal2
       double precision lowint,virtint,realint,fragint
-      double precision region(2*mxdim),lord_bypart(-1:1,-1:1)
+      double precision region(2*mxdim)
       logical first,myreadin
-      common/bypart/lord_bypart
       external lowint,virtint,realint,fragint
       data first/.true./
       save first,sigips,sdips
@@ -74,7 +74,6 @@ c--- total of virt and real may be combined at the end for 'tota'
       sdfrag=0d0
       xreal=0d0
       xreal2=0d0
-      
 c--- integer controlling stages of Z+gamma+jet and Z+gamma+gamma processes
       ipsgen=1
       
@@ -182,27 +181,18 @@ c--- Z+gamma+jet and Z+gamma+gamma processes
           ingridfile='dvegas_'//part//'_PS'//psgen(1:1)//'.grid'
         endif
       endif
-      
+
 c--- Basic lowest-order integration
       if (part .eq. 'lord') then
-       call boundregion(ndim,region)
-       call vegasnr(region,ndim,lowint,myinit,myncall,myitmx,
-     .               nprn,sig,sd,chi)
+!       call boundregion(ndim,region)
+!       call vegasnr(region,ndim,lowint,myinit,myncall,myitmx,
+!     .               nprn,sig,sd,chi)
+       call vegas_Pomp(lowint,sig,0d0,0d0,ndim,myncall,myitmx,myinit)
       endif
 
-
-c---- REMOVE THIS PIECE EVENTUALLY
-      if (part .eq. 'frit') then
-         ndim=ndim+1
-         call boundregion(ndim,region) 
-         call vegasnr(region,ndim,lowint,myinit,myncall,myitmx,
-     &                 nprn,sig,sd,chi)
-         ndim=ndim-1
-      endif
-c---- REMOVE THIS PIECE EVENTUALLY
 
 c--- If we're doing the tota integration, then set up the grid info
-      if ((mypart .eq. 'tota') .or. (mypart .eq. 'todk')) then        
+      if ((mypart .eq. 'tota') .or. (mypart .eq. 'todk')) then
         if (first .and. (myinit .eq. 1)) then
 c-- special input name for virtual grid
             ingridfile='dvegas_virt_'//ingridfile
@@ -240,9 +230,10 @@ c--- (added and then taken away)
         reset=.true.
         scalereset=.true.
         ndim=ndim+1
-        call boundregion(ndim,region)
-        call vegasnr(region,ndim,virtint,myinit,myncall,myitmx,
-     .              nprn,sig,sd,chi)
+!        call boundregion(ndim,region)
+!        call vegasnr(region,ndim,virtint,myinit,myncall,myitmx,
+!     .              nprn,sig,sd,chi)
+       call vegas_Pomp(virtint,sig,0d0,0d0,ndim,myncall,myitmx,myinit)
         ndim=ndim-1
       endif
             
@@ -290,9 +281,10 @@ c---   unsubtracted real emission weight)
         xreal=0d0
         xreal2=0d0
         ndim=ndim+3
-        call boundregion(ndim,region)
-        call vegasnr(region,ndim,realint,myinit,myncall,myitmx,
-     .              nprn,sigr,sdr,chi)
+!        call boundregion(ndim,region)
+!        call vegasnr(region,ndim,realint,myinit,myncall,myitmx,
+!     .              nprn,sigr,sdr,chi)
+        call vegas_Pomp(realint,sig,0d0,0d0,ndim,myncall,myitmx,myinit)
         ndim=ndim-3
         write(6,*) 
         ncall=myncall
@@ -324,9 +316,10 @@ c      else
 c      endif
         write(6,*) 'Adjusting number of points for real to',ncall
         ndim=ndim+3
-        call boundregion(ndim,region)
-        call vegasnr(region,ndim,realint,myinit,ncall,myitmx,
-     .              nprn,sigr,sdr,chi)
+!        call boundregion(ndim,region)
+!        call vegasnr(region,ndim,realint,myinit,ncall,myitmx,
+!     .              nprn,sigr,sdr,chi)
+        call vegas_Pomp(realint,sig,0d0,0d0,ndim,ncall,myitmx,myinit)
         ndim=ndim-3
         write(6,*) 
         ncall=myncall
@@ -374,9 +367,10 @@ c-- special input name for real grid
         ncall=int(dfloat(myncall)**adjust)/2
         write(6,*) 'Adjusting number of points for real to',ncall
         ndim=ndim+3
-        call boundregion(ndim,region)
-        call vegasnr(region,ndim,realint,myinit,ncall,myitmx,
-     .              nprn,sigdk,sddk,chidk)
+!        call boundregion(ndim,region)
+!        call vegasnr(region,ndim,realint,myinit,ncall,myitmx,
+!     .              nprn,sigdk,sddk,chidk)
+        call vegas_Pomp(realint,sig,0d0,0d0,ndim,ncall,myitmx,myinit)
         ndim=ndim-3
         write(6,*) 
         ncall=myncall
@@ -427,9 +421,10 @@ c-- special input name for real grid
         ncall=int(dfloat(myncall)**adjust)/2
         write(6,*) 'Adjusting number of points for real to',ncall
         ndim=ndim+3
-        call boundregion(ndim,region)
-        call vegasnr(region,ndim,realint,myinit,ncall,myitmx,
-     .              nprn,sigWdk,sdWdk,chiWdk)
+!        call boundregion(ndim,region)
+!        call vegasnr(region,ndim,realint,myinit,ncall,myitmx,
+!     .              nprn,sigWdk,sdWdk,chiWdk)
+      call vegas_Pomp(realint,sig,0d0,0d0,ndim,ncall,myitmx,myinit)
         ndim=ndim-3
         write(6,*) 
         ncall=myncall
@@ -506,10 +501,11 @@ c---   ipsgen=1,3 (W+gamma+gamma)
          ncall=myncall
 c         write(6,*) 'Adjusting number of points for frag to',ncall
          ndim=ndim+1
-         call boundregion(ndim,region) 
+!         call boundregion(ndim,region) 
          fragint_mode=.true.            ! for isolation
-         call vegasnr(region,ndim,fragint,myinit,myncall,myitmx,
-     &                 nprn,sigfrag,sdfrag,chifrag)
+!         call vegasnr(region,ndim,fragint,myinit,myncall,myitmx,
+!     &                 nprn,sigfrag,sdfrag,chifrag)
+         call vegas_Pomp(fragint,sig,0d0,0d0,ndim,myncall,myitmx,myinit)
          fragint_mode=.false.            ! for isolation
          ndim=ndim-1
        rescale=.false.       ! turn rescaling off again

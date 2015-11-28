@@ -16,3 +16,4 @@ c---  (b=2, rather than the usual q=1)
       double precision 
      . B1(-1:2,-1:2,-1:2,3),B2(-1:2,-1:2,-1:2,3)
       common/RP_stop/B1,B2
+!$omp threadprivate(/RP_stop/)

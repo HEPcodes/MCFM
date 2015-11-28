@@ -10,12 +10,62 @@
       include 'constants.f'
       include 'process.f'
       include 'runstring.f'
+      include 'first.f'
       logical failed,gencuts_Zt,gencuts_WZjj,gencuts_input
+      logical, save :: makeVBScuts,makeATLAS_sscuts,
+     & makeCMS_hzz,makeCMS_hzz_vbf
       integer njets
       double precision pjet(mxpart,4)
+!$omp threadprivate(makeVBScuts,makeATLAS_sscuts)
+!$omp threadprivate(makeCMS_hzz,makeCMS_hzz_vbf)
+      
+      if (first) then
+        first=.false.
+        makeVBScuts=(index(runstring,'VBS') .gt. 0)
+        makeATLAS_sscuts=(index(runstring,'ATLAS_ss') .gt. 0)
+        makeCMS_hzz=(index(runstring,'CMS_hzz') .gt. 0)
+        makeCMS_hzz_vbf=(index(runstring,'CMS_hzz_vbf') .gt. 0)
+      endif
       
       gencuts=.false.
       
+      if (makeVBScuts) then
+        call VBS(pjet,failed)
+        if (failed) gencuts=.true.
+        return
+      endif
+
+      if (makeATLAS_sscuts) then
+        call ATLAS_ss(pjet,failed)
+        if (failed) gencuts=.true.
+        return
+      endif
+
+      if (makeCMS_hzz_vbf) then
+        call CMS_hzz_vbf(pjet,failed)
+        if (failed) gencuts=.true.
+        return
+      endif
+      
+      if (makeCMS_hzz) then
+        call CMS_hzz(pjet,failed)
+        if (failed) gencuts=.true.
+        return
+      endif
+      
+c--- Default: use the cuts from the input file
+      gencuts=gencuts_input(pjet,njets)
+        
+      return
+
+
+      end
+ 
+
+
+
+ 
+ 
 c      if ( (case .eq. 'HZZ_4l')
 c     & .or.(case .eq. 'HZZ_tb')
 c     & .or.(case .eq. 'HZZint')
@@ -49,14 +99,4 @@ c         gencuts=gencuts_WZjj(pjet,njets)
 c         return
 c      endif
 
-c--- Default: use the cuts from the input file
-      gencuts=gencuts_input(pjet,njets)
-        
-      return
-
-
-      end
- 
- 
- 
  

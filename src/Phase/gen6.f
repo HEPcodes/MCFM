@@ -7,15 +7,14 @@
       include 'process.f'
       include 'masses.f'
       include 'jetcuts.f'
+      include 'x1x2.f'
+      include 'energy.f'
       integer nu
       double precision r(mxdim)
       double precision wt6,q(mxpart,4)
       double precision p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4),p8(4)
-      double precision sqrts,y,pswt,xjac,xx(2),tau,vs,vsqmax,vsqmin,
+      double precision y,pswt,xjac,tau,vs,vsqmax,vsqmin,
      & s34,rtshat,ymax,yave
-      common/energy/sqrts
-      common/x1x2/xx
-      data p3/0d0,0d0,0d0,0d0/
 
       wt6=0d0
 
@@ -95,6 +94,8 @@ c--- generic case
 
       return
 
- 999  return 1
+ 999  q(:,:)=0d0
+      return 1
+      
       end
 

@@ -106,6 +106,7 @@
 *	data
 *
 	data xprec /0./
+!$omp threadprivate(xprec,bnd101,bnd105,bnd110,bnd115)
 *
 *  #] declarations:
 *  #[ check input:

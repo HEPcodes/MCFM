@@ -10,17 +10,16 @@ c--- To reject an event, return jets=-1
       include 'jetcuts.f'
       include 'jetlabel.f'
       include 'plabel.f'
+      include 'first.f'
+      include 'nproc.f'
       double precision q(mxpart,4),qjet(mxpart,4),qfinal(mxpart,4)
       double precision pt,Rmin,R,Ry,Rbbmin,aetarap,ayrap
       double precision rtest,rab,raptest
       integer isub,i,j,k,nu,icandj,maxjet,jetindex(mxpart),ia,ib
-      integer nproc
-      logical jetmerge,verbalg,first,pseudo,bjetmerge,is_hadronic
-      common/nproc/nproc
+      logical jetmerge,verbalg,pseudo,bjetmerge,is_hadronic
       common/Rbbmin/Rbbmin
       common/jetmerge/jetmerge
-      data first/.true./
-      save first
+!$omp threadprivate(/jetmerge/)
               
       verbalg=.false.
 

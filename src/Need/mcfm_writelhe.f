@@ -10,18 +10,16 @@ c--- Routine to write a generic LHE file for a given MCFM process
       include 'montecarlorpp.f'
       include 'hepeup.f'
       include 'heprup.f'
-      logical first
+      include 'nqcdjets.f'
+      include 'nproc.f'
       integer ilomomenta,plabeltoPDG,ip_parent(10),id_parent(10),ic,
-     & i,j,k,jj,kk,j1,j2,j3,j4,ip,nqcdjets,nqcdstart,nproc,nu,ilen
+     & i,j,k,jj,kk,j1,j2,j3,j4,ip,nu,ilen
       double precision p(mxpart,4),xfac,p_parent(10,4),pin(mxpart,4),
      & xmsq(-nf:nf,-nf:nf),xx,mm
       character*255 runname,outputstring
-      common/ilomomenta/ilomomenta      
-      common/nqcdjets/nqcdjets,nqcdstart
-      common/nproc/nproc
+      common/ilomomenta/ilomomenta
       common/runname/runname
-      data first /.true./
-      save first 
+      logical, save :: first=.true.
 
 c--- work out flavour to use for initial state
 c--- (randomly, based on weights passed in xmsq)

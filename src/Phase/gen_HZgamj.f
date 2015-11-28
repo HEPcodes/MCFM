@@ -5,6 +5,7 @@
       include 'limits.f'
       include 'breit.f'
       include 'masses.f'
+      include 'energy.f'
       
       double precision r(mxdim),p(mxpart,4),wt
       double precision wt0,p12(4),p34(4),p3(4),p4(4),p5(4),p6(4)
@@ -14,8 +15,6 @@
       double precision Qsq,taumin
       parameter(wt0=one/twopi**2) 
       double precision wt3456,wt345,wt34
-      double precision sqrts
-      common/energy/sqrts
 
 !----- initialize p 
       do i=1,mxpart 

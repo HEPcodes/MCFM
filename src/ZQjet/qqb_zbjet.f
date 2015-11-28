@@ -19,8 +19,7 @@ c--- Extended to include charm quark production via the variable "flav"
       include 'zprods_com.f'
       include 'msq_cs.f'
       include 'nflav.f'
-      integer i,j,k,pq,pl,swap(2),swap1(0:2),
-     . j1,j2,j3,icol
+      integer i,j,k,pq,pl,j1,j2,j3,icol
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac,faclo,
      .   qgZqg2(2,2),gqZqg2(2,2),
      .   qgZqg2_cs(0:2,2,2),gqZqg2_cs(0:2,2,2),
@@ -35,20 +34,11 @@ c      double complex b111,b112,b121,b211,b122,b212,b221,b222
       double complex qR_a(2,2,2),qR_b(2,2,2)
       double complex qbRb_a(2,2,2),qbRb_b(2,2,2)
       double complex qbqb_a(2,2,2),qbqb_b(2,2,2)      
-      data swap/2,1/
-      save swap
-      data swap1/0,2,1/
-      save swap1
+      integer,parameter::swap(2)=(/2,1/),swap1(0:2)=(/0,2,1/)
 
 c--- initialize the matrix element squared
-      do j=-nf,nf
-      do k=-nf,nf
-      msq(j,k)=0d0
-      do icol=0,2
-      msq_cs(icol,j,k)=0d0
-      enddo
-      enddo
-      enddo
+      msq(:,:)=0d0
+      msq_cs(:,:,:)=0d0
 
       call spinoru(6,p,za,zb)
 

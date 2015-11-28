@@ -15,7 +15,7 @@ c                           ---> b(p3)+bbar(p4)
       include 'ckm.f'
       include 'sprods_com.f'
       include 'hdecaymode.f'
-      integer j,k,m,n,pn(-nf:nf)
+      integer j,k,m,n
       double precision p(mxpart,4),facqq,facqg,s34
       double precision msq(-nf:nf,-nf:nf),hdecay,
      . msqll,msqlr,msqzzin,msqwzin,msqwl,
@@ -24,7 +24,7 @@ c                           ---> b(p3)+bbar(p4)
       common/msq_all/msqx
       logical includeall
       
-      data pn/-1,-2,-1,-2,-1,0,1,2,1,2,1/
+      integer,parameter::pn(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
 
 c--- This flag decides whether or not to include all types of diagrams:
 c---  FALSE --> only diagrams that look like WBF

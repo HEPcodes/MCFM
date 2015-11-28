@@ -174,16 +174,16 @@ C     [arXiv:hep-ph/9610541].
 C     %%CITATION = HEP-PH 9610541;%%
 
       integer j,k,p1,p2,p3,p4,j1,j2,jk(4),
-     . i1(4),i2(4),i3(4),i4(4),k1(4),k2(4),k3(4),k4(4)
+     . i1(4),i2(4),i3(4),i4(4)
       double precision s123,s124,s134,s234
       double complex z2,amppp(3),apmpp(3),appmp(3),apppm(3),temp
       include 'constants.f'
       include 'zprods_decl.f'
       include 'sprods_com.f'
-      data k1/1,2,3,4/
-      data k2/2,3,4,1/
-      data k3/3,4,1,2/
-      data k4/4,1,2,3/
+      integer, parameter:: k1(4)=(/1,2,3,4/)
+      integer, parameter:: k2(4)=(/2,3,4,1/)
+      integer, parameter:: k3(4)=(/3,4,1,2/)
+      integer, parameter:: k4(4)=(/4,1,2,3/)
 
 
 C---statement function
@@ -301,13 +301,13 @@ C     [Erratum-ibid.\ D {\bf 58}, 119901 (1998)]
 C     [arXiv:hep-ph/9610541].
 C     %%CITATION = HEP-PH 9610541;%%
       integer j,k,p1,p2,p3,p4,jk(4),
-     . i1(6),i2(6),i3(6),i4(6),k1(6),k2(6),k3(6),k4(6)
+     . i1(6),i2(6),i3(6),i4(6)
       double complex temp,
      . ammpp(3),ampmp(3),amppm(3),apmmp(3),apmpm(3),appmm(3)
-      data k1/1,1,1,2,2,3/
-      data k2/2,3,4,3,4,4/
-      data k3/3,2,2,1,1,1/
-      data k4/4,4,3,4,3,2/
+      integer,parameter:: k1(6)=(/1,1,1,2,2,3/)
+      integer,parameter:: k2(6)=(/2,3,4,3,4,4/)
+      integer,parameter:: k3(6)=(/3,2,2,1,1,1/)
+      integer,parameter:: k4(6)=(/4,4,3,4,3,2/)
 
 
       jk(1)=p1

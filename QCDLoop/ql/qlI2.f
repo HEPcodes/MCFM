@@ -10,8 +10,10 @@ C     ep=-2,-1,0 chooses the coefficient in the Laurent series.
       double precision p1o,m1o,m2o,mu2o,pp1,mm1,mm2,newmu2,scalefac
       logical qlzero 
       double complex Ival(-2:0),qlI2fin
-      data p1o,m1o,m2o,mu2o/3*0d0,-1d0/
+      data p1o,m1o,m2o,mu2o/-1d0,-1d0,-1d0,-1d0/
       save Ival,p1o,m1o,m2o,mu2o
+!$omp threadprivate(p1o,m1o,m2o,mu2o)
+!$omp threadprivate(Ival)
 
 C--If we have already calculated, use the saved value
 C--else setup the arrays
@@ -49,6 +51,5 @@ C--else setup the arrays
       Ival(0)=qlI2fin(pp1,mm1,mm2,newmu2)
       qlI2=Ival(ep)
       endif
-
       return
       end

@@ -48,9 +48,9 @@ c---     numerical precision
      . Czero5(z5max,-2:0),Czero4(z4max,-2:0),
      . Czero3(z3max,-2:0),Czero2(z2max,-2:0),Czero1(z1max,-2:0),
      . Czero0(-2:0)
-      logical first,exceptional
-      data first/.true./
-      save first
+      logical exceptional
+      logical,save::first=.true.
+!$omp threadprivate(first)
 
       if (first) then
         first=.false.

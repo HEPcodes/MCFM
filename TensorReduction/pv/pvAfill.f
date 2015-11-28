@@ -9,10 +9,11 @@ C    N is the offset in the storage
       integer N,Np,ep,j
       double precision m1sq
       double complex trI1
-      logical first,scaleset
-      double precision id(0:2),idp2(0:2)
-      data first/.true./,scaleset/.false./
-      save scaleset,first,id,idp2
+      logical,save::first=.true.
+      logical,save::scaleset=.false.
+      double precision,save::id(0:2),idp2(0:2)
+!$omp threadprivate(scaleset,first,id,idp2)
+
       if (first) then
       first=.false.
 C--id=1/D

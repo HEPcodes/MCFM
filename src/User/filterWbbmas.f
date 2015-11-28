@@ -7,9 +7,8 @@ c--- routine returns FALSE if event does not pass the process-specific cuts
       include 'constants.f'
       include 'clustering.f'
       include 'jetlabel.f'
+      include 'nproc.f'
       logical veto3jets
-      integer nproc
-      common/nproc/nproc
 
       if (jets.lt.1) then
          filterWbbmas=.false.

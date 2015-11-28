@@ -11,6 +11,7 @@ c--- of one of the heavy particles
       include 'phasemin.f'
       include 'breit.f'
       include 'process.f'
+      include 'x1x2.f'
       double precision r(mxdim)
       double precision p(mxpart,4),pswt,smin
       double precision p1(4),p2(4),p12(4),p8(4),p34567(4),
@@ -19,11 +20,11 @@ c--- of one of the heavy particles
       double precision mtbsq,wt345,wt34,wt567,wt56
       integer nu
       double precision xjac,p1ext(4),p2ext(4),wt0
-      double precision xx(2),tau,x1mx2,surd,lntaum,sqrts,tmin
+      double precision tau,x1mx2,surd,lntaum,tmin
       common/pext/p1ext,p2ext
-      common/x1x2/xx
-      common/energy/sqrts
+      include 'energy.f'
       parameter(wt0=1d0/twopi**2)
+!$omp threadprivate(/pext/)
 
       if ((case .eq. 'Z_tdkj') .or. (case .eq. 'H_tdkj')) then
       call gen4(r,p,pswt,*99)

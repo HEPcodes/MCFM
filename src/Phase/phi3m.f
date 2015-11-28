@@ -14,6 +14,7 @@ c     factor of (2*pi)^4 included in definition of phase space
       double precision m1,m2,m1sq,m2sq,lambda,lambda2,smin
       integer j
       parameter(wt0=one/eight/pi)
+
       wt=0d0
 
       s=p0(4)**2-p0(1)**2-p0(2)**2-p0(3)**2  
@@ -60,7 +61,6 @@ c      pause
       do j=1,4
       p2(j)=p0(j)-p1(j)
       enddo
-
 
       if (  (p0(4) .lt. 0d0) 
      & .or. (p1(4) .lt. 0d0) 

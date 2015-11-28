@@ -30,6 +30,7 @@ c    Calculation is fully analytic
       logical CheckEGZ
       common/CheckEGZ/CheckEGZ
       parameter(i5=7,i6=8)
+!$omp threadprivate(/CheckEGZ/)
 C*************************************************** 
       scheme='dred'
 C*************************************************** 

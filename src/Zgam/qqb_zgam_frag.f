@@ -23,6 +23,7 @@ c---
      .               AqbgZqb(2,2,2),AgqbZqb(2,2,2),AgqZq(2,2,2),prop
       double precision fsq,D(0:5)
       common/D/D
+!$omp threadprivate(/D/)
 
       do j=-nf,nf
       do k=-nf,nf

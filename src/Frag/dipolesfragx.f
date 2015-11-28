@@ -26,6 +26,7 @@ c--- 4 dimensional array indexed by initial and final parton labels
       include 'facscale.f'
       include 'betacut.f'
       include 'lastphot.f'
+      include 'incldip.f'
       double precision p(mxpart,4),ptrans(mxpart,4),sub
       double precision p_phys(mxpart,4),tmp
       integer ipt
@@ -35,8 +36,7 @@ c--- 4 dimensional array indexed by initial and final parton labels
       double precision msqx(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf)
       double precision mdum2(0:2,-nf:nf,-nf:nf) !msqx_cs
       integer nd,ip,jp,kp,j,k
-      logical incldip(0:maxd),check_nv,phot_pass
-      common/incldip/incldip
+      logical check_nv,phot_pass
       external subr_born
 
       z=0d0

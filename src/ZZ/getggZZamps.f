@@ -32,7 +32,8 @@ c--- expected to be unreliable, namely pt(Z)<ptZsafetycut set below
       include 'scale.f'
       include 'docheck.f'
       include 'qlfirst.f'
-      logical dolight,dobottom,dotop,first,ggZZuse6d
+      include 'first.f'
+      logical dolight,dobottom,dotop,ggZZuse6d
       integer h1,h2,h34,h56,up,dn,om,nu
       double precision p(mxpart,4),cvec(2),cax(2),cl1(2),cl2(2),
      & ptZsafetycut_massless,ptZsafetycut_massive,ptZ,pttwo
@@ -46,8 +47,7 @@ c--- expected to be unreliable, namely pt(Z)<ptZsafetycut set below
 c     & AmtLL_new(2,2,2,2),AmtLR_new(2,2,2,2)
       common/ggZZuse6d/ggZZuse6d
       parameter(up=2,dn=1)
-      data first/.true./ 
-      save first
+!$omp threadprivate(/ggZZuse6d/)
 
       ggZZuse6d=.true.    ! TRUE -> use 6d instead of 4d boxes (recommended)
 c      ggZZuse6d=.false.  ! FALSE -> use 4d boxes, poorer numerical stability

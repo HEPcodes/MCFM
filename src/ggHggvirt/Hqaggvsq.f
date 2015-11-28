@@ -7,6 +7,7 @@ C---  matrix element squared for H--q(j1)+a(j2)+g(j3)+g(j4)
       integer al,j1,j2,j3,j4
       double precision q(4,5),qswap(4,5),sqres(-2:0)
       common/GZmom/q
+!$omp threadprivate(/GZmom/)
 
       do al=1,4
       qswap(al,1)=q(al,j1)

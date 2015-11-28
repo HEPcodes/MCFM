@@ -14,12 +14,12 @@ c                           ---> W+(nu(p3)+e+(p4))+W-(e-(p5)+nub(p6))
       include 'ewcouple.f'
       include 'zcouple.f'
       include 'sprods_com.f'
-      integer j,k,pn(-nf:nf)
+      integer j,k
       double precision p(mxpart,4),facqq,facqg,s3456
       double precision msq(-nf:nf,-nf:nf),hdecay,
      . ud_dug,uub_ddbg,ug_dudb,gu_uddb
       
-      data pn/-1,-2,-1,-2,-1,0,1,2,1,2,1/
+      integer,parameter::pn(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
 
       do j=-nf,nf
       do k=-nf,nf

@@ -11,13 +11,10 @@
       double precision wtepnn,wtnbem,ep(4),em(4),nn(4),nb(4),wp(4),wm(4)
       double precision wtttw,wtwp,wtwm,s3min,wt0
       parameter(wt0=1d0/twopi**4)
-      data wp,wm,ep,em,nn,nb,bp,bm/32*0d0/
-
 
 *     q(-p1) +qbar(-p2)=t(nu(p3)+e^+(p4)+b(p5))                        *
 *                       +t~(b~(p6)+e^-(p7)+nu(p8))+g(p9)               *
 *                                                                      * 
-
 
       wt8=0d0
 C---call gen4 that uses r(1)....r(10)
@@ -58,6 +55,7 @@ C---call gen4 that uses r(1)....r(10)
 
       return
  999  wt8=0d0
+      p(:,:)=0d0
       return 1
       
       end

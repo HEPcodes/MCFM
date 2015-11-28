@@ -25,6 +25,8 @@ C                                                               C
 C***************************************************************C
       implicit real*8(a-h,o-z)
       data xmin,xmax,qsqmin,qsqmax/1d-5,1d0,1.25d0,1d7/
+      save xmin,xmax,qsqmin,qsqmax
+!$omp threadprivate(xmin,xmax,qsqmin,qsqmax)
       q2=q*q
       if(q2.lt.qsqmin.or.q2.gt.qsqmax) print 99,q2
 c      if(x.lt.xmin.or.x.gt.xmax)       print 98,x
@@ -63,10 +65,16 @@ c      if(x.lt.xmin.or.x.gt.xmax)       print 98,x
      .        1.8d6,3.2d6,5.6d6,1d7/
       data xmin,xmax,qsqmin,qsqmax/1d-5,1d0,1.25d0,1d7/
       data init/0/
-      save
+      save xmin,xmax,qsqmin,qsqmax,init,emc2,emb2
+      save xx,qq
+      common /store/ xxl,qql,qqlc,qqlb,cc1,cc2,cc3,cc4,cc6,cc8
+!$omp threadprivate(xmin,xmax,qsqmin,qsqmax,init,emc2,emb2)
+!$omp threadprivate(xx,qq)
+!$omp threadprivate(/store/)
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
+!$omp critical(MrsRead)
         filename=checkpath('Pdfdata/mrst2004f3nlo.dat')
         open(unit=33,file=filename,status='old')
         do 20 n=1,nx-1
@@ -75,6 +83,8 @@ c      if(x.lt.xmin.or.x.gt.xmax)       print 98,x
      .		  f5(n,m),f7(n,m),f6(n,m),f8(n,m)
 c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
   20  continue
+      close(unit=33)
+!$omp end critical(MrsRead)
       do 40 m=1,nq
       f1(nx,m)=0.d0
       f2(nx,m)=0.d0
@@ -173,10 +183,14 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
      .        1.8d6,3.2d6,5.6d6,1d7/
       data xmin,xmax,qsqmin,qsqmax/1d-5,1d0,1.25d0,1d7/
       data init/0/
-      save
+      save xmin,xmax,qsqmin,qsqmax,init,emc2,emb2
+      common /store/ xxl,qql,qqlc,qqlb,cc1,cc2,cc3,cc4,cc6,cc8
+!$omp threadprivate(xmin,xmax,qsqmin,qsqmax,init,emc2,emb2)
+!$omp threadprivate(/store/)
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
+!$omp critical(MrsRead)
         filename=checkpath('Pdfdata/mrst2004f3lo.dat')
         open(unit=33,file=filename,status='old')
         do 20 n=1,nx-1
@@ -185,6 +199,8 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
      .		  f5(n,m),f7(n,m),f6(n,m),f8(n,m)
 c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
   20  continue
+      close(unit=33)
+!$omp end critical(MrsRead)
       do 40 m=1,nq
       f1(nx,m)=0.d0
       f2(nx,m)=0.d0

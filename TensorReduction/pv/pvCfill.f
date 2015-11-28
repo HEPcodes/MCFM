@@ -12,20 +12,22 @@ C     N is the offset in the common block
       include 'pvverbose.f'
       include 'pvrecurflags.f'
       integer B12,B23,B13,np,ep,epmj,N,j,perm(2),pvBcache
-      integer icall,irecur,irecur2,irecur3,irecur4
       parameter(np=2)
       double complex G(np,np),in(2,-2:0),trI3,
      . bsum(-2:0),b0sum(-2:0),b1sum(-2:0),b11sum(-2:0),b111sum(-2:0),
      . b1111sum(-2:0),b11111sum(-2:0),
      . b00sum(-2:0),b001sum(-2:0),b0011sum(-2:0),b0000sum(-2:0)
       double precision p1,p2,p1p2,m1s,m2s,m3s,f1,f2
-      double precision idp3(0:2),idp2(0:2),idp1(0:2),id(0:2),
+      logical exceptional
+      integer,save:: icall,irecur,irecur2,irecur3,irecur4
+      double precision,save::idp3(0:2),idp2(0:2),idp1(0:2),id(0:2),
      . idm1(0:2),idm2(0:2)
-      logical first,exceptional
-      data first/.true./
-      save first,idp3,idp2,idp1,id,idm1,idm2,
-     & icall,irecur,irecur2,irecur3,irecur4
-      
+
+      logical,save:: first=.true.
+      logical,save:: scaleset=.false.
+!$omp threadprivate(first,idp3,idp2,idp1,id,idm1,idm2)
+!$omp threadprivate(icall,irecur,irecur2,irecur3,irecur4)
+
       if (first) then
       first=.false.
 C--idp3=1/[D+3]

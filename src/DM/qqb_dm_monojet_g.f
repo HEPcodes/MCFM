@@ -32,10 +32,6 @@ c      double precision msqo
       double precision faclo,s34
       double complex cprop
       double precision propsq
-      logical first 
-      data first/.true./ 
-      save first 
-        
 
       if(dm_mediator.eq.'gluonO') then 
          call gg_dm_monojet_g(p,msq) 
@@ -72,14 +68,12 @@ c      double precision msqo
 !-------- for S and G need to be more careful, but G happens elsewhere and S can be done 
 !-------- in special routine
          s34=(p(3,4)+p(4,4))**2
-     &        -(p(3,1)+p(4,1))**2-(p(3,2)+p(4,2))**2-(p(3,3)+p(4,3))**2         
+     &        -(p(3,1)+p(4,1))**2-(p(3,2)+p(4,2))**2-(p(3,3)+p(4,3))**2
          cprop=cone/Dcmplx((s34-medmass**2),medmass*medwidth)
          propsq=cdabs(cprop)**2 
          fac=four*V*xn*gsq**2*propsq*g_dmq**2*g_dmx**2
          faclo=four*V*gsq**2*aveqq*propsq*g_dmq**2*g_dmx**2
       endif
-
-   
 
 !-------two gluon amplitudes 
 c      msqo=0d0
@@ -100,10 +94,6 @@ c      msqo=0d0
          call qqb_dm_gg_Axamps(p,5,1,6,2,3,4,gqbXqg1,gqbXqg2,gqbXqg3) 
          call qqb_dm_gg_Axamps(p,1,5,6,2,3,4,qqbXgg1,qqbXgg2,qqbXgg3) 
          call qqb_dm_gg_Axamps(p,2,5,6,1,3,4,qbqXgg1,qbqXgg2,qbqXgg3) 
-         if(first) then 
-            first = .false. 
-            call check_dmAxC
-         endif
       elseif(dm_mediator.eq.'scalar') then 
          call qqb_dm_gg_Samps(p,1,2,6,5,3,4,qgXqbg1,qgXqbg2,qgXqbg3) 
          call qqb_dm_gg_Samps(p,5,2,6,1,3,4,qbgXqg1,qbgXqg2,qbgXqg3) 
@@ -114,10 +104,6 @@ c      msqo=0d0
          call qqb_dm_gg_Samps(p,2,5,6,1,3,4,qbqXgg1,qbqXgg2,qbqXgg3)  
          fac=fac/4d0
          faclo=faclo/4d0
-         if(first) then 
-            first=.false.
-            call set_scalar_coups
-         endif
       elseif(dm_mediator.eq.'pseudo') then 
          call qqb_dm_gg_PSamps(p,1,2,6,5,3,4,qgXqbg1,qgXqbg2,qgXqbg3) 
          call qqb_dm_gg_PSamps(p,5,2,6,1,3,4,qbgXqg1,qbgXqg2,qbgXqg3) 
@@ -128,19 +114,10 @@ c      msqo=0d0
          call qqb_dm_gg_PSamps(p,2,5,6,1,3,4,qbqXgg1,qbqXgg2,qbqXgg3) 
          fac=fac/4d0
          faclo=faclo/4d0
-         if(first) then 
-            first = .false. 
-            call set_scalar_coups
-            call check_dmAxC
-         endif
-     
       endif
-
-
     
 !------- FOUR quark amplitudes 
-!----- order is qqbRRb for my amplitude
-    
+!----- order is qqbRRb for my amplitude    
       
 !-------- qRb-> qRb
       call qqb_dm_qqb(p,1,5,2,6,qRb_a,qRb_b) 

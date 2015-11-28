@@ -14,16 +14,16 @@ c---   appropriately and returned
       implicit none
       include 'constants.f'
       include 'mcfmplotinfo.f'
-      logical first(10)
       integer ip,n
       double precision p(mxpart,4),wt,wt2,var,pt,yrap
       character*4 tag
-      character*12 titley(10),titlept(10)
+      character*12 titley(12),titlept(12)
       character*6 cmom
-      data first/10*.true./
-      save first,titley,titlept
+      logical, save :: first(12)=.true.
+      save titley,titlept,cmom
+!$omp threadprivate(first,titley,titlept,cmom)      
       
-c--- on first call for each plot, set up strings      
+c--- on first call for each plot, set up strings
       if (first(ip)) then
 c--- convert integer to left-justified character string
         write(cmom,'(i6)') ip
@@ -73,15 +73,14 @@ c---   appropriately and returned
       implicit none
       include 'mcfmplotinfo.f'
       include 'constants.f'
-      logical first(10,10)
       integer mm,ip,jp,n
       double precision p(mxpart,4),wt,wt2,var,pttwo,yraptwo
       character*4 tag
       character*12 titley(10,10),titlept(10,10),titlem(10,10)
       character*6 cmom
-      data first/100*.true./
-      save first,titley,titlept,titlem
-
+      logical, save :: first(10,10)=.true.
+      save titley,titlept,titlem,cmom
+!$omp threadprivate(first,titley,titlept,titlem,cmom)
 c--- on first call for each plot, set up strings      
       if (first(ip,jp)) then
 c--- convert integer to left-justified character string
@@ -145,16 +144,16 @@ c---   appropriately and returned
       implicit none
       include 'constants.f'
       include 'mcfmplotinfo.f'
-      logical first(10,10,10)
       integer mm,ip,jp,kp,n
       double precision p(mxpart,4),wt,wt2,var,ptthree,yrapthree
       character*4 tag
       character*12 titley(10,10,10),titlept(10,10,10),titlem(10,10,10)
       character*6 cmom
-      data first/1000*.true./
-      save first,titley,titlept,titlem
+      logical, save :: first(10,10,10)=.true.
+      save titley,titlept,titlem,cmom
+!$omp threadprivate(first,titley,titlept,titlem,cmom)
 
-c--- on first call for each plot, set up strings      
+c---  on first call for each plot, set up strings      
       if (first(ip,jp,kp)) then
 c--- convert integer to left-justified character string
         write(cmom,'(i6)') mm
@@ -218,15 +217,15 @@ c---   appropriately and returned
       implicit none
       include 'constants.f'
       include 'mcfmplotinfo.f'
-      logical first(10,10,10,10)
       integer mm,ip,jp,kp,lp,n
       double precision p(mxpart,4),wt,wt2,var,ptfour,yrapfour
       character*4 tag
       character*12 titley(10,10,10,10),titlept(10,10,10,10)
      & ,titlem(10,10,10,10)
       character*6 cmom
-      data first/10000*.true./
-      save first,titley,titlept,titlem
+      logical, save :: first(10,10,10,10)=.true.
+      save titley,titlept,titlem,cmom
+!$omp threadprivate(first,titley,titlept,titlem,cmom)
 
 c--- on first call for each plot, set up strings      
       if (first(ip,jp,kp,lp)) then

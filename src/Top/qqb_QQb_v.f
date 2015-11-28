@@ -19,24 +19,16 @@
       include 'breit.f'
       integer j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),t1,ro
-      double precision qqsym,qqasy,ggsym
-      double precision ss,xm2,xlf,xmu,rmuom2
-      integer naem,nbeam1,nbeam2
-      common/para1/ss,xm2,xlf,xmu,rmuom2,naem,nbeam1,nbeam2
+      double precision qqsym,qqasy,ggsym,xm2
 
-      ss=s(1,2)
       xm2=mass2**2
-
-      xlf=dfloat(nflav)
-      xmu=scale
-      rmuom2=dlog(xmu**2/xm2)
-      naem=0
       ro=4d0*xm2/s(1,2)
       t1=-s(1,3)/s(1,2)                                                         
 
       call dotem(4,p,s)
       call virteval(t1,ro,qqsym,qqasy,ggsym)  
       
+      msq(:,:)=0d0
       do j=-nf,nf
       k=-j
       if     (j .eq. 0) then

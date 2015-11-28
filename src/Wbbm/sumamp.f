@@ -10,6 +10,7 @@ c--- the 6-character string "str" is only used as output when checking primitive
       double complex amp(-2:0)
       logical numcheck
       common/numcheck/numcheck
+!$omp threadprivate(/numcheck/)
 
 c--- multiply scalar integrals by coefficients
 c---  NB: only need sum over finite pieces, poles handled separately

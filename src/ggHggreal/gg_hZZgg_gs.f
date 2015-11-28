@@ -18,12 +18,11 @@
       include 'qqgg.f'
       include 'subdefs_gg_hgg.f'
       include 'nflav.f'
+      include 'bitflags.f'
       integer j,k,m,n,nd,i5,i6,i7
-      double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf),
+      double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf),nfactor,
      . sub2q3g_ii,sub2q3g_iffi,sub2q3g_if,sub2q3g_fi,sub2q3g_ff,
      . msq_ab,msq_ba,msq_sym,msqv_ab,msqv_ba,msqv_sym,subgg,subqq,subv 
-      double precision f0q,f2q,f4q,nfactor
-      common/bitflags/f0q,f2q,f4q
       parameter(i7=9,i6=8,i5=7)
       external gg_hZZgg,gg_hZZgg_gvec
 

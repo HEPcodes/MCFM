@@ -7,16 +7,15 @@ c--- in a common block
       include 'constants.f'
       include 'ZZclabels.f'
       include 'ZZdlabels.f'
-      logical first
+      include 'first.f'
       integer imt0,imt2,imt4,imp,ipp,h34,h56,j1,j2,j3,j4,j5,j6,
      & htag,ltag,itag
       double complex res(2,4,10,3),amp0,amp2,amp4
       character*(*) label
-      data first/.true./
-      save first
       parameter(imt0=1,imt2=2,imt4=3)
       parameter(ipp=1,imp=2)
       common/ggZZcaptureres/res
+!$omp threadprivate(/ggZZcaptureres/)
       
       if (first) then
         res(:,:,:,:)=czip

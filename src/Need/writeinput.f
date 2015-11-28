@@ -42,26 +42,25 @@ c--- by the strings 'lstring' and 'rstring'
       include 'anom_higgs.f'
       include 'vdecayid.f'
       include 'runstring.f'
+      include 'energy.f'
+      include 'nproc.f'
 c--- APPLgrid - flag using grid
-      include 'ptilde.f'
-      include 'APPLinclude.f'
+c      include 'ptilde.f'
+c      include 'APPLinclude.f'
 c--- APPLgrid - end
       character*(*) tag,lstring,rstring
       character*72 f94,f95,f96,f97,f98,f99
       logical dryrun,makecuts,writeall,spira
       integer unitno, nmin,nmax
-      integer nproc,ih1,ih2,itmx1,itmx2,ncall1,ncall2,origij
+      integer ih1,ih2,itmx1,itmx2,ncall1,ncall2,origij
       integer NPTYPE,NGROUP,NSET
-      double precision sqrts,rtsmin,Rcut
+      double precision rtsmin,Rcut
  
       common/spira/spira
       common/nmin/nmin
       common/nmax/nmax
       common/rtsmin/rtsmin
 
-
-      common/nproc/nproc
-      common/energy/sqrts
       common/density/ih1,ih2
       common/iterat/itmx1,ncall1,itmx2,ncall2
       common/dryrun/dryrun
@@ -111,9 +110,9 @@ c--- f99 floating point format
       if ((tag .eq. 'dswhisto') .or. (writeall)) then
       write(unitno,fmt=f98) dswhisto,'dswhisto'
       endif
-      if ((tag .eq. 'creategrid') .or. (writeall)) then
-      write(unitno,fmt=f98) creategrid,'creategrid'
-      endif
+c      if ((tag .eq. 'creategrid') .or. (writeall)) then
+c      write(unitno,fmt=f98) creategrid,'creategrid'
+c      endif
       if ((tag .eq. 'writetop') .or. (writeall)) then
       write(unitno,fmt=f98) writetop,'writetop'
       endif
@@ -273,6 +272,12 @@ c--- catch special scale choices for stop+b process
       endif
       if ((tag .eq. 'm56max') .or. (writeall)) then
       write(unitno,fmt=f99) dsqrt(bbsqmax),'m56max'
+      endif
+      if ((tag .eq. 'm3456min') .or. (writeall)) then
+      write(unitno,fmt=f99) m3456min,'m3456min'
+      endif
+      if ((tag .eq. 'm3456max') .or. (writeall)) then
+      write(unitno,fmt=f99) m3456max,'m3456max'
       endif
       if ((tag .eq. 'inclusive') .or. (writeall)) then
       write(unitno,fmt=f98) inclusive,'inclusive'

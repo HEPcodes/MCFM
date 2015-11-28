@@ -15,7 +15,7 @@ C-----Author: R.K.Ellis February 2013
      &     gg=0,bq=+5,cq=+4,sq=+3,uq=+2,dq=+1)
 
       msq(:,:)=0d0
-
+      ms(:,:,:,:)=0d0
 c      open(unit=66,file='madpoints.f',status='unknown')
 c      call writeformadgraph(p)
 c      write (*,*)
@@ -519,7 +519,6 @@ c      call madcheckm(ms)
       enddo
       enddo
       enddo
-
 
       return
       end

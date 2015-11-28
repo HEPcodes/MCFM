@@ -37,6 +37,9 @@
 *	data
 *
 	data locwrt /.FALSE./
+	save locwrt
+!$omp threadprivate(locwrt)
+
 *  #] declarations:
 *  #[ check input:
 	if ( ltest ) then
@@ -811,6 +814,7 @@
      +		+1,+1,+1,+1,+1, +1,+1,+1,+1,+1, +1,+1,+1,+1,+1,
      +		+1,+1,+1,+1,+1, +1,+1,+1,+1,+1, +1,+1,+1,-1,+1,
      +		+1,+1,+1,+1,+1, +1,+1,+1,+1,+1, +1,+1,+1,-1,-1/
+!$omp threadprivate(iplace,isigns)
 *
 *  #] declarations:
 *  #[ check input:
@@ -973,6 +977,8 @@
      +		 3, 7,10, 0,13,14,
      +		 4, 8,11,13, 0,15,
      +		 5, 9,12,14,15, 0/
+!$omp threadprivate(iplace,isigns,ij2k)
+
 *  #] declarations:
 *  #[ check input:
 	if ( ltest ) then

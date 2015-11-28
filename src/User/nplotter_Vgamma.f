@@ -20,20 +20,20 @@ c---                1  --> counterterm for real radiation
       include 'frag.f'
       include 'phot_dip.f'
       include 'outputflags.f'
+      include 'nqcdjets.f'
+      include 'nproc.f'
       double precision p(mxpart,4),wt,wt2
       double precision etarap,pt,r
       double precision y3,y4,y5,y6,pt3,pt4,pt5,pt6,re5,rea5,re6,rea6
-      double precision ylep, yjet, ptlep, ptjet,ptphot,yWgam,pt34,pttwo
+      double precision yWgam,pt34,pttwo
       double precision yraptwo,m34,m345,yellgam,dot
-      integer switch,n,nplotmax,nproc,nqcdjets,nqcdstart,nd 
+      integer switch,n,nplotmax,nd 
       character*4 tag
       integer j,ilep,igam,inu
-      logical first
+      logical, save::first=.true.
       common/nplotmax/nplotmax
-      common/nproc/nproc
-      common/nqcdjets/nqcdjets,nqcdstart
-      data first/.true./
-      save first
+ccccc!$omp threadprivate(first,/nplotmax/)
+
   
 ************************************************************************
 *                                                                      *
@@ -68,12 +68,6 @@ c--- the plotting range
         re6=1d3
         rea6=1d3
         jets=nqcdjets
-c--- (Upper) limits for the plots
-        ylep=5d0
-        yjet=5d0
-        ptlep=100d0
-        ptjet=200d0
-        ptphot=500d0
         goto 99
       else
 c--- Add event in histograms
@@ -93,7 +87,7 @@ c--- For nproc=300 plot e^+(4) and e^-(3)
       elseif(nproc .eq. 295) then 
          y3=etarap(3,p)
          pt3=pt(3,p)
-      elseif(nproc .eq. 300) then 
+      elseif(nproc .ge. 300) then 
          if(pt(3,p).gt.pt(4,p)) then 
             y3=etarap(3,p)
             pt3=pt(3,p)
@@ -111,20 +105,22 @@ c--- For nproc=300 plot e^+(4) and e^-(3)
       m34=dsqrt(max(2d0*dot(p,3,4),0d0))
       pt5=pt(5,p)
       y5=etarap(5,p)
+      re5=-1d0
+      rea5=-1d0
       if(nproc .eq. 290) then
          re5=R(p,4,5)
       elseif(nproc .eq. 295) then 
          re5=R(p,3,5)
-      elseif(nproc .eq. 300) then 
+      elseif((nproc .eq. 300) .or. (nproc .eq. 302)) then
          re5=R(p,3,5)
          rea5=R(p,4,5)
       endif
       
 !---- Radiation Zero plot for all processes 
       yWgam=y5-yraptwo(3,4,p) 
+      yellgam=1d8
       if(nproc.eq.290) then 
-         yellgam=y5-y4
-      
+         yellgam=y5-y4     
       elseif(nproc.eq.295) then 
          yellgam=y5-y3
       endif
@@ -132,11 +128,13 @@ c--- For nproc=300 plot e^+(4) and e^-(3)
       if(jets .gt. 0) then
          pt6=pt(6,p)
          y6=etarap(6,p)
+         re6=-1d0
+         rea6=-1d0
          if(nproc .eq. 290) then
             re6=R(p,4,6)
          elseif(nproc .eq. 295) then 
             re6=R(p,3,6)
-         elseif(nproc .eq. 300) then
+         elseif((nproc .eq. 300) .or. (nproc .eq. 302)) then
             re6=R(p,3,6)
             rea6=R(p,4,6)
          endif
@@ -148,8 +146,8 @@ c--- For nproc=300 plot e^+(4) and e^-(3)
       endif
 
 
-      if(nproc.ne.300) then 
-c---  transverse mass of (e-gam,nu) system for Wgamma     
+      if(nproc.lt.300) then 
+c---  transverse mass of (e-gam,nu) system for Wgamma
         if ((nproc .eq. 290) .or. (nproc .eq. 292)) then
           inu=3
           ilep=4
@@ -169,7 +167,7 @@ c---  transverse mass of (e-gam,nu) system for Wgamma
         enddo
         m345=dsqrt(max(m345,0d0)) 
 
-c---  invariant mass of (Z,gam) system for Zgamma     
+c---  invariant mass of (Z,gam) system for Zgamma
       else 
          m345=(p(3,4)+p(4,4)+p(5,4))**2
          do j=1,3
@@ -211,16 +209,16 @@ c---     xmax:  highest value to bin
 c---       dx:  bin width
 c---   llplot:  equal to "lin"/"log" for linear/log scale
 
-      if((nproc .eq. 290).or.(nproc.eq.300)) then
-         call bookplot(n,tag,'y4',y4,wt,wt2,-ylep,ylep,0.2d0,'lin')
+      if((nproc .eq. 290).or.(nproc.ge.300)) then
+         call bookplot(n,tag,'y4',y4,wt,wt2,-5d0,5d0,0.2d0,'lin')
          n=n+1
-         call bookplot(n,tag,'pt4',pt4,wt,wt2,0d0,ptlep,2d0,'lin')
+         call bookplot(n,tag,'pt4',pt4,wt,wt2,0d0,100d0,2d0,'lin')
          n=n+1
       endif
-      if((nproc.eq.295).or.(nproc.eq.300)) then           
-         call bookplot(n,tag,'y3',y3,wt,wt2,-ylep,ylep,0.2d0,'lin')
+      if((nproc.eq.295).or.(nproc.ge.300)) then
+         call bookplot(n,tag,'y3',y3,wt,wt2,-5d0,5d0,0.2d0,'lin')
          n=n+1
-         call bookplot(n,tag,'pt3',pt3,wt,wt2,0d0,ptlep,2d0,'lin')
+         call bookplot(n,tag,'pt3',pt3,wt,wt2,0d0,100d0,2d0,'lin')
          n=n+1
       endif
       call bookplot(n,tag,'boson invariant mass',
@@ -233,13 +231,13 @@ c---   llplot:  equal to "lin"/"log" for linear/log scale
       call bookplot(n,tag,'DeltaRea5',rea5,wt,wt2,0d0,5d0,0.1d0,'lin')
       n=n+1
       endif
-      call bookplot(n,tag,'pt34',pt34,wt,wt2,0d0,ptphot,10d0,'log')
+      call bookplot(n,tag,'pt34',pt34,wt,wt2,0d0,500d0,10d0,'log')
       n=n+1
-      call bookplot(n,tag,'y5',y5,wt,wt2,-yjet,yjet,0.2d0,'lin')
+      call bookplot(n,tag,'y5',y5,wt,wt2,-5d0,5d0,0.2d0,'lin')
       n=n+1
-      call bookplot(n,tag,'pt5',pt5,wt,wt2,0d0,ptphot,10d0,'log')
+      call bookplot(n,tag,'pt5',pt5,wt,wt2,0d0,500d0,10d0,'log')
       n=n+1
-      if(nproc.ne.300) then 
+      if(nproc.lt.300) then 
       call bookplot(n,tag,'transverse cluster mass, m(e-gam,nu)',
      & m345,wt,wt2,0d0,200d0,5d0,'lin')
       n=n+1
@@ -257,16 +255,16 @@ c---   llplot:  equal to "lin"/"log" for linear/log scale
       call bookplot(n,tag,'ydiff(Vgam)',yWgam,wt,wt2,-5d0,5d0,
      & 0.2d0,'lin')
       n=n+1      
-      call bookplot(n,tag,'pt6',pt6,wt,wt2,0d0,ptjet,2d0,'lin')
+      call bookplot(n,tag,'pt6',pt6,wt,wt2,0d0,200d0,2d0,'lin')
       n=n+1
-      call bookplot(n,tag,'y6',y6,wt,wt2,-yjet,yjet,0.2d0,'lin')
+      call bookplot(n,tag,'y6',y6,wt,wt2,-5d0,5d0,0.2d0,'lin')
       n=n+1
       call bookplot(n,tag,'DeltaRe6',re6,wt,wt2,0d0,5d0,0.1d0,'lin')
       n=n+1
-      if(nproc .eq. 300) then 
+c      if(nproc .lt. 305) then 
       call bookplot(n,tag,'DeltaRea6',rea6,wt,wt2,0d0,5d0,0.1d0,'lin')
       n=n+1
-      endif
+c      endif
 
   
 ************************************************************************

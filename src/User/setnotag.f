@@ -1,9 +1,8 @@
       subroutine setnotag()
       implicit none
       include 'removebr.f'
-      integer nproc,notag
-      common/nproc/nproc
-      common/notag/notag
+      include 'nproc.f'
+      include 'notag.f'
 c--- this routine sets the value of "notag", the number of jets
 c--- that may be safely ignored without affecting finiteness of result;
 c--- the minimum number of jets allowed by the code is equal to

@@ -85,6 +85,8 @@
      +		  2,4,0,0,
      +		  3,5,6,0/
 	data ii4 /5,6,7,8,9,10/
+!$omp threadprivate(inx43,sgn43,i2p,ii4)
+
 *
 *  #] declarations:
 *  #[ check input:

@@ -23,16 +23,14 @@ c---                1  --> counterterm for real radiation
       include 'phot_dip.f'
       include 'outputflags.f'
       double precision p(mxpart,4),wt,wt2
-      double precision yrap,pt,r
+      double precision yrap,pt,r,mjj
       double precision y3,y4,y5,pt3,pt4,pt5,r45,r35,r34,s34,m34
-      double precision yjet,ptphot,mjj
       integer switch,n,nplotmax
       character*4 tag
       integer nd
-      logical first
+      logical, save::first=.true.
       common/nplotmax/nplotmax
-      data first/.true./
-      save first
+ccccc!$omp threadprivate(first,/nplotmax/)
   
 ************************************************************************
 *                                                                      *
@@ -58,10 +56,6 @@ c--- the plotting range
         r45=1d3
         mjj=1d7 
         jets=2
-
-c--- (Upper) limits for the plots
-        yjet=3d0
-        ptphot=200d0
         goto 99
       else
 c--- Add event in histograms
@@ -151,11 +145,11 @@ c---     xmax:  highest value to bin
 c---       dx:  bin width
 c---   llplot:  equal to "lin"/"log" for linear/log scale   
        
-      call bookplot(n,tag,'pt_phot',pt3,wt,wt2,0d0,ptphot,5d0,'log')
+      call bookplot(n,tag,'pt_phot',pt3,wt,wt2,0d0,200d0,5d0,'log')
       n=n+1
       call bookplot(n,tag,'y_phot',y3,wt,wt2,-3d0,3d0,0.1d0,'lin')
       n=n+1
-      call bookplot(n,tag,'pt_j1',pt4,wt,wt2,0d0,ptphot,5d0,'log')
+      call bookplot(n,tag,'pt_j1',pt4,wt,wt2,0d0,200d0,5d0,'log')
       n=n+1 
       call bookplot(n,tag,'y_j1',y4,wt,wt2,-5d0,5d0,0.2d0,'lin')
       n=n+1  
@@ -166,9 +160,9 @@ c---   llplot:  equal to "lin"/"log" for linear/log scale
       call bookplot(n,tag,'m_gamj',m34,wt,wt2,0d0,300d0,20d0,'log')
       n=n+1
       if(jets.gt.1) then 
-      call bookplot(n,tag,'y_j2',y5,wt,wt2,-yjet,yjet,0.2d0,'lin')
+      call bookplot(n,tag,'y_j2',y5,wt,wt2,-3d0,3d0,0.2d0,'lin')
       n=n+1
-      call bookplot(n,tag,'pt_j2',pt5,wt,wt2,0d0,ptphot,2d0,'log')
+      call bookplot(n,tag,'pt_j2',pt5,wt,wt2,0d0,200d0,2d0,'log')
       n=n+1
       call bookplot(n,tag,'mjj',mjj,wt,wt2,0d0,150d0,5d0,'log')
       n=n+1

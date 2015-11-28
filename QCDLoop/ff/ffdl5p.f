@@ -182,6 +182,8 @@ c
      +		 7, 8, 9,10, 17, 13,14,15, 19,20/
 *
 *  #] data:
+!$omp threadprivate(i54)
+
 *  #[ check input:
 	if ( ltest ) then
 	    if ( inum.gt.6 .or. inum.lt.1 ) then

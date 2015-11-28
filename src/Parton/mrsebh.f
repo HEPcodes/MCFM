@@ -65,6 +65,8 @@ C :::::::::::: HARRIMAN MARTIN ROBERTS STIRLING (E) sea=ubar=dbar=2sbar at Q0**2
       DATA XMIN,XMAX,QSQMIN,QSQMAX/1.D-5,1.D0,5.D0,1310720.D0/
       DATA N0/2,5,4,5,0,0,5/
       DATA INIT/0/
+      save XX,F,XMIN,XMAX,QSQMIN,QSQMAX,N0,INIT
+!$omp threadprivate(XX,F,XMIN,XMAX,QSQMIN,QSQMAX,N0,INIT)
 
       xsave=x  ! don't let x be altered if it's out of range!!
 
@@ -89,6 +91,7 @@ C 1=UV 2=DV 3=GLUE 4=(UBAR+DBAR)/2 5=CBAR 7=BBAR 6=SBAR
       DO 40 I=1,7
       DO 40 M=1,19
   40  F(I,nx,M)=0.D0
+      close(unit=27)
   10  CONTINUE
       IF(X.LT.XMIN) X=XMIN
       IF(X.GT.XMAX) X=XMAX
@@ -147,6 +150,8 @@ C :::::::::::: HARRIMAN MARTIN ROBERTS STIRLING (B) sea=ubar=dbar=2sbar at Q0**2
       DATA XMIN,XMAX,QSQMIN,QSQMAX/1.D-5,1.D0,5.D0,1310720.D0/
       DATA N0/2,5,4,5,0,0,5/
       DATA INIT/0/
+      save XX,F,XMIN,XMAX,QSQMIN,QSQMAX,N0,INIT
+!$omp threadprivate(XX,F,XMIN,XMAX,QSQMIN,QSQMAX,N0,INIT)
 
 
       xsave=x
@@ -172,6 +177,7 @@ C 1=UV 2=DV 3=GLUE 4=(UBAR+DBAR)/2 5=CBAR 7=BBAR 6=SBAR
       DO 40 I=1,7
       DO 40 M=1,19
   40  F(I,nx,M)=0.D0
+      close(unit=28)
   10  CONTINUE
       IF(X.LT.XMIN) X=XMIN
       IF(X.GT.XMAX) X=XMAX

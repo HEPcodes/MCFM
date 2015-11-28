@@ -17,6 +17,8 @@ c--- Triangle (axial) pieces cancel for massless isodoublets
       include 'noglue.f'
       include 'anom_higgs.f' 
       include 'process.f'
+      include 'docheck.f'
+      include 'first.f'
       integer h1,h2,nu,i,j,k,om,del1,del2,k12h,k34h,k56h11,k34h11,e
       double precision p(mxpart,4),msq(fn:nf,fn:nf),msqgg,fac
       double precision mfsq,tau,tauinv,rt,pttwo,rescale
@@ -30,14 +32,13 @@ c--- Triangle (axial) pieces cancel for massless isodoublets
       double complex fvs,fvf,box(2,2,-2:0),triang(2,2,-2:0),
      & bub(2,2,-2:0)
       character*9 pp,pm
-      logical includegens1and2,includegen3,docheck,first,
+      logical includegens1and2,includegen3,
      & caseggWW4l,caseHWWHpI,caseHWWint
-      common/docheck/docheck
       parameter(pp='q+qb-g+g+',pm='q+qb-g+g-')
       parameter(del1=7,del2=8)
       parameter(k12h=9,k34h=10,k56h11=11,k34h11=12)
-      data first/.true./ 
-      save first,caseggWW4l,caseHWWHpI,caseHWWint
+      save caseggWW4l,caseHWWHpI,caseHWWint
+!$omp threadprivate(caseggWW4l,caseHWWHpI,caseHWWint)
 
 c--- set this to true to include generations 1 and 2 of (light) quarks
       includegens1and2=.true.      
@@ -70,7 +71,8 @@ c--- omit massless loops for pt(W) < "ptWsafetycut_massless" (for num. stability
         caseggWW4l=.false.
         caseHWWHpI=.false.
         caseHWWint=.false.
-        if (case .eq. 'ggWW4l') caseggWW4l=.true.
+        if ((case .eq. 'ggWW4l')
+     & .or. (case .eq. 'WWqqbr')) caseggWW4l=.true.
         if (case .eq. 'HWWH+i') caseHWWHpI=.true.
         if (case .eq. 'HWWint') caseHWWint=.true.
       endif
@@ -413,7 +415,6 @@ c--- overall factor from diagrams
       fac=fac/pmax**4
       
       msq(0,0)=msqgg*fac
-
       return
       end
       

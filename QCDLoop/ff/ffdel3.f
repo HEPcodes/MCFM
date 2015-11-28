@@ -49,6 +49,9 @@
      +		2,4,3,  2,3,6,  2,4,5,  2,6,4,
      +		2,5,6,  3,4,5,  3,6,4,  3,5,6/
 *  #] data:
+!$omp threadprivate(iperm,memind,memarr,inow)
+
+
 *  #[ starting point in memory?:
 *
 *	see if we know were to start, if not: go on as last time
@@ -201,6 +204,8 @@
      +		2,4,3,  2,3,6,  2,4,5,  2,6,4,
      +		2,5,6,  3,4,5,  3,6,4,  3,5,6/
 *  #] data:
+!$omp threadprivate(iperm,memind,memarr,inow)
+
 *  #[ test input:
 	if ( ltest ) then
 *	    print *,'ffdl3s: input: ii(,1) = ',(ii(i,1),i=1,6)

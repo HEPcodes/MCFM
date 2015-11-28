@@ -5,15 +5,14 @@ c- first label of fs,ft,fu, is gluon polarization, second is zdecay line
       include 'constants.f'
       include 'zprods_decl.f'
       include 'anomcoup.f'
+      include 'xanomcoup.f'
       include 'masses.f'
       include 'srdiags.f'
       integer j1,j2,j3,j4,j5,j6,j7,mplus,minus,jtype,j,k
       double complex A7treea,B7treea,B7treeb,A7b_1,A7b_2,A7b_3,A7b_4
       double complex f(10,2,2)
       double precision s127
-      common/xanomcoup/xdelg1_z,xdelg1_g,xlambda_g,xlambda_z,
-     . xdelk_g,xdelk_z
-      data minus,mplus/1,2/
+      parameter(minus=1,mplus=2)
 
 c----initialize to zero
 c--- added amplitude 10 on 4/25/2002, to include anomalous couplings

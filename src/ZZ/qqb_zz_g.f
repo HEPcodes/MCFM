@@ -13,10 +13,9 @@ c   for the moment --- radiation only from initial line
       include 'ewcharge.f'
       include 'srdiags.f'
       include 'interference.f'
-      integer j,k,jk,hq,h34,h56,hg,jp,kp,i4(2),i6(2),ii,nmax
-      integer jkswitch(-nf:nf)
+      include 'pchoice.f'
+      integer jk,hq,h34,h56,hg,jp,kp,ii,nmax
       double precision fac,fac1,q34,q56,s127
-      common/pchoice/j,k
       double precision P(mxpart,4),msq(-nf:nf,-nf:nf)
       double precision ave,v34(2),v56(2),rescale1,rescale2,oprat
       double complex aq12(2,2,2,2),aq34(2,2,2,2),aq56(2,2,2,2)
@@ -27,8 +26,9 @@ c   for the moment --- radiation only from initial line
       double complex qg12(2,2,2,2),qg34(2,2,2,2),qg56(2,2,2,2)
       double complex Uncrossed(-nf:nf,-nf:nf,2,2,2,2)
       double complex amp,prop34,prop56,prop127
-      data i4/4,6/,i6/6,4/,jkswitch/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      save i4,i6,jkswitch
+      integer,parameter::i4(2)=(/4,6/),i6(2)=(/6,4/),
+     & jkswitch(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
+
 
 C-set Uncrossed array to zero
       do jp=-nf,nf

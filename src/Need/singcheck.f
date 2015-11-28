@@ -17,18 +17,18 @@
       include 'process.f'
       include 'jetlabel.f'
       include 'noglue.f'
-      integer j,k,jj,kk,jmax,kmax,nd,nqcdjets,nqcdstart,icount,notag
+      include 'nqcdjets.f'
+      include 'incldip.f'
+      include 'notag.f'
+      integer j,k,jj,kk,jmax,kmax,nd,icount
       double precision p(mxpart,4),q(mxpart,4),pjet(mxpart,4),
      . msq(-nf:nf,-nf:nf),msqs(-nf:nf,-nf:nf),msqc(maxd,-nf:nf,-nf:nf),
      . s(mxpart,mxpart),rcut,debugsmall,debuglarge,xtoler,pttwo,
      . premsq(-nf:nf,-nf:nf),premsqs(-nf:nf,-nf:nf),smin,dot
       character*32 debugmsg
-      logical incldip(0:maxd),includedipole
+      logical includedipole
       external real_g,sub_gs
-      common/nqcdjets/nqcdjets,nqcdstart
       common/rcut/rcut
-      common/incldip/incldip
-      common/notag/notag
       data icount/0/
       save icount,premsq,premsqs
       

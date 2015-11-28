@@ -35,9 +35,6 @@ c--- Extended to include charm quark production via the variable "flav"
 
       integer isub
       common/isub/isub
-c      integer jj(-nf:nf),kk(-nf:nf),isub
-c      data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-c      data kk/-1,-2,-1,-2,-1,0,1,2,1,2,1/
 
       do j=-nf,nf
       do k=-nf,nf

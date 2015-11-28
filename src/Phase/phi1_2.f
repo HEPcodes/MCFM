@@ -16,17 +16,18 @@ c     delta(p2^2-s2) delta(p3^2-s3)
       include 'breit.f'
       include 'limits.f'
       include 'dm_params.f' 
+      include 'first.f' 
       double precision p1(4),p2(4),p3(4),p3cm(4)
       double precision x1,x2,x3,x4,costh,sinth,phi,cphi,sphi
-      double precision wt,wt0,w2,w3
+      double precision wt,w2,w3
       double precision s2max,s2min,s3max,s3min
       double precision m1,m2,s1,s2,s3,lambda
+      double precision,parameter::wt0=one/8d0/pi
       integer j
-      logical first,oldzerowidth
+      logical oldzerowidth
       common/lambda/lambda,s1,s2,s3
-      parameter(wt0=one/8d0/pi)
-      data first/.true./
-      save first
+!$omp threadprivate(/lambda/)
+
       if (verbose) then
       if(first) then
 c      if (n2 .eq. 1) write(6,*) 'generating phase space with bw,n2=',n2

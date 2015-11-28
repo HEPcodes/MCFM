@@ -45,6 +45,7 @@
 	logical luvw(3)
 	DOUBLE PRECISION absc,absr,xpi(13),xmax,sprec
 	DOUBLE COMPLEX cpipj(10,13)
+
 	save init
 *
 *	common blocks:
@@ -60,6 +61,8 @@
 *
 	data init /0/
 *  #] declarations:
+!$omp threadprivate(init)
+
 *  #[ the real case:
 *
 	if ( nschem.ge.2 ) then
@@ -171,6 +174,7 @@
 	logical ldone
 	DOUBLE PRECISION xpi(13),dpipj(10,13),sprec,absc
 	DOUBLE COMPLEX cc
+
 	save initlo
 *
 *	common blocks
@@ -184,7 +188,9 @@
 *	data
 *
 	data initlo /0/
+!$omp threadprivate(initlo)
 *  #] declarations:
+
 *  #[ check input:
 	if ( ltest ) then
 	    ier0 = 0
@@ -337,6 +343,8 @@
      +	0,4,0,2,4,0,0,1,0,0,0,0,2,1,0,0,0,3,2,0,3,0,1,0,2,1,0,0,0,0,0,0/
 *
 *  #] declarations:
+!$omp threadprivate(notij,notijk)
+
 *  #[ D0:
 *
 	if ( lwrite ) print *,'ffcd0c: calling ffxd0b'

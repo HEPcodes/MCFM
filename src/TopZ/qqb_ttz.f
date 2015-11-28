@@ -29,9 +29,7 @@
       double precision facqqb,facgg,denu,denb,denq1,denq2,dena1,dena2
       double precision p1Du,p2Du,p1Db,p2Db,p4Dq,p7Da,denz1,denz2
       double complex propz
-      integer jj(-nf:nf)
-      data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      save jj
+      integer,parameter::jj(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
       
 c      write(6,*) 'mt',mt,twidth,wmass,wwidth,zmass,zwidth
 c      write(6,*) 'Enter scalefac**2'

@@ -10,3 +10,4 @@ c--- 1) Only leading colour ( NCF . 1 )
 c--- 2) Only sub-leading ( NCF . 1/N ) [Identical quarks only]
 c--- 0) The total
       common/ColC/colourchoice
+!$omp threadprivate(/ColC/)

@@ -9,6 +9,8 @@
       character*3 llplot
       character*4 tag
       double precision var,wt,wt2,xmin,xmax,dx
+      logical, save :: threadfirst(500)=.true.
+!$omp threadprivate(threadfirst)
 
       if     (tag .eq. 'book') then
         if (dswhisto .eqv. .false.) then
@@ -19,7 +21,8 @@ c--- also book the errors now (in maxhisto+n,2*maxhisto+n)
           call mbook(2*maxhisto+n,titlex,dx,xmin,xmax)
           if ( (part .eq. 'real') .or. (part .eq. 'tota')
      &     .or.(part .eq. 'todk')) then
-            call mbook(3*maxhisto+n,titlex,dx,xmin,xmax)
+c            call tmpmbook(n,titlex,dx,xmin,xmax)
+            call smartbook(n,titlex,dx,xmin,xmax)
         endif
         else
 c--- DSW histograms - call hbook booking routine
@@ -32,9 +35,15 @@ c--- also book the errors now (in maxhisto+n); fill temp histos for real
           if ((part .eq. 'lord') .or. (part .eq. 'virt')
      &   .or. (part .eq. 'frag')) then
             call mfill(n,var,wt)
-          call mfill(maxhisto+n,var,wt2)
-        else
-          call mfill(3*maxhisto+n,var,wt)
+            call mfill(maxhisto+n,var,wt2)
+          else
+            if (threadfirst(n)) then
+c              call tmpmbook(n,titlex,dx,xmin,xmax)
+              call smartbook(n,titlex,dx,xmin,xmax)
+              threadfirst(n)=.false.
+            endif
+c            call tmpmfill(n,var,wt)
+            call smartfill(n,var,wt)
         endif
         else
 c--- DSW histograms - call hbook filling routine

@@ -14,6 +14,7 @@ c--- (unrenormalized) results in the EGZ paper
       include 'scheme.f'
       logical CheckEGZ
       common/CheckEGZ/CheckEGZ
+!$omp threadprivate(/CheckEGZ/)
 
       if (CheckEGZ) then
         H4prenorm=0d0

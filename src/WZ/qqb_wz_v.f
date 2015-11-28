@@ -21,6 +21,7 @@ c---  averaged(summed) over initial(final) colours and spins
       include 'zerowidth.f'
       include 'ewcharge.f'
       include 'anomcoup.f'
+      include 'xanomcoup.f'
       include 'srdiags.f'
       include 'nwz.f'
       include 'plabel.f'
@@ -49,7 +50,6 @@ c      double complex Fa561243,Fa562143
       double precision v2(2),cl1,cl2,en1,en2,xfac
       double complex ZgL(1:nf),ZgR(1:nf)
       parameter(ave=0.25d0/xn)
-      data cl1,cl2,en1,en2/4*1d0/
 
       scheme='dred'
       FAC=-2D0*gwsq*esq

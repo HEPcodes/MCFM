@@ -15,7 +15,8 @@ c     u(-q1)+b(-q2)->e-(q3)+e+(q4)+t(->nu(q5) l+(q6) b(q7)) +d(q8)
       include 'TRbadpoint.f'
       include 'TRtensorcontrol.f'
       include 'tensorinfo.f'
-      integer nu,icross,i1(4),i2(4),i8(4),u_b,b_u,db_b,b_db
+      include 'first.f'
+      integer nu,icross,u_b,b_u,db_b,b_db
       integer origitotal,origibadpoint,origipolesfailed
       double precision p(mxpart,4),msq(-nf:nf,-nf:nf),fac,
      & virt(4),q(mxpart,4)
@@ -25,13 +26,11 @@ c     u(-q1)+b(-q2)->e-(q3)+e+(q4)+t(->nu(q5) l+(q6) b(q7)) +d(q8)
      & vtot(2,-2:0),vtotep(2),upper_tri(2,-2:0), lower_tri(2,-2:0),
      &  lotot(2),lotot1(2,2)
       integer j3,h3,h5
-      logical first,failed
+      logical failed
       parameter(u_b=1,b_u=2,db_b=3,b_db=4)
-      data first/.true./
-      data i1/1,2,8,8/
-      data i2/2,1,2,1/
-      data i8/8,8,1,2/
-      save first
+      integer,parameter:: i1(4)=(/1,2,8,8/)
+      integer,parameter:: i2(4)=(/2,1,2,1/)
+      integer,parameter:: i8(4)=(/8,8,1,2/)
       integer p3,p4,k5,e5,p6,eta
       parameter(p3=3,p4=4,k5=5,e5=6,p6=7,eta=6)
       double complex mdecaymb(2,2),mdecay

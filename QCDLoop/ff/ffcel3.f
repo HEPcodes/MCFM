@@ -54,6 +54,8 @@
      +		2,4,3,  2,3,6,  2,4,5,  2,6,4,
      +		2,5,6,  3,4,5,  3,6,4,  3,5,6/
 *  #] data:
+!$omp threadprivate(iperm,memind,memarr,inow)
+
 *  #[ check input:
 	if ( ltest .and. ns .ne. 6 ) then
 	    print *,'ffcel3: error: only for ns = 6, not ',ns
@@ -220,6 +222,8 @@
      +		2,4,3,  2,3,6,  2,4,5,  2,6,4,
      +		2,5,6,  3,4,5,  3,6,4,  3,5,6/
 *  #] data:
+!$omp threadprivate(iperm,memind,memarr,inow)
+
 *  #[ test input:
 	if ( ltest ) then
 	    if ( lwrite ) then

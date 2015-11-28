@@ -22,6 +22,7 @@
       include 'b0.f'
       include 'heavyflav.f'
       include 'nflav.f'
+      include 'first.f'
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),
      . p(mxpart,4),q_bdkw(mxpart,4),faclo,subuv,scalesq,
      . fac,v2(2),vQ(nf,2),mmsq(2,2),pswap(mxpart,4)
@@ -32,9 +33,7 @@
      . a61z_423156(2,2,2),a61z_241356(2,2,2),
      . mmsq_vec(2,2),mmsq_ax(2,2),vcouple(2)
       integer nu,j,k,polq,polb,polz
-      logical first
-      data first/.true./
-      save first,scalesq
+      save scalesq
 
       scheme='dred'
 

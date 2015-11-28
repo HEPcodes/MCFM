@@ -37,3 +37,6 @@
 	common /ffcdot/ cfpij2,cfpij3,cfpij4,cfpij5,cfpij6
 	common /ffcdel/ cfdl4s
 	common /ffsmug/ lsmug,lnasty,idum93,cmipj,c2sisj,ca1
+
+!$omp threadprivate(/ffsign/,/ffprec/,/ffflag/,/ffcnst/,/ffrota/,
+!$omp&              /ffdot/,/ffdel/,/ffcdot/,/ffcdel/,/ffsmug/)

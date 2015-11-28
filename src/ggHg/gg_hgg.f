@@ -105,7 +105,7 @@ C-qbq
       do j=-nf,nf
       do k=-nf,nf
       msq(j,k)=0d0
-      msq_struc(iqr,j,k)=0d0
+      msq_struc(:,j,k)=0d0
 
       if ((j.gt.0).and.(k.gt.0)) then 
         if (j.eq.k) then

@@ -46,7 +46,6 @@ C     THIS IS THE NEW  "Aprime" FIT -- Feb 1995 -- standard Q^2 range
       parameter(ntenth=21)
       DIMENSION F(8,NX,20),G(8),XX(NX),N0(8)
       character*72 filename,checkpath
-      save F
       DATA XX/1.d-5,2.d-5,4.d-5,6.d-5,8.d-5,
      .        1.D-4,2.D-4,4.D-4,6.D-4,8.D-4,
      .        1.D-3,2.D-3,4.D-3,6.D-3,8.D-3,
@@ -58,6 +57,8 @@ C     THIS IS THE NEW  "Aprime" FIT -- Feb 1995 -- standard Q^2 range
       DATA XMIN,XMAX,QSQMIN,QSQMAX/1.D-5,1.D0,5.D0,1310720.D0/
       DATA N0/2,5,5,9,0,0,9,9/
       DATA INIT/0/
+      save XX,F,XMIN,XMAX,QSQMIN,QSQMAX,N0,INIT
+!$omp threadprivate(XX,F,XMIN,XMAX,QSQMIN,QSQMAX,N0,INIT)
  
  
       xsave=x
@@ -85,6 +86,7 @@ C 1=UV 2=DV 3=GLUE 4=UBAR 5=CBAR 7=BBAR 6=SBAR 8=DBAR
       DO 40 I=1,8
       DO 40 M=1,19
   40  F(I,nx,M)=0.D0
+      close(unit=20)
   10  CONTINUE
       IF(X.LT.XMIN) X=XMIN
       IF(X.GT.XMAX) X=XMAX
@@ -133,7 +135,6 @@ C     THIS IS THE NEW  "G" FIT -- Feb 1995 -- standard Q^2 range
       parameter(ntenth=21)
       DIMENSION F(8,NX,20),G(8),XX(NX),N0(8)
       character*72 filename,checkpath
-      save F
       DATA XX/1.d-5,2.d-5,4.d-5,6.d-5,8.d-5,
      .        1.D-4,2.D-4,4.D-4,6.D-4,8.D-4,
      .        1.D-3,2.D-3,4.D-3,6.D-3,8.D-3,
@@ -145,6 +146,8 @@ C     THIS IS THE NEW  "G" FIT -- Feb 1995 -- standard Q^2 range
       DATA XMIN,XMAX,QSQMIN,QSQMAX/1.D-5,1.D0,5.D0,1310720.D0/
       DATA N0/2,5,5,9,0,0,9,9/
       DATA INIT/0/
+      save XX,F,XMIN,XMAX,QSQMIN,QSQMAX,N0,INIT
+!$omp threadprivate(XX,F,XMIN,XMAX,QSQMIN,QSQMAX,N0,INIT)
  
  
       xsave=x
@@ -172,6 +175,7 @@ C 1=UV 2=DV 3=GLUE 4=UBAR 5=CBAR 7=BBAR 6=SBAR 8=DBAR
       DO 40 I=1,8
       DO 40 M=1,19
   40  F(I,nx,M)=0.D0
+      close(unit=21)
   10  CONTINUE
       IF(X.LT.XMIN) X=XMIN
       IF(X.GT.XMAX) X=XMAX

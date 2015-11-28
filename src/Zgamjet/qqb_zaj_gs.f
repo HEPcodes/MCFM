@@ -314,15 +314,14 @@ c--- output:msq_swap (array of matrix elements after 4<->5 swap)
       include 'constants.f'
       include 'ptilde.f'
       include 'z_dip.f'
+      include 'incldip.f'
       integer nd
-      logical incldip(0:maxd)
       double precision pdip(mxpart,4),msq_swap(-nf:nf,-nf:nf)
       double precision msq_x_swap(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf)
       double precision mqq(0:2,fn:nf,fn:nf),msq0,msq1,msq2
       double precision msqx(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf)
       double precision msqx_cs(0:2,-nf:nf,-nf:nf)
       double precision msqd1(0:2,-nf:nf,-nf:nf),msqd2(0:2,-nf:nf,-nf:nf) 
-      common/incldip/incldip
       
       if (incldip(nd)) then
         call getptilde(nd,pdip)

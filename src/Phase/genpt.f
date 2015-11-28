@@ -7,8 +7,8 @@ c---    exact=false: generate down to pt=0 with a shape determined by ptmin
 c---
 c--- returns: pt and xjac, the Jacobian of the transformation from pt dpt to dxr
       logical exact
-      double precision xr,ptmin,pt,xjac,hmin,hmax,sqrts,h,delh,ptmax
-      common/energy/sqrts
+      double precision xr,ptmin,pt,xjac,hmin,hmax,h,delh,ptmax
+      include 'energy.f'
 
       ptmax=sqrts/2d0
 

@@ -22,7 +22,7 @@ C     ehsv:EqnA.10
       include 'masses.f'
       double precision hmass2,s,t,u
       double complex w2,w3
-      hmass2=hmass**2
+      hmass2=s+t+u
 c--- The Fermilab preprint has w2(s), but it makes no difference due
 c--- to symmetrization in ehsva4 above      
       ehsvb4=mbsq/hmass2*(-2d0/3d0
@@ -36,7 +36,7 @@ C     ehsv:EqnA.11
       include 'masses.f'
       double precision hmass2,s,t,u
       double complex w1,w2,w3
-      hmass2=hmass**2
+      hmass2=s+t+u
       ehsvb2=mbsq/hmass2**2*(s*(u-s)/(s+u)
      . +2d0*u*t*(u+2d0*s)/(s+u)**2*(w1(t)-w1(hmass2))
      . +(mbsq-0.25d0*s)
@@ -53,7 +53,7 @@ C     ehsv:EqnA.14
       include 'masses.f'
       double precision hmass2,s,t,u
       double complex w1,w2
-      hmass2=hmass**2
+      hmass2=s+t+u
       ehsva5=mbsq/hmass2*(4d0+4d0*s/(u+t)*(w1(s)-w1(hmass2))
      . +(1d0-4d0*mbsq/(u+t))*(w2(s)-w2(hmass2)))
       return 

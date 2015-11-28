@@ -7,12 +7,13 @@
       include 'ewcharge.f'
       include 'couple.f'
       include 'part.f'
+      include 'first.f'
       double complex Iw,Iq,Ftriangle
       double precision prefac,mh
       double precision x_t,x_b,x_w,x,mt_eff,mb_eff,massfrun
-      logical first
-      data first/.true./
-      save first,mt_eff
+      save mt_eff,mb_eff
+!$omp threadprivate(mt_eff,mb_eff)
+
 C---statement functions
       Iq(x)=dcmplx(4d0*x)*(ctwo+dcmplx(4d0*x-1d0)*Ftriangle(x))
       Iw(x)=-ctwo*(dcmplx(6d0*x+1d0)
@@ -42,6 +43,7 @@ c---maybe it would be better to add esq at a higher scale.
       x_w=(wmass/mh)**2
       msqgamgam=prefac
      & *abs(xn*(Q(1)**2*Iq(x_b)+Q(2)**2*Iq(x_t))+Iw(x_w))**2
+
       return
       end
 

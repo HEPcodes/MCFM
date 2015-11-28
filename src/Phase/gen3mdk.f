@@ -58,6 +58,7 @@ c--- put vectors in their proper places
       return
       
   999 continue
+      pswt=0d0
       return 1    
       
       end

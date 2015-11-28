@@ -1,11 +1,12 @@
-      double precision up(4,4),dn(4,4)
-      data up/-1d0, 0d0, 0d0, 0d0,
+      double precision,parameter:: 
+     & up(4,4)=reshape((
+     &        /-1d0, 0d0, 0d0, 0d0,
      &         0d0,-1d0, 0d0, 0d0,
      &         0d0, 0d0,-1d0, 0d0,
-     &         0d0, 0d0, 0d0,+1d0/
-      data dn/+1d0, 0d0, 0d0, 0d0,
+     &         0d0, 0d0, 0d0,+1d0/),(/4,4/)),
+     & dn(4,4)=reshape((
+     &       /+1d0, 0d0, 0d0, 0d0,
      &         0d0,+1d0, 0d0, 0d0,
      &         0d0, 0d0,+1d0, 0d0,
-     &         0d0, 0d0, 0d0,+1d0/
-      save up,dn
+     &         0d0, 0d0, 0d0,+1d0/),(/4,4/))
 

@@ -18,6 +18,7 @@ c---                1  --> counterterm for real radiation
       include 'histo.f'
       include 'jetlabel.f'
       include 'outputflags.f'
+      include 'nproc.f'
       integer ilept,inu,ibq,iba,ilt
       double precision p(mxpart,4),wt,wt2
       double precision yrap,pt,r,yraptwo,pttwo
@@ -25,13 +26,12 @@ c---                1  --> counterterm for real radiation
      & ylt,ptlt,yj1,ptj1,yj2,ptj2,ybmax,yj3,ptj3,mbb,mjj,Rjl
      & ,dphibqnu,dphibanu,r2,binedges(30),tag2b
       double precision etaw, etabq, etaba, etaraptwo
-      integer switch,n,nplotmax,nproc
+      integer switch,n,nplotmax
       character*4 tag
-      logical first
       common/nplotmax/nplotmax
-      common/nproc/nproc
-      data first/.true./
-      save first
+      logical, save::first=.true.
+ccccc!$omp threadprivate(first,/nplotmax/)
+
   
 ************************************************************************
 *                                                                      *

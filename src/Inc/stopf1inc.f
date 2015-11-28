@@ -8,6 +8,6 @@
      &,tr3c00fs,tr3c001fs,tr3c002fs,tr3Xs,tr3s00ft,tr3s001ft
      &,tr3s002ft,tr4Xc,tr4Xs,tr5Xc,tr5Xs,B0csf,B0cgsf
      &,lRc1,lRc2,lRs1,lRs2,lRcs,BfunX
-
+!$omp threadprivate(/stopf1inc/)
       include 'sck.f'
 

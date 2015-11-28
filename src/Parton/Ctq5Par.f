@@ -750,6 +750,8 @@ c ---------------------------------------------------------------------
       data (am( 6,k,-5),k=0, 2)
      & / -0.1327377E+02,  0.1201754E+02, -0.6277844E+01 /
 
+      save am,alfvec,qmavec,mexvec,mlfvec,ut1vec,ut2vec,af
+!$omp threadprivate(am,alfvec,qmavec,mexvec,mlfvec,ut1vec,ut2vec,af)
       if(q .le. qmavec(ifl)) then
          faux5L = 0.d0
          return

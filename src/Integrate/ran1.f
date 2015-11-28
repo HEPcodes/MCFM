@@ -70,11 +70,11 @@ C--- Version where idum is passed via common block
       iv(j)=idum
       ran2=min(AM*dble(iy),RNMX)
 
-c      write(6,*) 'idum',idum
-c      write(6,*) 'AM=',AM
-c      write(6,*) 'iy=',iy
-c      write(6,*) 'AM*dble(iy)',AM*dble(iy)
-c      write(6,*) 'ran2',ran2
+!       write(6,*) 'idum',idum
+!       write(6,*) 'AM=',AM
+!       write(6,*) 'iy=',iy
+!       write(6,*) 'AM*dble(iy)',AM*dble(iy)
+!      write(6,*) 'ran2',ran2
 
       return
       END

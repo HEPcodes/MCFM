@@ -42,8 +42,11 @@
 *
 	absc(cc) = abs(DBLE(cc)) + abs(DIMAG(cc))
 *  #] declarations: 
+!$omp threadprivate(xprec,bdn02,bdn05,bdn10,bdn15,bdn20)
+
 *  #[ initialisations:
 	data xprec /-1./
+
 	if ( xprec .ne. precc ) then
 	    xprec = precc
 	    bdn02 = ffbnd(1,2,bf)
@@ -172,8 +175,11 @@
 *
 	absc(c) = abs(DBLE(c)) + abs(DIMAG(c))
 *  #] declarations: 
+!$omp threadprivate(xprec,bdn02,bdn05,bdn10,bdn15,bdn20)
+
 *  #[ initialisations:
 	data xprec /-1./
+
 	if ( xprec .ne. precc ) then
 	    xprec = precc
 	    bdn02 = ffbnd(1,2,bf)
@@ -422,8 +428,11 @@
 	include 'ff.h'
 	absc(c) = abs(DBLE(c)) + abs(DIMAG(c))
 *  #] declarations: 
+!$omp threadprivate(xprec,bdn01,bdn05,bdn10,bdn15,bdn19)
+
 *  #[ initialisations:
 	data xprec /-1./
+
 	if ( precc .ne. xprec ) then
 	    xprec = precc
 *	    determine the boundaries for 1,5,10,15 terms
@@ -488,6 +497,8 @@
 *  #] declarations: 
 *  #[ initialisation:
 	data xprec /-1./
+!$omp threadprivate(xprec,bdn01,bdn05,bdn10,bdn15,bdn18)
+
 	if ( xprec .ne. precc ) then
 	    xprec = precx
 	    precx = precc
@@ -560,6 +571,8 @@
 *  #] declarations: 
 *  #[ initialisation:
 	data xprec /-1./
+!$omp threadprivate(xprec,bdn01,bdn05,bdn10,bdn15)
+
 	if ( xprec .ne. precx ) then
 	    xprec = precx
 	    precx = precc
@@ -634,6 +647,8 @@
 *	common blocks
 *
 *  #] declarations: 
+!$omp threadprivate(c1,c2)
+
 *  #[ data:
 *
 	data c1(1) / 0.2500000000000000 /

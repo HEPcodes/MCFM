@@ -1,11 +1,10 @@
       subroutine TRsettensorcontrol(a)
       implicit none
-      logical first
       integer a
+      logical,save:: first=.true.
+!$omp threadprivate(first)
       include 'TRtensorcontrol.f'
-      data first/.true./
-      save first
-c--- This routine sets the value of the integrer (TRtensorcontrol)
+c--- This routine sets the value of the integer (TRtensorcontrol)
 c--- that determines how the tensor integrals are calculated
 
 c--- a = 1 :   OV reduction, followed by PV reduction if necessary

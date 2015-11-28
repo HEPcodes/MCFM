@@ -10,6 +10,7 @@
         pjet(i,j)=ptildejet(nd,i,j)
         enddo
       enddo
+      pjet(npart+3,:)=0d0   ! ensure next entry is zero
       
       return
       end

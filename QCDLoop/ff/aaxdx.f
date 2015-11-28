@@ -110,6 +110,8 @@
      +		   1,2,3,5,6,9/
 *
 *  #] declarations :
+!$omp threadprivate(iinx)
+
 *  #[ initialisations:
 *
 *	initialize to something ridiculous so that one immediately
@@ -238,6 +240,7 @@
 	DOUBLE COMPLEX cd4pppp(3,3,3,3),cd4ppdel(3,3),cd4deldel,
      +		cd3ppp(3,3,3),cd3pdel(3),cd2pp(3,3),cd2del,
      +		cb0ij(4,4),ca0i(4),cd2(7)
+
 	save iinx,bij
 *
 *	common blocks
@@ -252,12 +255,14 @@
      +		   1,2,4,5,10,8,
      +		   1,2,3,5,6,9/
 	data bij /1,2,5,6,9,10,17,18,21,22,33,34/
+!omp threadprivate(iinx,bij)
 *
 *	statement function
 *
 	absc(cc) = abs(DBLE(cc)) + abs(DIMAG(cc))
 *
 *  #] declarations :
+
 *  #[ kinematical quantities for 4pv-red :
 *	if ( abs(fdel3)  .lt. 1.d-6 ) then
 *	    print *,'kinematical det = 0, PV-scheme breaks down'
@@ -927,6 +932,7 @@
 *	local variables
 *
 	integer i,j,k,bij(12),beq(6,2)
+
 	save bij,beq
 *
 *	common
@@ -939,6 +945,7 @@
 	data bij /1,2,5,6,9,10,17,18,21,22,33,34/
 	data beq / 0, 4, 8,16,20,32,
      +		  12,24,36,28,40,44/
+!$omp threadprivate(bij,beq)
 *
 *  #] declarations:
 *  #[ renumber:

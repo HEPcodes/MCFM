@@ -7,13 +7,13 @@
       include 'ewcharge.f'
       include 'couple.f'
       include 'part.f'
+      include 'first.f'
       integer j,k
       double complex Iw,Iq,Ftriangle
       double precision p(mxpart,4),prefac,mh,hdecay
       double precision x_t,x_b,x_w,x,mt_eff,mb_eff,massfrun
-      logical first
-      data first/.true./
-      save first,mt_eff,mb_eff
+      save mt_eff,mb_eff
+!$threadprivate(mt_eff,mb_eff)
 C---statement functions
       Iq(x)=dcmplx(4d0*x)*(ctwo+dcmplx(4d0*x-1d0)*Ftriangle(x))
       Iw(x)=-ctwo*(dcmplx(6d0*x+1d0)

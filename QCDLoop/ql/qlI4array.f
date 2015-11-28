@@ -8,6 +8,7 @@
       parameter(Npt=10)
       data xpio/13*0d0/
       save Ival,xpio,musqo
+!$omp threadprivate(Ival,xpio,musqo)
 
 C--If we have already calculated this qlI4, use the saved value
 C--else setup the arrays

@@ -19,23 +19,22 @@ c---                1  --> counterterm for real radiation
       include 'jetlabel.f'
       include 'masses.f'
       include 'outputflags.f'
+      include 'nqcdjets.f'
       double precision p(mxpart,4),wt,wt2
       double precision etarap,pt
       double precision y4,y5,pt3,pt4,pt5,pt6
       double precision pt34,pttwo
       double precision pt45,pt56,m45,mt45,mtrans,Etll,MET
       double precision etvec(4),etmiss,r2,delphi,m34,m56,m3456
-      integer switch,n,nplotmax,nqcdjets,nqcdstart,nd 
+      double precision mthl,mthu
+      integer switch,n,nplotmax,nd 
       character*4 tag
       integer i
-      logical first
+      logical, save::first=.true.
       common/nplotmax/nplotmax
-      common/nqcdjets/nqcdjets,nqcdstart
-      data first/.true./
-      save first
-      double precision mthl,mthu
+ccccc!$omp threadprivate(first,/nplotmax/,y4,pt3,pt4,y5)
 
-!===== info for "peak" transverse mass plot
+!=====info for "peak" transverse mass plot
       mthu=hmass*1d0
       mthl=0.75d0*hmass
       
@@ -64,7 +63,7 @@ c---Intiailise photon
         pt56=1d7
 c----Initialise jet values will not pass cuts in there is an NLO jet
         pt6=1d7
-         jets=nqcdjets
+        jets=nqcdjets
         goto 99
       else
 c--- Add event in histograms
@@ -79,8 +78,6 @@ c--- Add event in histograms
 
 !     121 '  f(p1)+f(p2) --> H(--> W^+(nu(p3)+e^+(p4)) + W^-(e^-(p5)+nu~(p6))) [top, bottom loops, exact]' 'L'
 !     122 '  f(p1)+f(p2) --> H(--> W^+(nu(p3)+e^+(p4)) + W^-(e^-(p5)+nu~(p6))) [above + interf. with gg->WW]' 'L'
-
-
       
          pt3=pt(3,p)
          pt4=pt(4,p) 
@@ -97,39 +94,27 @@ c--- Add event in histograms
          if (r2 .lt. -0.9999999D0) r2=-1D0
          delphi=dacos(r2)
 !--- mll cut 
-         m45=0d0
-      do i=1,4
-         if(i.ne.4) then 
-            m45=m45-(p(4,i)+p(5,i))**2
-         else
-            m45=m45+(p(4,i)+p(5,i))**2 
-         endif
-      enddo
-      m45=dsqrt(m45)
-      m3456=0d0
-      do i=1,4
-         if(i.ne.4) then 
-            m34=m34-(p(3,i)+p(4,i))**2
-            m3456=m3456-(p(3,i)+p(4,i)+p(5,i)+p(6,i))**2
-         else
-            m34=m34+(p(4,i)+p(3,i))**2 
-            m3456=m3456+(p(3,i)+p(4,i)+p(5,i)+p(6,i))**2
-         endif
-      enddo
-      m34=dsqrt(m34)
-      m3456=dsqrt(m3456)
-       do i=1,4
-         if(i.ne.4) then 
-            m56=m56-(p(5,i)+p(6,i))**2
-         else
-            m56=m56+(p(5,i)+p(6,i))**2 
-         endif
-      enddo
-      m56=dsqrt(m56)
+         m45=(p(4,4)+p(5,4))**2 
+         do i=1,3
+           m45=m45-(p(4,i)+p(5,i))**2
+         enddo
+         m45=dsqrt(m45)
+         m34=(p(3,4)+p(4,4))**2 
+         m3456=(p(3,4)+p(4,4)+p(5,4)+p(6,4))**2
+         do i=1,3
+           m34=m34-(p(3,i)+p(4,i))**2
+           m3456=m3456-(p(3,i)+p(4,i)+p(5,i)+p(6,i))**2
+        enddo
+        m34=dsqrt(m34)
+        m3456=dsqrt(m3456)
+        m56=(p(5,4)+p(6,4))**2 
+        do i=1,3
+           m56=m56-(p(5,i)+p(6,i))**2
+        enddo
+        m56=dsqrt(m56)
 
       mt45=0d0 
       mt45=(dsqrt(dsqrt(pttwo(4,5,p)**2+m45**2)+etmiss(p,etvec))**2)
- !    endif
 
       etvec(:)=p(3,:)+p(6,:)
 c--- transverse mass

@@ -4,8 +4,8 @@ c----           routine has been tailored for direct photon (dirgam)
 c----           and photon+two jets (gamjet) production
 
 c---- generate phase space for 2-->nphots+njets process
-c----   and 3,..,3+nphots the photons
-c----   and 4+nphots,..,4+nphots+njets the jets
+c----   and 3,..,2+nphots the photons
+c----   and 2+nphots,..,2+nphots+njets the jets
 c----
 c---- This routine is adapted from gen_Vphotons_jets.f
 c----
@@ -22,27 +22,32 @@ c----
       include 'xmin.f'
       include 'part.f'
       include 'process.f'
+      include 'x1x2.f'
+      include 'first.f'
+      include 'energy.f'
       double precision r(mxdim),p(mxpart,4),psumjet(4),wt
-      double precision hmin,hmax,delh,h,sqrts,xpt,etamax,xx(2)
+      double precision hmin,hmax,delh,h,xpt,etamax
       double precision y,sinhy,coshy,phi,xjac,tmp(mxpart,4)
       double precision ptjetmin,etajetmin,etajetmax,pbreak
       double precision ptmin_part,etamax_part,pbreak_part,swap,lastmax
       integer j,nu,nphots,njets,nphotsjets,ijet,icount
-      logical first,flatreal
-      common/energy/sqrts
-      common/x1x2/xx
-      parameter(flatreal=.false.)
-      integer perm,perm2_3(0:1),perm2_4(0:1),
-     & perm3_3(0:5),perm3_4(0:5),perm3_5(0:5)
-      data perm /0/ 
-      data perm2_3/3,4/
-      data perm2_4/4,3/
-      data perm3_3/3,3,4,4,5,5/
-      data perm3_4/4,5,3,5,3,4/
-      data perm3_5/5,4,5,3,4,3/
-      data first/.true./
-      save first,ptjetmin,etajetmin,etajetmax,pbreak
-      save perm,perm2_3,perm2_4,perm3_3,perm3_4,perm3_5
+      logical flatreal
+      integer,save:: perm=0
+      integer,parameter:: perm2_3(0:1)=(/3,4/)
+      integer,parameter:: perm2_4(0:1)=(/4,3/)
+      integer,parameter:: perm3_3(0:5)=(/3,3,4,4,5,5/)
+      integer,parameter:: perm3_4(0:5)=(/4,5,3,5,3,4/)
+      integer,parameter:: perm3_5(0:5)=(/5,4,5,3,4,3/)
+      integer,parameter:: perm4_3(0:23)=(/3,3,3,3,3,3,4,4,4,4,4,4,
+     & 5,5,5,5,5,5,6,6,6,6,6,6/)
+      integer,parameter:: perm4_4(0:23)=(/4,4,5,5,6,6,3,3,5,5,6,6,
+     & 3,3,4,4,6,6,3,3,4,4,5,5/)
+      integer,parameter:: perm4_5(0:23)=(/5,6,4,6,4,5,5,6,3,6,3,5,
+     & 4,6,3,6,3,4,4,5,3,5,3,4/)
+      integer,parameter:: perm4_6(0:23)=(/6,5,6,4,5,4,6,5,6,3,5,3,
+     & 6,4,6,3,4,3,5,4,5,3,4,3/)
+      save ptjetmin,etajetmin,etajetmax,pbreak
+!$omp threadprivate(ptjetmin,etajetmin,etajetmax,pbreak,perm)
       
       if (first .or. reset) then
         first=.false.
@@ -93,7 +98,7 @@ c      xmin=2d0/sqrts
 c      xmax=1d0/ptjetmin
 
       if (ijet .le. nphots) then
-        if     (nphots .eq. 3) then
+        if     ((nphots .eq. 3) .or. (nphots .eq. 4)) then
           ptmin_part=min(gammpt,gammpt2,gammpt3)
         elseif (nphots .eq. 2) then
           ptmin_part=min(gammpt,gammpt2)
@@ -250,22 +255,47 @@ c--- now make the initial state momenta
 
       wt=wt/sqrts**2
       
+      do j=3+nphotsjets,mxpart
+      do nu=1,4
+      p(j,nu)=0d0
+      enddo
+      enddo
+      
 c--- symmetrize phase-space by permuting photon momenta appropriately
       if     (nphots .eq. 2) then
+        perm=int(r(3*nphotsjets-1)*2d0)
+        if (perm .lt. 0) perm=0
+        if (perm .gt. 1) perm=1
         tmp(3,:)=p(3,:)  
         tmp(4,:)=p(4,:)  
         p(3,:)=tmp(perm2_3(perm),:)
         p(4,:)=tmp(perm2_4(perm),:)
-        perm=mod(perm+1,2)
+c        perm=mod(perm+1,2)
       elseif (nphots .eq. 3) then
+        perm=int(r(3*nphotsjets-1)*6d0)
+        if (perm .lt. 0) perm=0
+        if (perm .gt. 5) perm=5
         tmp(3,:)=p(3,:)  
         tmp(4,:)=p(4,:)  
         tmp(5,:)=p(5,:)  
         p(3,:)=tmp(perm3_3(perm),:)
         p(4,:)=tmp(perm3_4(perm),:)
         p(5,:)=tmp(perm3_5(perm),:)
-        perm=mod(perm+1,6)
-      elseif (nphots .ge. 4) then
+c        perm=mod(perm+1,6)
+      elseif (nphots.eq.4) then 
+        perm=int(r(3*nphotsjets-1)*24d0)
+        if (perm .lt. 0) perm=0
+        if (perm .gt. 23) perm=23
+        tmp(3,:)=p(3,:)  
+        tmp(4,:)=p(4,:)  
+        tmp(5,:)=p(5,:)  
+        tmp(6,:)=p(6,:)  
+        p(3,:)=tmp(perm4_3(perm),:)
+        p(4,:)=tmp(perm4_4(perm),:)
+        p(5,:)=tmp(perm4_5(perm),:)
+        p(6,:)=tmp(perm4_6(perm),:)
+c        perm=mod(perm+1,24)
+      elseif (nphots .ge. 5) then
         write(6,*) 'Symmetrize gen_photons_jets.f before proceeding'
         write(6,*) 'nphots = ',nphots
         stop      

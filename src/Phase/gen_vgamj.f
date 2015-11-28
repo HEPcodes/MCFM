@@ -15,8 +15,7 @@ c---- Author: C. Williams, June 2012
       double precision Qsq,taumin
       parameter(wt0=one/twopi**2) 
       double precision wt3456,wt56,wt34
-      double precision sqrts
-      common/energy/sqrts
+      include 'energy.f'
 
       wt=0d0
 

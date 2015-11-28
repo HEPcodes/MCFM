@@ -13,7 +13,8 @@ c--all momenta incoming
       include 'flags.f'
       include 'msq_cs.f'
       include 'jetlabel.f'
-      integer i,j,k,n,nqcdjets,nqcdstart,a(6),b(6),c(6),qq
+      include 'nqcdjets.f'
+      integer i,j,k,n,qq
       integer perm(5:7,5:7)
       double precision P(mxpart,4),msq(-nf:nf,-nf:nf),pjet(mxpart,4),
      . msq0(-nf:nf,-nf:nf),s(mxpart,mxpart),Rcut
@@ -26,7 +27,6 @@ c--all momenta incoming
      .                 eikcb_a(6),eikbc_2(6),eik2c_b(6),
      .                 eik1b_2(6),eik2b_1(6),eikf,eikc,
      .                 msq_ac(6,0:2,-nf:nf,-nf:nf),p_ac(mxpart,4)
-      common/nqcdjets/nqcdjets,nqcdstart
       common/rcut/rcut
       double precision mqq(0:2,-nf:nf,-nf:nf)
       double precision 
@@ -35,13 +35,10 @@ c--all momenta incoming
      . sub17_6(4),sub67_1(4),sub27_6(4),sub67_2(4)
       parameter(qq=1)
       common/mqq/mqq
-      data a/5,5,7,6,6,7/
-      data b/6,7,5,7,5,6/
-      data c/7,6,6,5,7,5/
-c      data pntr/0,2,2,1,0,2,1,1,0/
-      data perm/0,4,6,2,0,3,1,5,0/
-c      data swapab/5,3,2,6,1,4/
-c      data swapbc/2,1,6,5,4,3/
+      integer,parameter:: a(6)=(/5,5,7,6,6,7/),
+     & b(6)=(/6,7,5,7,5,6/),c(6)=(/7,6,6,5,7,5/),
+     & perm(5:7,5:7)=reshape((/0,4,6,2,0,3,1,5,0/),(/3,3/))
+!$omp threadprivate/mqq/)
       
       do j=-nf,nf
       do k=-nf,nf

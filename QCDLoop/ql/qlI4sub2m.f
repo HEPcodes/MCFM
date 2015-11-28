@@ -20,6 +20,8 @@ C     Calculates the general box with qlzero masses
      .      2,3,4,1,6,7,8,5,10,9,11,12,13,
      .      1,2,3,4,5,6,7,8,9,10,11,12,13,
      .      3,2,1,4,6,5,8,7,9,10,11,12,13/
+      save swap
+!$omp threadprivate(swap)
 
       call qlxpicheck(xpi)
 

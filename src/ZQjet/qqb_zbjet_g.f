@@ -25,7 +25,7 @@ c--- isub=2 means that p7 is another heavy quark
       include 'zcouple.f'
       include 'ewcouple.f'
       include 'ewcharge.f'
-      integer j,k,jj(-nf:nf),kk(-nf:nf)
+      integer j,k
       double precision P(mxpart,4),msq(-nf:nf,-nf:nf)
       double precision mmsq_gg(2,2),
      . mmsq_qg(2,2),mmsq_gq(2,2),mmsq_gqb(2,2),mmsq_qbg(2,2)
@@ -42,8 +42,8 @@ c--- isub=2 means that p7 is another heavy quark
       double complex prop
       integer isub
       common/isub/isub
-      data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      data kk/-1,-2,-1,-2,-1,0,1,2,1,2,1/
+      integer, parameter::jj(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
+      integer, parameter::kk(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
       
 c--- initialize the matrix element squared
       do j=-nf,nf

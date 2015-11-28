@@ -29,6 +29,7 @@ C in is the label of the contracted line
       double complex prop
       double complex zanb(mxpart,mxpart)
       common/zprodsgvec/zanb
+!$omp threadprivate(/zprodsgvec/)
       s(j,k)=2d0
      & *(p(j,4)*p(k,4)-p(j,1)*p(k,1)-p(j,2)*p(k,2)-p(j,3)*p(k,3))
 

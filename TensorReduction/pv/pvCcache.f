@@ -7,11 +7,11 @@
       include 'pvforcerecalc.f'
       include 'pvCitry.f'
       double precision para(Pcc),p1sq,p2sq,p3sq,m1s,m2s,m3s
-      double precision tableC(Pcc,Ncmax)
-      logical maxcindexrespected(Ncmax)
-      integer Nstore,j,jtable,Ntrue
-      data Nstore/0/
-      save tableC,Nstore,maxcindexrespected
+      integer j,jtable,Ntrue
+      logical,save::maxcindexrespected(Ncmax)
+      double precision,save:: tableC(Pcc,Ncmax)
+      integer,save:: Nstore=0
+!$omp threadprivate(tableC,Nstore,maxcindexrespected)
       
 C--set the number of stored values to zero
       if (clear(3)) then

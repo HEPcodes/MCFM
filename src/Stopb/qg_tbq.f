@@ -33,6 +33,7 @@ c     u + g  ->  c + s + d  (t-channel single-charm)
       double precision alphas
       double precision b1scale,q2scale,q1scale,b2scale
       common/bqscale/b1scale,q2scale,q1scale,b2scale
+!$omp threadprivate(/bqscale/)
 c--- set this parameter to .false. to check amplitudes vs. squared ME      
       parameter(nocheck=.true.)
 

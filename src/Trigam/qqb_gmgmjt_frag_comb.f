@@ -29,6 +29,7 @@ c---   p_phys: array of momenta to evaluate integrated dipoles
       double precision facDgg
       external qcd_tree
       common/D/D
+!$omp threadprivate(/D/)
 
       aewo2pi=esq/(fourpi*twopi)            
       fsq=frag_scale**2

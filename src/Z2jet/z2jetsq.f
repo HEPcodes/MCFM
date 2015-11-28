@@ -17,9 +17,8 @@ c      double complex qcd1RR(-1:1,-1:1),qcd2RR(-1:1,-1:1)
       double complex qedLL(-1:1,-1:1),qedLR(-1:1,-1:1)
 c      double complex qedRL(-1:1,-1:1),qedRR(-1:1,-1:1)
       double precision msq1(2,2),msq2(2,2),msqq(2,2),msq(2,2)
-      integer i1,i2,i3,i4,i5,i6,j,k,pol(2),pq,pl
-      data pol/-1,1/
-      save pol      
+      integer i1,i2,i3,i4,i5,i6,j,k,pq,pl
+      integer,parameter::pol(2)=(/-1,1/)
 
       call subqcd(i1,i2,i3,i4,i5,i6,za,zb,qcd1LL)
       call subqcd(i1,i2,i3,i4,i6,i5,za,zb,qcd2LL)

@@ -21,7 +21,8 @@
       double precision smalla,smallb,smallc,ss,tt,uu,smalld
       double precision ga_ga,ag_ga,gq_gq,qg_gq,gg_gg,qa_gg,aq_gg
       double precision fac
-       common/D/D
+      common/D/D
+!$omp threadprivate(/D/)
    
       aewo2pi=esq/(fourpi*twopi)      
       fsq=frag_scale**2
@@ -177,6 +178,8 @@ c---- Generate array D(j) corresponding to MCFM notation 0=gluon 1=down 2=up ...
       double precision D(0:5) 
       common/D/D
       integer i,j
+!$omp threadprivate(/D/)
+
       d_sum_q=0d0
       do i=1,5 
          if(i.ne.j) then 

@@ -39,6 +39,8 @@ C
      9         0.45801 67776 57227 386D0,
      A         0.28160 35507 79258 913D0,
      B         0.95012 50983 76374 402D-1/
+      save W,X
+!$omp threadprivate(W,X)
 C
 C     ******************************************************************
 C
@@ -124,6 +126,8 @@ C CERN PROGLIB# Z035    ABEND           .VERSION KERNVAX  1.10  811126
           DATA      CODE(25),KNTM(25),KNTR(25) / 'F406.1', 100,   0 /
           DATA      CODE(26),KNTM(26),KNTR(26) / 'G100.1', 100, 100 /
           DATA      CODE(27),KNTM(27),KNTR(27) / 'G100.2', 100, 100 /
+          save LOGF,CODE,KNTM,KNTR
+!$omp threadprivate(LOGF,CODE,KNTM,KNTR)
           LOGF  =  LGFILE
           IF(ERCODE .EQ. ' ')  THEN
              L  =  0

@@ -10,22 +10,15 @@ C     the second for helicity of lepton line.
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'mmsq_cs.f'
-      integer i1(2),i2(2),i3(2),i4(2),i5(2),i6(2),j,lh,h2,h3,hq,h(2:3)
       double precision mqqb(2,2),m0,fac
       double complex tempm0,m(2)
       double complex a6treeg1
-c      double complex amp_qqgg,a6treeg
-c      double precision m1
-      character*9 st(2,2)
-c      logical compare
-c      parameter(x=xn/cf)
-      data i1/1,4/
-      data i2/2,3/
-      data i3/3,2/
-      data i4/4,1/
-      data i5/6,5/
-      data i6/5,6/
-      data st/'q+g-g-qb-','q+g-g+qb-','q+g+g-qb-','q+g+g+qb-'/
+      integer j,lh,h2,h3,hq,h(2:3)
+      integer,parameter::i1(2)=(/1,4/),i2(2)=(/2,3/),i3(2)=(/3,2/),
+     &                   i4(2)=(/4,1/),i5(2)=(/6,5/),i6(2)=(/5,6/)
+      character*9,parameter:: st(2,2)=
+     & reshape((/'q+g-g-qb-','q+g-g+qb-','q+g+g-qb-','q+g+g+qb-'/)
+     & ,(/2,2/))
       
 c      compare=.false.
       

@@ -20,15 +20,15 @@ C
       include 'msbarmasses.f'
       include 'msq_cs.f'
       include 'scheme.f'
+      include 'first.f'
       
       integer j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),ren,
      & wtqqb,wtqbq,wtgg0,massfrun,mt_eff,facqq,facgg,ytsq
       double complex cnab(-2:-1),cqed(-2:-1)
-      logical first
-      data first/.true./
-      save first,mt_eff
-      
+      save mt_eff
+!$omp threadprivate(mt_eff) 
+
       scheme='dred'     
       
       if (first) then

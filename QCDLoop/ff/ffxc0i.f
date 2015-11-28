@@ -59,6 +59,8 @@ c
      +		   3,2,1,5,4,6,
      +		   2,1,3,4,6,5/
 	data ilogi /3*0/
+!$omp threadprivate(init,inew,ilogi,/ffcut/)
+
 *
 *	statement function
 *

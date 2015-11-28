@@ -10,6 +10,7 @@ c--- of one of the heavy particles, with radiation included in the decay
       include 'limits.f'
       include 'phasemin.f'
       include 'breit.f'
+      include 'x1x2.f'
       double precision r(mxdim)
       double precision p(mxpart,4),pswt,smin
       double precision p1(4),p2(4),p12(4),p8(4),p34568(4),
@@ -18,11 +19,10 @@ c--- of one of the heavy particles, with radiation included in the decay
       double precision mtbsq
       integer nu
       double precision xjac,p1ext(4),p2ext(4),wt0
-      double precision xx(2),tau,x1mx2,surd,lntaum
+      double precision tau,x1mx2,surd,lntaum
       common/pext/p1ext,p2ext
-      common/x1x2/xx
       parameter(wt0=1d0/twopi**2)
-
+!$omp threadprivate(/pext/)
  
 c--- this part is taken from gen4
       lntaum=dlog(taumin)

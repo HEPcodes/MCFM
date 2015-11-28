@@ -19,18 +19,17 @@ c      include 'anomcoup.f'
       include 'plabel.f'
       include 'srdiags.f'
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),
-     & fac,mp(nf),s567,tanw,l3,l4,l5,l6,q3,q4,q5,q6
+     & fac,s567,tanw,l3,l4,l5,l6,q3,q4,q5,q6
+      double precision, parameter :: mp(nf)=(/-1d0,+1d0,-1d0,+1d0,-1d0/)
       double complex prop12,prop34,prop567,AWW(2,2)
       double complex propwp,propwm,propzg,cprop
       double complex Fa12(2,2),Fb12(2,2),Fc12(2,2),Fd12(2,2)
-      double complex Fa21(2,2),Fb21(2,2),Fc21(2,2)
+      double complex Fa21(2,2),Fb21(2,2),Fc21(2,2) 
       double complex qqb(4,2,2),qbq(4,2,2)
       double complex cs_z(2,2),cs_g(2,2)
       integer j,k,jk,tjk,hg,hq
-      data mp/-1d0,+1d0,-1d0,+1d0,-1d0/
 
       fac=aveqq*xn*gw**8*gsq*2d0*CF
-      
       do j=-nf,nf
       do k=-nf,nf
 c--set msq=0 to initalize
@@ -122,70 +121,69 @@ C----because W's attach to 12 line
       Fb21(2,:)=czip
 
       do j=-nf,nf
-      k=-j
+         k=-j
 C---as we begin every different j,k flavour, zero out AWW
-      AWW(:,:)=czip
-c--Exclude gluon-gluon initial state
-       if (j.eq.0) go to 20
-      jk=max(j,k)
+         AWW(:,:)=czip
+c--   Exclude gluon-gluon initial state
+         if (j.eq.0) go to 20
+         jk=max(j,k)
        
-      do hg=1,2
-      do hq=1,2
-      if (j .gt. 0) then
-          if  (tau(jk) .eq. +1d0) then
-              AWW(hq,hg)=prop567*prop34*(mp(jk)*Fb12(hq,hg)
-     &        +(cs_z(hq,2)+cs_g(hq,2))*Fc12(hq,hg))
-          elseif     (tau(jk) .eq. -1d0) then
-              AWW(hq,hg)=prop567*prop34*(mp(jk)*Fa12(hq,hg)
-     &        +(cs_z(hq,1)+cs_g(hq,1))*Fc12(hq,hg))
-          endif
-      elseif (j .lt. 0) then
-          if  (tau(jk) .eq. +1d0) then
-              AWW(hq,hg)=prop567*prop34*(mp(jk)*Fb21(hq,hg)
-     &        +(cs_z(hq,2)+cs_g(hq,2))*Fc21(hq,hg))
-          elseif     (tau(jk) .eq. -1d0) then
+         do hg=1,2
+            do hq=1,2
+               if (j .gt. 0) then
+                  if  (tau(jk) .eq. +1d0) then
+                     AWW(hq,hg)=prop567*prop34*(mp(jk)*Fb12(hq,hg)
+     &                    +(cs_z(hq,2)+cs_g(hq,2))*Fc12(hq,hg))
+                  elseif     (tau(jk) .eq. -1d0) then
+                     AWW(hq,hg)=prop567*prop34*(mp(jk)*Fa12(hq,hg)
+     &                    +(cs_z(hq,1)+cs_g(hq,1))*Fc12(hq,hg))
+                  endif
+               elseif (j .lt. 0) then
+                  if  (tau(jk) .eq. +1d0) then
+                     AWW(hq,hg)=prop567*prop34*(mp(jk)*Fb21(hq,hg)
+     &                    +(cs_z(hq,2)+cs_g(hq,2))*Fc21(hq,hg))
+                  elseif     (tau(jk) .eq. -1d0) then
+                     AWW(hq,hg)=prop567*prop34*(mp(jk)*Fa21(hq,hg)
+     &                    +(cs_z(hq,1)+cs_g(hq,1))*Fc21(hq,hg))
+                  endif
+               endif
+            enddo
 
-              AWW(hq,hg)=prop567*prop34*(mp(jk)*Fa21(hq,hg)
-     &        +(cs_z(hq,1)+cs_g(hq,1))*Fc21(hq,hg))
-          endif
-      endif
-      enddo
-
-      if (srdiags) then
+            if (srdiags) then
 c---we need supplementary diagrams for gauge invariance.
 
-      call c7tree(1,2,3,4,5,6,7,qqb)   ! qqb
-      call c7tree(2,1,3,4,5,6,7,qbq)   ! qbq
+               call c7tree(1,2,3,4,5,6,7,qqb) ! qqb
+               call c7tree(2,1,3,4,5,6,7,qbq) ! qbq
 
 C---tjk is equal to 2 (u,c) or 1 (d,s,b)
-      tjk=2-mod(abs(jk),2)     
-      do hq=1,2
-      if (j .gt. 0) then
-      AWW(hq,hg)=AWW(hq,hg)
-     & +prop567*qqb(1,hq,hg)*(tanw*cs_z(hq,tjk)*l4+cs_g(hq,tjk)*q4)
-     & +prop567*qqb(2,hq,hg)*(tanw*cs_z(hq,tjk)*l3+cs_g(hq,tjk)*q3)
-     & +prop34 *qqb(3,hq,hg)*(tanw*cs_z(hq,tjk)*l5+cs_g(hq,tjk)*q5)
-     & +prop34 *qqb(4,hq,hg)*(tanw*cs_z(hq,tjk)*l6+cs_g(hq,tjk)*q6)
-      elseif (j .lt. 0) then
-      AWW(hq,hg)=AWW(hq,hg)
-     & +prop567*qbq(1,hq,hg)*(tanw*cs_z(hq,tjk)*l4+cs_g(hq,tjk)*q4)
-     & +prop567*qbq(2,hq,hg)*(tanw*cs_z(hq,tjk)*l3+cs_g(hq,tjk)*q3)
-     & +prop34 *qbq(3,hq,hg)*(tanw*cs_z(hq,tjk)*l5+cs_g(hq,tjk)*q5)
-     & +prop34 *qbq(4,hq,hg)*(tanw*cs_z(hq,tjk)*l6+cs_g(hq,tjk)*q6)
-      endif
-      enddo
+               tjk=2-mod(abs(jk),2)     
+               do hq=1,2
+                  if (j .gt. 0) then
+                     AWW(hq,hg)=AWW(hq,hg)
+     &      +prop567*qqb(1,hq,hg)*(tanw*cs_z(hq,tjk)*l4+cs_g(hq,tjk)*q4)
+     &      +prop567*qqb(2,hq,hg)*(tanw*cs_z(hq,tjk)*l3+cs_g(hq,tjk)*q3)
+     &      +prop34 *qqb(3,hq,hg)*(tanw*cs_z(hq,tjk)*l5+cs_g(hq,tjk)*q5)
+     &      +prop34 *qqb(4,hq,hg)*(tanw*cs_z(hq,tjk)*l6+cs_g(hq,tjk)*q6)
+                  elseif (j .lt. 0) then
+                     AWW(hq,hg)=AWW(hq,hg)
+     &      +prop567*qbq(1,hq,hg)*(tanw*cs_z(hq,tjk)*l4+cs_g(hq,tjk)*q4)
+     &      +prop567*qbq(2,hq,hg)*(tanw*cs_z(hq,tjk)*l3+cs_g(hq,tjk)*q3)
+     &      +prop34 *qbq(3,hq,hg)*(tanw*cs_z(hq,tjk)*l5+cs_g(hq,tjk)*q5)
+     &      +prop34 *qbq(4,hq,hg)*(tanw*cs_z(hq,tjk)*l6+cs_g(hq,tjk)*q6)
+                  endif
+               enddo
       
-      endif
+            endif
     
 C-- Inclusion of width for W's a la Baur and Zeppenfeld with cprop.
-      AWW(1,hg)=cprop*AWW(1,hg)
-      AWW(2,hg)=cprop*AWW(2,hg)
-      enddo
+            AWW(1,hg)=cprop*AWW(1,hg)
+            AWW(2,hg)=cprop*AWW(2,hg)
+         enddo
+         msq(j,k)=fac*
+     &        (+abs(AWW(1,1))**2+abs(AWW(1,2))**2
+     &        +abs(AWW(2,1))**2+abs(AWW(2,2))**2)
 
-      msq(j,k)=fac*
-     & (+abs(AWW(1,1))**2+abs(AWW(1,2))**2
-     &  +abs(AWW(2,1))**2+abs(AWW(2,2))**2)
- 20   continue
+ 20      continue
       enddo
       
       return

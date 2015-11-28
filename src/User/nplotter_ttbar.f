@@ -27,12 +27,12 @@ c---                1  --> counterterm for real radiation
       integer switch,n,nplotmax,j,
      & jetindex(mxpart),iorder(mxpart),ijet
       character*4 tag
-      logical first,dilepton,failed
-      common/nplotmax/nplotmax
+      logical dilepton,failed
       parameter(tiny=1d-8)
-      data first/.true./
-      save first
-
+      logical, save::first=.true.
+      common/nplotmax/nplotmax
+ccccc!$omp threadprivate(first,/nplotmax/,mj1j2)
+      
 ************************************************************************
 *                                                                      *
 *     INITIAL BOOKKEEPING                                              *
@@ -365,7 +365,7 @@ c--- three-particle plots
       call genplot3(p,3,4,5,tag,wt,wt2,n)
       call genplot3(p,6,7,8,tag,wt,wt2,n)
 
-c--- additional plots that may be present at NLO       
+c--- additional plots that may be present at NLO
       if (abs(p(9,4)) .gt. 1d-8) then
         call genplot1(p,9,tag,wt,wt2,n)
         call genplot3(p,7,8,9,tag,wt,wt2,n)

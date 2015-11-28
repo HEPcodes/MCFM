@@ -5,6 +5,7 @@
       include 'dm_params.f'
       include 'qcdcouple.f'
       include 'frag.f'
+      include 'first.f'
       double precision p(mxpart,4),msq(-nf:nf,-nf:nf)
       double complex qqbg(2,2,2,2),qbqg(2,2,2,2)
       double complex qgqb(2,2,2,2),qbgq(2,2,2,2)
@@ -23,9 +24,7 @@
       common/check_QED/check_QED 
       double precision fsq,D(0:5)
       common/D/D
-      logical first 
-      data first /.true./
-      save first 
+!$omp threadprivate(/check_QED/,/D/)
       
       do j=-nf,nf
       do k=-nf,nf
@@ -104,10 +103,6 @@ c---- Generate array D(j) corresponding to MCFM notation 0=gluon 1=up 2=down ...
          call qqb_dm_monojet_Axamps(p,2,5,1,3,4,qbqg)
          call qqb_dm_monojet_Axamps(p,2,1,5,3,4,gqqb)  
          call qqb_dm_monojet_Axamps(p,5,1,2,3,4,gqbq)
-         if(first) then 
-            first = .false. 
-            call check_dmAxC
-         endif       
       elseif(dm_mediator.eq.'scalar') then
          call qqb_dm_monojet_Samps(p,1,2,5,3,4,qgqb)  
          call qqb_dm_monojet_Samps(p,5,2,1,3,4,qbgq)
@@ -116,11 +111,6 @@ c---- Generate array D(j) corresponding to MCFM notation 0=gluon 1=up 2=down ...
          call qqb_dm_monojet_Samps(p,2,1,5,3,4,gqqb)  
          call qqb_dm_monojet_Samps(p,5,1,2,3,4,gqbq)
          fac=fac/4d0
-          if(first) then 
-            first=.false.
-            call set_scalar_coups
-         endif
-
       elseif(dm_mediator.eq.'pseudo') then 
          call qqb_dm_monojet_PSamps(p,1,2,5,3,4,qgqb)  
          call qqb_dm_monojet_PSamps(p,5,2,1,3,4,qbgq)
@@ -129,11 +119,6 @@ c---- Generate array D(j) corresponding to MCFM notation 0=gluon 1=up 2=down ...
          call qqb_dm_monojet_PSamps(p,2,1,5,3,4,gqqb)  
          call qqb_dm_monojet_PSamps(p,5,1,2,3,4,gqbq)
          fac=fac/4d0
-         if(first) then 
-            first = .false. 
-            call check_dmAxC
-         endif       
-
       endif
 
      

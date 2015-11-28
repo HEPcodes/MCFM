@@ -104,7 +104,8 @@ C===========================================================================
 
       Data Warn /.true./
       Data Qsml /.3d0/
-      save Warn
+      save Warn,Qsml
+!$omp threadprivate(Warn,Qsml)      
 
       If (X .lt. 0d0 .or. X .gt. 1D0) Then
         Print *, 'X out of range in CT10Pdf: ', X
@@ -148,7 +149,6 @@ C                             ********************
       Data IsetASmn1,IsetASmx1 /10,19/
       Data IsetASmn2,IsetASmx2 /20,29/
       Data IsetFFSmn,IsetFFSmx /30,33/
-      Common /Setchange/ Isetch
       Common /CT10Jset/ Jset
       save
 
@@ -187,7 +187,6 @@ C                                                               30 - 33
  21     Call Readpds0 (IU)
         Close (IU)
         Isetold=Iset
-        Isetch=1
       Endif
       Return
 
@@ -252,7 +251,6 @@ c
      > / CtqPar1 / qBase, XV(0:MXX), TV(0:MXQ), UPD(MXPQX)
      > / CtqPar2 / Nx, Nt, NfMx, MxVal
      > / XQrange / Qini, Qmax, Xmin
-     > /Setchange/ Isetch
 
       Dimension fvec(4), fij(4)
       Dimension xvpow(0:mxx)
@@ -266,6 +264,14 @@ c
       Save ss, const1, const2, const3, const4, const5, const6
       Save sy2, sy3, s23, tt, t12, t13, t23, t24, t34, ty2, ty3
       Save tmp1, tmp2, tdet
+      data Isetch /1/
+      save Isetch
+!$omp threadprivate(Isetch)     
+!$omp threadprivate(X,Q,JX,JQ,JLX,JLQ)     
+!$omp threadprivate(ss,const1,const2,const3,const4,const5,const6)
+!$omp threadprivate(sy2,sy3,s23,tt,t12,t13,t23,t24,t34,ty2,ty3)
+!$omp threadprivate(tmp1, tmp2, tdet)
+
 
 c store the powers used for interpolation on first call...
       if(Isetch .eq. 1) then

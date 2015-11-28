@@ -29,7 +29,7 @@
 	DOUBLE PRECISION xmu,xpc(6),xpd(13)
 	DOUBLE COMPLEX cab(2),cbi(4),acbi(2),cac(3),cbc(12),cci(13),
      +		cbd(12),ccd(28),cdi(24)
-	save init,l2,l3,l4
+	save xmu,init,l2,l3,l4
 *
 *	common blocks
 *
@@ -46,7 +46,12 @@
 	data xmu /0.D0/
 	data l2,l3,l4 /2,3,3/
 	data init /0/
+!$omp threadprivate(init,l2,l3,l4,xmu)
+
 *  #] declarations:
+!$omp threadprivate(PX,RM,DEL,B0,B0PM,B1,B1PM,B2,
+!$omp&              CC0,CC1,CC2,CC3,D0,D1,D2,D3,D4)
+
 *  #[ initialisations:
 	if ( init.eq.0 ) then
 	    init = 1
@@ -183,6 +188,8 @@
 *	data
 *
 	data init /0/
+!$omp threadprivate(init)
+
 *  #] declarations:
 *  #[ initialisations:
 	if ( init .eq. 0 ) then

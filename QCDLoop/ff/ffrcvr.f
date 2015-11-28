@@ -1,10 +1,12 @@
 *###[ ffrcvr:
 	subroutine ffrcvr(isig)
     	integer isig,ier,nold,ncall
-	save nold
+	save nold,ncall
 	include 'ff.h'
 	data nold /0/
 	data ncall /0/
+!$omp threadprivate(nold,ncall)
+	
 	if ( isig .ne. 8 ) then
 		print *,'ffrcvr: Somebody shot a signal ',isig,' at me'
 		stop

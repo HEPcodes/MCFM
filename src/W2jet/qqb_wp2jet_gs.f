@@ -29,10 +29,9 @@ c--- are included in the subtraction terms for the QQGG piece
       include 'lc.f'
      
       integer j,k,n,np6,np12,np18,np21
-      integer a(6),b(6),c(6),pntr(5:7,5:7)
 c --- remember: nd will count the dipoles
       integer nd
-c--- slightly obtuse notation, to simplify declaration lines      
+c--- slightly obtuse notation, to simplify declaration lines
       double precision p(mxpart,4),msq(maxd,fn:nf,fn:nf),xninv
       double precision 
      & msq17_2(fn:nf,fn:nf),msq27_1(fn:nf,fn:nf),
@@ -95,7 +94,6 @@ c--- slightly obtuse notation, to simplify declaration lines
      . sub1b_2(6,4),sub2b_1(6,4),
      . msq1b_2v(6,0:2,fn:nf,fn:nf),msq2b_1v(6,0:2,fn:nf,fn:nf),
      . sub1b_2v(6),sub2b_1v(6)
-      integer jj(-nf:nf),kk(-nf:nf)
       double precision m57_1g(0:2,fn:nf,fn:nf),m57_1vg(0:2,fn:nf,fn:nf),
      .                 m57_1vx(fn:nf,fn:nf,fn:nf,fn:nf),
      .                 m57_2vx(fn:nf,fn:nf,fn:nf,fn:nf),
@@ -130,16 +128,15 @@ c--- slightly obtuse notation, to simplify declaration lines
       external qqb_w2jet,qqb_w2jet_gvec,
      .         qqb_w2jetx,qqb_w2jet_gvecx,donothing_gvecx
 
-      data a/5,5,7,6,6,7/
-      data b/6,7,5,7,5,6/
-      data c/7,6,6,5,7,5/
-      data pntr/0,2,2,1,0,2,1,1,0/
-      data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      data kk/-1,-2,-1,-2,-1,0,1,2,1,2,1/
+      integer,parameter:: a(6)=(/5,5,7,6,6,7/),b(6)=(/6,7,5,7,5,6/),
+     & c(6)=(/7,6,6,5,7,5/),
+     & jj(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/),
+     & kk(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/),
+     & pntr(5:7,5:7)=reshape((/0,2,2,1,0,2,1,1,0/),(/3,3/))
 
       if (Qflag .and. Gflag) then
         write(6,*) 'Both Qflag and Gflag cannot be true'
-        write(6,*) 'They are set in file options.DAT'
+        write(6,*) 'They are set in file input.DAT'
         write(6,*) 'Gflag=',Gflag
         write(6,*) 'Qflag=',Qflag
         write(6,*) 'Failed in qqb_w2jet_gs.f'
@@ -209,7 +206,7 @@ c--- initial-initial
      . qqb_w2jet,qqb_w2jet_gvec)
       call storedip(msq2b_1,msq2b_1v,dsub,dsubv,sub2b_1,sub2b_1v,n)
       enddo
-
+      
 c-- fill the matrix elements
       do j=-nf,nf
       do k=-nf,nf

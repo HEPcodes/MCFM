@@ -62,7 +62,8 @@ C===========================================================================
      > , 'cteq4a5.tbl', 'cteq4hj.tbl', 'cteq4lq.tbl' /
       Data Isetold, Isetmin, Isetmax / -987, 1, 10 /
       save Flnm, Isetold, Isetmin, Isetmax
-
+  
+!$omp threadprivate(Flnm, Isetold, Isetmin, Isetmax)
 C             If data file not initialized, do so.
       If(Iset.ne.Isetold) then
          If (Iset.lt.Isetmin .or. Iset.gt.Isetmax) Then

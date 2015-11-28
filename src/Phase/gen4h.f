@@ -8,16 +8,17 @@ c--- the Higgs mass
       include 'masses.f'
       include 'phasemin.f'
       include 'interference.f'
+      include 'x1x2.f'
       integer nu,icount
       double precision r(mxdim)
       double precision wt4,p1(4),p2(4),p3(4),p4(4),p5(4),p6(4)
-      double precision p(mxpart,4),sqrts,rtshat
+      double precision p(mxpart,4),rtshat
       double precision pswt,xjac
-      double precision xx(2),s3456,wt3456,ymax,yave
-      common/energy/sqrts
-      common/x1x2/xx
+      double precision s3456,wt3456,ymax,yave
+      include 'energy.f'
       data icount/1/
       save icount
+!$omp threadprivate(icount)
       
       wt4=0d0
 

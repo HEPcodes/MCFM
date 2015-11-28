@@ -1,11 +1,10 @@
       double complex function tloop(s23,mtsq)
       implicit none
       include 'scale.f'
+      include 'first.f'
       double precision s23,mtsq
       double complex qlI3,Bdiff
-      logical first
-      data first/.true./
-      save first
+
       if (first) then
       call qlinit
       first=.false.

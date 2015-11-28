@@ -14,6 +14,7 @@ C-----Matrix element for f(-p1)+f(-p2)->gamma(p3)+g(p4)
      .  qa,aq,qg,gq,ag,ga
       double precision D(0:5),fsq
       common/D/D
+!$omp threadprivate(/D/)
       
       fsq=frag_scale**2
 c---- Generate array D(j) corresponding to MCFM notation 0=gluon 1=down 2=up ....

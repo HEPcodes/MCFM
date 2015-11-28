@@ -17,7 +17,7 @@ c--all momenta incoming
       include 'flags.f'
       include 'lc.f'
       include 'part.f'
-      integer i,j,k,f,pq,pl,nquark,swap(2),swap1(0:2),nup,ndo,
+      integer i,j,k,f,pq,pl,nquark,nup,ndo,
      .   j1,j2,j3,icol
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac,faclo,
      .   qqbZgg2_cs(0:2,2,2),qbqZgg2_cs(0:2,2,2),
@@ -66,10 +66,7 @@ c     .   qbqZgg2(2,2)
 
       logical rGflag
 
-      data swap/2,1/
-      save swap
-      data swap1/0,2,1/
-      save swap1
+      integer,parameter::swap(2)=(/2,1/),swap1(0:2)=(/0,2,1/)
 
 c--- if we're calculating the REAL or VIRT matrix elements, we
 c--- need all the colour structures, but want to preserve

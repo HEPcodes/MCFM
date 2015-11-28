@@ -20,9 +20,7 @@
       include 'scheme.f'
       include 'heavyflav.f'
       include 'nflav.f'
-      integer j,k,
-     . iqgqLL(5),iqgqLR(5),iqgqRL(5),iqgqRR(5),
-     . igqqLL(5),igqqLR(5),igqqRL(5),igqqRR(5)
+      integer j,k
       double precision msq(-nf:nf,-nf:nf),msq0(-nf:nf,-nf:nf),
      . p(mxpart,4),fac,sz,virt5,subuv
       double precision gqZqLL,gqZqRR,gqZqLR,gqZqRL
@@ -30,12 +28,11 @@
       double precision gqbZqbLL,gqbZqbRR,gqbZqbLR,gqbZqbRL
       double precision qbgZqbLL,qbgZqbRR,qbgZqbLR,qbgZqbRL
       double complex prop
-      
-      data iqgqLL/1,5,3,4,2/,iqgqRR/5,1,4,3,2/
-      data iqgqRL/5,1,3,4,2/,iqgqLR/1,5,4,3,2/
-
-      data igqqLL/2,5,3,4,1/,igqqRR/5,2,4,3,1/
-      data igqqRL/5,2,3,4,1/,igqqLR/2,5,4,3,1/
+      integer,parameter:: 
+     & iqgqLL(5)=(/1,5,3,4,2/),iqgqRR(5)=(/5,1,4,3,2/),
+     & iqgqRL(5)=(/5,1,3,4,2/),iqgqLR(5)=(/1,5,4,3,2/),
+     & igqqLL(5)=(/2,5,3,4,1/),igqqRR(5)=(/5,2,4,3,1/),
+     & igqqRL(5)=(/5,2,3,4,1/),igqqLR(5)=(/2,5,4,3,1/)
 
       scheme='dred'
 c--set msq=0 to initialize

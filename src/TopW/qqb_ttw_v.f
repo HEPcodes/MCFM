@@ -32,6 +32,7 @@
      & loqbq(2,2),hoqbq(2,2),loqqb(2,2),hoqqb(2,2)
       logical numcheck
       common/numcheck/numcheck
+!$omp threadprivate(/numcheck/)
       
       scheme='dred'
 
@@ -40,12 +41,6 @@
       msqv(j,k)=0d0
       enddo
       enddo
-
-c--- ensure that QCDLoop is initialized (now done in computescalars.f) 
-c      if (first) then
-c        call qlinit
-c        first=.false.
-c      endif
 
 c--- set the following flag to true to write out values of different primitives
 c--- (a similar flag, to write out coefficients of the basis integrals,

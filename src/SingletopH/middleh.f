@@ -4,7 +4,7 @@
       include 'metric0.f'
       include 'alpha1.f'
       include 'masses.f'
-      include 'ydef.f'
+      include 'TRydef.f'
       include 'currentdecl.f'
       include 'tensordecl.f'
       integer fi,nu,ro,ep

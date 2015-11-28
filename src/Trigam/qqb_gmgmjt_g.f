@@ -10,14 +10,13 @@ c--- J. M. Campbell, March 2013
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'zprods_decl.f'
-      integer j,k,ii(6)
+      integer j,k
       double precision p(mxpart,4),msq(-nf:nf,-nf:nf),
      & ampsq_2gam2g,qqb,qbq,qg,gq,qbg,gqb,gg,fac,cfac,qqb_4q,
      & ampsq_qq(2,2),ampsqid_qq(2,2),
      & ampsq_qqb(2,2),ampsqid_qqb(2,2),ampsq_qqb_anni(2,2),
      & xoppo,xsame
-      data ii/1,2,1,2,1,2/
-      save ii
+      integer,parameter::ii(6)=(/1,2,1,2,1,2/)
      
       
       call spinoru(6,p,za,zb)

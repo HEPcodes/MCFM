@@ -43,13 +43,12 @@
 	integer i,j,ji,k,l,lk,isii
 	integer ii,ll
 	integer iii(6,2)
-	save iii
 	logical ldet(4)
 	DOUBLE PRECISION xa,xb,xc,xd,s(24),del3(4),som,somb,somd,xbp,
      +		xdp,smaxp,smax,save,xmax,rloss,del2d2,dum,del2i,del2j,
      +		del2ji,del2k,del2l,del2lk,d2d2i,d2d2j,d2d2ji,d2d2k,
      +		d2d2l,d2d2lk,d3d2m,d3d2n,d3d2nm
-	save del3,ldet
+	save del3,ldet,iii
 *
 *	common blocks:
 *
@@ -62,6 +61,8 @@
 *	data isign/1,1,1,0,1,0,
 *     +		   1,1,1,0,1,0/
 *  #] declarations: 
+!$omp threadprivate(iii,del3,ldet)
+
 *  #[ initialisaties:
 	if ( ifirst .eq. 0 ) then
 	    ifirst = ifirst + 1

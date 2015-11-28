@@ -23,13 +23,6 @@
       double precision dot,p(mxpart,4),
      . msq0(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),xl17,xl28,facv
       integer j,k
-      logical first
-      data first/.true./       
-      save first
-
-      if (first) then
-        first=.false.
-      endif
 
 c--- this result is in the MS-bar scheme
       scheme='dred'

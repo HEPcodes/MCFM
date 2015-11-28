@@ -18,12 +18,11 @@
       include 'qqgg.f'
       include 'subdefs_gg_hgg.f'
       include 'nflav.f'
+      include 'bitflags.f'
       integer j,k,m,n,nd
-      double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf),
+      double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf),nfactor,
      . sub2q3g_ii,sub2q3g_iffi,sub2q3g_if,sub2q3g_fi,sub2q3g_ff,
-     . msq_ab,msq_ba,msq_sym,msqv_ab,msqv_ba,msqv_sym,subgg,subqq,subv 
-      double precision f0q,f2q,f4q,nfactor
-      common/bitflags/f0q,f2q,f4q
+     . msq_ab,msq_ba,msq_sym,msqv_ab,msqv_ba,msqv_sym,subgg,subqq,subv
       external gg_hgg,gg_hgg_gvec
 
 c--- statement functions for 2q3g subtraction terms, with labelling

@@ -3,6 +3,7 @@
 
       include 'constants.f'
       include 'mxdim.f'
+      include 'x1x2.f'
 c---- generate phase space for 2-->3 process
 c---- with 3 and 4 (masses m3,m4) and 5 massless.
 c---- r(mxdim) and 
@@ -12,14 +13,13 @@ c---- with all 2 pi)
       double precision r(mxdim),y5starmin,y5starmax,plstar,plstarsq,
      . Estar,p(mxpart,4),a,E34st,
      . wt,p3(4),p4(4),p5(4),p345(4),p34(4),pstsq,
-     . xmin,sqrts,pt5,xx(2),ymin,ymax,phi,wt34,
+     . xmin,pt5,ymin,ymax,phi,wt34,
      . dely,sinhy,coshy,y,rtshat,pt2,
      . vs,vsqmax,vsqmin,s34,sinhy5,coshy5,y5,y5max,s34max,s34min,
      . m3,m4,xjac,w,wmax,wmin
 c      double precision p3cm(4),beta,costh,sinth
       integer j,nu
-      common/energy/sqrts
-      common/x1x2/xx
+      include 'energy.f'
       wt=0d0
 
       

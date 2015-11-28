@@ -7,17 +7,16 @@ c----p(6,i) and p(7,i) are set equal to zero
       include 'constants.f'
       include 'mxdim.f'
       include 'phasemin.f'
+      include 'x1x2.f'
+      include 'energy.f'
       integer nu
-      double precision r(mxdim),sqrts,wt3
+      double precision r(mxdim),wt3
       double precision p(mxpart,4),
      . p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4)
-      double precision pswt,xjac,xx(2),tau,y
-      common/energy/sqrts
-      common/x1x2/xx
-      data p6/0d0,0d0,0d0,0d0/
-      data p7/0d0,0d0,0d0,0d0/
+      double precision pswt,xjac,tau,y
 
       wt3=0d0
+      p(:,:)=0d0
       tau=exp(log(taumin)*r(4))
       y=0.5d0*log(tau)*(1d0-2d0*r(5))
       xjac=log(taumin)*tau*log(tau)
@@ -55,6 +54,10 @@ c---if x's out of normal range alternative return
       enddo 
 
       wt3=xjac*pswt
-      if(wt3 .eq. 0d0) return 1
+      if(wt3 .eq. 0d0) then
+      p(:,:)=0d0
+      return 1
+      endif
+
       return
       end

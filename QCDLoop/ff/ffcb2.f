@@ -122,6 +122,8 @@
 	absc(cc) = abs(DBLE(cc)) + abs(DIMAG(cc))
 *
 *  #] declarations:
+!$omp threadprivate(init)
+
 *  #[ real case:
 	if ( DIMAG(xma).eq.0 .and. DIMAG(xmb).eq.0 ) then
 	    lreal = .TRUE.

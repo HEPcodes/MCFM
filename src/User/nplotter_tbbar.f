@@ -25,6 +25,7 @@ c---                1  --> counterterm for real radiation
       parameter(tiny=1d-8)
       data first/.true./
       save first
+ccccc!$omp threadprivate(first,/nplotmax/)
 
 ************************************************************************
 *                                                                      *

@@ -18,21 +18,21 @@ c---                1  --> counterterm for real radiation
       include 'histo.f'
       include 'jetlabel.f'
       include 'outputflags.f'
+      include 'nproc.f'
       double precision p(mxpart,4),wt,wt2,yrap,pt,r,yraptwo,etaraptwo,
-     & y3,y4,y5,pt3,pt4,pt5,Re5,y34,eta34,ylep,yjet,ptlep,ptjet
-      integer switch,n,nplotmax,nproc
+     & y3,y4,y5,pt3,pt4,pt5,Re5,y34,eta34
+      integer switch,n,nplotmax
       character*4 tag
-      logical first
+      logical, save::first=.true.
       common/nplotmax/nplotmax
-      common/nproc/nproc
-      data first/.true./
-      save first
-
+ccccc!$omp threadprivate(first,/nplotmax/,y3,y4,y5,pt5,Re5)
+      
 ************************************************************************
 *                                                                      *
 *     INITIAL BOOKKEEPING                                              *
 *                                                                      *
 ************************************************************************
+
 
       if (first) then
 c--- Initialize histograms, without computing any quantities; instead
@@ -47,11 +47,6 @@ c--- If Re5 is not changed by the NLO value, it will be out of
 c--- the plotting range
         Re5=1d3
         jets=1
-c--- (Upper) limits for the plots
-        ylep=6d0
-        yjet=3d0
-        ptlep=100d0
-        ptjet=80d0
         goto 99
       else
 c--- Add event in histograms
@@ -131,21 +126,21 @@ c---   llplot:  equal to "lin"/"log" for linear/log scale
        call bookplot(n,tag,'W ps-rap',eta34,wt,wt2,-6d0,6d0,0.2d0,'lin')
        n=n+1
       if(nproc .eq. 1) then
-         call bookplot(n,tag,'y(lep)',y4,wt,wt2,-ylep,ylep,0.2d0,'lin')
+         call bookplot(n,tag,'y(lep)',y4,wt,wt2,-6d0,6d0,0.2d0,'lin')
          n=n+1
-         call bookplot(n,tag,'pt(lep)',pt4,wt,wt2,0d0,ptlep,2d0,'lin')
+         call bookplot(n,tag,'pt(lep)',pt4,wt,wt2,0d0,100d0,2d0,'lin')
          n=n+1
       else            
-         call bookplot(n,tag,'y(lep)',y3,wt,wt2,-ylep,ylep,0.2d0,'lin')
+         call bookplot(n,tag,'y(lep)',y3,wt,wt2,-6d0,6d0,0.2d0,'lin')
          n=n+1
-         call bookplot(n,tag,'pt(lep)',pt3,wt,wt2,0d0,ptlep,2d0,'lin')
+         call bookplot(n,tag,'pt(lep)',pt3,wt,wt2,0d0,100d0,2d0,'lin')
          n=n+1
       endif
       call bookplot(n,tag,'DeltaRe5',Re5,wt,wt2,0d0,5d0,0.4d0,'lin')
       n=n+1
-      call bookplot(n,tag,'y5',y5,wt,wt2,-yjet,yjet,0.2d0,'lin')
+      call bookplot(n,tag,'y5',y5,wt,wt2,-3d0,3d0,0.2d0,'lin')
       n=n+1
-      call bookplot(n,tag,'pt5',pt5,wt,wt2,0d0,ptjet,2d0,'lin')
+      call bookplot(n,tag,'pt5',pt5,wt,wt2,0d0,80d0,2d0,'lin')
       n=n+1
 
   

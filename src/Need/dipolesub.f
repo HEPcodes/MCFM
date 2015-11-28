@@ -27,13 +27,12 @@
       include 'initialscales.f'
       include 'dipolescale.f'
       include 'facscale.f'
+      include 'incldip.f'
       double precision p(mxpart,4),ptrans(mxpart,4),sub(4),subv,vecsq
       double precision x,omx,z,omz,y,omy,u,omu,sij,sik,sjk,dot,vec(4)
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),vtilde
       integer nd,ip,jp,kp,nu,j,k,ipt
 c--      logical includedipole
-      logical incldip(0:maxd)
-      common/incldip/incldip
       external subr_born,subr_corr
             
 C---Initialize the dipoles to zero

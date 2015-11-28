@@ -14,6 +14,7 @@ c--- makes some plots for the H->WW + jet search
       common/nplotmax/nplotmax
       data first/.true./
       save first,ic,jc,ilept,ijet
+ccccc!$omp threadprivate(/nplotmax/)
           
 c--- initialize all variables  
       dphi_ll=-1d0

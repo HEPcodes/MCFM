@@ -19,14 +19,16 @@ C     Implementing the formula of Denner and Dittmaier arXiv:hep-ph/0509141
       double complex A0(-2:0),B0(-2:0),B1(-2:0),B00(-2:0),B11(-2:0),
      & FB0(-2:0),FB1(y1max,-2:0),FB2(y2max,-2:0),trI1,
      & xp,xm,rt,arg,arg1,pvfndd,cln,xpvfndd
-      logical first,scaleset,p1sqnonzero
-      double precision fac,facnp,idp1(0:2),id(0:2),idm1(0:2)
-      data first/.true./,scaleset/.false./
-      save scaleset,first,idp1,id,idm1
-      double precision para(Pbb),tableB(Pbb,Nbmax)      
-      integer Nstore,jtable,j,Ntrue
-      data Nstore/0/
-      save tableB,Nstore
+      logical p1sqnonzero
+      double precision fac,facnp
+      double precision,save::idp1(0:2),id(0:2),idm1(0:2)
+      logical,save:: scaleset=.false.
+      logical,save:: first=.true.
+      double precision para(Pbb)
+      double precision,save::tableB(Pbb,Nbmax)      
+      integer, save:: Nstore=0
+      integer :: jtable,j,Ntrue
+!$omp threadprivate(scaleset,first,idp1,id,idm1,tableB,Nstore)
 
 C-----statement functions
       fac(n)=(-1d0)**n/dfloat(n+1)

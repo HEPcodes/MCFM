@@ -11,6 +11,7 @@
       double precision s12,s34,s56,s134,s156,mtsq,Delta
       integer j,k1,k2,k3,k4,k5,k6,e,h1,h2
       common/transferbox/d
+!$omp threadprivate(/transferbox/)
 
       mtsq=mt**2
 

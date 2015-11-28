@@ -1,11 +1,9 @@
       double complex function Bdiff(s34,s12,msq)
       implicit none
       include 'scale.f'
+      include 'first.f'
       double complex qlI2
       double precision s34,s12,msq
-      logical first
-      data first/.true./
-      save first
       if (first) then
          call qlinit
          first=.false.

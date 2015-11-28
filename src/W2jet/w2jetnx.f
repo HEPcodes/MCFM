@@ -13,6 +13,8 @@ C----nDp6 should be equal to zero
       double precision nDp5
       integer i1,i2,i3,i4,i5,i6
 
+      mmsqv_cs(:,:,:)=0d0
+
       nDp5=n(4)*p(i5,4)-n(3)*p(i5,3)-n(2)*p(i5,2)-n(1)*p(i5,1)
 
       call checkndotp(p,n,i6)

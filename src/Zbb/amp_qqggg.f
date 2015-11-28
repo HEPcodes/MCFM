@@ -22,7 +22,7 @@ c      t2b(i1,i2,i3,i4)=xb(i1,i2)*xa(i2,i4)+xb(i1,i3)*xa(i3,i4)
      .                      +xb(i1,i2)*xa(i2,i5)*xb(i5,i6)
      .                      +xb(i1,i3)*xa(i3,i4)*xb(i4,i6)
      .                      +xb(i1,i3)*xa(i3,i5)*xb(i5,i6)
-      
+
 C---A(qh,h2,h3,h4,lh)
 C---h=1 LH
 C---h=2 RH
@@ -59,7 +59,7 @@ C---h=2 RH
       xb(j,k)=za(k,j)
       enddo
       enddo
-       
+
       endif
       t123=s(i1,i2)+s(i2,i3)+s(i3,i1)
       t167=s(i1,i6)+s(i6,i7)+s(i7,i1)
@@ -226,6 +226,7 @@ c--- extra minus sign after CP symmetry
       endif
 
 c--- divide out by the photon propagator that we put back in later
+
       amp_qqggg = amp_qqggg/s(j6,j7)
 
       return 

@@ -11,6 +11,7 @@ C     ep=-2,-1,0 chooses the appropriate coefficienrt in the Laurent series.
       double complex Ival(-2:0)
       data m1o/0d0/
       save Ival,m1o,mu2o
+!$omp threadprivate(Ival,m1o,mu2o)
 
       if (mu2 .le. 0d0) then
       write(6,*) 'stopping because mu2 .le. 0d0 in qlI1, mu2=',mu2

@@ -20,7 +20,8 @@ c
       include 'ewcharge.f'
       include 'flags.f'
       include 'lc.f'
-      integer j,k,nquark,jj(-nf:nf),kk(-nf:nf)
+      include 'first.f'
+      integer j,k,nquark
       double precision P(mxpart,4),msq(-nf:nf,-nf:nf)
       double precision mmsq_gg(2,2),mmsq_qqb(2,2),mmsq_qbq(2,2),
      . mmsq_qg(2,2),mmsq_gq(2,2),mmsq_gqb(2,2),mmsq_qbg(2,2)
@@ -36,12 +37,8 @@ c
      .                 msqn_qg(2,2),msqn_qbg(2,2),
      .                 msqn_gqb(2,2),msqn_gq(2,2)
       double complex prop
-      logical first
-      data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      data kk/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      data first/.true./
-      save first
-
+      integer,parameter::jj(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
+      integer,parameter::kk(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
       if (first) then
       first=.false.
         if ((Gflag) .or. (QandGflag)) then

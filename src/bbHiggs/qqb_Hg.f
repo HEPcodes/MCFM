@@ -15,13 +15,11 @@ c--all momenta incoming
       include 'scale.f'
       include 'part.f'
       include 'couple.f'
+      include 'first.f'
       integer j,k,j1,j2,j3
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),s,amp
       double precision fac,propsq,hdecay,coupsq_eff,ghbb_eff
       double precision mb_eff,massfrun
-      logical first
-      data first/.true./
-      save first
       
 c--susycoup is the deviation of Higgs coupling 
 c-- from the standard model value

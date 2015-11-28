@@ -8,23 +8,22 @@ C---p1+p2 --> p3+p4+p5
       include 'phasemin.f'
       include 'leptcuts.f'
       include 'reset.f'
-      integer j,nu,iswap
-      double precision r(mxdim),p(mxpart,4),xx(2),
-     . sqrts,xjac,y3,y4,y5,phi,phi34,wt0,wt3,etamax,
+      include 'x1x2.f'
+      include 'first.f'
+      integer j,nu
+      double precision r(mxdim),p(mxpart,4),
+     . xjac,y3,y4,y5,phi,phi34,wt0,wt3,etamax,
      . pt3,pt4,pt5,rtson2,cphi,sphi,cphi34,sphi34
-      common/energy/sqrts
+      include 'energy.f'
       parameter(wt0=1d0/512d0/pi**3)
-      common/x1x2/xx
-      logical first
       double precision hmin,hmax,delh,h,tmp
       double precision ptjetmin,etajetmin,etajetmax
-      data first/.true./
-      save first,ptjetmin,etajetmin,etajetmax
+      save ptjetmin,etajetmin,etajetmax
+!$omp threadprivate(ptjetmin,etajetmin,etajetmax)
       
       wt3=0d0
       
       if (first .or. reset) then
-        iswap=1
         first=.false.
         reset=.false.
         call read_jetcuts(ptjetmin,etajetmin,etajetmax)
@@ -135,16 +134,13 @@ c      write(6,*) 'problems with xx(1),xx(2) in gen3',xx(1),xx(2)
 
 
 c--- randomize which of p3 and p4 is softest photon      
-      if (iswap .eq. 2) then
+      if (r(8) .lt. 0.5d0) then
         do nu=1,4
         tmp=p(3,nu)
         p(3,nu)=p(4,nu)
         p(4,nu)=tmp
         enddo
       endif
-      iswap=3-iswap
-      
-      
 
       wt3=wt0*xjac
       return

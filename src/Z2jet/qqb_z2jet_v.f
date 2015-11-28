@@ -38,6 +38,7 @@
       include 'flags.f'
       include 'msq_cs.f'
       include 'lc.f'
+      include 'first.f'
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),
      . mmsq_qqb(2,2),mmsq_qbq(2,2),mmsq_gq(2,2),mmsq_qg(2,2),
      . mmsq_qbg(2,2),mmsq_gqb(2,2),mmsq_gg(2,2),
@@ -51,7 +52,8 @@
       double complex atreez,a61z,a62z,a63z,prop,vcouple(2),
      . tamp,lamp,tampup,lampup,tampdo,lampdo,tamps,lamps,lampx,lampsx
       integer nu,j,k,cs,polq,polb,polz
-      integer jj(-nf:nf),nup,ndo,rvcolourchoice
+      integer nup,ndo,rvcolourchoice
+      integer, parameter :: jj(-nf:nf)=(/-1,-2,-1,-2,-1,0,1,2,1,2,1/)
       double precision subuv(0:2)
       double precision faclo,v2(2),vQ(nf,2),idfac
       double precision mqq(0:2,fn:nf,fn:nf)
@@ -86,7 +88,7 @@
      .               a63z_562143(2,2,2),a63z_265143(2,2,2),
      .               a63z_561243(2,2,2),a63z_165243(2,2,2)
 
-      logical first,compare,checkvector,checkaxial
+      logical compare,checkvector,checkaxial
       common/mqq/mqq
       common/rvcolourchoice/rvcolourchoice
       parameter (nup=2,ndo=nf-nup)
@@ -95,9 +97,7 @@ c--- These parameters allow for a point-by-point comparison of the
 c--- vector and axial pieces with MadLoop. They should normally
 c--- both be set to .false.
       parameter(checkvector=.false.,checkaxial=.false.)
-      data first/.true./
-      data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      save first
+!$omp threadprivate(/mqq/,/rvcolourchoice/)
 
       if (Qflag .and. Gflag) then
         write(6,*) 'Both Qflag and Gflag cannot be true'

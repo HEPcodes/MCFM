@@ -3,10 +3,10 @@
       include 'hepevt.h'
       include 'masses.f'
       include 'part.f'
+      include 'nproc.f'
       double precision p(12,4),pjet(12,4),ph(4),wt0,pt(1:4),
      1     d1t,d2t,d1a,d2a
-      integer switch,nd,ond,nproc,j
-      common/nproc/nproc
+      integer switch,nd,ond,j
       logical first
       data first/.true./
       save first,ond

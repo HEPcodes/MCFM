@@ -30,6 +30,7 @@
      +		xprec,bdn02,bdn05,bdn10,bdn15,bdn20
 	DOUBLE COMPLEX zxdilo,zlog
 	save xprec,bdn02,bdn05,bdn10,bdn15,bdn20
+!$omp threadprivate(xprec,bdn02,bdn05,bdn10,bdn15,bdn20)
 *
 *	common blocks
 *
@@ -144,6 +145,7 @@
      +		xprec,bdn02,bdn05,bdn10,bdn15,bdn20
 	DOUBLE COMPLEX cy,cfact
 	save xprec,bdn02,bdn05,bdn10,bdn15,bdn20
+!$omp threadprivate(xprec,bdn02,bdn05,bdn10,bdn15,bdn20)
 *
 *	common blocks
 *
@@ -349,6 +351,7 @@
      +		xa,d1,xheck,ffbnd
 	DOUBLE COMPLEX zxfflg
 	save xprec,bdn01,bdn05,bdn10,bdn15,bdn19
+!$omp threadprivate(xprec,bdn01,bdn05,bdn10,bdn15,bdn19)
 	include 'ff.h'
 *  #] declarations:
 *  #[ initialisation:
@@ -413,6 +416,7 @@
 	DOUBLE PRECISION x,bdn01,bdn05,bdn10,bdn15,bdn18,xprec,
      +		xa,d1,xheck,ffbnd,dfflo1
 	save xprec,bdn01,bdn05,bdn10,bdn15,bdn18
+!$omp threadprivate(xprec,bdn01,bdn05,bdn10,bdn15,bdn18)
 	include 'ff.h'
 *  #] declarations:
 *  #[ initialisation:
@@ -480,6 +484,7 @@
 	DOUBLE PRECISION x,bdn01,bdn05,bdn10,bdn15,xprec,
      +		xa,d1,xheck,ffbnd,dfflo2
 	save xprec,bdn01,bdn05,bdn10,bdn15
+!$omp threadprivate(xprec,bdn01,bdn05,bdn10,bdn15)
 	include 'ff.h'
 *  #] declarations:
 *  #[ initialisation:
@@ -543,9 +548,12 @@
 	DOUBLE PRECISION xl22,x,bdn01,bdn05,bdn10,bdn15,bdn20,bdn25,
      +		xprec,xa,xheck,ffbnd,dilog2(29)
 	save xprec,bdn01,bdn05,bdn10,bdn15,bdn20,bdn25,init,dilog2
+!$omp threadprivate(xprec,bdn01,bdn05,bdn10,bdn15,bdn20,bdn25,
+!$omp&  init,dilog2)
 	include 'ff.h'
 	data xprec /-1./
 	data init /0/
+
 	if ( init .eq. 0 ) then
 	    init = 1
 * taylor(dilog(x-1),x,30);

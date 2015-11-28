@@ -11,11 +11,9 @@ c--- routines for exact definitions of the scales.
       include 'qcdcouple.f'
       include 'couple.f'
       include 'stopscales.f'
+      include 'first.f'
       double precision rscalestart,fscalestart,p(mxpart,4),mu0,
      & alphas
-      logical first
-      data first/.true./  
-      save first
       
       if     (dynstring .eq. 'm(34)') then
         call scaleset_m34(p,mu0)
@@ -41,6 +39,8 @@ c--- routines for exact definitions of the scales.
         call scaleset_HT(p,mu0)
       elseif (dynstring .eq. 'DDIS') then
         call scaleset_ddis(p,mu0)
+      elseif (dynstring .eq. 's-hat') then
+        call scaleset_shat(p,mu0)
       else
         write(6,*) 'Dynamic scale choice not recognized'
         write(6,*) '   dynamicscale = ',dynstring
@@ -49,8 +49,7 @@ c--- routines for exact definitions of the scales.
       
       scale=rscalestart*mu0
       facscale=fscalestart*mu0
-c--- piggy-back renomalization scale for fragmentation scale 
-      frag_scale=scale
+      frag_scale=frag_scalestart*mu0
           
       if (first) then
         write(6,*)
@@ -64,7 +63,7 @@ c--- piggy-back renomalization scale for fragmentation scale
       if (frag) then
         write(6,*)'*                                                  *'
         write(6,*)'*                  FRAGMENTATION                   *'
-        write(6,45) ' mu_frag =',rscalestart,dynstring
+        write(6,45) ' mu_frag =',frag_scalestart,dynstring
       endif
         write(6,*)'*                                                  *'
         write(6,*)'****************************************************'

@@ -14,8 +14,6 @@
       double precision wt0,wtttg,wtwp,wtwm,s3min
       parameter(wt0=1d0/twopi**4)
 
-
-      data wp,wm,ep,em,nn,nb,bp,bm/32*0d0/
 *     q(-p1) +qbar(-p2)=t(nu(p3)+e^+(p4)+b(p5))                        *
 *                       +t~(b~(p6)+e^-(p7)+nu(p8))+g(p9)               *
 *                                                                      * 
@@ -56,6 +54,7 @@
       enddo
       return
  999  wt7=0d0
+      p(:,:)=0d0
       return 1
       
       end

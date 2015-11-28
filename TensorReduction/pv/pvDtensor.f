@@ -12,6 +12,7 @@ C     m1s,m2s,m3s,m4s are the squares of the masses in the propagators
       include 'pvforcerecalc.f'
       include 'pvverbose.f'
       include 'pvDitry.f'
+      include 'TRmetric.f'
       double complex FD0(-2:0),FD1(y1max,-2:0),FD2(y2max,-2:0),
      . FD3(y3max,-2:0),FD4(y4max,-2:0),FD5(y5max,-2:0),FD6(y6max,-2:0)
       double precision p1(4),p2(4),p3(4),p4(4),p1Dp1,p2Dp2,p3Dp3,p4Dp4,
@@ -23,13 +24,12 @@ C     m1s,m2s,m3s,m4s are the squares of the masses in the propagators
      . pvSDDDDDD,pvSDDDDPP,pvSDDDDPK,pvSDDPPPP,pvSDDPPPK,pvSDDPPKK,
      . pvSDDPPKL,pvSDDPKKK,pvSPPPPPK,pvSPPPPKK,pvSPPPKKK,pvSPPPPKL,
      . pvSPPPKKL,pvSPPKKLL
+      integer nu,n1,n2,n3,n4,n5,n6,ep,pvDcache,D01,itry
+      logical failed
       double precision q1save(4),q2save(4),q3save(4)
       common/q123save/q1save,q2save,q3save  
-      integer nu,n1,n2,n3,n4,n5,n6,ep,pvDcache,D01,itry
-      logical first,failed
-      include 'TRmetric.f'
-      data first/.true./
-      save first
+      logical,save:: first=.true.
+!$omp threadprivate(first,/q123save/)
 
 c--- value of itry specifies which calculation to use for tensor coefficients:
 c---    itry=0            regular PV recursion

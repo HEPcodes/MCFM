@@ -17,6 +17,7 @@ c---  %%CITATION = JHEPA,0405,064;%%
       include 'qcdcouple.f'
       include 'zprods_com.f'
       include 'nflav.f'
+      include 'bitflags.f'
       integer j,k,nu
       double precision p(mxpart,4),Asq,fac,q(mxpart,4)
       double precision Hggggg,
@@ -28,8 +29,6 @@ c---  %%CITATION = JHEPA,0405,064;%%
      .                 gq_qqa,ga_aaq,qg_qqa,ag_aaq
       double precision ra_rag,qa_qag,
      & dummy,ss,s3456,msq(-nf:nf,-nf:nf),hdecay
-      double precision f0q,f2q,f4q
-      common/bitflags/f0q,f2q,f4q
       ss(j,k)=2d0
      . *(p(j,4)*p(k,4)-p(j,1)*p(k,1)-p(j,2)*p(k,2)-p(j,3)*p(k,3))
 C   Deal with Higgs decay to ZZ

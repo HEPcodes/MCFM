@@ -82,6 +82,7 @@ C--   Can also get valence quarks directly:
 C--    f =  7, 8, 9,10,11,12.
 C--      = dv,uv,sv,cv,bv,tv.
 C--   Photon: f = 13.
+
       double precision function GetOnePDF(prefix,ih,x,q,f)
       implicit none
       logical warn,fatal
@@ -95,6 +96,7 @@ C--    invalid input values of x and q are used.
      &     dummy,qsq,xlog,qsqlog,res,res1,anom,ExtrapolatePDF,
      &     InterpolatePDF,distance,tolerance,
      &     mCharm,mBottom,alphaSQ0,alphaSMZ
+
       parameter(nx=64,nq=48,np=12,nqc0=4,nqb0=14,
      &     nqc=nq-nqc0,nqb=nq-nqb0)
       parameter(xmin=1d-6,xmax=1d0,qsqmin=1d0,qsqmax=1d9,eps=1d-6)
@@ -104,11 +106,12 @@ C--    invalid input values of x and q are used.
       double precision ff(np,nx,nq)
       double precision qq(nq),xx(nx),cc(np,0:nhess,nx,nq,4,4)
       double precision xxl(nx),qql(nq)
+      save ff,xxl,qql,cc
 C--   Store distance along each eigenvector, tolerance,
 C--   heavy quark masses and alphaS parameters in COMMON block.
       common/mstwCommon/distance,tolerance,
      &     mCharm,mBottom,alphaSQ0,alphaSMZ,alphaSorder
-      save
+      save /mstwCommon/
       data xx/1d-6,2d-6,4d-6,6d-6,8d-6,
      &     1d-5,2d-5,4d-5,6d-5,8d-5,
      &     1d-4,2d-4,4d-4,6d-4,8d-4,
@@ -126,7 +129,9 @@ C--   heavy quark masses and alphaS parameters in COMMON block.
      &     1.8d4,3.2d4,5.6d4,1d5,1.8d5,3.2d5,5.6d5,1d6,
      &     1.8d6,3.2d6,5.6d6,1d7,1.8d7,3.2d7,5.6d7,1d8,
      &     1.8d8,3.2d8,5.6d8,1d9/
-
+      save xx,qq,oldprefix,io
+!$omp threadprivate(xx,qq,oldprefix,io)     
+!$omp threadprivate(/mstwCommon/)
       if (f.lt.-6.or.f.gt.13) then
          print *,"Error: invalid parton flavour = ",f
          stop
@@ -159,6 +164,7 @@ C--   Remove trailing blanks from prefix before assigning filename.
          filename = prefix(1:len_trim(prefix))//'.'//set//'.dat'
 C--   Line below can be commented out if you don't want this message.
          print *,"Reading PDF grid from ",filename(1:len_trim(filename))
+!$omp critical(MrsRead)
          open(unit=33,file=filename,iostat=io,status='old')
          if (io.ne.0) then
             print *,"Error in GetOnePDF: can't open ",
@@ -245,6 +251,7 @@ C--   Check that ALL the file contents have been read in.
             stop
          end if
          close(unit=33)
+!$omp end critical(MrsRead)
 
 C--   PDFs are identically zero at x = 1.
          do m=1,nq
@@ -418,7 +425,8 @@ C----------------------------------------------------------------------
      &     0,0,0,0,0,0,0,0,2,-2,0,0,1,1,0,0,
      &     -6,6,-6,6,-3,-3,3,3,-4,4,2,-2,-2,-2,-1,-1,
      &     4,-4,4,-4,2,2,-2,-2,2,-2,-2,2,1,1,1,1/
-
+      save iwt
+!$omp threadprivate(iwt)     
       do m=1,my
          ff1(1,m)=polderiv1(xx(1),xx(2),xx(3),
      &        ff(ip,1,m),ff(ip,2,m),ff(ip,3,m))

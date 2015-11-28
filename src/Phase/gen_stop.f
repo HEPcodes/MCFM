@@ -9,6 +9,10 @@
       include 'process.f'
       include 'reset.f'
       include 'part.f'
+      include 'x1x2.f'
+      include 'energy.f'
+      include 'notag.f'
+      include 'first.f'
 c---- Generate phase space for 2-->2+n process
 c---- with (345) being a top and 6,..,5+n the jets
 c---- r(mxdim),p1(4),p2(4) are inputs reversed in sign 
@@ -27,20 +31,18 @@ c---- larger than the value of 'njets' passed
       double precision r(mxdim)
       double precision p(mxpart,4),psumjet(4),pcm(4),Q(4)
       double precision wt,wt0,wtbg
-      double precision hmin,hmax,delh,h,sqrts,pt,etamax,etamin,xx(2)
+      double precision hmin,hmax,delh,h,pt,etamax,etamin
       double precision y,sinhy,coshy,phi,mv2,wtbw,mjets
       double precision ybar,ptsumjet2,ycm,sumpst,q0st,rshat,dely
       double precision ptjetmin,etajetmin,etajetmax,pbreak
       double precision plstar,estar,plstarsq,y5starmax,y5starmin,mtrans
       double precision bm(4),wp(4),nn(4),ep(4),pbg(4),g(4),wtwp,wtepnn
-      integer j,nu,njets,ijet,in,notag
-      logical first,oldzerowidth,xxerror
+      integer j,nu,njets,ijet,in
+      logical oldzerowidth,xxerror
       parameter(wt0=1d0/twopi**2)
-      common/energy/sqrts
-      common/x1x2/xx
-      common/notag/notag
-      data first/.true./,xxerror/.false./
-      save first,ptjetmin,etajetmin,etajetmax,pbreak,xxerror
+      data xxerror/.false./
+      save ptjetmin,etajetmin,etajetmax,pbreak,xxerror
+!$omp threadprivate(ptjetmin,etajetmin,etajetmax,pbreak,xxerror)
 
       if (first .or. reset) then
         first=.false.

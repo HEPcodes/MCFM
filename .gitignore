@@ -21,3 +21,14 @@
 /Doc/*.toc
 /mcfm.dSYM
 /QCDLoop/test.dSYM/
+
+/Bin/mcfm_omp
+/obj_omp
+/QCDLoop/ff/libff_omp.a
+/QCDLoop/ql/libqcdloop_omp.a
+/TensorReduction/ov/libov_omp.a
+/TensorReduction/pv/libpv_omp.a
+/TensorReduction/recur/libsmallF_omp.a
+/TensorReduction/recur/libsmallG_omp.a
+/TensorReduction/recur/libsmallP_omp.a
+/TensorReduction/recur/libsmallY_omp.a

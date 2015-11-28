@@ -18,6 +18,7 @@ c--initial state gluons coupling to b not included
       include 'masses.f'
       include 'heavyflav.f'
       include 'nflav.f'
+      include 'first.f'
       integer j,k,nd
 c --- remember: nd will count the dipoles
       
@@ -45,9 +46,7 @@ c --- remember: nd will count the dipoles
      &                 mgg17_5v(0:2),mgg17_6v(0:2),
      &                 mgg27_5v(0:2),mgg27_6v(0:2)
       external qqb_zbb,donothing_gvec,qqb_zbb_gvec
-      logical first
-      data first/.true./
-      save first,scalesq
+      save scalesq
 
       if (first) then
        if     (flav .eq. 5) then
