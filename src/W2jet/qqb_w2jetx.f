@@ -74,7 +74,7 @@ c--- and by type of contribution qqb(1) ... qqb(n)
           write(*,*) '[LC is   1 ]'
           write(*,*) '[SLC is 1/N]'
         endif
-        if (part .eq. 'lord') then
+c        if (part .eq. 'lord') then
           if     (colourchoice .eq. 1) then
             write(*,*) 'Leading colour only'
           elseif (colourchoice .eq. 2) then
@@ -85,9 +85,9 @@ c--- and by type of contribution qqb(1) ... qqb(n)
             write(*,*) 'Bad colourchoice'
             stop
           endif
-        else
-          write(*,*) 'Calculating all colour structures in LO'
-        endif
+c        else
+c          write(*,*) 'Calculating all colour structures in LO'
+c        endif
       endif
 
 c--- if we're calculating the REAL or VIRT matrix elements, we
@@ -95,7 +95,10 @@ c--- need all the colour structures, but want to preserve
 c--- the actual value of colourchoice
       if ((part .eq. 'real') .or. (part .eq. 'virt')) then
         rcolourchoice=colourchoice
-        colourchoice=0
+c--- 21/5/09: we only need all the information for Gflag, not Qflag
+        if (Gflag) then
+	  colourchoice=0
+	endif
       endif     
 c--- if we're calculating the REAL matrix elements with Qflag=TRUE,
 c    the subtraction terms involve the (Gflag=TRUE) matrix elements
@@ -491,6 +494,44 @@ c--- qb(i) qb(j) --> qb(i) ( --> W qb(k) ) qb(j)
         qbqb_ijjk(1)=abs(qbqb1(4))**2+abs(qbqb3(4))**2
         qbqb_ijjk(2)=zip
         qbqb_ijjk(0)=zip
+      endif
+
+c--- remove all subleading colour pieces if they are not required
+      if (colourchoice .eq. 1) then
+        qqb_ijkk(0)=zip
+        qqb_ijii(0)=zip 
+        qqb_ijjj(0)=zip
+        qqb_ijkj(0)=zip
+        qqb_ijik(0)=zip
+        qqb_ijkl(0)=zip
+        qqb_iiij(0)=zip
+        qqb_iiji(0)=zip
+        qbq_ijkk(0)=zip
+        qbq_ijii(0)=zip
+        qbq_ijjj(0)=zip
+        qbq_ijkj(0)=zip
+        qbq_ijik(0)=zip
+        qbq_ijkl(0)=zip
+        qbq_iiij(0)=zip
+        qbq_iiji(0)=zip
+        qq_iiji(0)=zip
+        qq_ijkj(0)=zip
+        qq_ijik(0)=zip
+        qq_ijjj(0)=zip
+        qq_ijii(0)=zip
+        qbqb_iiji(0)=zip
+        qbqb_ijkj(0)=zip
+        qbqb_ijik(0)=zip
+        qbqb_ijjj(0)=zip
+        qbqb_ijii(0)=zip
+        qqbxiiij(0)=zip
+        qqbxiiji(0)=zip
+        qqbxijii(0)=zip
+        qqbxijjj(0)=zip
+        qbqxiiij(0)=zip
+        qbqxiiji(0)=zip
+        qbqxijii(0)=zip
+        qbqxijjj(0)=zip
       endif
 
       

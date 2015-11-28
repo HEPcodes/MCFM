@@ -77,84 +77,81 @@ c      common/breit/n2,n3,mass2,width2,mass3,width3
      &    /2.D0*taucs*taucg**(-1)*taugs**(-1)*xn**(-1)*qcs*amm2*fL6m1
      &     - 1.D0/2.D0*taucs*taucg**(-1)*taugs**(-1)*xn**(-1)*qcs**2*
      &    amm3*fL6m1 - 1.D0/2.D0*taucs*taucg**(-1)*qsqhat*xn**(-1)*amm1
-     &    *fL6m1 + 2.D0*taucs*taucg*taugs**(-1)*cf*amm3 + 1.D0/2.D0*
-     &    taucs*taucg*taugs**(-1)*xn*amm3*fL6m3 + 1.D0/2.D0*taucs*
-     &    taugs**(-1)*mQ**2*xn**(-1)*amm1*fL6m2 + taucs*taugs**(-1)*cf*
-     &    qcs*amm5*fq2m2 + 1.D0/2.D0*taucs*taugs**(-1)*cf*qcg*amm5*
-     &    fq2m2 - taucs*taugs**(-1)*cf*cgs1*amm1 - 4.D0*taucs*qsq**(-1)
-     &    *mQ**2*cf*amm1 - 2.D0*taucs*qsq**(-1)*mQ**2*xn**(-1)*amm1 + 2.
-     &    D0*taucs*qsq**(-1)*mQ**2*xn*amm1 + 4.D0*taucs*qsq**(-1)*cf*
-     &    cgs1*amm1 + 2.D0*taucs*qsq**(-1)*xn**(-1)*cgs1*amm1 - 2.D0*
-     &    taucs*qsq**(-1)*xn*cgs1*amm1
-      smm = smm - 4.D0*taucs*cf*amm1*fq2m2 + 2.D0*taucs*cf*amm1 - 2.D0*
-     &    taucs*xn**(-1)*amm1*ffcs2 - 2.D0*taucs*xn**(-1)*amm1*fq2m2 + 
-     &    2.D0*taucs*xn*amm1*fq2m2 - 1.D0/2.D0*taucs**2*taugs**(-1)*cf*
-     &    amm1 - 1.D0/2.D0*taucs**2*taugs**(-1)*cf*amm3 + 2.D0*
-     &    taucg**(-1)*taugs*mQ**2*cf*amm3*ffcg3 + taucg**(-1)*taugs*
-     &    mQ**2*cf*amm3 - 2.D0*taucg**(-1)*mQ**2*cf*amm2*ffcg3 - 
-     &    taucg**(-1)*mQ**2*xn*amm2*fL6m3 - 1.D0/2.D0*taucg*taugs**(-1)
-     &    *tcs*xn**(-1)*amm3*fL6m2 - taucg*taugs**(-1)*cf*amm2 - taucg*
-     &    taugs**(-1)*xn**(-1)*qcs*amm3 - 1.D0/2.D0*taucg*taugs**(-1)*
-     &    xn**(-1)*amm2*fL6m2 - taucg*taugs**(-1)*xn**(-1)*amm2 - taucg
-     &    *qsq**(-1)*mQ**2*cf*amm3*ffcg3 + taucg*cf*amm1 - 2.D0*taucg*
-     &    cf*amm3 - taucg**2*taugs**(-1)*cf*amm3 + 1.D0/2.D0*
-     &    taugs**(-1)*qsq*xn**(-1)*amm2*fL6m2 + 1.D0/2.D0*taugs**(-1)*
-     &    mQ**2*xn**(-1)*qcs*amm3*fL6m2 + taugs**(-1)*cf*cgs1*amm2 - 
-     &    taugs**(-1)*xn**(-1)*cgs1*amm2*fL6m2 + 1.D0/2.D0*taugs**(-1)*
-     &    xn*qcg*amm2*fL6m3
-      smm = smm + taugs*tcs*xn**(-1)*amm1*ffcs1 + taugs*qsq**(-1)*mQ**2
-     &    *cf*amm3*ffcg1 - 2.D0*taugs*qsq**(-1)*mQ**2*cf*amm3*ffcg3 - 
-     &    taugs*cf*amm1 - taugs*cf*amm3 + taugs*xn**(-1)*amm1*ffcs2 + 
-     &    tcg**(-1)*mQ**4*cf*amm3 - qsq**(-1)*mQ**2*cf*amm2*ffcg3 - 2.D0
-     &    *mQ**2*cf*amm1 - 2.D0*mQ**2*cf*amm3*ffcg3 - 4.D0*mQ**2*cf*
-     &    amm3 - mQ**2*xn**(-1)*amm1*ffcs2 - mQ**2*xn**(-1)*amm1 - 
-     &    mQ**2*xn**(-1)*amm3*ffcg3 - 1.D0/2.D0*mQ**2*xn*qcs*cgs1**(-1)
-     &    *amm3*fL6m3 - 1.D0/2.D0*mQ**2*xn*qcg*cgs1**(-1)*amm1*fL6m3 - 
-     &    1.D0/2.D0*mQ**2*xn*cgs1**(-1)*amm2*fL6m3 + 1.D0/2.D0*mQ**2*xn
-     &    *amm1*fL6m3 - mQ**2*xn*amm3*fL6m3 - xlog*b0*amm2 - xlog*b0*
-     &    amm4 + 3.D0/2.D0*epin*cf*amm2 + 3.D0/2.D0*epin*cf*amm4 + epin
-     &    *b0*amm2 + epin*b0*amm4 - 1.D0/2.D0*epin*xn**(-1)*amm2 - 1.D0/
-     &    2.D0*epin*xn**(-1)*amm4 + 1.D0/2.D0*epin*xn*amm2 + 1.D0/2.D0*
-     &    epin*xn*amm4 - 1.D0/2.D0*epin2*xn**(-1)*amm2 - 1.D0/2.D0*
-     &    epin2*xn**(-1)*amm4 + 3.D0/2.D0*epin2*xn*amm2 + 3.D0/2.D0*
-     &    epin2*xn*amm4
-      smm = smm + 1.D0/2.D0*cf*qcs*amm5*fq2m2 + cf*cgs1*amm1 + 7.D0/2.D0
-     &    *cf*amm2 + 5.D0/2.D0*cf*amm4 + xn**(-1)*cgs1*amm1 - 1.D0/2.D0
-     &    *xn**(-1)*pisqo6*amm2 - 1.D0/2.D0*xn**(-1)*pisqo6*amm4 - 
-     &    xn**(-1)*amm2*ffcs2 - xn**(-1)*amm2*fL6m2 - xn*qgs*amm1 - xn*
-     &    cgs1*amm1 + 1.D0/2.D0*xn*pisqo6*amm2 + 1.D0/2.D0*xn*pisqo6*
-     &    amm4 - ddilog(msq**(-1)*tcs)*xn**(-1)*amm2 - ddilog(msq**(-1)
-     &    *tcs)*xn**(-1)*amm4 + ddilog(msq**(-1)*tcg)*xn*amm2 + ddilog(
-     &    msq**(-1)*tcg)*xn*amm4 - lnrat( - taucs,msq)*taucs*tcs**(-1)*
-     &    mQ**2*xn**(-1)*amm1 - 2.D0*lnrat( - taucs,msq)*taucs**2*
-     &    tcs**(-1)*xn**(-1)*amm1 + lnrat( - taucs,msq)*tcs**(-1)*mQ**2
-     &    *xn**(-1)*amm2 - lnrat( - taucs,msq)*tcs*xn**(-1)*amm3 + 
-     &    lnrat( - taucs,msq)*epin*xn**(-1)*amm2 + lnrat( - taucs,msq)*
-     &    epin*xn**(-1)*amm4 - lnrat( - taucs,msq)**2*xn**(-1)*amm2 - 
-     &    lnrat( - taucs,msq)**2*xn**(-1)*amm4 + lnrat( - taucg,msq)*
-     &    taucg**2*tcg**(-2)*mQ**2*cf*amm3 - 2.D0*lnrat( - taucg,msq)*
-     &    tcg**(-1)*mQ**2*cf*qcs*amm3
-      smm = smm - 2.D0*lnrat( - taucg,msq)*mQ**2*cf*amm1 - lnrat( - 
-     &    taucg,msq)*mQ**2*xn**(-1)*amm1 - lnrat( - taucg,msq)*epin*xn*
-     &    amm2 - lnrat( - taucg,msq)*epin*xn*amm4 + lnrat( - taucg,msq)
-     &    **2*xn*amm2 + lnrat( - taucg,msq)**2*xn*amm4 - lnrat( - taugs
-     &    ,msq)*taucs*taugs**(-1)*cf*amm2 + lnrat( - taugs,msq)*taucs*
-     &    cf*amm5 + lnrat( - taugs,msq)*taucs*xn**(-1)*amm3 + lnrat( - 
-     &    taugs,msq)*taucs**2*taugs**(-1)*cf*amm3 + 1.D0/2.D0*lnrat( - 
-     &    taugs,msq)*taucs**2*mQ**(-2)*cf*amm5 + 1.D0/2.D0*lnrat( - 
-     &    taugs,msq)*taugs*cf*amm5 - lnrat( - taugs,msq)*mQ**2*cf*amm3
-     &     - lnrat( - taugs,msq)*mQ**2*cf*amm5 - lnrat( - taugs,msq)*
-     &    epin*xn*amm2 - lnrat( - taugs,msq)*epin*xn*amm4 + 1.D0/2.D0*
-     &    lnrat( - taugs,msq)*xn**(-1)*qcg*amm5 - lnrat( - taugs,msq)*
-     &    xn*amm2 + 1.D0/2.D0*lnrat( - taugs,msq)**2*xn*amm2 + 1.D0/2.D0
-     &    *lnrat( - taugs,msq)**2*xn*amm4 - 3.D0*lnrat( - qsqhat,msq)*
-     &    taucs*taucg*taugs**(-1)*qsq**(-1)*qsqhat*cf*amm3 - 2.D0*
+     &    *fL6m1 + taucs*taucg*taugs**(-1)*cf*amm3 + 1.D0/2.D0*taucs*
+     &    taucg*taugs**(-1)*xn*amm3*fL6m3 + 1.D0/2.D0*taucs*taugs**(-1)
+     &    *mQ**2*xn**(-1)*amm1*fL6m2 + taucs*taugs**(-1)*cf*qcs*amm5*
+     &    fq2m2 + 1.D0/2.D0*taucs*taugs**(-1)*cf*qcg*amm5*fq2m2 - 4.D0*
+     &    taucs*qsq**(-1)*mQ**2*cf*amm1 - 2.D0*taucs*qsq**(-1)*mQ**2*
+     &    xn**(-1)*amm1 + 2.D0*taucs*qsq**(-1)*mQ**2*xn*amm1 + 4.D0*
+     &    taucs*qsq**(-1)*cf*cgs1*amm1 + 2.D0*taucs*qsq**(-1)*xn**(-1)*
+     &    cgs1*amm1 - 2.D0*taucs*qsq**(-1)*xn*cgs1*amm1 - 4.D0*taucs*cf
+     &    *amm1*fq2m2
+      smm = smm + 3.D0*taucs*cf*amm1 + taucs*cf*amm3 - 2.D0*taucs*
+     &    xn**(-1)*amm1*ffcs2 - 2.D0*taucs*xn**(-1)*amm1*fq2m2 + 2.D0*
+     &    taucs*xn*amm1*fq2m2 - taucs*xn*amm1 - 1.D0/2.D0*taucs**2*
+     &    taugs**(-1)*cf*amm1 - 1.D0/2.D0*taucs**2*taugs**(-1)*cf*amm3
+     &     + 2.D0*taucg**(-1)*taugs*mQ**2*cf*amm3*ffcg3 - 2.D0*
+     &    taucg**(-1)*mQ**2*cf*amm2*ffcg3 - taucg**(-1)*mQ**2*xn*amm2*
+     &    fL6m3 - 1.D0/2.D0*taucg*taugs**(-1)*tcs*xn**(-1)*amm3*fL6m2
+     &     - 1.D0/2.D0*taucg*taugs**(-1)*xn**(-1)*amm2*fL6m2 - taucg*
+     &    qsq**(-1)*mQ**2*cf*amm3*ffcg3 + 1.D0/2.D0*taugs**(-1)*qsq*
+     &    xn**(-1)*amm2*fL6m2 + 1.D0/2.D0*taugs**(-1)*mQ**2*xn**(-1)*
+     &    qcs*amm3*fL6m2 + taugs**(-1)*cf*cgs1*amm2 - taugs**(-1)*
+     &    xn**(-1)*cgs1*amm2*fL6m2 + 1.D0/2.D0*taugs**(-1)*xn*qcg*amm2*
+     &    fL6m3 + taugs*tcs*xn**(-1)*amm1*ffcs1 + taugs*qsq**(-1)*mQ**2
+     &    *cf*amm3*ffcg1 - 2.D0*taugs*qsq**(-1)*mQ**2*cf*amm3*ffcg3 + 
+     &    taugs*xn**(-1)*amm1*ffcs2 + tcg**(-1)*mQ**4*cf*amm3 - 
+     &    qsq**(-1)*mQ**2*cf*amm2*ffcg3
+      smm = smm - mQ**2*cf*amm1 - 2.D0*mQ**2*cf*amm3*ffcg3 - 3.D0*mQ**2
+     &    *cf*amm3 - mQ**2*xn**(-1)*amm1*ffcs2 - mQ**2*xn**(-1)*amm3*
+     &    ffcg3 - 1.D0/2.D0*mQ**2*xn*qcs*cgs1**(-1)*amm3*fL6m3 - 1.D0/2.
+     &    D0*mQ**2*xn*qcg*cgs1**(-1)*amm1*fL6m3 - 1.D0/2.D0*mQ**2*xn*
+     &    cgs1**(-1)*amm2*fL6m3 + 1.D0/2.D0*mQ**2*xn*amm1*fL6m3 - mQ**2
+     &    *xn*amm3*fL6m3 - xlog*b0*amm2 - xlog*b0*amm4 + 3.D0/2.D0*epin
+     &    *cf*amm2 + 3.D0/2.D0*epin*cf*amm4 + epin*b0*amm2 + epin*b0*
+     &    amm4 - 1.D0/2.D0*epin*xn**(-1)*amm2 - 1.D0/2.D0*epin*xn**(-1)
+     &    *amm4 + 1.D0/2.D0*epin*xn*amm2 + 1.D0/2.D0*epin*xn*amm4 - 1.D0
+     &    /2.D0*epin2*xn**(-1)*amm2 - 1.D0/2.D0*epin2*xn**(-1)*amm4 + 3.
+     &    D0/2.D0*epin2*xn*amm2 + 3.D0/2.D0*epin2*xn*amm4 + 1.D0/2.D0*
+     &    cf*qcs*amm5*fq2m2 + 5.D0/2.D0*cf*amm2 + 5.D0/2.D0*cf*amm4 - 1.
+     &    D0/2.D0*xn**(-1)*pisqo6*amm2 - 1.D0/2.D0*xn**(-1)*pisqo6*amm4
+     &     - xn**(-1)*amm2*ffcs2 - xn**(-1)*amm2*fL6m2 - xn**(-1)*amm2
+     &     + 1.D0/2.D0*xn*pisqo6*amm2 + 1.D0/2.D0*xn*pisqo6*amm4 - 
+     &    ddilog(
+     & msq**(-1)*tcs)*xn**(-1)*amm2 - ddilog(msq**(-1)*tcs)*xn**(-1)*
+     &    amm4 + ddilog(msq**(-1)*tcg)*xn*amm2 + ddilog(msq**(-1)*tcg)*
+     &    xn*amm4 - lnrat( - taucs,msq)*taucs*tcs**(-1)*mQ**2*xn**(-1)*
+     &    amm1 - 2.D0*lnrat( - taucs,msq)*taucs**2*tcs**(-1)*xn**(-1)*
+     &    amm1 + lnrat( - taucs,msq)*tcs**(-1)*mQ**2*xn**(-1)*amm2 - 
+     &    lnrat( - taucs,msq)*tcs*xn**(-1)*amm3 + lnrat( - taucs,msq)*
+     &    epin*xn**(-1)*amm2 + lnrat( - taucs,msq)*epin*xn**(-1)*amm4
+     &     - lnrat( - taucs,msq)**2*xn**(-1)*amm2 - lnrat( - taucs,msq)
+     &    **2*xn**(-1)*amm4 - 2.D0*lnrat( - taucg,msq)*taucg*tcg**(-1)*
+     &    mQ**2*cf*amm1 - lnrat( - taucg,msq)*taucg*tcg**(-1)*mQ**2*
+     &    xn**(-1)*amm1 + lnrat( - taucg,msq)*taucg**2*tcg**(-2)*mQ**2*
+     &    cf*amm3 - 2.D0*lnrat( - taucg,msq)*tcg**(-1)*mQ**2*cf*qcs*
+     &    amm3 - 2.D0*lnrat( - taucg,msq)*tcg**(-1)*mQ**4*cf*amm1 - 
+     &    lnrat( - taucg,msq)*tcg**(-1)*mQ**4*xn**(-1)*amm1 - lnrat( - 
+     &    taucg,msq)*epin*xn*amm2 - lnrat( - taucg,msq)*epin*xn*amm4 + 
      &    lnrat(
-     &  - qsqhat,msq)*taucs*taugs**(-1)*qsq**(-1)*mQ**2*qsqhat*cf*amm3
-     &     + 3.D0*lnrat( - qsqhat,msq)*taucs*qsq**(-1)*qsqhat*cf*amm3
-     &     + 2.D0*lnrat( - qsqhat,msq)*taucs*qsq**(-1)*qsqhat*cf*amm5
-     &     + 3.D0/2.D0*lnrat( - qsqhat,msq)*taucs*qsq**(-1)*qsqhat*xn*
-     &    amm1 - lnrat( - qsqhat,msq)*taucs**2*taugs**(-1)*qsq**(-1)*
+     &  - taucg,msq)**2*xn*amm2 + lnrat( - taucg,msq)**2*xn*amm4 - 
+     &    lnrat( - taugs,msq)*taucs*taugs**(-1)*cf*amm2 + lnrat( - 
+     &    taugs,msq)*taucs*cf*amm5 + lnrat( - taugs,msq)*taucs*xn**(-1)
+     &    *amm3 + lnrat( - taugs,msq)*taucs**2*taugs**(-1)*cf*amm3 + 1.D
+     &    0/2.D0*lnrat( - taugs,msq)*taucs**2*mQ**(-2)*cf*amm5 + 1.D0/2.
+     &    D0*lnrat( - taugs,msq)*taugs*cf*amm5 - lnrat( - taugs,msq)*
+     &    mQ**2*cf*amm3 - lnrat( - taugs,msq)*mQ**2*cf*amm5 - lnrat( - 
+     &    taugs,msq)*epin*xn*amm2 - lnrat( - taugs,msq)*epin*xn*amm4 + 
+     &    1.D0/2.D0*lnrat( - taugs,msq)*xn**(-1)*qcg*amm5 - lnrat( - 
+     &    taugs,msq)*xn*amm2 + 1.D0/2.D0*lnrat( - taugs,msq)**2*xn*amm2
+     &     + 1.D0/2.D0*lnrat( - taugs,msq)**2*xn*amm4 - 3.D0*lnrat( - 
+     &    qsqhat,msq)*taucs*taucg*taugs**(-1)*qsq**(-1)*qsqhat*cf*amm3
+     &     - 2.D0*lnrat( - qsqhat,msq)*taucs*taugs**(-1)*qsq**(-1)*
+     &    mQ**2*qsqhat*cf*amm3 + 3.D0*lnrat( - qsqhat,msq)*taucs*
+     &    qsq**(-1)*qsqhat*cf*amm3 + 2.D0*lnrat( - qsqhat,msq)*taucs*
+     &    qsq**(-1)*qsqhat*cf*amm5
+      smm = smm + 3.D0/2.D0*lnrat( - qsqhat,msq)*taucs*qsq**(-1)*qsqhat
+     & *xn*amm1 - lnrat( - qsqhat,msq)*taucs**2*taugs**(-1)*qsq**(-1)*
      &    qsqhat*cf*amm3 - 1.D0/2.D0*lnrat( - qsqhat,msq)*taucs**2*
      &    taugs**(-1)*qsq**(-1)*qsqhat*cf*amm5 - 1.D0/2.D0*lnrat( - 
      &    qsqhat,msq)*taucs**2*qsq**(-1)*mQ**(-2)*qsqhat*cf*amm5 + 
@@ -165,48 +162,50 @@ c      common/breit/n2,n3,mass2,width2,mass3,width3
      &    qsqhat*cf*amm3 - 3.D0/2.D0*lnrat( - qsqhat,msq)*taugs*
      &    qsq**(-1)*qsqhat*cf*amm5 - 1.D0/2.D0*lnrat( - qsqhat,msq)*
      &    taugs*qsq**(-1)*qsqhat*xn*amm1 + 2.D0*lnrat( - qsqhat,msq)*
-     &    qsq**(-1)*mQ**2*qsqhat*cf*amm3
-      smm = smm - 3.D0*lnrat( - qsqhat,msq)*qsq**(-1)*mQ**2*qsqhat*cf*
-     & amm5 + 3.D0/2.D0*lnrat( - qsqhat,msq)*qsq**(-1)*mQ**2*qsqhat*
-     &    xn**(-1)*amm1 - 1.D0/2.D0*lnrat( - qsqhat,msq)*qsq**(-1)*
-     &    mQ**2*qsqhat*xn*amm1 + lnrat( - qsqhat,msq)*qsq**(-1)*qsqhat*
-     &    xn**(-1)*qcg*amm1 + 1.D0/2.D0*lnrat( - qsqhat,msq)*qsq**(-1)*
-     &    qsqhat*xn**(-1)*qcg*amm3 + lnrat( - qsqhat,msq)*qsq**(-1)*
-     &    qsqhat*xn**(-1)*amm2 - 2.D0*C0fb2m(tcg,msq)*taucs**(-1)*
-     &    taucg**(-1)*taugs*mQ**4*xn**(-1)*amm2 + C0fb2m(tcg,msq)*
-     &    taucs**(-1)*taucg*mQ**2*xn**(-1)*cgs1*amm3 + C0fb2m(tcg,msq)*
-     &    taucs**(-1)*mQ**2*xn**(-1)*qcg*amm2 - C0fb2m(tcg,msq)*
-     &    taucs**(-1)*mQ**4*xn**(-1)*amm2 - C0fa2m(tcs,qsq,msq)*
-     &    taucs**(-1)*taucg**(-1)*taugs*mQ**2*xn**(-1)*qcs*amm2 - 2.D0*
-     &    C0fa2m(tcs,qsq,msq)*taucs**(-1)*taucg**(-1)*mQ**2*xn**(-1)*
-     &    qcs*cgs1*amm2 + C0fa2m(tcs,qsq,msq)*taucs**(-1)*taucg**(-1)*
-     &    mQ**4*xn**(-1)*qcs*amm2 - C0fa2m(tcs,qsq,msq)*taucs**(-1)*
-     &    mQ**2*xn**(-1)*qcs*cgs1*amm3
-      smm = smm - 2.D0*C0fa2m(tcs,qsq,msq)*taucs*mQ**2*xn**(-1)*amm1 + 
-     &    C0fa2m(tcs,qsq,msq)*taucg**(-1)*taugs*mQ**4*xn**(-1)*amm1 - 
-     &    C0fa2m(tcs,qsq,msq)*mQ**2*xn**(-1)*amm2 - 18.D0*ffc002*taucs*
-     &    taugs**(-1)*cf*qcs*amm5 + 6.D0*ffc002*taucs**2*taugs**(-1)*
-     &    mQ**(-2)*cf*qgs*amm5 + 6.D0*ffc002*taucg*taugs**(-1)*cf*qcg*
-     &    amm5 + 12.D0*ffc002*mQ**2*cf*amm5 + 24.D0*ffc00*taucs*taucg*
-     &    taugs**(-1)*cf*amm3 + 4.D0*ffc00*taucs*taugs**(-2)*cf*qgs*
-     &    amm2 + 4.D0*ffc00*taucs*taugs**(-1)*tcs*cf*amm1 + 16.D0*ffc00
-     &    *taucs*taugs**(-1)*mQ**2*cf*amm3 + 12.D0*ffc00*taucs*
-     &    taugs**(-1)*cf*qcs*amm1 + 8.D0*ffc00*taucs*taugs**(-1)*cf*
-     &    amm2 + 12.D0*ffc00*taucs*cf*amm3 - 4.D0*ffc00*taucs**2*
-     &    taugs**(-2)*qsqhat*cf*amm3 + 8.D0*ffc00*taucs**2*taugs**(-1)*
-     &    cf*amm3 + 12.D0*ffc00*taucg*taugs**(-1)*mQ**2*cf*amm1 - 8.D0*
-     &    ffc00*taucg*taugs**(-1)*mQ**2*cf*amm3 - 4.D0*ffc00*taucg*
-     &    taugs**(-1)*cf*amm2 - 16.D0*ffc00*taugs**(-1)*mQ**2*cf*qcs*
-     &    amm1
-      smm = smm - 8.D0*ffc00*taugs**(-1)*mQ**2*cf*amm2 + 2.D0*ffc00*
-     &    taugs**(-1)*xn**(-1)*qgs*qcg*amm5 - 4.D0*ffc00*tcg*xn**(-1)*
-     &    amm5 - 28.D0*ffc00*mQ**2*cf*amm3 - fI3me*taucg**(-1)*taugs*
-     &    mQ**2*xn*amm2 - fI3me*taucg**(-1)*taugs*mQ**4*xn*amm1 - 2.D0*
-     &    fI3me*taucg**(-1)*mQ**2*xn*cgs1*amm2 - fI3me*taucg*mQ**2*xn*
-     &    amm3 - fI3me*taugs*mQ**2*xn**(-1)*amm1 - 2.D0*fI3me*taugs*
-     &    mQ**2*xn*amm3 - 2.D0*fI3me*mQ**2*cf*qgs*amm3 + 4.D0*fI3me*
-     &    mQ**2*cf*qcs*amm3 + 2.D0*fI3me*mQ**2*cf*amm2 - 2.D0*fI3me*
-     &    mQ**2*xn*cgs1*amm3 - fI3me*mQ**2*xn*amm2
+     &    qsq**(-1)*mQ**2*qsqhat*cf*amm3 - 3.D0*lnrat( - qsqhat,msq)*
+     &    qsq**(-1)*mQ**2*qsqhat*cf*amm5 + 3.D0/2.D0*lnrat( - qsqhat,
+     &    msq)*qsq**(-1)*mQ**2*qsqhat*xn**(-1)*amm1 - 1.D0/2.D0*lnrat(
+     &     - qsqhat,msq)*qsq**(-1)*mQ**2*qsqhat*xn*amm1
+      smm = smm + lnrat( - qsqhat,msq)*qsq**(-1)*qsqhat*xn**(-1)*qcg*
+     & amm1 + 1.D0/2.D0*lnrat( - qsqhat,msq)*qsq**(-1)*qsqhat*xn**(-1)*
+     &    qcg*amm3 + lnrat( - qsqhat,msq)*qsq**(-1)*qsqhat*xn**(-1)*
+     &    amm2 - 2.D0*C0fb2m(tcg,msq)*taucs**(-1)*taucg**(-1)*taugs*
+     &    mQ**4*xn**(-1)*amm2 + C0fb2m(tcg,msq)*taucs**(-1)*taucg*mQ**2
+     &    *xn**(-1)*cgs1*amm3 + C0fb2m(tcg,msq)*taucs**(-1)*mQ**2*
+     &    xn**(-1)*qcg*amm2 - C0fb2m(tcg,msq)*taucs**(-1)*mQ**4*
+     &    xn**(-1)*amm2 + 2.D0*C0fa2m(tcs,qsq,msq)*taucs**(-1)*
+     &    taucg**(-2)*mQ**4*xn**(-1)*qcs**2*amm2 - C0fa2m(tcs,qsq,msq)*
+     &    taucs**(-1)*taucg**(-1)*mQ**2*xn**(-1)*qcs**2*amm2 - C0fa2m(
+     &    tcs,qsq,msq)*taucs**(-1)*taucg**(-1)*mQ**4*xn**(-1)*qcs*amm2
+     &     - C0fa2m(tcs,qsq,msq)*taucs**(-1)*mQ**2*xn**(-1)*qcs*cgs1*
+     &    amm3 + C0fa2m(tcs,qsq,msq)*taucs**(-1)*mQ**2*xn**(-1)*qcs*
+     &    amm2 - 2.D0*C0fa2m(tcs,qsq,msq)*taucs*mQ**2*xn**(-1)*amm1 + 
+     &    C0fa2m(tcs,qsq,msq)*taucg**(-1)*taugs*mQ**4*xn**(-1)*amm1 - 2.
+     &    D0*C0fa2m(tcs,qsq,msq)*taucg**(-1)*mQ**2*xn**(-1)*qcs*amm2
+      smm = smm - C0fa2m(tcs,qsq,msq)*mQ**2*xn**(-1)*amm2 - 18.D0*
+     &    ffc002*taucs*taugs**(-1)*cf*qcs*amm5 + 6.D0*ffc002*taucs**2*
+     &    taugs**(-1)*mQ**(-2)*cf*qgs*amm5 + 6.D0*ffc002*taucg*
+     &    taugs**(-1)*cf*qcg*amm5 + 12.D0*ffc002*mQ**2*cf*amm5 + 24.D0*
+     &    ffc00*taucs*taucg*taugs**(-1)*cf*amm3 + 4.D0*ffc00*taucs*
+     &    taugs**(-2)*cf*qgs*amm2 + 4.D0*ffc00*taucs*taugs**(-1)*tcs*cf
+     &    *amm1 + 16.D0*ffc00*taucs*taugs**(-1)*mQ**2*cf*amm3 + 12.D0*
+     &    ffc00*taucs*taugs**(-1)*cf*qcs*amm1 + 8.D0*ffc00*taucs*
+     &    taugs**(-1)*cf*amm2 + 12.D0*ffc00*taucs*cf*amm3 - 4.D0*ffc00*
+     &    taucs**2*taugs**(-2)*qsqhat*cf*amm3 + 8.D0*ffc00*taucs**2*
+     &    taugs**(-1)*cf*amm3 + 12.D0*ffc00*taucg*taugs**(-1)*mQ**2*cf*
+     &    amm1 - 8.D0*ffc00*taucg*taugs**(-1)*mQ**2*cf*amm3 - 4.D0*
+     &    ffc00*taucg*taugs**(-1)*cf*amm2 - 16.D0*ffc00*taugs**(-1)*
+     &    mQ**2*cf*qcs*amm1 - 8.D0*ffc00*taugs**(-1)*mQ**2*cf*amm2 + 2.D
+     &    0*ffc00*taugs**(-1)*xn**(-1)*qgs*qcg*amm5 - 4.D0*ffc00*tcg*
+     &    xn**(-1)*amm5
+      smm = smm - 28.D0*ffc00*mQ**2*cf*amm3 + fI3me*taucs*mQ**2*
+     &    xn**(-1)*amm3 - 3.D0*fI3me*taucs*mQ**2*xn*amm3 - fI3me*taucs*
+     &    xn*amm2 - fI3me*taucg**(-1)*taugs*mQ**4*xn*amm1 + 2.D0*fI3me*
+     &    taucg**(-1)*taugs*mQ**4*xn*amm3 - 2.D0*fI3me*taucg**(-1)*
+     &    mQ**2*xn*cgs1*amm2 - fI3me*taucg*mQ**2*xn**(-1)*amm3 - fI3me*
+     &    taugs*mQ**2*xn**(-1)*amm1 - 2.D0*fI3me*taugs*mQ**2*xn**(-1)*
+     &    amm3 + 2.D0*fI3me*mQ**2*cf*amm2 - fI3me*mQ**2*xn*amm2 + fI3me
+     &    *xn*cgs1*amm2
 
       
       lomm =-(za(ig,ie)*zb(ig,is)+za(ie,ic)*zb(is,ic))*zb(is,in)
@@ -217,8 +216,8 @@ c--- alphas(DR) = alphas(MSbar) * (1+ (Nc / 6) * alphas(MSbar) / (2*pi))
       smm=smm + lomm * xn/6d0
       
 c--- include finite counterterm due to FDH scheme
-c--- gw = gw * ( 1 - cf * alphas(MSbar) / (2*pi))
-      smm=smm - lomm * cf
+c--- gw = gw * ( 1 - 2 * cf * alphas(MSbar) / (2*pi))
+      smm=smm - lomm * cf * 2d0
       
       virt_mm=smm
       return

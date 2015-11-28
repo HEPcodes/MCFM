@@ -129,6 +129,7 @@ c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO'/
       HINT(N)=0.d0
       DO 1 I=1,NBIN(N)
       XHIS(N,I)=HMIN(N)+HDEL(N)*(DFLOAT(I)-0.5d0)
+      IHIS(N,I)=0
    1  HIST(N,I)=0.d0
       END
 
@@ -247,6 +248,7 @@ c        HIST(I,L)=XAVG ! removed from 'V'
       HAVG(N)=0.d0
       HINT(N)=0.d0
       DO 1 I=1,NBIN(N)
+      IHIS(N,I)=0
    1  HIST(N,I)=0.d0
       END
 

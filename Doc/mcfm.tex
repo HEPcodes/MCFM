@@ -21,7 +21,7 @@
 \thispagestyle{empty}
 \vspace*{3cm}
 \begin{center}
-{\Huge MCFM v5.4} \\
+{\Huge MCFM v5.5} \\
 \vspace*{0.5cm}
 \Large{A Monte Carlo for FeMtobarn} \\
 \Large{processes at Hadron Colliders} \\
@@ -33,7 +33,7 @@
 J. M. Campbell ({\tt J.Campbell@physics.gla.ac.uk}) \\
 R. K. Ellis ({\tt ellis@fnal.gov}) \\
 \vspace*{2.5cm}
-{\it \small Updated: 11th March 2009}
+{\it \small Updated: 4th June 2009}
 \end{center}
 
 \newpage
@@ -936,6 +936,8 @@ the {\tt VEGAS} grid at the end of the run, to the file specified by
 \item {\tt outgridfile}.  {\it See above.}
 
 \end{itemize}
+
+The final section of the input file contains settings for various technical parameters that should not normally need to be changed. Prior to version 5.5, these were set in {\tt technical.DAT}. For backwards compatibility they may still be specified in that file too, although they will be over-ridden by any settings here.
 
 \section{Nuclear collisions}
 \label{sec:nucleus}

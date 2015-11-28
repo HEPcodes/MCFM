@@ -21,7 +21,7 @@ c   in the final state.
       include 'msqv_cs.f'
 C ip is the label of the emitter
       integer j,k,in,i,n1,n2
-      double precision msq(-nf:nf,-nf:nf),p(mxpart,4)
+      double precision msq(-nf:nf,-nf:nf),p(mxpart,4),tmp
       double precision fac,prop,p1p2(0:2,-1:1,-1:1),n(4),Vfac
       double complex zab(mxpart,mxpart),zba(mxpart,mxpart)
       common/p1p2/p1p2
@@ -79,6 +79,11 @@ c      p1p2(0,-1)=aveqg*fac*w2jetn(6,2,3,4,5,1,p,n,za,zb,zab,zba)
         call storecsv(-1,0)
         call w2jetn(5,6,3,4,1,2,p,n,za,zb,zab,zba)
         call storecsv(0,0)
+c--- since we have interchanged 1 and 2 to get the gg matrix element,
+c---  the colour structures should be interchanged too
+        tmp=p1p2(1,0,0)
+	p1p2(1,0,0)=p1p2(2,0,0)
+	p1p2(2,0,0)=tmp
         do i=0,2
           p1p2(i,+1,0)=aveqg*fac*p1p2(i,+1,0)
           p1p2(i,-1,0)=aveqg*fac*p1p2(i,-1,0)

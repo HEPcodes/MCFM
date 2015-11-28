@@ -159,22 +159,30 @@ C      The corresponding grid files are called lt05a.dat etc.    C
 C                                                                C
       elseif (pdlabel .eq. 'mrs96r1') then
       amz=0.113d0
+      nlooprun=2
       elseif (pdlabel .eq. 'mrs96r2') then
       amz=0.120d0
+      nlooprun=2
       elseif (pdlabel .eq. 'mrs96r3') then
       amz=0.113d0
+      nlooprun=2
       elseif (pdlabel .eq. 'mrs96r4') then
       amz=0.120d0
+      nlooprun=2
       elseif (pdlabel .eq. 'hmrs90e') then
       amz=0.098382675d0
+      nlooprun=2
       elseif (pdlabel .eq. 'hmrs90b') then
       amz=0.107961191d0
       amz=0.12801d0
+      nlooprun=2
       elseif (pdlabel .eq. 'mrs95ap') then
       amz=0.112683043d0
+      nlooprun=2
       elseif (pdlabel .eq. 'mrs95_g') then
       amz=0.114476658d0
       amz=0.13352d0
+      nlooprun=2
 c      amz=0.11297d0
 C   1      CTEQ4M   Standard MSbar scheme   0.116        1.6      cteq4m.tbl
 C   2      CTEQ4D   Standard DIS scheme     0.116        1.6      cteq4d.tbl

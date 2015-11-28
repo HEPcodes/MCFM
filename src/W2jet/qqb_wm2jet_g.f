@@ -35,7 +35,7 @@ c                           ---> f(p5)+f(p6)
      . QQb_ud_dd,QQb_us_ds,QQb_ud_uu,QQb_du_dd,QQb_su_sd,QQb_uu_ud,
      . RbR_dd_du,RbR_ss_du,RbR_uu_du,RbR_ud_dd,RbR_ud_ss,RbR_ud_uu,
      . QbQ_ud_dd,QbQ_us_ds,QbQ_ud_uu,QbQ_du_dd,QbQ_su_sd,QbQ_uu_ud,
-     . QG_d_ddu,QG_d_dsc,QG_u_ddd,QG_u_dcc,QG_u_duu,
+     . QG_d_ddu,QG_d_dsc,QG_u_ddd,QG_u_dcc,QG_u_duu,QG_u_udu,
      . GQ_d_ddu,GQ_d_dsc,GQ_u_ddd,GQ_u_dcc,GQ_u_duu,GQ_u_udu,
      . QbG_d_ddu,QbG_u_ucs,QbG_u_uud,QbG_d_uuu,QbG_d_ucc,QbG_d_udd,
      . GQb_d_ddu,GQb_u_ucs,GQb_u_uud,GQb_d_udd,GQb_d_ucc,GQb_d_uuu
@@ -124,18 +124,45 @@ c--- scattering
       call addhel(2,5,6,1,7,3,4,QbQ_ud_dd,QbQ_us_ds,QbQ_ud_uu)
       call addhel(6,1,2,5,7,3,4,QbQ_du_dd,QbQ_su_sd,QbQ_uu_ud)
 c--- basic Q-G amplitudes
-      call addhel(7,6,1,5,2,3,4,QG_d_ddu,QG_d_dsc,QG_u_ddd)
+      call addhel(7,6,1,5,2,3,4,QG_d_ddu,QG_d_dsc,QG_u_udu)
       call addhel(1,5,7,6,2,3,4,QG_u_ddd,QG_u_dcc,QG_u_duu)
+c--- Notes added 28/5/09 (for checking u+g processes):
+c---     QG_d_dsc corresponds to:     d + g -> d + c + sb
+c---     QG_u_udu corresponds to:     d + g -> d + u + db
+c---     QG_u_ddd corresponds to:     d + g -> u + u + ub
+c---     QG_u_dcc corresponds to:     d + g -> u + c + cb
+
 c--- basic QB-G amplitudes
       call addhel(6,7,5,1,2,3,4,QbG_d_ddu,QbG_u_ucs,QbG_u_uud)
       call addhel(5,1,6,7,2,3,4,QbG_d_udd,QbG_d_ucc,QbG_d_uuu)
+c--- Notes added 28/5/09 (for checking db+g processes):
+c---     QbG_u_ucs corresponds to:     ub + g -> ub + sb + c
+c---     QbG_u_uud is NOT NEEDED:           db + g -> db + db + u
+c---     QbG_d_ddu is used instead:    ub + g -> ub + db + u
+c---     QbG_d_udd is NOT NEEDED:           ub + g -> db + ub + u
+c---     QbG_d_uuu is used instead:    ub + g -> db + db + d
+c---     QbG_d_ucc corresponds to:     ub + g -> db + sb + s
+
 c--- basic G-Q amplitudes
       call addhel(7,5,2,6,1,3,4,GQ_d_ddu,GQ_d_dsc,GQ_u_udu)
       call addhel(2,6,7,5,1,3,4,GQ_u_ddd,GQ_u_dcc,GQ_u_duu)
+c--- Notes added 28/5/09 (for checking g+u processes):
+c---     GQ_d_dsc corresponds to:     g + d -> c + d + sb
+c---     GQ_u_udu corresponds to:     g + d -> u + d + db
+c---     GQ_u_ddd corresponds to:     g + d -> u + u + ub
+c---     GQ_u_dcc corresponds to:     g + d -> c + u + cb
+      
 c--- basic G-QB amplitudes
       call addhel(5,7,6,2,1,3,4,GQb_d_udd,GQb_u_ucs,GQb_u_uud)
       call addhel(6,2,5,7,1,3,4,GQb_d_ddu,GQb_d_ucc,GQb_d_uuu)
-
+c--- Notes added 28/5/09 (for checking g+db processes):
+c---     GQb_u_ucs corresponds to:     g + ub -> sb + ub + c
+c---     GQb_u_uud is NOT NEEDED     :     g + db -> db + db + u
+c---     GQb_d_udd is used instead:    g + ub -> db + ub + u
+c---     GQb_d_ddu is NOT NEEDED:          g + ub -> ub + db + u
+c---     GQB_d_uuu is used instead:    g + ub -> db + db + d
+c---     GQb_d_ucc corresponds to:     g + ub -> sb + db + s
+      
       endif
 
 c--- note the factor of 4d0*xw**2 relative to wbb
@@ -312,7 +339,7 @@ c--- Q G --> Q q qb
             Vfac=Vsq(j,-j-1)
           endif
               msq(j,k)=msq(j,k)+Vfac*(
-     .                   (aveqg/aveqq)*QG_u_duu
+     .                   (aveqg/aveqq)*QG_u_udu
      .                  +dfloat(nf-2)*(aveqg/aveqq)*QG_u_dcc
      .                  +(aveqg/aveqq)*QG_u_ddd*0.5d0)
      .                         +(2d0-Vfac)*
@@ -325,9 +352,9 @@ c--- Q G --> Q q qb
 c--- QB G --> QB qb q
         if( jj(j) .eq. -2) then
          msq(j,k)=msq(j,k)+Vsq(j,-j-1)*(
-     .              (aveqg/aveqq)*QbG_d_udd
-     .             +(aveqg/aveqq)*QbG_d_uuu*0.5d0
-     .             +dfloat(nf-2)*(aveqg/aveqq)*QbG_d_ucc)
+     .              (aveqg/aveqq)*QbG_d_ddu
+     .             +dfloat(nf-2)*(aveqg/aveqq)*QbG_d_ucc
+     .             +(aveqg/aveqq)*QbG_d_uuu*0.5d0)
      .                    +(2d0-Vsq(j,-j-1))*
      .              (aveqg/aveqq)*QbG_u_ucs
         elseif( jj(j) .eq. -1) then
@@ -350,7 +377,7 @@ c--- G Q --> Q q qb
          msq(j,k)=msq(j,k)+Vfac*(
      .             +dfloat(nf-2)*(aveqg/aveqq)*GQ_u_dcc
      .             +(aveqg/aveqq)*GQ_u_ddd*0.5d0
-     .           +(aveqg/aveqq)*GQ_u_udu)
+     .             +(aveqg/aveqq)*GQ_u_udu)
      .                         +(2d0-Vfac)*
      .            (aveqg/aveqq)*GQ_d_dsc
         elseif( kk(k) .eq. 2) then
@@ -362,8 +389,8 @@ c--- G QB --> QB qb q
         if( kk(k) .eq. -2) then
               msq(j,k)=msq(j,k)+Vsq(k,-k-1)*(
      .                   (aveqg/aveqq)*GQb_d_udd
-     .                  +(aveqg/aveqq)*GQb_d_uuu*0.5d0
-     .                  +dfloat(nf-2)*(aveqg/aveqq)*GQb_d_ucc)
+     .                  +dfloat(nf-2)*(aveqg/aveqq)*GQb_d_ucc
+     .                  +(aveqg/aveqq)*GQb_d_uuu*0.5d0)
      .                         +(2d0-Vsq(k,-k-1))*
      .                   (aveqg/aveqq)*GQb_u_ucs
         elseif( kk(k) .eq. -1) then

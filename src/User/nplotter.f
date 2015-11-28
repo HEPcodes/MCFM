@@ -27,12 +27,12 @@ c--- DSW histograms - call hbook booking routine
       elseif (tag .eq. 'plot') then
         if (dswhisto .eqv. .false.) then
 c--- Traditional MCFM histograms
-          call mfill(n,var,wt)
 c--- also book the errors now (in maxhisto+n); fill temp histos for real
           if ((part .eq. 'lord') .or. (part .eq. 'virt')) then
+            call mfill(n,var,wt)
 	    call mfill(maxhisto+n,var,wt2)
 	  else
-	    call mfill(3*maxhisto+n,var,wt2)
+	    call mfill(3*maxhisto+n,var,wt)
 	  endif
         else
 c--- DSW histograms - call hbook filling routine
@@ -702,34 +702,34 @@ c      write(6,*) switch,dphi_ll,wt,wt2
       endif
 
 c--- calculate lepton 3 angle in W rest frame
-      do nu=1,4
-      pw(nu)=p(3,nu)+p(4,nu)
-      plep(nu)=p(3,nu)
-      pw_wrest(nu)=0d0
-      enddo
-      pw_wrest(4)=dsqrt(pw(4)**2-pw(1)**2-pw(2)**2-pw(3)**2)
-      call boostx(plep,pw,pw_wrest,plep_wrest)
-      langle=plep_wrest(3)/
-     . dsqrt(plep_wrest(1)**2+plep_wrest(2)**2+plep_wrest(3)**2)
-c      langle=dacos(langle)
-      call bookplot(n,tag,'lepton 3',langle,wt,wt2,
-     . -1d0,1.01d0,0.1d0,'lin')
-      n=n+1
+c      do nu=1,4
+c      pw(nu)=p(3,nu)+p(4,nu)
+c      plep(nu)=p(3,nu)
+c      pw_wrest(nu)=0d0
+c      enddo
+c      pw_wrest(4)=dsqrt(pw(4)**2-pw(1)**2-pw(2)**2-pw(3)**2)
+c      call boostx(plep,pw,pw_wrest,plep_wrest)
+c      langle=plep_wrest(3)/
+c     . dsqrt(plep_wrest(1)**2+plep_wrest(2)**2+plep_wrest(3)**2)
+cc      langle=dacos(langle)
+c      call bookplot(n,tag,'lepton 3',langle,wt,wt2,
+c     . -1d0,1.01d0,0.1d0,'lin')
+c      n=n+1
             
 c--- calculate lepton 4 angle in W rest frame
-      do nu=1,4
-      pw(nu)=p(3,nu)+p(4,nu)
-      plep(nu)=p(4,nu)
-      pw_wrest(nu)=0d0
-      enddo
-      pw_wrest(4)=dsqrt(pw(4)**2-pw(1)**2-pw(2)**2-pw(3)**2)
-      call boostx(plep,pw,pw_wrest,plep_wrest)
-      langle=plep_wrest(3)/
-     . dsqrt(plep_wrest(1)**2+plep_wrest(2)**2+plep_wrest(3)**2)
-c      langle=dacos(langle)
-      call bookplot(n,tag,'lepton 4',langle,wt,wt2,
-     . -1d0,1.01d0,0.1d0,'lin')
-      n=n+1
+c      do nu=1,4
+c      pw(nu)=p(3,nu)+p(4,nu)
+c      plep(nu)=p(4,nu)
+c      pw_wrest(nu)=0d0
+c      enddo
+c      pw_wrest(4)=dsqrt(pw(4)**2-pw(1)**2-pw(2)**2-pw(3)**2)
+c      call boostx(plep,pw,pw_wrest,plep_wrest)
+c      langle=plep_wrest(3)/
+c     . dsqrt(plep_wrest(1)**2+plep_wrest(2)**2+plep_wrest(3)**2)
+cc      langle=dacos(langle)
+c      call bookplot(n,tag,'lepton 4',langle,wt,wt2,
+c     . -1d0,1.01d0,0.1d0,'lin')
+c      n=n+1
 
 c--- special plots for W+c
       if (case .eq. 'W_cjet') then
@@ -785,12 +785,14 @@ c	endif
       endif
         
 c--- added extra plot here, for the angle analysis of G. Hesketh et al.
+      if ((case .eq. 'Z_1jet') .or. (case .eq. 'Z_2jet')) then
       dphizj=atan2(p(3,1)+p(4,1),p(3,2)+p(4,2))-atan2(p(5,1),p(5,2))
       if (dphizj .gt. pi) dphizj=twopi-dphizj
       if (dphizj .lt. -pi) dphizj=twopi+dphizj
       call bookplot(n,tag,'dphi_zj',dphizj,wt,wt2,-3.1416d0,3.1416d0,
      .              1.5708d-1,'log')
       n=n+1
+      endif
       
       call bookplot(n,tag,'HT',HT,wt,wt2,0d0,500d0,20d0,'lin')
       n=n+1
@@ -804,11 +806,11 @@ c --- Histograms to monitor exclusive/inclusive cross-sections:
       endif
       n=n+1
       if (nodecay .eqv. .false.) then
-      call bookplot(n,tag,'eta3',eta3,wt,wt2,-4d0,4d0,0.1d0,'lin')
+      call bookplot(n,tag,'eta3',eta3,wt,wt2,-4d0,4d0,0.2d0,'lin')
       n=n+1
       call bookplot(n,tag,'pt3',pt3,wt,wt2,0d0,150d0,5d0,'log')
       n=n+1      
-      call bookplot(n,tag,'eta4',eta4,wt,wt2,-4d0,4d0,0.1d0,'lin')
+      call bookplot(n,tag,'eta4',eta4,wt,wt2,-4d0,4d0,0.2d0,'lin')
       n=n+1
       call bookplot(n,tag,'pt4',pt4,wt,wt2,25d0,50d0,0.5d0,'lin')
       n=n+1
@@ -830,7 +832,7 @@ c --- Histograms to monitor exclusive/inclusive cross-sections:
       n=n+1
       
       if (eventpart .gt. 4) then
-      call bookplot(n,tag,'eta5',eta5,wt,wt2,-4d0,4d0,0.1d0,'lin')
+      call bookplot(n,tag,'eta5',eta5,wt,wt2,-4d0,4d0,0.2d0,'lin')
       n=n+1
       call bookplot(n,tag,'eta5',eta5,wt,wt2,-10d0,10d0,0.5d0,'lin')
       n=n+1
@@ -866,13 +868,13 @@ c      n=n+1
 c      call bookplot(n,tag,'eta other',etaother,
 c     . wt,wt2,-5d0,5d0,0.4d0,'lin')
 c      n=n+1
-      call bookplot(n,tag,'eta6',eta6,wt,wt2,-4d0,4d0,0.1d0,'lin')
+      call bookplot(n,tag,'eta6',eta6,wt,wt2,-4d0,4d0,0.2d0,'lin')
       n=n+1
       call bookplot(n,tag,'pt6',pt6,wt,wt2,0d0,500d0,5d0,'log')
       n=n+1
       call bookplot(n,tag,'pt6',pt6,wt,wt2,0d0,200d0,2d0,'log')
       n=n+1
-      call bookplot(n,tag,'eta56',eta56,wt,wt2,-4d0,4d0,0.1d0,'lin')
+      call bookplot(n,tag,'eta56',eta56,wt,wt2,-4d0,4d0,0.2d0,'lin')
       n=n+1
       call bookplot(n,tag,'pt56',pt56,wt,wt2,10d0,150d0,10d0,'log')
       n=n+1
@@ -908,11 +910,11 @@ c--- Delta_R(b,b), 2 b-jets, bins of 0.2 from 0.35 to 4.95
       call bookplot(n,tag,'deltaRbb',rbb,
      . wt,wt2,0.35d0,4.95d0,0.2d0,'lin')
       n=n+1
-      call bookplot(n,tag,'etab1',etab1,wt,wt2,-4d0,4d0,0.1d0,'lin')
+      call bookplot(n,tag,'etab1',etab1,wt,wt2,-4d0,4d0,0.2d0,'lin')
       n=n+1
       call bookplot(n,tag,'ptb1',ptb1,wt,wt2,0d0,200d0,5d0,'log')
       n=n+1
-      call bookplot(n,tag,'etab2',etab2,wt,wt2,-4d0,4d0,0.1d0,'lin')
+      call bookplot(n,tag,'etab2',etab2,wt,wt2,-4d0,4d0,0.2d0,'lin')
       n=n+1
       call bookplot(n,tag,'ptb2',ptb2,wt,wt2,0d0,200d0,5d0,'log')
       n=n+1
@@ -948,13 +950,13 @@ c--- Delta_R(b,b), 2 b-jets, bins of 0.2 from 0.35 to 4.95
 c--- Non b-jet Et, 5 GeV bins from 15 to 200
       call bookplot(n,tag,'non-b Et',ptnob,wt,wt2,15d0,200d0,5d0,'log')
       n=n+1
-      call bookplot(n,tag,'etanob',etanob,wt,wt2,-4d0,4d0,0.1d0,'lin')
+      call bookplot(n,tag,'etanob',etanob,wt,wt2,-4d0,4d0,0.2d0,'lin')
       n=n+1
       call bookplot(n,tag,'ptnob',ptnob,wt,wt2,0d0,200d0,5d0,'log')
       n=n+1
       endif
 
-      call bookplot(n,tag,'eta7',eta7,wt,wt2,-4d0,4d0,0.1d0,'lin')
+      call bookplot(n,tag,'eta7',eta7,wt,wt2,-4d0,4d0,0.2d0,'lin')
       n=n+1
       call bookplot(n,tag,'pt7',pt7,wt,wt2,0d0,100d0,5d0,'lin')
       n=n+1
@@ -970,7 +972,7 @@ c--- Non b-jet Et, 5 GeV bins from 15 to 200
       endif      
 
       if (eventpart .gt. 7) then
-      call bookplot(n,tag,'eta8',eta8,wt,wt2,-4d0,4d0,0.1d0,'lin')
+      call bookplot(n,tag,'eta8',eta8,wt,wt2,-4d0,4d0,0.2d0,'lin')
       n=n+1
       call bookplot(n,tag,'pt8',pt8,wt,wt2,0d0,100d0,5d0,'lin')
       n=n+1

@@ -53,6 +53,7 @@
      . leptpt2,leptrap2,gammpt,gammrap,gammcone,gammcut
       integer lbjscheme
       logical jetsopphem
+      logical technicalincluded
       double precision ran2,randummy
       double precision cmass,bmass
       double precision mass2,width2,mass3,width3
@@ -92,55 +93,7 @@
 
       save /ranno/
       
-c---- read-in the technical parameters
-
-      open(unit=21,file='technical.DAT',status='old',err=999)
-      call checkversion(21,'technical.DAT')
-
-      read(21,*) debug
-c      if (verbose) write(6,*) 'debug',debug
-      read(21,*) verbose
-c      if (verbose) write(6,*) 'verbose',verbose
-      read(21,*) new_pspace
-c      if (verbose) write(6,*) 'new_pspace',new_pspace
-      read(21,*) virtonly
-c      if (verbose) write(6,*) 'virtonly',virtonly
-      read(21,*) realonly
-c      if (verbose) write(6,*) 'realonly',realonly
-      read(21,*) spira
-c      if (verbose) write(6,*) 'spira',spira
-      read(21,*) noglue
-c      if (verbose) write(6,*) 'noglue',noglue
-      read(21,*) ggonly
-c      if (verbose) write(6,*) 'ggonly',ggonly
-      read(21,*) gqonly
-c      if (verbose) write(6,*) 'gqonly',gqonly
-      read(21,*) vanillafiles
-c      if (verbose) write(6,*) 'vanillafiles',vanillafiles
-      read(21,*) nmin
-c      if (verbose) write(6,*) 'nmin',nmin
-      read(21,*) nmax
-c      if (verbose) write(6,*) 'nmax',nmax
-      read(21,*) clustering
-c      if (verbose) write(6,*) 'clustering',clustering
-      read(21,*) realwt
-c      if (verbose) write(6,*) 'realwt',realwt
-      read(21,*) colourchoice
-c      if (verbose) write(6,*) 'colourchoice',colourchoice
-      read(21,*) rtsmin
-c      if (verbose) write(6,*) 'rtsmin',rtsmin
-      read(21,*) cutoff
-c      if (verbose) write(6,*) 'cutoff',cutoff
-      read(21,*) aii
-c      if (verbose) write(6,*) 'aii',aii
-      read(21,*) aif
-c      if (verbose) write(6,*) 'aii',aii
-      read(21,*) afi
-c      if (verbose) write(6,*) 'aii',aii
-      read(21,*) aff
-c      if (verbose) write(6,*) 'aii',aii
-
-      close(unit=21)
+      verbose=.true.
 
 c--- work out the name of the input file and open it
 
@@ -353,7 +306,73 @@ c--- grid information
 
       if (verbose) write(6,*)
 
-      close(20)
+c--- check if the contents of technical.DAT are included here
+c--- (the default behaviour going forward)
+      technicalincluded=.false.
+
+      read(20,99,end=88) line
+      read(20,99,end=88) line
+      write(6,*) line
+      write(6,*) line(2:10)
+      if (line(2:10) .ne. 'Technical') goto 88
+      technicalincluded=.true.
+
+   88 continue
+      
+c--- if the contents of technical.DAT are not included, close the input
+c--- file and open technical.DAT instead; otherwise continue on
+      if (technicalincluded .eqv. .false.) then
+        close(20)
+        open(unit=20,file='technical.DAT',status='old',err=999)
+        call checkversion(20,'technical.DAT')
+      endif
+
+c---- read-in the technical parameters
+
+      read(20,*) debug
+c      if (verbose) write(6,*) 'debug',debug
+      read(20,*) verbose
+c      if (verbose) write(6,*) 'verbose',verbose
+      read(20,*) new_pspace
+c      if (verbose) write(6,*) 'new_pspace',new_pspace
+      read(20,*) virtonly
+c      if (verbose) write(6,*) 'virtonly',virtonly
+      read(20,*) realonly
+c      if (verbose) write(6,*) 'realonly',realonly
+      read(20,*) spira
+c      if (verbose) write(6,*) 'spira',spira
+      read(20,*) noglue
+c      if (verbose) write(6,*) 'noglue',noglue
+      read(20,*) ggonly
+c      if (verbose) write(6,*) 'ggonly',ggonly
+      read(20,*) gqonly
+c      if (verbose) write(6,*) 'gqonly',gqonly
+      read(20,*) vanillafiles
+c      if (verbose) write(6,*) 'vanillafiles',vanillafiles
+      read(20,*) nmin
+c      if (verbose) write(6,*) 'nmin',nmin
+      read(20,*) nmax
+c      if (verbose) write(6,*) 'nmax',nmax
+      read(20,*) clustering
+c      if (verbose) write(6,*) 'clustering',clustering
+      read(20,*) realwt
+c      if (verbose) write(6,*) 'realwt',realwt
+      read(20,*) colourchoice
+c      if (verbose) write(6,*) 'colourchoice',colourchoice
+      read(20,*) rtsmin
+c      if (verbose) write(6,*) 'rtsmin',rtsmin
+      read(20,*) cutoff
+c      if (verbose) write(6,*) 'cutoff',cutoff
+      read(20,*) aii
+c      if (verbose) write(6,*) 'aii',aii
+      read(20,*) aif
+c      if (verbose) write(6,*) 'aii',aii
+      read(20,*) afi
+c      if (verbose) write(6,*) 'aii',aii
+      read(20,*) aff
+c      if (verbose) write(6,*) 'aii',aii
+
+      close(unit=20)
 
 c--- reset values of the alpha parameters, for specific runstrings
       if (runstring(1:5) .eq. 'alpha') then

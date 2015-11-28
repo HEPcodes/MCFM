@@ -172,7 +172,6 @@ banner.o \
 boost.o \
 boostx.o \
 branch.o \
-checkgvec.o \
 checkndotp.o \
 checkversion.o \
 checkjets.o \
@@ -464,7 +463,7 @@ w2jetsq_mass.o \
 subqcdm.o
 
 W2JETFILES = \
-bit.o \
+ampwqqqqg.o \
 qqb_w2jet.o \
 qqb_w2jet_g.o \
 qqb_wp2jet_g.o \

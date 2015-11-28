@@ -17,7 +17,7 @@
       include 'PR_cs_new.f'
       include 'lc.f'
       include 'flags.f'
-      double precision z,p(mxpart,4),dot
+      double precision z,p(mxpart,4),dot,xninv
       double precision xl12,xl15,xl16,xl25,xl26,xl56
       double precision 
      .                 ii_qq,ii_qg,ii_gq,ii_gg,
@@ -305,7 +305,7 @@ c--- ason4pi*xn*(ff_qq(z,xl56,2) + ff_gg(z,xl56,2)/2d0) * (1)
       enddo
        
             
-C--- off-diagonal qflag->glfag pieces
+C--- off-diagonal Qflag -> Gflag pieces
 
       do is=1,3
       tempgq=ason4pi*two*cf*ii_gq(z,xl12,is)
@@ -359,38 +359,46 @@ C--- off-diagonal qflag->glfag pieces
 *     Contributions from QQQQ matrix elements                          *
 ************************************************************************            
       if (Qflag) then
+
+c--- implement leading color by defining color factors in which 1/xn=0
+      if (colourchoice .eq. 1) then
+        xninv=0d0
+      else
+        xninv=1d0/xn   
+      endif
+      
 c--- QUARK-QUARK contributions
       do is=1,3
       R1(q,q,q,0,is)=ason4pi*(
-     . -(if_qq(z,xl15,is)+fi_qq(z,xl15,is))/xn
-     . -(if_qq(z,xl16,is)+fi_qq(z,xl16,is))/xn
-     . +ii_qq(z,xl12,is)*(xn+one/xn)
-     . +ff_qq(z,xl56,is)*(xn+one/xn))
+     . -(if_qq(z,xl15,is)+fi_qq(z,xl15,is))*xninv
+     . -(if_qq(z,xl16,is)+fi_qq(z,xl16,is))*xninv
+     . +ii_qq(z,xl12,is)*(xn+xninv)
+     . +ff_qq(z,xl56,is)*(xn+xninv))
       R1(q,q,q,1,is)=ason4pi*(
-     . -(if_qq(z,xl15,is)+fi_qq(z,xl15,is))/xn
-     . +(if_qq(z,xl16,is)+fi_qq(z,xl16,is))*(xn-two/xn)
-     . +ii_qq(z,xl12,is)*two/xn
-     . +ff_qq(z,xl56,is)*two/xn)
+     . -(if_qq(z,xl15,is)+fi_qq(z,xl15,is))*xninv
+     . +(if_qq(z,xl16,is)+fi_qq(z,xl16,is))*(xn-two*xninv)
+     . +ii_qq(z,xl12,is)*two*xninv
+     . +ff_qq(z,xl56,is)*two*xninv)
       R1(q,q,q,2,is)=ason4pi*(
-     . +(if_qq(z,xl15,is)+fi_qq(z,xl15,is))*(xn-two/xn)
-     . -(if_qq(z,xl16,is)+fi_qq(z,xl16,is))/xn
-     . +ii_qq(z,xl12,is)*two/xn
-     . +ff_qq(z,xl56,is)*two/xn)
+     . +(if_qq(z,xl15,is)+fi_qq(z,xl15,is))*(xn-two*xninv)
+     . -(if_qq(z,xl16,is)+fi_qq(z,xl16,is))*xninv
+     . +ii_qq(z,xl12,is)*two*xninv
+     . +ff_qq(z,xl56,is)*two*xninv)
       R2(q,q,q,0,is)=ason4pi*(
-     . -(if_qq(z,xl25,is)+fi_qq(z,xl25,is))/xn
-     . -(if_qq(z,xl26,is)+fi_qq(z,xl26,is))/xn
-     . +ii_qq(z,xl12,is)*(xn+one/xn)
-     . +ff_qq(z,xl56,is)*(xn+one/xn))
+     . -(if_qq(z,xl25,is)+fi_qq(z,xl25,is))*xninv
+     . -(if_qq(z,xl26,is)+fi_qq(z,xl26,is))*xninv
+     . +ii_qq(z,xl12,is)*(xn+xninv)
+     . +ff_qq(z,xl56,is)*(xn+xninv))
       R2(q,q,q,1,is)=ason4pi*(
-     . +(if_qq(z,xl25,is)+fi_qq(z,xl25,is))*(xn-two/xn)
-     . -(if_qq(z,xl26,is)+fi_qq(z,xl26,is))/xn
-     . +ii_qq(z,xl12,is)*two/xn
-     . +ff_qq(z,xl56,is)*two/xn)
+     . +(if_qq(z,xl25,is)+fi_qq(z,xl25,is))*(xn-two*xninv)
+     . -(if_qq(z,xl26,is)+fi_qq(z,xl26,is))*xninv
+     . +ii_qq(z,xl12,is)*two*xninv
+     . +ff_qq(z,xl56,is)*two*xninv)
       R2(q,q,q,2,is)=ason4pi*(
-     . -(if_qq(z,xl25,is)+fi_qq(z,xl25,is))/xn
-     . +(if_qq(z,xl26,is)+fi_qq(z,xl26,is))*(xn-two/xn)
-     . +ii_qq(z,xl12,is)*two/xn
-     . +ff_qq(z,xl56,is)*two/xn)
+     . -(if_qq(z,xl25,is)+fi_qq(z,xl25,is))*xninv
+     . +(if_qq(z,xl26,is)+fi_qq(z,xl26,is))*(xn-two*xninv)
+     . +ii_qq(z,xl12,is)*two*xninv
+     . +ff_qq(z,xl56,is)*two*xninv)
 
       enddo
 
@@ -409,70 +417,70 @@ c--- ANTIQUARK-ANTIQUARK contributions
 c--- QUARK-ANTIQUARK contributions
       do is=1,3
       R1(q,q,a,0,is)=ason4pi*(
-     . -(if_qq(z,xl15,is)+fi_qq(z,xl15,is))/xn
-     . +(if_qq(z,xl16,is)+fi_qq(z,xl16,is))*(xn+one/xn)
-     . -ii_qq(z,xl12,is)/xn
-     . -ff_qq(z,xl56,is)/xn)
+     . -(if_qq(z,xl15,is)+fi_qq(z,xl15,is))*xninv
+     . +(if_qq(z,xl16,is)+fi_qq(z,xl16,is))*(xn+xninv)
+     . -ii_qq(z,xl12,is)*xninv
+     . -ff_qq(z,xl56,is)*xninv)
       R1(q,q,a,1,is)=ason4pi*(
-     . +(if_qq(z,xl15,is)+fi_qq(z,xl15,is))*(xn-two/xn)
-     . +(if_qq(z,xl16,is)+fi_qq(z,xl16,is))*two/xn
-     . -ii_qq(z,xl12,is)/xn
-     . -ff_qq(z,xl56,is)/xn)
+     . +(if_qq(z,xl15,is)+fi_qq(z,xl15,is))*(xn-two*xninv)
+     . +(if_qq(z,xl16,is)+fi_qq(z,xl16,is))*two*xninv
+     . -ii_qq(z,xl12,is)*xninv
+     . -ff_qq(z,xl56,is)*xninv)
       R1(q,q,a,2,is)=ason4pi*(
-     . -(if_qq(z,xl15,is)+fi_qq(z,xl15,is))/xn
-     . +(if_qq(z,xl16,is)+fi_qq(z,xl16,is))*two/xn
-     . +ii_qq(z,xl12,is)*(xn-two/xn)
-     . +ff_qq(z,xl56,is)*(xn-two/xn))
+     . -(if_qq(z,xl15,is)+fi_qq(z,xl15,is))*xninv
+     . +(if_qq(z,xl16,is)+fi_qq(z,xl16,is))*two*xninv
+     . +ii_qq(z,xl12,is)*(xn-two*xninv)
+     . +ff_qq(z,xl56,is)*(xn-two*xninv))
       R2(a,a,q,0,is)=ason4pi*(
-     . +(if_qq(z,xl25,is)+fi_qq(z,xl25,is))*(xn+one/xn)
-     . -(if_qq(z,xl26,is)+fi_qq(z,xl26,is))/xn
-     . -ii_qq(z,xl12,is)/xn
-     . -ff_qq(z,xl56,is)/xn)
+     . +(if_qq(z,xl25,is)+fi_qq(z,xl25,is))*(xn+xninv)
+     . -(if_qq(z,xl26,is)+fi_qq(z,xl26,is))*xninv
+     . -ii_qq(z,xl12,is)*xninv
+     . -ff_qq(z,xl56,is)*xninv)
       R2(a,a,q,1,is)=ason4pi*(
-     . +(if_qq(z,xl25,is)+fi_qq(z,xl25,is))*two/xn
-     . +(if_qq(z,xl26,is)+fi_qq(z,xl26,is))*(xn-two/xn)
-     . -ii_qq(z,xl12,is)/xn
-     . -ff_qq(z,xl56,is)/xn)
+     . +(if_qq(z,xl25,is)+fi_qq(z,xl25,is))*two*xninv
+     . +(if_qq(z,xl26,is)+fi_qq(z,xl26,is))*(xn-two*xninv)
+     . -ii_qq(z,xl12,is)*xninv
+     . -ff_qq(z,xl56,is)*xninv)
       R2(a,a,q,2,is)=ason4pi*(
-     . +(if_qq(z,xl25,is)+fi_qq(z,xl25,is))*two/xn
-     . -(if_qq(z,xl26,is)+fi_qq(z,xl26,is))/xn
-     . +ii_qq(z,xl12,is)*(xn-two/xn)
-     . +ff_qq(z,xl56,is)*(xn-two/xn))
+     . +(if_qq(z,xl25,is)+fi_qq(z,xl25,is))*two*xninv
+     . -(if_qq(z,xl26,is)+fi_qq(z,xl26,is))*xninv
+     . +ii_qq(z,xl12,is)*(xn-two*xninv)
+     . +ff_qq(z,xl56,is)*(xn-two*xninv))
 
       enddo
       
 c--- ANTIQUARK-QUARK contributions
       do is=1,3
       R1(a,a,q,0,is)=ason4pi*(
-     . +(if_qq(z,xl15,is)+fi_qq(z,xl15,is))*(xn+one/xn)
-     . -(if_qq(z,xl16,is)+fi_qq(z,xl16,is))/xn
-     . -ii_qq(z,xl12,is)/xn
-     . -ff_qq(z,xl56,is)/xn)
+     . +(if_qq(z,xl15,is)+fi_qq(z,xl15,is))*(xn+xninv)
+     . -(if_qq(z,xl16,is)+fi_qq(z,xl16,is))*xninv
+     . -ii_qq(z,xl12,is)*xninv
+     . -ff_qq(z,xl56,is)*xninv)
       R1(a,a,q,1,is)=ason4pi*(
-     . +(if_qq(z,xl15,is)+fi_qq(z,xl15,is))*two/xn
-     . +(if_qq(z,xl16,is)+fi_qq(z,xl16,is))*(xn-two/xn)
-     . -ii_qq(z,xl12,is)/xn
-     . -ff_qq(z,xl56,is)/xn)
+     . +(if_qq(z,xl15,is)+fi_qq(z,xl15,is))*two*xninv
+     . +(if_qq(z,xl16,is)+fi_qq(z,xl16,is))*(xn-two*xninv)
+     . -ii_qq(z,xl12,is)*xninv
+     . -ff_qq(z,xl56,is)*xninv)
       R1(a,a,q,2,is)=ason4pi*(
-     . +(if_qq(z,xl15,is)+fi_qq(z,xl15,is))*two/xn
-     . -(if_qq(z,xl16,is)+fi_qq(z,xl16,is))/xn
-     . +ii_qq(z,xl12,is)*(xn-two/xn)
-     . +ff_qq(z,xl56,is)*(xn-two/xn))
+     . +(if_qq(z,xl15,is)+fi_qq(z,xl15,is))*two*xninv
+     . -(if_qq(z,xl16,is)+fi_qq(z,xl16,is))*xninv
+     . +ii_qq(z,xl12,is)*(xn-two*xninv)
+     . +ff_qq(z,xl56,is)*(xn-two*xninv))
       R2(q,q,a,0,is)=ason4pi*(
-     . -(if_qq(z,xl25,is)+fi_qq(z,xl25,is))/xn
-     . +(if_qq(z,xl26,is)+fi_qq(z,xl26,is))*(xn+one/xn)
-     . -ii_qq(z,xl12,is)/xn
-     . -ff_qq(z,xl56,is)/xn)
+     . -(if_qq(z,xl25,is)+fi_qq(z,xl25,is))*xninv
+     . +(if_qq(z,xl26,is)+fi_qq(z,xl26,is))*(xn+xninv)
+     . -ii_qq(z,xl12,is)*xninv
+     . -ff_qq(z,xl56,is)*xninv)
       R2(q,q,a,1,is)=ason4pi*(
-     . +(if_qq(z,xl25,is)+fi_qq(z,xl25,is))*(xn-two/xn)
-     . +(if_qq(z,xl26,is)+fi_qq(z,xl26,is))*two/xn
-     . -ii_qq(z,xl12,is)/xn
-     . -ff_qq(z,xl56,is)/xn)
+     . +(if_qq(z,xl25,is)+fi_qq(z,xl25,is))*(xn-two*xninv)
+     . +(if_qq(z,xl26,is)+fi_qq(z,xl26,is))*two*xninv
+     . -ii_qq(z,xl12,is)*xninv
+     . -ff_qq(z,xl56,is)*xninv)
       R2(q,q,a,2,is)=ason4pi*(
-     . -(if_qq(z,xl25,is)+fi_qq(z,xl25,is))/xn
-     . +(if_qq(z,xl26,is)+fi_qq(z,xl26,is))*two/xn
-     . +ii_qq(z,xl12,is)*(xn-two/xn)
-     . +ff_qq(z,xl56,is)*(xn-two/xn))
+     . -(if_qq(z,xl25,is)+fi_qq(z,xl25,is))*xninv
+     . +(if_qq(z,xl26,is)+fi_qq(z,xl26,is))*two*xninv
+     . +ii_qq(z,xl12,is)*(xn-two*xninv)
+     . +ff_qq(z,xl56,is)*(xn-two*xninv))
 
       enddo
 

@@ -22,7 +22,8 @@
       integer unitno,j,k,itno
       double precision xsec,xsec_err
       double precision lord_bypart(-1:1,-1:1),lordnorm
-      double precision ggpart,gqpart,qgpart,qqpart,qqbpart
+      double precision ggpart,gqpart,qgpart,qqpart,qqbpart,
+     . gqbpart,qbgpart,qbqbpart,qbqpart
       
       character*4 part
       character*30 runstring
@@ -70,20 +71,28 @@ c--- variables in finalpart (normally done in mcfm_exit)
       enddo
       enddo
       ggpart=lord_bypart( 0, 0)/lordnorm
-      gqpart=(lord_bypart( 0,+1)+lord_bypart( 0,-1))/lordnorm
-      qgpart=(lord_bypart(+1, 0)+lord_bypart(-1, 0))/lordnorm
-      qqpart=(lord_bypart(+1,+1)+lord_bypart(-1,-1))/lordnorm
-      qqbpart=(lord_bypart(+1,-1)+lord_bypart(-1,+1))/lordnorm      
+      gqpart=lord_bypart( 0,+1)/lordnorm
+      gqbpart=lord_bypart( 0,-1)/lordnorm
+      qgpart=lord_bypart(+1, 0)/lordnorm
+      qbgpart=lord_bypart(-1, 0)/lordnorm
+      qqpart=lord_bypart(+1,+1)/lordnorm
+      qbqbpart=lord_bypart(-1,-1)/lordnorm
+      qqbpart=lord_bypart(+1,-1)/lordnorm
+      qbqpart=lord_bypart(-1,+1)/lordnorm
       endif
       write(unitno,55) '( Cross-section is: ',xsec,' +/-',xsec_err,')'
       write(unitno,*)
 
       write(unitno,*) '( Contribution from parton sub-processes:'
       write(unitno,95) '   GG    ',ggpart*xsec,ggpart*100d0
-      write(unitno,95) 'GQ + GQB ',gqpart*xsec,gqpart*100d0
-      write(unitno,95) 'QG + QBG ',qgpart*xsec,qgpart*100d0
-      write(unitno,95) 'QQ + QBQB',qqpart*xsec,qqpart*100d0
+      write(unitno,95) '   GQ    ',gqpart*xsec,gqpart*100d0
+      write(unitno,95) '   GQB   ',gqbpart*xsec,gqbpart*100d0
+      write(unitno,95) '   QG    ',qgpart*xsec,qgpart*100d0
+      write(unitno,95) '   QBG   ',qbgpart*xsec,qbgpart*100d0
+      write(unitno,95) '   QQ    ',qqpart*xsec,qqpart*100d0
+      write(unitno,95) '   QBQB  ',qbqbpart*xsec,qbqbpart*100d0
       write(unitno,95) '   QQB   ',qqbpart*xsec,qqbpart*100d0
+      write(unitno,95) '   QBQ   ',qbqpart*xsec,qbqpart*100d0
       write(unitno,*)
 
       if (PDFerrors) then
@@ -190,7 +199,7 @@ c--- 55 format
 c--- 56 character format
    56 format('( PDF error set ',i3,'  --->',f13.3,' fb  )')
 c--- 95 character format
-   95 format(' (',5x,a9,' |',f15.5,f8.2,'%')
+   95 format(' (',5x,a9,' |',f18.5,f8.2,'%')
 c--- 96 character format      
    96 format(' (',a20,12x,'[',a,']',' )')  
 c--- 97 integer format      

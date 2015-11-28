@@ -5,6 +5,7 @@
 ************************************************************************
 *     Authors: J.M. Campbell and R.K. Ellis                            *
 *     March, 2001.                                                     *
+*     (updated: May, 2009)                                             *
 ************************************************************************
 c---Matrix element SUBTRACTION squared averaged over initial colors and spins
 c     q(-p1)+qbar(-p2) -->  W + f(p5) + f(p6) + g(p7)
@@ -32,26 +33,27 @@ c--- are included in the subtraction terms for the QQGG piece
 c --- remember: nd will count the dipoles
       integer nd
 c--- slightly obtuse notation, to simplify declaration lines      
-      double precision p(mxpart,4),msq(maxd,fn:nf,fn:nf)
+      double precision p(mxpart,4),msq(maxd,fn:nf,fn:nf),xninv
       double precision 
      & msq17_2(fn:nf,fn:nf),msq27_1(fn:nf,fn:nf),
      & msq15_2(fn:nf,fn:nf),msq25_1(fn:nf,fn:nf),
      & msq16_2(fn:nf,fn:nf),msq26_1(fn:nf,fn:nf),
      & msq17_5(fn:nf,fn:nf),msq17_6(fn:nf,fn:nf),
-     & msq15_6(fn:nf,fn:nf),
+     & msq15_6(fn:nf,fn:nf),msq25_6(fn:nf,fn:nf),
      & msq27_5(fn:nf,fn:nf),msq27_6(fn:nf,fn:nf),
      & msq57_6(fn:nf,fn:nf),msq67_5(fn:nf,fn:nf),
-     & msq57_6v(fn:nf,fn:nf),msq26_1v(fn:nf,fn:nf),
+     & msq57_6v(fn:nf,fn:nf),msq67_5v(fn:nf,fn:nf),
+     & msq26_1v(fn:nf,fn:nf),
      & msq15_2v(fn:nf,fn:nf),msq16_2v(fn:nf,fn:nf),
      & dummy(fn:nf,fn:nf),dummyv(fn:nf,fn:nf),
      & sub17_2(4),sub27_1(4),sub15_2(4),sub25_1(4),
      & sub16_2(4),sub26_1(4),
      & sub17_5(4),sub57_1(4),sub27_5(4),sub57_2(4),
      & sub17_6(4),sub67_1(4),sub27_6(4),sub67_2(4),
-     & sub15_6(4),sub65_1(4),
+     & sub15_6(4),sub65_1(4),sub25_6(4),sub65_2(4),
      & sub57_6(4),sub67_5(4),dsubv,dsub(4),
-     & sub57_6v,sub57_1v,sub67_1v,
-     & sub26_1v,sub25_1v,sub15_2v,sub16_2v,sub65_1v
+     & sub57_6v,sub57_1v,sub67_1v,sub67_5v,sub57_2v,sub67_2v,
+     & sub26_1v,sub25_1v,sub15_2v,sub16_2v,sub65_1v,sub65_2v
       double precision
      & m17_2(0:2,fn:nf,fn:nf),m27_1(0:2,fn:nf,fn:nf),
      & m16_2(0:2,fn:nf,fn:nf),m26_1(0:2,fn:nf,fn:nf),
@@ -62,6 +64,7 @@ c--- slightly obtuse notation, to simplify declaration lines
      & m27_5(0:2,fn:nf,fn:nf),
      & m27_6(0:2,fn:nf,fn:nf),
      & m15_6(0:2,fn:nf,fn:nf),
+     & m25_6(0:2,fn:nf,fn:nf),
      & m17_2x(0:2,fn:nf,fn:nf,fn:nf,fn:nf),
      & m27_1x(0:2,fn:nf,fn:nf,fn:nf,fn:nf),
      & m15_2x(0:2,fn:nf,fn:nf,fn:nf,fn:nf),
@@ -74,7 +77,8 @@ c--- slightly obtuse notation, to simplify declaration lines
      & m17_6x(0:2,fn:nf,fn:nf,fn:nf,fn:nf),
      & m27_5x(0:2,fn:nf,fn:nf,fn:nf,fn:nf),
      & m27_6x(0:2,fn:nf,fn:nf,fn:nf,fn:nf),
-     & m15_6x(0:2,fn:nf,fn:nf,fn:nf,fn:nf)
+     & m15_6x(0:2,fn:nf,fn:nf,fn:nf,fn:nf),
+     & m25_6x(0:2,fn:nf,fn:nf,fn:nf,fn:nf)
       
       double precision 
      . msq1a_b(6,0:2,fn:nf,fn:nf),msqba_1(6,0:2,fn:nf,fn:nf),
@@ -94,19 +98,30 @@ c--- slightly obtuse notation, to simplify declaration lines
       integer jj(-nf:nf),kk(-nf:nf)
       double precision m57_1g(0:2,fn:nf,fn:nf),m57_1vg(0:2,fn:nf,fn:nf),
      .                 m57_1vx(fn:nf,fn:nf,fn:nf,fn:nf),
+     .                 m57_2vx(fn:nf,fn:nf,fn:nf,fn:nf),
      .                 m26_1g(0:2,fn:nf,fn:nf),m26_1vg(0:2,fn:nf,fn:nf),
      .                 m26_1vx(fn:nf,fn:nf,fn:nf,fn:nf),
      .                 m25_1g(0:2,fn:nf,fn:nf),m25_1vg(0:2,fn:nf,fn:nf),
      .                 m25_1vx(fn:nf,fn:nf,fn:nf,fn:nf),
      .                 m67_1g(0:2,fn:nf,fn:nf),m67_1vg(0:2,fn:nf,fn:nf),
      .                 m67_1vx(fn:nf,fn:nf,fn:nf,fn:nf),
+     .                 m67_2vx(fn:nf,fn:nf,fn:nf,fn:nf),
      .                 m15_2g(0:2,fn:nf,fn:nf),m15_2vg(0:2,fn:nf,fn:nf),
      .                 m15_2vx(fn:nf,fn:nf,fn:nf,fn:nf),
      .                 m16_2g(0:2,fn:nf,fn:nf),m16_2vg(0:2,fn:nf,fn:nf),
      .                 m16_2vx(fn:nf,fn:nf,fn:nf,fn:nf),
      .                 m65_1g(0:2,fn:nf,fn:nf),m65_1vg(0:2,fn:nf,fn:nf),
      .                 m65_1vx(fn:nf,fn:nf,fn:nf,fn:nf),
-     .                 m15_6g(0:2,fn:nf,fn:nf)
+     .                 m15_6g(0:2,fn:nf,fn:nf),
+     .                 m65_2g(0:2,fn:nf,fn:nf),m65_2vg(0:2,fn:nf,fn:nf),
+     .                 m65_2vx(fn:nf,fn:nf,fn:nf,fn:nf),
+     .                 m25_6g(0:2,fn:nf,fn:nf),
+     .                 m57_6vx(fn:nf,fn:nf,fn:nf,fn:nf),
+     .                 m67_5vx(fn:nf,fn:nf,fn:nf,fn:nf),
+     .                 m57_2vg(0:2,fn:nf,fn:nf),
+     .                 m67_2vg(0:2,fn:nf,fn:nf),
+     .                 m57_6vg(0:2,fn:nf,fn:nf),
+     .                 m67_5vg(0:2,fn:nf,fn:nf)
       double precision mqq(0:2,fn:nf,fn:nf),
      . msqx(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf),mg(0:2,-nf:nf,-nf:nf),
      . mvg(0:2,-nf:nf,-nf:nf),mvxg(-nf:nf,-nf:nf,-nf:nf,-nf:nf),
@@ -971,9 +986,9 @@ c--- momenta, used in realint to perform cuts and clustering
 
 c--- final-final
       call dipsx(2,p,5,7,6,sub57_6,sub57_6v,msq57_6,msq57_6v,
-     . qqb_w2jetx,qqb_w2jet_gvec,m57_6,m57_6x,mg,mvg,mvxg)
-      call dipsx(4,p,6,7,5,sub67_5,dsubv,msq67_5,dummyv,
-     . qqb_w2jetx,donothing_gvecx,m67_5,m67_5x,mg,mvg,mvxg)
+     . qqb_w2jetx,qqb_w2jet_gvecx,m57_6,m57_6x,mg,m57_6vg,m57_6vx)
+      call dipsx(4,p,6,7,5,sub67_5,sub67_5v,msq67_5,msq67_5v,
+     . qqb_w2jetx,qqb_w2jet_gvecx,m67_5,m67_5x,mg,m67_5vg,m67_5vx)
 c--- now the basic initial final and final initial
 c--- second call for dipole 9,12 etc  only supplies new values for
 c--- sub..
@@ -994,13 +1009,19 @@ c--- sub..
 
       call dipsx(13,p,2,7,6,sub27_6,dsubv,msq27_6,dummyv,
      . qqb_w2jetx,donothing_gvecx,m27_6,m27_6x,mg,mvg,mvxg)
-      call dipsx(13,p,6,7,2,sub67_2,dsubv,dummy,dummyv,
-     . qqb_w2jetx,donothing_gvecx,mqq,msqx,mg,mvg,mvxg)
+      call dipsx(13,p,6,7,2,sub67_2,sub67_2v,dummy,dummyv,
+     . qqb_w2jetx,qqb_w2jet_gvecx,mqq,msqx,mg,m67_2vg,m67_2vx)
 
       call dipsx(17,p,2,7,5,sub27_5,dsubv,msq27_5,dummyv,
      . qqb_w2jetx,donothing_gvecx,m27_5,m27_5x,mg,mvg,mvxg)
-      call dipsx(17,p,5,7,2,sub57_2,dsubv,dummy,dummyv,
-     . qqb_w2jetx,donothing_gvecx,mqq,msqx,mg,mvg,mvxg)
+      call dipsx(17,p,5,7,2,sub57_2,sub57_2v,dummy,dummyv,
+     . qqb_w2jetx,qqb_w2jet_gvecx,mqq,msqx,mg,m57_2vg,m57_2vx)
+
+      call dipsx(18,p,2,5,6,sub25_6,dsubv,msq25_6,dummyv,
+     . qqb_w2jetx,donothing_gvecx,m25_6,m25_6x,m25_6g,mvg,mvxg)
+      call dipsx(18,p,6,5,2,sub65_2,sub65_2v,dummy,dummyv,
+     . qqb_w2jetx,qqb_w2jet_gvecx,mqq,msqx,m65_2g,m65_2vg,m65_2vx)
+
 c--- calculate all the initial-initial dipoles
       call dipsx(19,p,1,6,2,sub16_2,sub16_2v,msq16_2,msq16_2v,
      . qqb_w2jetx,qqb_w2jet_gvecx,m16_2,m16_2x,m16_2g,m16_2vg,m16_2vx)
@@ -1015,6 +1036,13 @@ c--- calculate all the initial-initial dipoles
       call dipsx(24,p,2,5,1,sub25_1,sub25_1v,msq25_1,dummyv,
      . qqb_w2jetx,qqb_w2jet_gvecx,m25_1,m25_1x,m25_1g,m25_1vg,m25_1vx)
 
+c--- implement leading color by defining color factors in which 1/xn=0
+      if (colourchoice .eq. 1) then
+        xninv=0d0
+      else
+        xninv=1d0/xn   
+      endif
+      
 c--- fill the dipole contributions
       do j=-nf,nf
       do k=-nf,nf
@@ -1023,36 +1051,36 @@ c--- fill the dipole contributions
 c---QQ
       msq(2,j,k)=msq(2,j,k)
      . +sub57_6(qq)
-     . *((xn+1d0/xn)*m57_6(0,j,k)+two*(m57_6(1,j,k)+m57_6(2,j,k))/xn)
+     . *((xn+xninv)*m57_6(0,j,k)+two*(m57_6(1,j,k)+m57_6(2,j,k))*xninv)
       msq(4,j,k)=msq(4,j,k)
      . +sub67_5(qq)
-     . *((xn+1d0/xn)*m67_5(0,j,k)+two*(m67_5(1,j,k)+m67_5(2,j,k))/xn)
+     . *((xn+xninv)*m67_5(0,j,k)+two*(m67_5(1,j,k)+m67_5(2,j,k))*xninv)
       msq(9,j,k)=msq(9,j,k)
      . +sub17_5(qq)
-     . *((xn-two/xn)*m17_5(2,j,k)-m17_5(0,j,k)/xn-m17_5(1,j,k)/xn)
+     . *((xn-two*xninv)*m17_5(2,j,k)-(m17_5(0,j,k)+m17_5(1,j,k))*xninv)
      . +sub57_1(qq)
-     . *((xn-two/xn)*m17_5(2,j,k)-m17_5(0,j,k)/xn-m17_5(1,j,k)/xn)
+     . *((xn-two*xninv)*m17_5(2,j,k)-(m17_5(0,j,k)+m17_5(1,j,k))*xninv)
       msq(12,j,k)=msq(12,j,k)
      . +sub17_6(qq)
-     . *((xn-two/xn)*m17_6(1,j,k)-m17_6(0,j,k)/xn-m17_6(2,j,k)/xn)
+     . *((xn-two*xninv)*m17_6(1,j,k)-(m17_6(0,j,k)+m17_6(2,j,k))*xninv)
      . +sub67_1(qq)
-     . *((xn-two/xn)*m17_6(1,j,k)-m17_6(0,j,k)/xn-m17_6(2,j,k)/xn)
+     . *((xn-two*xninv)*m17_6(1,j,k)-(m17_6(0,j,k)+m17_6(2,j,k))*xninv)
       msq(13,j,k)=msq(13,j,k)
      . +sub27_6(qq)
-     . *((xn-two/xn)*m27_6(2,j,k)-m27_6(0,j,k)/xn-m27_6(1,j,k)/xn)
+     . *((xn-two*xninv)*m27_6(2,j,k)-(m27_6(0,j,k)+m27_6(1,j,k))*xninv)
      . +sub67_2(qq)
-     . *((xn-two/xn)*m27_6(2,j,k)-m27_6(0,j,k)/xn-m27_6(1,j,k)/xn)
+     . *((xn-two*xninv)*m27_6(2,j,k)-(m27_6(0,j,k)+m27_6(1,j,k))*xninv)
       msq(17,j,k)=msq(17,j,k)
      . +sub27_5(qq)
-     . *((xn-two/xn)*m27_5(1,j,k)-m27_5(0,j,k)/xn-m27_5(2,j,k)/xn)
+     . *((xn-two*xninv)*m27_5(1,j,k)-(m27_5(0,j,k)+m27_5(2,j,k))*xninv)
      . +sub57_2(qq)
-     . *((xn-two/xn)*m27_5(1,j,k)-m27_5(0,j,k)/xn-m27_5(2,j,k)/xn)
+     . *((xn-two*xninv)*m27_5(1,j,k)-(m27_5(0,j,k)+m27_5(2,j,k))*xninv)
       msq(20,j,k)=msq(20,j,k)
      . +sub17_2(qq)
-     . *((xn+1d0/xn)*m17_2(0,j,k)+two*(m17_2(1,j,k)+m17_2(2,j,k))/xn)
+     . *((xn+xninv)*m17_2(0,j,k)+two*(m17_2(1,j,k)+m17_2(2,j,k))*xninv)
       msq(23,j,k)=msq(23,j,k)
      . +sub27_1(qq)
-     . *((xn+1d0/xn)*m27_1(0,j,k)+two*(m27_1(1,j,k)+m27_1(2,j,k))/xn)
+     . *((xn+xninv)*m27_1(0,j,k)+two*(m27_1(1,j,k)+m27_1(2,j,k))*xninv)
        if ((jj(j) .eq. 2) .and. (kk(k) .eq. 1)) then
        msq(22,j,k)=msq(22,j,k)+sub26_1(gq)*(aveqq/aveqg)*
      .     (Vsum(j)-0.5d0*Vsq(j,-k))*(
@@ -1100,36 +1128,36 @@ c---QQ
 c---QbarQbar
       msq(2,j,k)=msq(2,j,k)
      . +sub57_6(qq)
-     . *((xn+1d0/xn)*m57_6(0,j,k)+two*(m57_6(1,j,k)+m57_6(2,j,k))/xn)
+     . *((xn+xninv)*m57_6(0,j,k)+two*(m57_6(1,j,k)+m57_6(2,j,k))*xninv)
       msq(4,j,k)=msq(4,j,k)
      . +sub67_5(qq)
-     . *((xn+1d0/xn)*m67_5(0,j,k)+two*(m67_5(1,j,k)+m67_5(2,j,k))/xn)
+     . *((xn+xninv)*m67_5(0,j,k)+two*(m67_5(1,j,k)+m67_5(2,j,k))*xninv)
       msq(9,j,k)=msq(9,j,k)
      . +sub17_5(qq)
-     . *((xn-two/xn)*m17_5(2,j,k)-m17_5(0,j,k)/xn-m17_5(1,j,k)/xn)
+     . *((xn-two*xninv)*m17_5(2,j,k)-(m17_5(0,j,k)+m17_5(1,j,k))*xninv)
      . +sub57_1(qq)
-     . *((xn-two/xn)*m17_5(2,j,k)-m17_5(0,j,k)/xn-m17_5(1,j,k)/xn)
+     . *((xn-two*xninv)*m17_5(2,j,k)-(m17_5(0,j,k)+m17_5(1,j,k))*xninv)
       msq(12,j,k)=msq(12,j,k)
      . +sub17_6(qq)
-     . *((xn-two/xn)*m17_6(1,j,k)-m17_6(0,j,k)/xn-m17_6(2,j,k)/xn)
+     . *((xn-two*xninv)*m17_6(1,j,k)-(m17_6(0,j,k)+m17_6(2,j,k))*xninv)
      . +sub67_1(qq)
-     . *((xn-two/xn)*m17_6(1,j,k)-m17_6(0,j,k)/xn-m17_6(2,j,k)/xn)
+     . *((xn-two*xninv)*m17_6(1,j,k)-(m17_6(0,j,k)+m17_6(2,j,k))*xninv)
       msq(13,j,k)=msq(13,j,k)
      . +sub27_6(qq)
-     . *((xn-two/xn)*m27_6(2,j,k)-m27_6(0,j,k)/xn-m27_6(1,j,k)/xn)
+     . *((xn-two*xninv)*m27_6(2,j,k)-(m27_6(0,j,k)+m27_6(1,j,k))*xninv)
      . +sub67_2(qq)
-     . *((xn-two/xn)*m27_6(2,j,k)-m27_6(0,j,k)/xn-m27_6(1,j,k)/xn)
+     . *((xn-two*xninv)*m27_6(2,j,k)-(m27_6(0,j,k)+m27_6(1,j,k))*xninv)
       msq(17,j,k)=msq(17,j,k)
      . +sub27_5(qq)
-     . *((xn-two/xn)*m27_5(1,j,k)-m27_5(0,j,k)/xn-m27_5(2,j,k)/xn)
+     . *((xn-two*xninv)*m27_5(1,j,k)-(m27_5(0,j,k)+m27_5(2,j,k))*xninv)
      . +sub57_2(qq)
-     . *((xn-two/xn)*m27_5(1,j,k)-m27_5(0,j,k)/xn-m27_5(2,j,k)/xn)
+     . *((xn-two*xninv)*m27_5(1,j,k)-(m27_5(0,j,k)+m27_5(2,j,k))*xninv)
       msq(20,j,k)=msq(20,j,k)
      . +sub17_2(qq)
-     . *((xn+1d0/xn)*m17_2(0,j,k)+two*(m17_2(1,j,k)+m17_2(2,j,k))/xn)
+     . *((xn+xninv)*m17_2(0,j,k)+two*(m17_2(1,j,k)+m17_2(2,j,k))*xninv)
       msq(23,j,k)=msq(23,j,k)
      . +sub27_1(qq)
-     . *((xn+1d0/xn)*m27_1(0,j,k)+two*(m27_1(1,j,k)+m27_1(2,j,k))/xn)
+     . *((xn+xninv)*m27_1(0,j,k)+two*(m27_1(1,j,k)+m27_1(2,j,k))*xninv)
         if ((jj(j) .eq. -2) .and. (kk(k) .eq. -1)) then
        msq(21,j,k)=msq(21,j,k)+sub15_2(gq)*(aveqq/aveqg)*
      .     (Vsum(k)-0.5d0*Vsq(k,-j))*(
@@ -1177,36 +1205,36 @@ c---QbarQbar
 c---QQbar
       msq(2,j,k)=msq(2,j,k)
      . +sub57_6(qq)
-     . *((xn-two/xn)*m57_6(2,j,k)-m57_6(0,j,k)/xn-m57_6(1,j,k)/xn)
+     . *((xn-two*xninv)*m57_6(2,j,k)-(m57_6(0,j,k)+m57_6(1,j,k))*xninv)
       msq(4,j,k)=msq(4,j,k)
      . +sub67_5(qq)
-     . *((xn-two/xn)*m67_5(2,j,k)-m67_5(0,j,k)/xn-m67_5(1,j,k)/xn)
+     . *((xn-two*xninv)*m67_5(2,j,k)-(m67_5(0,j,k)+m67_5(1,j,k))*xninv)
       msq(9,j,k)=msq(9,j,k)
      . +sub17_5(qq)
-     . *((xn-two/xn)*m17_5(1,j,k)-m17_5(0,j,k)/xn-m17_5(2,j,k)/xn)
+     . *((xn-two*xninv)*m17_5(1,j,k)-(m17_5(0,j,k)+m17_5(2,j,k))*xninv)
      . +sub57_1(qq)
-     . *((xn-two/xn)*m17_5(1,j,k)-m17_5(0,j,k)/xn-m17_5(2,j,k)/xn)
+     . *((xn-two*xninv)*m17_5(1,j,k)-(m17_5(0,j,k)+m17_5(2,j,k))*xninv)
       msq(12,j,k)=msq(12,j,k)
      . +sub17_6(qq)
-     . *((xn+1d0/xn)*m17_6(0,j,k)+two*(m17_6(1,j,k)+m17_6(2,j,k))/xn)
+     . *((xn+xninv)*m17_6(0,j,k)+two*(m17_6(1,j,k)+m17_6(2,j,k))*xninv)
      . +sub67_1(qq)
-     . *((xn+1d0/xn)*m17_6(0,j,k)+two*(m17_6(1,j,k)+m17_6(2,j,k))/xn)
+     . *((xn+xninv)*m17_6(0,j,k)+two*(m17_6(1,j,k)+m17_6(2,j,k))*xninv)
       msq(13,j,k)=msq(13,j,k)
      . +sub27_6(qq)
-     . *((xn-two/xn)*m27_6(1,j,k)-m27_6(0,j,k)/xn-m27_6(2,j,k)/xn)
+     . *((xn-two*xninv)*m27_6(1,j,k)-(m27_6(0,j,k)+m27_6(2,j,k))*xninv)
      . +sub67_2(qq)
-     . *((xn-two/xn)*m27_6(1,j,k)-m27_6(0,j,k)/xn-m27_6(2,j,k)/xn)
+     . *((xn-two*xninv)*m27_6(1,j,k)-(m27_6(0,j,k)+m27_6(2,j,k))*xninv)
       msq(17,j,k)=msq(17,j,k)
      . +sub27_5(qq)
-     . *((xn+1d0/xn)*m27_5(0,j,k)+two*(m27_5(1,j,k)+m27_5(2,j,k))/xn)
+     . *((xn+xninv)*m27_5(0,j,k)+two*(m27_5(1,j,k)+m27_5(2,j,k))*xninv)
      . +sub57_2(qq)
-     . *((xn+1d0/xn)*m27_5(0,j,k)+two*(m27_5(1,j,k)+m27_5(2,j,k))/xn)
+     . *((xn+xninv)*m27_5(0,j,k)+two*(m27_5(1,j,k)+m27_5(2,j,k))*xninv)
       msq(20,j,k)=msq(20,j,k)
      . +sub17_2(qq)
-     . *((xn-two/xn)*m17_2(2,j,k)-m17_2(0,j,k)/xn-m17_2(1,j,k)/xn)
+     . *((xn-two*xninv)*m17_2(2,j,k)-(m17_2(0,j,k)+m17_2(1,j,k))*xninv)
       msq(23,j,k)=msq(23,j,k)
      . +sub27_1(qq)
-     . *((xn-two/xn)*m27_1(2,j,k)-m27_1(0,j,k)/xn-m27_1(1,j,k)/xn)
+     . *((xn-two*xninv)*m27_1(2,j,k)-(m27_1(0,j,k)+m27_1(1,j,k))*xninv)
         if ((jj(j).eq.2) .and. (kk(k).eq.-1)) then
        msq(21,j,k)=msq(21,j,k)+sub15_2(gq)*(aveqq/aveqg)*Vsum(k)*(
      .      m15_2x(0,0,-1,-2,0)+m15_2x(1,0,-1,-2,0)+m15_2x(2,0,-1,-2,0))
@@ -1217,10 +1245,15 @@ c---QQbar
      .                        +sub26_1v*(aveqq/aveqg)*Vsum(j)*
      .      m26_1vx(2,0,1,0)
          if (Vsq(j,k) .ne. 0d0) then
-         msq( 7,j,k)=msq( 7,j,k)+2d0*dfloat(nf)*sub65_1(gq)*(
+c--- 20/5/09: symmetrized 65 between _1 and _2
+         msq( 7,j,k)=msq( 7,j,k)+dfloat(nf)*sub65_1(gq)*(
      .        m15_6g(0,2,-1)+m15_6g(1,2,-1)+m15_6g(2,2,-1))
-     .                          -2d0*dfloat(nf)*sub65_1v*(
+     .                          -dfloat(nf)*sub65_1v*(
      .        m65_1vg(0,2,-1)+m65_1vg(1,2,-1)+m65_1vg(2,2,-1))
+         msq(18,j,k)=msq(18,j,k)+dfloat(nf)*sub65_2(gq)*(
+     .        m25_6g(0,2,-1)+m25_6g(1,2,-1)+m25_6g(2,2,-1))
+     .                          -dfloat(nf)*sub65_2v*(
+     .        m65_2vg(0,2,-1)+m65_2vg(1,2,-1)+m65_2vg(2,2,-1))
          endif
         elseif ((jj(j).eq.2) .and. (kk(k).eq.-2)) then
        msq(22,j,k)=msq(22,j,k)+sub26_1(gq)*(aveqq/aveqg)*Vsum(j)*(
@@ -1237,36 +1270,36 @@ c---QQbar
 c---QbarQ
       msq(2,j,k)=msq(2,j,k)
      . +sub57_6(qq)
-     . *((xn-two/xn)*m57_6(2,j,k)-m57_6(0,j,k)/xn-m57_6(1,j,k)/xn)
+     . *((xn-two*xninv)*m57_6(2,j,k)-(m57_6(0,j,k)+m57_6(1,j,k))*xninv)
       msq(4,j,k)=msq(4,j,k)
      . +sub67_5(qq)
-     . *((xn-two/xn)*m67_5(2,j,k)-m67_5(0,j,k)/xn-m67_5(1,j,k)/xn)
+     . *((xn-two*xninv)*m67_5(2,j,k)-(m67_5(0,j,k)+m67_5(1,j,k))*xninv)
       msq(9,j,k)=msq(9,j,k)
      . +sub17_5(qq)
-     . *((xn+1d0/xn)*m17_5(0,j,k)+two*(m17_5(1,j,k)+m17_5(2,j,k))/xn)
+     . *((xn+xninv)*m17_5(0,j,k)+two*(m17_5(1,j,k)+m17_5(2,j,k))*xninv)
      . +sub57_1(qq)
-     . *((xn+1d0/xn)*m17_5(0,j,k)+two*(m17_5(1,j,k)+m17_5(2,j,k))/xn)
+     . *((xn+xninv)*m17_5(0,j,k)+two*(m17_5(1,j,k)+m17_5(2,j,k))*xninv)
       msq(12,j,k)=msq(12,j,k)
      . +sub17_6(qq)
-     . *((xn-two/xn)*m17_6(1,j,k)-m17_6(0,j,k)/xn-m17_6(2,j,k)/xn)
+     . *((xn-two*xninv)*m17_6(1,j,k)-(m17_6(0,j,k)+m17_6(2,j,k))*xninv)
      . +sub67_1(qq)
-     . *((xn-two/xn)*m17_6(1,j,k)-m17_6(0,j,k)/xn-m17_6(2,j,k)/xn)
+     . *((xn-two*xninv)*m17_6(1,j,k)-(m17_6(0,j,k)+m17_6(2,j,k))*xninv)
       msq(13,j,k)=msq(13,j,k)
      . +sub27_6(qq)
-     . *((xn+1d0/xn)*m27_6(0,j,k)+two*(m27_6(1,j,k)+m27_6(2,j,k))/xn)
+     . *((xn+xninv)*m27_6(0,j,k)+two*(m27_6(1,j,k)+m27_6(2,j,k))*xninv)
      . +sub67_2(qq)
-     . *((xn+1d0/xn)*m27_6(0,j,k)+two*(m27_6(1,j,k)+m27_6(2,j,k))/xn)
+     . *((xn+xninv)*m27_6(0,j,k)+two*(m27_6(1,j,k)+m27_6(2,j,k))*xninv)
       msq(17,j,k)=msq(17,j,k)
      . +sub27_5(qq)
-     . *((xn-two/xn)*m27_5(1,j,k)-m27_5(0,j,k)/xn-m27_5(2,j,k)/xn)
+     . *((xn-two*xninv)*m27_5(1,j,k)-(m27_5(0,j,k)+m27_5(2,j,k))*xninv)
      . +sub57_2(qq)
-     . *((xn-two/xn)*m27_5(1,j,k)-m27_5(0,j,k)/xn-m27_5(2,j,k)/xn)
+     . *((xn-two*xninv)*m27_5(1,j,k)-(m27_5(0,j,k)+m27_5(2,j,k))*xninv)
       msq(20,j,k)=msq(20,j,k)
      . +sub17_2(qq)
-     . *((xn-two/xn)*m17_2(2,j,k)-m17_2(0,j,k)/xn-m17_2(1,j,k)/xn)
+     . *((xn-two*xninv)*m17_2(2,j,k)-(m17_2(0,j,k)+m17_2(1,j,k))*xninv)
       msq(23,j,k)=msq(23,j,k)
      . +sub27_1(qq)
-     . *((xn-two/xn)*m27_1(2,j,k)-m27_1(0,j,k)/xn-m27_1(1,j,k)/xn)
+     . *((xn-two*xninv)*m27_1(2,j,k)-(m27_1(0,j,k)+m27_1(1,j,k))*xninv)
         if ((jj(j).eq.-1) .and. (kk(k).eq.2)) then
        msq(24,j,k)=msq(24,j,k)+sub25_1(gq)*(aveqq/aveqg)*Vsum(j)*(
      .      m25_1x(0,-1,0,-2,0)+m25_1x(1,-1,0,-2,0)+m25_1x(2,-1,0,-2,0))
@@ -1277,10 +1310,15 @@ c---QbarQ
      .                        +sub16_2v*(aveqq/aveqg)*Vsum(k)*
      .      m16_2vx(0,2,1,0)
          if (Vsq(j,k) .ne. 0d0) then
-         msq( 7,j,k)=msq( 7,j,k)+2d0*dfloat(nf)*sub65_1(gq)*(
+c--- 20/5/09: symmetrized 65 between _1 and _2
+         msq( 7,j,k)=msq( 7,j,k)+dfloat(nf)*sub65_1(gq)*(
      .        m15_6g(0,-1,2)+m15_6g(1,-1,2)+m15_6g(2,-1,2))
-     .                          -2d0*dfloat(nf)*sub65_1v*(
+     .                          -dfloat(nf)*sub65_1v*(
      .        m65_1vg(0,-1,2)+m65_1vg(1,-1,2)+m65_1vg(2,-1,2))
+         msq(18,j,k)=msq(18,j,k)+dfloat(nf)*sub65_2(gq)*(
+     .        m25_6g(0,-1,2)+m25_6g(1,-1,2)+m25_6g(2,-1,2))
+     .                          -dfloat(nf)*sub65_2v*(
+     .        m65_2vg(0,-1,2)+m65_2vg(1,-1,2)+m65_2vg(2,-1,2))
          endif
         elseif ((jj(j).eq.-2) .and. (kk(k).eq.2)) then
        msq(19,j,k)=msq(19,j,k)+sub16_2(gq)*(aveqq/aveqg)*Vsum(k)*(
@@ -1294,15 +1332,229 @@ c---QbarQ
      .      m25_1vx(-1,0,-2,0)
         endif
 
+      elseif (k.eq.0) then 
+c------- Q-G
+        if     (j .gt. 0) then
+          if (jj(j) .eq. 1) then
+          if (j .lt. 5) then
+            Vckm=Vsq(-j,j+1)
+          else
+            Vckm=0d0
+          endif
+          msq(23,j,k)=msq(23,j,k)+sub27_1(qg)*(aveqg/aveqq)*(
+     .     +(xn-xninv )*(m27_1(0,j,+1)+m27_1(0,j,+2)+m27_1(0,j,+3)
+     .          	+m27_1(0,j,+4)+m27_1(0,j,+5))
+     .     +(xn-xninv )*(m27_1(1,j,+1)+m27_1(1,j,+2)+m27_1(1,j,+3)
+     .   		+m27_1(1,j,+4)+m27_1(1,j,+5))
+     .     +(xn-xninv )*(m27_1(2,j,+1)+m27_1(2,j,+2)+m27_1(2,j,+3)
+     .   		+m27_1(2,j,+4)+m27_1(2,j,+5)))
+          msq(24,j,k)=msq(24,j,k)+sub25_1(qg)*(aveqg/aveqq)*(
+     .     +(xn-xninv )*(0.5d0*m25_1x(0,1,-1,1,-2)*Vckm
+     .                        +m25_1x(0,1,-1,3,-4)*(2d0-Vckm))
+     .     +(xn-xninv )*(0.5d0*m25_1x(1,1,-1,1,-2)*Vckm
+     .                        +m25_1x(1,1,-1,3,-4)*(2d0-Vckm))
+     .     +(xn-xninv )*(0.5d0*m25_1x(2,1,-1,1,-2)*Vckm
+     .                        +m25_1x(2,1,-1,3,-4)*(2d0-Vckm)))
+          msq(22,j,k)=msq(22,j,k)+sub26_1(qg)*(aveqg/aveqq)*(
+     .     +(xn-xninv )*(0.5d0*m26_1x(0,1,-1,1,-2)*Vckm
+     .                        +m26_1x(0,1,-3,1,-4)*(2d0-Vckm))
+     .     +(xn-xninv )*(0.5d0*m26_1x(1,1,-1,1,-2)*Vckm
+     .                        +m26_1x(1,1,-3,1,-4)*(2d0-Vckm))
+     .     +(xn-xninv )*(0.5d0*m26_1x(2,1,-1,1,-2)*Vckm
+     .                        +m26_1x(2,1,-3,1,-4)*(2d0-Vckm)))
+c--- W radiated from the gluon line, identical quarks only
+          msq(19,j,k)=msq(19,j,k)+0.5d0*Vckm*sub16_2(gq)*(aveqg/avegg)*(
+     .     +m16_2x(0,0,0,1,-2)+m16_2x(1,0,0,1,-2)+m16_2x(2,0,0,1,-2))
+     .                           +0.5d0*Vckm*sub16_2v*(aveqg/avegg)*(
+     .     +m16_2vx(0,0,1,-2))
+c--- W radiated from the gluon line, all quarks
+          msq(21,j,k)=msq(21,j,k)+
+     .     sub15_2(gq)*(aveqg/avegg)*(2d0-0.5d0*Vckm)*(
+     .     +m15_2x(0,0,0,1,-2)+m15_2x(1,0,0,1,-2)+m15_2x(2,0,0,1,-2))
+     .    +sub15_2v*(aveqg/avegg)*(2d0-0.5d0*Vckm)*(
+     .     +m15_2vx(0,0,1,-2))
+           endif
+          if (jj(j) .eq. 2) then
+          Vckm=Vsq(j,-j+1)
+          msq(23,j,k)=msq(23,j,k)+sub27_1(qg)*(aveqg/aveqq)*(
+     .     +(xn-xninv )*(  m27_1x(0,+2,+1,+1,+1)+m27_1x(0,+2,+2,+2,+1)
+     .       +dfloat(nf-2)*m27_1x(0,+2,+3,+1,+3)+m27_1x(0,+2,+4,+2,+3))
+     .     +(xn-xninv )*(  m27_1x(1,+2,+1,+1,+1)+m27_1x(1,+2,+2,+2,+1)
+     .       +dfloat(nf-2)*m27_1x(1,+2,+3,+1,+3)+m27_1x(1,+2,+4,+2,+3))
+     .     +(xn-xninv )*(  m27_1x(2,+2,+1,+1,+1)+m27_1x(2,+2,+2,+2,+1)
+     .       +dfloat(nf-2)*m27_1x(2,+2,+3,+1,+3)+m27_1x(2,+2,+4,+2,+3)))
+          msq(24,j,k)=msq(24,j,k)+sub25_1(qg)*(aveqg/aveqq)*Vckm*(
+     .     +(xn-xninv )*(m25_1x(0,2,-2,1,-2)+0.5d0*m25_1x(0,2,-1,1,-1)
+     .                  +m25_1x(0,2,-1,4,-4)+m25_1x(0,2,-1,3,-3)*2d0
+     .                  +m25_1x(0,2,-2,3,-4))
+     .     +(xn-xninv )*(m25_1x(1,2,-2,1,-2)+0.5d0*m25_1x(1,2,-1,1,-1)
+     .                  +m25_1x(1,2,-1,4,-4)+m25_1x(1,2,-1,3,-3)*2d0
+     .                  +m25_1x(1,2,-2,3,-4))
+     .     +(xn-xninv )*(m25_1x(2,2,-2,1,-2)+0.5d0*m25_1x(2,2,-1,1,-1)
+     .                  +m25_1x(2,2,-1,4,-4)+m25_1x(2,2,-1,3,-3)*2d0
+     .                  +m25_1x(2,2,-2,3,-4)))
+          msq(22,j,k)=msq(22,j,k)+sub26_1(qg)*(aveqg/aveqq)*Vckm*(
+     .     +(xn-xninv )*(m26_1x(0,2,-1,2,-2)+0.5d0*m26_1x(0,2,-1,1,-1)
+     .                  +m26_1x(0,2,-4,1,-4)+m26_1x(0,2,-3,1,-3)*2d0
+     .                  +m26_1x(0,2,-3,2,-4))
+     .     +(xn-xninv )*(m26_1x(1,2,-1,2,-2)+0.5d0*m26_1x(1,2,-1,1,-1)
+     .                  +m26_1x(1,2,-4,1,-4)+m26_1x(1,2,-3,1,-3)*2d0
+     .                  +m26_1x(1,2,-3,2,-4))
+     .     +(xn-xninv )*(m26_1x(2,2,-1,2,-2)+0.5d0*m26_1x(2,2,-1,1,-1)
+     .                  +m26_1x(2,2,-4,1,-4)+m26_1x(2,2,-3,1,-3)*2d0
+     .                  +m26_1x(2,2,-3,2,-4)))
+c--- 17/5/09: symmetrized 57 and 67 between _1 and _2
+c--- 26/5/09: added additional 57_6 and 67_5 and divided as in Gflag gg dips
+          msq( 9,j,k)=msq( 9,j,k)+1.5d0*Vckm*half*sub57_1(gq)*(
+     .     +m17_5x(0,2,0,0,1)+m17_5x(2,2,0,0,1))
+     .                           -1.5d0*Vckm*half*sub57_1v*
+     .     (m57_1vg(0,2,0)+m57_1vg(2,2,0))
+          msq(17,j,k)=msq(17,j,k)+1.5d0*Vckm*half*sub57_2(gq)*(
+     .     +m27_5x(1,2,0,0,1)+m27_5x(2,2,0,0,1))
+     .                           -1.5d0*Vckm*half*sub57_2v*
+     .     (m57_2vg(1,2,0)+m57_2vg(2,2,0))
+          msq( 2,j,k)=msq( 2,j,k)+1.5d0*Vckm*half*sub57_6(gq)*(
+     .     +m57_6x(0,2,0,0,1)+m57_6x(1,2,0,0,1))
+     .                           -1.5d0*Vckm*half*sub57_6v*
+     .     (m57_6vg(0,2,0)+m57_6vg(1,2,0))
+          msq(12,j,k)=msq(12,j,k)+(dfloat(nf-2)+0.5d0)*Vckm*half*(
+     .      sub67_1(gq)*(
+     .         +m17_6x(0,2,0,1,0)+m17_6x(2,2,0,1,0))
+     .     -sub67_1v*(m67_1vg(0,2,0)+m67_1vg(2,2,0)))
+          msq(13,j,k)=msq(13,j,k)+(dfloat(nf-2)+0.5d0)*Vckm*half*(
+     .      sub67_2(gq)*(
+     .         +m27_6x(1,2,0,1,0)+m27_6x(2,2,0,1,0))
+     .     -sub67_2v*(m67_2vg(1,2,0)+m67_2vg(2,2,0)))
+          msq( 4,j,k)=msq( 4,j,k)+(dfloat(nf-2)+0.5d0)*Vckm*half*(
+     .      sub67_5(gq)*(
+     .         +m67_5x(0,2,0,1,0)+m67_5x(1,2,0,1,0))
+     .     -sub67_5v*(m67_5vg(0,2,0)+m67_5vg(1,2,0)))
+          msq(21,j,k)=msq(21,j,k)+sub15_2(gq)*2d0*(aveqg/avegg)*(
+     .     +m15_2x(0,0,0,3,-4)+m15_2x(1,0,0,3,-4)+m15_2x(2,0,0,3,-4))
+     .                           +sub15_2v*2d0*(aveqg/avegg)*(
+     .     +m15_2vx(0,0,3,-4))
+          endif
+
+C------- Qbar-G
+        elseif (j .lt. 0) then
+          if (jj(j) .eq. -2) then
+          Vckm=Vsq(-j,j+1)
+          msq(23,j,k)=msq(23,j,k)+sub27_1(qg)*(aveqg/aveqq)*(
+     .     +(xn-xninv )*(m27_1(0,j,-1)+m27_1(0,j,-2)+m27_1(0,j,-3)
+     .                  +m27_1(0,j,-4)+m27_1(0,j,-5))
+     .     +(xn-xninv )*(m27_1(1,j,-1)+m27_1(1,j,-2)+m27_1(1,j,-3)
+     .                  +m27_1(1,j,-4)+m27_1(1,j,-5))
+     .     +(xn-xninv )*(m27_1(2,j,-1)+m27_1(2,j,-2)+m27_1(2,j,-3)
+     .                  +m27_1(2,j,-4)+m27_1(2,j,-5)))
+          msq(24,j,k)=msq(24,j,k)+sub25_1(qg)*(aveqg/aveqq)*(
+     .     +(xn-xninv )*(0.5d0*m25_1x(0,-2,2,-2,1)+m25_1x(0,-2,2,-4,3))
+     .     +(xn-xninv )*(0.5d0*m25_1x(1,-2,2,-2,1)+m25_1x(1,-2,2,-4,3))
+     .     +(xn-xninv )*(0.5d0*m25_1x(2,-2,2,-2,1)+m25_1x(2,-2,2,-4,3)))
+          msq(22,j,k)=msq(22,j,k)+sub26_1(qg)*(aveqg/aveqq)*(
+     .     +(xn-xninv )*(0.5d0*m26_1x(0,-2,2,-2,1)+m26_1x(0,-2,4,-2,3))
+     .     +(xn-xninv )*(0.5d0*m26_1x(1,-2,2,-2,1)+m26_1x(1,-2,4,-2,3))
+     .     +(xn-xninv )*(0.5d0*m26_1x(2,-2,2,-2,1)+m26_1x(2,-2,4,-2,3)))
+          msq(19,j,k)=msq(19,j,k)+0.5d0*sub16_2(gq)*(aveqg/avegg)*(
+     .     +m16_2x(0,0,0,-2,1)+m16_2x(1,0,0,-2,1)+m16_2x(2,0,0,-2,1))
+     .                           +0.5d0*sub16_2v*(aveqg/avegg)*(
+     .     +m16_2vx(0,0,-2,1))
+          msq(21,j,k)=msq(21,j,k)
+     .               +(2d0-0.5d0*Vckm)*sub15_2(gq)*(aveqg/avegg)*(
+     .     +m15_2x(0,0,0,-2,1)+m15_2x(1,0,0,-2,1)+m15_2x(2,0,0,-2,1))
+     .               +(2d0-0.5d0*Vckm)*sub15_2v*(aveqg/avegg)*(
+     .     +m15_2vx(0,0,-2,1))
+          endif
+          if (jj(j) .eq. -1) then
+          if (j .gt. -5) then
+            Vckm=Vsq(j,-j+1)
+          else
+            Vckm=0d0
+          endif
+	  msq(23,j,k)=msq(23,j,k)+
+     .      sub27_1(qg)*(aveqg/aveqq)*(xn-xninv )*(
+     .     +m27_1x(0,-1,-1,-1,-2)*Vckm
+     .     +m27_1x(0,-1,-4,-2,-4)*Vckm*dfloat(nf-2)
+     .     +m27_1x(0,-1,-2,-2,-2)*Vckm
+     .     +m27_1x(0,-1,-3,-1,-4)*(2d0-Vckm)
+     .     +m27_1x(1,-1,-1,-1,-2)*Vckm
+     .     +m27_1x(1,-1,-4,-2,-4)*Vckm*dfloat(nf-2)
+     .     +m27_1x(1,-1,-2,-2,-2)*Vckm
+     .     +m27_1x(1,-1,-3,-1,-4)*(2d0-Vckm)
+     .     +m27_1x(2,-1,-1,-1,-2)*Vckm
+     .     +m27_1x(2,-1,-4,-2,-4)*Vckm*dfloat(nf-2)
+     .     +m27_1x(2,-1,-2,-2,-2)*Vckm
+     .     +m27_1x(2,-1,-3,-1,-4)*(2d0-Vckm))
+          msq(24,j,k)=msq(24,j,k)+
+     .     sub25_1(qg)*(aveqg/aveqq)*(xn-xninv )*(
+     .         +Vckm*(m25_1x(0,-1,1,-2,1)
+     .                +dfloat(nf-2)*m25_1x(0,-1,2,-4,4)
+     .                +0.5d0*m25_1x(0,-1,2,-2,2))
+     .    +(2d0-Vckm)*m25_1x(0,-1,1,-4,3)
+     .         +Vckm*(m25_1x(1,-1,1,-2,1)
+     .                +dfloat(nf-2)*m25_1x(1,-1,2,-4,4)
+     .                +0.5d0*m25_1x(1,-1,2,-2,2))
+     .    +(2d0-Vckm)*m25_1x(1,-1,1,-4,3)
+     .         +Vckm*(m25_1x(2,-1,1,-2,1)
+     .                +dfloat(nf-2)*m25_1x(2,-1,2,-4,4)
+     .                +0.5d0*m25_1x(2,-1,2,-2,2))
+     .    +(2d0-Vckm)*m25_1x(2,-1,1,-4,3))
+          msq(22,j,k)=msq(22,j,k)+
+     .     sub26_1(qg)*(aveqg/aveqq)*(xn-xninv )*(
+     .         +Vckm*(m26_1x(0,-1,2,-1,1)
+     .                +dfloat(nf-2)*m26_1x(0,-1,4,-2,4)
+     .                +0.5d0*m26_1x(0,-1,2,-2,2))
+     .    +(2d0-Vckm)*m26_1x(0,-1,4,-1,3)
+     .         +Vckm*(m26_1x(1,-1,2,-1,1)
+     .                +dfloat(nf-2)*m26_1x(1,-1,4,-2,4)
+     .                +0.5d0*m26_1x(1,-1,2,-2,2))
+     .    +(2d0-Vckm)*m26_1x(1,-1,4,-1,3)
+     .         +Vckm*(m26_1x(2,-1,2,-1,1)
+     .                +dfloat(nf-2)*m26_1x(2,-1,4,-2,4)
+     .                +0.5d0*m26_1x(2,-1,2,-2,2))
+     .    +(2d0-Vckm)*m26_1x(2,-1,4,-1,3))
+c--- 19/5/09: symmetrized 57 and 67 between _1 and _2
+c--- 26/5/09: added additional 57_6 and 67_5 and divided as in Gflag gg dips
+          msq( 9,j,k)=msq( 9,j,k)+1.5d0*Vckm*half*sub57_1(gq)*(
+     .     +m17_5x(0,-1,0,0,-2)+m17_5x(1,-1,0,0,-2))
+     .                           -1.5d0*Vckm*half*sub57_1v*
+     .     (m57_1vg(0,-1,0)+m57_1vg(1,-1,0))
+          msq(17,j,k)=msq(17,j,k)+1.5d0*Vckm*half*sub57_2(gq)*(
+     .     +m27_5x(1,-1,0,0,-2)+m27_5x(2,-1,0,0,-2))
+     .                           -1.5d0*Vckm*half*sub57_2v*
+     .     (m57_2vg(1,-1,0)+m57_2vg(2,-1,0))
+          msq( 2,j,k)=msq( 2,j,k)+1.5d0*Vckm*half*sub57_6(gq)*(
+     .     +m57_6x(0,-1,0,0,-2)+m57_6x(2,-1,0,0,-2))
+     .                           -1.5d0*Vckm*half*sub57_6v*
+     .     (m57_6vg(0,-1,0)+m57_6vg(2,-1,0))
+         msq(12,j,k)=msq(12,j,k)+(dfloat(nf-2)+0.5d0)*Vckm*half*(
+     .    sub67_1(gq)*(
+     .     +m17_6x(0,-1,0,-2,0)+m17_6x(1,-1,0,-2,0))
+     .            -sub67_1v*(m67_1vg(0,-1,0)+m67_1vg(1,-1,0)))
+         msq(13,j,k)=msq(13,j,k)+(dfloat(nf-2)+0.5d0)*Vckm*half*(
+     .    sub67_2(gq)*(
+     .     +m27_6x(1,-1,0,-2,0)+m27_6x(2,-1,0,-2,0))
+     .            -sub67_2v*(m67_2vg(1,-1,0)+m67_2vg(2,-1,0)))
+         msq( 4,j,k)=msq( 4,j,k)+(dfloat(nf-2)+0.5d0)*Vckm*half*(
+     .    sub67_5(gq)*(
+     .     +m67_5x(0,-1,0,-2,0)+m67_5x(2,-1,0,-2,0))
+     .            -sub67_5v*(m67_5vg(0,-1,0)+m67_5vg(2,-1,0)))
+          msq(21,j,k)=msq(21,j,k)+
+     .     sub15_2(gq)*(aveqg/avegg)*2d0*(
+     .     +m15_2x(0,0,0,-4,3)+m15_2x(1,0,0,-4,3)+m15_2x(2,0,0,-4,3))
+     .    +sub15_2v*(aveqg/avegg)*2d0*(
+     .     +m15_2vx(0,0,-4,3))
+           endif
+        endif
+
       elseif (j.eq.0) then
-c---------G-Q
+c------ G-Q
        if     (k .gt. 0) then
        msq(20,j,k)=msq(20,j,k)+sub17_2(qg)*(aveqg/aveqq)*(
-     .   +(xn-one/xn)*(m17_2(0,+1,k)+m17_2(0,+2,k)+m17_2(0,+3,k)
+     .   +(xn-xninv )*(m17_2(0,+1,k)+m17_2(0,+2,k)+m17_2(0,+3,k)
      .                +m17_2(0,+4,k)+m17_2(0,+5,k))
-     .   +(xn-one/xn)*(m17_2(1,+1,k)+m17_2(1,+2,k)+m17_2(1,+3,k)
+     .   +(xn-xninv )*(m17_2(1,+1,k)+m17_2(1,+2,k)+m17_2(1,+3,k)
      .                +m17_2(1,+4,k)+m17_2(1,+5,k))
-     .   +(xn-one/xn)*(m17_2(2,+1,k)+m17_2(2,+2,k)+m17_2(2,+3,k)
+     .   +(xn-xninv )*(m17_2(2,+1,k)+m17_2(2,+2,k)+m17_2(2,+3,k)
      .                +m17_2(2,+4,k)+m17_2(2,+5,k)))
          if (kk(k) .eq. 1) then
          if (k .lt. 5) then
@@ -1310,20 +1562,27 @@ c---------G-Q
          else
            Vckm=0d0
          endif
-         msq(21,j,k)=msq(21,j,k)+sub15_2(qg)*(aveqg/aveqq)*(xn-one/xn)*(
+         msq(21,j,k)=msq(21,j,k)+sub15_2(qg)*(aveqg/aveqq)*(xn-xninv)*(
      .    +(0.5d0*m15_2x(0,-1,1,1,-2)*Vckm
      .           +m15_2x(0,-3,1,1,-4)*(2d0-Vckm))
      .    +(0.5d0*m15_2x(1,-1,1,1,-2)*Vckm
      .           +m15_2x(1,-3,1,1,-4)*(2d0-Vckm))
      .    +(0.5d0*m15_2x(2,-1,1,1,-2)*Vckm
      .           +m15_2x(2,-3,1,1,-4)*(2d0-Vckm)))
-         msq(19,j,k)=msq(19,j,k)+sub16_2(qg)*(aveqg/aveqq)*(xn-one/xn)*(
+         msq(19,j,k)=msq(19,j,k)+sub16_2(qg)*(aveqg/aveqq)*(xn-xninv)*(
      .    +(0.5d0*m16_2x(0,-1,1,1,-2)*Vckm
      .           +m16_2x(0,-1,1,3,-4)*(2d0-Vckm))
      .    +(0.5d0*m16_2x(1,-1,1,1,-2)*Vckm
      .           +m16_2x(1,-1,1,3,-4)*(2d0-Vckm))
      .    +(0.5d0*m16_2x(2,-1,1,1,-2)*Vckm
      .           +m16_2x(2,-1,1,3,-4)*(2d0-Vckm)))
+c--- W radiated from the gluon line, identical quarks only
+         msq(24,j,k)=msq(24,j,k)+
+     .    0.5d0*Vckm*sub25_1(gq)*(aveqg/avegg)*(
+     .    +m25_1x(0,0,0,1,-2)+m25_1x(1,0,0,1,-2)+m25_1x(2,0,0,1,-2))
+     .    +0.5d0*Vckm*sub25_1v*(aveqg/avegg)*(
+     .    +m25_1vx(0,0,1,-2))
+c--- W radiated from the gluon line, all quarks
          msq(22,j,k)=msq(22,j,k)+sub26_1(gq)*(aveqg/avegg)*(
      .    +m26_1x(0,0,0,1,-2)*Vckm*0.5d0
      .    +m26_1x(0,0,0,3,-4)*(2d0-Vckm)
@@ -1334,68 +1593,83 @@ c---------G-Q
      .                          +sub26_1v*(aveqg/avegg)*(
      .    +m26_1vx(0,0,1,-2)*Vckm*0.5d0
      .    +m26_1vx(0,0,3,-4)*(2d0-Vckm))
-         msq(24,j,k)=msq(24,j,k)+
-     .    0.5d0*sub25_1(gq)*(aveqg/avegg)*Vckm*(
-     .    +m25_1x(0,0,0,1,-2)+m25_1x(1,0,0,1,-2)+m25_1x(2,0,0,1,-2))
-     .    +0.5d0*sub25_1v*(aveqg/avegg)*Vckm*(
-     .    +m25_1vx(0,0,1,-2))
          endif
          if (kk(k) .eq. 2) then
          Vckm=Vsq(k,-k+1)
          msq(21,j,k)=msq(21,j,k)+sub15_2(qg)*(aveqg/aveqq)*Vckm*(
-     .    +(xn-one/xn)*(0.5d0*m15_2x(0,-1,2,1,-1)+m15_2x(0,-1,2,2,-2)
+     .    +(xn-xninv )*(0.5d0*m15_2x(0,-1,2,1,-1)+m15_2x(0,-1,2,2,-2)
      .                 +m15_2x(0,-4,2,1,-4)+m15_2x(0,-3,2,1,-3)*2d0)
-     .    +(xn-one/xn)*(0.5d0*m15_2x(1,-1,2,1,-1)+m15_2x(1,-1,2,2,-2)
+     .    +(xn-xninv )*(0.5d0*m15_2x(1,-1,2,1,-1)+m15_2x(1,-1,2,2,-2)
      .                 +m15_2x(1,-4,2,1,-4)+m15_2x(1,-3,2,1,-3)*2d0)
-     .    +(xn-one/xn)*(0.5d0*m15_2x(2,-1,2,1,-1)+m15_2x(2,-1,2,2,-2)
+     .    +(xn-xninv )*(0.5d0*m15_2x(2,-1,2,1,-1)+m15_2x(2,-1,2,2,-2)
      .                 +m15_2x(2,-4,2,1,-4)+m15_2x(2,-3,2,1,-3)*2d0))
-     .    +sub15_2(qg)*(aveqg/aveqq)*(2d0-Vckm)*(xn-one/xn)*(
+     .    +sub15_2(qg)*(aveqg/aveqq)*(2d0-Vckm)*(xn-xninv )*(
      .                 +m15_2x(0,-3,2,2,-4)
      .                 +m15_2x(1,-3,2,2,-4)
      .                 +m15_2x(2,-3,2,2,-4))
          msq(19,j,k)=msq(19,j,k)+sub16_2(qg)*(aveqg/aveqq)*Vckm*(
-     .    +(xn-one/xn)*(0.5d0*m16_2x(0,-1,2,1,-1)+m16_2x(0,-2,2,1,-2)
+     .    +(xn-xninv )*(0.5d0*m16_2x(0,-1,2,1,-1)+m16_2x(0,-2,2,1,-2)
      .                 +m16_2x(0,-1,2,4,-4)+m16_2x(0,-1,2,3,-3)*2d0)
-     .    +(xn-one/xn)*(0.5d0*m16_2x(1,-1,2,1,-1)+m16_2x(1,-2,2,1,-2)
+     .    +(xn-xninv )*(0.5d0*m16_2x(1,-1,2,1,-1)+m16_2x(1,-2,2,1,-2)
      .                 +m16_2x(1,-1,2,4,-4)+m16_2x(1,-1,2,3,-3)*2d0)
-     .    +(xn-one/xn)*(0.5d0*m16_2x(2,-1,2,1,-1)+m16_2x(2,-2,2,1,-2)
+     .    +(xn-xninv )*(0.5d0*m16_2x(2,-1,2,1,-1)+m16_2x(2,-2,2,1,-2)
      .                 +m16_2x(2,-1,2,4,-4)+m16_2x(2,-1,2,3,-3)*2d0))
-     .    +sub16_2(qg)*(aveqg/aveqq)*(2d0-Vckm)*(xn-one/xn)*(
+     .    +sub16_2(qg)*(aveqg/aveqq)*(2d0-Vckm)*(xn-xninv )*(
      .                 +m16_2x(0,-2,2,3,-4)
      .                 +m16_2x(1,-2,2,3,-4)
      .                 +m16_2x(2,-2,2,3,-4))
+c--- 17/5/09: symmetrized 57 and 67 between _1 and _2
+c--- 26/5/09: added additional 57_6 and 67_5 and divided as in Gflag gg dips
+         msq( 9,j,k)=msq( 9,j,k)+(dfloat(nf-2)+0.5d0)*Vckm*half*(
+     .     sub57_1(gq)*(
+     .        +m17_5x(1,0,2,0,1)+m17_5x(2,0,2,0,1))
+     .    -sub57_1v*(m57_1vg(1,0,2)+m57_1vg(2,0,2)))
+         msq(17,j,k)=msq(17,j,k)+(dfloat(nf-2)+0.5d0)*Vckm*half*(
+     .     sub57_2(gq)*(
+     .        +m27_5x(0,0,2,0,1)+m27_5x(2,0,2,0,1))
+     .    -sub57_2v*(m57_2vg(0,0,2)+m57_2vg(2,0,2)))
+         msq( 2,j,k)=msq( 2,j,k)+(dfloat(nf-2)+0.5d0)*Vckm*half*(
+     .     sub57_6(gq)*(
+     .        +m57_6x(0,0,2,0,1)+m57_6x(1,0,2,0,1))
+     .    -sub57_6v*(m57_6vg(0,0,2)+m57_6vg(1,0,2)))
+         msq(12,j,k)=msq(12,j,k)+1.5d0*Vckm*half*sub67_1(gq)*(
+     .    +m17_6x(1,0,2,1,0)+m17_6x(2,0,2,1,0))
+     .                          -1.5d0*Vckm*half*sub67_1v*
+     .    (m67_1vg(1,0,2)+m67_1vg(2,0,2))
+         msq(13,j,k)=msq(13,j,k)+1.5d0*Vckm*half*sub67_2(gq)*(
+     .    +m27_6x(0,0,2,1,0)+m27_6x(2,0,2,1,0))
+     .                          -1.5d0*Vckm*half*sub67_2v*
+     .    (m67_2vg(0,0,2)+m67_2vg(2,0,2))
+         msq( 4,j,k)=msq( 4,j,k)+1.5d0*Vckm*half*sub67_5(gq)*(
+     .    +m67_5x(0,0,2,1,0)+m67_5x(1,0,2,1,0))
+     .                          -1.5d0*Vckm*half*sub67_5v*
+     .    (m67_5vg(0,0,2)+m67_5vg(1,0,2))
          msq(22,j,k)=msq(22,j,k)+sub26_1(gq)*(aveqg/avegg)*(
      .    +Vckm*m26_1x(0,0,0,1,-2)+(2d0-Vckm)*m26_1x(0,0,0,3,-4)
      .    +Vckm*m26_1x(1,0,0,1,-2)+(2d0-Vckm)*m26_1x(1,0,0,3,-4)
      .    +Vckm*m26_1x(2,0,0,1,-2)+(2d0-Vckm)*m26_1x(2,0,0,3,-4))
      .                          +sub26_1v*(aveqg/avegg)*(
      .    +Vckm*m26_1vx(0,0,1,-2)+(2d0-Vckm)*m26_1vx(0,0,3,-4))
-         msq( 9,j,k)=msq( 9,j,k)+3.5d0*Vckm*sub57_1(gq)*(
-     .    +m17_5x(0,0,2,0,1)+m17_5x(1,0,2,0,1)+m17_5x(2,0,2,0,1))
-     .                          -3.5d0*Vckm*sub57_1v*m57_1vx(0,2,0,1)
-         msq(12,j,k)=msq(12,j,k)+1.5d0*Vckm*sub67_1(gq)*(
-     .    +m17_6x(0,0,2,1,0)+m17_6x(1,0,2,1,0)+m17_6x(2,0,2,1,0))
-     .                          -1.5d0*Vckm*sub67_1v*m67_1vx(0,2,1,0)
          endif
-C-- G-Qbar
+C------- G-Qbar
         elseif (k .lt. 0) then
-        msq(20,j,k)=msq(20,j,k)+sub17_2(qg)*(aveqg/aveqq)*(
-     .    +(xn-one/xn)*(m17_2(0,-1,k)+m17_2(0,-2,k)+m17_2(0,-3,k)
-     .                 +m17_2(0,-4,k)+m17_2(0,-5,k))
-     .    +(xn-one/xn)*(m17_2(1,-1,k)+m17_2(1,-2,k)+m17_2(1,-3,k)
-     .                 +m17_2(1,-4,k)+m17_2(1,-5,k))
-     .    +(xn-one/xn)*(m17_2(2,-1,k)+m17_2(2,-2,k)+m17_2(2,-3,k)
-     .                 +m17_2(2,-4,k)+m17_2(2,-5,k)))
           if (kk(k) .eq. -2) then
           Vckm=Vsq(-k,k+1)
+          msq(20,j,k)=msq(20,j,k)+sub17_2(qg)*(aveqg/aveqq)*(
+     .     +(xn-xninv )*(m17_2(0,-1,k)+m17_2(0,-2,k)+m17_2(0,-3,k)
+     .                  +m17_2(0,-4,k)+m17_2(0,-5,k))
+     .     +(xn-xninv )*(m17_2(1,-1,k)+m17_2(1,-2,k)+m17_2(1,-3,k)
+     .                  +m17_2(1,-4,k)+m17_2(1,-5,k))
+     .     +(xn-xninv )*(m17_2(2,-1,k)+m17_2(2,-2,k)+m17_2(2,-3,k)
+     .                  +m17_2(2,-4,k)+m17_2(2,-5,k)))
           msq(21,j,k)=msq(21,j,k)+sub15_2(qg)*(aveqg/aveqq)*(
-     .     +(xn-one/xn)*(0.5d0*m15_2x(0,2,-2,-2,1)+m15_2x(0,4,-2,-2,3))
-     .     +(xn-one/xn)*(0.5d0*m15_2x(1,2,-2,-2,1)+m15_2x(1,4,-2,-2,3))
-     .     +(xn-one/xn)*(0.5d0*m15_2x(2,2,-2,-2,1)+m15_2x(2,4,-2,-2,3)))
+     .     +(xn-xninv )*(0.5d0*m15_2x(0,2,-2,-2,1)+m15_2x(0,4,-2,-2,3))
+     .     +(xn-xninv )*(0.5d0*m15_2x(1,2,-2,-2,1)+m15_2x(1,4,-2,-2,3))
+     .     +(xn-xninv )*(0.5d0*m15_2x(2,2,-2,-2,1)+m15_2x(2,4,-2,-2,3)))
           msq(19,j,k)=msq(19,j,k)+sub16_2(qg)*(aveqg/aveqq)*(
-     .     +(xn-one/xn)*(0.5d0*m16_2x(0,2,-2,-2,1)+m16_2x(0,2,-2,-4,3))
-     .     +(xn-one/xn)*(0.5d0*m16_2x(1,2,-2,-2,1)+m16_2x(1,2,-2,-4,3))
-     .     +(xn-one/xn)*(0.5d0*m16_2x(2,2,-2,-2,1)+m16_2x(2,2,-2,-4,3)))
+     .     +(xn-xninv )*(0.5d0*m16_2x(0,2,-2,-2,1)+m16_2x(0,2,-2,-4,3))
+     .     +(xn-xninv )*(0.5d0*m16_2x(1,2,-2,-2,1)+m16_2x(1,2,-2,-4,3))
+     .     +(xn-xninv )*(0.5d0*m16_2x(2,2,-2,-2,1)+m16_2x(2,2,-2,-4,3)))
           msq(22,j,k)=msq(22,j,k)+sub26_1(gq)*(aveqg/avegg)*(
      .     +Vckm*m26_1x(0,0,0,-2,1)*0.5d0+(2d0-Vckm)*m26_1x(0,0,0,-4,3)
      .     +Vckm*m26_1x(1,0,0,-2,1)*0.5d0+(2d0-Vckm)*m26_1x(1,0,0,-4,3)
@@ -1413,27 +1687,41 @@ C-- G-Qbar
           else
             Vckm=0d0
           endif
+	  msq(20,j,k)=msq(20,j,k)+
+     .      sub17_2(qg)*(aveqg/aveqq)*(xn-xninv )*(
+     .     +m17_2x(0,-1,-1,-2,-1)*Vckm
+     .     +m17_2x(0,-4,-1,-4,-2)*Vckm*dfloat(nf-2)
+     .     +m17_2x(0,-2,-1,-2,-2)*Vckm
+     .     +m17_2x(0,-3,-1,-4,-1)*(2d0-Vckm)
+     .     +m17_2x(1,-1,-1,-2,-1)*Vckm
+     .     +m17_2x(1,-4,-1,-4,-2)*Vckm*dfloat(nf-2)
+     .     +m17_2x(1,-2,-1,-2,-2)*Vckm
+     .     +m17_2x(1,-3,-1,-4,-1)*(2d0-Vckm)
+     .     +m17_2x(2,-1,-1,-2,-1)*Vckm
+     .     +m17_2x(2,-4,-1,-4,-2)*Vckm*dfloat(nf-2)
+     .     +m17_2x(2,-2,-1,-2,-2)*Vckm
+     .     +m17_2x(2,-3,-1,-4,-1)*(2d0-Vckm))
           msq(21,j,k)=msq(21,j,k)+
      .     sub15_2(qg)*(aveqg/aveqq)*Vckm*(
-     .     +(xn-one/xn)*(0.5d0*m15_2x(0,2,-1,-2,2)+m15_2x(0,2,-1,-1,1)
+     .     +(xn-xninv )*(0.5d0*m15_2x(0,2,-1,-2,2)+m15_2x(0,2,-1,-1,1)
      .                  +m15_2x(0,4,-1,-2,4)+m15_2x(0,3,-1,-2,3)*2d0)
-     .     +(xn-one/xn)*(0.5d0*m15_2x(1,2,-1,-2,2)+m15_2x(1,2,-1,-1,1)
+     .     +(xn-xninv )*(0.5d0*m15_2x(1,2,-1,-2,2)+m15_2x(1,2,-1,-1,1)
      .                  +m15_2x(1,4,-1,-2,4)+m15_2x(1,3,-1,-2,3)*2d0)
-     .     +(xn-one/xn)*(0.5d0*m15_2x(2,2,-1,-2,2)+m15_2x(2,2,-1,-1,1)
+     .     +(xn-xninv )*(0.5d0*m15_2x(2,2,-1,-2,2)+m15_2x(2,2,-1,-1,1)
      .                  +m15_2x(2,4,-1,-2,4)+m15_2x(2,3,-1,-2,3)*2d0))
-     .    +sub15_2(qg)*(aveqg/aveqq)*(2d0-Vckm)*(xn-one/xn)*(
+     .    +sub15_2(qg)*(aveqg/aveqq)*(2d0-Vckm)*(xn-xninv )*(
      .                  +m15_2x(0,4,-1,-1,3)
      .                  +m15_2x(1,4,-1,-1,3)
      .                  +m15_2x(2,4,-1,-1,3))
           msq(19,j,k)=msq(19,j,k)+
      .     sub16_2(qg)*(aveqg/aveqq)*Vckm*(
-     .     +(xn-one/xn)*(0.5d0*m16_2x(0,2,-1,-2,2)+m16_2x(0,1,-1,-2,1)
+     .     +(xn-xninv )*(0.5d0*m16_2x(0,2,-1,-2,2)+m16_2x(0,1,-1,-2,1)
      .                  +m16_2x(0,2,-1,-4,4)+m16_2x(0,2,-1,-3,3)*2d0)
-     .     +(xn-one/xn)*(0.5d0*m16_2x(1,2,-1,-2,2)+m16_2x(1,1,-1,-2,1)
+     .     +(xn-xninv )*(0.5d0*m16_2x(1,2,-1,-2,2)+m16_2x(1,1,-1,-2,1)
      .                  +m16_2x(1,2,-1,-4,4)+m16_2x(1,2,-1,-3,3)*2d0)
-     .     +(xn-one/xn)*(0.5d0*m16_2x(2,2,-1,-2,2)+m16_2x(2,1,-1,-2,1)
+     .     +(xn-xninv )*(0.5d0*m16_2x(2,2,-1,-2,2)+m16_2x(2,1,-1,-2,1)
      .                  +m16_2x(2,2,-1,-4,4)+m16_2x(2,2,-1,-3,3)*2d0))
-     .    +sub16_2(qg)*(aveqg/aveqq)*(2d0-Vckm)*(xn-one/xn)*(
+     .    +sub16_2(qg)*(aveqg/aveqq)*(2d0-Vckm)*(xn-xninv )*(
      .                  +m16_2x(0,1,-1,-4,3)
      .                  +m16_2x(1,1,-1,-4,3)
      .                  +m16_2x(2,1,-1,-4,3))
@@ -1447,169 +1735,35 @@ C-- G-Qbar
      .                           +sub26_1v*(aveqg/avegg)*(
      .     +m26_1vx(0,0,-2,1)*Vckm
      .     +m26_1vx(0,0,-4,3)*(2d0-Vckm))
-          msq( 9,j,k)=msq( 9,j,k)+3.5d0*sub57_1(gq)*Vckm*(
-     .     +m17_5x(0,0,-1,0,-2)+m17_5x(1,0,-1,0,-2)+m17_5x(2,0,-1,0,-2))
-     .                           -3.5d0*sub57_1v*Vckm*
-     .      m57_1vx(0,-1,0,-2)
-          msq(12,j,k)=msq(12,j,k)+1.5d0*sub67_1(gq)*Vckm*(
-     .     +m17_6x(0,0,-1,-2,0)+m17_6x(1,0,-1,-2,0)+m17_6x(2,0,-1,-2,0))
-     .                           -1.5d0*sub67_1v*Vckm*
-     .      m67_1vx(0,-1,-2,0)
+c--- 19/5/09: symmetrized 57 and 67 between _1 and _2
+c--- 26/5/09: added additional 57_6 and 67_5 and divided as in Gflag gg dips
+         msq( 9,j,k)=msq( 9,j,k)+(dfloat(nf-2)+0.5d0)*Vckm*half*(
+     .     sub57_1(gq)*(
+     .      +m17_5x(1,0,-1,0,-2)+m17_5x(2,0,-1,0,-2))
+     .    -sub57_1v*(m57_1vg(1,0,-1)+m57_1vg(2,0,-1)))
+         msq(17,j,k)=msq(17,j,k)+(dfloat(nf-2)+0.5d0)*Vckm*half*(
+     .     sub57_2(gq)*(
+     .      +m27_5x(0,0,-1,0,-2)+m27_5x(1,0,-1,0,-2))
+     .    -sub57_2v*(m57_2vg(0,0,-1)+m57_2vg(1,0,-1)))
+         msq( 2,j,k)=msq( 2,j,k)+(dfloat(nf-2)+0.5d0)*Vckm*half*(
+     .     sub57_6(gq)*(
+     .      +m57_6x(0,0,-1,0,-2)+m57_6x(2,0,-1,0,-2))
+     .    -sub57_6v*(m57_6vg(0,0,-1)+m57_6vg(2,0,-1)))
+         msq(12,j,k)=msq(12,j,k)+1.5d0*sub67_1(gq)*Vckm*half*(
+     .     +m17_6x(1,0,-1,-2,0)+m17_6x(2,0,-1,-2,0))
+     .                           -1.5d0*sub67_1v*Vckm*half*
+     .     (m67_1vg(1,0,-1)+m67_1vg(2,0,-1))
+         msq(13,j,k)=msq(13,j,k)+1.5d0*sub67_2(gq)*Vckm*half*(
+     .     +m27_6x(0,0,-1,-2,0)+m27_6x(1,0,-1,-2,0))
+     .                           -1.5d0*sub67_2v*Vckm*half*
+     .     (m67_2vg(0,0,-1)+m67_2vg(1,0,-1))
+         msq( 4,j,k)=msq( 4,j,k)+1.5d0*sub67_5(gq)*Vckm*half*(
+     .     +m67_5x(0,0,-1,-2,0)+m67_5x(2,0,-1,-2,0))
+     .                           -1.5d0*sub67_5v*Vckm*half*
+     .     (m67_5vg(0,0,-1)+m67_5vg(2,0,-1))
           endif
         endif
-      elseif (k.eq.0) then 
-c---------Q-G
-        if     (j .gt. 0) then
-        msq(23,j,k)=msq(23,j,k)+sub27_1(qg)*(aveqg/aveqq)*(
-     .    +(xn-one/xn)*(m27_1(0,j,+1)+m27_1(0,j,+2)+m27_1(0,j,+3)
-     .                 +m27_1(0,j,+4)+m27_1(0,j,+5))
-     .    +(xn-one/xn)*(m27_1(1,j,+1)+m27_1(1,j,+2)+m27_1(1,j,+3)
-     .                 +m27_1(1,j,+4)+m27_1(1,j,+5))
-     .    +(xn-one/xn)*(m27_1(2,j,+1)+m27_1(2,j,+2)+m27_1(2,j,+3)
-     .                 +m27_1(2,j,+4)+m27_1(2,j,+5)))
-          if (jj(j) .eq. 1) then
-          if (j .lt. 5) then
-            Vckm=Vsq(-j,j+1)
-          else
-            Vckm=0d0
-          endif
-          msq(24,j,k)=msq(24,j,k)+sub25_1(qg)*(aveqg/aveqq)*(
-     .     +(xn-one/xn)*(0.5d0*m25_1x(0,1,-1,1,-2)*Vckm
-     .                        +m25_1x(0,1,-1,3,-4)*(2d0-Vckm))
-     .     +(xn-one/xn)*(0.5d0*m25_1x(1,1,-1,1,-2)*Vckm
-     .                        +m25_1x(1,1,-1,3,-4)*(2d0-Vckm))
-     .     +(xn-one/xn)*(0.5d0*m25_1x(2,1,-1,1,-2)*Vckm
-     .                        +m25_1x(2,1,-1,3,-4)*(2d0-Vckm)))
-          msq(22,j,k)=msq(22,j,k)+sub26_1(qg)*(aveqg/aveqq)*(
-     .     +(xn-one/xn)*(0.5d0*m26_1x(0,1,-1,1,-2)*Vckm
-     .                        +m26_1x(0,1,-3,1,-4)*(2d0-Vckm))
-     .     +(xn-one/xn)*(0.5d0*m26_1x(1,1,-1,1,-2)*Vckm
-     .                        +m26_1x(1,1,-3,1,-4)*(2d0-Vckm))
-     .     +(xn-one/xn)*(0.5d0*m26_1x(2,1,-1,1,-2)*Vckm
-     .                        +m26_1x(2,1,-3,1,-4)*(2d0-Vckm)))
-          msq(19,j,k)=msq(19,j,k)+0.5d0*Vckm*sub16_2(gq)*(aveqg/avegg)*(
-     .     +m16_2x(0,0,0,1,-2)+m16_2x(1,0,0,1,-2)+m16_2x(2,0,0,1,-2))
-     .                           +0.5d0*Vckm*sub16_2v*(aveqg/avegg)*(
-     .     +m16_2vx(0,0,1,-2))
-          msq(21,j,k)=msq(21,j,k)+
-     .     sub15_2(gq)*(aveqg/avegg)*(2d0-0.5d0*Vckm)*(
-     .     +m15_2x(0,0,0,1,-2)+m15_2x(1,0,0,1,-2)+m15_2x(2,0,0,1,-2))
-     .    +sub15_2v*(aveqg/avegg)*(2d0-0.5d0*Vckm)*(
-     .     +m15_2vx(0,0,1,-2))
-           endif
-          if (jj(j) .eq. 2) then
-          Vckm=Vsq(j,-j+1)
-          msq(24,j,k)=msq(24,j,k)+sub25_1(qg)*(aveqg/aveqq)*Vckm*(
-     .     +(xn-one/xn)*(m25_1x(0,2,-1,2,-2)+0.5d0*m25_1x(0,2,-1,1,-1)
-     .                  +m25_1x(0,2,-1,4,-4)+m25_1x(0,2,-1,3,-3)*2d0
-     .                  +m25_1x(0,2,-2,3,-4))
-     .     +(xn-one/xn)*(m25_1x(1,2,-1,2,-2)+0.5d0*m25_1x(1,2,-1,1,-1)
-     .                  +m25_1x(1,2,-1,4,-4)+m25_1x(1,2,-1,3,-3)*2d0
-     .                  +m25_1x(1,2,-2,3,-4))
-     .     +(xn-one/xn)*(m25_1x(2,2,-1,2,-2)+0.5d0*m25_1x(2,2,-1,1,-1)
-     .                  +m25_1x(2,2,-1,4,-4)+m25_1x(2,2,-1,3,-3)*2d0
-     .                  +m25_1x(2,2,-2,3,-4)))
-          msq(22,j,k)=msq(22,j,k)+sub26_1(qg)*(aveqg/aveqq)*Vckm*(
-     .     +(xn-one/xn)*(m26_1x(0,2,-2,1,-2)+0.5d0*m26_1x(0,2,-1,1,-1)
-     .                  +m26_1x(0,2,-4,1,-4)+m26_1x(0,2,-3,1,-3)*2d0
-     .                  +m26_1x(0,2,-3,2,-4))
-     .     +(xn-one/xn)*(m26_1x(1,2,-2,1,-2)+0.5d0*m26_1x(1,2,-1,1,-1)
-     .                  +m26_1x(1,2,-4,1,-4)+m26_1x(1,2,-3,1,-3)*2d0
-     .                  +m26_1x(1,2,-3,2,-4))
-     .     +(xn-one/xn)*(m26_1x(2,2,-2,1,-2)+0.5d0*m26_1x(2,2,-1,1,-1)
-     .                  +m26_1x(2,2,-4,1,-4)+m26_1x(2,2,-3,1,-3)*2d0
-     .                  +m26_1x(2,2,-3,2,-4)))
-          msq( 9,j,k)=msq( 9,j,k)+0.5d0*Vckm*sub57_1(gq)*(
-     .     +m17_5x(0,2,0,0,1)+m17_5x(1,2,0,0,1)+m17_5x(2,2,0,0,1))
-     .                           -0.5d0*Vckm*sub57_1v*m57_1vx(2,0,0,1)
-          msq(12,j,k)=msq(12,j,k)+4.5d0*Vckm*sub67_1(gq)*(
-     .     +m17_6x(0,2,0,1,0)+m17_6x(1,2,0,1,0)+m17_6x(2,2,0,1,0))
-     .                           -4.5d0*Vckm*sub67_1v*m67_1vx(2,0,1,0)
-          msq(19,j,k)=msq(19,j,k)+sub16_2(gq)*Vckm*(aveqg/avegg)*(
-     .     +m16_2x(0,0,0,1,-2)+m16_2x(1,0,0,1,-2)+m16_2x(2,0,0,1,-2))
-     .                           +sub16_2v*Vckm*(aveqg/avegg)*(
-     .     +m16_2vx(0,0,1,-2))
-          msq(21,j,k)=msq(21,j,k)+sub15_2(gq)*(2d0-Vckm)*(aveqg/avegg)*(
-     .     +m15_2x(0,0,0,3,-4)+m15_2x(1,0,0,3,-4)+m15_2x(2,0,0,3,-4))
-     .                           +sub15_2v*(2d0-Vckm)*(aveqg/avegg)*(
-     .     +m15_2vx(0,0,3,-4))
-          endif
-C-- Qbar-G
-        elseif (j .lt. 0) then
-        msq(23,j,k)=msq(23,j,k)+sub27_1(qg)*(aveqg/aveqq)*(
-     .    +(xn-one/xn)*(m27_1(0,j,-1)+m27_1(0,j,-2)+m27_1(0,j,-3)
-     .                 +m27_1(0,j,-4)+m27_1(0,j,-5))
-     .    +(xn-one/xn)*(m27_1(1,j,-1)+m27_1(1,j,-2)+m27_1(1,j,-3)
-     .                 +m27_1(1,j,-4)+m27_1(1,j,-5))
-     .    +(xn-one/xn)*(m27_1(2,j,-1)+m27_1(2,j,-2)+m27_1(2,j,-3)
-     .                 +m27_1(2,j,-4)+m27_1(2,j,-5)))
-          if (jj(j) .eq. -2) then
-          Vckm=Vsq(-j,j+1)
-          msq(24,j,k)=msq(24,j,k)+sub25_1(qg)*(aveqg/aveqq)*(
-     .     +(xn-one/xn)*(0.5d0*m25_1x(0,-2,2,-2,1)+m25_1x(0,-2,2,-4,3))
-     .     +(xn-one/xn)*(0.5d0*m25_1x(1,-2,2,-2,1)+m25_1x(1,-2,2,-4,3))
-     .     +(xn-one/xn)*(0.5d0*m25_1x(2,-2,2,-2,1)+m25_1x(2,-2,2,-4,3)))
-          msq(22,j,k)=msq(22,j,k)+sub26_1(qg)*(aveqg/aveqq)*(
-     .     +(xn-one/xn)*(0.5d0*m26_1x(0,-2,2,-2,1)+m26_1x(0,-2,4,-2,3))
-     .     +(xn-one/xn)*(0.5d0*m26_1x(1,-2,2,-2,1)+m26_1x(1,-2,4,-2,3))
-     .     +(xn-one/xn)*(0.5d0*m26_1x(2,-2,2,-2,1)+m26_1x(2,-2,4,-2,3)))
-          msq(19,j,k)=msq(19,j,k)+0.5d0*sub16_2(gq)*(aveqg/avegg)*(
-     .     +m16_2x(0,0,0,-2,1)+m16_2x(1,0,0,-2,1)+m16_2x(2,0,0,-2,1))
-     .                           +0.5d0*sub16_2v*(aveqg/avegg)*(
-     .     +m16_2vx(0,0,-2,1))
-          msq(21,j,k)=msq(21,j,k)
-     .               +(2d0-0.5d0*Vckm)*sub15_2(gq)*(aveqg/avegg)*(
-     .     +m15_2x(0,0,0,-2,1)+m15_2x(1,0,0,-2,1)+m15_2x(2,0,0,-2,1))
-     .               +(2d0-0.5d0*Vckm)*sub15_2v*(aveqg/avegg)*(
-     .     +m15_2vx(0,0,-2,1))
-          endif
-          if (jj(j) .eq. -1) then
-          if (j .gt. -5) then
-            Vckm=Vsq(j,-j+1)
-          else
-            Vckm=0d0
-          endif
-          msq(24,j,k)=msq(24,j,k)+
-     .     sub25_1(qg)*(aveqg/aveqq)*Vckm*(xn-one/xn)*(
-     .     +(0.5d0*m25_1x(0,-1,2,-2,2)+m25_1x(0,-1,2,-1,1)
-     .      +m25_1x(0,-1,2,-4,4)+m25_1x(0,-1,2,-3,3)*2d0)
-     .     +(0.5d0*m25_1x(1,-1,2,-2,2)+m25_1x(1,-1,2,-1,1)
-     .      +m25_1x(1,-1,2,-4,4)+m25_1x(1,-1,2,-3,3)*2d0)
-     .     +(0.5d0*m25_1x(2,-1,2,-2,2)+m25_1x(2,-1,2,-1,1)
-     .      +m25_1x(2,-1,2,-4,4)+m25_1x(2,-1,2,-3,3)*2d0))
-     .    +sub25_1(qg)*(aveqg/aveqq)*(2d0-Vckm)*(xn-one/xn)*(
-     .      +m25_1x(0,-1,1,-4,3)
-     .      +m25_1x(1,-1,1,-4,3)
-     .      +m25_1x(2,-1,1,-4,3))
-          msq(22,j,k)=msq(22,j,k)+
-     .     sub26_1(qg)*(aveqg/aveqq)*Vckm*(xn-one/xn)*(
-     .     +(0.5d0*m26_1x(0,-1,2,-2,2)+m26_1x(0,-1,1,-2,1)
-     .      +m26_1x(0,-1,4,-2,4)+m26_1x(0,-1,3,-2,3)*2d0)
-     .     +(0.5d0*m26_1x(1,-1,2,-2,2)+m26_1x(1,-1,1,-2,1)
-     .      +m26_1x(1,-1,4,-2,4)+m26_1x(1,-1,3,-2,3)*2d0)
-     .     +(0.5d0*m26_1x(2,-1,2,-2,2)+m26_1x(2,-1,1,-2,1)
-     .      +m26_1x(2,-1,4,-2,4)+m26_1x(2,-1,3,-2,3)*2d0))
-     .    +sub26_1(qg)*(aveqg/aveqq)*(2d0-Vckm)*(xn-one/xn)*(
-     .      +m26_1x(0,-1,4,-1,3)
-     .      +m26_1x(1,-1,4,-1,3)
-     .      +m26_1x(2,-1,4,-1,3))
-          msq( 9,j,k)=msq( 9,j,k)+0.5d0*Vckm*sub57_1(gq)*(
-     .     +m17_5x(0,-1,0,0,-2)+m17_5x(1,-1,0,0,-2)+m17_5x(2,-1,0,0,-2))
-     .                           -0.5d0*Vckm*sub57_1v*m57_1vx(-1,0,0,-2)
-          msq(12,j,k)=msq(12,j,k)+4.5d0*Vckm*sub67_1(gq)*(
-     .     +m17_6x(0,-1,0,-2,0)+m17_6x(1,-1,0,-2,0)+m17_6x(2,-1,0,-2,0))
-     .                           -4.5d0*Vckm*sub67_1v*m67_1vx(-1,0,-2,0)
-          msq(19,j,k)=msq(19,j,k)+sub16_2(gq)*Vckm*(aveqg/avegg)*(
-     .     +m16_2x(0,0,0,-2,1)+m16_2x(1,0,0,-2,1)+m16_2x(2,0,0,-2,1))
-     .                           +sub16_2v*Vckm*(aveqg/avegg)*(
-     .     +m16_2vx(0,0,-2,1))
-          msq(21,j,k)=msq(21,j,k)+
-     .     sub15_2(gq)*(aveqg/avegg)*(2d0-Vckm)*(
-     .     +m15_2x(0,0,0,-4,3)+m15_2x(1,0,0,-4,3)+m15_2x(2,0,0,-4,3))
-     .    +sub15_2v*(aveqg/avegg)*(2d0-Vckm)*(
-     .     +m15_2vx(0,0,-4,3))
-           endif
-        endif
+
       endif
 
 

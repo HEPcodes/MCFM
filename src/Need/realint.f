@@ -25,7 +25,7 @@ cz
       common/nproc/nproc
 cz //
       integer ih1,ih2,j,k,nd,nmax,nmin,nvec
-      double precision vector(mxdim),W,val,val2,xint,dot,tmp
+      double precision vector(mxdim),W,val,val2,valsum,xint,dot,tmp
       double precision sqrts,fx1(-nf:nf),fx2(-nf:nf),
      . dipfx1(0:maxd,-nf:nf),dipfx2(0:maxd,-nf:nf)
       double precision p(mxpart,4),pjet(mxpart,4),p1ext(4),p2ext(4)
@@ -583,8 +583,10 @@ cz
       bwgt=0d0
 cz //
 
+      valsum=0d0 ! running total of weights at this point
+
 c--- zero out temporary histograms
-      call zerorealhistos
+      if (bin) call zerorealhistos
 
 c---trial with weight of real alone
 c---first set up all dipole contributions
@@ -649,6 +651,9 @@ c---if it does, add to total
 
         val=xmsq(nd)*wgt
         val2=xmsq(nd)**2*wgt
+
+	valsum=valsum+val
+	
 cz Fill bwgt if needed
         if(dabs(msqtmp(nd)).gt.0d0) bwgt=bwgttmp(nd)/msqtmp(nd)
 cz //
@@ -663,11 +668,6 @@ c--- update PDF errors
           enddo           
         endif
                 
-c--- update the maximum weight so far, if necessary
-        if (dabs(val) .gt. wtmax) then
-          wtmax=dabs(val)
-        endif
-
 c---if we're binning, add to histo too
         if (bin) then
           call getptildejet(nd,pjet)
@@ -685,7 +685,12 @@ c---otherwise, skip contribution
 c 998  continue
 
 c--- add temporary histograms to cumulative totals
-      call addrealhistos
+      if (bin) call addrealhistos(wgt)
+
+c--- update the maximum weight so far, if necessary
+        if (dabs(valsum) .gt. wtmax) then
+          wtmax=dabs(valsum)
+        endif
 
       if (realwt) then
       realint=xmsq(0)

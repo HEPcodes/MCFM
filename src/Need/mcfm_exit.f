@@ -11,7 +11,8 @@
       double precision xinteg,xinteg_err,minPDFxsec,maxPDFxsec
       double precision PDFerror,PDFperror,PDFnerror
       double precision lord_bypart(-1:1,-1:1),lordnorm
-      double precision ggpart,gqpart,qgpart,qqpart,qqbpart
+      double precision ggpart,gqpart,qgpart,qqpart,qqbpart,
+     . gqbpart,qbgpart,qbqbpart,qbqpart
       character*4 part
       logical creatent,dswhisto
       common/outputflags/creatent,dswhisto
@@ -61,22 +62,30 @@ c--- through the jet and cut routines
       enddo
       enddo
       ggpart=lord_bypart( 0, 0)/lordnorm
-      gqpart=(lord_bypart( 0,+1)+lord_bypart( 0,-1))/lordnorm
-      qgpart=(lord_bypart(+1, 0)+lord_bypart(-1, 0))/lordnorm
-      qqpart=(lord_bypart(+1,+1)+lord_bypart(-1,-1))/lordnorm
-      qqbpart=(lord_bypart(+1,-1)+lord_bypart(-1,+1))/lordnorm
+      gqpart=lord_bypart( 0,+1)/lordnorm
+      gqbpart=lord_bypart( 0,-1)/lordnorm
+      qgpart=lord_bypart(+1, 0)/lordnorm
+      qbgpart=lord_bypart(-1, 0)/lordnorm
+      qqpart=lord_bypart(+1,+1)/lordnorm
+      qbqbpart=lord_bypart(-1,-1)/lordnorm
+      qqbpart=lord_bypart(+1,-1)/lordnorm
+      qbqpart=lord_bypart(-1,+1)/lordnorm
       write(6,*) 'Contribution from parton sub-processes:'
       write(6,*) '---------------------------------------'      
       write(6,55) '   GG    ',ggpart*xinteg,ggpart*100d0
-      write(6,55) 'GQ + GQB ',gqpart*xinteg,gqpart*100d0
-      write(6,55) 'QG + QBG ',qgpart*xinteg,qgpart*100d0
-      write(6,55) 'QQ + QBQB',qqpart*xinteg,qqpart*100d0
+      write(6,55) '   GQ    ',gqpart*xinteg,gqpart*100d0
+      write(6,55) '   GQB   ',gqbpart*xinteg,gqbpart*100d0
+      write(6,55) '   QG    ',qgpart*xinteg,qgpart*100d0
+      write(6,55) '   QBG   ',qbgpart*xinteg,qbgpart*100d0
+      write(6,55) '   QQ    ',qqpart*xinteg,qqpart*100d0
+      write(6,55) '   QBQB  ',qbqbpart*xinteg,qbqbpart*100d0
       write(6,55) '   QQB   ',qqbpart*xinteg,qqbpart*100d0
+      write(6,55) '   QBQ   ',qbqpart*xinteg,qbqpart*100d0
       write(6,*) '---------------------------------------'
       call flush(6)
 
    54 format(a20,f6.2,'%')
-   55 format(4x,a9,' |',f15.5,f8.2,'%')
+   55 format(4x,a9,' |',f18.5,f8.2,'%')
 
 c--- If we've calculated PDF errors, present results.   
 c--- Note that asymmetric errors are calculated according to

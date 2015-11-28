@@ -33,6 +33,7 @@
       include 'flags.f'
       include 'msq_cs.f'
       include 'lc.f'
+      include 'noglue.f'
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),fac,
      . mmsq_qqb,mmsq_qbq,mmsq_gq,mmsq_gqb,mmsq_qg,mmsq_qbg,mmsq_gg,
      . p(mxpart,4),q(mxpart,4),pswap(mxpart,4)
@@ -52,6 +53,8 @@
      .                 qbqb_ijkk,qbqb_iikl,qbqb_ijkj,qbqb_ijik,
      .                 qbqb_ijii,qbqb_ijjj,qbqb_iiij,qbqb_iiji
       logical first
+      character*30 runstring
+      common/runstring/runstring
       common/mqq/mqq
       common/rvcolourchoice/rvcolourchoice
       data first/.true./
@@ -85,9 +88,6 @@
       endif
 
       scheme='dred'
-c--- calculate the lowest order matrix element and fill the
-c--- common block twopij with s_{ij}
-      call qqb_w2jetx(p,msq,mqq,msqx,msqx_cs)
       
       do j=-nf,nf
       do k=-nf,nf
@@ -95,6 +95,10 @@ c--- common block twopij with s_{ij}
       enddo
       enddo
 
+c--- calculate the lowest order matrix element and fill the
+c--- common block twopij with s_{ij}
+      call qqb_w2jetx(p,msq,mqq,msqx,msqx_cs)
+      
       prop=s(3,4)/dcmplx(s(3,4)-wmass**2,wmass*wwidth)
       
 ************************************************************************
@@ -126,6 +130,11 @@ c--- NB: this breaks the routine if Qflag = Gflag = .true.
         enddo
         enddo
       enddo
+
+c--- when testing alpha-dependence, we do not need loop contribution
+      if (runstring(1:5) .eq. 'alpha') then
+        return
+      endif
 
 c--- Now calculate the relevant lowest-order matrix elements
 c--- for each possible initial state from the QQGG contribution
@@ -246,6 +255,14 @@ c--- NB: this breaks the routine if Qflag = Gflag = .true.
         enddo
         enddo
       enddo
+
+c--- when testing alpha-dependence, we do not need loop contribution
+      if (runstring(1:5) .eq. 'alpha') then
+        return
+      endif
+
+c--- early return if there's no contribution here      
+      if ((gqonly) .or. (ggonly)) return      
 
 c---  Now transform momenta into a notation 
 c---  suitable for calling the BDKW function with notation which is 

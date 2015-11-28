@@ -5,6 +5,8 @@ C----nDp6 should be equal to zero
       include 'constants.f'
       include 'zprods_decl.f'
       include 'mmsqv_cs.f'
+      include 'flags.f'
+      include 'lc.f'
       double complex qcdabn(2,2,2),qcdban(2,2,2),qedn(2,2,2)
       double complex zab(mxpart,mxpart),zba(mxpart,mxpart)
       double precision msq1,msq2,msqq,n(4),p(mxpart,4)
@@ -27,9 +29,14 @@ C  1=L,2=R
       msq2= abs(qcdban(1,1,1))**2+abs(qcdban(2,1,1))**2 
       msqq= abs(qedn(1,1,1))**2+abs(qedn(2,1,1))**2
 
-      mmsqv_cs(0,+1,+1)=-ninth*msqq
       mmsqv_cs(1,+1,+1)=msq1
       mmsqv_cs(2,+1,+1)=msq2
+      if ((Qflag) .and. (colourchoice .eq. 1)) then
+        mmsqv_cs(0,+1,+1)=zip
+      else
+        mmsqv_cs(0,+1,+1)=-ninth*msqq
+      endif
+
 
       return
       end
