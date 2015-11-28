@@ -94,22 +94,12 @@ c--- set up lepton variables depending on whether it's t or tbar
       include 'masses.f'
       include 'zprods_com.f'
       integer ig,is,ie,in,je,jn,jb
-      double precision p(mxpart,4),vec(4),prop,nDpg,fac,mq,qwidth
+      double precision p(mxpart,4),vec(4),prop,fac,mq,qwidth
       double complex amp
       double complex zab(mxpart,mxpart),zba(mxpart,mxpart)
       common/zabprods/zab,zba
 
-      nDpg=vec(4)*p(ig,4)-vec(1)*p(ig,1)-vec(2)*p(ig,2)-vec(3)*p(ig,3)
-
-c--- appropriate scale is approx 1d-3*energy(incoming)
-c--- so of order(1) for the Tevatron
-      if (abs(nDpg).gt.1d-3*abs(p(ig,4))) then
-         write(*,*) 'Error for :',ig,is,ie,in,je,jn,jb
-         write(*,*) 'cutoff',1d-3*abs(p(ig,4))
-         write(6,*) 'nDpg',nDpg
-         call flush(6)
-         stop
-      endif
+      call checkndotp(p,vec,ig)
 
       call spinoru(7,p,za,zb)
       call spinork(7,p,zab,zba,vec)

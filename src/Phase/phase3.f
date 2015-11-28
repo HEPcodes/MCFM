@@ -7,6 +7,7 @@ c----with all 2 pi's (ie 1/(2*pi)^5)
 c----(p4,p5) are dummies
       implicit none
       include 'constants.f'
+      include 'limits.f'
       include 'masses.f'
       include 'process.f'
       include 'mxdim.f'
@@ -30,7 +31,8 @@ c----(p4,p5) are dummies
       p6(j)=0d0
       p7(j)=0d0
       enddo
-      smin=0d0
+c      smin=0d0
+      smin=wsqmin ! for more efficient generation
 
 c---generate p5 and p34, 
 c---smin is the minimum inv mass of 34 system

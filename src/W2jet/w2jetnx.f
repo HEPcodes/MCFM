@@ -8,21 +8,12 @@ C----nDp6 should be equal to zero
       double complex qcdabn(2,2,2),qcdban(2,2,2),qedn(2,2,2)
       double complex zab(mxpart,mxpart),zba(mxpart,mxpart)
       double precision msq1,msq2,msqq,n(4),p(mxpart,4)
-      double precision nDp5,nDp6
+      double precision nDp5
       integer i1,i2,i3,i4,i5,i6
 
       nDp5=n(4)*p(i5,4)-n(3)*p(i5,3)-n(2)*p(i5,2)-n(1)*p(i5,1)
-      nDp6=n(4)*p(i6,4)-n(3)*p(i6,3)-n(2)*p(i6,2)-n(1)*p(i6,1)
-c--- appropriate scale is approx 1d-3*energy(incoming)
-c--- so of order(1) for the Tevatron
-      if (abs(nDp6).gt.1d-3*abs(p(i1,4))) then 
-         write(*,*) 'Error for :',i1,i2,i3,i4,i5,i6
-         write(*,*) 'cutoff',1d-3*abs(p(i1,4))
-         write(6,*) 'nDp5',nDp5
-         write(6,*) 'nDp6',nDp6
-         call flush(6)
-         stop
-      endif
+
+      call checkndotp(p,n,i6)
 
       call subqcdn(i1,i2,i3,i4,i5,i6,nDp5,za,zb,zab,zba,qcdabn,qcdban)
             

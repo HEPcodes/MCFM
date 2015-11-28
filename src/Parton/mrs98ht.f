@@ -43,6 +43,7 @@ C****************************************************************C
       implicit real*8(a-h,o-z)
       parameter(nx=49,nq=37,ntenth=23,np=8)
       real*8 f(np,nx,nq+1),qq(nq),xx(nx),g(np),n0(np)
+      character*72 filename,checkpath
       data xx/1d-5,2d-5,4d-5,6d-5,8d-5,
      .        1d-4,2d-4,4d-4,6d-4,8d-4,
      .        1d-3,2d-3,4d-3,6d-3,8d-3,
@@ -64,7 +65,8 @@ C****************************************************************C
       q2save=qsq
       if(init.ne.0) goto 10
 c        open(unit=1,file='ft08a.dat',status='old')
-        open(unit=1,file='Pdfdata/ht11b.dat',status='old')
+        filename=checkpath('Pdfdata/ht11b.dat')
+        open(unit=1,file=filename,status='old')
         do 20 n=1,nx-1
         do 20 m=1,nq
         read(1,50)f(1,n,m),f(2,n,m),f(3,n,m),f(4,n,m),

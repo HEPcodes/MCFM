@@ -11,8 +11,9 @@ c--- For itno>0, this is an intermediate result only
       include 'verbose.f'
       include 'PDFerrors.f'
       include 'histo.f'
+      include 'vanillafiles.f'
       integer j,nlength,itno,itmx,nplotmax,nempty
-      character*72 runname,outfiledat,outfiletop,outfileerr
+      character*255 runname,outfiledat,outfiletop,outfileerr
       character*3 oldbook
       character mop
       double precision xsec,xsec_err,scalefac,itscale
@@ -29,7 +30,15 @@ c--- For itno>0, this is an intermediate result only
       if (itno .eq. 0) then
       write(6,*)
       write(6,*) '****************************************************'
-      write(6,*) 'output files  ',runname
+      if (vanillafiles) then
+        write(6,*) 'output file name normally  ',runname(1:nlength)
+        runname='mcfm-output'
+	nlength=11
+	write(6,*)
+        write(6,*) '  but renamed to: ',runname
+      else
+        write(6,*) 'output files  ',runname(1:nlength)
+      endif
       write(6,*) '****************************************************'
       call flush(6)
       scaleplots=.false.

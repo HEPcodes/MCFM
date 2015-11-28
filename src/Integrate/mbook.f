@@ -190,7 +190,7 @@ c     we are renormalising the weights by the bin width
         IF(I.EQ.J) XNORM=DFLOAT(IHIS(J,L))
         IF(XNORM.NE.0.d0) THEN
         XAVG=HIST(J,L)/XNORM
-        HIST(K,L)=SQRT(ABS(-XAVG**2+HIST(K,L)/XNORM)/DFLOAT(IHIS(I,L)))
+        HIST(K,L)=DSQRT(ABS(-XAVG**2+HIST(K,L)/XNORM)/DFLOAT(IHIS(I,L)))
         HIST(J,L)=XAVG 
         ELSE
         HIST(K,L)=0.d0
@@ -201,9 +201,11 @@ c     we are renormalising the weights by the bin width
         XSQAVG=HIST(J,L)*X
 c--- need extra factor to account for renormalization by bin width
         XSQAVG=XSQAVG/hdel(i)
-        XNORM=DFLOAT(IHIS(I,L))*X
+c        XNORM=DFLOAT(IHIS(I,L))*X
+c--- Assume that grid is optimal and iterations improve statistics
+        XNORM=DFLOAT(IHIS(I,L))
         IF(XNORM.NE.0.d0) THEN
-        HIST(K,L)=SQRT(ABS(XSQAVG-XAVG**2)/XNORM)
+        HIST(K,L)=DSQRT(ABS(XSQAVG-XAVG**2)/XNORM)
         HIST(I,L)=XAVG
         ELSE
         HIST(K,L)=0.d0
@@ -213,9 +215,11 @@ c--- need extra factor to account for renormalization by bin width
         XSQAVG=HIST(J,L)*X
 c--- need extra factor to account for renormalization by bin width
         XSQAVG=XSQAVG/hdel(i)
-        XNORM=DFLOAT(IHIS(I,L))*X
+c        XNORM=DFLOAT(IHIS(I,L))*X
+c--- Assume that grid is optimal and iterations improve statistics
+        XNORM=DFLOAT(IHIS(I,L))
         IF(XNORM.NE.0.d0) THEN
-        HIST(K,L)=SQRT(ABS(XSQAVG-XAVG**2)/XNORM)
+        HIST(K,L)=DSQRT(ABS(XSQAVG-XAVG**2)/XNORM)
 c        HIST(I,L)=XAVG ! removed from 'V'
         ELSE
         HIST(K,L)=0.d0
@@ -228,7 +232,7 @@ c        HIST(I,L)=XAVG ! removed from 'V'
       END DO
       RETURN
   10  WRITE(98,20) I,J
-  20  FORMAT(' ****** INCOMPATIBLE OPERATION HIST ',I2,' &',I2,
+  20  FORMAT(' ****** INCOMPATIBLE OPERATION HIST ',I3,' &',I3,
      &                                                   '*******'/)
       END
      

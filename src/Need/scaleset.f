@@ -104,7 +104,10 @@ c--- catch invalid inputs
         write(6,*) 'Invalid dynamic scale!'
         stop
       endif
-      
+
+c--- choose a reasonable minimum value for the scale      
+      if (setscale .lt. 1d0) setscale=1d0 ! for safety
+
       if (iscale .eq. 1) then
         scale=setscale
         rmsg=msg

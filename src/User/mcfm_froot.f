@@ -54,11 +54,11 @@ c--- Extra definitions to facilitate dummy call to lowint
       integer ifill
       integer imaxmom,ipdf
       character*100 outfile
-      character*72 runname
-      integer nlength, lenocc
+      character*255 runname
+      integer lenocc
       logical first
       common/iarray/imaxmom,ipdf            
-      common/runname/runname,nlength
+      common/runname/runname
       data first/.true./
       save first
 

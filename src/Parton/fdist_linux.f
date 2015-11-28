@@ -1,11 +1,15 @@
       subroutine fdist(ih_call,x,xmu,fx)
       implicit none
       include 'pdlabel.f'
+      include 'vanillafiles.f'
       double precision fx(-5:5),x,xmu,xZ,xA,eks98r,xmu_safe
       double precision u_val,d_val,u_sea,d_sea,s_sea,c_sea,b_sea,gluon
       double precision Ctq3df,Ctq4Fn,Ctq5Pdf,Ctq6Pdf,Ctq5L
       integer mode,Iprtn,ih,ih_call,iZ,iA,Irt
       logical first,nucleon
+c--- extra variables for MSTW08 implementation
+      character*72 prefix,checkpath
+      double precision str,sbar,chm,cbar,bot,bbar,photon
       data first/.true./
       save first
 c---  ih1=+1 proton 
@@ -52,7 +56,43 @@ C---set to zero if x out of range
           return
       endif
  
-      if     ((pdlabel(1:3) .eq. 'mrs')
+      if      (pdlabel(1:5) .eq. 'mstw8') then
+            if         (pdlabel .eq. 'mstw8lo') then
+            prefix = checkpath('Pdfdata/mstw2008lo') ! LO grid
+            elseif     (pdlabel .eq. 'mstw8nl') then
+            prefix = checkpath('Pdfdata/mstw2008nlo') ! NLO grid
+            elseif     (pdlabel .eq. 'mstw8nn') then
+            prefix = checkpath('Pdfdata/mstw2008nnlo') ! NNLO grid
+            endif
+	    call GetAllPDFs(prefix,0,x,xmu,u_val,d_val,u_sea,d_sea,
+     .                      str,sbar,chm,cbar,bot,bbar,gluon,photon)
+c-----assign MSTW to standard grid
+            fx(0)=gluon/x
+            if (ih.eq.1) then      
+               fx(1)=(d_val+d_sea)/x
+               fx(2)=(u_val+u_sea)/x
+               fx(-1)=d_sea/x
+               fx(-2)=u_sea/x
+               fx(+3)=str/x
+               fx(+4)=chm/x
+               fx(+5)=bot/x
+               fx(-3)=sbar/x
+               fx(-4)=cbar/x
+               fx(-5)=bbar/x	     
+            elseif(ih.eq.-1) then      
+               fx(-1)=(d_val+d_sea)/x
+               fx(-2)=(u_val+u_sea)/x
+               fx(+1)=d_sea/x
+               fx(+2)=u_sea/x
+               fx(-3)=str/x
+               fx(-4)=chm/x
+               fx(-5)=bot/x
+               fx(+3)=sbar/x
+               fx(+4)=cbar/x
+               fx(+5)=bbar/x
+            endif
+     
+      elseif ((pdlabel(1:3) .eq. 'mrs')
      .   .or. (pdlabel(2:4) .eq. 'mrs')) then
 
              if     (pdlabel .eq. 'mrs4nf3') then

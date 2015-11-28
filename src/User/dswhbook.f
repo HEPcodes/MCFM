@@ -30,9 +30,9 @@ c        1         2         3         4         5         6         7
       integer ISTAT,i
       character*100 outfile
 
-      character*72 runname
-      integer nlength, lenocc
-      common/runname/runname,nlength
+      character*255 runname
+      integer lenocc
+      common/runname/runname
 c     ------------------------------------------------------------------
       
       if (first) then
@@ -221,9 +221,9 @@ c--- Extra definitions to facilitate dummy call to lowint
       integer ISTAT
       character*100 outfile
 
-      character*72 runname
-      integer nlength, lenocc
-      common/runname/runname,nlength
+      character*255 runname
+      integer lenocc
+      common/runname/runname
 
       logical first
       integer batchno

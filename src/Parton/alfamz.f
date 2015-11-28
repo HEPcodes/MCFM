@@ -21,26 +21,27 @@ c     in common block qmass.
       IF (Q .LE. 0D0) THEN 
          WRITE(6,*) 'q .le. 0 in alphas'
          WRITE(6,*) 'q= ',Q
-         PAUSE
+	 stop
+c         PAUSE
       ENDIF
       IF (AMZ .LE. 0D0) THEN 
          WRITE(6,*) 'amz .le. 0 in alphas',AMZ
-         WRITE(6,*) 'continue with amz=0.117?'
-         PAUSE
+         WRITE(6,*) 'continuing with amz=0.117'
+c         PAUSE
          AMZ=0.117D0
       ENDIF
       IF (CMASS .LE. 0.3D0) THEN 
          WRITE(6,*) 'cmass .le. 0.3GeV in alphas',CMASS
          WRITE(6,*) 'COMMON/QMASS/CMASS,BMASS'
-         WRITE(6,*) 'continue with cmass=1.5GeV?'
-         PAUSE
+         WRITE(6,*) 'continuing with cmass=1.5GeV'
+c         PAUSE
          CMASS=1.5D0
       ENDIF
       IF (BMASS .LE. 0D0) THEN 
          WRITE(6,*) 'bmass .le. 0 in alphas',BMASS
          WRITE(6,*) 'COMMON/QMASS/CMASS,BMASS'
-         WRITE(6,*) 'continue with bmass=5.0GeV?'
-         PAUSE
+         WRITE(6,*) 'continuing with bmass=5.0GeV'
+c         PAUSE
          BMASS=5D0
       ENDIF
 c--- 3-flavour running only

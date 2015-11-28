@@ -53,6 +53,7 @@ C :::::::::::: HARRIMAN MARTIN ROBERTS STIRLING (E) sea=ubar=dbar=2sbar at Q0**2
       parameter(nx=47)
       parameter(ntenth=21)
       DIMENSION F(7,nx,19),G(7),XX(nx),N0(7)
+      character*72 filename,checkpath
       DATA XX/1.d-5,2.d-5,4.d-5,6.d-5,8.d-5,
      .        1.D-4,2.D-4,4.D-4,6.D-4,8.D-4,
      .        1.D-3,2.D-3,4.D-3,6.D-3,8.D-3,
@@ -68,8 +69,8 @@ C :::::::::::: HARRIMAN MARTIN ROBERTS STIRLING (E) sea=ubar=dbar=2sbar at Q0**2
       xsave=x  ! don't let x be altered if it's out of range!!
 
       IF(INIT.NE.0) GOTO 10
-      open(unit=27,
-     & file='Pdfdata/mrse.dat',status='old')
+      filename=checkpath('Pdfdata/mrse.dat')
+      open(unit=27,file=filename,status='old')
       INIT=1
       DO 20 N=1,nx-1
       DO 20 M=1,19
@@ -134,6 +135,7 @@ C :::::::::::: HARRIMAN MARTIN ROBERTS STIRLING (B) sea=ubar=dbar=2sbar at Q0**2
       parameter(nx=47)
       parameter(ntenth=21)
       DIMENSION F(7,nx,19),G(7),XX(nx),N0(7)
+      character*72 filename,checkpath
       DATA XX/1.d-5,2.d-5,4.d-5,6.d-5,8.d-5,
      .        1.D-4,2.D-4,4.D-4,6.D-4,8.D-4,
      .        1.D-3,2.D-3,4.D-3,6.D-3,8.D-3,
@@ -150,8 +152,8 @@ C :::::::::::: HARRIMAN MARTIN ROBERTS STIRLING (B) sea=ubar=dbar=2sbar at Q0**2
       xsave=x
 
       IF(INIT.NE.0) GOTO 10
-      open(unit=28,
-     & file='Pdfdata/mrsb.dat',status='old')
+      filename=checkpath('Pdfdata/mrsb.dat')
+      open(unit=28,file=filename,status='old')
       INIT=1
       DO 20 N=1,nx-1
       DO 20 M=1,19

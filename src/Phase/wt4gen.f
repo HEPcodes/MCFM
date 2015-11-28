@@ -51,7 +51,7 @@ c      write(6,*) 's3max in wt4gen',s3max
 
       if (lambda .lt. 0d0) then
       write(6,*) '(lambda .lt. 0d0) in wt4gen',lambda
-      pause
+c      pause
       return
       endif
 

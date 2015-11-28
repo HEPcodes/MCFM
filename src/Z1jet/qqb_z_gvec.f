@@ -111,7 +111,7 @@ c--note QED propagator included.
       include 'sprods_com.f'
 
       integer j1,j2,j3,j4,j5
-      double precision n(4),p(mxpart,4),nDn,nDp1,nDp2,nDp3,nDp5
+      double precision n(4),p(mxpart,4),nDn,nDp1,nDp2,nDp3,test
       j3=3
       j4=4
 
@@ -120,17 +120,7 @@ c--note QED propagator included.
       nDp3=n(4)*p(j3,4)-n(3)*p(j3,3)-n(2)*p(j3,2)-n(1)*p(j3,1)
       nDn=n(4)**2-n(3)**2-n(2)**2-n(1)**2
 
-      nDp5=n(4)*p(j5,4)-n(3)*p(j5,3)-n(2)*p(j5,2)-n(1)*p(j5,1)
-
-c--- appropriate scale is approx 1d-3*energy(incoming)
-c--- so of order(1) for the Tevatron
-      if (abs(nDp5).gt.1d-3*abs(p(j1,4))) then 
-         write(*,*) 'Error for :',j1,j2,j3,j4,j5
-         write(*,*) 'cutoff',1d-3*abs(p(j1,4))
-         write(6,*) 'nDp5',nDp5
-         call flush(6)
-         stop
-      endif
+      call checkndotp(p,n,j5)
 
       z1jetn=((nDp1*s(j2,j3)/s(j1,j5)-nDp2*s(j1,j4)/s(j2,j5))**2
      . +two*(s(j2,j3)*nDp1/s(j1,j5)-s(j1,j4)*nDp2/s(j2,j5))*(nDp2+nDp3)

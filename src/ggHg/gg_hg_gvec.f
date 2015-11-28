@@ -78,22 +78,13 @@ c   contracted with the vector n(mu)
       include 'qcdcouple.f'
       include 'ewcouple.f'
       integer j1,j2,j5
-      double precision Asq,p(mxpart,4),n(4),nDn,nDp1,nDp2,nDp5,
-     . dot,s,t,u
+      double precision Asq,p(mxpart,4),n(4),nDn,nDp1,nDp2,dot,s,t,u
 
       nDp1=n(4)*p(j1,4)-n(3)*p(j1,3)-n(2)*p(j1,2)-n(1)*p(j1,1)
       nDp2=n(4)*p(j2,4)-n(3)*p(j2,3)-n(2)*p(j2,2)-n(1)*p(j2,1)
-      nDp5=n(4)*p(j5,4)-n(3)*p(j5,3)-n(2)*p(j5,2)-n(1)*p(j5,1)
       nDn=n(4)**2-n(3)**2-n(2)**2-n(1)**2
 
-c--- appropriate scale is approx energy(incoming)
-      if (abs(nDp5).gt.abs(p(1,4))) then 
-         write(*,*) 'Error for :',j1,j2,j5
-         write(*,*) 'cutoff',abs(p(1,4))
-         write(6,*) 'nDp5',nDp5
-         call flush(6)
-         stop
-      endif
+      call checkndotp(p,n,j5)
 
       Asq=(as/(3d0*pi))**2/vevsq
 
@@ -120,22 +111,13 @@ c   contracted with the vector n(mu)
       include 'qcdcouple.f'
       include 'ewcouple.f'
       integer j1,j2,j5
-      double precision Asq,p(mxpart,4),n(4),nDn,nDp1,nDp2,nDp5,
-     . dot,s,t,u,sh
+      double precision Asq,p(mxpart,4),n(4),nDn,nDp1,nDp2,dot,s,t,u,sh
 
       nDp1=n(4)*p(j1,4)-n(3)*p(j1,3)-n(2)*p(j1,2)-n(1)*p(j1,1)
       nDp2=n(4)*p(j2,4)-n(3)*p(j2,3)-n(2)*p(j2,2)-n(1)*p(j2,1)
-      nDp5=n(4)*p(j5,4)-n(3)*p(j5,3)-n(2)*p(j5,2)-n(1)*p(j5,1)
       nDn=n(4)**2-n(3)**2-n(2)**2-n(1)**2
 
-c--- appropriate scale is approx energy(incoming)
-      if (abs(nDp5).gt.abs(p(1,4))) then 
-         write(*,*) 'Error for :',j1,j2,j5
-         write(*,*) 'cutoff',abs(p(1,4))
-         write(6,*) 'nDp5',nDp5
-         call flush(6)
-         stop
-      endif
+      call checkndotp(p,n,j5)
 
       Asq=(as/(3d0*pi))**2/vevsq
 

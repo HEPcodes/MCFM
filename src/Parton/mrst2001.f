@@ -60,6 +60,7 @@ C***************************************************************C
      .cc3(nx,nq,4,4),cc4(nx,nq,4,4),cc6(nx,nq,4,4),cc8(nx,nq,4,4),
      .ccc(nx,nqc,4,4),ccb(nx,nqb,4,4)
       real*8 xxl(nx),qql(nq),qqlc(nqc),qqlb(nqb)
+      character*72 filename,checkpath
       data xx/1d-5,2d-5,4d-5,6d-5,8d-5,
      .        1d-4,2d-4,4d-4,6d-4,8d-4,
      .        1d-3,2d-3,4d-3,6d-3,8d-3,
@@ -79,7 +80,8 @@ c      data xmin,xmax,qsqmin,qsqmax/1d-5,1d0,1.25d0,1d7/
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
-        open(unit=33,file='Pdfdata/alf119.dat',status='old')
+        filename=checkpath('Pdfdata/alf119.dat')
+        open(unit=33,file=filename,status='old')
         do 20 n=1,nx-1
         do 20 m=1,nq
         read(33,50)f1(n,m),f2(n,m),f3(n,m),f4(n,m),
@@ -168,6 +170,7 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
      .cc3(nx,nq,4,4),cc4(nx,nq,4,4),cc6(nx,nq,4,4),cc8(nx,nq,4,4),
      .ccc(nx,nqc,4,4),ccb(nx,nqb,4,4)
       real*8 xxl(nx),qql(nq),qqlc(nqc),qqlb(nqb)
+      character*72 filename,checkpath
       data xx/1d-5,2d-5,4d-5,6d-5,8d-5,
      .        1d-4,2d-4,4d-4,6d-4,8d-4,
      .        1d-3,2d-3,4d-3,6d-3,8d-3,
@@ -187,7 +190,8 @@ c      data xmin,xmax,qsqmin,qsqmax/1d-5,1d0,1.25d0,1d7/
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
-        open(unit=33,file='Pdfdata/alf117.dat',status='old')
+        filename=checkpath('Pdfdata/alf117.dat')
+        open(unit=33,file=filename,status='old')
         do 20 n=1,nx-1
         do 20 m=1,nq
         read(33,50)f1(n,m),f2(n,m),f3(n,m),f4(n,m),
@@ -276,6 +280,7 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
      .cc3(nx,nq,4,4),cc4(nx,nq,4,4),cc6(nx,nq,4,4),cc8(nx,nq,4,4),
      .ccc(nx,nqc,4,4),ccb(nx,nqb,4,4)
       real*8 xxl(nx),qql(nq),qqlc(nqc),qqlb(nqb)
+      character*72 filename,checkpath
       data xx/1d-5,2d-5,4d-5,6d-5,8d-5,
      .        1d-4,2d-4,4d-4,6d-4,8d-4,
      .        1d-3,2d-3,4d-3,6d-3,8d-3,
@@ -295,7 +300,8 @@ c      data xmin,xmax,qsqmin,qsqmax/1d-5,1d0,1.25d0,1d7/
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
-        open(unit=33,file='Pdfdata/alf121.dat',status='old')
+        filename=checkpath('Pdfdata/alf121.dat')
+        open(unit=33,file=filename,status='old')
         do 20 n=1,nx-1
         do 20 m=1,nq
         read(33,50)f1(n,m),f2(n,m),f3(n,m),f4(n,m),
@@ -384,6 +390,7 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
      .cc3(nx,nq,4,4),cc4(nx,nq,4,4),cc6(nx,nq,4,4),cc8(nx,nq,4,4),
      .ccc(nx,nqc,4,4),ccb(nx,nqb,4,4)
       real*8 xxl(nx),qql(nq),qqlc(nqc),qqlb(nqb)
+      character*72 filename,checkpath
       data xx/1d-5,2d-5,4d-5,6d-5,8d-5,
      .        1d-4,2d-4,4d-4,6d-4,8d-4,
      .        1d-3,2d-3,4d-3,6d-3,8d-3,
@@ -403,7 +410,8 @@ c      data xmin,xmax,qsqmin,qsqmax/1d-5,1d0,1.25d0,1d7/
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
-        open(unit=33,file='Pdfdata/j121.dat',status='old')
+        filename=checkpath('Pdfdata/j121.dat')
+        open(unit=33,file=filename,status='old')
         do 20 n=1,nx-1
         do 20 m=1,nq
         read(33,50)f1(n,m),f2(n,m),f3(n,m),f4(n,m),

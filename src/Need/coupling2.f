@@ -4,13 +4,13 @@ c--- value of nflav and makes CKM matrix diagonal if necessary
       implicit none
       include 'constants.f'
       include 'masses.f'
-      include 'ewcouple.f'
+c      include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'scale.f'
       include 'verbose.f'
       include 'nlooprun.f'
-      include 'process.f'
-      include 'ewinput.f'
+c      include 'process.f'
+c      include 'ewinput.f'
       include 'nflav.f'
       include 'b0.f'
       include 'dynamicscale.f'
@@ -22,9 +22,9 @@ c--- value of nflav and makes CKM matrix diagonal if necessary
       common/cabib/Vud,Vus,Vub,
      &             Vcd,Vcs,Vcb
       common/qmass/cmass,bmass
-      common/em/aemmz
+c      common/em/aemmz
       common/couple/amz
-      common/mypart/mypart
+c      common/mypart/mypart
       common/nproc/nproc
 
 c--- set up the beta-function

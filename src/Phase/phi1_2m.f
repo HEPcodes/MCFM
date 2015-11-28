@@ -9,6 +9,7 @@ c     delta(p2^2-m2) delta(p3^2-s3)
       implicit none
       include 'constants.f'
       include 'debug.f'
+      include 'zerowidth.f'
       double precision p1(4),p2(4),p3(4),p3cm(4)
       double precision x3,xth,xphi,costh,sinth,phi,cphi,sphi
       double precision wt,wt0,w3
@@ -44,6 +45,7 @@ c      endif
          s3=s3max*x3+s3min*(1d0-x3)
          xx=0d0
       elseif (n3 .eq. 1) then
+        if ((zerowidth) .and. (s3max .lt. mass3)) return 1
         xx=1d0
         call breitw(x3,s3min,s3max,mass3,width3,s3,w3) 
       endif

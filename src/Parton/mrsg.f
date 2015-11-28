@@ -45,6 +45,7 @@ C     THIS IS THE NEW  "Aprime" FIT -- Feb 1995 -- standard Q^2 range
       parameter(nx=47)
       parameter(ntenth=21)
       DIMENSION F(8,NX,20),G(8),XX(NX),N0(8)
+      character*72 filename,checkpath
       save F
       DATA XX/1.d-5,2.d-5,4.d-5,6.d-5,8.d-5,
      .        1.D-4,2.D-4,4.D-4,6.D-4,8.D-4,
@@ -63,7 +64,8 @@ C     THIS IS THE NEW  "Aprime" FIT -- Feb 1995 -- standard Q^2 range
  
       IF(INIT.NE.0) GOTO 10
       INIT=1
-      OPEN(UNIT=20,file='Pdfdata/mrs95ap.dat',status='unknown')
+      filename=checkpath('Pdfdata/mrs95ap.dat')
+      OPEN(UNIT=20,file=filename,status='unknown')
       DO 20 N=1,nx-1
       DO 20 M=1,19
       READ(20,50)F(1,N,M),F(2,N,M),F(3,N,M),F(4,N,M),F(5,N,M),F(7,N,M),
@@ -130,6 +132,7 @@ C     THIS IS THE NEW  "G" FIT -- Feb 1995 -- standard Q^2 range
       parameter(nx=47)
       parameter(ntenth=21)
       DIMENSION F(8,NX,20),G(8),XX(NX),N0(8)
+      character*72 filename,checkpath
       save F
       DATA XX/1.d-5,2.d-5,4.d-5,6.d-5,8.d-5,
      .        1.D-4,2.D-4,4.D-4,6.D-4,8.D-4,
@@ -148,7 +151,8 @@ C     THIS IS THE NEW  "G" FIT -- Feb 1995 -- standard Q^2 range
  
       IF(INIT.NE.0) GOTO 10
       INIT=1
-      OPEN(UNIT=21,file='Pdfdata/mrs95_g.dat',status='unknown')
+      filename=checkpath('Pdfdata/mrs95_g.dat')
+      OPEN(UNIT=21,file=filename,status='unknown')
       DO 20 N=1,nx-1
       DO 20 M=1,19
       READ(21,50)F(1,N,M),F(2,N,M),F(3,N,M),F(4,N,M),F(5,N,M),F(7,N,M),

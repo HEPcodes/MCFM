@@ -1,4 +1,5 @@
 *.o
+/makefile.orig
 /Bin/mcfm
 /Doc/*.aux
 /Doc/*.dvi

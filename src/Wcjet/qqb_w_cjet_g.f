@@ -13,7 +13,6 @@ c     f(-p1)+f(-p2)--> W^-(e^-(p3)+nbar(p4))+ c(p5) + f(p6)
       include 'msq_cs.f'
       include 'nwz.f'
       include 'nflav.f'
-      include 'jetcuts.f'
       include 'ckm.f'
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4), 
      .                 facgg,prop
@@ -182,8 +181,6 @@ c--- 4-quark contribution to matrix elements
           msq(j,k)=msq(j,k)+Vsum(-4)*qqbWcsb+Vsum(+4)*qqbWcbs
         endif
       endif
-
-   99 continue
 
       enddo
       enddo      

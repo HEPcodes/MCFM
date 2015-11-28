@@ -27,6 +27,8 @@ c---- are required
       double precision mass2,width2,mass3,width3
       integer j,nu,njets,ijet,n2,n3
       logical first,xxerror,flatreal
+      character*30 runstring
+      common/runstring/runstring
       character*4 part
       common/part/part
       common/energy/sqrts
@@ -42,7 +44,10 @@ c---- are required
         first=.false.
         reset=.false.
         call read_jetcuts(ptjetmin,etajetmin,etajetmax)
-        if (part .eq. 'real') then
+c--- added extra check here, to allow for analysis of G. Hesketh et al.
+c--- that requires Z+2 jets with only one jet within cuts, to obtain
+c--- prediction for Delta_phi(Z,jet) at NLO
+        if ((part .eq. 'real') .or. (runstring(1:6) .eq. 'dphizj')) then
 c--- if we're generating phase space for real emissions, then we need
 c--- to produce partons spanning the whole phase space pt>0,eta<10;
 c--- in this case, pbreak=ptjetmin simply means that we
@@ -58,6 +63,8 @@ c--- right up to the jet cut boundaries and there is no need for pbreak
         endif
 c--- in case this routine is used for very small values of ptjetmin
         if ((ptjetmin .lt. 5d0) .and. (part .ne. 'real')) pbreak=5d0
+c--- for processes in which it is safe to jet ptmin to zero at NLO
+	if ((part .eq. 'real') .and. (pbreak .lt. 1d-8)) pbreak=5d0
       endif        
 
       do nu=1,4

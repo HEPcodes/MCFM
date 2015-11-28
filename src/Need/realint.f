@@ -583,6 +583,9 @@ cz
       bwgt=0d0
 cz //
 
+c--- zero out temporary histograms
+      call zerorealhistos
+
 c---trial with weight of real alone
 c---first set up all dipole contributions
 c---this is the value of integral including subtractions
@@ -680,6 +683,9 @@ c---otherwise, skip contribution
       enddo
 
 c 998  continue
+
+c--- add temporary histograms to cumulative totals
+      call addrealhistos
 
       if (realwt) then
       realint=xmsq(0)

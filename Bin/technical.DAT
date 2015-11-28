@@ -1,4 +1,4 @@
-'5.3'		[file version number]
+'5.4'		[file version number]
 .false.		[debug]
 .true.		[verbose]
 .false.		[new_pspace]
@@ -8,6 +8,7 @@
 .false.		[noglue]
 .false.		[ggonly]
 .false.		[gqonly]
+.false.		[vanillafiles]
 1		[nmin]
 2		[nmax]
 .true.		[clustering]

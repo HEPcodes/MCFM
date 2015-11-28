@@ -18,11 +18,19 @@
       common/part/part
       common/bypart/lord_bypart
       common/finalpart/ggpart,gqpart,qgpart,qqpart,qqbpart
+
+      double precision PDFMCav, PDFMCer, sum1,sum2
       
 c--- Print-out the value of the integral and its error
       write(6,*) 
-      write(6,53)'Value of final ',part,' integral is',
-     . xinteg,' +/-',xinteg_err, ' fb'
+      if (xinteg .lt. 5d7) then 
+        write(6,53)'Value of final ',part,' integral is',
+     .   xinteg,' +/-',xinteg_err, ' fb'
+      else 
+        write(6,53)'Value of final ',part,' integral is',
+     .   xinteg/1d6,' +/-',xinteg_err/1d6, ' nb'
+        write(6,*) '(WARNING: result in nanobarns)'
+      endif
      
    53 format(a15,a4,a12,f13.3,a4,f10.3,a3)
 
@@ -74,10 +82,13 @@ c--- If we've calculated PDF errors, present results.
 c--- Note that asymmetric errors are calculated according to
 c--- Eq. (43) of "Hard Interactions of Quarks and Gluons",
 c---  J.Campbell, J.Huston, W.J. Stirling, Rep. Prog. Phys. 70 (2007) 89
+c--- (called "HEPDATA" method below)
       if (PDFerrors) then
+        open(unit=91,status='unknown',file='pdferrors.res')
         write(6,*)
         write(6,58) '************ PDF error analysis ************'
         write(6,58) '*                                          *'
+!     Compute PDF errors for sets which provide eigenvectors
         minPDFxsec=PDFxsec(0)
         maxPDFxsec=PDFxsec(0)
         PDFerror=0d0
@@ -103,8 +114,27 @@ c---  J.Campbell, J.Huston, W.J. Stirling, Rep. Prog. Phys. 70 (2007) 89
         PDFerror=0.5d0*dsqrt(PDFerror)
         PDFperror=dsqrt(PDFperror)
         PDFnerror=dsqrt(PDFnerror)
+
+c--- Compute PDF errors with the MC prescription
+c---  (see Appendix B of arXiv:0808.1231 [hep-ph])
+        sum1=0d0
+        sum2=0d0
+
+        do j=1,maxPDFsets
+           sum1=sum1+PDFxsec(j)
+           sum2=sum2+PDFxsec(j)**2d0
+        enddo
+
+        PDFMCav = sum1/maxPDFsets
+        PDFMCer =dsqrt( sum2/maxPDFsets -  PDFMCav**2d0 )
+
         write(6,58) '*                                          *'
         write(6,58) '* --------------- SUMMARY ---------------- *'
+        write(6,58) '*                                          *'
+        write(6,58) '*            HEPDATA prescription          *'
+	write(6,58) '*     (see, for example Eqn. (43) of       *'
+	write(6,58) '*      J.Campbell, J.Huston, W.J.Stirling, *'
+	write(6,58) '*      Rep. Prog. Phys. 70 (2007) 89)      *'
         write(6,58) '*                                          *'
         write(6,57) 'Minimum value',minPDFxsec
         write(6,57) 'Central value',PDFxsec(0)
@@ -113,12 +143,52 @@ c---  J.Campbell, J.Huston, W.J. Stirling, Rep. Prog. Phys. 70 (2007) 89
         write(6,57) 'Err estimate +/-',PDFerror
         write(6,57) '   +ve direction',PDFperror
         write(6,57) '   -ve direction',PDFnerror
+        write(6,59) 'Fractional error',PDFerror/PDFxsec(0)
+        write(6,58) '*                                          *'
+        write(6,58) '*              MC prescription             *'
+        write(6,58) '*       (for details and references,       *'
+        write(6,58) '*        see Eqn. (158) in Appendix B      *'
+        write(6,58) '*        of arXiv:0808.1231 [hep-ph])      *'
+        write(6,58) '*                                          *'
+        write(6,57) 'Central value',PDFMCav
+        write(6,57) 'Err estimate +/-',PDFMCer
+        write(6,59) 'Fractional error',PDFMCer/PDFMCav
         write(6,58) '********************************************'
+
+        write(91,58) '* --------------- SUMMARY ---------------- *'
+        write(91,58) '*                                          *'
+        write(91,58) '*            HEPDATA prescription          *'
+	write(91,58) '*     (see, for example Eqn. (43) of       *'
+	write(91,58) '*      J.Campbell, J.Huston, W.J.Stirling, *'
+	write(91,58) '*      Rep. Prog. Phys. 70 (2007) 89)      *'
+        write(91,58) '*                                          *'
+        write(91,57) 'Minimum value',minPDFxsec
+        write(91,57) 'Central value',PDFxsec(0)
+        write(91,57) 'Maximum value',maxPDFxsec
+        write(91,58) '*                                          *'
+        write(91,57) 'Err estimate +/-',PDFerror
+        write(91,57) '   +ve direction',PDFperror
+        write(91,57) '   -ve direction',PDFnerror
+        write(91,59) 'Fractional error',PDFerror/PDFxsec(0)
+        write(91,58) '*                                          *'
+        write(91,58) '*              MC prescription             *'
+        write(91,58) '*       (for details and references,       *'
+        write(91,58) '*        see Eqn. (158) in Appendix B      *'
+        write(91,58) '*        of arXiv:0808.1231 [hep-ph])      *'
+        write(91,58) '*                                          *'
+        write(91,57) 'Central value',PDFMCav
+        write(91,57) 'Err estimate +/-',PDFMCer
+        write(91,59) 'Fractional error',PDFMCer/PDFMCav
+        write(91,58) '********************************************'
+
+   
       endif
+      close(91)
       
    56 format('* PDF error set ',i3,'  --->',f13.3,' fb  *')
    57 format('*   ',a16,f14.3,' fb      *')
    58 format(a44)
+   59 format('*   ',a16,f14.3,'         *')
  
 c--- Finalize the histograms, if we're not filling ntuples instead
       if (creatent .eqv. .false.) then

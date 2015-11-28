@@ -1,18 +1,24 @@
       subroutine mt(x,scale,mode,upv,dnv,sea,str,chm,bot,glu)
       implicit double precision(a-h,o-z)
       dimension a(0:3,0:2,8),f(8)
+      character*72 filename,checkpath
       data init/0/
       if(init.ne.0) goto 10
       if(mode.eq.1)then
-        open(unit=1,file='Pdfdata/MTS1.DAT',status='old')
+        filename=checkpath('Pdfdata/MTS1.DAT')
+        open(unit=1,file=filename,status='old')
       elseif(mode.eq.2)then
-        open(unit=1,file='Pdfdata/MTE1.DAT',status='old')
+        filename=checkpath('Pdfdata/MTE1.DAT')
+        open(unit=1,file=filename,status='old')
       elseif(mode.eq.3)then
-        open(unit=1,file='Pdfdata/MTB1.DAT',status='old')
+        filename=checkpath('Pdfdata/MTB1.DAT')
+        open(unit=1,file=filename,status='old')
       elseif(mode.eq.4)then
-        open(unit=1,file='Pdfdata/MTB2.DAT',status='old')
+        filename=checkpath('Pdfdata/MTB2.DAT')
+        open(unit=1,file=filename,status='old')
       elseif(mode.eq.5)then
-        open(unit=1,file='Pdfdata/MTSN1.DAT',status='old')
+        filename=checkpath('Pdfdata/MTSN1.DAT')
+        open(unit=1,file=filename,status='old')
       endif
 c 2=uv 1=dv 3=glue 4=(ubar+dbar)/2 5=sbar 6=cbar 7=bbar 8=ttbar
       read(1,49)q0,qcdl

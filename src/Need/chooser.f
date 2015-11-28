@@ -616,6 +616,11 @@ c--- total cross-section
           BrnRat=brzee
         endif
 
+c--- added extra check here, to allow for analysis of G. Hesketh et al.
+c--- that requires Z+2 jets with only one jet within cuts, to obtain
+c--- prediction for Delta_phi(Z,jet) at NLO
+        if (runstring(1:6) .eq. 'dphizj') notag=1
+	
       elseif (nproc .eq. 45) then
 c-- 45 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4))+f(p5)+f(p6)+f(p7)'
 c--    '  f(p1)+f(p2) --> Z^0 (no BR) +f(p5)+f(p6)+f(p7)' (removebr=.true.)
@@ -645,6 +650,11 @@ c--- total cross-section
           BrnRat=brzee
         endif
 
+c--- added extra check here, to allow for analysis of G. Hesketh et al.
+c--- that requires Z+2 jets with only one jet within cuts, to obtain
+c--- prediction for Delta_phi(Z,jet) at NLO
+        if (runstring(1:6) .eq. 'dphizj') notag=1
+	
 c-----------------------------------------------------------------------
 
         elseif ((nproc .eq. 48) .or. (nproc .eq. 49)) then
@@ -3366,7 +3376,11 @@ c--- Checks that the minimum invariant mass specified in the options
 c--- file is not zero for boson 34 (i=1) or boson 56 (i=2)
       implicit none
       include 'limits.f'
+      include 'zerowidth.f'
       integer i
+
+c--- if generating exactly on-shell, there's nothing to worry about      
+      if (zerowidth) return
       
       if ((i .eq. 1) .and. (wsqmin .eq. 0d0)) then
         write(6,*)

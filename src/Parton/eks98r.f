@@ -185,12 +185,14 @@ c
 
       subroutine eksrinit
       implicit double precision (a-h,o-z)
+      character*72 filename,checkpath
       common/eks981r/pa(3,10,3,8)
       common/eks982r/pk0(3,180,8)
       common/eks987r/nm(5)
       data readFR2r/0/
       if (readFR2r.ne.1) then
-         open(11,file='Pdfdata/parxQA.all',status='UNKNOWN')
+         filename=checkpath('Pdfdata/parxQA.all')
+         open(11,file=filename,status='UNKNOWN')
          do 30 i=1,8
             do 40 j=1,3
                do 50 k=1,10
@@ -198,7 +200,8 @@ c
 40       continue
 30       continue
          close(11)
-         open(11,file='Pdfdata/par0.all',status='UNKNOWN')
+         filename=checkpath('Pdfdata/par0.all')
+         open(11,file=filename,status='UNKNOWN')
          do 10 i=1,8
             do 20 j=1,180
 20             read(11,137) pk0(1,j,i),pk0(2,j,i),pk0(3,j,i)

@@ -52,6 +52,7 @@ C===========================================================================
       Function Ctq4Fn (Iset, Iparton, X, Q)
       Implicit Double Precision (A-H,O-Z)
       Character Flnm(10)*11
+      character*72 filename,checkpath
       Common
      > / CtqPar_5_2 / Nx, Nt, NfMx
      > / QCDtable /  Alambda, Nfl, Iorder
@@ -69,7 +70,8 @@ C             If data file not initialized, do so.
             Stop
          Endif
          IU= NextUt()
-         Open(IU, File='Pdfdata/'//Flnm(Iset), Status='OLD', Err=100)
+	 filename=checkpath('Pdfdata/'//Flnm(Iset))
+         Open(IU, File=filename, Status='OLD', Err=100)
          Call ReadTbl (IU)
          Close (IU)
          Isetold=Iset

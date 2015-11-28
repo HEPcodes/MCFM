@@ -12,6 +12,7 @@
 *      via the variable mass2                                          *
 ************************************************************************
       include 'constants.f'
+      include 'nflav.f'
       include 'qcdcouple.f'
       include 'sprods_com.f'
       include 'scale.f'
@@ -27,7 +28,7 @@
       ss=s(1,2)
       xm2=mass2**2
 
-      xlf=dfloat(nf)
+      xlf=dfloat(nflav)
       xmu=scale
       rmuom2=dlog(xmu**2/xm2)
       naem=0
@@ -59,6 +60,7 @@
 ************************************************************************
       implicit none
       include 'constants.f'
+      include 'nflav.f'
       include 'qcdcouple.f'
       include 'epinv.f'
       include 'scheme.f'
@@ -115,7 +117,7 @@ C UBAR=-U/S=t2-1/4*ro
 C VIRgg is the complete answer for virt diagrams in units of
 C as/2/pi*g^4*Gamma(1-EP)/Gamma(1-2*EP)*(4*pi*mu^2/XM2)^EP
 
-      xlf=dfloat(nf)
+      xlf=dfloat(nflav)
       rmuom2=2d0*dlog(scale/mass2)
       t2=1d0-t1
       tbar=t1-0.25d0*ro

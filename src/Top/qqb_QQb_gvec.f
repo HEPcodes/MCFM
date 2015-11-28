@@ -16,7 +16,7 @@
       integer j,k,in,n2,n3
 C--in is the label of the parton dotted with n
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),n(4)
-      double precision mass2,width2,mass3,width3,msqn(0:2),nDp1
+      double precision mass2,width2,mass3,width3,msqn(0:2)
       common/breit/n2,n3,mass2,width2,mass3,width3
       logical first
       data first/.true./
@@ -34,16 +34,8 @@ C--in is the label of the parton dotted with n
       enddo
 
       call dotem(4,p,s)
-      nDp1=n(4)*p(in,4)-n(1)*p(in,1)-n(2)*p(in,2)-n(3)*p(in,3)      
- 
-      if (abs(nDp1).gt.1d-3*abs(p(1,4))) then 
-         write(*,*) 'Error for in=:',in
-         write(*,*) 'cutoff',1d-3*abs(p(1,4))
-         write(6,*) 'qqb_QQb_gvec:ndp1',nDp1
-         call flush(6)
-         stop
-      endif
 
+      call checkndotp(p,n,in)
 
       if     (in .eq. 1) then
         call qqb_QQbn(1,2,mass2,p,n,msqn) 

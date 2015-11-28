@@ -5,12 +5,13 @@
       implicit none
       include 'masses.f'
       include 'lhapdf.f'
+      include 'nlooprun.f'
       include 'PDFerrors.f'
       include 'pdlabel.f'
       double precision amz,alphasPDF
       logical validPDF
       character*30 oldPDFname
-      integer i
+      integer i,iorder
 
       common/couple/amz
 
@@ -55,19 +56,21 @@ c      endif
       write(6,*) '**********************************'
       write(6,*)
 
+c      write(6,*) '+ Name = ','PDFsets/'//PDFname
       call InitPDFset('PDFsets/'//PDFname)
+c      write(6,*) '+ PDF set succesfully initialized'
       
       if (PDFmember .lt. 0) then
         PDFerrors=.true.
         call numberPDF(maxPDFsets)
-        if (maxPDFsets .gt. 50) then
-          write(6,*) 'ERROR: Max. number of error sets is 50!'
+        if (maxPDFsets .gt. 1000) then
+          write(6,*) 'ERROR: Max. number of error sets is 1000!'
           stop
         endif
         write(6,*)
         write(6,*) '****************************************'        
         write(6,*) '*        Calculating errors using      *'
-        write(6,*) '*        ',maxPDFsets,' sets of error PDFs        *'
+        write(6,97) maxPDFsets
         write(6,*) '****************************************'
         call InitPDF(0)
         amz=alphasPDF(zmass)
@@ -77,11 +80,16 @@ c      endif
         amz=alphasPDF(zmass)
       endif
 
+c--- fill MCFM global variable "nlooprun" with the correct value
+      call GetOrderAs(iorder)
+      nlooprun=iorder+1
+      
 c--- rename pdlabel to get sensible output name
       pdlabel=PDFname(1:7)
 
       return
  
+   97 format(' *        ',i4,' sets of error PDFs       *')
    98 format(' *   ',a7,' ',a20,' *')
    99 format(' *  ',a10,i3,'                 *')
 

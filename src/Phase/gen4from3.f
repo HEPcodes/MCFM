@@ -71,7 +71,7 @@ c        jac=jac+apweight(j)/wtc(j)
       if (debug) write(6,*) 
       if (debug) write(6,*) 'this is the result of reconstruction'
       if (debug) write(6,*) 'jac in gen3from2',jac
-      if (debug) pause
+c      if (debug) pause
       return 
 
  999  jac=0d0

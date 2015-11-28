@@ -5,8 +5,8 @@ CERNLIB     =
 # Replace this with the location of LHAPDF on your system (if desired)
 LHAPDFLIB   = 
 
-MCFMHOME        = /home/ellis/Desktop/MCFM-5.3
-SOURCEDIR       = /home/ellis/Desktop/MCFM-5.3/src
+MCFMHOME        = /Users/johnmc/MCFM
+SOURCEDIR       = /Users/johnmc/MCFM/src
 VPATH		= $(DIRS)
 BIN		= $(MCFMHOME)/Bin
 INCPATH  	= $(SOURCEDIR)/Inc
@@ -25,7 +25,7 @@ PDFROUTINES = NATIVE
 #            exists; output uses the FROOT package of P. Nadolsky.
 NTUPLES = NO
 
-FC = g77
+FC = gfortran
 FFLAGS 	= -fno-automatic -fno-f2c -O0 -g -I$(INCPATH)
 
 # If using FROOT package for ROOT ntuples, first specify C++ compiler:
@@ -173,6 +173,7 @@ boost.o \
 boostx.o \
 branch.o \
 checkgvec.o \
+checkndotp.o \
 checkversion.o \
 checkjets.o \
 checkorder.o \
@@ -213,6 +214,7 @@ r.o \
 read_jetcuts.o \
 readcoup.o \
 reader_input.o \
+realhistos.o \
 realint.o \
 scaleset.o \
 sethparams.o \
@@ -234,7 +236,7 @@ transform_mass.o \
 zeromsq.o
 
 PARTONFILES = \
-alfamz.o \
+checkpath.o \
 newton1.o
 
 PHASEFILES = \
@@ -789,6 +791,7 @@ endif
 # Check PDFROUTINES flag and add appropriate files
 ifeq ($(PDFROUTINES),PDFLIB)
    PARTONFILES += \
+   alfamz.o \
    fdist_pdflib.o \
    pdfwrap_pdflib.o
    LIBDIR=$(CERNLIB)
@@ -800,6 +803,7 @@ ifeq ($(PDFROUTINES),PDFLIB)
 else
 ifeq ($(PDFROUTINES),LHAPDF)
    PARTONFILES += \
+   alfamz_lhapdf.o \
    fdist_lhapdf.o \
    pdfwrap_lhapdf.o
    LIBDIR += -L$(LHAPDFLIB)
@@ -808,10 +812,11 @@ ifeq ($(PDFROUTINES),LHAPDF)
 else
 ifeq ($(PDFROUTINES),NATIVE)
    PARTONFILES += \
+   alfamz.o \
    Ctq4Fn.o \
    Ctq5Par.o \
    Ctq5Pdf.o \
-   Ctq6Pdf.o \
+   Cteq6Pdf-2008.o \
    cteq3.o \
    mrs96.o \
    mrs98.o \
@@ -825,6 +830,7 @@ ifeq ($(PDFROUTINES),NATIVE)
    mrst2004.o \
    mrst2004f3.o \
    mrst2004f4.o \
+   mstwpdf.o \
    mt.o \
    eks98r.o \
    fdist_linux.o \

@@ -51,7 +51,7 @@ c---debug
 
       write(6,*) 'p3',p3(4),p3(3),p3(2),p3(1)
       write(6,*) 'p4',p4(4),p4(3),p4(2),p4(1)
-      pause
+c      pause
       wt=wt0
 
       end

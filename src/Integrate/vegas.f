@@ -17,7 +17,7 @@ C     USES fxn,ran2,rebin
      *d(NDMX,MXDIM),di(NDMX,MXDIM),dt(MXDIM),dx(MXDIM),r(NDMX),x(MXDIM),
      *xi(NDMX,MXDIM),xin(NDMX),ran2
       DOUBLE PRECISION schi,si,swgt
-      character*72 runname
+      character*255 runname
       integer nlength
       logical bin,dorebin
       common/bin/bin

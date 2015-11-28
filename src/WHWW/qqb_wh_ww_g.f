@@ -15,7 +15,6 @@ c                           ---> W^+(nu(p5),e^+(p6))W^-(e^-(p7),nub(p8))
 c   for the moment --- radiation only from initial line
       implicit none 
       include 'constants.f'
-      include 'masses.f'
       include 'ckm.f'
       include 'sprods_com.f'
       integer j,k

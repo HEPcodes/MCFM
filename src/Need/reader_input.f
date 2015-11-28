@@ -35,6 +35,7 @@
       include 'qcdcouple.f'
       include 'nlooprun.f'
       include 'initialscales.f'
+      include 'vanillafiles.f'
       character*72 inputfile,getinput
       character*90 line
       character*4 part
@@ -88,7 +89,9 @@
       common/qmass/cmass,bmass
 
       common/origij/origij
+
       save /ranno/
+      
 c---- read-in the technical parameters
 
       open(unit=21,file='technical.DAT',status='old',err=999)
@@ -112,6 +115,8 @@ c      if (verbose) write(6,*) 'noglue',noglue
 c      if (verbose) write(6,*) 'ggonly',ggonly
       read(21,*) gqonly
 c      if (verbose) write(6,*) 'gqonly',gqonly
+      read(21,*) vanillafiles
+c      if (verbose) write(6,*) 'vanillafiles',vanillafiles
       read(21,*) nmin
 c      if (verbose) write(6,*) 'nmin',nmin
       read(21,*) nmax

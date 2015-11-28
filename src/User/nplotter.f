@@ -4,11 +4,11 @@
       integer n
       character*(*) titlex
       character*3 llplot
-      character*4 tag,mypart
+      character*4 tag,part
       double precision var,wt,wt2,xmin,xmax,dx
       logical creatent,dswhisto
       common/outputflags/creatent,dswhisto
-      common/mypart/mypart
+      common/part/part
 
       if     (tag .eq. 'book') then
         if (dswhisto .eqv. .false.) then
@@ -17,6 +17,9 @@ c--- Traditional MCFM histograms
 c--- also book the errors now (in maxhisto+n,2*maxhisto+n)
           call mbook(maxhisto+n,titlex,dx,xmin,xmax)
           call mbook(2*maxhisto+n,titlex,dx,xmin,xmax)
+	  if ((part .eq. 'real') .or. (part .eq. 'tota')) then
+            call mbook(3*maxhisto+n,titlex,dx,xmin,xmax)
+	  endif
         else
 c--- DSW histograms - call hbook booking routine
           call dswhbook(n,titlex,dx,xmin,xmax)
@@ -25,9 +28,11 @@ c--- DSW histograms - call hbook booking routine
         if (dswhisto .eqv. .false.) then
 c--- Traditional MCFM histograms
           call mfill(n,var,wt)
-c--- also book the errors now (in maxhisto+n) - lord and virt only
-          if ((mypart .eq. 'lord') .or. (mypart .eq. 'virt')) then
+c--- also book the errors now (in maxhisto+n); fill temp histos for real
+          if ((part .eq. 'lord') .or. (part .eq. 'virt')) then
 	    call mfill(maxhisto+n,var,wt2)
+	  else
+	    call mfill(3*maxhisto+n,var,wt2)
 	  endif
         else
 c--- DSW histograms - call hbook filling routine
@@ -91,7 +96,7 @@ cz //
 
       integer n,switch,i5,i6,i7,nu,nplotmax
       character tag*4
-      double precision DETABB
+      double precision DETABB,DPHIZJ
      & ,DPHIBB
      & ,ETAB1
      & ,ETAB2
@@ -145,10 +150,10 @@ cz          use with bwgt
 cz //
 
       double precision m34,etmiss,misset,
-     . p(mxpart,4),fphi,HT,etcharm
+     . p(mxpart,4),fphi,HT,etcharm,deltaeta
       double precision eta3,eta4,eta5,eta6,eta7,eta8,eta34,eta56,y34
       double precision r34,r35,r45,r36,r46,r56,m345,m348,m567,m678
-      double precision pt3,pt4,pt5,pt6,pt7,pt8,pt34,pt56
+      double precision pt3,pt4,pt5,pt6,pt7,pt8,pt34,pt56,oldpt(5:7)
       double precision bclustmass,etvec(4),tmp5(4),tmp6(4),tmp7(4)
       double precision langle,plep(4),plep_wrest(4),pw(4),pw_wrest(4)
       integer nproc,eventpart,ib1,ib2,nqcdjets,nqcdstart
@@ -172,25 +177,25 @@ cz //
         tag='book'
 c--- ensure we initialize all possible histograms
         eventpart=npart+3
-        eta3=0d0
+        eta3=1d3
         pt3=0d0
-        eta4=0d0
+        eta4=1d3
         pt4=0d0
-        eta5=0d0
+        eta5=1d3
         pt5=0d0
-        eta6=0d0
+        eta6=1d3
         pt6=0d0
-        eta7=0d0
+        eta7=1d3
         pt7=0d0
-        eta8=0d0
+        eta8=1d3
         pt8=0d0
-        eta34=0d0
-        y34=0d0
+        eta34=1d3
+        y34=1d3
         pt34=0d0
         r34=0d0
         r35=0d0
         r45=0d0
-        eta56=0d0
+        eta56=1d3
         pt56=0d0        
         m56clust=0d0
         r36=0d0
@@ -201,24 +206,25 @@ c--- ensure we initialize all possible histograms
         misset=0d0
         etbin=0d0
         mbb=0d0
-        etab1=0d0
-        etab2=0d0
-        etanob=0d0
+        etab1=1d3
+        etab2=1d3
+        etanob=1d3
         ptb1=0d0
         ptb2=0d0
         ptQ1=0d0
         etaQ1=0d0
         ptother=0d0
-        etaother=0d0
+        etaother=1d3
         ptnob=0d0
         rbb=0d0
-        detabb=0d0
-        dphibb=0d0
+        detabb=1d3
+        dphibb=1d3
         m345=0d0
         m348=0d0
         m567=0d0
         m678=0d0
         HT=0d0
+	deltaeta=99d0
         jetmerge=.true.
         jets=nqcdjets
         goto 99
@@ -257,7 +263,7 @@ c---  are handled with reference to nproc
         eventpart=8+jets
       endif
       if (nproc .eq. 73) eventpart=4+jets
-
+      
 c--- this variable should be set to .true. when the jets are reordered
 c---  according to their pt (or Et)
       jetevent=.false.
@@ -281,6 +287,9 @@ c--- re-order jets according to pt, for a W/Z/H+jet event
         i5=5
         i6=6
         i7=7
+	if (jets .gt. 0) oldpt(5)=pt5
+	if (jets .gt. 1) oldpt(6)=pt6
+	if (jets .gt. 2) oldpt(7)=pt7
 c--- sort for 2 jets 
         if (jets .eq. 2) then          
           if (pt6 .gt. pt5) then
@@ -332,6 +341,9 @@ c--- perform exchange
           p(6,nu)=tmp6(nu)
           p(7,nu)=tmp7(nu)
         enddo
+	if (jets .gt. 0) pt5=oldpt(i5)
+	if (jets .gt. 1) pt6=oldpt(i6)
+	if (jets .gt. 2) pt7=oldpt(i7)
       endif      
 
       m34=dsqrt((p(3,4)+p(4,4))**2-(p(3,1)+p(4,1))**2
@@ -366,7 +378,7 @@ c--- returns zero cluster mass if two b's are in one jet
       HT=HT+pt5
       endif
       
-      if (eventpart .gt. 5) then        
+      if (eventpart .gt. 5) then
       eta6=etarap(6,p)
       if (jetevent .eqv. .false.) pt6=pt(6,p)
       eta56=etaraptwo(5,6,p)
@@ -544,6 +556,14 @@ c---  when it is a b-quark and when it is not
         etbin=etdoublebin(pt4,pt5)
       endif
 
+c--- find largest rapidity difference between the jets
+      deltaeta=99d0
+      if     (jets .eq. 2) then
+        deltaeta=abs(eta5-eta6)
+      elseif (jets .eq. 3) then
+        deltaeta=max(abs(eta5-eta6),abs(eta5-eta7),abs(eta6-eta7))
+      endif
+	  
    99 continue
 
 c--- make plots for H(->WW)+jet paper
@@ -763,7 +783,15 @@ c	endif
         call bookplot(n,tag,'Et_c',etcharm,wt,wt2,0d0,100d0,10d0,'log')
         n=n+1
       endif
-            
+        
+c--- added extra plot here, for the angle analysis of G. Hesketh et al.
+      dphizj=atan2(p(3,1)+p(4,1),p(3,2)+p(4,2))-atan2(p(5,1),p(5,2))
+      if (dphizj .gt. pi) dphizj=twopi-dphizj
+      if (dphizj .lt. -pi) dphizj=twopi+dphizj
+      call bookplot(n,tag,'dphi_zj',dphizj,wt,wt2,-3.1416d0,3.1416d0,
+     .              1.5708d-1,'log')
+      n=n+1
+      
       call bookplot(n,tag,'HT',HT,wt,wt2,0d0,500d0,20d0,'lin')
       n=n+1
 c --- Histograms to monitor exclusive/inclusive cross-sections:
@@ -782,6 +810,8 @@ c --- Histograms to monitor exclusive/inclusive cross-sections:
       n=n+1      
       call bookplot(n,tag,'eta4',eta4,wt,wt2,-4d0,4d0,0.1d0,'lin')
       n=n+1
+      call bookplot(n,tag,'pt4',pt4,wt,wt2,25d0,50d0,0.5d0,'lin')
+      n=n+1
       call bookplot(n,tag,'pt4',pt4,wt,wt2,0d0,150d0,5d0,'log')
       n=n+1
       call bookplot(n,tag,'eta34',eta34,wt,wt2,-4d0,4d0,0.4d0,'lin')
@@ -792,6 +822,8 @@ c --- Histograms to monitor exclusive/inclusive cross-sections:
       call ebookplot(n,tag,pt34,wt)
       n=n+1
       call bookplot(n,tag,'m34',m34,wt,wt2,0d0,200d0,5d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'m34',m34,wt,wt2,0d0,500d0,10d0,'log')
       n=n+1
       endif
       call bookplot(n,tag,'misset',misset,wt,wt2,0d0,100d0,2d0,'lin')
@@ -804,7 +836,7 @@ c --- Histograms to monitor exclusive/inclusive cross-sections:
       n=n+1
       call bookplot(n,tag,'pt5',pt5,wt,wt2,0d0,500d0,5d0,'log')
       n=n+1
-      call bookplot(n,tag,'pt5',pt5,wt,wt2,0d0,10d0,0.2d0,'log')
+      call bookplot(n,tag,'pt5',pt5,wt,wt2,0d0,100d0,2d0,'log')
       n=n+1
       call bookplot(n,tag,'m345',m345,wt,wt2,108d0,308d0,2d0,'log')
       n=n+1
@@ -831,12 +863,14 @@ c      n=n+1
       endif
       
       if (eventpart .gt. 5) then
-      call bookplot(n,tag,'eta other',etaother,
-     . wt,wt2,-5d0,5d0,0.4d0,'lin')
-      n=n+1
+c      call bookplot(n,tag,'eta other',etaother,
+c     . wt,wt2,-5d0,5d0,0.4d0,'lin')
+c      n=n+1
       call bookplot(n,tag,'eta6',eta6,wt,wt2,-4d0,4d0,0.1d0,'lin')
       n=n+1
       call bookplot(n,tag,'pt6',pt6,wt,wt2,0d0,500d0,5d0,'log')
+      n=n+1
+      call bookplot(n,tag,'pt6',pt6,wt,wt2,0d0,200d0,2d0,'log')
       n=n+1
       call bookplot(n,tag,'eta56',eta56,wt,wt2,-4d0,4d0,0.1d0,'lin')
       n=n+1
@@ -853,6 +887,11 @@ c      n=n+1
       call bookplot(n,tag,'eta5-eta6',eta5-eta6,
      . wt,wt2,-6d0,6d0,0.2d0,'lin')
       n=n+1
+      if ((jets .ge. 2) .or. (tag .eq. 'book')) then
+      call bookplot(n,tag,'delta(eta)',deltaeta,
+     . wt,wt2,0d0,10d0,0.5d0,'lin')
+      n=n+1      
+      endif
       endif
 
       if (bbproc) then
@@ -894,13 +933,15 @@ c--- Delta_R(b,b), 2 b-jets, bins of 0.2 from 0.35 to 4.95
       n=n+1
       endif
       
+      if (case .eq. 'Z_bjet') then
       call bookplot(n,tag,'pt b leading',ptleadingb,
      .               wt,wt2,0d0,500d0,20d0,'log')
       n=n+1
       call bookplot(n,tag,'pt non-b leading',ptleadingnonb,
      .               wt,wt2,0d0,500d0,20d0,'log')
       n=n+1
-
+      endif
+      
       if (eventpart .gt. 6) then
 
       if (bbproc) then

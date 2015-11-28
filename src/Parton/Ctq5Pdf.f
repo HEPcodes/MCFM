@@ -201,6 +201,7 @@ C                        ****************************
       Implicit Double Precision (A-H,O-Z)
       Parameter (Isetmax=9)
       Character Flnm(Isetmax)*12, Tablefile*40
+      character*72 filename,checkpath
       Data (Flnm(I), I=1,Isetmax)
      > / 'cteq5m.tbl', 'cteq5d.tbl', 'cteq5l.tbl', 'cteq5hj.tbl'
      > , 'cteq5hq.tbl', 'cteq5f3.tbl', 'cteq5f4.tbl'
@@ -226,7 +227,8 @@ C             If data file not initialized, do so.
             Stop
          Else
             Tablefile=Flnm(Iset)
-            Open(IU, File='Pdfdata/'//Tablefile, Status='OLD', Err=100)
+	    filename=checkpath('Pdfdata/'//Tablefile)
+            Open(IU, File=filename, Status='OLD', Err=100)
          Endif
          Call ReadTbl (IU)
          Close (IU)
@@ -326,7 +328,7 @@ C                                        Adapted from "Numerical Recipes"
           HP=XA(I+M)-X
           W=C(I+1)-D(I)
           DEN=HO-HP
-          IF(DEN.EQ.0.)PAUSE
+c          IF(DEN.EQ.0.)PAUSE
           DEN=W/DEN
           D(I)=HP*DEN
           C(I)=HO*DEN

@@ -7,7 +7,7 @@ C***********************************************************************
 *     for the process                                                  *
 *----My notation                                                       *
 *     q(-p1) +qbar(-p2)=t(nu(p3)+e^+(p4)+b(p5))                        *
-*                       +t~(b~(p6)+e^-(p7)+nu(p8))+g(p9)               *
+*                       +t~(b~(p6)+e^-(p7)+nu~(p8))+g(p9)              *
 *                                                                      * 
 *     Only five diagrams included, leading to 2 on-shell top quarks    *
 ************************************************************************

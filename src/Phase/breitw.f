@@ -11,7 +11,7 @@ c     wt is the jacobian between integration in msq and integration in x1
       include 'zerowidth.f'
 
 c--- in case the maximum msq is very small, just generate linearly for safety
-      if (mmaxsq .lt. rmass*1d-3) then
+      if ((mmaxsq .lt. rmass*1d-3) .and. (zerowidth .eqv. .false.)) then
         msq=mminsq+x1*(mmaxsq-mminsq)
         wt=mmaxsq-mminsq
         return

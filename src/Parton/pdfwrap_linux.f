@@ -6,43 +6,38 @@
       common/couple/amz
       COMMON/QMASS/CMASS,BMASS
 
-C MRS99
-C  1     COR01  central gluon, a_s    300      0.1175   0.00537  C
-C  2     COR02  higher gluon          300      0.1175   0.00497  C
-C  3     COR03  lower gluon           300      0.1175   0.00398  C
-C  4     COR04  lower a_s             229      0.1125   0.00585  C
-C  5     COR05  higher a_s            383      0.1225   0.00384  C
-C  6     COR06  quarks up             303.3    0.1178   0.00497  C
-C  7     COR07  quarks down           290.3    0.1171   0.00593  C
-C  8     COR08  strange up            300      0.1175   0.00524  C
-C  9     COR09  strange down          300      0.1175   0.00524  C
-C  10    C0R10  charm up              300      0.1175   0.00525  C
-C  11    COR11  charm down            300      0.1175   0.00524  C
-C  12    COR12  larger d/u            300      0.1175   0.00515  C
-
-      if         (pdlabel .eq. 'mrs4nf3') then
-      amz=0.106574973d0
+      if         (pdlabel .eq. 'mstw8lo') then
+      amz=0.13939d0
+      nlooprun=1
+      elseif     (pdlabel .eq. 'mstw8nl') then
+      amz=0.12018d0
+      nlooprun=2
+      elseif     (pdlabel .eq. 'mstw8nn') then
+      amz=0.11707d0
+      nlooprun=3
+      elseif     (pdlabel .eq. 'mrs4nf3') then
+      amz=0.1083d0
       nlooprun=2
       cmass=1000d0
       bmass=1001d0
       elseif     (pdlabel .eq. 'mrs4lf3') then
-      amz=0.118586857d0
+      amz=0.1186d0
       nlooprun=1
       cmass=1000d0
       bmass=1001d0
       elseif     (pdlabel .eq. 'mrs4nf4') then
-      amz=0.11369191d0
+      amz=0.1153d0
       nlooprun=2
       bmass=1000d0
       elseif     (pdlabel .eq. 'mrs4lf4') then
-      amz=0.125103791d0
+      amz=0.1251d0
       nlooprun=1
       bmass=1000d0
       elseif     (pdlabel .eq. 'mrs04nl') then
-      amz=0.11368833d0 
+      amz=0.1205d0 
       nlooprun=2
       elseif     (pdlabel .eq. 'mrs04nn') then
-      amz=0.108113173d0 ! Obtained from Lambda(4) using NLO defn only
+      amz=0.1167d0
       nlooprun=3
       elseif     (pdlabel .eq. 'mrs02nl') then
       amz=0.1197d0 
@@ -62,6 +57,21 @@ C  12    COR12  larger d/u            300      0.1175   0.00515  C
       elseif     (pdlabel .eq. 'mrs01_j') then
       amz=0.121d0
       nlooprun=2
+
+C MRS99
+C  1     COR01  central gluon, a_s    300      0.1175   0.00537  C
+C  2     COR02  higher gluon          300      0.1175   0.00497  C
+C  3     COR03  lower gluon           300      0.1175   0.00398  C
+C  4     COR04  lower a_s             229      0.1125   0.00585  C
+C  5     COR05  higher a_s            383      0.1225   0.00384  C
+C  6     COR06  quarks up             303.3    0.1178   0.00497  C
+C  7     COR07  quarks down           290.3    0.1171   0.00593  C
+C  8     COR08  strange up            300      0.1175   0.00524  C
+C  9     COR09  strange down          300      0.1175   0.00524  C
+C  10    C0R10  charm up              300      0.1175   0.00525  C
+C  11    COR11  charm down            300      0.1175   0.00524  C
+C  12    COR12  larger d/u            300      0.1175   0.00515  C
+
       elseif     (pdlabel .eq. 'mrs99_1') then
       amz=0.1175d0
       nlooprun=2
@@ -254,6 +264,14 @@ C   10     CTEQ4LQ  Low Q0                  0.114        0.7      cteq4lq.tbl
       Call SetCtq5(9)
       amz=0.118d0
       nlooprun=2
+      elseif (pdlabel .eq. 'cteq66m') then
+      amz=0.118d0
+      Call SetCtq6(400)
+      nlooprun=2
+      elseif (pdlabel .eq. 'cteq61m') then
+      amz=0.118d0
+      Call SetCtq6(200)
+      nlooprun=2
       elseif (pdlabel .eq. 'cteq6_m') then
       amz=0.118d0
       Call SetCtq6(1)
@@ -278,6 +296,7 @@ c--- need a value here: Lambda = 200 MeV
       else
           write(6,*) 'Unimplemented distribution= ',pdlabel
           write(6,*) 'Implemented are: ',
+     .'mstw8lo,','mstw8nl,','mstw8nn,',
      .'mrs4nf3,','mrs4lf3,','mrs4nf4,','mrs4lf4,',
      .'mrs02nl,','mrs02nn,',
      .'mrs0119,','mrs0117,','mrs0121,','mrs01_j,',
@@ -294,6 +313,7 @@ c--- need a value here: Lambda = 200 MeV
      .'cteq5_m,','cteq5_d,','cteq5_l,','cteq5hj,','cteq5hq,',
      .'cteq5f3,','cteq5f4,','cteq5m1,','ctq5hq1,','cteq5l1,',
      .'cteq6_m,','cteq6_d,','cteq6_l,','cteq6l1,',
+     .'cteq61m,','cteq66m,',
      .'mtungb1'
 
       stop

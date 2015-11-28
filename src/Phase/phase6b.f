@@ -2,9 +2,7 @@
 c----phase space for signal
       implicit none
       include 'constants.f'
-      include 'masses.f'
       include 'mxdim.f'
-      include 'zerowidth.f'
 c********* generate phase space for 2-->6 process
 c********* r(mxdim),p1(4),p2(4) are inputs 
 c--------- incoming p1 and p2 reversed in sign from physical values 

@@ -7,23 +7,14 @@ C     with p1 contracted with n
       include 'zprods_com.f'
       integer j,p1,p2,p3,p4,h1,h2,h3,h4
       double precision Hgggg_1256,Hgggg_1265,Hgggg_1625,
-     . n(4),p(mxpart,4),nDp1
+     . n(4),p(mxpart,4)
       double complex amp(3,2,2,2,2),
      .  amppp(3),apmpp(3),appmp(3),apppm(3),
      .  apppp(3),
      .  ammpp(3),ampmp(3),amppm(3),apmmp(3),apmpm(3),appmm(3),
      .  ndep,ndem,vecm(mxpart,mxpart)
 
-      nDp1=n(4)*p(p1,4)-n(3)*p(p1,3)-n(2)*p(p1,2)-n(1)*p(p1,1)
-c--- appropriate scale is approx 1d-3*energy(incoming)
-c--- so of order(1) for the Tevatron
-      if (abs(nDp1).gt.1d-3*dsqrt(abs(p(1,4)*n(4)))) then
-        write(*,*) 'Error in gggghn for :',p1,p2,p3,p4
-        write(*,*) 'cutoff',1d-3*dsqrt(abs(p(1,4)*n(4)))
-        write(6,*) 'nDp1',nDp1
-        call flush(6)
-        stop
-      endif
+      call checkndotp(p,n,p1)
       
       do h1=1,2
       do h2=1,2

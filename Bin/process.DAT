@@ -1,4 +1,4 @@
-'5.3'           [file version number] 
+'5.4'           [file version number] 
 1  '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4))'
 6  '  f(p1)+f(p2) --> W^-(-->e^-(p3)+nu~(p4))'
 1000 'nul'
@@ -93,10 +93,10 @@
 143 '  f(p1)+f(p2) --> H(-->b(p3)+b~(p4)) + b(p5) + b~(p6) [both observed]'
 1000 'nul'
 1000 'nul'
-151 '  f(p1)+f(p2) --> t(-->nu(p3)+e^+(p4)+b(p5))+t~(-->b~(p6))+e^-(p7)+nu~(p8))'
-152 '  f(p1)+f(p2) --> t(-->nu(p3)+e^+(p4)+b(p5))+t~(-->b~(p6))+q(p7)+q~(p8))'
+151 '  f(p1)+f(p2) --> t(-->nu(p3)+e^+(p4)+b(p5))+t~(-->b~(p6)+e^-(p7)+nu~(p8))'
+152 '  f(p1)+f(p2) --> t(-->nu(p3)+e^+(p4)+b(p5))+t~(-->b~(p6)+q(p7)+q~(p8))'
 1000 'nul'
-156 '  f(p1)+f(p2) --> t(-->nu(p3)+e^+(p4)+b(p5))+t~(-->nu~(p7)+e^-(p8)+b~(p6))+g(p9)'
+156 '  f(p1)+f(p2) --> t(-->nu(p3)+e^+(p4)+b(p5))+t~(-->b~(p6)+e^-(p7)+nu~(p8))+g(p9)'
 1000 'nul'
 157 '  f(p1)+f(p2) --> t t~ [for total Xsect]'
 158 '  f(p1)+f(p2) --> b b~ [for total Xsect]'

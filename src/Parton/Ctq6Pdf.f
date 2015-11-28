@@ -100,6 +100,7 @@ C                             ********************
       Implicit Double Precision (A-H,O-Z)
       Parameter (Isetmax0=4)
       Character Flnm(Isetmax0)*6, nn*3, Tablefile*40
+      character*72 filename,checkpath
       Data (Flnm(I), I=1,Isetmax0)
      > / 'cteq6m', 'cteq6d', 'cteq6l', 'cteq6l'/
       Data Isetold, Isetmin0, Isetmin1, Isetmax1 /-987,1,101,140/
@@ -119,7 +120,8 @@ C             If data file not initialized, do so.
             Print *, 'Invalid Iset number in SetCtq6 :', Iset
             Stop
          Endif
-         Open(IU, File='Pdfdata/'//Tablefile, Status='OLD', Err=100)
+	 filename=checkpath('Pdfdata/'//Tablefile)
+         Open(IU, File=filename, Status='OLD', Err=100)
  21      Call ReadTbl6 (IU)
          Close (IU)
          Isetold=Iset
@@ -218,7 +220,7 @@ C                                        Adapted from "Numerical Recipes"
           HP=XA(I+M)-X
           W=C(I+1)-D(I)
           DEN=HO-HP
-          IF(DEN.EQ.0.)PAUSE
+c          IF(DEN.EQ.0.)PAUSE
           DEN=W/DEN
           D(I)=HP*DEN
           C(I)=HO*DEN

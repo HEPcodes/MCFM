@@ -8,7 +8,7 @@ c   contracted with the vector n(mu)
       include 'sprods_com.f'
       integer p1,p2,p3,p4,p5
       double precision p(mxpart,4),n(4),nDn,prop,
-     .                 nDp1,nDp2,nDp3,nDp4,nDp5
+     .                 nDp1,nDp2,nDp3,nDp4
       p3=3
       p4=4
       nDp1=n(4)*p(p1,4)-n(3)*p(p1,3)-n(2)*p(p1,2)-n(1)*p(p1,1)
@@ -17,17 +17,7 @@ c   contracted with the vector n(mu)
       nDp4=n(4)*p(p4,4)-n(3)*p(p4,3)-n(2)*p(p4,2)-n(1)*p(p4,1)
       nDn=n(4)**2-n(3)**2-n(2)**2-n(1)**2
 
-      nDp5=n(4)*p(p5,4)-n(3)*p(p5,3)-n(2)*p(p5,2)-n(1)*p(p5,1)
-
-c--- appropriate scale is approx 1d-3*energy(incoming)
-c--- so of order(1) for the Tevatron
-      if (abs(nDp5).gt.1d-3*abs(p(p1,4))) then 
-         write(*,*) 'Error for :',p1,p2,p3,p4,p5
-         write(*,*) 'cutoff',1d-3*abs(p(p1,4))
-         write(6,*) 'nDp5',nDp5
-         call flush(6)
-         stop
-      endif
+      call checkndotp(p,n,p5)
 
 c---calculate the propagator
       prop=((s(p3,p4)-wmass**2)**2+(wmass*wwidth)**2)

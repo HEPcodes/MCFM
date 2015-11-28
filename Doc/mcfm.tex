@@ -2,6 +2,8 @@
 
 \begin{document}
 \def\GeV{\mbox{GeV}}
+\def\cteqsixsixm{\mbox{0802.0007 [hep-ph]}}
+\def\cteqsixonem{\mbox{hep-ph/0303013}}
 \def\cteqsix{\mbox{hep-ph/0201195}}
 \def\cteqfive{\mbox{hep-ph/9903282}}
 \def\cteqfour{\mbox{hep-ph/9606399}}
@@ -14,11 +16,12 @@
 \def\mrsninesix{\mbox{PLB387 (1996) 419}}
 \def\mrsninefive{\mbox{PLB354 (1995) 155}}
 \def\hmrs{\mbox{Durham DTP-90-04}}
+\def\mstwoheight{\mbox{0901.0002 [hep-ph]}}
 
 \thispagestyle{empty}
 \vspace*{3cm}
 \begin{center}
-{\Huge MCFM v5.3} \\
+{\Huge MCFM v5.4} \\
 \vspace*{0.5cm}
 \Large{A Monte Carlo for FeMtobarn} \\
 \Large{processes at Hadron Colliders} \\
@@ -30,7 +33,7 @@
 J. M. Campbell ({\tt J.Campbell@physics.gla.ac.uk}) \\
 R. K. Ellis ({\tt ellis@fnal.gov}) \\
 \vspace*{2.5cm}
-{\it \small Updated: 21st October 2008}
+{\it \small Updated: 11th March 2009}
 \end{center}
 
 \newpage
@@ -79,7 +82,7 @@ are:
   Phys.\ Rev.\ D {\bf 70}, 094012 (2004)
   [arXiv:hep-ph/0408158].
 \item J.~Campbell and F.~Tramontano, \\
-  {\it ``Next-to-leading order corrections to W t production and
+  {\it ``Next-to-leading order corrections to Wt production and
   decay,''} \\
   Nucl.\ Phys.\ B {\bf 726}, 109 (2005)
   [arXiv:hep-ph/0506289].
@@ -111,11 +114,17 @@ released in the future.
   at hadron colliders,''} \\
   Phys. Rev. Lett. {\bf 98}, 252002 (2007)
   [arXiv:hep-ph/0703113].
+\item R.~K.~Ellis, K.~Melnikov and G.~Zanderighi,\\
+  {\it ``Generalized unitarity at work: first NLO QCD results for hadronic $W^+$3jet production,''}
+  arXiv:0901.4101 [hep-ph].
+\item J.~M.~Campbell, R.~Frederix, F.~Maltoni and F.~Tramontano,\\
+  {\it $t^-$ channel single-top production at hadron colliders,''}
+  arXiv:0903.0005 [hep-ph].
 \end{itemize}
 
 \section{Installation}
 
-The tar'ed, gzip'ed and uu-encoded package may be downloaded from
+The tar'ed and gzip'ed package may be downloaded from
 the {\tt MCFM} home-page at {\tt http://mcfm.fnal.gov}.
 After extracting, the source can be initialized by running the
 {\tt Install} command and then compiled with {\tt make}. The
@@ -195,8 +204,9 @@ an additional input parameter and there are 3 other independent
 parameters from the remaining 5. The variable {\tt ewscheme} then performs
 exactly the same role as {\tt idef} in MadEvent~\cite{Maltoni:2002qb}.
 {\tt ewscheme=0} is the old MadEvent default and {\tt ewscheme=1} is the
-new MadEvent default, which is also the same as that used in Alpgen and
-LUSIFER. For processes in which the top quark is directly produced  it is 
+new MadEvent default, which is also the same as that used in 
+Alpgen~\cite{Alpgen} and LUSIFER~\cite{Lusifer} 
+For processes in which the top quark is directly produced  it is 
 preferable to use  the schemes ({\tt ewscheme=0,1,2}), since in these schemes
 one can adjust the top mass to its physical value, (in {\tt src/User/mdata.f}).
 
@@ -240,76 +250,81 @@ some calculation and/or guesswork.
 \begin{center}
 \begin{tabular}{|c|c|c||c|c|c|}
 \hline
-{\tt mrs02nl}  & 0.1197       & \mrstohtwo &
-{\tt mrs02nn}  & 0.1154       & \mrstohtwo \\
-{\tt mrs4nf3}  & 0.1066       & \mrstff &
-{\tt mrs4lf3}  & 0.1186       & \mrstff \\
-{\tt mrs4nf4}  & 0.1136       & \mrstff &
-{\tt mrs4lf4}  & 0.1251       & \mrstff \\
-{\tt mrs0119}  & 0.119        & \mrstohone &
-{\tt mrs0117}  & 0.117        & \mrstohone \\
-{\tt mrs0121}  & 0.121        & \mrstohone &
-{\tt mrs01\_j} & 0.121        & \mrstohone \\
-{\tt mrs99\_1} & 0.1175       & \mrsninenine &
-{\tt mrs99\_2} & 0.1175       & \mrsninenine \\
-{\tt mrs99\_3} & 0.1175       & \mrsninenine &
-{\tt mrs99\_4} & 0.1125       & \mrsninenine \\    
-{\tt mrs99\_5} & 0.1225       & \mrsninenine &
-{\tt mrs99\_6} & 0.1178       & \mrsninenine \\    
-{\tt mrs99\_7} & 0.1171       & \mrsninenine &
-{\tt mrs99\_8} & 0.1175       & \mrsninenine \\    
-{\tt mrs99\_9} & 0.1175       & \mrsninenine &
-{\tt mrs9910}  & 0.1175       & \mrsninenine \\    
-{\tt mrs9911}  & 0.1175       & \mrsninenine &
-{\tt mrs9912}  & 0.1175       & \mrsninenine \\    
-{\tt mrs98z1}  &  0.1175      & \mrsnineeight &   
-{\tt mrs98z2}  &  0.1175      & \mrsnineeight \\ 
-{\tt mrs98z3}  &  0.1175      & \mrsnineeight &  
-{\tt mrs98z4}  &  0.1125      & \mrsnineeight \\  
-{\tt mtungb1}  &  0.109       & \mrsnineeight &
-{\tt mrs98z5}  &  0.1225      & \mrsnineeight \\   
-{\tt mrs96r1}  &  0.113       & \mrsninesix &    
-{\tt mrs96r2}  &  0.120       & \mrsninesix \\  
-{\tt mrs96r3}  &  0.113       & \mrsninesix &   
-{\tt mrs96r4}  &  0.120       & \mrsninesix \\   
-{\tt mrs95ap}  &  0.1127      & \mrsninefive & 
-{\tt mrs95\_g} &  0.1148      & \mrsninefive \\
-{\tt hmrs90e}  &  0.09838     & \hmrs & 
-{\tt hmrs90b}  &  0.10796     & \hmrs \\
-{\tt cteq6\_m} &  0.118       & \cteqsix &
-{\tt cteq6\_d} &  0.118       & \cteqsix \\
-{\tt cteq6\_l} &  0.118       & \cteqsix &
-{\tt cteq6l1}  &  0.130       & \cteqsix \\
-{\tt cteq5hq}  &  0.118       & \cteqfive &
-{\tt cteq5f3}  &  0.106       & \cteqfive \\
-{\tt cteq5f4}  &  0.112       & \cteqfive &
-{\tt cteq5\_m} &  0.118       & \cteqfive \\
-{\tt cteq5\_d} &  0.118       & \cteqfive & 
-{\tt cteq5\_l} &  0.127       & \cteqfive \\ 
-{\tt cteq5l1}  &  0.127       & \cteqfive & 
-{\tt cteq5hj}  &  0.118       & \cteqfive \\
-{\tt cteq5m1}  &  0.118       & \cteqfive &
-{\tt ctq5hq1}  &  0.118       & \cteqfive \\
-{\tt cteq4a5}  &  0.122       & \cteqfour &
-{\tt cteq4hj}  &  0.116       & \cteqfour \\
-{\tt cteq4lq}  &  0.114       & \cteqfour &
-{\tt cteq4\_m} &  0.116       & \cteqfour \\
-{\tt cteq4\_d} &  0.116       & \cteqfour &
-{\tt cteq4\_l} &  0.132       & \cteqfour \\
-{\tt cteq4a1}  &  0.110       & \cteqfour &
-{\tt cteq4a2}  &  0.113       & \cteqfour \\
-{\tt cteq4a3}  &  0.116       & \cteqfour &
-{\tt cteq4a4}  &  0.119       & \cteqfour \\
-{\tt cteq3\_m} &  0.112       & \cteqthree &
-{\tt cteq3\_l} &  0.112       & \cteqthree \\
+{\tt mstw8lo}  & 0.1394       & \mstwoheight &
+{\tt mstw8nl}  & 0.1202       & \mstwoheight \\
+{\tt mstw8nn}  & 0.1083       & \mstwoheight &
+{\tt mrs02nl}  & 0.1197       & \mrstohtwo \\
+{\tt mrs02nn}  & 0.1154       & \mrstohtwo &
+{\tt mrs4nf3}  & 0.1066       & \mrstff \\
+{\tt mrs4lf3}  & 0.1186       & \mrstff &
+{\tt mrs4nf4}  & 0.1136       & \mrstff \\
+{\tt mrs4lf4}  & 0.1251       & \mrstff &
+{\tt mrs0119}  & 0.119        & \mrstohone \\
+{\tt mrs0117}  & 0.117        & \mrstohone &
+{\tt mrs0121}  & 0.121        & \mrstohone \\
+{\tt mrs01\_j} & 0.121        & \mrstohone &
+{\tt mrs99\_1} & 0.1175       & \mrsninenine \\
+{\tt mrs99\_2} & 0.1175       & \mrsninenine &
+{\tt mrs99\_3} & 0.1175       & \mrsninenine \\
+{\tt mrs99\_4} & 0.1125       & \mrsninenine &    
+{\tt mrs99\_5} & 0.1225       & \mrsninenine \\
+{\tt mrs99\_6} & 0.1178       & \mrsninenine &    
+{\tt mrs99\_7} & 0.1171       & \mrsninenine \\
+{\tt mrs99\_8} & 0.1175       & \mrsninenine &    
+{\tt mrs99\_9} & 0.1175       & \mrsninenine \\
+{\tt mrs9910}  & 0.1175       & \mrsninenine &    
+{\tt mrs9911}  & 0.1175       & \mrsninenine \\
+{\tt mrs9912}  & 0.1175       & \mrsninenine &    
+{\tt mrs98z1}  &  0.1175      & \mrsnineeight \\  
+{\tt mrs98z2}  &  0.1175      & \mrsnineeight & 
+{\tt mrs98z3}  &  0.1175      & \mrsnineeight \\  
+{\tt mrs98z4}  &  0.1125      & \mrsnineeight &  
+{\tt mtungb1}  &  0.109       & \mrsnineeight \\
+{\tt mrs98z5}  &  0.1225      & \mrsnineeight &   
+{\tt mrs96r1}  &  0.113       & \mrsninesix \\    
+{\tt mrs96r2}  &  0.120       & \mrsninesix &  
+{\tt mrs96r3}  &  0.113       & \mrsninesix \\   
+{\tt mrs96r4}  &  0.120       & \mrsninesix &   
+{\tt mrs95ap}  &  0.1127      & \mrsninefive \\
+{\tt mrs95\_g} &  0.1148      & \mrsninefive &
+{\tt hmrs90e}  &  0.09838     & \hmrs \\ 
+{\tt hmrs90b}  &  0.10796     & \hmrs &
+{\tt cteq66m}  &  0.118       & \cteqsixsixm \\
+{\tt cteq61m}  &  0.118       & \cteqsixonem &
+{\tt cteq6\_m} &  0.118       & \cteqsix \\
+{\tt cteq6\_d} &  0.118       & \cteqsix &
+{\tt cteq6\_l} &  0.118       & \cteqsix \\
+{\tt cteq6l1}  &  0.130       & \cteqsix &
+{\tt cteq5hq}  &  0.118       & \cteqfive \\
+{\tt cteq5f3}  &  0.106       & \cteqfive &
+{\tt cteq5f4}  &  0.112       & \cteqfive \\
+{\tt cteq5\_m} &  0.118       & \cteqfive &
+{\tt cteq5\_d} &  0.118       & \cteqfive \\ 
+{\tt cteq5\_l} &  0.127       & \cteqfive & 
+{\tt cteq5l1}  &  0.127       & \cteqfive \\ 
+{\tt cteq5hj}  &  0.118       & \cteqfive &
+{\tt cteq5m1}  &  0.118       & \cteqfive \\
+{\tt ctq5hq1}  &  0.118       & \cteqfive &
+{\tt cteq4a5}  &  0.122       & \cteqfour \\
+{\tt cteq4hj}  &  0.116       & \cteqfour &
+{\tt cteq4lq}  &  0.114       & \cteqfour \\
+{\tt cteq4\_m} &  0.116       & \cteqfour &
+{\tt cteq4\_d} &  0.116       & \cteqfour \\
+{\tt cteq4\_l} &  0.132       & \cteqfour &
+{\tt cteq4a1}  &  0.110       & \cteqfour \\
+{\tt cteq4a2}  &  0.113       & \cteqfour &
+{\tt cteq4a3}  &  0.116       & \cteqfour \\
+{\tt cteq4a4}  &  0.119       & \cteqfour &
+{\tt cteq3\_m} &  0.112       & \cteqthree \\
+{\tt cteq3\_l} &  0.112       & \cteqthree &
 {\tt cteq3\_d} &  0.112       & \cteqthree \\
 \hline
 \end{tabular}
 \end{center}
 \caption{Available pdf sets, their corresponding values of
 $\alpha_S(M_Z)$ and a reference to the paper or preprint that
-describes their origin.}
-\label{pdlabel}
+describes their origin.
+\label{pdlabel}}
 \end{table}
 
 By editing the {\tt Makefile}, it is straightforward to switch to
@@ -333,7 +348,8 @@ Particularly when compiling against both LHAPDF and CERNLIB, it may
 be useful to link only LHAPDF in a static manner. This can be achieved
 using g77, for instance, by replacing
  ``{\tt -lLHAPDF}'' with ``{\tt -Wl,-Bstatic -lLHAPDF -Wl,-Bdynamic}''
- in the makefile.
+ in the makefile. This version of {\tt MCFM} has been explicitly tested
+ against {\tt LHAPDF-5.5.0}.
  
 The parameters to choose the
 pdf set are then provided in {\tt Bin/input.DAT} - 
@@ -538,10 +554,10 @@ $f(p_i)$ denotes a generic partonic jet.
 142& $ H(\to b(p_3)+\bar{b}(p_4)) + \bar{b}(p_5) (+b(p_6)) $ & NLO \\
 143& $ H(\to b(p_3)+\bar{b}(p_4)) + b(p_5) + \bar{b}(p_6) ~[ \mbox{both observed} ] $ & NLO \\
 \hline 
-151& $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{t}(\to \bar{b}(p_6))+e^-(p_7)+\bar{\nu}(p_8)) $ & LO \\
-152& $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{t}(\to \bar{b}(p_6))+q(p_7)+\bar{q}(p_8)) $ & LO \\
+151& $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{t}(\to \bar{b}(p_6)+e^-(p_7)+\bar{\nu}(p_8)) $ & LO \\
+152& $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{t}(\to \bar{b}(p_6)+q(p_7)+\bar{q}(p_8)) $ & LO \\
 \hline 
-156& $t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{t}(\to \bar{\nu}(p_7)+e^-(p_8)+\bar{b}(p_6))+g(p_9) $ & LO \\
+156& $t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{t}(\to \bar{b}(p_6) +e^-(p_7)+\bar{\nu}(p_8))+g(p_9) $ & LO \\
 \hline 
 157& $ t \bar{t} ~[ \mbox{for total Xsect} ] $ & NLO \\
 158& $ b \bar{b} ~[ \mbox{for total Xsect} ] $ & NLO \\
@@ -798,7 +814,7 @@ to the calculated cross-section. The only events that contribute to
 the cross-section will have, for example,
 {\tt m34min} $<$ {\tt m34} $<$ {\tt m34max} where {\tt m34} is the
 invariant mass of particles 3 and 4 that are specified by {\tt nproc}.
-{\tt m34min} > 0 is obligatory for processes which can involve a virtual
+{\tt m34min}~$> 0$ is obligatory for processes which can involve a virtual
 photon, such as {\tt nproc=31}.
 \item {\tt inclusive}.  This logical parameter chooses whether the
 calculated cross-section should be inclusive in the number of jets
@@ -963,6 +979,18 @@ of the total cross-section, together with the accompanying error estimate.
 After all sweeps have been completed, a final summary line will be printed.
 In the {\tt npart}~$=$~{\tt tota} case, this last line will actually be the
 sum of the two separate real and virtual integrations.
+If the {\tt LHAPDF} package is being used and the value of
+{\tt LHAPDF set} is equal to {\tt -1},  to indicate a calculation using
+PDF uncertainties, then two estimates of the PDF uncertainty are
+also supplied in the regular output and also echoed to the file,
+{\tt pdferrors.res}. The first estimate corresponds to the
+{\tt HEPDATA} method, using the explicit formula given in
+Eqn. (43) of Ref.~\cite{Campbell:2006wx}. The second is the so-called
+MC prescription, described in detail in Appendix B of
+Ref.~\cite{Ball:2008by}~\footnote{
+The authors thank M. Ubiali and collaborators for providing their
+implementation of the MC method within the MCFM framework.}.
+
 
 The two other output files are {\tt outputname.dat} and
 {\tt outputname.top}, which contain data for various histograms associated
@@ -1014,7 +1042,7 @@ If the {\tt LHAPDF} package is being used and the value of
 PDF uncertainties, then errors on distributions may also be accumulated.
 Note that, due to limitations within the LHAPDF distribution, calculations
 using error PDF sets are impractical unless the grid versions of the sets
-are used. The grid versions are available in LHAPDF v.3 and may be identified
+are used. The grid versions are available in LHAPDF v.3 onwards and may be identified
 by the {\tt .LHgrid} extension in the {\tt PDFsets} directory. To use the
 grid version, simply pass the PDF set name, including this extension, as
 the value of {\tt LHAPDF group} in the input file.
@@ -1141,6 +1169,13 @@ When {\tt removebr} is true, the $W$ boson does not decay.
 
 These processes represent the production of a $W$ boson which subsequently
 decays leptonically, in association with a real photon.
+Since this process includes a real photon, the cross section diverges
+when the photon is very soft or in the direction of the beam.
+Thus in order to produce sensible results, the input file must set
+{\tt makecuts} to {\tt .true.} and supply values for both
+{\tt ptmin\_photon} and {\tt etamax\_photon}. This will ensure that
+the cross section is well-defined.
+
 The calculation may be performed at NLO. Note however that the contribution
 in which a jet fragments into a photon is not included, so these processes 
 are currently of limited utility.
@@ -1297,6 +1332,13 @@ When {\tt removebr} is true, the $Z$ boson does not decay.
 These processes represent the production of a $Z$ boson (or virtual photon)
 in association with a real photon. The $Z/\gamma^*$ subsequently decays into 
 either an $e^+ e^-$ pair ({\tt nproc=48}) or neutrinos ({\tt nproc=49}).
+Since these processes include a real photon, the cross section diverges
+when the photon is very soft or in the direction of the beam.
+Thus in order to produce sensible results, the input file must set
+{\tt makecuts} to {\tt .true.} and supply values for both
+{\tt ptmin\_photon} and {\tt etamax\_photon}. This will ensure that
+the cross section is well-defined.
+
 The calculation may be performed at NLO. However since the contribution
 of a jet fragmenting into a photon is not included, 
 these processes are currently of limited utility.
@@ -1827,7 +1869,7 @@ performed at LO only.
 
 When {\tt removebr} is true, the Higgs boson does not decay.
 
-\subsection{$W+Q+$~jet production ($Q$ pdf), processes 311--326}
+\subsection{$W+Q+$~jet production processes 311--326}
 \label{subsec:wQj}
 
 These processes represent the production of a $W$
@@ -1835,7 +1877,7 @@ boson that decays leptonically,
 in association with a heavy quark, $Q$ and an additional light jet. In
 processes {\tt 311} and {\tt 316} $Q$ is a bottom quark, whilst
 processes {\tt 321} and {\tt 326} involve a charm quark.
-
+In these processes the quark $Q$ occurs as parton PDF in the initial state. 
 The initial state in these processes consists of a light quark and a heavy 
 quark, with the light quark radiating the $W$ boson. These calculations may
 be performed at LO only.
@@ -1870,6 +1912,8 @@ in association with a heavy quark, $Q$ and an untagged jet.
 For processes {\tt 341} and {\tt 351} the initial
 state at lowest order is the heavy quark and a gluon and 
 the calculation may be performed at NLO.
+Thus in these processes the quark $Q$ occurs as 
+parton PDF in the initial state. 
 As for $H+b$ and $Z+Q$ production, the matrix elements are divided into two
 sub-processes at NLO. Thus the user must sum over these after performing
 more runs than usual. At lowest order one can proceed as normal, using
@@ -1908,13 +1952,53 @@ JHEP {\bf 0302}, 027 (2003)
 [arXiv:hep-ph/0208156].
 %%CITATION = HEP-PH 0208156;%%
 
-%\cite{deFlorian:1999zd}
-\bibitem{deFlorian:1999zd}
-D.~de Florian, M.~Grazzini and Z.~Kunszt,
-%``Higgs production with large transverse momentum in hadronic collisions  at next-to-leading order,''
-Phys.\ Rev.\ Lett.\  {\bf 82}, 5209 (1999)
-[arXiv:hep-ph/9902483].
-%%CITATION = HEP-PH 9902483;%%
+\bibitem{Alpgen}
+Michelangelo L. Mangano, Mauro Moretti, Fulvio Piccinini, Roberto Pittau and Antonello Polosa, {\it http://mlm.home.cern.ch/mlm/alpgen/}
+
+\bibitem{Lusifer}
+Stefan Dittmaier and Markus Roth,\\
+{\it http://wwwth.mppmu.mpg.de/members/roth/Lusifer/lusifer.html}
+
+%\cite{Eskola:1998df}
+\bibitem{Eskola:1998df}
+  K.~J.~Eskola, V.~J.~Kolhinen and C.~A.~Salgado,
+  %``The scale dependent nuclear effects in parton distributions for  practical
+  %applications,''
+  Eur.\ Phys.\ J.\ C {\bf 9}, 61 (1999)
+  [arXiv:hep-ph/9807297].
+  %%CITATION = HEP-PH 9807297;%%
+  
+%\cite{Campbell:2006wx}
+\bibitem{Campbell:2006wx}
+  J.~M.~Campbell, J.~W.~Huston and W.~J.~Stirling,
+  %``Hard interactions of quarks and gluons: A primer for LHC physics,''
+  Rept.\ Prog.\ Phys.\  {\bf 70}, 89 (2007)
+  [arXiv:hep-ph/0611148].
+  %%CITATION = RPPHA,70,89;%%
+
+%\cite{Ball:2008by}
+\bibitem{Ball:2008by}
+  R.~D.~Ball {\it et al.}  [NNPDF Collaboration],
+  %``A determination of parton distributions with faithful uncertainty
+  %estimation,''
+  Nucl.\ Phys.\  B {\bf 809}, 1 (2009)
+  [arXiv:0808.1231 [hep-ph]].
+  %%CITATION = NUPHA,B809,1;%%
+
+%\cite{Kleiss:1988xr}
+\bibitem{Kleiss:1988xr}
+R.~Kleiss and W.~J.~Stirling,
+%``Top Quark Production At Hadron Colliders: Some Useful Formulae,''
+Z.\ Phys.\ C {\bf 40}, 419 (1988).
+%%CITATION = ZEPYA,C40,419;%%
+
+%\cite{Nason:1987xz}
+\bibitem{Nason:1987xz}
+P.~Nason, S.~Dawson and R.~K.~Ellis,
+%``The Total Cross-Section For The Production Of Heavy Quarks In Hadronic
+%Collisions,''
+Nucl.\ Phys.\ B {\bf 303}, 607 (1988).
+%%CITATION = NUPHA,B303,607;%%
 
 \bibitem{Ravindran:2002dc}
 V.~Ravindran, J.~Smith and W.~L.~Van Neerven,
@@ -1931,6 +2015,14 @@ Phys.\ Lett.\ B {\bf 413}, 391 (1997)
 [arXiv:hep-ph/9707448].
 %%CITATION = HEP-PH 9707448;%%
 
+%\cite{deFlorian:1999zd}
+\bibitem{deFlorian:1999zd}
+D.~de Florian, M.~Grazzini and Z.~Kunszt,
+%``Higgs production with large transverse momentum in hadronic collisions  at next-to-leading order,''
+Phys.\ Rev.\ Lett.\  {\bf 82}, 5209 (1999)
+[arXiv:hep-ph/9902483].
+%%CITATION = HEP-PH 9902483;%%
+
 %\cite{Glosser:2002gm}
 \bibitem{Glosser:2002gm}
 C.~J.~Glosser and C.~R.~Schmidt,
@@ -1938,30 +2030,6 @@ C.~J.~Glosser and C.~R.~Schmidt,
 JHEP {\bf 0212}, 016 (2002)
 [arXiv:hep-ph/0209248].
 %%CITATION = HEP-PH 0209248;%%
-
-%\cite{Nason:1987xz}
-\bibitem{Nason:1987xz}
-P.~Nason, S.~Dawson and R.~K.~Ellis,
-%``The Total Cross-Section For The Production Of Heavy Quarks In Hadronic
-%Collisions,''
-Nucl.\ Phys.\ B {\bf 303}, 607 (1988).
-%%CITATION = NUPHA,B303,607;%%
-
-%\cite{Eskola:1998df}
-\bibitem{Eskola:1998df}
-  K.~J.~Eskola, V.~J.~Kolhinen and C.~A.~Salgado,
-  %``The scale dependent nuclear effects in parton distributions for  practical
-  %applications,''
-  Eur.\ Phys.\ J.\ C {\bf 9}, 61 (1999)
-  [arXiv:hep-ph/9807297].
-  %%CITATION = HEP-PH 9807297;%%
-  
-%\cite{Kleiss:1988xr}
-\bibitem{Kleiss:1988xr}
-R.~Kleiss and W.~J.~Stirling,
-%``Top Quark Production At Hadron Colliders: Some Useful Formulae,''
-Z.\ Phys.\ C {\bf 40}, 419 (1988).
-%%CITATION = ZEPYA,C40,419;%%
 
 \end{thebibliography}
 

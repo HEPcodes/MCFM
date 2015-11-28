@@ -10,7 +10,7 @@
       integer nlength,lenocc
       character*30 runstring
       character*4 part
-      character*72 outlabel1,runname,outlabeltmp
+      character*255 outlabel1,runname,outlabeltmp
       character*3 strmh,getstr,strpt
       character*7 strscale
       common/part/part
