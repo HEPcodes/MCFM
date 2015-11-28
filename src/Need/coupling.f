@@ -1,31 +1,28 @@
       subroutine coupling
+c--- initialize electroweak couplings and calculate alpha-s; this
+c--- must be called at the beginning of "chooser" to enable it to
+c--- set up all the variables (e.g. twidth). Once nflav is set,
+c--- alpha-s will be determined again (in coupling2).
       implicit none
       include 'constants.f'
       include 'masses.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'scale.f'
-      include 'verbose.f'
       include 'nlooprun.f'
-      include 'process.f'
       include 'ewinput.f'
       include 'nflav.f'
       include 'b0.f'
-      include 'dynamicscale.f'
       character*4 part,mypart
       common/part/part
-      integer i,nproc
+      integer i
       double precision aemmz,alphas,amz,cmass,bmass
-      double precision Vud,Vus,Vub,Vcd,Vcs,Vcb
       double precision xsq,topwidth
       character*3 inlabel(10)
-      common/cabib/Vud,Vus,Vub,
-     &             Vcd,Vcs,Vcb
       common/qmass/cmass,bmass
       common/em/aemmz
       common/couple/amz
       common/mypart/mypart
-      common/nproc/nproc
 
 c--- blank out labels that indicate input parameters
       do i=1,10
@@ -187,53 +184,6 @@ c--- Set-up twidth, using LO formula except when including radiation in decay
    76 format(' * ',a6,a3,d13.6,3x,a7,a3,f12.7,'  *')
    77 format(' * ',a9,f13.7,25x,'  *')
    78 format(' * ',a5,4x,f13.7,6x,a4,2x,f13.7,'  *')
-
-***************************************
-
-c--- if we're doing W + jets, automatically make the CKM matrix
-c--- diagonal since we're not interested in these small effects   
-      if ((nproc .eq. 11) .or. (nproc .eq. 16) .or.
-     .    (nproc .eq. 22) .or. (nproc .eq. 27)) then
-        Vud=1d0
-        Vus=0d0
-        Vub=0d0
-        Vcd=0d0
-        Vcs=1d0
-        Vcb=0d0
-      endif
-
-      if (verbose) then
-      write(6,*)
-      write(6,*) '***************** CKM mixing matrix ****************'
-      write(6,*) '*                                                  *'
-      write(6,47) Vud,Vus,Vub
-      write(6,48) Vcd,Vcs,Vcb
-      write(6,*) '****************************************************'
-      if ((nproc .eq. 11) .or. (nproc .eq. 16) .or.
-     .    (nproc .eq. 22) .or. (nproc .eq. 27)) then
-      write(6,*) '* Forced to be diagonal for simplicity in W + jets *'
-      write(6,*) '****************************************************'
-      endif
- 47   format(' *      Vud=',g10.5,'Vus=',g10.5,'Vub=',g10.5,'  *')
- 48   format(' *      Vcd=',g10.5,'Vcs=',g10.5,'Vcb=',g10.5,'  *')
-      endif      
-
-      if ((verbose) .and. (scale .gt. 0d0)) then      
-      write(6,*)
-      write(6,*) '************* Strong coupling, alpha_s  ************'
-      write(6,*) '*                                                  *'
-      if (dynamicscale .eqv. .false.) then
-      write(6,49) 'alpha_s (scale)',gsq/fourpi
-      write(6,49) 'alpha_s (zmass)',amz
-      else
-      write(6,*) '*  Dynamic scale - alpha_s changed event-by-event  *'
-      write(6,49) 'alpha_s (zmass)',amz
-      endif
-      write(6,50) ' (using ',nlooprun,'-loop running of alpha_s)'  
-      write(6,*) '****************************************************'
- 49   format(' *  ',a20,f12.8,16x,'*')
- 50   format(' *  ',6x,a8,i1,a25,8x,'*')
-      endif
       
       return
       end

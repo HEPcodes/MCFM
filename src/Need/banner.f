@@ -1,7 +1,8 @@
       block data codeversion_data
       implicit none
       include 'codeversion.f'
-      data codeversion/'5.2'/      
+      data codeversion/'5.3'/      
+      data      prelim/.false./      ! if true, print warning message
       end
 
       subroutine banner
@@ -20,9 +21,30 @@
      . ' MCFM - version '//codeversion//' '
 
       write(6,*) line
+
+c--- warning message, if necessary
+      if (prelim) then
+        write(6,*) '*                                                *'
+        write(6,*) '*           PRELIMINARY VERSION                  *'
+        write(6,*) '*                                                *'
+        write(6,*) '*  NOTE: This is a private release of the MCFM   *'
+        write(6,*) '*  code that has not yet been made public on the *'
+        write(6,*) '*  usual website. As such:                       *'
+        write(6,*) '*                                                *'
+        write(6,*) '*    + Please do not redistribute without the    *'
+        write(6,*) '*      knowledge of the authors;                 *'
+        write(6,*) '*                                                *'
+        write(6,*) '*    + Please notify the authors of any bugs     *'
+        write(6,*) '*      or problems so that they can be corrected *'
+        write(6,*) '*      before the next official release.         *'
+        write(6,*) '*                                                *'
+        write(6,*) line
+      endif
+     
+
       write(6,*) '*                                                *'
       write(6,*) '* MCFM, v'//codeversion//
-     . '                 July 12th, 2007  *'
+     . '               October 21st, 2008  *'
       write(6,*) '*                                                *'
       write(6,*) '* Authors: John Campbell, Keith Ellis            *'
       write(6,*) '* (J.Campbell@physics.gla.ac.uk, ellis@fnal.gov) *'

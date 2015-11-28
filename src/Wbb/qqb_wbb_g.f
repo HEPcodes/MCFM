@@ -66,6 +66,7 @@ c--- shortcut if we're doing gqonly
 
       elseif ((j .gt. 0) .and. (k .eq. 0)) then
       msq(j,k)=fac*aveqg*Vsum(j)*qgWbbq 
+
       elseif ((j .lt. 0) .and. (k .eq. 0)) then
       msq(j,k)=fac*aveqg*Vsum(j)*qbgWbbqb
 

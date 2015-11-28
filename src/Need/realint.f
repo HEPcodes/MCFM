@@ -19,13 +19,15 @@
       include 'process.f'
       include 'PDFerrors.f'
       include 'wts_bypart.f'
+      include 'dipolescale.f'
 cz
       integer nproc
       common/nproc/nproc
 cz //
       integer ih1,ih2,j,k,nd,nmax,nmin,nvec
       double precision vector(mxdim),W,val,val2,xint,dot,tmp
-      double precision sqrts,fx1(-nf:nf),fx2(-nf:nf)
+      double precision sqrts,fx1(-nf:nf),fx2(-nf:nf),
+     . dipfx1(0:maxd,-nf:nf),dipfx2(0:maxd,-nf:nf)
       double precision p(mxpart,4),pjet(mxpart,4),p1ext(4),p2ext(4)
       double precision pswt,rscalestart,fscalestart
       double precision s(mxpart,mxpart),wgt,msq(-nf:nf,-nf:nf)
@@ -43,6 +45,8 @@ cz //
       logical bin,first,failed
       logical incldip(0:maxd),includedipole,includereal
       logical creatent,dswhisto
+      character*30 runstring
+      common/runstring/runstring
       external qqb_w2jet_g,qqb_w2jet_gs,qqb_z2jet_g,qqb_z2jet_gs,
      . qqb_w2jet,qqb_w1jet_gs,qqb_z2jet,qqb_z1jet_gs,qqb_Hg_g,qqb_Hg_gs,
      . qqb_hww_g,qqb_hww_gs,qqb_zbb_g,qqb_zbb_gs,
@@ -50,7 +54,7 @@ cz //
      . qqb_w_g,qqb_w_gs,qqb_z1jet,qqb_z_gs,qqb_ww_g,qqb_ww_gs,
      . qqb_wz_g,qqb_wz_gs,qqb_zz_g,qqb_zz_gs,qqb_wgam_g,qqb_wgam_gs,
      . qqb_QQb_g,qqb_QQb_gs,
-     . VV_Hqq_g,VV_Hqq_gs,
+     . VV_Hqq_g,VV_Hqq_gs,VV_HWW_g,VV_HWW_gs,
      . gg_Hg,gg_H_gs,gg_HWWgg,gg_HWWg_gs,gg_Hgg,gg_Hg_gs,
      . gQ_zQ_g,gQ_zQ_gs,qqb_tbb_g,qqb_tbb_gs,
      . qqb_w_tndk_g,qqb_w_tndk_gs,
@@ -99,7 +103,9 @@ cz // Add b fraction   Note: only msqtmp(0), bwgttmp(0) are used in nplotter.f
 c--- processes that use "gen3"     
       if     ( (case .eq. 'W_only')
      .    .or. (case .eq. 'Z_only')
-     .    .or. (case .eq. 'ggfus0') ) then
+     .    .or. (case .eq. 'ggfus0')
+     .   .or.  (case .eq. 'Wcsbar')
+     .   .or.  (case .eq. 'Wcs_ms') ) then
         npart=3
         if (new_pspace) then
           call gen3a(vector,p,pswt,*999)
@@ -118,7 +124,7 @@ c--- processes that use "gen3m"
         call gen3m(vector,p,m3,m4,m5,pswt,*999)
           
 c--- processes that use "gen4"     
-      elseif ( (case .eq. 'W_cjet') 
+      elseif ( (case .eq. 'W_cjet')
      .   .or.  (case .eq. 'Wgamma')
      .   .or.  (case .eq. 'Zgamma')
      .   .or.  (case .eq. 'W_tndk') ) then
@@ -133,6 +139,15 @@ c--- processes that use "gen6"
      . ) then
         npart=6
         call gen6(vector,p,pswt,*999)
+                  
+c--- processes that use "gen7"     
+      elseif ( 
+     .      (case .eq. 'qq_HWW')
+     . .or. (case .eq. 'WH__WW')
+     . .or. (case .eq. 'ZH__WW')
+     . ) then
+        npart=7
+        call gen7(vector,p,pswt,*999)
                   
 c--- processes that use "gen_njets" with an argument of "2"     
       elseif ( (case .eq. 'W_1jet')
@@ -216,7 +231,10 @@ c--- bother calculating the matrix elements for it, instead set to zero
       enddo
       enddo
       
-      if (dynamicscale) call scaleset(rscalestart,fscalestart,p)
+      if (dynamicscale) then
+        call scaleset(rscalestart,fscalestart,p)
+	dipscale(0)=facscale
+      endif
       
 c---- generate collinear points that satisfy the jet cuts (for checking)
 c      call singgen(p,s,*998)
@@ -294,10 +312,18 @@ c        call singcheck(qqb_zz_g,qqb_zz_gs,p)       ! Checked 12/05/01
 c        call singcheck(qqb_wh_g,qqb_wh_gs,p)
         if (includereal) call qqb_wh_g(p,msq)      
         call qqb_wh_gs(p,msqc)     
+      elseif (case .eq. 'WH__WW') then
+c        call singcheck(qqb_wh_ww_g,qqb_wh_ww_gs,p)
+        if (includereal) call qqb_wh_ww_g(p,msq)      
+        call qqb_wh_ww_gs(p,msqc)     
       elseif (case .eq. 'ZHbbar') then
 c        call singcheck(qqb_zh_g,qqb_zh_gs,p)
         if (includereal) call qqb_zh_g(p,msq)      
         call qqb_zh_gs(p,msqc)     
+      elseif (case .eq. 'ZH__WW') then
+c        call singcheck(qqb_zh_ww_g,qqb_zh_ww_gs,p)
+        if (includereal) call qqb_zh_ww_g(p,msq)      
+        call qqb_zh_ww_gs(p,msqc)     
        elseif (case .eq. 'ggfus0') then
 c         call singcheck(gg_hg,gg_h_gs,p)       ! Checked 28/02/03
          if (includereal) call gg_hg(p,msq)
@@ -355,6 +381,10 @@ c        call singcheck(gg_hWWgg,gg_hWWg_gs,p)
 c        call singcheck(VV_Hqq_g,VV_Hqq_gs,p)
         if (includereal) call VV_Hqq_g(p,msq)
         call VV_Hqq_gs(p,msqc)
+      elseif (case .eq. 'qq_HWW') then
+c        call singcheck(VV_HWW_g,VV_HWW_gs,p)
+        if (includereal) call VV_HWW_g(p,msq)
+        call VV_HWW_gs(p,msqc)
       elseif (case .eq. 'gQ__ZQ') then
 c        call singcheck(gQ_zQ_g,gQ_zQ_gs,p)
         if (includereal) call gQ_zQ_g(p,msq)
@@ -363,6 +393,13 @@ c        call singcheck(gQ_zQ_g,gQ_zQ_gs,p)
 c        call singcheck(qqb_zbjet_g,qqb_zbjet_gs,p)	! Checked 07/18/05
         if (includereal) call qqb_zbjet_g(p,msq)
         call qqb_zbjet_gs(p,msqc)
+      elseif (case .eq. 'Wcsbar') then
+c        call singcheck(qqb_w_g,qqb_w_gs,p)         ! Checked 11/30/01
+        if (includereal) call qqb_w_g(p,msq)      
+        call qqb_w_gs(p,msqc)     
+      elseif (case .eq. 'Wcs_ms') then
+        if (includereal) call qqb_w_cjet(p,msq)
+        ndmax=0
       endif
       
       do nd=0,ndmax
@@ -381,6 +418,10 @@ cz //
       currentPDF=0
             
       flux=fbGeV2/(two*xx1*xx2*W)
+c--- for mlm study, divide by (Ecm)**2=W
+      if (runstring(1:3) .eq. 'mlm') then
+	flux=flux/W
+      endif
 
 c--- initialize a PDF set here, if calculating errors
   777 continue    
@@ -394,10 +435,31 @@ cz //
       if (PDFerrors) then
         call InitPDF(currentPDF)
       endif
-            
+         
 c--- calculate PDF's  
-      call fdist(ih1,xx1,facscale,fx1)
-      call fdist(ih2,xx2,facscale,fx2)
+      if (dynamicscale) then
+        do nd=ndmax,0,-1  ! so that fx1,fx2 correct for real kinematics
+          if (dipscale(nd) .lt. 1d-8) then	  
+c--- in case dipole is not used, set up dummy value of scale for safety
+c-- and set all PDF entries to zero
+	    dipscale(nd)=dipscale(0)
+	    do j=-nf,nf
+	      fx1(j)=0d0
+	      fx2(j)=0d0
+	    enddo
+	  else
+            call fdist(ih1,xx1,dipscale(nd),fx1)
+            call fdist(ih2,xx2,dipscale(nd),fx2)
+            do j=-nf,nf
+	      dipfx1(nd,j)=fx1(j)
+	      dipfx2(nd,j)=fx2(j)
+	    enddo
+	  endif
+	enddo
+      else
+        call fdist(ih1,xx1,facscale,fx1)
+        call fdist(ih2,xx2,facscale,fx2)
+      endif	
             
       do j=-nflav,nflav
       do k=-nflav,nflav
@@ -416,6 +478,8 @@ c      do k=0,0
       if ((j.eq.0) .or. (k.eq.0)) goto 20
       endif
 
+      if ((case .eq. 'Wcsbar').and.(j .ne. 4).and.(k .ne. 4)) goto 20
+
       if (realonly) then 
         xmsq(0)=xmsq(0)+fx1(j)*fx2(k)*msq(j,k)
         do nd=1,ndmax
@@ -424,7 +488,11 @@ c      do k=0,0
       elseif (virtonly) then
          xmsq(0)=0d0
          do nd=1,ndmax
-           xmsq(nd)=xmsq(nd)+fx1(j)*fx2(k)*(-msqc(nd,j,k))
+	   if (dynamicscale) then	   
+             xmsq(nd)=xmsq(nd)+dipfx1(nd,j)*dipfx2(nd,k)*(-msqc(nd,j,k))
+	   else
+             xmsq(nd)=xmsq(nd)+fx1(j)*fx2(k)*(-msqc(nd,j,k))
+	   endif
          enddo
       else
 
@@ -479,7 +547,11 @@ cz // end fill index 0
            xmsq_bypart(0,sgnj,sgnk)=xmsq_bypart(0,sgnj,sgnk)+xmsqjk
          endif
          do nd=1,ndmax
-           xmsqjk=fx1(j)*fx2(k)*(-msqc(nd,j,k))
+	   if (dynamicscale) then	   
+             xmsqjk=dipfx1(nd,j)*dipfx2(nd,k)*(-msqc(nd,j,k))
+	   else
+             xmsqjk=fx1(j)*fx2(k)*(-msqc(nd,j,k))
+	   endif
            xmsq(nd)=xmsq(nd)+xmsqjk
            if (currentPDF .eq. 0) then
              xmsq_bypart(nd,sgnj,sgnk)=xmsq_bypart(nd,sgnj,sgnk)+xmsqjk
@@ -546,6 +618,7 @@ c---check whether each counter-event passes the cuts
           q(j,k)=ptilde(nd,j,k)
           enddo
           enddo
+
 c          write(6,*)
 c          write(6,*) 'Dipole nd=',nd
           if (incldip(nd)) incldip(nd)=includedipole(nd,q)
@@ -596,8 +669,6 @@ c---if we're binning, add to histo too
         if (bin) then
           call getptildejet(nd,pjet)
           call dotem(nvec,pjet,s)
-          val=val/dfloat(itmx)
-          val2=val2/dfloat(itmx)**2
           if (nd .eq. 0) then
             call nplotter(pjet,val,val2,0)
           else

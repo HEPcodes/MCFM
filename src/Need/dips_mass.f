@@ -22,6 +22,10 @@
       include 'ptilde.f'
       include 'process.f'
       include 'alfacut.f'
+      include 'dynamicscale.f'
+      include 'initialscales.f'
+      include 'dipolescale.f'
+      include 'facscale.f'
       double precision p(mxpart,4),ptrans(mxpart,4),sub(4),subv,vecsq,
      . x,omx,z,omz,y,omy,u,omu,pij,pik,pjk,dot,q(4),qsq,qij(4),qijsq,
      . vec(4),root,vtilde,pold(mxpart,4),pext(mxpart,4)
@@ -128,6 +132,13 @@ C---Modification so that only close to singular subtracted
           vec(nu)=p(jp,nu)-pij/pik*p(kp,nu)
         enddo
         vecsq=-pij*pjk/pik
+
+c--- if using a dynamic scale, set that scale with dipole kinematics	
+	if (dynamicscale) then
+	  call scaleset(initscale,initfacscale,ptrans)
+	  dipscale(nd)=facscale
+	endif
+	
         call subr_born(ptrans,msq)
         call subr_corr(ptrans,vec,ip,msqv)
 
@@ -147,13 +158,13 @@ C---Modification so that only close to singular subtracted
         omu=pik/(pij+pik)
 
 C---determine mass of spectator
-c      mksq=max(p(kp,4)**2-p(kp,1)**2-p(kp,2)**2-p(kp,3)**2,0d0)
-c      if (mksq.gt.0d0) then
-c         muksq=mksq/2d0/(-dot(p,ip,jp)-dot(p,ip,kp))
-c         zp=omx/(omx+muksq)
-c      else
-c         zp=1d0
-c      endif     
+        mksq=max(p(kp,4)**2-p(kp,1)**2-p(kp,2)**2-p(kp,3)**2,0d0)
+        if (mksq.gt.0d0) then
+          muksq=mksq/2d0/(-dot(p,ip,jp)-dot(p,ip,kp))
+          zp=omx/(omx+muksq)
+        else
+          zp=1d0
+        endif     
       
 C---Modification so that only close to singular subtracted
         if (u .gt. aif) goto 99
@@ -178,15 +189,23 @@ C---transform the momenta so that only the first npart+1 are filled
 
         call storeptilde(nd,ptrans)
         do nu=1,4
-           vec(nu)=p(jp,nu)/u-p(kp,nu)/omu
+           vec(nu)=(p(jp,nu)/u-p(kp,nu)/omu)/dsqrt(pjk)
         enddo
+
+c--- if using a dynamic scale, set that scale with dipole kinematics	
+	if (dynamicscale) then
+	  call scaleset(initscale,initfacscale,ptrans)
+	  dipscale(nd)=facscale
+	endif
+	
         call subr_born(ptrans,msq)
         call subr_corr(ptrans,vec,ip,msqv)        
         sub(qq)=-gsq/x/pij*(two/(omx+u)-one-x)
         sub(gq)=-gsq/pij
         sub(qg)=-gsq/x/pij*(one-two*x*omx)
         sub(gg)=-2d0*gsq/x/pij*(one/(omx+u)-one+x*omx)
-        subv   =-4d0*gsq/x/pij*(omx/x*u*(one-u)/pjk)
+        subv   =-4d0*gsq/x/pij*(omx/x*u*(one-u))
+	
 ***********************************************************************
 *************************** FINAL-INITIAL *****************************
 ***********************************************************************
@@ -245,17 +264,24 @@ c---Modification so that only close to singular subtracted
 c--- note that musq is related to msq by musq = msq/(2pij_tilde.pa)
 c--- and 2pij_tilde.pa = (Qsq-mijsq)/x
         zp=omx*(Qsq-mijsq)/x+mijsq+misq-mjsq
-        root=dsqrt(zp**2-4d0*misq*mjsq)
+        root=omx*(Qsq-mijsq)/x+mijsq-misq-mjsq
+        root=dsqrt(root**2-4d0*misq*mjsq)
         zm=(zp-root)/(2d0*(omx*(Qsq-mijsq)/x+mijsq))
         zp=(zp+root)/(2d0*(omx*(Qsq-mijsq)/x+mijsq))
 
+c--- if using a dynamic scale, set that scale with dipole kinematics	
+	if (dynamicscale) then
+	  call scaleset(initscale,initfacscale,ptrans)
+	  dipscale(nd)=facscale
+	endif	
+
         call subr_born(ptrans,msq)
 
-c        do nu=1,4
-c          vec(nu)=z*p(ip,nu)-omz*p(jp,nu)
-c        enddo
+        do nu=1,4
+          vec(nu)=z*p(ip,nu)-omz*p(jp,nu)
+        enddo
 
-c        call subr_corr(ptrans,vec,5,msqv)
+        call subr_corr(ptrans,vec,ip,msqv)
 
         if (jproc .eq. qq) then
         sub(qq)=+gsq/x/(qijsq-mijsq)*(two/(omz+omx)-one-z-2d0*mqsq/pij)
@@ -288,27 +314,6 @@ C  and square them
       qijsq=qij(4)**2-qij(1)**2-qij(2)**2-qij(3)**2
 
 
-
-C---determine mass of spectator
-      mksq=max(p(kp,4)**2-p(kp,1)**2-p(kp,2)**2-p(kp,3)**2,0d0)
-      if (mksq.gt.0d0) then
-         muk=sqrt(mksq/qsq)
-         yp=(1d0-muk)/(1d0+muk)
-      else
-         yp=1d0
-      endif     
-
-      if (y .gt. yp) then
-         write(6,*) 'Problems with phase space in dips_mass.f'
-         stop
-      endif
-
-C---Modification so that only close to singular subtracted
-       if (y .gt. aff*yp) then
-         incldip(nd)=.false.
-         go to 99
-       endif
-
 C---loop over the different possibilities which have different kinematics
       do jproc=1,4
       if ((jproc.eq.qq) .and. (qqproc .eqv. .false.)) goto 80
@@ -338,12 +343,32 @@ C g->gg
       mjsq=0d0
       endif
       
-
       muisq=misq/Qsq
       mujsq=mjsq/Qsq
-      muksq=mksq/Qsq
       muijsq=mijsq/Qsq
-      muk=dsqrt(muksq)
+
+C---determine mass of spectator
+      mksq=max(p(kp,4)**2-p(kp,1)**2-p(kp,2)**2-p(kp,3)**2,0d0)
+      if (mksq.gt.0d0) then
+        muksq=mksq/Qsq
+	muk=dsqrt(muksq)
+        yp=1d0-2d0*muk*(1d0-muk)/(1d0-muisq-mujsq-muksq)
+      else
+        muksq=0d0
+        muk=0d0
+        yp=1d0
+      endif 
+
+      if (y .gt. yp) then
+         write(6,*) 'Problems with phase space in dips_mass.f'
+         stop
+      endif
+
+C---Modification so that only close to singular subtracted
+       if (y .gt. aff*yp) then
+         incldip(nd)=.false.
+         go to 99
+       endif
 
 
 c      viji=sqrt((1d0-muijsq-muisq)**2-4d0*mijsq*muisq)
@@ -353,17 +378,16 @@ c      vijk=sqrt((one-qijsq/Qsq-muksq)**2-4d0*qijsq/Qsq*muksq)
 c     . /(one-qijsq/Qsq-muksq)
 c      write(6,*) vijk
 
+c--- Note that identities of i and j have been exchanged
       viji=dsqrt(((1d0-mujsq-muisq-muksq)*y)**2-4d0*muisq*mujsq)
-     . /((1d0-mujsq-muisq-muksq)*y+2d0*muisq)
+     . /((1d0-mujsq-muisq-muksq)*y+2d0*mujsq)
 
       vijk=dsqrt((2d0*muksq+(1d0-mujsq-muisq-muksq)*omy)**2-4d0*muksq)
      . /((1d0-mujsq-muisq-muksq)*omy)
 
-
 c      ym=2d0*mui*muj/(1d0-muisq-mujsq-muksq)
-      yp=1d0-2d0*muk*(1d0-muk)/(1d0-muisq-mujsq-muksq)
 
-      zp=(2d0*muisq+(1d0-muisq-mujsq-muksq)*y)
+      zp=(2d0*mujsq+(1d0-muisq-mujsq-muksq)*y)
      . /(2d0*(muisq+mujsq+(1d0-muisq-mujsq-muksq)*y)) 
       zm=zp*(1d0-viji*vijk)
       zp=zp*(1d0+viji*vijk)
@@ -393,6 +417,12 @@ C have to enhance the store so that it works
        ztmi=z-0.5d0+0.5d0*vijk
        ztmj=omz-0.5d0+0.5d0*vijk
 
+c--- if using a dynamic scale, set that scale with dipole kinematics	
+        if (dynamicscale) then
+ 	  call scaleset(initscale,initfacscale,ptrans)
+ 	  dipscale(nd)=facscale
+        endif
+	
        call subr_born(ptrans,msq)
 
        do nu=1,4

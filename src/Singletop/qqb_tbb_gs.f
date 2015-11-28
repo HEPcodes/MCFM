@@ -166,14 +166,14 @@ c--- checked
          msq(12,j,k)=2d0*tr*sub24_1(qg)*(msq24_1(j,-1)+msq24_1(j,-2)
      &   +msq24_1(j,-3)+msq24_1(j,-4)+msq24_1(j,-5))
       elseif ((j .ne. 0) .and. (k .eq. 0)) then
-         msq(12,j,k)=2d0*tr*sub24_1(qg)*msq24_1(j,ib)
+         msq(10,j,k)=2d0*tr*sub25_1(qg)*msq25_1(j,ib)
       elseif ((j .eq. 0) .and. (k .eq. ib)) then
          msq(9,j,k)=2d0*tr*sub15_2(qg)*(msq15_2(+1,k)+msq15_2(+2,k)
      &   +msq15_2(+3,k)+msq15_2(+4,k)+msq15_2(+5,k))
          msq(11,j,k)=2d0*tr*sub14_2(qg)*(msq14_2(-1,k)+msq14_2(-2,k)
      &   +msq14_2(-3,k)+msq14_2(-4,k)+msq14_2(-5,k))
       elseif ((j .eq. 0) .and. (k .ne. 0)) then
-         msq(11,j,k)=2d0*tr*sub14_2(qg)*msq14_2(ib,k)
+         msq(9,j,k)=2d0*tr*sub15_2(qg)*msq15_2(ib,k)
       endif
       
  21   continue

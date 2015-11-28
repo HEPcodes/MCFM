@@ -38,12 +38,18 @@ C  12    COR12  larger d/u            300      0.1175   0.00515  C
       amz=0.125103791d0
       nlooprun=1
       bmass=1000d0
+      elseif     (pdlabel .eq. 'mrs04nl') then
+      amz=0.11368833d0 
+      nlooprun=2
+      elseif     (pdlabel .eq. 'mrs04nn') then
+      amz=0.108113173d0 ! Obtained from Lambda(4) using NLO defn only
+      nlooprun=3
       elseif     (pdlabel .eq. 'mrs02nl') then
       amz=0.1197d0 
       nlooprun=2
       elseif     (pdlabel .eq. 'mrs02nn') then
       amz=0.1154d0
-      nlooprun=2
+      nlooprun=3
       elseif     (pdlabel .eq. 'mrs0119') then
       amz=0.119d0
       nlooprun=2

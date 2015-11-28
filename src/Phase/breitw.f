@@ -1,7 +1,6 @@
       subroutine breitw(x1,mminsq,mmaxsq,rmass,rwidth,msq,wt)       
       implicit none
       include 'constants.f'
-      include 'cutoff.f'
 c---- Given a number 0<x<1 generate a mass-squared msq and a weight wt 
 c---- such that mminsq<msq<mmaxsq
 c---- points are generated around resonance position rmass, but 
@@ -12,7 +11,7 @@ c     wt is the jacobian between integration in msq and integration in x1
       include 'zerowidth.f'
 
 c--- in case the maximum msq is very small, just generate linearly for safety
-      if (mmaxsq .lt. cutoff) then
+      if (mmaxsq .lt. rmass*1d-3) then
         msq=mminsq+x1*(mmaxsq-mminsq)
         wt=mmaxsq-mminsq
         return

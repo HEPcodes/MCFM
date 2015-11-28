@@ -23,6 +23,10 @@
       include 'ptilde.f'
       include 'alfacut.f'
       include 'process.f'
+      include 'dynamicscale.f'
+      include 'initialscales.f'
+      include 'dipolescale.f'
+      include 'facscale.f'
       double precision p(mxpart,4),ptrans(mxpart,4),sub(4),subv,vecsq
       double precision x,omx,z,omz,y,omy,u,omu,sij,sik,sjk,dot,vec(4)
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),vtilde
@@ -70,6 +74,13 @@ c        if (incldip(nd) .eqv. .false.) return
         do nu=1,4
           vec(nu)=(p(jp,nu)-vtilde*p(kp,nu))/dsqrt(-vecsq)
         enddo
+
+c--- if using a dynamic scale, set that scale with dipole kinematics	
+	if (dynamicscale) then
+	  call scaleset(initscale,initfacscale,ptrans)
+	  dipscale(nd)=facscale
+	endif
+	
         call subr_born(ptrans,msq)
         call subr_corr(ptrans,vec,ip,msqv)
 
@@ -98,6 +109,12 @@ c        incldip(nd)=includedipole(nd,ptrans)
 C-- if not return
 c        if (incldip(nd) .eqv. .false.) return
 
+c--- if using a dynamic scale, set that scale with dipole kinematics	
+	if (dynamicscale) then
+	  call scaleset(initscale,initfacscale,ptrans)
+	  dipscale(nd)=facscale
+	endif
+	
 c--- Calculate the matrix element now because it might be needed
 c--- in the final-initial segment, regardless of whether or not the
 c--- alfa cut fails here
@@ -106,8 +123,7 @@ C---Modification so that only close to singular subtracted
 C---Do not set incldip because initial-final can fail 
 C---but final initial needs still to be tested
 
-        if (((case .eq. 'H_1jet') .and. (ip.eq.1) .and. (jp.eq.6)) 
-     .  .or.((case .eq. 'HWWjet') .and. (ip.eq.1) .and. (jp.eq.8))) then
+        if ((case .eq. 'H_1jet') .and. (ip.eq.1) .and. (jp.eq.6)) then
 c--- do nothing
         else
           if (u .gt. aif) return
@@ -151,8 +167,15 @@ C---call msqv again because vec has changed
         enddo
         enddo
 
+c--- if using a dynamic scale, set that scale with dipole kinematics	
+	if (dynamicscale) then
+	  call scaleset(initscale,initfacscale,ptrans)
+	  dipscale(nd)=facscale
+	endif	
+
 c--- do something special if we're doing W+2,Z+2jet (jp .ne. 7)
-        if ((jp .ne. 7) .and. (case .ne. 'HWWjet')) then
+        if ((jp .ne. 7) .and. (case .ne. 'HWWjet')
+     .      .and. (case .ne. 'qq_HWW')) then
           if (ip .lt. 7) then
 C ie for cases 56_i,65_i
             ipt=5
@@ -177,40 +200,47 @@ C ie for cases 57_i,67_i
 ***********************************************************************
       elseif ((ip .gt. 2) .and. (kp .gt. 2)) then
 c------Eq-(5.2)    
-       y=sij/(sij+sjk+sik)
+        y=sij/(sij+sjk+sik)
 
 C---Modification so that only close to singular subtracted
-       if (y .gt. aff) then
-         incldip(nd)=.false.
-         return
-       endif
+        if (y .gt. aff) then
+          incldip(nd)=.false.
+          return
+        endif
 
-       z=sik/(sjk+sik)
-       omz=one-z
-       omy=one-y
+        z=sik/(sjk+sik)
+        omz=one-z
+        omy=one-y
 C---calculate the ptrans-momenta 
 
-       call transform(p,ptrans,y,ip,jp,kp)
-       call storeptilde(nd,ptrans)
+        call transform(p,ptrans,y,ip,jp,kp)
+        call storeptilde(nd,ptrans)
 
 c-- Check to see if this dipole will be included
 c        incldip(nd)=includedipole(nd,ptrans)
 c        if (incldip(nd) .eqv. .false.) return
         
-       do nu=1,4
-         vec(nu)=z*p(ip,nu)-omz*p(jp,nu)
-       enddo
-       call subr_born(ptrans,msq)
-       if (ip .lt. kp) then
-         call subr_corr(ptrans,vec,5,msqv)
-       else
-         call subr_corr(ptrans,vec,6,msqv)
-       endif
-              
-       sub(qq)=gsq/sij*(two/(one-z*omy)-one-z)
-       sub(gq)=gsq/sij
-       sub(gg)=gsq/sij*(two/(one-z*omy)+two/(one-omz*omy)-four)
-       subv   =+4d0*gsq/sij/sij
+        do nu=1,4
+          vec(nu)=z*p(ip,nu)-omz*p(jp,nu)
+        enddo
+
+c--- if using a dynamic scale, set that scale with dipole kinematics	
+        if (dynamicscale) then
+ 	  call scaleset(initscale,initfacscale,ptrans)
+ 	  dipscale(nd)=facscale
+        endif
+	
+        call subr_born(ptrans,msq)
+        if (ip .lt. kp) then
+          call subr_corr(ptrans,vec,5,msqv)
+        else
+          call subr_corr(ptrans,vec,6,msqv)
+        endif
+               
+        sub(qq)=gsq/sij*(two/(one-z*omy)-one-z)
+        sub(gq)=gsq/sij
+        sub(gg)=gsq/sij*(two/(one-z*omy)+two/(one-omz*omy)-four)
+        subv   =+4d0*gsq/sij/sij
 
       endif
       

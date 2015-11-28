@@ -11,10 +11,15 @@ c- first label of fs,ft,fu, is gluon polarization, second is zdecay line
       double complex A7treea,B7treea,B7treeb,A7b_1,A7b_2,A7b_3,A7b_4
       double complex f(10,2,2)
       double precision s127
+      logical srdiags
       common/xanomcoup/xdelg1_z,xdelg1_g,xlambda_g,xlambda_z,
      . xdelk_g,xdelk_z
       data minus,mplus/1,2/
 
+c--- include singly resonant diagrams if zerowidth=.false. , but only
+c---  as long as anomtgc=.false. too
+      srdiags=((zerowidth .eqv. .false.) .and. (anomtgc .eqv. .false.))
+      
 c----initialize to zero
 c--- added amplitude 10 on 4/25/2002, to include anomalous couplings
       do jtype=4,9
@@ -97,7 +102,7 @@ c      f(1,minus,mplus)=+A7treeb_anom_wz(j2,j1,j4,j3,j5,j6,j7,zb,za)
       f(2,minus,mplus)=-A7treea(j2,j1,j6,j5,j3,j4,j7,zb,za)
       f(3,minus,mplus)=-A7treea(j2,j1,j4,j3,j5,j6,j7,zb,za)
             
-      if (zerowidth) return
+      if (srdiags .eqv. .false.) return
       
 c+++ the extra amplitude 7 accounts for W+ production instead of W-
 c+++ amplitudes 8 and 9 are needed when considering ub+d instead of

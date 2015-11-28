@@ -1,3 +1,4 @@
-      double precision taumin,xmin
+      double precision taumin
       common/taumin/taumin
-      common/xmin/xmin
+      include 'xmin.f'
+

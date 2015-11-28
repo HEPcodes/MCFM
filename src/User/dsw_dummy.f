@@ -39,17 +39,7 @@ c
 
 c
 
-      subroutine dswhrout
-      implicit none
-
-      call dsw_error
-
-      return
-      end
-
-c
-
-      subroutine dswclose
+      subroutine NTfinalize
       implicit none
 
       call dsw_error

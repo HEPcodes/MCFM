@@ -65,30 +65,13 @@ c--- calculate 2-quark, 2-gluon amplitudes
         call w2jetsq_mass(2,5,4,3,1,6,p,gqbWqbg2)
         call storecs(gqbWqbg2_cs)
 
-        call w2jetsq_mass(6,5,4,3,1,2,p,ggWqbq2)
-        call storecs(ggWqbq2_cs)        
-        do i=0,2        
-          gqbWqbg2_cs(i)= aveqg*facgg*gqbWqbg2_cs(i)
-          qbgWqbg2_cs(i)= aveqg*facgg*qbgWqbg2_cs(i)
-          ggWqbq2_cs(i) = avegg*facgg*ggWqbq2_cs(i)
-        enddo
-        gqbWqbg2= gqbWqbg2_cs(1)+gqbWqbg2_cs(2)+gqbWqbg2_cs(0)
-        qbgWqbg2= qbgWqbg2_cs(1)+qbgWqbg2_cs(2)+qbgWqbg2_cs(0)
-        ggWqbq2 = ggWqbq2_cs(1) +ggWqbq2_cs(2) +ggWqbq2_cs(0) 
-      elseif (nwz .eq. -1) then
-        call w2jetsq_mass(2,5,3,4,1,6,p,gqWqg2)
-        call storecs(gqWqg2_cs)
-
-        call w2jetsq_mass(1,5,3,4,2,6,p,qgWqg2)
-        call storecs(qgWqg2_cs)
-
 c--- alternative calculation of gg->Wtb piece
-      if (nores .eqv. .false.) then
-        call BBamps_nores(p,1,2,3,4,5,6,ampgg_ag)
-        call BBamps_nores(p,2,1,3,4,5,6,ampgg_ga)
+        if (nores .eqv. .false.) then
+          call BBamps_nores(p,1,2,4,3,5,6,ampgg_ag)
+          call BBamps_nores(p,2,1,4,3,5,6,ampgg_ga)
 c        call BBamps(p,1,2,3,4,5,6,ampgg_ag)
 c        call BBamps(p,2,1,3,4,5,6,ampgg_ga)
-        msq_gg=0d0
+          msq_gg=0d0
 c--- sum over helicities of gluons and massive quarks
           do ib=1,2
           do it=1,2
@@ -103,28 +86,63 @@ c--- sum over helicities of gluons and massive quarks
           enddo
           enddo
           enddo
+	endif
+	  
+      elseif (nwz .eq. -1) then
+        call w2jetsq_mass(2,5,3,4,1,6,p,gqWqg2)
+        call storecs(gqWqg2_cs)
 
-c-- veto b-jet contribution if doing subtraction and pt(b)>ptbjetmin GeV
-          if (dsqrt(p(6,1)**2+p(6,2)**2) .gt. ptbjetmin) then
-            msq_gg=0d0
-          endif
-      
-          ggWqqb2=avegg*gsq**2*gwsq**2*msq_gg*(prop/s34**2)          
+        call w2jetsq_mass(1,5,3,4,2,6,p,qgWqg2)
+        call storecs(qgWqg2_cs)
+
+c--- alternative calculation of gg->Wtb piece
+        if (nores .eqv. .false.) then
+          call BBamps_nores(p,1,2,3,4,5,6,ampgg_ag)
+          call BBamps_nores(p,2,1,3,4,5,6,ampgg_ga)
+c        call BBamps(p,1,2,3,4,5,6,ampgg_ag)
+c        call BBamps(p,2,1,3,4,5,6,ampgg_ga)
+          msq_gg=0d0
+c--- sum over helicities of gluons and massive quarks
+          do ib=1,2
+          do it=1,2
+          do ia=1,2
+          do ig=1,2
+            msq_gg=msq_gg+xn*cf**2*(
+     .            + abs(ampgg_ag(ia,ig,ib,it))**2
+     .            + abs(ampgg_ga(ig,ia,ib,it))**2
+     .            - one/xn/cf*dble(ampgg_ag(ia,ig,ib,it)
+     .                     *dconjg(ampgg_ga(ig,ia,ib,it))))
+          enddo
+          enddo
+          enddo
+          enddo
+        endif
+
       endif
 c--- end of alternative calculation
 
+c-- veto b-jet contribution if doing subtraction and pt(b)>ptbjetmin GeV
+      if (dsqrt(p(6,1)**2+p(6,2)**2) .gt. ptbjetmin) then
+       msq_gg=0d0
+      endif
+      
+      ggWqqb2=avegg*gsq**2*gwsq**2*msq_gg*(prop/s34**2)          
+      ggWqbq2=avegg*gsq**2*gwsq**2*msq_gg*(prop/s34**2)          
+
 c        call w2jetsq_mass(6,5,3,4,1,2,p,ggWqqb2)
 c        call storecs(ggWqqb2_cs)        
-        do i=0,2        
-          gqWqg2_cs(i)  = aveqg*facgg*gqWqg2_cs(i)
-          qgWqg2_cs(i)  = aveqg*facgg*qgWqg2_cs(i)
-c          ggWqqb2_cs(i) = avegg*facgg*ggWqqb2_cs(i)
-        enddo
-        gqWqg2  = gqWqg2_cs(1)  +gqWqg2_cs(2)  +gqWqg2_cs(0)  
-        qgWqg2  = qgWqg2_cs(1)  +qgWqg2_cs(2)  +qgWqg2_cs(0)  
-c        ggWqqb2 = ggWqqb2_cs(1) +ggWqqb2_cs(2) +ggWqqb2_cs(0) 
-      endif
-
+      do i=0,2        
+        gqWqg2_cs(i)  = aveqg*facgg*gqWqg2_cs(i)
+        qgWqg2_cs(i)  = aveqg*facgg*qgWqg2_cs(i)
+        gqbWqbg2_cs(i)  = aveqg*facgg*gqbWqbg2_cs(i)
+        qbgWqbg2_cs(i)  = aveqg*facgg*qbgWqbg2_cs(i)
+c        ggWqqb2_cs(i) = avegg*facgg*ggWqqb2_cs(i)
+      enddo
+      gqWqg2  = gqWqg2_cs(1)  +gqWqg2_cs(2)  +gqWqg2_cs(0)  
+      qgWqg2  = qgWqg2_cs(1)  +qgWqg2_cs(2)  +qgWqg2_cs(0)  
+      gqbWqbg2  = gqbWqbg2_cs(1)  +gqbWqbg2_cs(2)  +gqbWqbg2_cs(0)  
+      qbgWqbg2  = qbgWqbg2_cs(1)  +qbgWqbg2_cs(2)  +qbgWqbg2_cs(0)  
+c      ggWqqb2 = ggWqqb2_cs(1) +ggWqqb2_cs(2) +ggWqqb2_cs(0) 
       
       do j=-nf,nf
       do k=-nf,nf
@@ -157,9 +175,9 @@ c--- 2-quark, 2-gluon contribution to matrix elements
           if (nores .eqv. .false.) then
           if     (nwz .eq. +1) then
             msq(j,k)=ggWqbq2
-            do i=0,2
-              msq_cs(i,j,k)=ggWqbq2_cs(i)
-            enddo
+c            do i=0,2
+c              msq_cs(i,j,k)=ggWqbq2_cs(i)
+c            enddo
           elseif (nwz .eq. -1) then
             msq(j,k)=ggWqqb2
 c            do i=0,2

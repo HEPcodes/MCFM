@@ -25,7 +25,7 @@ c                            -->l(p3)+a(p4)
      & sub16_2(4),sub26_1(4),sub16_5(4),sub26_5(4),
      & sub56_1(4),sub56_2(4),sub56_1v,sub56_2v,
      & sub26_5v,sub26_1v,sub16_5v,sub16_2v
-      external qqb_w_cjet,qqb_w_cjet_gvec
+      external qqb_w_cjet,qqb_w_cjet_gvec,donothing_gvec
 
 c--- Note that the subtractions here are very similar to the ones
 c--- for W+1 jet, except that the charm mass means that we must
@@ -51,9 +51,9 @@ c--- now the initial-final ones
 
 c--- now the final-initial ones
       call dips_mass(1,p,5,6,1,sub56_1,sub56_1v,msq56_1,msq56_1v,
-     . qqb_w_cjet,qqb_w_cjet_gvec)
+     . qqb_w_cjet,donothing_gvec)
       call dips_mass(2,p,5,6,2,sub56_2,sub56_2v,msq56_2,msq56_2v,
-     . qqb_w_cjet,qqb_w_cjet_gvec)
+     . qqb_w_cjet,donothing_gvec)
 
       do j=-nf,nf
       do k=-nf,nf      
@@ -85,6 +85,7 @@ c--- g-q and g-qb cases
       msq(2,j,k)=-msq56_2(j,k)*sub56_2(qq)/xn
 
       elseif ((j .eq. 0).and.(k .eq. 0)) then
+c--- gg case
       msq(3,j,k)=(msq16_2(-1,k)+msq16_2(+1,k)
      .           +msq16_2(-3,k)+msq16_2(+3,k))*sub16_2(qg)*2d0*tr
       msq(4,j,k)=(msq26_1(k,-1)+msq26_1(k,+1)

@@ -48,7 +48,7 @@ C -- GZ
       rtsmin=min(rtsmin,dsqrt(wsqmin+cutoff))
       rtsmin=min(rtsmin,dsqrt(bbsqmin+cutoff))
       taumin=(rtsmin/sqrts)**2
-      xmin=taumin
+      xmin=1d-8
 
       p1ext(4)=-half*sqrts
       p1ext(1)=0d0

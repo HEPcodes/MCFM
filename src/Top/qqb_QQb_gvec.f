@@ -45,7 +45,7 @@ C--in is the label of the parton dotted with n
       endif
 
 
-      if (in .eq. 1) then
+      if     (in .eq. 1) then
         call qqb_QQbn(1,2,mass2,p,n,msqn) 
       elseif (in .eq. 2) then
         call qqb_QQbn(2,1,mass2,p,n,msqn) 
@@ -79,14 +79,12 @@ C--in is the label of the parton dotted with n
       t2=-s(i2,3)/s(i1,i2)
       ro=4d0*mass**2/s(i1,i2)
 
-
       msqn(0)=V/xn*(nDn*(1d0/(t1*t2)-2d0)
      . -2d0*ro/s(1,2)*((nDt+t1*nDp2)/(t1*t2))**2)
-      msqn(1)=V*xn*(nDn*(2d0*t2-1d0/t1+t1**2+t2**2)
-     . +2d0*ro/s(1,2)*(nDt/t1+nDp2)**2)
-      msqn(2)=V*xn*(nDn*(2d0*t1-1d0/t2+t1**2+t2**2)
+      msqn(i1)=V*xn*(nDn*(2d0*t1-1d0/t2+t1**2+t2**2)
      . +2d0*ro/s(1,2)*(nDtb/t2+nDp2)**2)
-
+      msqn(i2)=V*xn*(nDn*(2d0*t2-1d0/t1+t1**2+t2**2)
+     . +2d0*ro/s(1,2)*(nDt/t1+nDp2)**2)
 
 c      qqb_QQbx=2d0*V*(V/(xn*t1*t2)-2d0*xn)
 c     . *(nDn*(t1*t2-0.5d0)+ro*(nDt+t1*nDp2)**2/(t1*t2*s(i1,i2)))

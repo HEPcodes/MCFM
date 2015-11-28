@@ -3,13 +3,13 @@
 
 ************************************************************************
 *     Author: R.K. Ellis                                               *
-*     March, 2002.                                                  *
-*     calculate the element squared
+*     March, 2002.                                                     *
+*     calculate the element squared                                    *
 *     for the process                                                  *
 c----My notation                                                       *
-C      This is the four dimensional result for
-C      Quark antiquark annihilation in order alfa_s^2
-C      q(P1) + qbar(P2) --> Q(-P3) + Qbar(-P4)
+C      This is the four dimensional result for                         *
+C      Quark antiquark annihilation in order alfa_s^2                  *
+C      q(P1) + qbar(P2) --> Q(-P3) + Qbar(-P4)                         *
 ************************************************************************
       include 'constants.f'
       include 'qcdcouple.f'

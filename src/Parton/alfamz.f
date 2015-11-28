@@ -43,6 +43,19 @@ c     in common block qmass.
          PAUSE
          BMASS=5D0
       ENDIF
+c--- 3-flavour running only
+      if     (cmass .gt. 999d0) then
+        T=2D0*DLOG(Q/ZMASS)
+        CALL NEWTON1(T,AMZ,AS_OUT,NLOOP,NF3)
+	ALPHAS=AS_OUT
+	RETURN
+c--- 4-flavour running only
+      elseif (bmass .gt. 999d0) then
+        T=2D0*DLOG(Q/ZMASS)
+        CALL NEWTON1(T,AMZ,AS_OUT,NLOOP,NF4)
+	ALPHAS=AS_OUT
+	RETURN
+      endif
 c--- establish value of coupling at b- and c-mass and save
       IF ((AMZ .NE. AMZ0) .OR. (NLOOP .NE. NLOOP0)) THEN
          AMZ0=AMZ
@@ -52,7 +65,6 @@ c--- establish value of coupling at b- and c-mass and save
          T=2D0*DLOG(CMASS/BMASS)
          CALL NEWTON1(T,AMB,AMC,NLOOP,NF4)
       ENDIF
-
 c--- evaluate strong coupling at scale q
       IF (Q  .LT. BMASS) THEN
            IF (Q  .LT. CMASS) THEN

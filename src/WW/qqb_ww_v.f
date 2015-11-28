@@ -37,6 +37,7 @@ c     q(-p1)+qbar(-p2)-->q'(p5)+bar{q'}(p6)+n(p3)+ebar(p4)
       double complex clgamz(2),crgamz(2),clz(2),crz(2)
       double precision FAC,xfac
       integer j,k,jk
+      logical srdiags
       parameter(ave=0.25d0/xn)
       data mp/-1d0,+1d0,-1d0,+1d0,-1d0/
 
@@ -51,6 +52,10 @@ c--- set msqv=0 to initalize
       enddo
       enddo
 
+c--- include singly resonant diagrams if zerowidth=.false. , but only
+c---  as long as anomtgc=.false. too
+      srdiags=((zerowidth .eqv. .false.) .and. (anomtgc .eqv. .false.))
+      
 c--- calculate the lowest order matrix element
       call qqb_ww(p,msq)
 
@@ -71,7 +76,6 @@ c-- s returned from sprod (common block) is 2*dot product
       call spinoru(6,qdks,za,zb)
 
 c--   calculate propagators
-
       if     (zerowidth  .eqv. .true.) then
       prop12=s(1,2)/dcmplx(s(1,2)-zmass**2,zmass*zwidth)
       prop34=s(3,4)/dcmplx(s(3,4)-wmass**2,wmass*wwidth)
@@ -93,7 +97,7 @@ c-- couplings with or without photon pole
       cr_z(j)=-mp(j)*2d0*Q(j)*xw*prop12
       cl_g(j)=+mp(j)*2d0*Q(j)*xw
       cr_g(j)=+mp(j)*2d0*Q(j)*xw
-      if (zerowidth .neqv. .true.) then
+      if (srdiags) then
       clgamz(j)=two*xw*(-Q(j)+le*L(j)*prop12)
       crgamz(j)=two*xw*(-Q(j)+le*R(j)*prop12)
       clz(j)=two*xw*ln*L(j)*prop12
@@ -161,7 +165,7 @@ c      Lb213456=A6loopb(2,1,3,4,5,6,za,zb)
 c      Lb126543=A6loopb(1,2,6,5,4,3,za,zb)
 c      Lb216543=A6loopb(2,1,6,5,4,3,za,zb)
 
-      if (zerowidth .neqv. .true.) then
+      if (srdiags) then
 c---for supplementary diagrams.
       Fa341256=A6treea(3,4,1,2,5,6,za,zb)
       Fa653421=A6treea(6,5,3,4,2,1,za,zb)
@@ -217,7 +221,7 @@ c---of the outgoing quark
          endif
       endif
 
-      if (zerowidth .neqv. .true.) then
+      if (srdiags) then
 c---we need supplementary diagrams for gauge invariance.
       if     (j .gt. 0) then
           if     (tau(jk) .eq. +1d0) then

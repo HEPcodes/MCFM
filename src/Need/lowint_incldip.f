@@ -29,7 +29,8 @@ c --- To use VEGAS random number sequence :
       double precision r(mxdim),W,sqrts,xmsq,val,val2,
      . fx1(-nf:nf),fx2(-nf:nf),p(mxpart,4),pjet(mxpart,4),
      . pswt,rscalestart,fscalestart
-      double precision wgt,msq(-nf:nf,-nf:nf),m3,m4,m5,xmsqjk
+      double precision wgt,msq(-nf:nf,-nf:nf),m3,m4,m5,xmsqjk,
+     . msq1(-nf:nf,-nf:nf),msq2(-nf:nf,-nf:nf),n(4)
       double precision xx(2),flux,vol,vol_mass,vol3_mass,vol_wt,BrnRat
       double precision xmsq_bypart(-1:1,-1:1),lord_bypart(-1:1,-1:1)
       logical bin,first,includedipole
@@ -37,6 +38,8 @@ c --- To use VEGAS random number sequence :
 c      double precision gx1(-nf:nf),gx2(-nf:nf)
 c      integer idum
 c      COMMON/ranno/idum
+      character*30 runstring
+      common/runstring/runstring
       common/density/ih1,ih2
       common/energy/sqrts
       common/bin/bin
@@ -128,14 +131,17 @@ c--- processes that use "gen4h"
      .    .or. (case .eq. 'HZZ_4l') ) then
         npart=4
         call gen4h(r,p,pswt,*999)
-          
+         
 c--- processes that use "gen5" 
       elseif ( (case .eq. 'W_twdk') 
      . .or.    (case .eq. 'HWWjet') 
+     . .or.    (case .eq. 'WW_jet') 
+     . .or.    (case .eq. 'ZZ_jet') 
      . .or.    (case .eq. 'vlchwt') 
      . ) then 
         npart=5 
         call gen5(r,p,pswt,*999)
+
 c--- processes that use "gen6"     
       elseif ( (case .eq. 'tt_bbl')
      .    .or. (case .eq. 'tt_bbh')
@@ -143,10 +149,13 @@ c--- processes that use "gen6"
      .    .or. (case .eq. 'Wtbwdk')
      .    .or. (case .eq. 'vlchk6')
      .    .or. (case .eq. 'vlchwg')
-     .    .or. (case .eq. 'vlchwh') ) then
+     .    .or. (case .eq. 'vlchwh')
+     .    .or. (case .eq. 'qq_HWW')
+     .    .or. (case .eq. 'WH__WW')
+     .    .or. (case .eq. 'ZH__WW')) then
         npart=6
         call gen6(r,p,pswt,*999)
-        
+	
 c--- processes that use "gen7"     
       elseif ( (case .eq. 'qq_ttg') ) then
         m3=mt
@@ -286,14 +295,22 @@ c--- Calculate the required matrix elements
         call qqb_ww(p,msq)
       elseif (case .eq. 'WWnpol') then
         call qqb_ww_unpol(p,msq)
+      elseif (case .eq. 'WW_jet') then
+        call qqb_ww_g(p,msq)
       elseif (case .eq. 'WZbbar') then
         call qqb_wz(p,msq)
       elseif (case .eq. 'ZZlept') then
         call qqb_zz(p,msq)
+      elseif (case .eq. 'ZZ_jet') then
+        call qqb_zz_g(p,msq)
       elseif (case .eq. 'WHbbar') then
         call qqb_wh(p,msq)
+      elseif (case .eq. 'WH__WW') then
+        call qqb_wh_ww(p,msq)
       elseif (case .eq. 'ZHbbar') then
         call qqb_zh(p,msq)
+      elseif (case .eq. 'ZH__WW') then
+        call qqb_zh_ww(p,msq)
       elseif (case .eq. 'ggfus0') then
         call gg_h(p,msq)
       elseif (case .eq. 'HWW_4l') then
@@ -350,6 +367,8 @@ c--- Calculate the required matrix elements
         call VV_hqq(p,msq)
       elseif (case .eq. 'qqHqqg') then
         call VV_hqq_g(p,msq)
+      elseif (case .eq. 'qq_HWW') then
+        call VV_HWW(p,msq)
       elseif (case .eq. 'tautau') then
         call qqb_tautau(p,msq)
       elseif (case .eq. 'gQ__ZQ') then
@@ -481,6 +500,10 @@ c--- Calculate the required matrix elements
 c--- do not calculate the flux if we're only checking the volume      
       if (case(1:4) .ne. 'vlch') then      
         flux=fbGeV2/(2d0*xx(1)*xx(2)*W)
+c--- for mlm study, divide by (Ecm)**2=W
+	if (runstring(1:3) .eq. 'mlm') then
+	  flux=flux/W
+	endif
       endif
       
 c--- initialize a PDF set here, if calculating errors
@@ -581,8 +604,6 @@ c---  but not if we are already unweighting ...
       endif
 
       if (bin) then
-        val=val/dfloat(itmx)
-        val2=val2/dfloat(itmx)**2
 c ---   DSW. If the user has not selected to generate
 c ---   events, still call nplotter here in order to
 c ---   fill histograms/ntuples with weighted events :

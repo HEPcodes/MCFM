@@ -75,7 +75,7 @@ c--- variables in finalpart (normally done in mcfm_exit)
       qqpart=(lord_bypart(+1,+1)+lord_bypart(-1,-1))/lordnorm
       qqbpart=(lord_bypart(+1,-1)+lord_bypart(-1,+1))/lordnorm      
       endif
-      write(unitno,*) '( Cross-section is: ',xsec,'+/-',xsec_err,')'
+      write(unitno,55) '( Cross-section is: ',xsec,' +/-',xsec_err,')'
       write(unitno,*)
 
       write(unitno,*) '( Contribution from parton sub-processes:'
@@ -185,6 +185,8 @@ c--- variables in finalpart (normally done in mcfm_exit)
 
       return
 
+c--- 55 format
+   55 format(a20,f24.10,a4,f24.10,a1)
 c--- 56 character format
    56 format('( PDF error set ',i3,'  --->',f13.3,' fb  )')
 c--- 95 character format

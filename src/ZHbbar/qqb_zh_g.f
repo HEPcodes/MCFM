@@ -87,7 +87,7 @@ c   for the moment --- radiation only from initial line
       include 'ewcouple.f'
       integer j1,j2,j3,j4,j5,j6,j7
       double precision s45,s12,s13,s23,s123,prop
-      double precision fac
+      double precision fac,hdecay
 
 
       s45=s(j4,j5)+2d0*mb**2
@@ -95,16 +95,21 @@ c   for the moment --- radiation only from initial line
       s13=s(j1,j3)
       s23=s(j2,j3)
       s123=s12+s13+s23
-c---calculate the 3 propagators
+c---calculate the 2 Z propagators
       prop=       ((s123-zmass**2)**2+(zmass*zwidth)**2)
       prop=prop*((s(j6,j7)-zmass**2)**2+(zmass*zwidth)**2)
-      prop=prop*((s45-hmass**2)**2+(hmass*hwidth)**2)
 
-      fac=4d0*CF*xnsq
-     .  *gsq*gw**8*(xw/(1d0-xw))**2*mbsq*(s45-4d0*mb**2)/prop
+      fac=8d0*cf*xn*(xw/(1d0-xw))**2*gsq*gwsq**3*wmass**2/prop
+      hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s45-4d0*mb**2)
+      hdecay=hdecay/((s45-hmass**2)**2+(hmass*hwidth)**2)
+      fac=fac*hdecay
+c-- Old form of this matrix element (modified to facilitate extension
+c--- to H->WW decay)
+c      fac=4d0*CF*xnsq
+c     .  *gsq*gw**8*(xw/(1d0-xw))**2*mbsq*(s45-4d0*mb**2)/prop
 
       radiLL=s12/s13/s23
-     & *(2*s(j1,j7)*s(j2,j6)+s(j1,j7)*s(j3,j6)+s(j2,j6)*s(j3,j7))
+     & *(2d0*s(j1,j7)*s(j2,j6)+s(j1,j7)*s(j3,j6)+s(j2,j6)*s(j3,j7))
      & +(s(j1,j7)*s(j2,j6)+s(j2,j6)*s(j3,j7)-s(j1,j6)*s(j1,j7))/s13
      & +(s(j1,j7)*s(j2,j6)+s(j1,j7)*s(j3,j6)-s(j2,j6)*s(j2,j7))/s23
 

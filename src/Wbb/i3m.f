@@ -58,6 +58,12 @@ c---case all positive
       double precision function I3m1a(s1,s2,s3,rtmdel)
       implicit none
 C     symmetric form of Lu and Perez
+C     %\cite{Lu:1992ny}
+c     \bibitem{Lu:1992ny}
+c     H.~J.~Lu and C.~A.~Perez,
+c     %``Massless one loop scalar three point integral and associated Clausen,
+c     %Glaisher and L functions,''
+c     SLAC-PUB-5809
       include 'constants.f'
       double precision s1,s2,s3,d1,d2,d3,rtmdel,arg1,arg2,arg3,dclaus
 
@@ -76,13 +82,23 @@ C     symmetric form of Lu and Perez
       double complex function I3m1b(s1,s2,s3,rtdel,flag)
       implicit none
 C     form of Ussyukina and Davydychev
+C %\cite{Usyukina:1994iw}
+C \bibitem{Usyukina:1994iw}
+C   N.~I.~Usyukina and A.~I.~Davydychev,
+C   %``New results for two loop off-shell three point diagrams,''
+C  Phys.\ Lett.\ B {\bf 332}, 159 (1994)
+C  [arXiv:hep-ph/9402223].
+C  %%CITATION = HEP-PH 9402223;%%
+
       include 'constants.f'
-      double precision s1,s2,s3,d3,temp,ddilog,xlog,ylog
+      double precision s1,s2,s3,d3,temp,ddilog,xlog,ylog,rat
       double precision x,y,rho,rtdel,argx,argy,argdlx,argdly,flag
       d3=s3-s1-s2
       x=s1/s3
       y=s2/s3
-      rho=two*s3/(d3+rtdel)
+      rat=0.5d0*(d3+rtdel)/s3
+      if (abs(rat) .lt. 1d-3) rat=2d0*s1*s2/(s3*(d3-rtdel))
+      rho=1d0/rat
       argx=rho*x
       argy=rho*y
       argdlx=-argx

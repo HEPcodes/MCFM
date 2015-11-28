@@ -10,47 +10,52 @@
       double precision wt7,q(mxpart,4)
       double precision p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4),p8(4),
      . p9(4),pswt,xjac,p1ext(4),p2ext(4)
-      double precision xx(2),tau,x1mx2,surd
+      double precision xx(2),tau,sqrts,y
       double precision lntaum
       common/pext/p1ext,p2ext
       common/x1x2/xx
+      common/energy/sqrts
       data p1,p2,p3,p4,p5,p6,p7,p8,p9/36*0d0/
 
       wt7=0d0
 
-      lntaum=dlog(taumin)
-      tau=dexp(lntaum*(one-r(18)))
-      xjac=-lntaum*tau
+      tau=dexp(dlog(taumin)*r(9))
+      y=0.5d0*dlog(tau)*(1d0-2d0*r(10))
+      xjac=dlog(taumin)*tau*dlog(tau)
 
-c      tau=(one-taumin)*r(14)**2+taumin
-c      xjac=2*r(13)*(one-taumin)
+      xx(1)=dsqrt(tau)*dexp(+y)
+      xx(2)=dsqrt(tau)*dexp(-y)
 
-      x1mx2=two*r(19)-one
-      surd=dsqrt(x1mx2**2+four*tau) 
-           
-      xx(1)=half*(+x1mx2+surd)
-      xx(2)=half*(-x1mx2+surd)
-      xjac=xjac*two/surd
+c--- phase space volume only checked for x1=x2=1
+      if ((case .eq. 'vlchwg') .or. (case .eq. 'vlchwh')) then
+        xx(1)=1d0
+        xx(2)=1d0
+        xjac=1d0
+      endif
 
-      if   ((xx(1) .gt. 1d0) 
+c---if x's out of normal range alternative return
+      if   ((xx(1) .gt. 1d0)
      & .or. (xx(2) .gt. 1d0)
      & .or. (xx(1) .lt. xmin)
-     & .or. (xx(2) .lt. xmin)) return 1 
+     & .or. (xx(2) .lt. xmin)) return 1
 
-      do nu=1,4
-      p1(nu)=xx(1)*p1ext(nu)
-      p2(nu)=xx(2)*p2ext(nu)
-      enddo
+      p1(4)=-xx(1)*sqrts*half
+      p1(1)=zip
+      p1(2)=zip
+      p1(3)=-xx(1)*sqrts*half
 
-      if ((case .eq. 'qq_ttg')
-     ..or.(case .eq. 'tt_bbl') 
-     ..or.(case .eq. 'tt_bbh')) then
-        call  phase7(r,p1,p2,p3,p4,p5,p6,p7,p8,p9,pswt,*999) 
-      elseif (case .eq. 'hlljet') then
-        call phase7m(r,p1,p2,p3,p4,p5,p6,p7,p8,p9,pswt,*999)
+      p2(4)=-xx(2)*sqrts*half
+      p2(1)=zip
+      p2(2)=zip
+      p2(3)=+xx(2)*sqrts*half
+
+      if     (case .eq. 'qq_HWW') then
+        call  phase7a(r,p1,p2,p3,p4,p5,p6,p7,p8,p9,pswt,*999) 
+      elseif ((case .eq. 'WH__WW') .or. (case .eq. 'ZH__WW')) then
+        call  phase7b(r,p1,p2,p3,p4,p5,p6,p7,p8,p9,pswt,*999) 
       else
-        write(*,*) 'Bad process name in gen7.f'
-        stop
+        write(6,*) 'Unanticipated process in gen7.f!'
+	stop
       endif
       
       do nu=1,4
@@ -63,11 +68,12 @@ c      xjac=2*r(13)*(one-taumin)
       q(7,nu)=p7(nu)
       q(8,nu)=p8(nu)
       q(9,nu)=p9(nu)
-      q(10,nu)=0d0
-
       enddo 
+      
       wt7=xjac*pswt
+      
       if (debug) write(6,*) 'wt7 in gen7',wt7
+      
       return
 
  999  return 1

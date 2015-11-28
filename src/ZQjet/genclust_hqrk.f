@@ -10,18 +10,32 @@ c--- To reject an event, return jets=-1
       include 'jetcuts.f'
       include 'jetlabel.f'
       double precision q(mxpart,4),qjet(mxpart,4),qfinal(mxpart,4)
-      double precision pt,Rmin,Ry,Rbbmin,ayrap
-      double precision rtest,rab
+      double precision pt,Rmin,R,Ry,Rbbmin,aetarap,ayrap
+      double precision rtest,rab,raptest
       integer isub,i,j,k,nu,icandj,maxjet,jetindex(mxpart),ia,ib
       integer nproc
-      logical jetmerge,verbalg
+      logical jetmerge,verbalg,first,pseudo,bjetmerge
       character*2 plabel(mxpart)
       common/nproc/nproc
       common/Rbbmin/Rbbmin
       common/plabel/plabel
       common/jetmerge/jetmerge
+      data first/.true./
+      save first
               
       verbalg=.false.
+
+      pseudo=.true.
+      
+      if (first) then
+        if (pseudo) then
+	write(6,*) 'Heavy quark clustering routine using pseudorapidity'
+	else
+	write(6,*) 'Heavy quark clustering routine using rapidity'
+	endif
+	write(6,*) '     (for both cuts and definition of Delta-R)'
+	first=.false.
+      endif	
 
 c--- transfer incoming and lepton momenta to the final array
       do j=1,4
@@ -32,6 +46,7 @@ c--- transfer incoming and lepton momenta to the final array
 
 c--- simple clustering algorithm designed for WQj and ZQj
       jetmerge=.false.
+      bjetmerge=.false.
       maxjet=0
 c--- pick out jets: note that we search to npart+2-isub, to get the
 c--- number of particles right. Note that isub=0 for all calls except
@@ -102,7 +117,11 @@ c--- the minimum separation in R
       jetmerge=.false.
       do j=1,icandj
       do k=j+1,icandj        
-        rtest=Ry(qjet,j,k)
+        if (pseudo) then        
+          rtest=R(qjet,j,k)   ! Uses pseudorapidity
+	else
+          rtest=Ry(qjet,j,k)  ! Uses rapidity
+	endif
         if (verbalg) write(6,*) jetlabel(j),',',jetlabel(k),' R =',rtest
 c--- check to see if this pair should be merged - pair of b quarks
         if ( ((jetlabel(j).eq.'bq') .and. (jetlabel(k).eq.'ba'))
@@ -140,6 +159,11 @@ c--- check for an error
         stop
       endif
       
+c--- if two b's will be merged, set the flag      
+      if ( ((jetlabel(ia).eq.'bq') .and. (jetlabel(ib).eq.'ba'))
+     . .or.((jetlabel(ia).eq.'ba'). and. (jetlabel(ib).eq.'bq')) ) then
+      	bjetmerge=.true.
+      endif
 c--- do merging      
 c--- ...... set label for merged jet
       if     ((jetlabel(ia) .eq. 'bq').or.(jetlabel(ib) .eq. 'bq')) then 
@@ -183,16 +207,21 @@ c--- set the "jetmerge" flag properly now
       
 c--- now check jet pt and rapidity
       do i=1,icandj
+        if (pseudo) then
+	  raptest=aetarap(i,qjet)
+	else
+	  raptest=ayrap(i,qjet)
+	endif
 c--- .... for b-quarks
         if ((jetlabel(i) .eq. 'bq') .or. (jetlabel(i) .eq. 'ba')) then
           if ( (pt(i,qjet) .lt. ptbjetmin)
-     .    .or. (ayrap(i,qjet) .gt. etabjetmax)) jetlabel(i)='ff'
+     .    .or. (raptest .gt. etabjetmax)) jetlabel(i)='ff'
 c--- .... for generic jets
         else
           if ( (pt(i,qjet) .lt. ptjetmin)
-     .    .or. (ayrap(i,qjet) .gt. etajetmax)) jetlabel(i)='ff'
+     .    .or. (raptest .gt. etajetmax)) jetlabel(i)='ff'
         endif
-        if (verbalg) write(6,*) jetlabel(i),pt(i,qjet),ayrap(i,qjet)
+        if (verbalg) write(6,*) jetlabel(i),pt(i,qjet),raptest
       enddo
 
 c--- the final reckoning: transfer to qfinal
@@ -399,6 +428,7 @@ c--- Modification of "r.f" to use rapidity rather than pseudorapidity
 
       r2= (p(i,1)*p(j,1)+p(i,2)*p(j,2))
      .   /dsqrt((p(i,1)**2+p(i,2)**2)*(p(j,1)**2+p(j,2)**2))
+      if (r2 .gt. +0.999999999D0) r2=+1D0
       if (r2 .lt. -0.999999999D0) r2=-1D0
       delphi=dacos(r2)
       

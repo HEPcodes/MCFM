@@ -37,8 +37,8 @@ c--- initialize matrix elements
       enddo
       enddo
 
-c--- Note that the mass is calculated dynamically inside the routines
-c--- wqq_sc and w2jetsq_mass
+c--- Note that the charm quark mass is calculated dynamically inside
+c--- the routines wqq_sc and w2jetsq_mass
 
 c--- calculate 4-quark contributions
 c--- note that these are symmetric under interchange of q and qb
@@ -120,11 +120,11 @@ cc--- end of alternative calculation
         do i=0,2        
           gqWqg2_cs(i)  = aveqg*facgg*gqWqg2_cs(i)
           qgWqg2_cs(i)  = aveqg*facgg*qgWqg2_cs(i)
-c          ggWqqb2_cs(i) = avegg*facgg*ggWqqb2_cs(i)
+          ggWqqb2_cs(i) = avegg*facgg*ggWqqb2_cs(i)
         enddo
         gqWqg2  = gqWqg2_cs(1)  +gqWqg2_cs(2)  +gqWqg2_cs(0)  
         qgWqg2  = qgWqg2_cs(1)  +qgWqg2_cs(2)  +qgWqg2_cs(0)  
-c        ggWqqb2 = ggWqqb2_cs(1) +ggWqqb2_cs(2) +ggWqqb2_cs(0) 
+        ggWqqb2 = ggWqqb2_cs(1) +ggWqqb2_cs(2) +ggWqqb2_cs(0) 
       endif
 
       
@@ -132,7 +132,7 @@ c        ggWqqb2 = ggWqqb2_cs(1) +ggWqqb2_cs(2) +ggWqqb2_cs(0)
       do k=-nflav,nflav
       
 c--- 2-quark, 2-gluon contribution to matrix elements      
-      if     (((j .eq. +1).or.(j .eq. +1)) .and. (k .eq. 0)) then
+      if     (((j .eq. +1).or.(j .eq. +3)) .and. (k .eq. 0)) then
           msq(j,k)=Vsq(j,-4)*qgWqg2
           do i=0,2
             msq_cs(i,j,k)=Vsq(j,-4)*qgWqg2_cs(i)

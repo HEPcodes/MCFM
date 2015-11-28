@@ -55,20 +55,14 @@ C---Fill spinor products
       facgg=4d0*V*gsq**2*esq**2*xn*avegg
       facqq=4d0*V*gsq**2*esq**2*aveqq 
 
-c ensure that we have a hard process
-c      if (
-c     .      (s(5,6) .lt. four*hscalesq) 
-c     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. hscalesq) 
-c     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. hscalesq) ) return
-
       call spinoru(6,p12,za,zb)
       call mamps(1,2,3,4,5,6,qqb_a,qqb_b)
 
-      coupL=Q(1)*q1+L(1)*l1*prop
-      coupR=Q(1)*q1+R(1)*l1*prop
+      coupL=Q(2)*q1+L(2)*l1*prop
+      coupR=Q(2)*q1+R(2)*l1*prop
       call gamps0(1,2,3,4,5,6,sumleptL,coupL,coupR)
-      coupL=Q(1)*q1+L(1)*r1*prop
-      coupR=Q(1)*q1+R(1)*r1*prop
+      coupL=Q(2)*q1+L(2)*r1*prop
+      coupR=Q(2)*q1+R(2)*r1*prop
       call gamps0(1,2,4,3,5,6,sumleptR,coupL,coupR)
 
       call spinoru(6,p21,za,zb)

@@ -16,7 +16,7 @@ c----(p4,p5) are dummies
       double precision wt0,wt12,wt345678,wt345,wt678,wt34,wt78,wt,
      . m3,m4,m5,mass2,width2,mass3,width3
       common/breit/n2,n3,mass2,width2,mass3,width3 
-      parameter(wt0=1d0/twopi)
+      parameter(wt0=1d0/twopi**5)
 
       do j=1,4
       p12(j)=-p1(j)-p2(j)
@@ -31,6 +31,10 @@ c----(p4,p5) are dummies
 c---generate p9 and p345678, 
 c---smin is the minimum inv mass of 345678 system
 c---m5 is the mass of p9
+
+c--- DEBUG: make p9 soft
+c      r(1)=1d0-r(1)/1d3
+c--- END DEBUG      
       call phi1_2m(m5,r(1),r(2),r(3),smin,p12,p9,p345678,wt12,*99)
 
 c      write(6,*) 'p9  ',p9

@@ -68,6 +68,7 @@ c--- Traditional MCFM histograms
 
       subroutine nplotter(p,wt,wt2,switch)
       implicit none
+      include 'vegas_common.f'
       include 'bbproc.f'
       include 'clustering.f'
       include 'constants.f'
@@ -75,7 +76,6 @@ c--- Traditional MCFM histograms
       include 'histo.f'
       include 'jetlabel.f'
       include 'npart.f'
-      include 'mxdim.f'
       include 'process.f'
       include 'removebr.f'
       include 'nodecay.f'
@@ -134,6 +134,8 @@ cz //
      & ,PTQ1_VETO
      & ,ETAQ1_VETO
      & ,PHI56
+     & ,PTLEADINGB
+     & ,PTLEADINGNONB
 
 cz Added by Z. Sullivan 1/25/05
 cz jet(3) will be filled with pt-ordered jets in all processes
@@ -151,7 +153,7 @@ cz //
       double precision langle,plep(4),plep_wrest(4),pw(4),pw_wrest(4)
       integer nproc,eventpart,ib1,ib2,nqcdjets,nqcdstart
       logical first,jetmerge
-      logical creatent,dswhisto
+      logical creatent,dswhisto,jetevent
       character*30 runstring
       common/runstring/runstring
       common/outputflags/creatent,dswhisto
@@ -232,6 +234,7 @@ c---   for real counter-events switch=1 and eventpart=npart+1
 c--- There are some processes for which this is not correct and these
 c---  are handled with reference to nproc  
       eventpart=npart-switch+2
+
       if (jets .gt. 0) then
         eventpart=4+jets
       endif
@@ -241,7 +244,8 @@ c---  are handled with reference to nproc
       elseif ((case .eq. 'WWqqbr') .or. (case .eq. 'WWnpol')
      .    .or.(case .eq. 'WZbbar') .or. (case .eq. 'ZZlept')
      .    .or.(case .eq. 'HWW_4l') .or. (case .eq. 'HZZ_4l')
-     .    .or.(case .eq. 'HWWjet')) then
+     .    .or.(case .eq. 'HWWjet') .or. (case .eq. 'qq_HWW')
+     .    .or.(case .eq. 'WW_jet') .or. (case .eq. 'ZZ_jet')) then
         eventpart=6+jets
       elseif ((case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')) then
         eventpart=8
@@ -249,9 +253,14 @@ c---  are handled with reference to nproc
      .    .or.(case .eq. 'Wtbwdk')) then
         eventpart=6+jets
         if (removebr) eventpart=eventpart+1
+      elseif ((case .eq. 'WH__WW') .or. (case .eq. 'ZH__WW')) then
+        eventpart=8+jets
       endif
       if (nproc .eq. 73) eventpart=4+jets
-      
+
+c--- this variable should be set to .true. when the jets are reordered
+c---  according to their pt (or Et)
+      jetevent=.false.
 c--- re-order jets according to pt, for a W/Z/H+jet event        
       if ((case .eq. 'W_1jet') .or. (case .eq. 'Z_1jet') .or.
      .    (case .eq. 'W_2jet') .or. (case .eq. 'Z_2jet') .or.
@@ -259,6 +268,7 @@ c--- re-order jets according to pt, for a W/Z/H+jet event
      .    (case .eq. 'ggfus1') .or. (case .eq. 'ggfus2') .or.
      .    (case .eq. 'ggfus3') .or. (case .eq. 'qq_Hqq') .or.
      .    (case .eq. 'qqHqqg')) then
+        jetevent=.true.
         if (algorithm .eq. 'cone') then
           if (jets .gt. 0) pt5=getet(p(5,4),p(5,1),p(5,2),p(5,3))
           if (jets .gt. 1) pt6=getet(p(6,4),p(6,1),p(6,2),p(6,3))
@@ -348,7 +358,7 @@ c--- returns zero cluster mass if two b's are in one jet
       
       if (eventpart .gt. 4) then        
       eta5=etarap(5,p)
-      pt5=pt(5,p)
+      if (jetevent .eqv. .false.) pt5=pt(5,p)
       r35=R(p,3,5)
       r45=R(p,4,5)
       m345=dsqrt((p(3,4)+p(4,4)+p(5,4))**2-(p(3,1)+p(4,1)+p(5,1))**2
@@ -358,7 +368,7 @@ c--- returns zero cluster mass if two b's are in one jet
       
       if (eventpart .gt. 5) then        
       eta6=etarap(6,p)
-      pt6=pt(6,p)
+      if (jetevent .eqv. .false.) pt6=pt(6,p)
       eta56=etaraptwo(5,6,p)
       eta56=etaraptwo(5,6,p)
       pt56=pttwo(5,6,p)
@@ -371,7 +381,7 @@ c--- returns zero cluster mass if two b's are in one jet
 
       if (eventpart .gt. 6) then        
       eta7=etarap(7,p)
-      pt7=pt(7,p)
+      if (jetevent .eqv. .false.) pt7=pt(7,p)
       r57=R(p,5,7)
       r67=R(p,6,7)
       m567=dsqrt((p(5,4)+p(6,4)+p(7,4))**2-(p(5,1)+p(6,1)+p(7,1))**2
@@ -514,12 +524,35 @@ c--- for the H+b process, catch the highest pt heavy quark
         etaother=99d0
       endif
 
+c--- for The Z+Q+jet process, make histograms of the leading jet pt
+c---  when it is a b-quark and when it is not
+      ptleadingb=-1d0
+      ptleadingnonb=-1d0
+      if (case .eq. 'Z_bjet') then
+        if     ((jetlabel(1) .eq. 'bq') .and. (pt5 .gt. pt6)) then
+	  ptleadingb=pt5
+	elseif ((jetlabel(2) .eq. 'bq') .and. (pt6 .gt. pt5)) then
+	  ptleadingb=pt6
+	elseif ((jetlabel(1) .eq. 'pp') .and. (pt5 .gt. pt6)) then
+	  ptleadingnonb=pt5
+	elseif ((jetlabel(2) .eq. 'pp') .and. (pt6 .gt. pt5)) then
+	  ptleadingnonb=pt6
+	endif
+      endif
+      
       if (nproc .eq. 61) then
         etbin=etdoublebin(pt4,pt5)
       endif
 
    99 continue
 
+c--- make plots for H(->WW)+jet paper
+      if (runstring(1:6) .eq. 'hjetww') then
+        call hwwjetplots(eventpart,tag,p,wt,wt2)
+	first=.false.
+	return
+      endif
+      
 cz Added by Z. Sullivan, 1/25/05
 cz jet(i) will hold a pt-ordered index to jet momenta.  jet(i)=0 by default
 cz This is designed to work for processes where jet momenta come last,
@@ -586,9 +619,10 @@ c           use removebr = .true. for comparisons to event generators anyway.
 cz // end finding index to b~ in t-channel single-top
 cz // Can now plot pt-ordered jets, and b~ fraction (with wt*bwgt)
 
-c--- Book and fill ntuple if that option is set
+c--- Book and fill ntuple if that option is set, remembering to divide
+c--- by # of iterations now that is handled at end for regular histos
       if (creatent .eqv. .true.) then
-        call bookfill(tag,p,wt)  
+        call bookfill(tag,p,wt/dfloat(itmx))  
 c--- REMOVED - to produce normal histograms as well
 c        return    
       endif
@@ -860,6 +894,13 @@ c--- Delta_R(b,b), 2 b-jets, bins of 0.2 from 0.35 to 4.95
       n=n+1
       endif
       
+      call bookplot(n,tag,'pt b leading',ptleadingb,
+     .               wt,wt2,0d0,500d0,20d0,'log')
+      n=n+1
+      call bookplot(n,tag,'pt non-b leading',ptleadingnonb,
+     .               wt,wt2,0d0,500d0,20d0,'log')
+      n=n+1
+
       if (eventpart .gt. 6) then
 
       if (bbproc) then

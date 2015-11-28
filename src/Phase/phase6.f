@@ -14,8 +14,9 @@ c---- with all 2 pi's (ie 1/(2*pi)^14)
       double precision r(mxdim)
       double precision p1(4),p2(4),p5(4),p6(4),p3(4),p4(4),p7(4),p8(4)
       double precision p12(4),p345(4),p678(4),p78(4),p34(4),smin,
-     . p348(4),p567(4),p56(4),p3456(4)
-      double precision wt,wt0,wt12,wt678,wt345,wt34,wt78,wt3456,wt56
+     . p348(4),p567(4),p56(4),p3456(4),p5678(4)
+      double precision wt,wt0,wt12,wt678,wt345,wt34,wt78,wt3456,wt56,
+     . wt5678
       double precision mass2,width2,mass3,width3
       common/breit/n2,n3,mass2,width2,mass3,width3 
       integer j
@@ -58,7 +59,7 @@ c---- calculate momenta of top and bbbar
         call phi1_2(r(1),r(2),r(3),r(4),p12,p345,p678,wt12,*99)
         zerowidth=oldzerowidth
 
-      elseif (case .eq. 'HWWjet') then
+      elseif ((case .eq. 'HWWjet') .or. (case .eq. 'qq_HWW')) then
 c--- In the case of HWWjet, we should generate s3456 according to
 c--- a Breit-Wigner at mH
         n2=1
@@ -77,6 +78,33 @@ c--- a Breit-Wigner at mH
         call phi3m0(r(11),r(12),p56,p5,p6,wt56,*99)
         call phi3m0(r(15),r(16),p78,p7,p8,wt78,*99)
         wt=wt0*wt12*wt3456*wt34*wt56*wt78
+        return
+      elseif ((case .eq. 'WH__WW') .or. (case .eq. 'ZH__WW')) then
+c--- In the case of W+H(->WW), we should generate s5678 according to
+c--- a Breit-Wigner at mH
+        n2=1
+	if (case .eq. 'WH__WW') then
+	  mass2=wmass
+	  width2=wwidth
+	else
+	  mass2=zmass
+	  width2=zwidth
+	endif
+        n3=1
+        mass3=hmass
+        width3=hwidth
+        call phi1_2(r(1),r(2),r(3),r(4),p12,p34,p5678,wt12,*99)
+        n2=1
+        mass2=wmass
+        width2=wwidth
+        n3=1
+        mass3=wmass
+        width3=wwidth
+        call phi1_2(r(5),r(6),r(7),r(8),p5678,p56,p78,wt5678,*99)
+        call phi3m0(r(13),r(14),p34,p3,p4,wt34,*99)
+        call phi3m0(r(11),r(12),p56,p5,p6,wt56,*99)
+        call phi3m0(r(15),r(16),p78,p7,p8,wt78,*99)
+        wt=wt0*wt12*wt5678*wt34*wt56*wt78
         return
       else
         write(*,*) 'Case not supported in phase6.f'

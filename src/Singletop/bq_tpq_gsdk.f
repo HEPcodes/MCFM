@@ -14,8 +14,17 @@ c--- g(p7) represents a gluon
       double precision msq(-nf:nf,-nf:nf),msqc(maxd,-nf:nf,-nf:nf),
      . p(mxpart,4),q(mxpart,4),omz,z,fac,ptDpg,pbDpg,ptDpb
       integer j,k
+      logical incldip(0:maxd)
+      common/incldip/incldip
+
+      do j=-nf,nf
+      do k=-nf,nf
+      msqc(1,j,k)=0d0
+      enddo
+      enddo
 
       ndmax=1
+      incldip(1)=.true.
 
       call wtransform(p,q,pbDpg,ptDpg,ptDpb)
       omz=ptDpg/(ptDpb+ptDpg-pbDpg)

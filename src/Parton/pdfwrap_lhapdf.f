@@ -60,8 +60,8 @@ c      endif
       if (PDFmember .lt. 0) then
         PDFerrors=.true.
         call numberPDF(maxPDFsets)
-        if (maxPDFsets .gt. 40) then
-          write(6,*) 'ERROR: Max. number of error sets is 40!'
+        if (maxPDFsets .gt. 50) then
+          write(6,*) 'ERROR: Max. number of error sets is 50!'
           stop
         endif
         write(6,*)

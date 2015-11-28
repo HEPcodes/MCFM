@@ -62,10 +62,13 @@ c  * ( 2*L + 4*[ln(1-x)] - 2*epinv )
       if (vorz .eq. 1) then
         ii_qq=epinv*(epinv2-L)+0.5d0*L**2-pisqo6
         if (scheme .eq. 'tH-V') then
-           return
+          return
         elseif (scheme .eq. 'dred') then
-           ii_qq=ii_qq-half
-           return
+          ii_qq=ii_qq-half
+          return
+	else
+	  write(6,*) 'Value of scheme not implemented properly ',scheme
+	  stop
         endif
       endif
       
@@ -188,10 +191,13 @@ c    * ( 2*L + 4*[ln(1-x)] - 2*epinv )
       if (vorz .eq. 1) then
         ii_gg=epinv*(epinv2-L)+half*L**2-pisqo6
         if (scheme .eq. 'tH-V') then
-        return
+          return
         elseif (scheme .eq. 'dred') then
-        ii_gg=ii_gg-1d0/6d0
-        return
+          ii_gg=ii_gg-1d0/6d0
+          return
+	else
+	  write(6,*) 'Value of scheme not implemented properly ',scheme
+	  stop
         endif
       endif
       
@@ -243,6 +249,9 @@ c--  +4*[ln(1-x)/(1-xp)]+2*L/[1-xp]
         elseif (scheme .eq. 'dred') then
           if_qq=if_qq-half
           return
+	else
+	  write(6,*) 'Value of scheme not implemented properly ',scheme
+	  stop
         endif
       endif
       
@@ -296,10 +305,13 @@ c--  +4*[ln(1-x)/(1-xp)]+2*L/[1-xp]
       if (vorz .eq. 1) then
         if_gg=epinv*(epinv2-L)+half*L**2+pisq/6d0
         if (scheme .eq. 'tH-V') then
-        return
+          return
         elseif (scheme .eq. 'dred') then 
-        if_gg=if_gg-1d0/6d0
-        return
+          if_gg=if_gg-1d0/6d0
+          return
+	else
+	  write(6,*) 'Value of scheme not implemented properly ',scheme
+	  stop
         endif
       endif
       
@@ -439,7 +451,10 @@ c - 3/2*[1/(1-x)_(1-al)]
            return
          elseif (scheme .eq. 'dred') then
            fi_qq=fi_qq-half
-         return
+           return
+	 else
+	   write(6,*) 'Value of scheme not implemented properly ',scheme
+	   stop
          endif
       endif
       
@@ -501,10 +516,13 @@ c  * ( - 2*b0 )
      .  +67d0/9d0-10d0/9d0*dfloat(nflav)/xn
      .  -pisq+2d0*b0/xn*(epinv-L)-2d0*dlog(afi)*(b0/xn+dlog(afi))
         if (scheme .eq. 'tH-V') then
-        return
+          return
         elseif (scheme .eq. 'dred') then
-        fi_gg=fi_gg-1d0/3d0
-        return
+          fi_gg=fi_gg-1d0/3d0
+          return
+	else
+	  write(6,*) 'Value of scheme not implemented properly ',scheme
+	  stop
         endif
       endif
       
@@ -587,10 +605,13 @@ c  - [ln(al)]^2 + 3/2*epinv - epinv*L + epinv^2
         ff_qq=epinv*(epinv2-L)+half*L**2+1.5d0*(epinv-L)+5d0-half*pisq
         ff_qq=ff_qq+1.5d0*(aff-1d0-dlog(aff))-dlog(aff)**2
         if (scheme .eq. 'tH-V') then
-        return
+          return
         elseif (scheme .eq. 'dred') then
-        ff_qq=ff_qq-half
-        return
+          ff_qq=ff_qq-half
+          return
+	else
+	  write(6,*) 'Value of scheme not implemented properly ',scheme
+	  stop
         endif
       endif
       return
@@ -658,6 +679,9 @@ c  * ( 2*al*b0 - 20/9*Tr*nflav - 2*[ln(al)]*b0 - 2*b0*L + 2*b0*epinv ) + 0.
         elseif (scheme .eq. 'dred') then
           ff_gg=ff_gg-1d0/3d0
           return
+	else
+	  write(6,*) 'Value of scheme not implemented properly ',scheme
+	  stop
         endif
       endif
       return

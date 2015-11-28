@@ -10,17 +10,20 @@
       include 'ptilde.f'
       include 'jetlabel.f'
       character*52 msg,rmsg,fmsg
+      character*4 prechar(6)
       character boson
       integer nqcdjets,nqcdstart,n2,n3,j,iscale,iscalemax,
      . irscale,ifscale,iset
       double precision amz,rscalestart,fscalestart,
      . dot,pttwo,aveptjet,getEt,p(mxpart,4),alphas,
-     . setscale,pt
+     . setscale,pt,prescale(6),prefac
       logical first
       double precision mass2,width2,mass3,width3
       common/breit/n2,n3,mass2,width2,mass3,width3
       common/nqcdjets/nqcdjets,nqcdstart
       common/couple/amz
+      data prescale/0.5d0,0.75d0,1d0,2d0,4d0,8d0/
+      data prechar/" 0.5","0.75"," 1.0"," 2.0"," 4.0"," 8.0"/
       data first/.true./  
       save first
 
@@ -84,6 +87,18 @@ c--- pt7
         setscale=pt(7,p)
         if (first) msg='*                 Dynamic scale = pt7      '//
      . '        *'
+      elseif ((iset .gt. 10) .and. (iset .lt. 17)) then
+c--- sqrt(boson mass + boson pt) multiplied by a scale factor
+        prefac=prescale(iset-10)
+        if (nwz .eq. 0) then
+          setscale=prefac*dsqrt(zmass**2+pttwo(3,4,p)**2)
+          boson='z'
+        else
+          setscale=prefac*dsqrt(wmass**2+pttwo(3,4,p)**2)
+          boson='w'
+        endif  
+        msg='* Dynamic scale = '//prechar(iset-10)//' * dsqrt('
+     .    //boson//'mass**2'//' + pt_'//boson//'**2) *'
       elseif ((iset .lt. 1) .or. (iset .gt. 7)) then
 c--- catch invalid inputs
         write(6,*) 'Invalid dynamic scale!'

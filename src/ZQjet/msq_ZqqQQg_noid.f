@@ -8,6 +8,8 @@
 ************************************************************************
       implicit none
       include 'constants.f'
+      include 'masses.f'
+      include 'sprods_com.f'
       integer Qh,hq,hg,lh,f1,f3,i1,i2,i3,i4,i5,i6,i7,j
       double precision A(2,2,2),B(2,2,2),C(2,2,2),D(2,2,2),E(2,2,2),
      . F(2,2,2),G(2,2,2)
@@ -17,7 +19,10 @@
       parameter(x=xn/cf,y=half/cf,z=0.25d0*(xn**2-two)/xn/cf**2)
       double complex 
      .               mb1_1234(2,2,2,2,2,2),mb2_1234(2,2,2,2,2,2),
-     .               mb1_3412(2,2,2,2,2,2),mb2_3412(2,2,2,2,2,2)
+     .               mb1_3412(2,2,2,2,2,2),mb2_3412(2,2,2,2,2,2),
+     .               mb1_3214(2,2,2,2,2,2),mb2_3214(2,2,2,2,2,2),
+     .               mb1_1432(2,2,2,2,2,2),mb2_1432(2,2,2,2,2,2)
+      
 
 C---set everything to zero 
 

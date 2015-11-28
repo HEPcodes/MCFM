@@ -59,23 +59,26 @@ C---set to zero if x out of range
              mode=1
              call mrst2004f3(x,xmu,mode,u_val,d_val,u_sea,d_sea,
      &                          s_sea,c_sea,b_sea,gluon)
-
              elseif (pdlabel .eq. 'mrs4lf3') then
              mode=2
              call mrst2004f3(x,xmu,mode,u_val,d_val,u_sea,d_sea,
      &                          s_sea,c_sea,b_sea,gluon)
-
              elseif (pdlabel .eq. 'mrs4nf4') then
              mode=1
              call mrst2004f4(x,xmu,mode,u_val,d_val,u_sea,d_sea,
      &                          s_sea,c_sea,b_sea,gluon)
-
              elseif (pdlabel .eq. 'mrs4lf4') then
              mode=2
              call mrst2004f4(x,xmu,mode,u_val,d_val,u_sea,d_sea,
      &                          s_sea,c_sea,b_sea,gluon)
-
-
+             elseif (pdlabel .eq. 'mrs04nl') then
+             mode=1
+             call mrst2004(x,xmu,mode,u_val,d_val,u_sea,d_sea,
+     &                          s_sea,c_sea,b_sea,gluon)
+             elseif (pdlabel .eq. 'mrs04nn') then
+             mode=2
+             call mrst2004(x,xmu,mode,u_val,d_val,u_sea,d_sea,
+     &                          s_sea,c_sea,b_sea,gluon)
              elseif (pdlabel .eq. 'mrs02nl') then
              mode=1
              call mrst2002(x,xmu,mode,u_val,d_val,u_sea,d_sea,
@@ -445,7 +448,8 @@ c-----assign to standard grid
           write(6,*) 'Unimplemented mrs distribution' 
           write(6,*) 'pdlabel= ',pdlabel
           write(6,*) 'Implemented are: ',
-     . 'mrs02nl,mrs02nn,',
+     . 'mrs4nf3,mrs4lf3,mrs4nf4,mrs4lf4,',
+     . 'mrs04nl,mrs04nn,mrs02nl,mrs02nn,',
      . 'mrs0119,mrs0177,mrs0121,mrs01_j,',
      . 'mrs99_1,mrs99_2,mrs99_3,mrs99_4,mrs99_5,mrs99_6,',
      . 'mrs99_7,mrs99_8,mrs99_9,mrs9910,mrs9911,mrs9912,',

@@ -86,11 +86,10 @@ c   contracted with the vector n(mu)
       nDp5=n(4)*p(j5,4)-n(3)*p(j5,3)-n(2)*p(j5,2)-n(1)*p(j5,1)
       nDn=n(4)**2-n(3)**2-n(2)**2-n(1)**2
 
-c--- appropriate scale is approx 1d-3*energy(incoming)
-c--- so of order(1) for the Tevatron
-      if (abs(nDp5).gt.1d-3*abs(p(1,4))) then 
+c--- appropriate scale is approx energy(incoming)
+      if (abs(nDp5).gt.abs(p(1,4))) then 
          write(*,*) 'Error for :',j1,j2,j5
-         write(*,*) 'cutoff',1d-3*abs(p(1,4))
+         write(*,*) 'cutoff',abs(p(1,4))
          write(6,*) 'nDp5',nDp5
          call flush(6)
          stop
@@ -129,11 +128,10 @@ c   contracted with the vector n(mu)
       nDp5=n(4)*p(j5,4)-n(3)*p(j5,3)-n(2)*p(j5,2)-n(1)*p(j5,1)
       nDn=n(4)**2-n(3)**2-n(2)**2-n(1)**2
 
-c--- appropriate scale is approx 1d-3*energy(incoming)
-c--- so of order(1) for the Tevatron
-      if (abs(nDp5).gt.1d-3*abs(p(1,4))) then 
+c--- appropriate scale is approx energy(incoming)
+      if (abs(nDp5).gt.abs(p(1,4))) then 
          write(*,*) 'Error for :',j1,j2,j5
-         write(*,*) 'cutoff',1d-3*abs(p(1,4))
+         write(*,*) 'cutoff',abs(p(1,4))
          write(6,*) 'nDp5',nDp5
          call flush(6)
          stop

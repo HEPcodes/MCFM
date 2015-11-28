@@ -11,10 +11,11 @@ c--- For itno>0, this is an intermediate result only
       include 'verbose.f'
       include 'PDFerrors.f'
       include 'histo.f'
-      integer j,nlength,itno,itmx,nplotmax
+      integer j,nlength,itno,itmx,nplotmax,nempty
       character*72 runname,outfiledat,outfiletop,outfileerr
       character*3 oldbook
-      double precision xsec,xsec_err,scalefac
+      character mop
+      double precision xsec,xsec_err,scalefac,itscale
       double precision EHIST(4,40,100)   
       integer IHISTOMATCH(100),ICOUNTHISTO  
       logical scaleplots                  
@@ -34,7 +35,7 @@ c--- For itno>0, this is an intermediate result only
       scaleplots=.false.
       else
       scaleplots=.true.
-      scalefac=dfloat(itmx)/dfloat(itno)
+      scalefac=1d0/dfloat(itno)
       endif
 
       outfiledat=runname
@@ -54,13 +55,22 @@ c--- write out run info to top of files
       call writeinfo(98,xsec,xsec_err,itno)      
       call writeinfo(99,xsec,xsec_err,itno)      
 
+c--- make sure to scale results by the maximum number of iterations
+      if (itno .eq. 0) then
+        itscale=1d0/dfloat(itmx)
+        mop='V'
+      else
+        itscale=1d0/dfloat(itno)
+        mop='U'
+      endif
+      
 c--- calculate the errors in each plot (and store in 2*maxhisto+j)    
       do j=1,nplotmax
       if (verbose) then
-c        write(6,*) 'Finalizing plot ',j
+c        write(6,*) 'Calculating errors for plot ',j
         call flush(6)
       endif
-      call mopera(j,'V',maxhisto+j,2*maxhisto+j,1d0,1d0)
+      call mopera(j,mop,maxhisto+j,2*maxhisto+j,itscale,1d0)
       enddo
 
       do j=1,nplotmax
@@ -76,17 +86,19 @@ c--- ensure that MFINAL doesn't turn off booking for intermediate results
       endif
       enddo
 
+      nempty=0
       do j=1,nplotmax
       if (verbose) then
 c        write(6,*) 'Writing .dat for plot ',j
         call flush(6)
       endif
       call mprint(j)
+      if (book(j) .ne. 'YES') nempty=nempty+1
       enddo
       close (unit=98)
 
-c---generate topdrawer file
-      do j=1,nplotmax
+c---generate topdrawer file - only for non-empty plots
+      do j=1,nplotmax-nempty
       if (verbose) then
 c        write(6,*) 'Writing .top for plot ',j
         call flush(6)

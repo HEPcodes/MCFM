@@ -1,4 +1,4 @@
-      subroutine qqb_ttb_g(p,msq)
+      subroutine qqb_ttb_g_old(p,msq)
       implicit none
 ************************************************************************
 *     Author: R.K. Ellis                                               *
@@ -17,12 +17,14 @@ C***********************************************************************
       include 'zprods_com.f'
       integer b,j,k,h1,h2
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),ampsq(2,2)
-      double precision wtgg,wtqqb,wtqbq,wtqg,fac
+      double precision wtgg,wtqqb,wtqbq,wtqg,wtgq,fac
       double complex T1(2,2),T2(2,2),T3(2,2),T4(2,2),T5(2,2),
      . T6(2,2),T7(2,2),x1(2,2),x2(2,2),x3(2,2),x4(2,2),x12(2,2)
 
       
       call spinoru(9,p,za,zb)
+
+c--- calculate qqb contribution
 
       b=1
       call diagg1(1,2,9,b,T1)      
@@ -32,8 +34,8 @@ C***********************************************************************
       call diagg5(1,2,9,b,T5)      
       call diagg6(1,2,9,b,T6)      
       call diagg7(1,2,9,b,T7)      
-      wtqqb=0d0
-     
+
+      wtqqb=0d0     
       do h1=1,2
       do h2=1,2
       x1(h1,h2)=-0.5d0*(t1(h1,h2)+t2(h1,h2))/xn
@@ -47,8 +49,7 @@ C***********************************************************************
       enddo
       enddo
 
-      wtqbq=0d0
-
+c--- calculate qbq contribution
 
       b=1
       call diagg1(2,1,9,b,T1)      
@@ -59,10 +60,7 @@ C***********************************************************************
       call diagg6(2,1,9,b,T6)      
       call diagg7(2,1,9,b,T7)      
 
-
-      wtqqb=0d0
-
-
+      wtqbq=0d0
       do h1=1,2
       do h2=1,2
       x1(h1,h2)=-0.5d0*(t1(h1,h2)+t2(h1,h2))/xn
@@ -77,6 +75,9 @@ C***********************************************************************
       enddo
 
 
+c--- calculate qg contribution
+
+      b=1
       call diagg1(1,9,2,b,T1)      
       call diagg2(1,9,2,b,T2)      
       call diagg3(1,9,2,b,T3)      
@@ -87,7 +88,6 @@ C***********************************************************************
 
 
       wtqg=0d0
-
       do h1=1,2
       do h2=1,2
       x1(h1,h2)=-0.5d0*(t1(h1,h2)+t2(h1,h2))/xn
@@ -101,6 +101,35 @@ C***********************************************************************
       enddo
       enddo
 
+c--- calculate gq contribution
+
+      b=2
+      call diagg1(9,2,1,b,T1)	   
+      call diagg2(9,2,1,b,T2)	   
+      call diagg3(9,2,1,b,T3)	   
+      call diagg4(9,2,1,b,T4)	   
+      call diagg5(9,2,1,b,T5)	   
+      call diagg6(9,2,1,b,T6)	   
+      call diagg7(9,2,1,b,T7)	   
+
+
+      wtgq=0d0
+      do h1=1,2
+      do h2=1,2
+      x1(h1,h2)=-0.5d0*(t1(h1,h2)+t2(h1,h2))/xn
+      x2(h1,h2)=-0.5d0*(t3(h1,h2)+t4(h1,h2)+t5(h1,h2)+t6(h1,h2))/xn
+      x12(h1,h2)=x1(h1,h2)+x2(h1,h2)
+      x3(h1,h2)=0.5d0*(t1(h1,h2)+t3(h1,h2)+t5(h1,h2)-t7(h1,h2))
+      x4(h1,h2)=0.5d0*(t2(h1,h2)+t4(h1,h2)+t6(h1,h2)+t7(h1,h2))
+      ampsq(h1,h2)=0.5d0*V/xn*(abs(x1(h1,h2))**2+abs(x2(h1,h2))**2
+     .  +abs(x3(h1,h2))**2+abs(x4(h1,h2))**2-2d0*abs(x12(h1,h2))**2)
+      wtgq=wtgq+ampsq(h1,h2)
+      enddo
+      enddo
+
+c--- calculate gg contribution - CURRENTLY SET TO ZERO
+
+      wtgg=0d0
 
 
 C----set all elements to zero
@@ -109,19 +138,24 @@ C----set all elements to zero
       msq(j,k)=0d0
       enddo
       enddo
-      wtgg=0d0
 
-      fac=(gwsq/2d0)**4*gsq**3
+      fac=xn**2*(gwsq/2d0)**4*gsq**3
+
 C---fill qb-q, gg and q-qb elements
       do j=-nf,nf
-      if (j .lt. 0) then
+      if     (j .gt. 0) then
           msq(j,-j)=aveqq*fac*wtqqb
+	  msq(j,0)=aveqg*fac*wtqg
+	  msq(0,j)=aveqg*fac*wtgq
       elseif (j .eq. 0) then
           msq(j,j)=avegg*fac*wtgg
-      elseif (j .gt. 0) then
+      elseif (j .lt. 0) then
           msq(j,-j)=aveqq*fac*wtqbq
+	  msq(j,0)=aveqg*fac*wtqg
+	  msq(0,j)=aveqg*fac*wtgq
       endif
       enddo
+      
       return
       end
 

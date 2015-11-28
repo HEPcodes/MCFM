@@ -38,12 +38,17 @@ c     Notation to allow room for p3 --- gluon emission.
       double precision v2(2),cl1,cl2,en1,en2
       double precision ave,cotw,wwflag,xfac
       character*2 plabel(mxpart)
+      logical srdiags
       common/plabel/plabel
       double precision FAC,FACM
       integer j,k
       parameter(ave=0.25d0/xn)
       data cl1,cl2,en1,en2/4*1d0/
 
+c--- include singly resonant diagrams if zerowidth=.false. , but only
+c---  as long as anomtgc=.false. too
+      srdiags=((zerowidth .eqv. .false.) .and. (anomtgc .eqv. .false.))
+      
       FAC=-two*gwsq*esq
       if ((nwz.eq.1) .or. (nwz .eq. -1)) then
       FACM=nwz*FAC
@@ -186,7 +191,7 @@ c---case u-dbar or d-ubar
       Fa213465=A6treea(2,1,3,4,6,5,za,zb)
       Fa215643=A6treea(2,1,5,6,4,3,za,zb)
 
-      if (zerowidth .neqv. .true.) then
+      if (srdiags) then
 c---for supplementary diagrams.
       Fa346512=A6treea(3,4,6,5,1,2,za,zb)
       Fa342156=A6treea(3,4,2,1,5,6,za,zb)
@@ -228,7 +233,7 @@ c--no point in wasting time if it gives zero anyway
      .           +FACM*(v2(2)*cotw*prop56*Fb123465_z
      .                                +q1*Fb123465_g)*prop12)*prop34
           endif
-          if (zerowidth .neqv. .true.) then
+          if (srdiags) then
 c---we need supplementary diagrams for gauge invariance.
 c---now also assume that we have lepton decay products for W
 c---so that v2(1)=le, v2(2)=re

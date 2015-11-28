@@ -18,6 +18,8 @@ c                            --> e^-(p3) + nubar(p4)
       double precision msq(-nf:nf,-nf:nf),msqc(maxd,-nf:nf,-nf:nf),
      . p(mxpart,4),q(mxpart,4),omz,z,fac,ptDpg,pbDpg,ptDpb
       integer j,k
+      logical incldip(0:maxd)
+      common/incldip/incldip
 
       do j=-nf,nf
       do k=-nf,nf
@@ -26,6 +28,7 @@ c                            --> e^-(p3) + nubar(p4)
       enddo
 
       ndmax=1
+      incldip(1)=.true.
 
       call wtransform_wt(p,q,pbDpg,ptDpg,ptDpb)
 

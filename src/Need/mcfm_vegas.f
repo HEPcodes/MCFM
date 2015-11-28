@@ -73,13 +73,6 @@ c--- Put the vegasnr parameters in the common block
       ncall=myncall
       bin=mybin
       
-c--- Basic lowest-order integration
-      if (part .eq. 'lord') then
-       call boundregion(ndim,region)
-       call vegasnr(region,ndim,lowint,myinit,myncall,myitmx,
-     .               0,sig,sd,chi)
-      endif
-
 c--- Store value of part in mypart, which will be retained;
 c--- also store value of scale in myscale, which will be retained;
 c--- part and scale can be changed to make sure that the tota option works.
@@ -87,6 +80,13 @@ c--- part and scale can be changed to make sure that the tota option works.
       myscale=scale
       myfacscale=facscale
       
+c--- Basic lowest-order integration
+      if (part .eq. 'lord') then
+       call boundregion(ndim,region)
+       call vegasnr(region,ndim,lowint,myinit,myncall,myitmx,
+     .               0,sig,sd,chi)
+      endif
+
 c--- If we're doing the tota integration, then set up the grid info
       if ((mypart .eq. 'tota') .or. (mypart .eq. 'todk')) then        
         if (first .and. (myinit .eq. 1)) then

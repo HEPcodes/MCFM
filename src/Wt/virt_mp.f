@@ -23,7 +23,7 @@ c----
       double precision dot,taucg,taugs,taucs,msq,mQ
       double precision qsq,tcg,tcs,qsqhat,qcg,qcs,cgs1
       double precision ddilog,epin,epin2,xlog
-      double complex smp
+      double complex smp,lomp
       double complex amp1,amp2,amp3,amp4
       double complex ffcg1,ffcg2,ffcg3,ffcs1,ffcs2,fun1,fun2,fun3,fun4
       double complex fL6m1,fL6m2,fL6m3,L6m1,L6m2,L6m3
@@ -148,8 +148,14 @@ c      common/breit/n2,n3,mass2,width2,mass3,width3
      &    msq)*taucg**(-1)*mQ**2*xn**(-1)*qcs*cgs1*amp1
       smp = smp + C0fa2m(tcs,qsq,msq)*taugs*mQ**2*xn**(-1)*amp3
 
-c      lomp=za(ie,ic)
-c    . /za(ig,is)/za(ig,ic)*(za(is,ic)*zb(is,in)+za(ig,ic)*zb(ig,in)) 
+      lomp=za(ie,ic)
+     . /za(ig,is)/za(ig,ic)*(za(is,ic)*zb(is,in)+za(ig,ic)*zb(ig,in)) 
+
+c--- include finite counterterm to go from DR to MSbar scheme
+c--- alphas(DR) = alphas(MSbar) * (1+ (Nc / 6) * alphas(MSbar) / (2*pi))
+      smp=smp + lomp * xn/6d0
+      
       virt_mp=smp
+      
       return
       end

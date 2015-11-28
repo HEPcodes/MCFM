@@ -82,6 +82,8 @@ c--- processes that use "gen2"
       if     ( (case .eq. 'W_only')
      .    .or. (case .eq. 'Z_only')
      .    .or. (case .eq. 'ggfus0')
+     .    .or. (case .eq. 'Wcsbar')
+     .    .or. (case .eq. 'Wcs_ms')
      .    .or. (case .eq. 'vlchk2') ) then
         if (case .eq. 'vlchk2') then
           wsqmin=0d0
@@ -135,6 +137,9 @@ c--- processes that use "gen6"
       elseif ( (case .eq. 'tt_bbl')
      .    .or. (case .eq. 'tt_bbh')
      .    .or. (case .eq. 'tautau')
+     .    .or. (case .eq. 'qq_HWW')
+     .    .or. (case .eq. 'WH__WW')
+     .    .or. (case .eq. 'ZH__WW')
      .    .or. (case .eq. 'vlchk6') ) then
         npart=6
         call gen6(r,p,pswt,*999)
@@ -231,6 +236,10 @@ c--- bother calculating the matrix elements for it, instead bail out
       omz=1d0-z
 
       flux=fbGeV2/(2d0*xx(1)*xx(2)*W)
+c--- for mlm study, divide by (Ecm)**2=W
+      if (runstring(1:3) .eq. 'mlm') then
+	flux=flux/W
+      endif
 
 c--- to test poles, we need colourchoice=0, but save real value
       if (nshot .eq. 1) then
@@ -386,10 +395,18 @@ c--- Calculate the required matrix elements
         call qqb_wh(p,msq)
         call qqb_wh_v(p,msqv)
         call qqb_wh_z(p,z)
+      elseif (case .eq. 'WH__WW') then
+        call qqb_wh_ww(p,msq)
+        call qqb_wh_ww_v(p,msqv)
+        call qqb_wh_z(p,z) ! nb: the same as above
       elseif (case .eq. 'ZHbbar') then
         call qqb_zh(p,msq)
         call qqb_zh_v(p,msqv)
         call qqb_zh_z(p,z)
+      elseif (case .eq. 'ZH__WW') then
+        call qqb_zh_ww(p,msq)
+        call qqb_zh_ww_v(p,msqv)
+        call qqb_zh_z(p,z) ! nb: the same as above
       elseif (case .eq. 'ggfus0') then
         call gg_h(p,msq)
         call gg_h_v(p,msqv)
@@ -485,6 +502,10 @@ c--- Calculate the required matrix elements
         call VV_hqq(p,msq)
         call VV_hqq_v(p,msqv)
         call VV_hqq_z(p,z)
+      elseif (case .eq. 'qq_HWW') then
+        call VV_HWW(p,msq)
+        call VV_HWW_v(p,msqv)
+        call VV_HWW_z(p,z)
       elseif (case .eq. 'gQ__ZQ') then
         call gQ_zQ(p,msq)
         call gQ_zQ_v(p,msqv)
@@ -493,6 +514,26 @@ c--- Calculate the required matrix elements
         call qqb_zbjet(p,msq)
         call qqb_zbjet_v(p,msqv)
         call qqb_zbjet_z(p,z)
+      elseif (case .eq. 'Wcsbar') then
+        call qqb_w(p,msq)
+        call qqb_w_v(p,msqv)
+        call qqb_w_z(p,z)
+      elseif (case .eq. 'Wcs_ms') then
+c--- massive subtraction term only
+        call qqb_w(p,msq)
+	do j=-nf,nf
+	do k=-nf,nf
+	msqv(j,k)=0d0
+	enddo
+	enddo
+        do j=-1,1
+        do k=-1,1
+        AP(j,k,1)=0d0
+        AP(j,k,2)=0d0
+        AP(j,k,3)=0d0
+        enddo
+        enddo
+        AP(q,g,2)=-ason2pi*Tr*(z**2+omz**2)*dlog(facscale**2/mcsq)
       endif
       
 C---initialize to zero
@@ -505,14 +546,14 @@ C---initialize to zero
       currentPDF=0
             
 c--- initialize a PDF set here, if calculating errors
-  777 continue    
+  777 continue
       xmsq=0d0
       if (PDFerrors) then
         call InitPDF(currentPDF)
       endif
       call fdist(ih1,xx(1),facscale,fx1)
       call fdist(ih2,xx(2),facscale,fx2)
-
+      
       do j=-nf,nf
       fx1z(j)=0d0
       fx2z(j)=0d0
@@ -541,6 +582,8 @@ c--- initialize a PDF set here, if calculating errors
       if (noglue) then 
       if ((j.eq.0) .or. (k.eq.0)) goto 20
       endif
+
+      if ((case .eq. 'Wcsbar').and.(j .ne. 4).and.(k .ne. 4)) goto 20
 
       tmp=xmsq
 
@@ -1155,6 +1198,11 @@ C--Qbarg
       
       endif
 
+c--- subtract off LO (we don't want it) for Wcs_ms case
+      if (case .eq. 'Wcs_ms') then
+        xmsq=xmsq-msq(j,k)*fx1(j)*fx2(k)
+      endif  
+           
       if     (j .gt. 0) then
         sgnj=+1
       elseif (j .lt. 0) then
@@ -1250,8 +1298,6 @@ c--- update the maximum weight so far, if necessary
       endif
 
       if (bin) then
-        val=val/dfloat(itmx) 
-        val2=val2/dfloat(itmx)**2
         call nplotter(pjet,val,val2,0)
       endif
 

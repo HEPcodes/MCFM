@@ -17,7 +17,7 @@
       integer j,k
       double precision p(mxpart,4)
       double precision s,prop,fac,q1423,q2413,s56,v2(2)
-      double precision msq(-nf:nf,-nf:nf)
+      double precision msq(-nf:nf,-nf:nf),hdecay
 
       s(j,k)=2*(p(j,4)*p(k,4)-p(j,1)*p(k,1)-p(j,2)*p(k,2)-p(j,3)*p(k,3))
 
@@ -36,15 +36,20 @@ c---cut to ensure hard process
      . .or. (s(1,5)*s(2,5)/s(1,2) .lt. mbsq) 
      . .or. (s(1,6)*s(2,6)/s(1,2) .lt. mbsq) ) return
 
-c---calculate the 3 propagators
+c---calculate the 2 Z propagators
       prop=     ((s(1,2)-zmass**2)**2+(zmass*zwidth)**2)
       prop=prop*((s(3,4)-zmass**2)**2+(zmass*zwidth)**2)
-      prop=prop*((s56-hmass**2)**2+(hmass*hwidth)**2)
 
-c spinave only (color factors cancel)
-      fac=two*spinave*gw**8*(xw/(1d0-xw))**2*mbsq*(s56-4d0*mb**2)/prop
-      q1423=fac*s(1,4)*s(2,3)
-      q2413=fac*s(2,4)*s(1,3)
+      fac=xn*4d0*(xw/(1d0-xw))**2*gwsq**3*wmass**2/prop
+      hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s56-4d0*mb**2)
+      hdecay=hdecay/((s56-hmass**2)**2+(hmass*hwidth)**2)
+      fac=fac*hdecay
+c-- Old form of this matrix element (modified to facilitate extension
+c--- to H->WW decay)
+c      spinave only (color factors cancel)
+c       fac=two*spinave*gw**8*(xw/(1d0-xw))**2*mbsq*(s56-4d0*mb**2)/prop
+      q1423=aveqq*fac*s(1,4)*s(2,3)
+      q2413=aveqq*fac*s(2,4)*s(1,3)
 
       do j=-nf,nf
       if (j .eq. 0) go to 40

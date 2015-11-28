@@ -28,10 +28,11 @@ echo 'LHAPDFLIB   = '$LHAPDFLIB >> makefile.new
 echo '' >> makefile.new
 echo 'MCFMHOME        = '`pwd` >> makefile.new
 echo 'SOURCEDIR       = '`pwd`'/src' >> makefile.new
-tail +10 makefile >> makefile.new
+tail -n +10 makefile >> makefile.new
+mv makefile makefile.orig
 mv makefile.new makefile
 
-mkdir obj/
+mkdir -p obj/
 cd Doc
 latex mcfm > latex.out
 latex mcfm > latex.out

@@ -23,7 +23,7 @@ c----
       double precision dot,taucg,taugs,taucs,msq,mQ
       double precision qsq,tcg,tcs,qsqhat,qgs,qcg,qcs,cgs1
       double precision ddilog,epin,epin2,xlog
-      double complex smm
+      double complex smm,lomm
       double complex amm1,amm2,amm3,amm4,amm5
       double complex fq2m2,fc002,fc00,ffc00,ffc002,fI3me
       double complex ffcg1,ffcg3,ffcs1,ffcs2,fun1,fun2,fun4
@@ -208,8 +208,14 @@ c      common/breit/n2,n3,mass2,width2,mass3,width3
      &    mQ**2*cf*qcs*amm3 + 2.D0*fI3me*mQ**2*cf*amm2 - 2.D0*fI3me*
      &    mQ**2*xn*cgs1*amm3 - fI3me*mQ**2*xn*amm2
 
-c      lomm =-(za(ig,ie)*zb(ig,is)+za(ie,ic)*zb(is,ic))*zb(is,in)
-c     . /zb(ig,is)/zb(ig,ic)
+      lomm =-(za(ig,ie)*zb(ig,is)+za(ie,ic)*zb(is,ic))*zb(is,in)
+     . /zb(ig,is)/zb(ig,ic)      
+
+c--- include finite counterterm to go from DR to MSbar scheme
+c--- alphas(DR) = alphas(MSbar) * (1+ (Nc / 6) * alphas(MSbar) / (2*pi))
+      smm=smm + lomm * xn/6d0
+      
       virt_mm=smm
+      
       return
       end

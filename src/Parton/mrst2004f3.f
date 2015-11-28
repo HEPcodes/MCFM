@@ -27,7 +27,7 @@ C***************************************************************C
       data xmin,xmax,qsqmin,qsqmax/1d-5,1d0,1.25d0,1d7/
       q2=q*q
       if(q2.lt.qsqmin.or.q2.gt.qsqmax) print 99,q2
-      if(x.lt.xmin.or.x.gt.xmax)       print 98,x
+c      if(x.lt.xmin.or.x.gt.xmax)       print 98,x
           if(mode.eq.1) then
         call mrst1f3(x,q2,upv,dnv,usea,dsea,str,chm,bot,glu) 
       elseif(mode.eq.2) then

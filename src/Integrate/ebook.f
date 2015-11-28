@@ -138,7 +138,8 @@ c--- loop over all PDF sets
       IMPLICIT REAL*8 (A-H,O-Z)
       IMPLICIT INTEGER (I-N)
       include 'PDFerrors.f'
-      double precision EHIST(4,40,100),maxhist(100),minhist(100)
+      double precision EHIST(4,40,100),maxhist(100),minhist(100),
+     . PDFperror,PDFnerror
       integer IHISTOMATCH(100),ICOUNTHISTO                    
       CHARACTER*(*) LTIT,BTIT,SCALE
 c--- This is the MBOOK common block
@@ -180,18 +181,24 @@ c--- this bit writes out the normal plot
 c--- this bit writes out the error bounds      
       NMATCH=IHISTOMATCH(N)
       
+c--- Note that asymmetric errors are calculated according to
+c--- Eq. (43) of "Hard Interactions of Quarks and Gluons",
+c---  J.Campbell, J.Huston, W.J. Stirling, Rep. Prog. Phys. 70 (2007) 89
+
 c--- loop over all PDF sets
       DO J=1,NBIN(N)
-        maxhist(J)=HIST(N,J)
-        minhist(J)=HIST(N,J)
-        DO K=1,maxPDFsets      
+	PDFperror=0d0
+	PDFnerror=0d0
+        DO K=1,maxPDFsets-1,2      
         IF(EHIST(NMATCH,K,J).ne.0.) then
-          if (EHIST(NMATCH,K,J) .gt. maxhist(j))
-     .      maxhist(j)=EHIST(NMATCH,K,J)
-          if (EHIST(NMATCH,K,J) .lt. minhist(j))
-     .      minhist(j)=EHIST(NMATCH,K,J)
+	  PDFperror=PDFperror+max(0d0,
+     .     EHIST(NMATCH,K,J)-HIST(N,J),EHIST(NMATCH,K+1,J)-HIST(N,J))**2
+	  PDFnerror=PDFnerror+max(0d0,
+     .     HIST(N,J)-EHIST(NMATCH,K,J),HIST(N,J)-EHIST(NMATCH,K+1,J))**2
         ENDIF
         ENDDO
+        maxhist(J)=HIST(N,J)+dsqrt(PDFperror)
+        minhist(J)=HIST(N,J)-dsqrt(PDFnerror)
       ENDDO
 
   201 FORMAT('  SET ORDER X Y DY')

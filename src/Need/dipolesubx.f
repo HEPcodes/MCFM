@@ -38,6 +38,10 @@
       include 'qcdcouple.f'
       include 'qqgg.f'
       include 'ptilde.f'
+      include 'dynamicscale.f'
+      include 'initialscales.f'
+      include 'dipolescale.f'
+      include 'facscale.f'
       double precision p(mxpart,4),ptrans(mxpart,4),sub(4),subv,vecsq
       double precision x,omx,z,omz,y,omy,u,omu,sij,sik,sjk,dot,vec(4)
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf)
@@ -77,6 +81,13 @@ C---Initialize the dipoles to zero
           vec(nu)=p(jp,nu)-sij/sik*p(kp,nu)
         enddo
         vecsq=-sij*sjk/sik
+
+c--- if using a dynamic scale, set that scale with dipole kinematics	
+	if (dynamicscale) then
+	  call scaleset(initscale,initfacscale,ptrans)
+	  dipscale(nd)=facscale
+	endif
+	
         call subr_born(ptrans,msq,mqq,msqx,mg)
         call subr_corr(ptrans,vec,ip,msqv,mvg,mvxg)
 
@@ -101,6 +112,13 @@ C---transform the momenta so that only the first npart+1 are filled
         do nu=1,4
            vec(nu)=p(jp,nu)/u-p(kp,nu)/omu
         enddo
+
+c--- if using a dynamic scale, set that scale with dipole kinematics	
+	if (dynamicscale) then
+	  call scaleset(initscale,initfacscale,ptrans)
+	  dipscale(nd)=facscale
+	endif
+	
         call subr_born(ptrans,msq,mqq,msqx,mg)
         call subr_corr(ptrans,vec,ip,msqv,mvg,mvxg)        
         sub(qq)=-gsq/x/sij*(two/(omx+u)-one-x)
@@ -127,6 +145,13 @@ C---call again because vec has changed
           ptrans(j,k)=ptilde(nd,j,k)
         enddo
         enddo
+
+c--- if using a dynamic scale, set that scale with dipole kinematics	
+	if (dynamicscale) then
+	  call scaleset(initscale,initfacscale,ptrans)
+	  dipscale(nd)=facscale
+	endif
+	
 c--- do something special if we're doing W+2,Z+2jet (jp .ne. 7)
         if (jp .ne.7) then
           if (ip .lt. 7) then
@@ -163,6 +188,13 @@ C---calculate the ptrans-momenta
        do nu=1,4
          vec(nu)=z*p(ip,nu)-omz*p(jp,nu)
        enddo
+
+c--- if using a dynamic scale, set that scale with dipole kinematics	
+	if (dynamicscale) then
+	  call scaleset(initscale,initfacscale,ptrans)
+	  dipscale(nd)=facscale
+	endif
+	
        call subr_born(ptrans,msq,mqq,msqx,mg)
        if (ip .lt. kp) then
          call subr_corr(ptrans,vec,5,msqv,mvg,mvxg)

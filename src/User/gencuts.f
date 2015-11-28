@@ -32,20 +32,20 @@
       character*2 plabel(mxpart)
       integer njets,j,k,countb,bindex(mxpart),jindex,kindex,ib1,ib2
       integer countlept,leptindex(mxpart),countgamm,gammindex(mxpart),
-     . countjet,jetindex(mxpart),pntr,lbjscheme,maxparts
+     . countjet,jetindex(mxpart),pntr,lbjscheme,maxparts,notag
       double precision pjet(mxpart,4),etvec(4)
       double precision leptpt,leptrap,misspt,jetpt,jetrap,gammpt,gammrap
       double precision pt,etarap,etmiss,evtmisset,R,Rcut,gammcone,
-     . gammcut,etaj,etak,etalept
+     . gammcut,etaj,etak,etalept,mll
       double precision Rjlmin,Rllmin,delyjjmin,leptpt2,leptrap2
       double precision delta(mxpart),discr,ptjet(mxpart),etabuffer
 c    . ,MJJ
-      logical jetsopphem,passed
+      logical jetsopphem,passed,hwwjetcuts
 c      integer nu
 c      double precision sumjetpt(2)
       double precision ht,qeta,mlbnu,merecon,reconcorr
       double precision dphi_ll,m_ll,mtrans,scut1,scut2
-c      double precision pt34,pttwo
+      double precision pt34,pttwo,phill,phillcut,etajet2cut,mllcut
       character*30 runstring
       common/runstring/runstring
       common/stopvars/ht,qeta,mlbnu,merecon,reconcorr
@@ -55,13 +55,23 @@ c      double precision pt34,pttwo
      . lbjscheme,jetsopphem
       common/plabel/plabel
       common/rcut/Rcut
+      common/notag/notag
 ************************************************************************
 *     Set-up the jet-like cut parameters here                          *
       parameter (jetpt=15d0,jetrap=2d0)
 ************************************************************************
+      parameter(phillcut=1.2d0,etajet2cut=2.5d0,mllcut=75d0)
       data first/.true./
-
+      
       gencuts=.false.
+
+c--- perform extra H(->WW)+jet search cuts if there is a minimum
+c---  jet rapidity, as is usually done
+      if (abs(etajetmin) .gt. 1d-6) then
+        hwwjetcuts=.true.
+      else
+        hwwjetcuts=.false.
+      endif 
 
 c--- extra transverse mass cut in W+jets for CDF
       if (runstring(1:7) .eq. 'cdfjoey') then
@@ -100,7 +110,11 @@ c--- do H->WW search cuts instead
       if (runstring(1:3) .eq. 'wbf') then
 c--- do WBF search cuts instead
         maxparts=4+njets
-        call wbfcuts(pjet,maxparts,passed)  
+	if (runstring(4:8) .eq. 'jeppe') then
+          call wbfcuts_jeppe(pjet,maxparts,passed)  
+        else
+	  call wbfcuts(pjet,maxparts,passed)  
+	endif
         if (passed .eqv. .false.) gencuts=.true.
         return
       endif
@@ -168,6 +182,14 @@ c--- write-out the cuts we are using
      .                '                    *'
       write(6,99) '*   R(jet1,jet2)     >   ',Rcut,
      .                '                    *'
+      endif
+      if (hwwjetcuts) then
+      write(6,99) '*   phi(lepton,lepton)   <   ',phillcut,
+     .                '                *'
+      write(6,99) '*  |eta(2nd jet)|        >   ',etajet2cut,
+     .                '                *'
+      write(6,99) '*  m(lepton,lepton)      <   ',mllcut,
+     .                '                *'
       endif
       write(6,*)  '****************************************************'
       endif
@@ -248,6 +270,32 @@ c--- lepton-lepton separation (if there are 2 or more leptons)
           endif
         enddo
         enddo
+c--- extra cut on phi(lept,lept) for H(->WW)+jet search
+	if (hwwjetcuts) then
+          phill=
+     .       (pjet(leptindex(1),1)*pjet(leptindex(2),1)
+     .       +pjet(leptindex(1),2)*pjet(leptindex(2),2))
+     .       /dsqrt((pjet(leptindex(1),1)**2+pjet(leptindex(1),2)**2)
+     .             *(pjet(leptindex(2),1)**2+pjet(leptindex(2),2)**2))
+          if (phill .lt. -0.999999999D0) phill=-1d0
+          phill=dacos(phill) 
+	  if (phill .gt. phillcut) then
+	    gencuts=.true.
+	    return
+	  endif
+	endif
+c--- extra cut on m(lept,lept) for H(->WW)+jet search
+	if (hwwjetcuts) then
+          mll=dsqrt(2d0*(
+     .       +pjet(leptindex(1),4)*pjet(leptindex(2),4)
+     .       -pjet(leptindex(1),1)*pjet(leptindex(2),1)
+     .       -pjet(leptindex(1),2)*pjet(leptindex(2),2)
+     .       -pjet(leptindex(1),3)*pjet(leptindex(2),3)))
+	  if (mll .gt. mllcut) then
+	    gencuts=.true.
+	    return
+	  endif
+	endif
       endif
  
 c--- lepton-photon separation 
@@ -281,12 +329,27 @@ c--- countjet will pick up the extra 'pp' needed for the real piece,
 c--- therefore we should subtract 1 from this number     
       if (countjet .gt. njets) countjet=countjet-1
 
-      if (njets .ne. countjet) then
+      if ((njets .ne. countjet) .and. (notag .eq. 0)) then
         write(6,*) 'Something is wrong in gencuts.f -'
         write(6,*) 'countjet = ',countjet,' BUT njets = ',njets
         stop
       endif
       
+c--- extra cut on eta(2nd jet) for H(->WW)+jet search
+      if ((hwwjetcuts) .and. (countjet .ge. 2)) then
+        if (pt(jetindex(1),pjet) .gt. pt(jetindex(2),pjet)) then
+          if (abs(etarap(jetindex(2),pjet)) .lt. etajet2cut) then
+            gencuts=.true.
+            return
+          endif
+        else
+          if (abs(etarap(jetindex(1),pjet)) .lt. etajet2cut) then
+            gencuts=.true.
+            return
+          endif
+        endif
+      endif
+
 c--- jet-lepton separation (if there are 1 or more jets and leptons)
       if ((njets .gt. 0) .and. (countlept .gt. 0)) then
         do j=1,countlept
@@ -447,13 +510,13 @@ C--- if there are jet-like particles (see above), do more cuts
           enddo
         enddo
       endif
-
+ 
       return
 
    99 format(1x,a29,f6.2,a17)
       
-c  999 write(6,*) 'Error reading gencuts.DAT'
-c      call flush(6)
+  999 write(6,*) 'Error reading gencuts.DAT'
+      call flush(6)
       stop      
 
       end

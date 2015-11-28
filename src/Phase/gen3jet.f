@@ -13,7 +13,7 @@ C---p1+p2 --> p3+p4+p5
       parameter(wt0=1d0/512d0/pi**3)
       common/x1x2/xx
 
-      do j=1,mxpart     
+      do j=6,mxpart     
       do nu=1,4     
       p(j,nu)=0d0
       enddo     

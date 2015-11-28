@@ -18,7 +18,7 @@
 \thispagestyle{empty}
 \vspace*{3cm}
 \begin{center}
-{\Huge MCFM v5.2} \\
+{\Huge MCFM v5.3} \\
 \vspace*{0.5cm}
 \Large{A Monte Carlo for FeMtobarn} \\
 \Large{processes at Hadron Colliders} \\
@@ -30,7 +30,7 @@
 J. M. Campbell ({\tt J.Campbell@physics.gla.ac.uk}) \\
 R. K. Ellis ({\tt ellis@fnal.gov}) \\
 \vspace*{2.5cm}
-{\it \small Updated: 12 July 2007}
+{\it \small Updated: 21st October 2008}
 \end{center}
 
 \newpage
@@ -167,7 +167,7 @@ $M_W$            & {\tt wmass}   & 80.419 GeV
  & input & calculated & input & calculated \\
 $M_Z$            & {\tt zmass}   & 91.188 GeV               
  & input & input & input & calculated \\
-$m_t$            & {\tt mt}      & 170.9 GeV                  
+$m_t$            & {\tt mt}      & 172.5 GeV                  
  & calculated & input & input & input \\
 \hline
 \end{tabular}
@@ -178,13 +178,19 @@ values.}
 \end{center}
 \end{table}
 
-For the default scheme ({\tt ewscheme=-1}), we use the effective field
+Starting from version 5.2 of the code, the default scheme has been
+changed from {\tt ewscheme=-1} (as in previous versions) to
+{\tt ewscheme=+1}. As described below, this corresponds to a scheme
+in which the top quark mass is an input parameter so that it is
+more suitable for many processes now included in the program.
+
+The choice of ({\tt ewscheme=-1}) enforces the use of an effective field
 theory approach, which is valid for scales below the top mass. In this
 approach there are 4 independent parameters (which we choose to be
 $G_F$, $\alpha(M_Z)$, $M_W$ and $M_Z$). For further details,
 see Georgi~\cite{Georgi:1991ci}.
 
-For the alternative schemes ({\tt ewscheme=0,1,2}) the top mass is simply
+For all the other schemes ({\tt ewscheme=0,1,2}) the top mass is simply
 an additional input parameter and there are 3 other independent
 parameters from the remaining 5. The variable {\tt ewscheme} then performs
 exactly the same role as {\tt idef} in MadEvent~\cite{Maltoni:2002qb}.
@@ -319,7 +325,17 @@ pdf set are then specified in {\tt Bin/input.DAT}.
 To use {\tt LHAPDF}, one must first set the variable {\tt LHAPDFLIB}
 in the makefile to point to the directory that contains
 {\tt libLHAPDF.a} and then modify {\tt PDFROUTINES} to
-take the value {\tt LHAPDF}. The parameters to choose the
+take the value {\tt LHAPDF}. Note that, in newer versions of LHAPDF,
+it may be easier to link against the static LHAPDF libraries by passing
+a ``{\tt -static}'' flag to the compiler via the {\tt FFLAGS} variable
+in the makefile, rather than using the (default) shared libraries.
+Particularly when compiling against both LHAPDF and CERNLIB, it may
+be useful to link only LHAPDF in a static manner. This can be achieved
+using g77, for instance, by replacing
+ ``{\tt -lLHAPDF}'' with ``{\tt -Wl,-Bstatic -lLHAPDF -Wl,-Bdynamic}''
+ in the makefile.
+ 
+The parameters to choose the
 pdf set are then provided in {\tt Bin/input.DAT} - 
 the name of the group and the integer specifying 
 the set.
@@ -464,11 +480,11 @@ $f(p_i)$ denotes a generic partonic jet.
 \hline
 {\tt nproc} & $ f(p_1)+f(p_2) \to \ldots $& Order \\ 
 \hline
-
 61& $ W^+(\to \nu(p_3)+e^+(p_4)) +W^-(\to e^-(p_5)+\bar{\nu}(p_6)) $ & NLO \\
 62& $ W^+(\to \nu(p_3)+e^+(p_4)) +W^-(\to q(p_5)+\bar{q}(p_6)) $ & NLO \\
 63& $ W^+(\to  q(p_3)+ \bar{q}(p_4)) +W^-(\to e^-(p_5)+\bar{\nu}(p_6)) $ & NLO \\
 64& $ W^+(\to \nu(p_3)+e^+(p_4)) +W^-(\to e^-(p_5)+\bar{\nu}(p_6)) ~[ \mbox{no pol} ] $ & NLO \\
+66& $ W^+(\to  q(p_3)+ \bar{q}(p_4)) +W^-(\to e^-(p_5)+\bar{\nu}(p_6))+f(p_7) $ & NLO \\
 \hline 
 71& $ W^+(\to \nu(p_3)+\mu^+(p_4))+Z^0(\to e^-(p_5)+e^+(p_6)) $ & NLO \\
 72& $ W^+(\to \nu(p_3)+\mu^+(p_4))+Z^0(\to \nu_e(p_5)+\bar{\nu}_e(p_6)) $ & NLO \\
@@ -479,21 +495,27 @@ $f(p_i)$ denotes a generic partonic jet.
 78& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4))+Z^0(\to b(p_5)+\bar{b}(p_6)) $ & NLO \\
 \hline 
 81& $ Z^0(\to \mu^-(p_3)+\mu^+(p_4)) + Z^0(\to e^-(p_5)+e^+(p_6)) $ & NLO \\
-82& $ Z^0(\to 3\times(\nu(p_3)+\bar{\nu}(p_4))) + Z^0(\to e^-(p_5)+e^+(p_6)) $ & NLO \\
+82& $ Z^0(\to e^-(p_3)+e^+(p_4)) + Z^0(\to 3\times(\nu(p_5)+\bar{\nu}(p_6)))$ & NLO \\
 83& $ Z^0(\to e^-(p_5)+e^+(p_6)) + Z^0(\to b(p_3)+\bar{b}(p_4)) $ & NLO \\
-84& $ Z^0(\to 3\times(\nu(p_3)+\bar{\nu}(p_4))) + Z^0(\to b(p_5)+\bar{b}(p_6)) $ & NLO \\
+84& $ Z^0(\to b(p_3)+\bar{b}(p_4)) + Z^0(\to 3\times(\nu(p_5)+\bar{\nu}(p_6)))$ & NLO \\
+85& $ Z^0(\to e^-(p_3)+e^+(p_4)) + Z^0(\to 3\times(\nu(p_5)+\bar{\nu}(p_6))) + f(p_7)$ & LO \\
 \hline 
-86& $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to \mu^-(p_3)+\mu^+(p_4)) ~[ \mbox{no $\gamma^*$} ] $ & NLO \\
-87& $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to 3\times(\nu(p_3)+\bar{\nu}(p_4))) ~[ \mbox{no $\gamma^*$} ] $ & NLO \\
-88& $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to b(p_3)+\bar{b}(p_4)) ~[ \mbox{no $\gamma^*$} ] $ & NLO \\
-89& $ Z^0(\to 3\times(\nu(p_3)+\bar{\nu}(p_4))) + Z^0(\to b(p_5)+\bar{b}(p_6))~[ \mbox{no $\gamma^*$} ] $ & NLO \\
+86& $ Z^0(\to \mu^-(p_3)+\mu^+(p_4)) + Z^0(\to e^-(p_5)+e^+(p_6))~[ \mbox{no $\gamma^*$} ] $ & NLO \\
+87& $ Z^0(\to e^-(p_3)+e^+(p_4))+Z^0(\to 3\times(\nu(p_5)+\bar{\nu}(p_6))) ~[ \mbox{no $\gamma^*$} ] $ & NLO \\
+88& $ Z^0(\to e^-(p_3)+e^+(p_4))+Z^0(\to b(p_5)+\bar{b}(p_6)) ~[ \mbox{no $\gamma^*$} ] $ & NLO \\
+89& $ Z^0(\to b(p_3)+\bar{b}(p_4))+Z^0(\to 3\times(\nu(p_5)+\bar{\nu}(p_6)))~[ \mbox{no $\gamma^*$} ] $ & NLO \\
 \hline 
 91& $ W^+(\to \nu(p_3)+e^+(p_4)) + H(\to b(p_5)+\bar{b}(p_6))  $ & NLO \\
+92& $ W^+(\to \nu(p_3)+e^+(p_4)) + H(\to W^+(\nu(p_5) e^+(p_6)) + W^-(e^-(p_7) \bar{\nu}(p_8)))  $ & NLO \\
 96& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4)) + H(\to b(p_5)+\bar{b}(p_6)) $ & NLO \\ 
+97& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4)) + H(\to W^+(\nu(p_5) e^+(p_6)) + W^-(e^-(p_7) \bar{\nu}(p_8)))  $ & NLO \\
 \hline 
 101& $ Z^0(\to e^-(p_3)+e^+(p_4)) + H(\to b(p_5)+\bar{b}(p_6)) $ & NLO \\
 102& $ Z^0(\to 3\times(\nu(p_3)+\bar{\nu}(p_4))) + H(\to b(p_5)+\bar{b}(p_6)) $ & NLO \\
 103& $ Z^0(\to b(p_3)+\bar{b}(p_4)) + H(\to b(p_5)+\bar{b}(p_6)) $ & NLO \\     
+106& $ Z^0(\to e^-(p_3)+e^+(p_4)) + H(\to W^+(\nu(p_5) e^+(p_6)) + W^-(e^-(p_7) \bar{\nu}(p_8))) $ & NLO \\
+107& $ Z^0(\to 3\times(\nu(p_3)+\bar{\nu}(p_4))) + H(\to W^+(\nu(p_5) e^+(p_6)) + W^-(e^-(p_7) \bar{\nu}(p_8))) $ & NLO \\
+108& $ Z^0(\to b(p_3)+\bar{b}(p_4)) + H(\to W^+(\nu(p_5) e^+(p_6)) + W^-(e^-(p_7) \bar{\nu}(p_8))) $ & NLO \\     
 \hline 
 111& $ H(\to b(p_3)+\bar{b}(p_4)) $ & NLO \\
 112& $ H(\to \tau^-(p_3)+\tau^+(p_4)) $ & NLO \\
@@ -501,10 +523,6 @@ $f(p_i)$ denotes a generic partonic jet.
 114& $ H(\to Z^0(\mu^-(p_3)+\mu^+(p_4)) + Z^0(e^-(p_5)+e^+(p_6)) $ & NLO \\
 115& $ H(\to Z^0(3\times(\nu(p_3)+\bar{\nu}(p_4)))+ Z^0(e^-(p_5)+e^+(p_6)) $ & NLO \\
 116& $ H(\to Z^0(\mu^-(p_3)+\mu^+(p_4)) + Z^0(b(p_5)+\bar{b}(p_6)) $ & NLO \\
-\hline 
-141& $ H(\to b(p_3)+\bar{b}(p_4)) + b(p_5) (+g(p_6)) $ & NLO \\
-142& $ H(\to b(p_3)+\bar{b}(p_4)) + \bar{b}(p_5) (+b(p_6)) $ & NLO \\
-143& $ H(\to b(p_3)+\bar{b}(p_4)) + b(p_5) + \bar{b}(p_6) ~[ \mbox{both observed} ] $ & NLO \\
 \hline 
 \end{tabular}
 \end{center}
@@ -516,7 +534,10 @@ $f(p_i)$ denotes a generic partonic jet.
 \hline
 {\tt nproc} & $ f(p_1)+f(p_2) \to \ldots $& Order \\ 
 \hline
-
+141& $ H(\to b(p_3)+\bar{b}(p_4)) + b(p_5) (+g(p_6)) $ & NLO \\
+142& $ H(\to b(p_3)+\bar{b}(p_4)) + \bar{b}(p_5) (+b(p_6)) $ & NLO \\
+143& $ H(\to b(p_3)+\bar{b}(p_4)) + b(p_5) + \bar{b}(p_6) ~[ \mbox{both observed} ] $ & NLO \\
+\hline 
 151& $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{t}(\to \bar{b}(p_6))+e^-(p_7)+\bar{\nu}(p_8)) $ & LO \\
 152& $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{t}(\to \bar{b}(p_6))+q(p_7)+\bar{q}(p_8)) $ & LO \\
 \hline 
@@ -558,13 +579,6 @@ $f(p_i)$ denotes a generic partonic jet.
 207& $ A(\to \tau^-(p_3)+\tau^+(p_4)) + f(p_5) ~[ \mbox{full mt dep.} ] $ & LO \\
 208& $ H(\to W^+(\to \nu(p_3)+e^+(p_4))+W^-(\to e^-(p_5)+\bar{\nu}(p_6)))+f(p_7)$ & NLO \\
 \hline 
-211& $ H(\to b(p_3)+\bar{b}(p_4))+f(p_5)+f(p_6) ~[ \mbox{WBF} ] $ & NLO \\
-212& $ H(\to \tau^-(p_3)+\tau^+(p_4))+f(p_5)+f(p_6) ~[ \mbox{WBF} ] $ & NLO \\
-216& $ H(\to b(p_3)+\bar{b}(p_4))+f(p_5)+f(p_6)+f(p_7) ~[ \mbox{WBF+jet} ] $ & NLO \\
-217& $ H(\to \tau^-(p_3)+\tau^+(p_4))+f(p_5)+f(p_6)+f(p_7) ~[ \mbox{WBF+jet} ] $ & NLO \\
-\hline 
-221& $ \tau^-(\to e^-(p_3)+\bar{\nu}_e(p_4)+\nu_\tau(p_5))+\tau^+(\to \bar{\nu}_\tau(p_6)+\nu_e(p_7)+e^+(p_8)) $ & LO \\
-\hline 
 \end{tabular}
 \end{center}
 \end{table}
@@ -574,8 +588,15 @@ $f(p_i)$ denotes a generic partonic jet.
 \begin{tabular}{|l|l|l|}
 \hline
 {\tt nproc} & $ f(p_1)+f(p_2) \to \ldots $& Order \\ 
+\hline 
+211& $ H(\to b(p_3)+\bar{b}(p_4))+f(p_5)+f(p_6) ~[ \mbox{WBF} ] $ & NLO \\
+212& $ H(\to \tau^-(p_3)+\tau^+(p_4))+f(p_5)+f(p_6) ~[ \mbox{WBF} ] $ & NLO \\
+213& $ H(\to W^+(\nu(p_3) e^+(p_4)) + W^-(e^-(p_5) \bar{\nu}(p_6)))+f(p_7)+f(p_8) ~[ \mbox{WBF} ] $ & NLO \\
+216& $ H(\to b(p_3)+\bar{b}(p_4))+f(p_5)+f(p_6)+f(p_7) ~[ \mbox{WBF+jet} ] $ & NLO \\
+217& $ H(\to \tau^-(p_3)+\tau^+(p_4))+f(p_5)+f(p_6)+f(p_7) ~[ \mbox{WBF+jet} ] $ & NLO \\
+\hline 
+221& $ \tau^-(\to e^-(p_3)+\bar{\nu}_e(p_4)+\nu_\tau(p_5))+\tau^+(\to \bar{\nu}_\tau(p_6)+\nu_e(p_7)+e^+(p_8)) $ & LO \\
 \hline
-
 261& $ Z^0(\to e^-(p_3)+e^+(p_4))+b(p_5) $ & NLO \\
 262& $ Z^0(\to e^-(p_3)+e^+(p_4))+c(p_5) $ & NLO \\
 263& $ Z^0(\to e^-(p_3)+e^+(p_4))+\bar{b}(p_5)+b(p_6) ~[ \mbox{1 b-tag} ] $ & NLO \\
@@ -607,16 +628,14 @@ $f(p_i)$ denotes a generic partonic jet.
 356& $ Z^0(\to e^-(p_3)+e^+(p_4))+c(p_5)+f(p_6)+f(p_7)$ & LO \\
 357& $ Z^0(\to e^-(p_3)+e^+(p_4))+c(p_5)+f(p_6)+c~(p_7)$ & LO \\
 \hline 
-902& $  ~[ \mbox{Check of Volume of 2 particle phase space} ] $ & -- \\
-903& $  ~[ \mbox{Check of Volume of 3 particle phase space} ] $ & -- \\
-904& $  ~[ \mbox{Check of Volume of 4 particle phase space} ] $ & -- \\
-905& $  ~[ \mbox{Check of Volume of 5 particle phase space} ] $ & -- \\
-906& $  ~[ \mbox{Check of Volume of 6 particle phase space} ] $ & -- \\
-908& $  ~[ \mbox{Check of Volume of 8 particle phase space} ] $ & -- \\
-909& $  ~[ \mbox{Check of Volume of 4 particle massive phase space} ] $ & -- \\
-910& $  ~[ \mbox{Check of Volume of 3 particle (2 massive) phase space} ] $ & -- \\
-
-
+902 --& $  ~[ \mbox{Internal consistency checks} ] $ & -- \\
+% 903& $  ~[ \mbox{Check of Volume of 3 particle phase space} ] $ & -- \\
+% 904& $  ~[ \mbox{Check of Volume of 4 particle phase space} ] $ & -- \\
+% 905& $  ~[ \mbox{Check of Volume of 5 particle phase space} ] $ & -- \\
+% 906& $  ~[ \mbox{Check of Volume of 6 particle phase space} ] $ & -- \\
+% 908& $  ~[ \mbox{Check of Volume of 8 particle phase space} ] $ & -- \\
+% 909& $  ~[ \mbox{Check of Volume of 4 particle massive phase space} ] $ & -- \\
+% 910& $  ~[ \mbox{Check of Volume of 3 particle (2 massive) phase space} ] $ & -- \\
 \hline
 \end{tabular}
 \end{center}
@@ -790,8 +809,14 @@ instead contain an extra jet at NLO.
 
 \item {\tt algorithm} This specifies the jet-finding algorithm that
 is used, and can take the values
-{\tt ktal} (for the Run II $k_T$-algorithm) and {\tt cone} (for
-a midpoint cone algorithm).
+{\tt ktal} (for the Run II $k_T$-algorithm), {\tt cone} (for
+a midpoint cone algorithm), {\tt hqrk} (for a simplified cone
+algorithm designed for heavy quark processes) and {\tt none} (to
+specify no jet clustering at all). The latter option is only a
+sesnible choice when the leading order cross-section is well-defined
+without any jet definition: e.g. the single top process,
+$q{\bar q^\prime} \to t{\bar b}$, which is finite as
+$p_T({\bar b}) \to 0$.
 
 \item {\tt ptmin\_jet, etamin\_jet, etamax\_jet}. These specify the values
 of $p_T^{\rm min}$, $|\eta|^{\rm min}$ and $|\eta|^{\rm max}$ for the
@@ -948,7 +973,7 @@ as a summary of the options file ({\tt input.DAT}) in the form of
 comments at the beginning. The structure
 of {\tt outputname} is as follows:
 \begin{displaymath}
-{\tt procname\_part\_pdlabel\_scale\_runstring}
+{\tt procname\_part\_pdlabel\_scale\_facscale\_runstring}
 \end{displaymath}
 where {\tt procname} is a label assigned by the program corresponding to
 the calculated process; the remaining labels are as input by the user
@@ -970,16 +995,17 @@ a call to the routine {\tt bookplot} and updating the histogram
 counter {\tt n} by 1. For example:
 
 \begin{verbatim}
-   call bookplot(n,tag,'    eta3',eta3,wt,-5d0,5d0,0.5d0,'lin')
-   n=n+1
+  call bookplot(n,tag,'eta3',eta3,wt,wt2,-4d0,4d0,0.1d0,'lin')
+  n=n+1
 \end{verbatim}
 The first two arguments of the call should not be changed. The third
 argument is a string describing the plot which will be used for the
 title in {\tt TOPDRAWER}. The fourth argument carries the variable to
-be plotted, which has been previously calculated. The argument {\tt
-wt} contains the phase-space weight and should not be changed. The
+be plotted, which has been previously calculated. The arguments {\tt
+wt} and {\tt wt2} contain information about the phase-space weight and
+should not be changed. The
 last arguments tell the histogramming routine to use bins of size {\tt
-0.5} which run from {\tt -5} to {\tt 5}, and use a linear scale for
+0.1} which run from {\tt -4} to {\tt 4}, and use a linear scale for
 the plot. A logarithmic scale may be used by changing the final
 argument to {\tt 'log'}.
 
@@ -1020,7 +1046,7 @@ set.
 As noted in the description of the input file, there are a number of other
 output modes which may be useful in certain situations. In particular, the
 ability to output n-tuples can be used to generate a large event record that 
-can be subsequently analyzed according to the users needs. Much of the code
+can be subsequently analyzed according to the user's needs. Much of the code
 for generating these outputs can be found in {\tt src/User/dswhbook.f}; some
 additional work may be required, depending on the process under study.
 
@@ -1029,15 +1055,19 @@ The simplest alternative output mode is obtained by changing the flag
 replaced by the file {\tt outputname.rz} which contains the histograms in {\tt HBOOK}
 format.
 
+\subsubsection{Simple n-tuple output}
 To obtain the simplest n-tuple output, the flag {\tt creatent} should be set
-to {\tt .true.} . In this case, each event that enters a histogram
+to {\tt .true.} and the parameter {\tt NTUPLES} in the {\tt Makefile} should be changed
+to either {\tt YES} or {\tt FROOT}. When changed to {\tt YES}, each event that enters a histogram
 is also recorded as an n-tuple in the file {\tt outputname\_batchno.rz}. The {\tt batchno}
 starts at zero and is incremented by one every one millions events. Each event
 is a simple row-wise n-tuple consisting of the 4-momenta of each of the final
 state particles ($p_x$, $p_y$, $p_z$ and $E$, in that order) followed by 5 numbers
 representing the event weight. The first number represents the total event weight
 and the others, the contribution from gluon-gluon, quark-gluon (and antiquark-gluon),
-quark-quark (and antiquark-antiquark) and quark-antiquark initial states. 
+quark-quark (and antiquark-antiquark) and quark-antiquark initial states. If
+PDF uncertainties are being calculated (using {\tt LHAPDF}) then the total event weight
+corresponding to each of the additional PDF sets is also written out at this stage.
 Single precision is used, for economy. A simple way to analyze 
 these n-tuples is to use the {\tt h2root} command and then perform
 manipulations with the ROOT package. Note that these n-tuples contain
@@ -1045,6 +1075,23 @@ no information about either the flavour or the colour of the initial or final
 state particles. Summation and averaging over these variables has already been
 performed. Furthermore, the `events' are {\it weighted} - so are not events
 in the traditional event generator sense.
+
+\subsubsection{n-tuples using FROOT}
+Output is similar when using the {\tt FROOT} option. In this case, the program will directly
+fill a ROOT n-tuple using the FROOT interface of P. Nadolsky ({\tt nadolsky@pa.msu.edu}, a version
+of which is included with MCFM (in the directory {\tt src/User/froot.c}). The structure
+of the ntuples is slightly different to that above, with entries:
+\begin{itemize}
+\item {\tt E\_i}, {\tt pxi}, {\tt pyi}, {\tt pzi} to specify the particle momenta, with {\tt i}
+ looping over all members of the final state.
+\item {\tt wt\_ALL}, {\tt wt\_gg}, {\tt wt\_gq}, {\tt wt\_qq}, {\tt wt\_qqb} for the total event
+ weight and the weights in each of the parton-parton subchannels.
+\item {\tt PDFjj}, where {\tt jj} loops over all the PDF uncertainty sets (only written if
+ appropriate).
+\end{itemize}
+
+\subsubsection{Unweighted events}
+{\it Note that this option is both extremely limited and inefficient.}
 
 In order to obtain {\it unweighted} events, one must change the flag
 {\tt evtgen} to {\tt .true.} . This option is only available at lowest order
@@ -1330,6 +1377,12 @@ hadronic decays of the $W$.
 When {\tt removebr} is true in processes {\tt 61} and {\tt 64},
 the $W$ bosons do not decay.
 
+\subsubsection{$WW$+jet production, process 66}
+
+This process is only implemented for the leptonic decay modes of both $W$
+bosons and is currently limited to LO accuracy only. When {\tt removebr} is true,
+the $W$ bosons do not decay.
+
 \subsubsection{$WZ$ production, processes 71--73, 76--78}
 
 For $WZ$ production, the $W$ is chosen to decay leptonically. The $Z$ (or
@@ -1360,6 +1413,13 @@ radiation from the bottom quarks that are produced by the $Z$ decay.
 
 When {\tt removebr} is true in processes {\tt 81} and {\tt 86},
 neither of the $Z$ bosons decays.
+
+\subsubsection{$ZZ$+jet production, process 85}
+
+This process is only implemented for the case when one $Z$ boson decays to
+electrons and the other to neutrinos (i.e. the companion of {\tt nproc=82}).
+It may only be calculated at LO. When {\tt removebr} is true, the $Z$ bosons
+do not decay.
 
 \subsubsection{Anomalous couplings}
 
@@ -1421,30 +1481,33 @@ $\Delta \kappa^\gamma$, $\lambda^Z$, $\lambda^\gamma$ and
 $\Lambda$~[TeV] respectively. By setting the first 5 parameters to zero,
 as above, one recovers the Standard Model result.
 
-\subsection{$WH$ production, processes 91,96}
+\subsection{$WH$ production, processes 91, 92, 96, 97}
 \label{subsec:wh}
 
 These processes represent the production of a $W$ boson which subsequently
 decays leptonically, in association with a Standard Model Higgs boson that
-decays into a bottom quark pair.
+decays into a bottom quark pair ({\tt nproc=91, 96}) or a pair of $W$ bosons
+({\tt nproc=92, 97}).  Note that in the latter case, below the $W$ pair threshold
+one of the $W$ bosons is virtual and therefore one must set {\tt zerowidth=.false.}.
 The calculation may be performed at NLO, although radiation from the
 bottom quarks in the decay is not included.
 
 When {\tt removebr} is true, neither the $W$ boson nor the Higgs decays.
 
-\subsection{$ZH$ production, processes 101--103}
+\subsection{$ZH$ production, processes 101--103, 106--108}
 \label{subsec:zh}
 
 These processes represent the production of a $Z$ boson (or virtual photon)
 in association with a Standard Model Higgs boson that
-decays into a bottom quark pair. The $Z/\gamma^*$ subsequently decays into 
-either an $e^+ e^-$ pair ({\tt nproc=101}), neutrinos ({\tt nproc=102})
-or a further bottom quark pair ({\tt nproc=103}).
+decays into a bottom quark pair ({\tt nproc=101-103}) or a pair of $W$ bosons
+({\tt nproc=106-108}). The $Z/\gamma^*$ subsequently decays into 
+either an $e^+ e^-$ pair ({\tt nproc=101, 106}), neutrinos ({\tt nproc=102, 107})
+or a bottom quark pair ({\tt nproc=103, 108}).
 The calculation may be performed at NLO, although radiation from the
-bottom quarks in the decay of the Higgs (or the $Z$, for process
-{\tt 103}) is not included.
+bottom quarks in the decay of the Higgs (or the $Z$, for processes
+{\tt 103, 108}) is not included.
 
-When {\tt removebr} is true in process {\tt 101}, neither the $Z$ boson
+When {\tt removebr} is true in processes {\tt 101, 106}, neither the $Z$ boson
 nor the Higgs decays.
 
 \subsection{Higgs production, processes 111--116}
@@ -1592,8 +1655,8 @@ the simpler processes ({\tt 180,185}) can be demonstrated by running process
 At next-to-leading order, the calculation includes contributions from diagrams
 with two gluons in the initial state, $gg \rightarrow Wtb$. The $p_T$ of the
 additional $b$ quark is vetoed according to the value of the parameter
-{\tt ptbjetmin} which is specified in the input file. The contribution from
-these diagrams when the $p_T$ of the $b$ quark is above {\tt ptbjetmin}
+{\tt ptmin\_bjet} which is specified in the input file. The contribution from
+these diagrams when the $p_T$ of the $b$ quark is above {\tt ptmin\_bjet}
 is zero. The values of this parameter and the factorization scale ({\tt facscale})
 set in the input file should be chosen carefully. Appropriate values for both
 (in the range $30$-$100$~GeV) are discussed in the associated paper.
@@ -1668,7 +1731,7 @@ and \cite{Glosser:2002gm}.
 Note that the effect of radiation from the bottom quarks in process {\tt 203}
 is not included.
 
-When {\tt removebr} is true in processes {\tt 201},{\tt 203},{\tt 206}
+When {\tt removebr} is true in processes {\tt 201}, {\tt 203}, {\tt 206}
 and {\tt 208}, the Higgs boson does not decay.
 
 \subsection{Higgs production via WBF, processes 211--217}
@@ -1681,9 +1744,10 @@ and {\tt 208}, the Higgs boson does not decay.
 These processes provide predictions for the production of a Higgs boson in
 association with two jets via weak-boson fusion (WBF). The Higgs boson
 subsequently decays to either a pair of bottom quarks
-(processes {\tt 211,216}) or to a pair of tau's ({\tt 212,217}).
+(processes {\tt 211, 216}), to a pair of tau's ({\tt 212, 217}) or to
+a pair of $W$ bosons ({\tt 213}).
 
-Calculations can be performed up to NLO for processes {\tt 211} and {\tt 212}.
+Calculations can be performed up to NLO for processes {\tt 211}, {\tt 212} and {\tt 213}.
 In addition to this, processes {\tt 216} and {\tt 217} provide the lowest
 order calculation of the WBF reaction which radiates an additional jet. 
 

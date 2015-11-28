@@ -2,6 +2,7 @@
 c--- reads in the anomalous couplings from the file anomcoup.DAT
       implicit none
       include 'anomcoup.f'
+      include 'zerowidth.f'
      
 c      if (newinput) goto 20     
       
@@ -38,6 +39,22 @@ c   20 continue
      .                ' TeV            *'
       write(6,*)  '****************************************************'
       
+c--- Check to see whether anomalous couplings are being used
+      if (max(abs(delg1_z),abs(lambda_g),abs(lambda_z),
+     .        abs(delk_g),abs(delk_z)) .gt. 1d-8) then
+        anomtgc=.true.
+	if (zerowidth .eqv. .false.) then
+	write(6,*)
+        write(6,*)'********************** WARNING *********************'
+        write(6,*)'*                                                  *'
+        write(6,*)'* No singly resonant diagrams will be included     *'
+        write(6,*)'*  when anomalous TGCs are present.                *'
+        write(6,*)'*                                                  *'
+        write(6,*)'****************************************************'
+        endif
+      else
+        anomtgc=.false.
+      endif
       return
  
    99 format(1x,a29,f6.2,a17)

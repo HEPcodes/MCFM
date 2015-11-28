@@ -34,6 +34,7 @@
       include 'pdlabel.f'
       include 'qcdcouple.f'
       include 'nlooprun.f'
+      include 'initialscales.f'
       character*72 inputfile,getinput
       character*90 line
       character*4 part
@@ -44,7 +45,7 @@
       integer nmin,nmax,n2,n3
       integer nproc,ih1,ih2,itmx1,itmx2,ncall1,ncall2,idum,origij
       integer NPTYPE,NGROUP,NSET
-      double precision rtsmin,sqrts
+      double precision rtsmin,sqrts,factor
       double precision mbbmin,mbbmax,Mwmin,Mwmax
       double precision Rcut
       double precision leptpt,leptrap,misspt,Rjlmin,Rllmin,delyjjmin,
@@ -376,6 +377,11 @@ c--- reset values of the alpha parameters, for specific runstrings
           aif=1d0
           afi=1d0
           aff=0.1d0
+        elseif (runstring(6:9) .eq. '0001') then
+          aii=0.1d0
+          aif=0.1d0
+          afi=0.1d0
+          aff=1d0
         elseif (runstring(6:9) .eq. '0000') then
           aii=0.1d0
           aif=0.1d0
@@ -401,6 +407,22 @@ c--- reset values of the alpha parameters, for specific runstrings
         gqonly=.true.
       endif
       
+      if     (index(runstring,'mc1.3') .gt. 0) then
+        mc=1.3d0
+	mcsq=mc**2
+      elseif (index(runstring,'mc1.4') .gt. 0) then
+        mc=1.4d0
+	mcsq=mc**2
+      elseif (index(runstring,'mc1.5') .gt. 0) then
+        mc=1.5d0
+	mcsq=mc**2
+      endif
+      
+      if (runstring(1:3) .eq. 'mlm') then
+        write(6,*) 'WARNING: cross sections divided by Ecm**2'
+	write(6,*)
+      endif
+      
       if (noglue) then
         write(6,*) 'WARNING: no gluon contribution included in PDF'
 	write(6,*)
@@ -415,6 +437,10 @@ c--- reset values of the alpha parameters, for specific runstrings
       endif
       
 c-----initialize various quantities
+
+c--- save initial scale choices (that may be changed later)
+      initscale=scale
+      initfacscale=facscale
 
 c--- set-up mass window cuts
       bbsqmin=mbbmin**2
@@ -452,9 +478,20 @@ c--- this is an allowed combination
       endif      
 
 c--- set up the default choices of static scale, if required
-      if (scale .eq. -1d0) then
+      if (scale .lt. 0d0) then
+	if     (scale .eq. -2d0) then
+	  factor=0.125d0
+	elseif (scale .eq. -3d0) then
+	  factor=0.25d0
+	elseif (scale .eq. -4d0) then
+	  factor=0.5d0
+	elseif (scale .eq. -5d0) then
+	  factor=2d0
+        else
+	  factor=1d0
+	endif	  
         if (n2+n3 .ne. 0) then
-        scale=(dfloat(n2)*mass2+dfloat(n3)*mass3)/dfloat(n2+n3)
+        scale=factor*(dfloat(n2)*mass2+dfloat(n3)*mass3)/dfloat(n2+n3)
         as=alphas(scale,amz,nlooprun)
         ason2pi=as/twopi
         ason4pi=as/fourpi
@@ -476,9 +513,21 @@ c--- set up the default choices of static scale, if required
         stop
         endif
       endif
-      if (facscale .eq. -1d0) then
+      if (facscale .lt. 0d0) then
+	if     (facscale .eq. -2d0) then
+	  factor=0.125d0
+	elseif (facscale .eq. -3d0) then
+	  factor=0.25d0
+	elseif (facscale .eq. -4d0) then
+	  factor=0.5d0
+	elseif (facscale .eq. -5d0) then
+	  factor=2d0
+        else
+	  factor=1d0
+	endif	  
         if (n2+n3 .ne. 0) then
-        facscale=(dfloat(n2)*mass2+dfloat(n3)*mass3)/dfloat(n2+n3)
+        facscale=factor*
+     .           (dfloat(n2)*mass2+dfloat(n3)*mass3)/dfloat(n2+n3)
         write(6,*)
         write(6,*)'****************************************************'
         write(6,77) facscale

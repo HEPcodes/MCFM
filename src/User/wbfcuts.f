@@ -2,6 +2,7 @@
 c--- given the event momenta in p (with maxparts entries),
 c--- performs some generic WBF cuts (a la Del Duca et al.)
 c---  a point that fails the cuts returns passed=.false.
+c--- Note: implements Eq. (3.2) of CEZ paper
       implicit none
       include 'constants.f'
       logical passed
@@ -59,7 +60,8 @@ c--- ensure the tagging jets lie in opposite hemispheres
       mj1j2=dsqrt(max(0d0,(p(j1,4)+p(j2,4))**2
      . -(p(j1,1)+p(j2,1))**2-(p(j1,2)+p(j2,2))**2-(p(j1,3)+p(j2,3))**2))
 c--- ensure the tagging jets have an invariant mass larger than 600 GeV
-      if (mj1j2 .lt. 600d0) goto 999      
+c--- NOT USED ANY LONGER
+c      if (mj1j2 .lt. 600d0) goto 999      
 
 ********************** END OF CUT CROSS SECTIONS ***********************
 

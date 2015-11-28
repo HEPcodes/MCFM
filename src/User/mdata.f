@@ -49,9 +49,9 @@ c--- throughout the program to calculate couplings that depend on the
 c--- mass, while "mtau","mc" and "mb" are the masses that appear in
 c--- the rest of the matrix elements and phase space (and may be set
 c--- to zero in the program, depending on the process number) 
-      data mtausq,mcsq,mbsq/3.157729d0,2.25d0,21.3444d0/
+      data mtausq,mcsq,mbsq/3.157729d0,2.25d0,22.5625d0/
       data mtau/1.777d0/
-      data mc,mb,mt/1.5d0,4.62d0,170.9d0/
+      data mc,mb,mt/1.5d0,4.75d0,172.5d0/
 c--- Widths: note that the top width is calculated in the program
       data wwidth,zwidth/2.06d0,2.49d0/
       data tauwidth/2.269d-12/

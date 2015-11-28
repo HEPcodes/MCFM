@@ -8,14 +8,20 @@ c  -first label of fs,ft is gluon polarization, second is qqb line
       include 'zerowidth.f'
       include 'masses.f'
       include 'anomcoup.f'
+      include 'process.f'
       
       integer j,k,jtype,j1,j2,j3,j4,j5,j6,j7,mplus,minus
       double complex A7treea,B7treea,B7treeb
       double complex f(5,2,2),A7b_1,A7b_2,A7b_3
       double complex prop34,prop56,propboth
+      logical srdiags
       common/xanomcoup/xdelg1_z,xdelg1_g,xlambda_g,xlambda_z,
      . xdelk_g,xdelk_z
       data minus,mplus/1,2/
+      
+c--- include singly resonant diagrams if zerowidth=.false. , but only
+c---  as long as anomtgc=.false. too
+      srdiags=((zerowidth .eqv. .false.) .and. (anomtgc .eqv. .false.))
       
 c----initialize to zero
       do jtype=3,4
@@ -75,8 +81,12 @@ c      f(2,minus,minus)=-A7treeb(j2,j1,j5,j6,j3,j4,j7,zb,za)*propboth
      .                 +A7b_2*(2d0*(1d0+xdelg1_g))
      .                 +A7b_3*(xlambda_g/wmass**2))*propboth
 
-      if (zerowidth) return   ! Done all amplitudes needed for zerowidth
+      if (srdiags .eqv. .false.) return  
+c--- Done all non-singly resonant amplitudes
 
+c--- also return here for WW+jet process since no singly-resonant
+c---  diagrams are included in the real contribution
+      if (case .eq. 'WW_jet') return    
 
       f(3,mplus,mplus)=-B7treeb(j1,j2,3,4,5,6,j7,za,zb)*prop34
      .                 -B7treea(j2,j1,3,4,5,6,j7,za,zb)*prop56

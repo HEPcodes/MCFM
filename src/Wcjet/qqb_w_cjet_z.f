@@ -52,15 +52,8 @@ c--- (g,qb)
       Q2(a,a,g,is)=Q2(q,q,g,is)
 
 c--- (g,g)
-      if (nores .eqv. .false.) then
-c--- included only if we are calculating with mb=0
-c      if (runstring(1:3) .eq. 'sub') then
       Q1(q,g,g,is)=ason4pi*2d0*tr*ii_mqg(z,xl12,mbar12,is)
-      Q1(a,g,g,is)=Q1(q,g,g,is)
       Q2(q,g,g,is)=Q1(q,g,g,is)
-      Q2(a,g,g,is)=Q1(q,g,g,is)
-c      endif
-      endif
  
 c--- these are terms coming from the diagrams which are
 c--- a 4-quark contribution, with (q,q~)->g in the initial state

@@ -25,7 +25,7 @@ c                            -->l(p3)+a(p4)
      & sub16_2(4),sub26_1(4),sub16_5(4),sub26_5(4),
      & sub56_1(4),sub56_2(4),sub56_1v,sub56_2v,
      & sub26_5v,sub26_1v,sub16_5v,sub16_2v
-      external qqb_w_tndk,qqb_w_tndk_gvec
+      external qqb_w_tndk,qqb_w_tndk_gvec,donothing_gvec
 
 c--- Note that the subtractions here are very similar to the ones
 c--- for W+1 jet, except that the top mass means that we must
@@ -52,9 +52,9 @@ c--- now the initial-final ones
 
 c--- now the final-initial ones
       call dips_mass(1,p,5,6,1,sub56_1,sub56_1v,msq56_1,msq56_1v,
-     . qqb_w_tndk,qqb_w_tndk_gvec)
+     . qqb_w_tndk,donothing_gvec)
       call dips_mass(2,p,5,6,2,sub56_2,sub56_2v,msq56_2,msq56_2v,
-     . qqb_w_tndk,qqb_w_tndk_gvec)
+     . qqb_w_tndk,donothing_gvec)
 
       do j=-nf,nf
       do k=-nf,nf      

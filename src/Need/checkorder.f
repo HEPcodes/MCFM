@@ -7,6 +7,15 @@ c--- writes an error message and aborts
 
       common/nproc/nproc
       common/part/part
+
+c--- special cases where there is no LO calculation
+      if ((part .eq. 'lord') .and. 
+     .    ( (nproc .eq. 342) .or. (nproc .eq. 352) ) ) then
+        write(6,*)
+        write(6,*)'This process cannot be calculated at LO, it is part'
+	write(6,*)'of a NLO calculation only.'
+	stop
+      endif
       
 c--- if we're calculating LO only, there's no problem      
       if (part .eq. 'lord') return
@@ -19,6 +28,7 @@ c--- process numbers can't be calculated beyond LO
      . .or. (nproc .eq.  24) .or. (nproc .eq.  29)
      . .or. (nproc .eq.  45) .or. (nproc .eq.  50)
      . .or. (nproc .eq.  54) .or. (nproc .eq.  64)
+     . .or. (nproc .eq.  85)
      . .or. (nproc .eq. 151)
      . .or. (nproc .eq. 152) .or. (nproc .eq. 156)
      . .or. (nproc .eq. 160)

@@ -114,21 +114,21 @@ c--final-initial
      . qqb_QQb,donothing_gvec)
       call storedip_mass(m35_1,m35_1v)
       call dips_mass(8,p,3,5,2,sub35_2,sub35_2v,msq35_2,msq35_2v,
-     . qqb_QQb,qqb_QQb_gvec)
+     . qqb_QQb,donothing_gvec)
       call storedip_mass(m35_2,m35_2v)
       call dips_mass(9,p,4,5,1,sub45_1,sub45_1v,msq45_1,msq45_1v,
-     . qqb_QQb,qqb_QQb_gvec)
+     . qqb_QQb,donothing_gvec)
       call storedip_mass(m45_1,m45_1v)
       call dips_mass(10,p,4,5,2,sub45_2,sub45_2v,msq45_2,msq45_2v,
-     . qqb_QQb,qqb_QQb_gvec)
+     . qqb_QQb,donothing_gvec)
       call storedip_mass(m45_2,m45_2v)
 
 c--final-final
       call dips_mass(11,p,3,5,4,sub35_4,sub35_4v,msq35_4,msq35_4v,
-     . qqb_QQb,qqb_QQb_gvec)
+     . qqb_QQb,donothing_gvec)
       call storedip_mass(m35_4,m35_4v)
       call dips_mass(12,p,4,5,3,sub45_3,sub45_3v,msq45_3,msq45_3v,
-     . qqb_QQb,qqb_QQb_gvec)
+     . qqb_QQb,donothing_gvec)
       call storedip_mass(m45_3,m45_3v)
 
 

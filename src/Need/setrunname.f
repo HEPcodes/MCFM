@@ -11,19 +11,21 @@
       character*30 runstring
       character*4 part
       character*72 outlabel1,runname,outlabeltmp
-      character*3 strmh,strscale,getstr,strpt
+      character*3 strmh,getstr,strpt
+      character*7 strscale
       common/part/part
       common/runstring/runstring
       common/runname/runname
       common/nlength/nlength
 
-      if (abs(scalestart-fscalestart) .lt. 1d0) then
+c      if (abs(scalestart-fscalestart) .lt. 1d0) then
 c--- if the scales are the same, use this scale as the label
-        strscale=getstr(int(scalestart))
-       else
+c        strscale=getstr(int(scalestart))
+c       else
 c--- .... otherwise, use the percentage of (muR/muF)
-        strscale=getstr(int(scalestart/fscalestart*100d0))
-      endif
+c        strscale=getstr(int(scalestart/fscalestart*100d0))
+c      endif
+      strscale=getstr(int(scalestart))//'_'//getstr(int(fscalestart))
 
       if     ( (case .eq. 'WHbbar')
      .    .or. (case .eq. 'ZHbbar')

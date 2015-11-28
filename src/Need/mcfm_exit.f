@@ -70,7 +70,10 @@ c--- through the jet and cut routines
    54 format(a20,f6.2,'%')
    55 format(4x,a9,' |',f15.5,f8.2,'%')
 
-c--- if we've calculated PDF errors, present results      
+c--- If we've calculated PDF errors, present results.   
+c--- Note that asymmetric errors are calculated according to
+c--- Eq. (43) of "Hard Interactions of Quarks and Gluons",
+c---  J.Campbell, J.Huston, W.J. Stirling, Rep. Prog. Phys. 70 (2007) 89
       if (PDFerrors) then
         write(6,*)
         write(6,58) '************ PDF error analysis ************'
@@ -84,16 +87,18 @@ c--- if we've calculated PDF errors, present results
             minPDFxsec=PDFxsec(j)
           elseif (PDFxsec(j) .gt. maxPDFxsec) then
             maxPDFxsec=PDFxsec(j)
-         endif
-         if ( (j .gt. 0) .and. (j/2 .eq. (j-1)/2) ) then
-           PDFerror=PDFerror+(PDFxsec(j)-PDFxsec(j+1))**2
-         endif
-         if ( (j .gt. 0) .and. (PDFxsec(j) .gt. PDFxsec(0)) ) then
-           PDFperror=PDFperror+(PDFxsec(j)-PDFxsec(0))**2
-         endif
-         if ( (j .gt. 0) .and. (PDFxsec(j) .lt. PDFxsec(0)) ) then
-           PDFnerror=PDFnerror+(PDFxsec(j)-PDFxsec(0))**2
-         endif
+          endif
+          if ( (j .gt. 0) .and. (j/2 .eq. (j-1)/2) ) then
+            PDFerror=PDFerror+(PDFxsec(j)-PDFxsec(j+1))**2
+          endif
+        enddo
+	PDFperror=0d0
+	PDFnerror=0d0
+	do j=1,maxPDFsets-1,2
+	  PDFperror=PDFperror+max(
+     .     PDFxsec(j)-PDFxsec(0),PDFxsec(j+1)-PDFxsec(0),0d0)**2
+	  PDFnerror=PDFnerror+max(
+     .     PDFxsec(0)-PDFxsec(j),PDFxsec(0)-PDFxsec(j+1),0d0)**2
         enddo
         PDFerror=0.5d0*dsqrt(PDFerror)
         PDFperror=dsqrt(PDFperror)
@@ -126,14 +131,12 @@ c--- DSW histograms - store the information
           call dswhfill(200,0.5d0,xinteg)
           call dswhfill(200,1.5d0,xinteg_err)
 c--- DSW histograms - output and close file
-          call dswhrout
-          call dswclose
+          call NTfinalize
         endif
       else
 c--- ADDED - to produce normal histograms as well
         call histofin(xinteg,xinteg_err,0,itmx)
-        call dswhrout
-        call dswclose
+        call NTfinalize
       endif
 
       return

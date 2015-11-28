@@ -19,7 +19,7 @@ c----(p4,p5) are dummies
       parameter(wt0=1d0/twopi)
 
       m5=0d0
-      if     (case .eq. 'W_cjet') then 
+      if     ((case .eq. 'W_cjet') .or. (case .eq. 'Wcs_ms')) then 
          m5=mc
       elseif ((case .eq. 'W_tndk') .or. (case .eq. 'vlchwn')) then 
          m5=mt

@@ -1,16 +1,19 @@
       subroutine genclust2(q,R,qfinal,isub)
 c--- this is a wrapper routine for the jet clustering algorithm
-c--- either re-route to:
-c---  genclust_kt.f     for kt clustering
-c---  genclust_cone.f   for cone algorithm
+c--- which re-routes according to the value of 'algorithm'  to:
+c---  ('ktal') genclust_kt.f     for kt clustering
+c---  ('cone') genclust_cone.f   for cone algorithm
+c---  ('hqrk') genclust_hqrk.f   for simplified heavy-quark algorithm
+c---  ('none') to perform no clustering at all
       implicit none
       include 'constants.f'
       include 'clustering.f'
       include 'jetcuts.f'
+      include 'jetlabel.f'
       include 'bbproc.f'
       include 'process.f'
       double precision q(mxpart,4),qfinal(mxpart,4),R,Rbbmin
-      integer nqcdjets,nqcdstart,isub
+      integer nqcdjets,nqcdstart,isub,i,nu
       logical first
       character*4 part
       common/part/part
@@ -30,10 +33,12 @@ c---  genclust_cone.f   for cone algorithm
       write(6,*) '*              (Run II cone algorithm)             *'
       elseif (algorithm .eq. 'hqrk') then
       write(6,*) '*        (Simple cone algorithm for W/Z+Q+j)       *'
+      elseif (algorithm .eq. 'none') then
+      write(6,*) '*             (no clustering algorithm)            *'
       else
       write(6,*)
       write(6,*) 'Invalid selection of algorithm in input file.'
-      write(6,*) 'Please select either ktal, cone or hqrk'
+      write(6,*) 'Please select either ktal, cone, hqrk or none'
       stop
       endif
       write(6,*) '*                                                  *'
@@ -73,8 +78,18 @@ c---  genclust_cone.f   for cone algorithm
         call genclust_cone(q,R,qfinal,isub)
       elseif (algorithm .eq. 'hqrk') then
         call genclust_hqrk(q,R,qfinal,isub)
+      elseif (algorithm .eq. 'none') then
+        do i=1,mxpart
+          do nu=1,4
+            qfinal(i,nu)=q(i,nu)
+          enddo
+        enddo
+        jets=nqcdjets
+	if ((part .eq. 'real') .and. (isub .eq. 0)) jets=jets+1
+        return
       else
-        write(6,*) 'Invalid choice for clustering algorithm: ',algorithm
+        write(6,*) 'Invalid choice of jet algorithm, must be'
+        write(6,*) '   ktal, cone, hqrk, none'
         stop
       endif
 

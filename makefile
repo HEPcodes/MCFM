@@ -5,8 +5,8 @@ CERNLIB     =
 # Replace this with the location of LHAPDF on your system (if desired)
 LHAPDFLIB   = 
 
-MCFMHOME        = /home/ellis/MCFM5.2
-SOURCEDIR       = /home/ellis/MCFM5.2/src
+MCFMHOME        = /home/ellis/Desktop/MCFM-5.3
+SOURCEDIR       = /home/ellis/Desktop/MCFM-5.3/src
 VPATH		= $(DIRS)
 BIN		= $(MCFMHOME)/Bin
 INCPATH  	= $(SOURCEDIR)/Inc
@@ -18,13 +18,27 @@ OUTPUT_OPTION	= -o $(MCFMHOME)/obj/$@
 #   LHAPDF -- Les Houches library
 PDFROUTINES = NATIVE
 
-# Set this to NO/YES
+# Set this to NO/YES/FROOT
 #   NO  -- no n-tuple output or unweighting is possible
 #   YES -- n-tuples, unweighting available - but only if CERNLIB exists
+#   FROOT -- n-tuples, unweighting available - but only if CERNLIB
+#            exists; output uses the FROOT package of P. Nadolsky.
 NTUPLES = NO
 
 FC = g77
 FFLAGS 	= -fno-automatic -fno-f2c -O0 -g -I$(INCPATH)
+
+# If using FROOT package for ROOT ntuples, first specify C++ compiler:
+CXX = g++
+CXXFLAGS=$(CXXFLAGS0) $(DROOT) 
+# ROOTLIBS and ROOTINCLUDE are locations of ROOT libraries and header files.
+# Find the ROOT directory automatically by running root-config 
+# or specify it manually by editing the variable ROOTDIR 
+ROOTDIR= $(shell root-config --prefix)
+DMYROOT= -DMYROOT
+ROOTLIBS     := $(shell root-config --prefix=$(ROOTDIR)  --libs)
+ROOTINCLUDE     := -I $(shell root-config --prefix=$(ROOTDIR) --incdir)
+
 
 DIRS	=	$(MCFMHOME):\
 		$(MCFMHOME)/obj:\
@@ -34,8 +48,8 @@ DIRS	=	$(MCFMHOME):\
 		$(SOURCEDIR)/Wbb:$(SOURCEDIR)/Zbb:\
 		$(SOURCEDIR)/WHbbar:$(SOURCEDIR)/ZHbbar:\
 		$(SOURCEDIR)/WW:$(SOURCEDIR)/WZ:$(SOURCEDIR)/ZZ:\
-		$(SOURCEDIR)/Top:$(SOURCEDIR)/Singletop:\
-		$(SOURCEDIR)/TopH:$(SOURCEDIR)/TopZ:$(SOURCEDIR)/Topg:\
+		$(SOURCEDIR)/Top:$(SOURCEDIR)/Topdk:$(SOURCEDIR)/Singletop:\
+		$(SOURCEDIR)/TopH:$(SOURCEDIR)/TopZ:\
 		$(SOURCEDIR)/HWW:$(SOURCEDIR)/HZZ:$(SOURCEDIR)/Tau:\
 		$(SOURCEDIR)/Httbar:\
 		$(SOURCEDIR)/W:$(SOURCEDIR)/Z:\
@@ -46,9 +60,10 @@ DIRS	=	$(MCFMHOME):\
 		$(SOURCEDIR)/Wgam:$(SOURCEDIR)/Zgam:\
                 $(SOURCEDIR)/Z2jet:$(SOURCEDIR)/Zb:\
 		$(SOURCEDIR)/bbHiggs:$(SOURCEDIR)/Wt:\
-                $(SOURCEDIR)/qqH:$(SOURCEDIR)/ZQjet:\
+                $(SOURCEDIR)/qqH:$(SOURCEDIR)/qqHWW:$(SOURCEDIR)/ZQjet:\
                 $(SOURCEDIR)/ggH:$(SOURCEDIR)/ggHg:\
-                $(SOURCEDIR)/ggHggreal:
+                $(SOURCEDIR)/ggHggreal:\
+                $(SOURCEDIR)/WHWW:$(SOURCEDIR)/ZHWW:
 
 # -----------------------------------------------------------------------------
 # Specify the object files. 
@@ -157,12 +172,14 @@ banner.o \
 boost.o \
 boostx.o \
 branch.o \
+checkgvec.o \
 checkversion.o \
 checkjets.o \
 checkorder.o \
 chooser.o \
 ckmfill.o \
 coupling.o \
+coupling2.o \
 couplz.o \
 dclaus.o \
 dipoles.o \
@@ -243,6 +260,7 @@ gen5a.o \
 gen5from4.o \
 gen6.o \
 gen6_rap.o \
+gen7.o \
 gen7m.o \
 phase7m_alt.o \
 gen7_rap.o \
@@ -270,6 +288,8 @@ phase6.o \
 phase6a.o \
 phase6b.o \
 phase7.o \
+phase7a.o \
+phase7b.o \
 phase7m.o \
 phase8.o \
 phi1_2.o \
@@ -295,6 +315,19 @@ WW_Hqq_gs.o \
 ZZ_Hqq.o \
 ZZ_Hqq_g.o \
 ZZ_Hqq_gs.o
+
+QQHWWFILES = \
+VV_HWW.o \
+WW_HWW.o \
+ZZ_HWW.o \
+VV_HWW_g.o \
+WW_HWW_g.o \
+ZZ_HWW_g.o \
+VV_HWW_gs.o \
+WW_HWW_gs.o \
+ZZ_HWW_gs.o \
+VV_HWW_v.o \
+VV_HWW_z.o
 
 SINGLETOPFILES = \
 topwidth.o \
@@ -326,15 +359,38 @@ qqb_QQb_gs.o \
 qqb_QQb_gvec.o \
 qqb_QQb_v.o \
 qqb_QQb_z.o \
-qqb_ttb.o \
-ttbbww.o \
-ggttww.o 
+qqb_ttb.o
 
-TOPGFILES = \
+TOPDKFILES = \
+ttbgggppp.o \
+ttbgggppm.o \
+ttbgggpmm.o \
+ttbgggmmm.o \
+ttbgggmpp.o \
+ttbgggmmp.o \
+ttbgggmpm.o \
+ttbgggpmp.o \
+ttbqqbsqpp.o \
+ttbqqbsqpm.o \
+ttbqqbsqmp.o \
+ttbqqbsqmm.o \
+ttbqqbtqpp.o \
+ttbqqbtqpm.o \
+ttbqqbtqmp.o \
+ttbqqbtqmm.o \
+ttbqqbqqpp.o \
+ttbqqbqqpm.o \
+ttbqqbqqmp.o \
+ttbqqbqqmm.o \
+ttbqqbrqpp.o \
+ttbqqbrqpm.o \
+ttbqqbrqmp.o \
+ttbqqbrqmm.o \
 qqb_ttb_g.o \
+ttbbww.o \
+ggttww.o \
 dotks.o \
-std.o \
-ttgdiags.o
+std.o
 
 TOPHFILES = \
 qqbtth.o \
@@ -356,12 +412,14 @@ genclust_cone.o \
 gencuts.o \
 getet.o \
 hwwcuts.o \
+hwwjetplots.o \
 jetlabel_to_stdhep.o \
 mdata.o \
 miscclust.o \
 nplotter.o \
 stopcuts.o \
 wbfcuts.o \
+wbfcuts_jeppe.o \
 wconstruct.o 
 
 VOLFILES = \
@@ -456,13 +514,18 @@ fvf.o \
 fvs.o \
 vvg.o
 
-
 WHBBARFILES = \
 qqb_wh.o \
 qqb_wh_g.o \
 qqb_wh_gs.o \
 qqb_wh_v.o \
-qqb_wh_z.o 
+qqb_wh_z.o
+
+WHWWFILES = \
+qqb_wh_ww.o \
+qqb_wh_ww_g.o \
+qqb_wh_ww_gs.o \
+qqb_wh_ww_v.o
 
 WWFILES = \
 BigT.o \
@@ -639,6 +702,12 @@ qqb_zh_gs.o \
 qqb_zh_v.o \
 qqb_zh_z.o
 
+ZHWWFILES = \
+qqb_zh_ww.o \
+qqb_zh_ww_g.o \
+qqb_zh_ww_gs.o \
+qqb_zh_ww_v.o
+
 ZZFILES = \
 qqb_zz.o \
 qqb_zz_g.o \
@@ -684,23 +753,37 @@ LIBDIR=.
 LIBFLAGS=
 
 # Check NTUPLES flag
-ifeq ($(NTUPLES),YES)
+ifeq ($(NTUPLES),FROOT)
   ifeq ($(CERNLIB),)
-    ERRORMSG=Please specify the path to CERNLIB to use n-tuples
+    ERRORMSG=Please specify the path to CERNLIB to use FROOT n-tuples
     $(error $(ERRORMSG))
   endif
-  USERFILES += dswhbook.o
+  USERFILES += mcfm_froot.o froot.co
   LIBDIR=$(CERNLIB)
   LIBFLAGS = -lmathlib -lpacklib -lkernlib
-  NTUPMSG='   ----> MCFM compiled with optional n-tuple output <----'
+  LIBFLAGS += $(ROOTLIBS)
+  NTUPMSG='   ----> MCFM compiled with FROOT n-tuple output <----'
  else
-  ifeq ($(NTUPLES),NO)
-    USERFILES += dsw_dummy.o
+  ifeq ($(NTUPLES),YES)
+    ifeq ($(CERNLIB),)
+      ERRORMSG=Please specify the path to CERNLIB to use n-tuples
+      $(error $(ERRORMSG))
+    endif
+    USERFILES += dswhbook.o
+    LIBDIR=$(CERNLIB)
+# Note: some versions of the CERN libraries (e.g. Redhat v7.2)
+#       require that "-lpacklib" be changed to "-lpacklib_noshift"
+    LIBFLAGS = -lmathlib -lpacklib -lkernlib
+    NTUPMSG='   ----> MCFM compiled with optional n-tuple output <----'
   else
-    ERRORMSG=Please set NTUPLES equal to NO/YES
-    $(error $(ERRORMSG))
+    ifeq ($(NTUPLES),NO)
+      USERFILES += dsw_dummy.o
+    else
+      ERRORMSG=Please set NTUPLES equal to NO/YES/FROOT
+      $(error $(ERRORMSG))
+    endif
+    NTUPMSG = '   ----> MCFM compiled with histogram output only <----'
   endif
-  NTUPMSG = '   ----> MCFM compiled with histogram output only <----'
 endif
 
 # Check PDFROUTINES flag and add appropriate files
@@ -719,12 +802,7 @@ ifeq ($(PDFROUTINES),LHAPDF)
    PARTONFILES += \
    fdist_lhapdf.o \
    pdfwrap_lhapdf.o
-#   LIBFILES =
-   ifeq ($(NTUPLES),YES)
-     LIBDIR += -L$(LHAPDFLIB)
-   else
-     LIBDIR=$(LHAPDFLIB)
-   endif
+   LIBDIR += -L$(LHAPDFLIB)
    LIBFLAGS += -lLHAPDF
    PDFMSG='   ----> MCFM compiled with LHAPDF routines <----'
 else
@@ -744,6 +822,7 @@ ifeq ($(PDFROUTINES),NATIVE)
    mrsg.o \
    mrst2001.o \
    mrst2002.o \
+   mrst2004.o \
    mrst2004f3.o \
    mrst2004f4.o \
    mt.o \
@@ -764,7 +843,7 @@ endif
 
 OURCODE = $(LIBFILES) $(NEEDFILES) \
           $(PHASEFILES) $(SINGLETOPFILES) \
-          $(TOPHFILES) $(TOPZFILES) $(TOPGFILES) \
+          $(TOPHFILES) $(TOPZFILES) $(TOPDKFILES) \
           $(USERFILES) $(VOLFILES) $(WFILES) $(W2JETFILES) \
           $(WCJETFILES) $(WBJETFILES) \
 	  $(W2JETVIRTFILES) $(WHBBARFILES) $(WGAMFILES) $(ZGAMFILES) \
@@ -773,10 +852,10 @@ OURCODE = $(LIBFILES) $(NEEDFILES) \
 	    $(Z1JETFILES) $(HWWFILES) $(HZZFILES) \
           $(TAUTAUFILES) $(HTTBARFILES) \
           $(BBHIGGSFILES) $(WBBFILES) $(ZBBFILES) $(WZBBMFILES) \
-          $(QQHFILES) $(GGHFILES) $(GGHGFILES) \
+          $(QQHFILES) $(QQHWWFILES) $(GGHFILES) $(GGHGFILES) \
           $(GGHGGrealFILES) \
 	  $(TOPFILES) $(ZQFILES) $(ZQJETFILES) $(WTFILES) $(HWWJETFILES) \
-	  $(CHECKINGFILES)
+	  $(WHWWFILES) $(ZHWWFILES) $(CHECKINGFILES)
           
 OTHER = $(INTEGRATEFILES) $(PARTONFILES) 
 ALLMCFM = $(OTHER) $(OURCODE)
@@ -790,6 +869,10 @@ mcfm: $(ALLMCFM)
 	mv mcfm Bin/
 	@echo $(PDFMSG)
 	@echo $(NTUPMSG)
+
+# for FROOT package
+%.co: %.c
+	$(CXX) -c $(CXXFLAGS) $(DMYROOT) $(ROOTINCLUDE) -o obj/$@ $<
 
 # -----------------------------------------------------------------------------
 # Specify other options.

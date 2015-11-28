@@ -14,6 +14,7 @@ c---
       include 'zprods_com.f'
       include 'epinv.f'
       include 'scheme.f'
+      include 'nflav.f'
       integer j,k,iqqbg(5),iqbqg(5),iqgq(5),igqq(5),
      . igqbqb(5),iqbgqb(5)
       double precision msq(-nf:nf,-nf:nf),msq0(-nf:nf,-nf:nf),
@@ -52,7 +53,7 @@ c--- calculate lowest order
       
 c--- UV counterterm contains the finite renormalization to arrive
 c--- at MS bar scheme.      
-      subuv=ason2pi*xn*(epinv*(11d0-2d0*dble(nf)/xn)-1d0)/6d0
+      subuv=ason2pi*xn*(epinv*(11d0-2d0*dble(nflav)/xn)-1d0)/6d0
 
 c--- calculate propagator
       sw=s(3,4)

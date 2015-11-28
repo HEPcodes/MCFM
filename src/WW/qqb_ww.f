@@ -30,6 +30,7 @@ c--- note that non-leptonic W decays do not include scattering diagrams
       double complex cs_z(2,2),cs_g(2,2),cgamz(2,2),cz(2,2)
       double precision fac,mp(nf),xfac
       integer j,k,jk,tjk,minus,mplus
+      logical srdiags
       parameter(ave=0.25d0/xn)
       data minus,mplus/1,2/
       data mp/-1d0,+1d0,-1d0,+1d0,-1d0/
@@ -42,6 +43,10 @@ c--set msq=0 to initalize
       enddo
       enddo
 
+c--- include singly resonant diagrams if zerowidth=.false. , but only
+c---  as long as anomtgc=.false. too
+      srdiags=((zerowidth .eqv. .false.) .and. (anomtgc .eqv. .false.))
+      
 C----Change the momenta to DKS notation 
 c   We have --- f(p1) + f'(p2)-->mu^-(p5)+nubar(p6)+e^+(p4)+nu(p3)
 c   DKS have--- ubar(q1)+u(q2)-->mu^-(q3)+nubar(q4)+e^+(q5)+nu(q6)
@@ -79,7 +84,7 @@ c-- couplings with or without photon pole
       cs_z(mplus,j)=-mp(j)*2d0*Q(j)*xw*prop12
       cs_g(minus,j)=+mp(j)*2d0*Q(j)*xw
       cs_g(mplus,j)=+mp(j)*2d0*Q(j)*xw
-      if (zerowidth .neqv. .true.) then
+      if (srdiags) then
       cz(minus,j)=2d0*xw*ln*L(j)*prop12
       cz(mplus,j)=2d0*xw*ln*R(j)*prop12
       cgamz(minus,j)=2d0*xw*(-Q(j)+le*L(j)*prop12)
@@ -127,7 +132,7 @@ c      Fb126543=-Fb123456
 c      Fb213456=A6treeb(2,1,3,4,5,6,za,zb)
 c      Fb216543=-Fb213456
 
-      if (zerowidth .neqv. .true.) then
+      if (srdiags) then
 c---for supplementary diagrams.
       Fa341256=A6treea(3,4,1,2,5,6,za,zb)
       Fa653421=A6treea(6,5,3,4,2,1,za,zb)
@@ -173,7 +178,7 @@ c---Remember that base process is ub-u so this has the natural 123456 order
           endif
       endif
      
-      if (zerowidth .neqv. .true.) then
+      if (srdiags) then
 c---we need supplementary diagrams for gauge invariance.
 C---tjk is equal to 2 (u,c) or 1 (d,s,b)
       tjk=2-mod(abs(jk),2)     

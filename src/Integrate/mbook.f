@@ -56,6 +56,7 @@ C      J with fun**2*wgt; then K will contain an estimate of the error
 C      of the integration. Putting X=1/(#of iterations) performs the 
 C      average over the iterations, and gives the right normalization to 
 C      the differential distribution, I, and to the errors, K. J stays the same.
+C U  : same as V, but I also remains the same (i.e. only K is filled)
 C
 C FINAL ACCOUNTING:
 C Now we can finalize our histograms; MFINAL(N) will calculate the integral
@@ -198,10 +199,24 @@ c     we are renormalising the weights by the bin width
       ELSEIF(OPER.EQ.'V') THEN                 
         XAVG=HIST(I,L)*X
         XSQAVG=HIST(J,L)*X
+c--- need extra factor to account for renormalization by bin width
+        XSQAVG=XSQAVG/hdel(i)
         XNORM=DFLOAT(IHIS(I,L))*X
         IF(XNORM.NE.0.d0) THEN
         HIST(K,L)=SQRT(ABS(XSQAVG-XAVG**2)/XNORM)
         HIST(I,L)=XAVG
+        ELSE
+        HIST(K,L)=0.d0
+        ENDIF
+      ELSEIF(OPER.EQ.'U') THEN ! same as 'V', but write errors only   
+        XAVG=HIST(I,L)*X
+        XSQAVG=HIST(J,L)*X
+c--- need extra factor to account for renormalization by bin width
+        XSQAVG=XSQAVG/hdel(i)
+        XNORM=DFLOAT(IHIS(I,L))*X
+        IF(XNORM.NE.0.d0) THEN
+        HIST(K,L)=SQRT(ABS(XSQAVG-XAVG**2)/XNORM)
+c        HIST(I,L)=XAVG ! removed from 'V'
         ELSE
         HIST(K,L)=0.d0
         ENDIF
@@ -355,7 +370,7 @@ c     &' SET ORDER X Y DY ')
       IF(HIST(N,J).EQ.0.) GO TO 1
       if (scaleplots) then
       WRITE(99,'(3X,G13.6,2(2X,G13.6))')  
-     & XHIS(N,J),scalefac*HIST(N,J),scalefac*HIST(M,J)
+     & XHIS(N,J),scalefac*HIST(N,J),HIST(M,J)
       else
       WRITE(99,'(3X,G13.6,2(2X,G13.6))')  
      &                            XHIS(N,J),HIST(N,J),HIST(M,J)

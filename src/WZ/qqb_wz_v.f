@@ -47,10 +47,15 @@ c---  averaged(summed) over initial(final) colours and spins
 c      double complex Fa561243,Fa562143
       double precision v2(2),cl1,cl2,en1,en2,xfac
       double complex ZgL(-nf:nf),ZgR(-nf:nf)
+      logical srdiags
 
       parameter(ave=0.25d0/xn)
       data cl1,cl2,en1,en2/4*1d0/
 
+c--- include singly resonant diagrams if zerowidth=.false. , but only
+c---  as long as anomtgc=.false. too
+      srdiags=((zerowidth .eqv. .false.) .and. (anomtgc .eqv. .false.))
+      
       scheme='dred'
       FAC=-2D0*gwsq*esq
       FACNLO=ason2pi*cf
@@ -198,7 +203,7 @@ c---case u-dbar
       La213465=A6loopa(2,1,3,4,6,5,za,zb)
       La215643=A6loopa(2,1,5,6,4,3,za,zb)
 
-      if (zerowidth .neqv. .true.) then
+      if (srdiags) then
 c---for supplementary diagrams.
       Fa346512=A6treea(3,4,6,5,1,2,za,zb)
       Fa342156=A6treea(3,4,2,1,5,6,za,zb)
@@ -255,7 +260,7 @@ c---note that L/R labels the LEPTON coupling v2, NOT the quarks (all L)
      .           +FACM*(v2(2)*cotw*prop56*Lb123465_z
      .                                +q1*Lb123465_g)*prop12)*prop34
         endif
-        if (zerowidth .neqv. .true.) then
+        if (srdiags) then
 c---we need supplementary diagrams for gauge invariance.
 c---now also assume that we have lepton decay products for W
 c---so that v2(1)=le, v2(2)=re
