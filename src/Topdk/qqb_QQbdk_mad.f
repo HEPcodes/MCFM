@@ -12,7 +12,6 @@
       include 'zcouple.f'
       include 'ewcouple.f'
       include 'ewcharge.f'
-      include 'hardscale.f'
       include 'flags.f'
       integer i,j,k,nu,hq,Qh,hg,lh,n1,n2
       double precision P(mxpart,4),msq(-nf:nf,-nf:nf)

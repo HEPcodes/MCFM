@@ -349,6 +349,9 @@ c---this is the value of integral including subtractions
       do nd=0,ndmax
         xmsq(nd)=xmsq(nd)*flux*pswt/BrnRat
 
+c--- if this dipole has no contribution, go to end of loop
+        if (xmsq(nd) .eq. 0d0) goto 997
+
         if (nd .eq. 0) then
 c---call clustering for event
 c--- cluster partons (nqcdstart) to (nqcdstart+nqcdjets)

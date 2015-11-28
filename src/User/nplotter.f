@@ -275,7 +275,11 @@ c--- case where we have 2 jets to order
       if ( (((nproc .eq. 22)
      .    .or.(nproc .eq. 27)
      .    .or.(nproc .eq. 44)
-     .    .or.(nproc .eq. 217))
+     .    .or.(nproc .eq. 217)
+     .    .or.(nproc .eq. 219)
+     .    .or.(nproc .eq. 272)
+     .    .or.(nproc .eq. 273)
+     .    .or.(nproc .eq. 145))
      .    .and. (jets .eq. 2))
      . .or.(((nproc .eq. 11).or.(nproc .eq. 46).or.(nproc .eq. 41)
      .                      .or.(nproc .eq. 42).or.(nproc .eq. 43))
@@ -296,7 +300,10 @@ c--- case where we have 3 jets to order
       if ( (((nproc .eq. 22)
      .    .or.(nproc .eq. 27)
      .    .or.(nproc .eq. 44)
-     .    .or.(nproc .eq. 217))
+     .    .or.(nproc .eq. 217)
+     .    .or.(nproc .eq. 219)
+     .    .or.(nproc .eq. 272)
+     .    .or.(nproc .eq. 273))
      .    .and. (jets .eq. 3))
      . .or.  ((nproc .eq. 23).or.(nproc .eq. 28)
      . .or.  (nproc .eq. 218)) ) then
@@ -369,6 +376,14 @@ c--- set-up variables to catch b's
             etab1=eta5
             etab2=eta6
             rbb=r56
+            if (ptb2 .gt. ptb1) then
+              swap=ptb1
+              ptb1=ptb2
+              ptb2=swap
+              swap=etab1
+              etab1=etab2
+              etab2=swap
+            endif
           elseif (jets .eq. 3) then
             call getbs(p,ib1,ib2)
             if     (ib1 .eq. 5) then
@@ -491,6 +506,13 @@ c     . 1.0d0,-2d0,0d0,0.1d0,'lin')
       n=n+1
       call bookplot(n,tag,'  deta54',deta54,wt,-5d0,5d0,0.4d0,'lin')
       n=n+1
+
+c--- Kramer comparison
+      call bookplot(n,tag,' pth(mk)',pt34,wt,9.2d0,101.2d0,9.2d0,'log')
+      n=n+1
+      call bookplot(n,tag,' ptb(mk)',pt5,wt,9.2d0,101.2d0,9.2d0,'log')
+      n=n+1
+
       endif
       if (eventpart .gt. 5) then
       call bookplot(n,tag,'    eta6',eta6,wt,-5d0,5d0,0.5d0,'lin')
@@ -502,11 +524,11 @@ c     . 1.0d0,-2d0,0d0,0.1d0,'lin')
       call bookplot(n,tag,'    pt56',pt56,wt,10d0,150d0,10d0,'log')
       n=n+1
       call bookplot(n,tag,'|y5-y6|',
-     .                    abs(eta5-eta6),wt,0d0,10d0,0.5d0,'lin')
+     .                    abs(eta5-eta6),wt,0d0,10d0,0.4d0,'lin')
       n=n+1
       call bookplot(n,tag,'dphi(56)',fphi(5,6,p),wt,0d0,4d0,0.2d0,'lin')
       n=n+1
-      call bookplot(n,tag,'detatags',detatags,wt,0d0,10d0,0.2d0,'lin')
+      call bookplot(n,tag,'detatags',detatags,wt,0d0,10d0,0.4d0,'lin')
       n=n+1
       call bookplot(n,tag,'dphitags',dphitags,wt,0d0,4d0,0.2d0,'lin')
       n=n+1
@@ -599,12 +621,15 @@ c      n=n+1
       call bookplot(n,tag,'    eta8',eta8,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
       call bookplot(n,tag,'     pt8',pt8,wt,0d0,100d0,5d0,'lin')
+      n=n+1
       endif      
 
       else
 c--- Book and fill ntuple if we're not doing histograms       
          call bookfill(tag,p,wt)       
       endif
+
+      n=n-1
 
       return 
       end

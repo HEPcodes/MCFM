@@ -2,7 +2,7 @@
 C----q(p1)+g(p2)--> t(nu(p3)+e^+(p4))+b(p5))+bb(p6)+q'(p7)
       implicit none
       include 'constants.f'
-      include 'hardscale.f'
+      include 'masses.f'
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),
      . q_g,qbar_g,g_q,g_qbar
       double precision p1(4),p2(4),p3(4),q1(4),q2(4),q3(4),k0(4),xmatsq
@@ -20,9 +20,9 @@ c----put basic cuts to avoid mass singularity for zero mass
       ptbbsq=pt(6,p)**2
       s56=two*dot(p,5,6)
       if (
-     .     (s56 .lt. four*hscalesq) 
-     . .or. (ptbsq.lt. hscalesq) 
-     . .or. (ptbbsq .lt. hscalesq) ) return
+     .     (s56 .lt. four*mbsq) 
+     . .or. (ptbsq.lt. mbsq) 
+     . .or. (ptbbsq .lt. mbsq) ) return
 
 
       do j=1,4

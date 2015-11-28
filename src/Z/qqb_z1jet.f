@@ -27,7 +27,6 @@ c---
       enddo
       enddo
       
-      call dotem(5,p,s)
       call spinoru(5,p,za,zb)
       
 c---protect from soft and collinear singularities
@@ -64,7 +63,7 @@ c      call zgamps2(5,2,3,4,1,za,zb,AgqbZqb2)
       do j=-nf,nf
       do k=-nf,nf
 
-      if( j .ne. 0 .and. k .ne. 0 .and. j .ne. -k) goto 20
+      if( (j .ne. 0) .and. (k .ne. 0) .and. (j .ne. -k)) goto 20
 
       if     ((j .eq. 0) .and. (k .eq. 0)) then
           msq(j,k)=0d0

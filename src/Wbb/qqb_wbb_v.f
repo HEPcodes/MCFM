@@ -14,7 +14,8 @@
       include 'sprods_com.f'
       include 'zprods_decl.f'
       include 'scheme.f'
-      include 'hardscale.f'
+      include 'masses.f'
+      include 'noglue.f'
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),
      . p(mxpart,4),q(mxpart,4),faclo,fac,
      . qqb,qbq
@@ -30,13 +31,16 @@
       enddo
       enddo
 
+c--- shortcut if we're doing gqonly
+      if (gqonly) return
+
 c---calculate the lowest order matrix element and fill the common block
 c---twopij with s_{ij}
       call qqb_wbb(p,msq)
       if (
-     .      (s(5,6) .lt. four*hscalesq) 
-     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. hscalesq) 
-     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. hscalesq) ) return 
+     .      (s(5,6) .lt. four*mbsq) 
+     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. mbsq) 
+     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. mbsq) ) return 
 
 c---  Now transform momenta into a notation 
 c---  suitable for calling the BDKW function with notation which is 

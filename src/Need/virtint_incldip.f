@@ -625,11 +625,9 @@ C--QQbar
      &                +AP(a,a,1)-AP(a,a,3)+Q2(a,a,q,1)-Q2(a,a,q,3)))
      &                *fx1(j)*fx2(k)
      & +(msq(j,k)*(AP(q,q,2)+AP(q,q,3)+Q1(q,q,a,3)+Q1(q,q,a,2))
-     & + msq(g,k)*(AP(g,q,2)+Q1(g,q,a,2))
-     & + msq(g,k)*(AP(g,a,2)+Q1(g,a,a,2)))*fx1z(j)/z*fx2(k)
+     & + msq(g,k)*(AP(g,q,2)+Q1(g,q,a,2)))*fx1z(j)/z*fx2(k)
      & +(msq(j,k)*(AP(a,a,2)+AP(a,a,3)+Q2(a,a,q,3)+Q2(a,a,q,2))
-     & + msq(j,g)*(AP(g,a,2)+Q2(g,a,q,2))
-     & + msq(j,g)*(AP(g,q,2)+Q2(g,q,q,2)))*fx1(j)*fx2z(k)/z
+     & + msq(j,g)*(AP(g,a,2)+Q2(g,a,q,2)))*fx1(j)*fx2z(k)/z
       
       elseif ((j .lt. 0) .and. (k.gt.0)) then
 C--QbarQ
@@ -645,30 +643,31 @@ C--QbarQ
       elseif ((j .eq. g) .and. (k.eq.g)) then
 C--gg
       if (case .eq. 'Zbbbar') then
-         xmsq=xmsq+msqv(g,g)*fx1(g)*fx2(g)
-         do cs=0,2
-      xmsq=xmsq+(
-     &+msq_cs(cs,g,g)*(one+two*(AP(g,g,1)-AP(g,g,3))
-     &                    +R1(g,g,g,cs,1)-R1(g,g,g,cs,3)
-     &                    +R2(g,g,g,cs,1)-R2(g,g,g,cs,3)))*fx1(g)*fx2(g)
-     &+msq_cs(cs,g,g)*(AP(g,g,2)+AP(g,g,3)
-     &                +R1(g,g,g,cs,2)+R1(g,g,g,cs,3))*fx1z(g)/z*fx2(g)
-     &+msq_cs(cs,g,g)*(AP(g,g,2)+AP(g,g,3)
-     &                +R2(g,g,g,cs,2)+R2(g,g,g,cs,3))*fx1(g)*fx2z(g)/z
+       xmsq=xmsq+msqv(g,g)*fx1(g)*fx2(g)
+       do cs=0,2
+       xmsq=xmsq+(
+     & +msq_cs(cs,g,g)*(one
+     &  +AP(g,g,1)-AP(g,g,3)+R1(g,g,g,cs,1)-R1(g,g,g,cs,3)
+     &  +AP(g,g,1)-AP(g,g,3)+R2(g,g,g,cs,1)-R2(g,g,g,cs,3))
+     &                 )*fx1(g)*fx2(g)
+     & +msq_cs(cs,g,g)*(AP(g,g,2)+AP(g,g,3)
+     &                 +R1(g,g,g,cs,2)+R1(g,g,g,cs,3))*fx1z(g)/z*fx2(g)
+     & +msq_cs(cs,g,g)*(AP(g,g,2)+AP(g,g,3)
+     &                 +R2(g,g,g,cs,2)+R2(g,g,g,cs,3))*fx1(g)*fx2z(g)/z
         enddo
       else
-      msq_qg=msq(+5,g)+msq(+4,g)+msq(+3,g)+msq(+2,g)+msq(+1,g)
-     &      +msq(-5,g)+msq(-4,g)+msq(-3,g)+msq(-2,g)+msq(-1,g)
-      msq_gq=msq(g,+5)+msq(g,+4)+msq(g,+3)+msq(g,+2)+msq(g,+1)
-     &      +msq(g,-5)+msq(g,-4)+msq(g,-3)+msq(g,-2)+msq(g,-1)
-      xmsq=xmsq+(msqv(g,g)
-     & +msq(g,g)*(one+AP(g,g,1)-AP(g,g,3)+Q1(g,g,g,1)-Q1(g,g,g,3)
-     &               +AP(g,g,1)-AP(g,g,3)+Q2(g,g,g,1)-Q2(g,g,g,3)))
-     &               *fx1(g)*fx2(g)
-     & +(msq(g,g)*(AP(g,g,2)+AP(g,g,3)+Q1(g,g,g,2)+Q1(g,g,g,3))
-     & + msq_qg*(AP(q,g,2)+Q1(q,g,g,2)))*fx1z(g)/z*fx2(g)
-     & +(msq(g,g)*(AP(g,g,2)+AP(g,g,3)+Q2(g,g,g,2)+Q2(g,g,g,3))
-     & + msq_gq*(AP(q,g,2)+Q2(q,g,g,2)))*fx1(g)*fx2z(g)/z
+       msq_qg=msq(+5,g)+msq(+4,g)+msq(+3,g)+msq(+2,g)+msq(+1,g)
+     &       +msq(-5,g)+msq(-4,g)+msq(-3,g)+msq(-2,g)+msq(-1,g)
+       msq_gq=msq(g,+5)+msq(g,+4)+msq(g,+3)+msq(g,+2)+msq(g,+1)
+     &       +msq(g,-5)+msq(g,-4)+msq(g,-3)+msq(g,-2)+msq(g,-1)
+       xmsq=xmsq+(msqv(g,g)
+     &  +msq(g,g)*(one+AP(g,g,1)-AP(g,g,3)+Q1(g,g,g,1)-Q1(g,g,g,3)
+     &                +AP(g,g,1)-AP(g,g,3)+Q2(g,g,g,1)-Q2(g,g,g,3)))
+     &                *fx1(g)*fx2(g)
+     &  +(msq(g,g)*(AP(g,g,2)+AP(g,g,3)+Q1(g,g,g,2)+Q1(g,g,g,3))
+     &  +   msq_qg*(AP(q,g,2)+Q1(q,g,g,2)))*fx1z(g)/z*fx2(g)
+     &  +(msq(g,g)*(AP(g,g,2)+AP(g,g,3)+Q2(g,g,g,2)+Q2(g,g,g,3))
+     &  +   msq_gq*(AP(q,g,2)+Q2(q,g,g,2)))*fx1(g)*fx2z(g)/z
       endif
 
       elseif (j .eq. g) then

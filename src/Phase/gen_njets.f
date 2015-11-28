@@ -26,11 +26,14 @@ c---- with all 2 pi's (ie 1/(2*pi)^(4+2n))
       common/energy/sqrts
       common/breit/n2,n3,mass2,width2,mass3,width3
       common/x1x2/xx
+      common/reset/reset
+      logical reset
       data first/.true./,xxerror/.false./
       save first,ptjetmin,etajetmin,etajetmax,pbreak,xxerror
 
-      if (first) then
+      if (first .or. reset) then
         first=.false.
+        reset=.false.
         call read_jetcuts(ptjetmin,etajetmin,etajetmax)
         if (part .eq. 'real') then
 c--- if we're generating phase space for real emissions, then we need

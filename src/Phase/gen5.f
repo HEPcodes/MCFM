@@ -3,17 +3,14 @@
       include 'constants.f'
       include 'mxdim.f'
       include 'process.f'
+      include 'phasemin.f'
       integer nu
-
       double precision r(mxdim),sqrts,wt5,
      . p(mxpart,4),p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4)
       double precision pswt,xjac
-      double precision xx(2),xmin,tau,y,taumin
-
+      double precision xx(2),tau,y
       common/energy/sqrts
       common/x1x2/xx
-      common/taumin/taumin
-      parameter(xmin=1d-5)
 
       wt5=0d0
       tau=dexp(dlog(taumin)*r(9))

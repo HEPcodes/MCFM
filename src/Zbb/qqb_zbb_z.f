@@ -12,12 +12,12 @@
       double precision ii_qq,ii_qg,ii_gq,if_qq,fi_qq,
      .                 ff_qq,ii_gg,if_gg
 
-      xl12=log(+two*dot(p,1,2)/musq)
-      xl15=log(-two*dot(p,1,5)/musq)
-      xl16=log(-two*dot(p,1,6)/musq)
-      xl25=log(-two*dot(p,2,5)/musq)
-      xl26=log(-two*dot(p,2,6)/musq)
-      xl56=log(+two*dot(p,5,6)/musq)
+      xl12=dlog(+two*dot(p,1,2)/musq)
+      xl15=dlog(-two*dot(p,1,5)/musq)
+      xl16=dlog(-two*dot(p,1,6)/musq)
+      xl25=dlog(-two*dot(p,2,5)/musq)
+      xl26=dlog(-two*dot(p,2,6)/musq)
+      xl56=dlog(+two*dot(p,5,6)/musq)
 
       do is=1,3
 c--- pieces for the 4Q matrix elements
@@ -39,15 +39,10 @@ c--- pieces for the 4Q matrix elements
      .          -one/xn *(ii_qq(z,xl12,is)+ff_qq(z,xl56,is)))
 
       tempqg=ason2pi*tr*ii_qg(z,xl12,is)
-      Q1(q,g,q,is)=tempqg
       Q1(a,g,q,is)=tempqg
       Q1(q,g,a,is)=tempqg
-      Q1(a,g,a,is)=tempqg
-
-      Q2(q,g,q,is)=tempqg
       Q2(a,g,q,is)=tempqg
       Q2(q,g,a,is)=tempqg
-      Q2(a,g,a,is)=tempqg
 
       tempgq=ason4pi*two*cf*ii_gq(z,xl12,is)
       Q1(g,q,g,is)=tempgq

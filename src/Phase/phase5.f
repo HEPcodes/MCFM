@@ -37,7 +37,7 @@ c--- a Breit-Wigner at mH, otherwise just linearly
       endif
       
       call phi1_2(r(1),r(2),r(3),r(4),p127,p56,p34,wt3456,*99)
-      if (case .eq. 'Wbbjet') then
+      if ((case .eq. 'Wbbjet').or.(case .eq. 'Wbbmas')) then
         call phi3m(r(5),r(6),p56,p5,p6,mb,mb,wt56,*99)
       else
         call phi3m0(r(5),r(6),p56,p5,p6,wt56,*99)

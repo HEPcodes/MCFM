@@ -34,16 +34,14 @@
      .             *((xn-two/xn)*(if_qq(z,xl16,is)+fi_qq(z,xl16,is))
      .                  +two/xn *(if_qq(z,xl15,is)+fi_qq(z,xl15,is))
      .                  -one/xn *(ii_qq(z,xl12,is)+ff_qq(z,xl56,is)))
+
       tempqg=ason2pi*tr*ii_qg(z,xl12,is)
-      Q1(q,g,q,is)=tempqg
       Q1(a,g,q,is)=tempqg
       Q1(q,g,a,is)=tempqg
-      Q1(a,g,a,is)=tempqg
-      Q2(q,g,q,is)=tempqg
       Q2(a,g,q,is)=tempqg
       Q2(q,g,a,is)=tempqg
-      Q2(a,g,a,is)=tempqg
       enddo
+
       return
       end
 

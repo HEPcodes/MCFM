@@ -31,19 +31,20 @@
       character*2 plabel(mxpart)
       integer njets,j,k,countb,bindex(mxpart),jindex,kindex,ib1,ib2
       integer countlept,leptindex(mxpart),countgamm,gammindex(mxpart),
-     . countjet,jetindex(mxpart),pntr
+     . countjet,jetindex(mxpart),pntr,lbjscheme
       double precision p(mxpart,4),pjet(mxpart,4),etvec(4)
       double precision leptpt,leptrap,misspt,jetpt,jetrap,gammpt,gammrap
       double precision pt,etarap,etmiss,evtmisset,R,Rcut,gammcone,
-     . gammcut
+     . gammcut,etaj,etak,etalept
       double precision Rjlmin,Rllmin,delyjjmin,leptpt2,leptrap2
-      double precision delta(mxpart),discr,ptjet(mxpart)
-      logical newinput
+      double precision delta(mxpart),discr,ptjet(mxpart),etabuffer
+      logical newinput,jetsopphem
 c      integer nu
 c      double precision sumjetpt(2)
       common/newinput/newinput
       common/leptcuts/leptpt,leptrap,misspt,Rjlmin,Rllmin,delyjjmin,
-     . leptpt2,leptrap2,gammpt,gammrap,gammcone,gammcut
+     . leptpt2,leptrap2,gammpt,gammrap,gammcone,gammcut,
+     . lbjscheme,jetsopphem
       common/plabel/plabel
       common/rcut/Rcut
 ************************************************************************
@@ -95,25 +96,34 @@ c--- read-in cuts from file gencuts.DAT
       write(6,*)  '*                                                  *'
       write(6,99) '*        pt(lepton)      >   ',leptpt,
      .                ' GeV            *'
-      write(6,99) '*      |rap(lepton)|     <   ',leptrap,
+      write(6,99) '*      |eta(lepton)|     <   ',leptrap,
      .                '                *'
       write(6,99) '*       pt(missing)      >   ',misspt,
      .                ' GeV            *'
       if ((leptpt2 .ne. 0d0) .or. (leptrap2 .ne. 0d0)) then
       write(6,99) '*     pt(2nd+ lepton)    >   ',leptpt2,
      .                ' GeV            *'
-      write(6,99) '*   |rap(2nd+ lepton)|   <   ',leptrap2,
+      write(6,99) '*   |eta(2nd+ lepton)|   <   ',leptrap2,
      .                '                *'
       endif
       write(6,99) '*      R(jet,lepton)     >   ',Rjlmin,
      .                '                *'
       write(6,99) '*     R(lepton,lepton)   >   ',Rllmin,
      .                '                *'
-      write(6,99) '*     |y(jet1)-y(jet2)|  >   ',delyjjmin,
+      write(6,99) '* |eta(jet1)-eta(jet2)|  >   ',delyjjmin,
      .                '                *'
+      if (jetsopphem) then
+      write(6,*) '*           eta(jet1) . eta(jet2)  <  0            *' 
+      endif
+      if     (lbjscheme .eq. 1) then
+      write(6,*) '*        eta(jet1)  <  eta(lept)  <  eta(jet2)     *' 
+      elseif (lbjscheme .ge. 2) then
+      write(6,*) '*  eta(jet1)+Rcut  <  eta(lept)  <  eta(jet2)-Rcut *' 
+      lbjscheme=2
+      endif
       write(6,99) '*   pt(photon)           >   ',gammpt,
      .                '                *'
-      write(6,99) '*   rap(photon)          <   ',gammrap,
+      write(6,99) '*   eta(photon)          <   ',gammrap,
      .                '                *'
       write(6,99) '*   pt(hadronic)         <   ',gammcut,
      .                '    pt(photon)  *'
@@ -123,7 +133,7 @@ c--- read-in cuts from file gencuts.DAT
       write(6,*)  '*                                                  *'
       write(6,99) '*      pt(jet)       >   ',jetpt,
      .                ' GeV                *'
-      write(6,99) '*    |rap(jet)|      <   ',jetrap,
+      write(6,99) '*    |eta(jet)|      <   ',jetrap,
      .                '                    *'
       write(6,99) '*   R(jet1,jet2)     >   ',Rcut,
      .                '                    *'
@@ -246,18 +256,6 @@ c--- therefore we should subtract 1 from this number
         stop
       endif
       
-c-- check that momenta 5...4+njets are indeed jets
-c---(shifted by 1 for the number of photons)
-c      if (njets .gt. 0) then
-c        do j=5+countgamm,4+countgamm+njets
-c          if ((plabel(j) .ne. 'pp') .and. (plabel(j) .ne. 'pj')
-c     .   .and.(plabel(j) .ne. 'bq') .and. (plabel(j) .ne. 'ba')) then
-c            write(6,*) 'Cannot identify jets in gencuts.f'
-c            stop
-c          endif
-c        enddo
-c      endif     
-
 c--- jet-lepton separation (if there are 1 or more jets and leptons)
       if ((njets .gt. 0) .and. (countlept .gt. 0)) then
         do j=1,countlept
@@ -332,9 +330,10 @@ c          endif
         enddo
       endif  
       
-c--- jet-jet rapidity separation (if there are 2 or more jets)
+c--- WBF-style cuts (if there are 2 or more jets)
       if ((njets .gt. 1)) then
-c--- j and k point to the two highest pt jets
+c--- jet-jet rapidity separation 
+c--- j and k point to the two highest pt ('tagging') jets
         j=1
         k=2
         if (njets. eq. 3) then
@@ -353,29 +352,31 @@ c--- j and k point to the two highest pt jets
           gencuts=.true.
           return
         endif
-c--- Also require that jets be in opposite hemispheres in this case
-c        if ((etarap(jetindex(j),pjet)*etarap(jetindex(k),pjet) .gt. 0d0)
-c     .     .and. (delyjjmin .gt. 0d0)) then
-c          gencuts=.true.
-c          return
-c        endif
-c--- Extra pt cut on the two highest pt jets
-c        if ((pt(jetindex(j),pjet) .lt. 20d0)
-c     . .or. (pt(jetindex(k),pjet) .lt. 20d0)) then
-c          gencuts=.true.
-c          return
-c        endif
 
+c--- Requirement that jets be in opposite hemispheres
+        if (jetsopphem) then
+          if (etarap(jetindex(j),pjet)*etarap(jetindex(k),pjet) .gt. 0d0)
+     .       ) then
+            gencuts=.true.
+            return
+          endif
+        endif
+
+        if (lbjscheme .gt. 0) then
 c--- Cut to require lepton to be between jets
-c        do pntr=1,countlept
-c          if ((etarap(leptindex(pntr),pjet) .lt. 
-c     .     min(etarap(jetindex(j),pjet),etarap(jetindex(k),pjet))+Rcut) .or.
-c     .        (etarap(leptindex(pntr),pjet) .gt. 
-c     .     max(etarap(jetindex(j),pjet),etarap(jetindex(k),pjet))-Rcut))then 
-c            gencuts=.true.
-c            return
-c          endif
-c        enddo
+          etabuffer=dble(lbjscheme-1)*Rcut
+          etaj=etarap(jetindex(j),pjet)
+          etak=etarap(jetindex(k),pjet)
+          do pntr=1,countlept
+            etalept=etarap(leptindex(pntr),pjet)
+            if ( (etalept .lt. min(etaj,etak)+etabuffer) .or.
+     .           (etalept .gt. max(etaj,etak)-etabuffer) ) then 
+              gencuts=.true.
+              return
+            endif
+          enddo
+        endif
+
       endif
       
 c-- cuts on b-quarks

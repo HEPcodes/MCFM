@@ -1,5 +1,6 @@
       double complex function d1pm(j1,j2,j3,j4,j5,j6,j7,jb)
       implicit none
+C     DENOMS (dg),(bc),(neu)
       include 'constants.f'
       include 'sprods_com.f'
       include 'zprods_com.f'

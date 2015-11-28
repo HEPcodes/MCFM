@@ -25,6 +25,9 @@
         jetlabel_to_stdhep=+5
       elseif (label .eq. 'ba') then
         jetlabel_to_stdhep=-5
+      elseif (label .eq. 'ig') then
+c--- this is a dummy value: no particle id available      
+        jetlabel_to_stdhep=0
       else
         write(6,*) 'Conversion routine jetlabel_to_stdhep.f failed'
         write(6,*) 'I do not know what a [',label,'] label means'

@@ -5,16 +5,15 @@ c----p(5,i) and p(4,i) are set equal to zero
       implicit none
       include 'constants.f'
       include 'mxdim.f'
+      include 'phasemin.f'
       integer nu
 
       double precision r(mxdim),sqrts,wt3,
      . p(mxpart,4),p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4)
-      double precision pswt,xjac,xx(2),xmin,tau,y,taumin
+      double precision pswt,xjac,xx(2),tau,y
 
       common/energy/sqrts
       common/x1x2/xx
-      common/taumin/taumin
-      parameter(xmin=1d-5)
       data p6/0d0,0d0,0d0,0d0/
       data p7/0d0,0d0,0d0,0d0/
 

@@ -1728,6 +1728,36 @@ C mb=0, keeps mbsq in the coupling but ignores it in the phase space)
              mass3=hmass
              width3=hwidth
 
+      elseif (nproc .eq. 219) then
+             case='VV_Hqq'
+             nqcdjets=2
+             nwz=2
+             plabel(3)='el'
+             plabel(4)='ea'
+             plabel(5)='pp'
+             plabel(6)='pp'
+             plabel(7)='pp'
+             ndim=10
+             mb=0d0
+             n2=0
+             n3=1
+             write(6,*) 'nproc=',nproc
+             write(6,*) 'case=',case
+             if (spira) then
+                 call higgsp(br,gamgambr,wwbr,zzbr)
+             else
+                 call higgsw(br)
+             endif
+C--reset higgs width so that whole gives correct BR, (if we have set
+C mb=0, keeps mbsq in the coupling but ignores it in the phase space) 
+             hwidth=xn*sqrt(2d0)/8d0/pi*gf*hmass*mbsq
+     .         *(1d0-4d0*mbsq/hmass**2)**1.5d0/br
+             write(6,99) hmass,hwidth,br
+             write(6,*) 'chooser:mbsq',mbsq
+             BrnRat=br
+             mass3=hmass
+             width3=hwidth
+
       elseif (nproc .eq. 230) then
              ndim=4 
              case='twojet'
@@ -1913,6 +1943,39 @@ C mb=0, keeps mbsq in the coupling but ignores it in the phase space)
              mass3=hmass
              width3=hwidth
              BrnRat=br
+      elseif (nproc .eq. 273) then
+C  gluon-gluon fusion+2jets - Higgs decay to generic leptons
+             case='ggfus2'
+             mb=0
+             nqcdjets=2
+             nqcdstart=5
+             plabel(3)='el'
+             plabel(4)='ea'
+             plabel(5)='pp'
+             plabel(6)='pp'
+             plabel(7)='pp'
+             ndim=10
+      
+             n2=0
+             n3=1
+
+             write(6,*) 'nproc=',nproc
+             write(6,*) 'case=',case
+             if (spira) then
+                 call higgsp(br,gamgambr,wwbr,zzbr)
+             else
+                 call higgsw(br)
+             endif
+C--reset higgs width so that whole gives correct BR, (if we have set
+C mb=0, keeps mbsq in the coupling but ignores it in the phase space) 
+             hwidth=xn*sqrt(2d0)/8d0/pi*gf*hmass*mbsq
+     .         *(1d0-4d0*mbsq/hmass**2)**1.5d0/br
+             write(6,99) hmass,hwidth,br
+             write(6,*) 'chooser:mbsq',mbsq
+             mass3=hmass
+             width3=hwidth
+             BrnRat=br
+
       elseif (nproc/10 .ge. 30) then
              write(6,*) 'Setting part to lord and zerowidth to false'
              zerowidth=.false.

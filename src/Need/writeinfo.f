@@ -27,6 +27,8 @@
       double precision Rcut
       double precision leptpt,leptrap,misspt,Rjlmin,Rllmin,delyjjmin,
      . leptpt2,leptrap2,gammpt,gammrap,gammcone,gammcut
+      integer lbjscheme
+      logical jetsopphem
  
       common/outputflags/creatent,dswhisto      
 
@@ -43,7 +45,8 @@
       common/Rcut/Rcut
       common/makecuts/makecuts
       common/leptcuts/leptpt,leptrap,misspt,Rjlmin,Rllmin,delyjjmin,
-     . leptpt2,leptrap2,gammpt,gammrap,gammcone,gammcut
+     . leptpt2,leptrap2,gammpt,gammrap,gammcone,gammcut,
+     . lbjscheme,jetsopphem
 
       common/origij/origij
 
@@ -110,6 +113,8 @@
       write(unitno,99) Rjlmin,'Rjlmin'
       write(unitno,99) Rllmin,'Rllmin'
       write(unitno,99) delyjjmin,'delyjjmin'
+      write(unitno,98) jetsopphem,'jetsopphem'
+      write(unitno,97) lbjscheme,'lbjscheme'
       write(unitno,99) gammpt,'gammpt'
       write(unitno,99) gammrap,'gammrap'
       write(unitno,99) gammcone,'gammcone'

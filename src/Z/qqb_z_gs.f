@@ -25,12 +25,13 @@ c---- entries are left as dummies
 
       do j=-nf,nf
       do k=-nf,nf
+
       do nd=1,ndmax
       msq(nd,j,k)=0d0
       enddo
 
-      if((j .ne. 0 .and. k .ne. 0 .and. j.ne.-k) 
-     .  .or. (j .eq. 0 .and. k .eq. 0)) goto 19
+      if(((j .ne. 0) .and. (k .ne. 0) .and. (j.ne.-k)) 
+     .  .or. ((j .eq. 0) .and. (k .eq. 0))) goto 19
 
       if     (((j .gt. 0) .and. (k .lt. 0))
      .   .or. ((j .lt. 0) .and. (k .gt. 0))) then

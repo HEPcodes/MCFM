@@ -3,12 +3,12 @@ c----1+2 --> 3+4
       implicit none
       include 'constants.f'
       include 'mxdim.f'
+      include 'phasemin.f'
       integer nu
-      double precision r(mxdim),p(mxpart,4),wt2,xx(2),xmin,sqrts
+      double precision r(mxdim),p(mxpart,4),wt2,xx(2),sqrts
       double precision p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4)
       common/energy/sqrts
       common/x1x2/xx
-      parameter(xmin=1d-5) 
 
       data p5/0d0,0d0,0d0,0d0/
       data p6/0d0,0d0,0d0,0d0/

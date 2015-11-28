@@ -8,9 +8,7 @@ c---  averaged(summed) over initial(final) colours and spins
       include 'sprods_com.f'
       include 'zprods_com.f'
       include 'zcouple.f'
-c      include 'ewcouple.f'
       include 'ewcharge.f'
-      include 'hardscale.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'msq_cs.f'
@@ -55,9 +53,9 @@ C---Fill spinor products
 
 c ensure that we have a hard process
       if (
-     .      (s(5,6) .lt. four*hscalesq) 
-     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. hscalesq) 
-     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. hscalesq) ) return
+     .      (s(5,6) .lt. four*mbsq) 
+     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. mbsq) 
+     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. mbsq) ) return
 
 c--- qqb
       call ampqqb_qqb(1,2,6,5,qqb_a,qqb_b)

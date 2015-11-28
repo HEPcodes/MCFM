@@ -145,29 +145,17 @@ c      if (Qflag) then
       do j=-nf,nf
       do k=-nf,nf
 
-c--- statistical factor = 1/2 if (q,Q) are in the same family
-c--- since Q --> Wq
-      if ((j-1)/2 .eq. (k-1)/2) then
-        stat=0.5d0
-      else
-        stat=1d0
-      endif      
-
       if ((j .gt. 0) .and. (k .gt. 0)) then
-c--- Q Q - different flavours
         if (j .ne. k) then
-        msq(1,j,k)=msq(1,j,k)+stat*(xn-1d0/xn)
+c--- Q Q - different flavours
+        msq(1,j,k)=msq(1,j,k)+(Vsum(k)-half*Vsq(k,-j))*(xn-1d0/xn)
      .  *(msq15_2(0,k)*sub15_2(gq)+msq15_2v(0,k)*sub15_2v)
-        msq(4,j,k)=msq(4,j,k)+stat*(xn-1d0/xn)
-     .  *(msq26_1(j,0)*sub26_1(gq)+msq26_1v(j,0)*sub26_1v)
-        if (Vsq(j,-k) .ne. 0d0) then
-        msq(2,j,k)=msq(2,j,k)+0.5d0*(xn-1d0/xn)
+        msq(2,j,k)=msq(2,j,k)+0.5d0*Vsq(j,-k)*(xn-1d0/xn)
      .  *(msq25_1(j,0)*sub25_1(gq)+msq25_1v(j,0)*sub25_1v)
-        endif
-        if (Vsq(k,-j) .ne. 0d0) then
-        msq(3,j,k)=msq(3,j,k)+0.5d0*(xn-1d0/xn)
+        msq(3,j,k)=msq(3,j,k)+0.5d0*Vsq(k,-j)*(xn-1d0/xn)
      .  *(msq16_2(0,k)*sub16_2(gq)+msq16_2v(0,k)*sub16_2v)
-        endif
+        msq(4,j,k)=msq(4,j,k)+(Vsum(j)-half*Vsq(j,-k))*(xn-1d0/xn)
+     .  *(msq26_1(j,0)*sub26_1(gq)+msq26_1v(j,0)*sub26_1v)
         else
 c--- Q Q - same flavours
 c--- note: W+2 jet qq piece only includes W radiation off
@@ -183,18 +171,14 @@ c---        radiation off the 26 line also)
        elseif ((j .lt. 0).and.(k .lt. 0)) then
         if (j .ne. k) then
 c--- QBAR QBAR - different flavours
-        msq(1,j,k)=msq(1,j,k)+stat*(xn-1d0/xn)
-     .    *(msq15_2(0,k)*sub15_2(gq)+msq15_2v(0,k)*sub15_2v)
-        msq(4,j,k)=msq(4,j,k)+stat*(xn-1d0/xn)
-     .    *(msq26_1(j,0)*sub26_1(gq)+msq26_1v(j,0)*sub26_1v)
-        if (Vsq(j,-k) .ne. 0d0) then
-        msq(2,j,k)=msq(2,j,k)+0.5d0*(xn-1d0/xn)
-     .    *(msq25_1(j,0)*sub25_1(gq)+msq25_1v(j,0)*sub25_1v)
-        endif
-        if (Vsq(k,-j) .ne. 0d0) then
-        msq(3,j,k)=msq(3,j,k)+0.5d0*(xn-1d0/xn)
-     .    *(msq16_2(0,k)*sub16_2(gq)+msq16_2v(0,k)*sub16_2v)
-        endif
+        msq(1,j,k)=msq(1,j,k)+(Vsum(k)-half*Vsq(k,-j))*(xn-1d0/xn)
+     .  *(msq15_2(0,k)*sub15_2(gq)+msq15_2v(0,k)*sub15_2v)
+        msq(2,j,k)=msq(2,j,k)+0.5d0*Vsq(j,-k)*(xn-1d0/xn)
+     .  *(msq25_1(j,0)*sub25_1(gq)+msq25_1v(j,0)*sub25_1v)
+        msq(3,j,k)=msq(3,j,k)+0.5d0*Vsq(k,-j)*(xn-1d0/xn)
+     .  *(msq16_2(0,k)*sub16_2(gq)+msq16_2v(0,k)*sub16_2v)
+        msq(4,j,k)=msq(4,j,k)+(Vsum(j)-half*Vsq(j,-k))*(xn-1d0/xn)
+     .  *(msq26_1(j,0)*sub26_1(gq)+msq26_1v(j,0)*sub26_1v)
         else
 c--- QBAR QBAR - same flavours     
         msq(3,j,k)=msq(3,j,k)+(xn-1d0/xn)

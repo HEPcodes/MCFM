@@ -18,17 +18,22 @@
       include 'gridinfo.f'
       include 'realwt.f'
       include 'vegas_common.f'
-      integer myitmx,myncall,myinit,i
+      integer myitmx,myncall,myinit,i,j,k
       logical mybin,bin
       double precision sig,sd,chi,sigr,sdr,chir,
      . xreal,xreal2,xinteg,xerr,adjust
       character*4 part,mypart
+      character*72 runname
+      integer nlength
       common/part/part
       common/bin/bin
       common/xreal/xreal,xreal2
+      common/runname/runname,nlength
+      common/reset/reset
       double precision lowint,virtint,realint
-      double precision region(2*mxdim)
-      logical first
+      double precision region(2*mxdim),lord_bypart(-1:1,-1:1)
+      logical first,reset
+      common/bypart/lord_bypart
       external lowint,virtint,realint
       data first/.true./
       save first
@@ -42,6 +47,16 @@ c--- total of virt and real may be combined at the end for 'tota'
       xreal=0d0
       xreal2=0d0
       
+      do j=-1,1
+      do k=-1,1
+        lord_bypart(j,k)=0d0
+      enddo
+      enddo
+
+c--- Controls behaviour of gen_njets: need to reset phase-space
+c--- boundaries when going from virt to real (using tota)
+      reset=.false.
+
 c--- Put the vegasnr parameters in the common block
       itmx=myitmx
       ncall=myncall
@@ -63,11 +78,11 @@ c--- If we're doing the tota integration, then set up the grid info
         if (first .eqv. .true.) then
           readin=.false.
           writeout=.true.
-          outgridfile='dvegas_tota_virt'          
+          outgridfile=runname(1:nlength)//'_dvegas_virt.grid'          
         else
           readin=.true.
           writeout=.false.
-          ingridfile='dvegas_tota_virt'
+          ingridfile=runname(1:nlength)//'_dvegas_virt.grid'
         endif
       endif        
       
@@ -75,6 +90,7 @@ c--- Virtual integration should have one extra dimension
 c--- (added and then taken away)
       if ((mypart .eq. 'virt') .or. (mypart .eq. 'tota'))  then
         part='virt'
+        reset=.true.
         call boundregion(ndim+1,region)
         call vegasnr(region,ndim+1,virtint,myinit,myncall,myitmx,
      .              0,sig,sd,chi)
@@ -85,11 +101,11 @@ c--- If we're doing the tota integration, then set up the grid info
         if (first .eqv. .true.) then
           readin=.false.
           writeout=.true.
-          outgridfile='dvegas_tota_real'          
+          outgridfile=runname(1:nlength)//'_dvegas_real.grid'          
         else
           readin=.true.
           writeout=.false.
-          ingridfile='dvegas_tota_real'
+          ingridfile=runname(1:nlength)//'_dvegas_real.grid'
         endif
       endif        
       
@@ -119,6 +135,7 @@ c---   unsubtracted real emission weight)
       endif
       if (mypart .eq. 'tota')  then
         part='real'
+        reset=.true.
         if (realwt) then
           nprn=0
         endif

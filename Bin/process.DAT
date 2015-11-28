@@ -1,4 +1,4 @@
-'3.4.2'           [file version number] 
+'3.4.3'           [file version number] 
 0  '  f(p1)+f(p2) --> W^+ (for total Xsect)'
 1  '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4))'
 5  '  f(p1)+f(p2) --> W^- (for total Xsect)'
@@ -145,7 +145,7 @@
 270 '  f(p1)+f(p2) --> H(bb(p3)+ba(p4))(in heavy top limit)'
 271 '  f(p1)+f(p2) --> H(bb(p3)+ba(p4))+f(p5)(in heavy top limit)'
 272 '  f(p1)+f(p2) --> H(bb(p3)+ba(p4))+f(p5)+f(p6)(in heavy top limit)'
-273 '  f(p1)+f(p2) --> H(bb(p3)+ba(p4))+f(p5)+f(p6)+f(p7)(in heavy top limit)'
+273 '  f(p1)+f(p2) --> H(l(p3)+l(p4))+f(p5)+f(p6)(in heavy t limit, H->l no BR)'
 1000 'nul'
 302 '  Check of Volume of 2 particle phase space'
 303 '  Check of Volume of 3 particle phase space'

@@ -4,19 +4,16 @@
       include 'mxdim.f'
       include 'debug.f'
       include 'process.f'
+      include 'phasemin.f'
       integer nu
-
       double precision r(mxdim)
       double precision wt4,p1(4),p2(4),p3(4),p4(4),p5(4),p6(4)
       double precision p(mxpart,4)
       double precision pswt,xjac,p1ext(4),p2ext(4)
-      double precision xx(2),xmin,tau,taumin,x1mx2,surd
+      double precision xx(2),tau,x1mx2,surd
       double precision lntaum
-
       common/pext/p1ext,p2ext
       common/x1x2/xx
-      common/taumin/taumin
-      parameter(xmin=1d-5)
 
 
       wt4=0d0

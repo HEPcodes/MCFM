@@ -42,6 +42,8 @@
       double precision Rcut
       double precision leptpt,leptrap,misspt,Rjlmin,Rllmin,delyjjmin,
      . leptpt2,leptrap2,gammpt,gammrap,gammcone,gammcut
+      integer lbjscheme
+      logical jetsopphem
       double precision randummy,ran1
       double precision cmass,bmass
       
@@ -66,7 +68,8 @@
       common/Rcut/Rcut
       common/makecuts/makecuts
       common/leptcuts/leptpt,leptrap,misspt,Rjlmin,Rllmin,delyjjmin,
-     . leptpt2,leptrap2,gammpt,gammrap,gammcone,gammcut
+     . leptpt2,leptrap2,gammpt,gammrap,gammcone,gammcut,
+     . lbjscheme,jetsopphem
 
       common/qmass/cmass,bmass
 
@@ -272,6 +275,10 @@ c--- jets and cuts options
       if (verbose) write(6,*) 'Rllmin',Rllmin
       read(20,*) delyjjmin
       if (verbose) write(6,*) 'delyjjmin',delyjjmin
+      read(20,*) jetsopphem 
+      if (verbose) write(6,*) 'jetsopphem',jetsopphem
+      read(20,*) lbjscheme 
+      if (verbose) write(6,*) 'lbjscheme',lbjscheme
       read(20,*) ptbjetmin
       if (verbose) write(6,*) 'ptbjetmin',ptbjetmin
       read(20,*) etabjetmax

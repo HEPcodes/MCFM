@@ -6,16 +6,16 @@ C---p1+p2 --> p3+p4
       include 'cutoff.f'
       include 'mxdim.f'
       include 'jetcuts.f'
+      include 'phasemin.f'
       character*4 part
       common/part/part
       integer j,nu
 
       double precision r(mxdim),p(mxpart,4),xx(2),zmin,zmax,z
       double precision sqrts,yave,ydif,xjac,y3,y4,phi,wt0,wt2,
-     . ydifmin,ydifmax,yavemin,yavemax,xtsq
-      double precision pt,xmin,xt
+     . ydifmin,ydifmax,yavemin,yavemax,xtsq,pt,xt
       logical first
-      parameter(xmin=1d-5,wt0=1d0/16d0/pi)
+      parameter(wt0=1d0/16d0/pi)
       common/energy/sqrts
       common/x1x2/xx
       data first/.true./

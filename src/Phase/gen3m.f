@@ -8,17 +8,15 @@ c----p(6,i) and p(7,i) are set equal to zero
       include 'mxdim.f'
       include 'masses.f'
       include 'process.f'
+      include 'phasemin.f'
       integer nu,j
-
       double precision r(mxdim),sqrts,wt3
       double precision p(mxpart,4),
      . p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4),m3,m4,m5
-      double precision pswt,xjac,xx(2),xmin,tau,y,taumin
+      double precision pswt,xjac,xx(2),tau,y
 
       common/energy/sqrts
       common/x1x2/xx
-      common/taumin/taumin
-      parameter(xmin=1d-5)
 
       do nu=1,4
       do j=1,mxpart

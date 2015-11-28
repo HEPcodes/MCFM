@@ -1,6 +1,7 @@
       double complex function d78pm(j1,j2,j3,j4,j5,j6,j7,jb)
 c---sum of d7+d8
       implicit none
+C---denoms  45,345,(2345) .or (267) 
       include 'constants.f'
       include 'sprods_com.f'
       include 'zprods_com.f'

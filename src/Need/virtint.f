@@ -23,6 +23,7 @@
       include 'limits.f'
       include 'jetlabel.f'
       include 'pdlabel.f'
+      include 'phasemin.f'
       double precision mqq(0:2,fn:nf,fn:nf)
       double precision msqx(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf)
       double precision msqx_cs(0:2,-nf:nf,-nf:nf)
@@ -34,7 +35,7 @@
       double precision pswt,xjac,scalestart,pdfscale,
      . wgt,msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),
      . msq_qq,msq_aa,msq_aq,msq_qa,msq_qg,msq_gq
-      double precision xx(2),z,x1onz,x2onz,flux,vol,taumin,omz,
+      double precision xx(2),z,x1onz,x2onz,flux,vol,omz,
      . BrnRat,xmsq_old,tmp
       double precision rcut     
       integer nqcdjets,nqcdstart,nshot,rvcolourchoice
@@ -44,7 +45,6 @@
       common/energy/sqrts
       common/bin/bin
       common/x1x2/xx
-      common/taumin/taumin
       common/BrnRat/BrnRat
       common/makecuts/makecuts
       common/rcut/rcut

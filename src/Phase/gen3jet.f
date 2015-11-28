@@ -4,14 +4,13 @@ C---p1+p2 --> p3+p4+p5
       implicit none
       include 'constants.f'
       include 'mxdim.f'
+      include 'phasemin.f'
       integer j,nu
-
       double precision r(mxdim),p(mxpart,4),xx(2),
      . sqrts,ymax,ymin,xjac,y3,y4,y5,phi,phi45,wt0,wt3,
-     . pt3,pt4,pt5,xt3,xt4,xt5,xmin,rtson2,cphi,sphi,cphi45,sphi45,
-     . deltay
+     . pt3,pt4,pt5,xt3,xt4,xt5,rtson2,cphi,sphi,cphi45,sphi45,deltay
       common/energy/sqrts
-      parameter(xmin=1d-5,wt0=1d0/512d0/pi**3)
+      parameter(wt0=1d0/512d0/pi**3)
       common/x1x2/xx
 
       do j=1,mxpart     

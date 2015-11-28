@@ -75,7 +75,7 @@ c  * ( 2*L + 4*[ln(1-x)] - 2*epinv )
       
       if (vorz .eq. 2) then
         ii_qq=omx-(one+x)*(two*lomx+L-epinv)-(one+x**2)/omx*lx
-        if (omx .gt. aii) ii_qq=ii_qq+(one+x**2)/omx*log(aii/omx)
+        if (omx .gt. aii) ii_qq=ii_qq+(one+x**2)/omx*dlog(aii/omx)
       return
       endif
       
@@ -113,7 +113,7 @@ c  - [x^2+(1-x)^2]*epinv
       
       if (vorz .eq. 2) then
         ii_qg=(one-two*x*omx)*(two*lomx-lx+L-epinv)+two*x*omx
-        if (omx .gt. aii) ii_qg=ii_qg+(one-two*x*omx)*log(aii/omx)
+        if (omx .gt. aii) ii_qg=ii_qg+(one-two*x*omx)*dlog(aii/omx)
       endif
       return
       end
@@ -146,7 +146,7 @@ c  [ln(1-x)] - [(1+(1-x)^2)/x]*epinv
       
       if (vorz .eq. 2) then
         ii_gq=(one+omx**2)/x*(two*lomx-lx+L-epinv)+x
-        if (omx .gt. aii) ii_gq=ii_gq+(one+omx**2)/x*log(aii/omx)
+        if (omx .gt. aii) ii_gq=ii_gq+(one+omx**2)/x*dlog(aii/omx)
         return
       endif
 
@@ -202,7 +202,7 @@ c    * ( 2*L + 4*[ln(1-x)] - 2*epinv )
         lx=dlog(x)
         ii_gg=two*(omx/x+x*omx-one)*(two*lomx-lx+L-epinv)-two*lx/omx
         if (omx .gt. aii) ii_gg=ii_gg
-     .  +two*(one/omx+omx/x+x*omx-one)*log(aii/omx)
+     .  +two*(one/omx+omx/x+x*omx-one)*dlog(aii/omx)
         return
       endif
       
@@ -264,7 +264,7 @@ c  * ( 2*L + 4*[ln(1-x)] - 2*epinv )
         ltmx=dlog((omx+aif)/aif)
         lx=dlog(x)
         if_qq=omx-two/omx*ltmx-(one+x)*(lomx+L-epinv)-(one+x**2)/omx*lx
-        if_qq=if_qq-log(aif)*(one+x)
+        if_qq=if_qq-dlog(aif)*(one+x)
         return
       endif
       
@@ -323,7 +323,7 @@ c  * ( 2*L + 4*[ln(1-x)] - 2*epinv )
       if (vorz .eq. 2) then
         ltmx=dlog((omx+aif)/aif)
         lx=dlog(x)
-        if_gg=two*((lomx-lx+L-epinv+log(aif))*(omx/x+x*omx-one)
+        if_gg=two*((lomx-lx+L-epinv+dlog(aif))*(omx/x+x*omx-one)
      .  -(ltmx+lx)/omx)
         return
       endif
@@ -360,7 +360,7 @@ c  - [x^2+(1-x)^2]*epinv
       lx=dlog(x)
       
       if (vorz .eq. 2) then
-        if_qg=(one-two*x*omx)*(lomx-lx+L-epinv+log(aif))+two*x*omx
+        if_qg=(one-two*x*omx)*(lomx-lx+L-epinv+dlog(aif))+two*x*omx
       endif
      
       return
@@ -434,7 +434,7 @@ c - 3/2*[1/(1-x)_(1-al)]
       if (x .gt. 1d0-afi) theta=1d0       
       if (vorz .eq. 1) then
          fi_qq=epinv*(epinv2-L)+half*L**2+1.5d0*(epinv-L)
-     .   +3.5d0-half*pisq-log(afi)*(1.5d0+log(afi))
+     .   +3.5d0-half*pisq-dlog(afi)*(1.5d0+dlog(afi))
          if (scheme .eq. 'tH-V') then
            return
          elseif (scheme .eq. 'dred') then
@@ -496,7 +496,7 @@ c  * ( - 2*b0 )
       if (x .gt. 1d0-afi) theta=1d0       
       if (vorz .eq. 1) then
         fi_gg=two*epinv*(epinv2-L)+L**2+67d0/9d0-10d0/9d0*dfloat(nf)/xn
-     .  -pisq+2d0*b0/xn*(epinv-L)-2d0*log(afi)*(b0/xn+log(afi))
+     .  -pisq+2d0*b0/xn*(epinv-L)-2d0*dlog(afi)*(b0/xn+dlog(afi))
         if (scheme .eq. 'tH-V') then
         return
         elseif (scheme .eq. 'dred') then
@@ -581,7 +581,7 @@ c  - [ln(al)]^2 + 3/2*epinv - epinv*L + epinv^2
       ff_qq=0d0
       if (vorz .eq. 1) then
         ff_qq=epinv*(epinv2-L)+half*L**2+1.5d0*(epinv-L)+5d0-half*pisq
-        ff_qq=ff_qq+1.5d0*(aff-1d0+log(aff))-log(aff)**2
+        ff_qq=ff_qq+1.5d0*(aff-1d0-dlog(aff))-dlog(aff)**2
         if (scheme .eq. 'tH-V') then
         return
         elseif (scheme .eq. 'dred') then
@@ -646,7 +646,7 @@ c  * ( 2*al*b0 - 20/9*Tr*nf - 2*[ln(al)]*b0 - 2*b0*L + 2*b0*epinv ) + 0.
       if (vorz .eq. 1) then
         ff_gg=two*epinv*(epinv2-L)+L**2+100d0/9d0-pisq
      .        +two*b0/xn*(epinv-L)-dfloat(nf)/xn*16d0/9d0
-        ff_gg=ff_gg-two*log(aff)**2+two*b0/xn*(aff-1d0-log(aff))
+        ff_gg=ff_gg-two*dlog(aff)**2+two*b0/xn*(aff-1d0-dlog(aff))
         if (scheme .eq. 'tH-V') then
           return
         elseif (scheme .eq. 'dred') then

@@ -15,7 +15,7 @@ c--initial state gluons coupling to b not included
       include 'constants.f'
       include 'ptilde.f'
       include 'qqgg.f'
-      include 'hardscale.f'
+      include 'masses.f'
       integer j,k,nd
 c --- remember: nd will count the dipoles
       
@@ -56,9 +56,9 @@ c --- remember: nd will count the dipoles
       enddo
 
       if (
-     .      (two*dot(p,5,6) .lt. four*hscalesq) 
-     . .or. (two*dot(p,1,5)*dot(p,2,5)/dot(p,1,2) .lt. hscalesq) 
-     . .or. (two*dot(p,1,6)*dot(p,2,6)/dot(p,1,2) .lt. hscalesq))return 
+     .      (two*dot(p,5,6) .lt. four*mbsq) 
+     . .or. (two*dot(p,1,5)*dot(p,2,5)/dot(p,1,2) .lt. mbsq) 
+     . .or. (two*dot(p,1,6)*dot(p,2,6)/dot(p,1,2) .lt. mbsq)) return 
 
 c--- calculate all the initial-initial dipoles
       call dips(1,p,1,7,2,sub17_2,sub17_2v,msq17_2,msq17_2v,

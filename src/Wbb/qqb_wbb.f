@@ -7,7 +7,7 @@ c---  averaged(summed) over initial(final) colours and spins
       include 'ckm.f'
       include 'sprods_com.f'
       include 'zprods_com.f'
-      include 'hardscale.f'
+      include 'masses.f'
       integer j,k
       double precision p(mxpart,4),msq(-nf:nf,-nf:nf),msqwbb
       double precision qqb,qbq
@@ -24,9 +24,9 @@ C---Fill spinor products
 
 c ensure that we have a hard process
       if (
-     .      (s(5,6) .lt. four*hscalesq) 
-     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. hscalesq) 
-     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. hscalesq) ) return
+     .      (s(5,6) .lt. four*mbsq) 
+     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. mbsq) 
+     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. mbsq) ) return
 
 C--calculate matrix element squared
       qqb=msqwbb(1,2,5,6)

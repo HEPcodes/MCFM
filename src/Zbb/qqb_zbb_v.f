@@ -18,7 +18,7 @@
       include 'zcouple.f'
       include 'epinv.f'
       include 'scheme.f'
-      include 'hardscale.f'
+      include 'noglue.f'
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),
      . p(mxpart,4),q_bdkw(mxpart,4),faclo,subuv,
      . fac,v2(2),vQ(nf,2),
@@ -37,14 +37,17 @@
       enddo
       enddo
 
+c--- shortcut if we're doing gqonly
+      if (gqonly) return
+
 c---calculate the lowest order matrix element and fill the common block
 c---twopij with s_{ij} (in rke notation)
       call qqb_zbb(p,msq)
 
       if (
-     .      (s(5,6) .lt. four*hscalesq) 
-     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. hscalesq) 
-     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. hscalesq) ) return 
+     .      (s(5,6) .lt. four*mbsq) 
+     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. mbsq) 
+     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. mbsq) ) return 
 
       prop=s(3,4)/dcmplx((s(3,4)-zmass**2),zmass*zwidth)
 

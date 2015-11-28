@@ -14,18 +14,21 @@
 ************************************************************************
       implicit none
       include 'constants.f'
+      include 'cutoff.f'
+      include 'efficiency.f'
+      include 'limits.f'
       include 'npart.f'
       include 'mxdim.f'
-      include 'efficiency.f'
+      include 'phasemin.f'
+      include 'scale.f'
       include 'verbose.f'
       include 'workdir.f'
       logical creatent,dswhisto
-      double precision taumin,rtsmin,sqrts,p1ext(4),p2ext(4),
+      double precision rtsmin,sqrts,p1ext(4),p2ext(4),
      . vector(mxdim),p(mxpart,4),s(mxpart,mxpart),val
       integer j,k
       logical newinput
       common/newinput/newinput
-      common/taumin/taumin
       common/rtsmin/rtsmin
       common/energy/sqrts
       common/pext/p1ext,p2ext
@@ -56,9 +59,11 @@
       write(6,*)
       endif
 
-* Set-up incoming beams
-
+* Set-up incoming beams and PS integration cut-offs
+      rtsmin=min(rtsmin,dsqrt(wsqmin+cutoff))
+      rtsmin=min(rtsmin,dsqrt(bbsqmin+cutoff))
       taumin=(rtsmin/sqrts)**2
+      xmin=taumin
 
       p1ext(4)=-half*sqrts
       p1ext(1)=0d0
@@ -82,6 +87,9 @@
       p(j,k)=0d0
       enddo
       enddo 
+
+* Set-up run name
+      call setrunname(scale)
            
       return
       end

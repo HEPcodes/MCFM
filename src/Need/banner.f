@@ -2,7 +2,7 @@
       implicit none
       character*6 codeversion
       common/versionnumber/codeversion
-      data codeversion/'3.4.2'/      
+      data codeversion/'3.4.3'/      
       end
 
       subroutine banner
@@ -24,7 +24,7 @@
       write(6,*) line
       write(6,*) '*                                                *'
       write(6,*) '* MCFM, v'//codeversion//
-     . '                  June 5th, 2003  *'
+     . '                  July 2nd, 2003  *'
       write(6,*) '*                                                *'
       write(6,*) '* Authors: John Campbell, johnmc@hep.anl.gov     *'
       write(6,*) '*          Keith Ellis,   ellis@fnal.gov,        *'

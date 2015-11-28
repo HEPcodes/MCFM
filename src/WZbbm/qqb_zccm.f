@@ -9,7 +9,6 @@ c---  averaged(summed) over initial(final) colours and spins
       include 'zprods_com.f'
       include 'zcouple.f'
       include 'ewcharge.f'
-      include 'hardscale.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
       integer j,k,nu,swap(4),h1,h3,h5,h6

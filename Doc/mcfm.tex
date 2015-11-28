@@ -6,7 +6,7 @@
 \thispagestyle{empty}
 \vspace*{3cm}
 \begin{center}
-{\Huge MCFM v3.4.1} \\
+{\Huge MCFM v3.4.3} \\
 \vspace*{0.5cm}
 \Large{A Monte Carlo for FeMtobarn} \\
 \Large{processes at Hadron Colliders} \\
@@ -18,7 +18,7 @@
 J. M. Campbell ({\tt johnmc@hep.anl.gov}) \\
 R. K. Ellis ({\tt ellis@fnal.gov}) \\
 \vspace*{2.5cm}
-{\it \small Updated: 29th May 2003}
+{\it \small Updated: 2nd July 2003}
 \end{center}
 
 \newpage
@@ -421,6 +421,7 @@ b(p_5)+\bar{b}(p_6))+Z^0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) ~(\mathrm{no}~\gamma^*
 216 &$  H(p_3+p_4)+f(p_5)+f(p_6)+f(p_7) ~\mbox{ (ZZ-fusion for total Xsect)}$& NLO \\
 217 &$  H(p_3+p_4)+f(p_5)+f(p_6) ~\mbox{ (VV-fusion for total Xsect)}$& NLO \\
 218 &$  H(p_3+p_4)+f(p_5)+f(p_6)+f(p_7) ~\mbox{ (VV-fusion for total Xsect)}$& NLO \\
+219 &$  H(l_3+{\bar l}_4)+f(p_5)+f(p_6)+f(p_7) ~\mbox{ (VV-fusion for total Xsect, no H BR)}$& NLO \\
 \hline
 30$n$ &  Check of volume of $n$-particle phase space& --  \\
 \hline
@@ -582,7 +583,7 @@ be rejected according to a set of cuts that is specified below.
 Further options may be implemented by editing {\tt src/User/gencuts.f}
 -- please contact the authors for guidance if necessary.
 
-\item {\tt ptmin\_lepton, ymax\_lepton}. These specify the values
+\item {\tt ptmin\_lepton, etamax\_lepton}. These specify the values
 of $p_T^{\rm min}$ and $|y|^{\rm max}$ for the hardest lepton produced
 in the process.
 \item {\tt ptmin\_missing}. Specifies the minimum missing transverse
@@ -599,9 +600,23 @@ $\Delta R >$~{\tt R(jet,lept)\_min}.
 \item {\tt R(lept,lept)\_min}. When non-zero, all lepton-lepton pairs
 must be separated by $\Delta R >$~{\tt R(lept,lept)\_min}.
 
-\item {\tt Deltay(jet,jet)\_min}. This enforces a rapidity gap between
-the two hardest jets, so that
-$|y^{\rm jet~1} - y^{\rm jet~2}| >$~{\tt Deltay(jet,jet)\_min}.
+\item {\tt Delta\_eta(jet,jet)\_min}. This enforces a pseudo-rapidity
+gap between the two hardest jets $j_1$ and $j_2$, so that: \\
+$|\eta^{j_1} - \eta^{j_2}| >$~{\tt Delta\_eta(jet,jet)\_min}.
+
+\item {\tt jets\_opphem}. If this parameter is set to {\tt .true.},
+then the two hardest jets are required to lie in opposite hemispheres,
+$\eta^{j_1} \cdot \eta^{j_2} < 0$.
+
+\item {\tt lepbtwnjets\_scheme}. This integer parameter provides no
+additional cuts when it takes the value {\tt 0}. When equal to
+{\tt 1} or {\tt 2}, leptons are required to lie between the two
+hardest jets. With the ordering $\eta^{j_-} < \eta^{j_+}$ for the
+pseudo-rapidities of jets $j_1$ and $j_2$: \\
+{\tt lepbtwnjets\_scheme = 1} : 
+ $\eta^{j_-} < \eta^{\rm leptons} < \eta^{j_+}$; \\
+{\tt lepbtwnjets\_scheme = 2} :
+ $\eta^{j_-}+{\tt Rcut\_jet} < \eta^{\rm leptons} < \eta^{j_+}-{\tt Rcut\_jet}$.
 
 \item {\tt ptmin\_bjet,  etamax\_bjet}. If {\tt makecuts} is {\tt .true.}
 and a process involving $b$-quarks is being calculated, then these can
@@ -642,7 +657,7 @@ where $R_0$ and $f$ are specified by {\tt cone\_photon} and
 previously saved {\tt VEGAS} grid from the file specified by
 {\tt ingridfile.grid}. Note that this, and the following 3 options,
 have no effect if {\tt part} is set to {\tt tota} (in this case, grids
-are automatically saved and loaded).
+are automatically saved and loaded as part of the calculation).
 
 \item {\tt writeout}. If {\tt .true.}, the program will write out
 the {\tt VEGAS} grid at the end of the run, to the file specified by

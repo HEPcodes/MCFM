@@ -5,15 +5,15 @@ C---p1+p2 --> p3+p4
       include 'constants.f'
       include 'limits.f'
       include 'mxdim.f'
+      include 'phasemin.f'
       integer n2,n3,j,nu
-
       double precision r(mxdim),p(mxpart,4),xx(2)
       double precision sqrts,ymax,yave,ydif,xjac,y3,y4,phi,wt0,wt2,w3
-      double precision pt,s34,xmin,rtshat,udif
+      double precision pt,s34,rtshat,udif
       common/energy/sqrts
       double precision mass2,width2,mass3,width3 
       common/breit/n2,n3,mass2,width2,mass3,width3 
-      parameter(xmin=1d-5,wt0=1d0/16d0/pi)
+      parameter(wt0=1d0/16d0/pi)
       common/x1x2/xx
 
       do j=1,mxpart     

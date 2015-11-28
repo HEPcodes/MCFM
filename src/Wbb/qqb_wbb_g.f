@@ -17,7 +17,8 @@ c   positively charged W only
       include 'ckm.f'
       include 'sprods_com.f'
       include 'zprods_com.f'
-      include 'hardscale.f'
+      include 'masses.f'
+      include 'noglue.f'
       integer j,k
       double precision p(mxpart,4),msq(-nf:nf,-nf:nf),redmsq,fac
       double precision qqbWbbg,qbqWbbg,qgWbbq,gqWbbq,gqbWbbqb,qbgWbbqb
@@ -32,13 +33,20 @@ c   positively charged W only
       call spinoru(7,p,za,zb)
 
       if (
-     .      (s(5,6) .lt. four*hscalesq) 
-     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. hscalesq) 
-     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. hscalesq) ) return
+     .      (s(5,6) .lt. four*mbsq) 
+     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. mbsq) 
+     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. mbsq) ) return
 
       fac=gsq**3*gw**4/4d0
-      qqbWbbg =+redmsq(1,2,7,5,6,3,4,4)*fac*aveqq
-      qbqWbbg =+redmsq(2,1,7,5,6,3,4,4)*fac*aveqq
+      
+c--- shortcut if we're doing gqonly
+      if (gqonly) then
+        qqbWbbg=0d0      
+        qbqWbbg=0d0
+      else     
+        qqbWbbg =+redmsq(1,2,7,5,6,3,4,4)*fac*aveqq
+        qbqWbbg =+redmsq(2,1,7,5,6,3,4,4)*fac*aveqq
+      endif
       qgWbbq  =+redmsq(1,7,2,5,6,3,4,4)*fac*aveqg
       qbgWbbqb=+redmsq(7,1,2,5,6,3,4,4)*fac*aveqg
       gqWbbq  =+redmsq(2,7,1,5,6,3,4,4)*fac*aveqg

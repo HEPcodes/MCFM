@@ -18,6 +18,7 @@
       include 'maxwt.f'
       include 'jetlabel.f'
       include 'pdlabel.f'
+      include 'phasemin.f'
 c --- DSW. To store flavour information :
       include 'flavours.f'
 c --- DSW.
@@ -34,7 +35,7 @@ c --- To use VEGAS random number sequence :
       double precision wgt,msq(-nf:nf,-nf:nf),m3,m4,m5,xmsqjk
       double precision msqa(-nf:nf,-nf:nf),n(4)
       double precision xx(2),flux,vol,vol_mass,vol3_mass,
-     . taumin,BrnRat,rcut
+     . BrnRat,rcut
       double precision xmsq_bypart(-1:1,-1:1),lord_bypart(-1:1,-1:1)
       integer nqcdjets,nqcdstart,notag
       logical bin,makecuts,gencuts,first
@@ -43,7 +44,6 @@ c --- To use VEGAS random number sequence :
       common/energy/sqrts
       common/bin/bin
       common/x1x2/xx
-      common/taumin/taumin
       common/makecuts/makecuts
       common/BrnRat/BrnRat
       common/nproc/nproc
