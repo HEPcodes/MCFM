@@ -200,7 +200,7 @@ c--- loop over all the lepton possibilities for lepton 1 (j)
             if (k .ne. j) then
              ptcheck=pt(leptindex(k),pjet)
              aetacheck=abs(etarap(leptindex(k),pjet))
-              if ((ptcheck .lt. leptpt).or.(aetacheck .gt. leptrap))then
+              if ((ptcheck.lt. leptpt2).or.(aetacheck.gt. leptrap2))then
                 passedlept=.false.
               endif
               if ((aetacheck .gt. leptveto2min) .and.

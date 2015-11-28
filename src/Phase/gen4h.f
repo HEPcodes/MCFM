@@ -1,13 +1,14 @@
+      subroutine gen4h(r,p,wt4,*)
 c--- Generates 2->4 phase space with (3456) a Breit-Wigner around
 c--- the Higgs mass
-      subroutine gen4h(r,p,wt4,*)
       implicit none
       include 'constants.f'
       include 'mxdim.f'
       include 'debug.f'
       include 'masses.f'
       include 'phasemin.f'
-      integer nu
+      include 'interference.f'
+      integer nu,icount
       double precision r(mxdim)
       double precision wt4,p1(4),p2(4),p3(4),p4(4),p5(4),p6(4)
       double precision p(mxpart,4),sqrts,rtshat
@@ -15,7 +16,9 @@ c--- the Higgs mass
       double precision xx(2),s3456,wt3456,ymax,yave
       common/energy/sqrts
       common/x1x2/xx
-
+      data icount/1/
+      save icount
+      
       wt4=0d0
 
       call breitw(r(9),0d0,sqrts**2,hmass,hwidth,s3456,wt3456)
@@ -58,6 +61,20 @@ c      write(6,*) 'problems with xx(1),xx(2) in gen4h',xx(1),xx(2)
       p(7,nu)=0d0
       enddo 
 
+      if (interference) then
+        if (icount .eq. 1) then
+          bw34_56=.true.
+          icount=icount-1
+        else
+          bw34_56=.false.
+          do nu=1,4
+            p(4,nu)=p6(nu)
+            p(6,nu)=p4(nu)
+          enddo 
+          icount=icount+1
+        endif
+      endif
+      
       wt4=xjac*pswt/sqrts**2
       
       if (debug) write(6,*) 'wt4 in gen4h',wt4

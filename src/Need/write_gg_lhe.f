@@ -14,6 +14,7 @@
       include 'process.f'
       include 'maxwt.f' 
       include 'eventbuffer.f'
+      include 'runstring.f'
       double precision p(mxpart,4),xfac
       integer j,k,i,nu,it
       integer nproc
@@ -23,8 +24,6 @@
       common/store_wt/store_wt
       data first /.true./
       save first 
-      character*30 runstring  
-      common/runstring/runstring 
       character*200 outputstring 
       integer iruns
 
@@ -58,7 +57,7 @@ c--- events with negative weight or events with weights that exceed wtmax
          nup=npart+4
          idprup=10000+nproc
          scalup=facscale
-         aqedup=-1
+         aqedup=-1d0
          aqcdup=as
       else 
          write(6,*) 'LHE output not supported for case=',case

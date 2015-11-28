@@ -31,6 +31,7 @@
       include 'breit.f'
       include 'dm_params.f' 
       include 'outputflags.f'
+      include 'runstring.f'
 
 c--- APPLgrid - enable grids
       include 'APPLinclude.f'
@@ -66,8 +67,6 @@ cz //
       logical bin,first,failed
       logical incldip(0:maxd),includedipole,includereal
       double precision QandGint
-      character*30 runstring
-      common/runstring/runstring
       external qqb_w2jet_g,qqb_w2jet_gs,qqb_z2jet_g,qqb_z2jet_gs,
      . qqb_w2jet,qqb_w1jet_gs,qqb_z2jet,qqb_z1jet_gs,qqb_Hg_g,qqb_Hg_gs,
      . qqb_hww_g,qqb_hww_gs,qqb_zbb_g,qqb_zbb_gs,
@@ -116,7 +115,7 @@ cz Add b fraction
       
       data bwgt / 0d0 /  ! in common block
 cz // Add b fraction   Note: only msqtmp(0), bwgttmp(0) are used in nplotter.f
-      data p/48*0d0/
+      data p/56*0d0/
       data first/.true./
       save first,rscalestart,fscalestart
 
@@ -604,43 +603,10 @@ c        if (includereal) call singcheck(qqb_gamgam_g,qqb_gamgam_gs,p)
         if (includereal) call qqb_gamgam_g(p,msq)
         call qqb_gamgam_gs(p,msqc)
       elseif (case .eq. 'gmgmjt') then
-c--- These lines generate PS point for comparison with KirillCheck
-       if (1 .eq. 2) then
-       p(1,4)=  -3.0000000000000000d0
-       p(1,1)=   2.1213203435596424d0
-       p(1,2)=   1.0606601717798212d0
-       p(1,3)=   1.8371173070873839d0
-       p(2,4)=   2.0000000000000000d0
-       p(2,1)=   2.0000000000000000d0
-       p(2,2)=   0.0000000000000000d0
-       p(2,3)=   0.0000000000000000d0
-       p(5,4)=  0.85714285714285710d0
-       p(5,1)= -0.31578947368421051d0
-       p(5,2)=  0.79685060448070799d0
-       p(5,3)=   0.0000000000000000d0
-       p(6,4)=  -3.0000000000000000d0
-       p(6,1)=  -2.1213203435596424d0
-       p(6,2)=  -1.0606601717798212d0
-       p(6,3)=  -1.8371173070873839d0
-       p(3,4)=   1.0000000000000000d0
-       p(3,1)= -0.18421052631578949d0
-       p(3,2)=  0.46482951928041311d0
-       p(3,3)=  0.86602540378443860d0
-       p(4,4)=   2.1428571428571428d0
-       p(4,1)=  -1.4999999999999996d0
-       p(4,2)=  -1.2616801237611210d0
-       p(4,3)= -0.86602540378443860d0
-       endif
-
-!    if (includereal) call singcheck(qqb_gmgmjt_g,qqb_gmgmjt_gs,p)
+c        if (includereal) call singcheck(qqb_gmgmjt_g,qqb_gmgmjt_gs,p)
         if (includereal) call qqb_gmgmjt_g(p,msq)
         call qqb_gmgmjt_gs(p,msqc)
       elseif (case .eq. 'trigam') then
-c        call qqb_trigam_g(p,msq)
-c        call qqb_trigam_g_mad(p,msqa)
-c        write(6,*) 'mcfm',msq(1,-1)
-c        write(6,*) 'mad ',msqa(1,-1)
-c        pause
 c        if (includereal) call singcheck(qqb_trigam_g,qqb_trigam_gs,p)
         if (includereal) call qqb_trigam_g(p,msq)
         call qqb_trigam_gs(p,msqc)

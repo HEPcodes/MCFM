@@ -1,3 +1,4 @@
-      integer ipsgen
-      common/ipsgen/ipsgen
+      logical doipsgen
+      integer ipsgen,maxipsgen
+      common/ipsgen/doipsgen,ipsgen,maxipsgen
       

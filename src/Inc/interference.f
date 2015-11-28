@@ -1,4 +1,4 @@
-      logical interference
-      common/interference/interference
+      logical interference,bw34_56
+      common/interference/interference,bw34_56
       double precision vsymfact
       common/vsymfact/vsymfact

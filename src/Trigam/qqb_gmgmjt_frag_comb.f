@@ -49,6 +49,8 @@ c---- Generate array D(j) corresponding to MCFM notation 0=gluon 1=down 2=up ...
             call get_frag(z_frag,fsq,2,i,D(i))   
          elseif (fragset .eq. 'GdRG__LO') then 
             call GGdR_frag(z_frag,i,D(i),0) 
+         elseif (fragset .eq. 'GdRG_NLO') then 
+            call GGdR_frag(z_frag,i,D(i),1) 
          else
             write(6,*) 'Unrecognized fragmentation set name: ',fragset
             stop        
@@ -58,6 +60,7 @@ c---- Generate array D(j) corresponding to MCFM notation 0=gluon 1=down 2=up ...
 !==== Debug turn off frag funcs for comp to Johns routine 
 !      D(:)=0d0 
 
+      
 
 
 
@@ -138,8 +141,8 @@ c--- fill output array
      &               +(Q(1)**2*virt_dip+D(3))*msqbits_qcd(ddb_ddb)
      &            +(2d0*Q(1)**2*virt_dip+D(1)+D(5))*msqbits_qcd(ddb_ssb)
      &         +(2d0*Q(2)**2*virt_dip+D(2)+D(4))*msqbits_qcd(ddb_uub)
-     &               +(Q(1)**2*virt_dip+D(1))*msqbits_qcd_swap(ddb_ddb)
-     &      +(2d0*Q(1)**2*virt_dip+D(3)+D(5))*msqbits_qcd_swap(ddb_ssb)
+     &               +(Q(1)**2*virt_dip+D(3))*msqbits_qcd_swap(ddb_ddb)
+     &      +(2d0*Q(1)**2*virt_dip+D(1)+D(5))*msqbits_qcd_swap(ddb_ssb)
      &      +(2d0*Q(2)**2*virt_dip+D(2)+D(4))*msqbits_qcd_swap(ddb_uub)
     
 !============b type 
@@ -148,8 +151,8 @@ c--- fill output array
      &               +(Q(1)**2*virt_dip+D(5))*msqbits_qcd(ddb_ddb)
      &            +(2d0*Q(1)**2*virt_dip+D(3)+D(1))*msqbits_qcd(ddb_ssb)
      &         +(2d0*Q(2)**2*virt_dip+D(2)+D(4))*msqbits_qcd(ddb_uub)
-     &             +(Q(1)**2*virt_dip+D(1))*msqbits_qcd_swap(ddb_ddb)
-     &       +(2d0*Q(1)**2*virt_dip+D(3)+D(5))*msqbits_qcd_swap(ddb_ssb)
+     &             +(Q(1)**2*virt_dip+D(5))*msqbits_qcd_swap(ddb_ddb)
+     &       +(2d0*Q(1)**2*virt_dip+D(3)+D(1))*msqbits_qcd_swap(ddb_ssb)
      &     +(2d0*Q(2)**2*virt_dip+D(2)+D(4))*msqbits_qcd_swap(ddb_uub)
               
             endif

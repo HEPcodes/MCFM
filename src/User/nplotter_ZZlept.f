@@ -17,6 +17,7 @@ c---                1  --> counterterm for real radiation
       include 'constants.f'
       include 'histo.f'
       include 'outputflags.f'
+      include 'interference.f'
       double precision p(mxpart,4),wt,wt2,m3456,pt34,pttwo
       integer switch,n,nplotmax
       character*4 tag
@@ -115,11 +116,23 @@ c--- Plots of m(3456) in specific regions
      & pt34,wt,wt2,0d0,10d0,0.1d0,'lin')
       n=n+1
       
+      call bookplot(n,tag,'50 < m(3456) < 250',
+     & m3456,wt,wt2,50d0,250d0,2d0,'log')
+      n=n+1
+      
 c--- usual plots for 3+4
       call autoplot2(p,34,3,4,tag,wt,wt2,n)
 
 c--- usual plots for 5+6
       call autoplot2(p,56,5,6,tag,wt,wt2,n)
+
+      if (interference) then
+c--- usual plots for 3+6
+        call autoplot2(p,36,3,6,tag,wt,wt2,n)
+
+c--- usual plots for 4+5
+        call autoplot2(p,45,4,5,tag,wt,wt2,n)
+      endif
 
 c--- usual plots for 3+4+5+6
       call autoplot4(p,3456,3,4,5,6,tag,wt,wt2,n)

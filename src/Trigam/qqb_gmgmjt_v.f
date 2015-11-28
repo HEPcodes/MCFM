@@ -49,7 +49,7 @@
       gqqb_nfs=0d0 
 
       msq(:,:)=0d0 
-      scheme='tH-V'
+      scheme='dred'
 
       faclo=8d0*cf*xn*gsq*esq**2*statfac
       fac=faclo*xn*ason2pi/2d0
@@ -206,9 +206,17 @@
       include 'zprods_decl.f' 
       integer i1,i2,i3,i4,i5
       double complex amp(2,2,2,2) 
-      double complex amp_2gam1g,virt_gmgmjt_GMHV
-      double complex virt_gmgmjt_GaMHV 
+      double complex amp_2gam1g,virt_gmgmjt_GMHV,virt_gmgmjt_GaMHV
+      double complex virt_gmgmjt_gammaMHV,virt_gmgmjt_gluonMHV
 !===== default is for gluon MHV amplitude 
+
+c--- DEBUG ONLY
+c      write(6,*)
+c      amp(1,2,2,1)=virt_gmgmjt_GMHV(i1,i2,i3,i4,i5,za,zb)
+c      amp(1,2,2,1)=virt_gmgmjt_gluonMHV(i1,i2,i3,i4,i5,za,zb)
+c      write(6,*)
+c      pause
+c--- DEBUG ONLY
 
       amp(:,:,:,:)=czip
       amp(1,1,1,1)=czip
@@ -217,23 +225,23 @@
       amp(1,2,2,2)=czip
 
 !===== MHV amplitudes 
-      amp(1,1,2,2)=virt_gmgmjt_GMHV(i1,i2,i3,i4,i5,za,zb)
-      amp(1,2,1,2)=virt_gmgmjt_GaMHV(i1,i2,i3,i5,i4,za,zb)
-      amp(1,2,2,1)=virt_gmgmjt_GaMHV(i1,i2,i3,i4,i5,za,zb)
+      amp(1,1,2,2)=virt_gmgmjt_gluonMHV(i1,i2,i3,i4,i5,za,zb)
+      amp(1,2,1,2)=virt_gmgmjt_gammaMHV(i1,i2,i3,i5,i4,za,zb)
+      amp(1,2,2,1)=virt_gmgmjt_gammaMHV(i1,i2,i3,i4,i5,za,zb)
 
 !===== line reversal 
-      amp(2,1,2,2)=virt_gmgmjt_GMHV(i2,i1,i3,i4,i5,za,zb)
-      amp(2,2,1,2)=virt_gmgmjt_GaMHV(i2,i1,i3,i5,i4,za,zb)
-      amp(2,2,2,1)=virt_gmgmjt_GaMHV(i2,i1,i3,i4,i5,za,zb)
+      amp(2,1,2,2)=virt_gmgmjt_gluonMHV(i2,i1,i3,i4,i5,za,zb)
+      amp(2,2,1,2)=virt_gmgmjt_gammaMHV(i2,i1,i3,i5,i4,za,zb)
+      amp(2,2,2,1)=virt_gmgmjt_gammaMHV(i2,i1,i3,i4,i5,za,zb)
 
 !====== conjugation 
-      amp(2,2,1,1)=-virt_gmgmjt_GMHV(i1,i2,i3,i4,i5,zb,za)
-      amp(2,1,2,1)=-virt_gmgmjt_GaMHV(i1,i2,i3,i5,i4,zb,za)
-      amp(2,1,1,2)=-virt_gmgmjt_GaMHV(i1,i2,i3,i4,i5,zb,za)
+      amp(2,2,1,1)=-virt_gmgmjt_gluonMHV(i1,i2,i3,i4,i5,zb,za)
+      amp(2,1,2,1)=-virt_gmgmjt_gammaMHV(i1,i2,i3,i5,i4,zb,za)
+      amp(2,1,1,2)=-virt_gmgmjt_gammaMHV(i1,i2,i3,i4,i5,zb,za)
 !====== conjugation + line reversal 
-      amp(1,2,1,1)=-virt_gmgmjt_GMHV(i2,i1,i3,i4,i5,zb,za)
-      amp(1,1,2,1)=-virt_gmgmjt_GaMHV(i2,i1,i3,i5,i4,zb,za)
-      amp(1,1,1,2)=-virt_gmgmjt_GaMHV(i2,i1,i3,i4,i5,zb,za)
+      amp(1,2,1,1)=-virt_gmgmjt_gluonMHV(i2,i1,i3,i4,i5,zb,za)
+      amp(1,1,2,1)=-virt_gmgmjt_gammaMHV(i2,i1,i3,i5,i4,zb,za)
+      amp(1,1,1,2)=-virt_gmgmjt_gammaMHV(i2,i1,i3,i4,i5,zb,za)
       
 
       return 
@@ -246,8 +254,16 @@
       integer i1,i2,i3,i4,i5
       double complex amp(2,2,2,2) 
       double complex amp_2gam1g
-      double complex virt_gmgmjt_nfGaMHV 
+      double complex virt_gmgmjt_nfGaMHV,virt_gmgmjt_nfgammaMHV
 !===== default is for gluon MHV amplitude 
+
+c--- DEBUG ONLY
+c      write(6,*)
+c      amp(1,2,2,1)=virt_gmgmjt_nfGaMHV(i1,i2,i3,i4,i5,za,zb)
+c      amp(1,2,2,1)=virt_gmgmjt_nfgammaMHV(i1,i2,i3,i4,i5,za,zb)
+c      write(6,*)
+c      pause
+c--- DEBUG ONLY
 
       amp(:,:,:,:)=czip
       amp(1,1,1,1)=czip
@@ -255,23 +271,23 @@
       amp(2,1,1,1)=czip
       amp(1,2,2,2)=czip
 !===== MHV amplitudes 
-      amp(1,2,2,1)=virt_gmgmjt_nfGaMHV(i1,i2,i3,i4,i5,za,zb)
-      amp(1,2,1,2)=virt_gmgmjt_nfGaMHV(i1,i2,i3,i5,i4,za,zb)
-      amp(1,1,2,2)=virt_gmgmjt_nfGaMHV(i1,i2,i4,i5,i3,za,zb)
+      amp(1,2,2,1)=virt_gmgmjt_nfgammaMHV(i1,i2,i3,i4,i5,za,zb)
+      amp(1,2,1,2)=virt_gmgmjt_nfgammaMHV(i1,i2,i3,i5,i4,za,zb)
+      amp(1,1,2,2)=virt_gmgmjt_nfgammaMHV(i1,i2,i4,i5,i3,za,zb)
 
 !===== line reversal 
-      amp(2,2,2,1)=virt_gmgmjt_nfGaMHV(i2,i1,i3,i4,i5,za,zb)
-      amp(2,2,1,2)=virt_gmgmjt_nfGaMHV(i2,i1,i3,i5,i4,za,zb)
-      amp(2,1,2,2)=virt_gmgmjt_nfGaMHV(i2,i1,i4,i5,i3,za,zb)
+      amp(2,2,2,1)=virt_gmgmjt_nfgammaMHV(i2,i1,i3,i4,i5,za,zb)
+      amp(2,2,1,2)=virt_gmgmjt_nfgammaMHV(i2,i1,i3,i5,i4,za,zb)
+      amp(2,1,2,2)=virt_gmgmjt_nfgammaMHV(i2,i1,i4,i5,i3,za,zb)
 
 !====== conjugation 
-      amp(2,1,1,2)=virt_gmgmjt_nfGaMHV(i1,i2,i3,i4,i5,zb,za)
-      amp(2,1,2,1)=virt_gmgmjt_nfGaMHV(i1,i2,i3,i5,i4,zb,za)
-      amp(2,2,1,1)=virt_gmgmjt_nfGaMHV(i1,i2,i4,i5,i3,zb,za)
+      amp(2,1,1,2)=virt_gmgmjt_nfgammaMHV(i1,i2,i3,i4,i5,zb,za)
+      amp(2,1,2,1)=virt_gmgmjt_nfgammaMHV(i1,i2,i3,i5,i4,zb,za)
+      amp(2,2,1,1)=virt_gmgmjt_nfgammaMHV(i1,i2,i4,i5,i3,zb,za)
 !====== conjugation + line reversal 
-      amp(1,1,1,2)=virt_gmgmjt_nfGaMHV(i2,i1,i3,i4,i5,zb,za)
-      amp(1,1,2,1)=virt_gmgmjt_nfGaMHV(i2,i1,i3,i5,i4,zb,za)
-      amp(1,2,1,1)=virt_gmgmjt_nfGaMHV(i2,i1,i4,i5,i3,zb,za)
+      amp(1,1,1,2)=virt_gmgmjt_nfgammaMHV(i2,i1,i3,i4,i5,zb,za)
+      amp(1,1,2,1)=virt_gmgmjt_nfgammaMHV(i2,i1,i3,i5,i4,zb,za)
+      amp(1,2,1,1)=virt_gmgmjt_nfgammaMHV(i2,i1,i4,i5,i3,zb,za)
 
       return 
       end 

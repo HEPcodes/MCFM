@@ -16,11 +16,13 @@ c---   Eur.\ Phys.\ J.\  {\bf C7}, 29-48 (1999).  [hep-ph/9806316].
       double precision lx,dix,lmx,D,Dnp,PxP,PxD
       double precision GGdR_NonP,GGdR_PxP,GGdR_DxP
       integer pow,str,i
-
+      double precision GdRG_NLO_frag
+      external GdRG_NLO_frag 
+      
 c--- Safety cuts::
-c---    x < 0.999 to avoid x->1 singularity
-c---    x > 0.1 to limit region of extrapolation
-      if((x .gt. 0.999d0) .or. (x .lt. 0.1d0)) then 
+c---    x < 0.9999999 to avoid x->1 singularity
+c---    x > 0.0001
+      if((x .gt. 0.9999999d0) .or. (x .lt. 0.0001d0)) then 
          D=0d0 
          return 
       endif
@@ -47,10 +49,10 @@ c----- LO only, set alpha_s terms= 0
          pref_ewas = 0d0 
          mu_zero=0.14d0 
       elseif (str.eq.1) then 
-         write(6,*) 'NLO not currently implemented.'
-         stop 
-!         pref_ewas=pref_ew*ason2pi
-!         mu_zero=0.64d0 
+         D=GdRG_NLO_frag(x,i) 
+         return 
+!         write(6,*) 'NLO not currently implemented.'
+!         stop 
       else
          write(6,*) 'Unrecognised order in Frag'  
       endif
@@ -104,119 +106,3 @@ c-- LO Non Pert eq. 2.13 with prefactor removed
       end
 
 
-
-!      double precision function GGdR_PxP(z) 
-!      implicit none 
-!      include 'constatns.f'
-!      include 'grid_ggdrConv.f'
-! !---- interpolating P conv P piece of 2.12 
-!      double precision z 
-!      integer i,jz,it_p
-!      parameter(it_p=4)
-!      double precision lz(num_g),lpxp(num_g) 
-!      double precision Z1(it_p),LP1(it_p)
-!      double precision z_min,z_max,a,out_2
-!      logical first
-!      data first/.true./
-
-
-!      if(first) then 
-!         first=.false.
-!         do i=1,num_g
-!     lz(i)=dlog10(z_grid(i)) 
-!            lpxp(i)=PxPconv(i)
-!     enddo
-!      endif
-      
-     
-!      z_min=z_grid(1)
-!      z_max=z_grid(num_g)
-
-!      GGdR_PxP=0d0
-!      if((z.gt.z_min).and.(z.lt.z_max)) then
-!------find z in grid 
-!         a=dlog10(z) 
-!         call locate (lz,num_g,a,jz)
- !        do i=1,it_p
-!------Special case when jz= 1
-c$$$            if(jz.eq.1) then 
-c$$$               Z1(i)=lz(i) 
-c$$$               LP1(i)=lpxp(i) 
-c$$$            elseif(jz.eq.(num_g-1)) then   
-c$$$               Z1(i)=lz(jz-3+i)
-c$$$               LP1(i)=lpxp(jz-3+i)
-c$$$            elseif(jz.eq.num_g) then 
-c$$$               Z1(i)=lz(jz-4+i) 
-c$$$               LP1(i)=lpxp(jz-4+i) 
-c$$$            else
-c$$$               Z1(i)=lz(jz-2+i) 
-c$$$               LP1(i)=lpxp(jz-2+i)
-c$$$            endif
-c$$$         enddo
-c$$$      endif
-c$$$!------- interpolate 
-c$$$           
-c$$$      
-c$$$      call dpolint(Z1,LP1,4,a,GGdR_PxP,out_2)
-c$$$ 
-c$$$!-------- return 
-c$$$      return 
-c$$$      end function 
-c$$$
-c$$$        double precision function GGdR_DxP(z) 
-c$$$      implicit none 
-c$$$      include 'constatns.f'
-c$$$      include 'grid_ggdrConv.f'
-c$$$ !---- interpolating P conv P piece of 2.12 
-c$$$      double precision z 
-c$$$      integer i,jz,it_p
-c$$$      parameter(it_p=4)
-c$$$      double precision lz(num_g),lpxp(num_g) 
-c$$$      double precision Z1(it_p),LP1(it_p)
-c$$$      double precision z_min,z_max,a,out_2
-c$$$      logical first
-c$$$      data first/.true./
-c$$$
-c$$$
-c$$$      if(first) then 
-c$$$         first=.false.
-c$$$         do i=1,num_g
-c$$$            lz(i)=dlog10(z_grid(i)) 
-c$$$            lpxp(i)=DxPconv(i)
-c$$$         enddo
-c$$$      endif
-c$$$      
-c$$$     
-c$$$      z_min=z_grid(1)
-c$$$      z_max=z_grid(num_g)
-c$$$
-c$$$      GGdR_DxP=0d0
-c$$$      if((z.gt.z_min).and.(z.lt.z_max)) then
-c$$$!------find z in grid 
-c$$$         a=dlog10(z) 
-c$$$         call locate (lz,num_g,a,jz)
-c$$$         do i=1,it_p
-c$$$!------Special case when jz= 1
-c$$$            if(jz.eq.1) then 
-c$$$               Z1(i)=lz(i) 
-c$$$               LP1(i)=lpxp(i) 
-c$$$            elseif(jz.eq.(num_g-1)) then   
-c$$$               Z1(i)=lz(jz-3+i)
-c$$$               LP1(i)=lpxp(jz-3+i)
-c$$$            elseif(jz.eq.num_g) then 
-c$$$               Z1(i)=lz(jz-4+i) 
-c$$$               LP1(i)=lpxp(jz-4+i) 
-c$$$            else
-c$$$               Z1(i)=lz(jz-2+i) 
-c$$$               LP1(i)=lpxp(jz-2+i)
-c$$$            endif
-c$$$         enddo
-c$$$      endif
-c$$$!------- interpolate 
-c$$$           
-c$$$      
-c$$$      call dpolint(Z1,LP1,4,a,GGdR_DxP,out_2)
-c$$$ 
-c$$$!-------- return 
-c$$$      return 
-c$$$      end function 

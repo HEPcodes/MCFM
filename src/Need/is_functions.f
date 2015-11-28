@@ -56,7 +56,9 @@ c--- muons
 
 c--- neutrinos
       do j=1,mxpart      
-      if ((plabel(j) .eq. 'nl') .or. (plabel(j) .eq. 'na')) then
+      if (     (plabel(j) .eq. 'nl') .or. (plabel(j) .eq. 'na')
+     &    .or. (plabel(j) .eq. 'nm') .or. (plabel(j) .eq. 'bm')
+     &    .or. (plabel(j) .eq. 'nt') .or. (plabel(j) .eq. 'bt')) then
          isneutarray(j) = .true. 
       else
          isneutarray(j) = .false. 
@@ -80,7 +82,6 @@ c--- dark matter
       logical function is_hadronic(i)
       implicit none
       include 'constants.f'
-      include 'plabel.f'
       include 'is_functions_com.f'
       integer i
 

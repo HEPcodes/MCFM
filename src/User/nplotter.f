@@ -25,8 +25,6 @@ c--- APPLgrid - end
       double precision p(mxpart,4),wt,wt2
       integer switch,nproc,nd
       common/nproc/nproc
-      character*30 runstring
-      common/runstring/runstring
       
 c--- This routine simply picks out a process-specific plotting routine
 c---  (if available) and falls back to the generic routine otherwise.
@@ -74,18 +72,24 @@ c--- Special plotting routine for WW -> leptons
       elseif ((case.eq.'HWW_4l') .or. (case.eq.'HWW_tb') 
      &   .or. (case.eq.'HWW2lq') .or. (case.eq.'HWWint') 
      &   .or. (case.eq.'HWWH+i') .or. (case.eq.'ggWW4l')
-     &   .or. (case.eq.'WWqqbr') ) then
+     &   .or. (case.eq.'WWqqbr') .or. (case.eq.'ggWWbx')) then
         call nplotter_VV(p,wt,wt2,switch,0)
+      elseif ((case .eq. 'WW_jet') .or. (case .eq. 'WW2jet')) then
+        call nplotter_WW_jet(p,wt,wt2,switch)
 c--- photon processes also need to know the dipole number
       elseif ((case.eq.'Wgamma') .or. (case.eq.'Zgamma')
      &   .or. (case.eq.'Wgajet') .or. (case.eq.'Zgajet')) then
         call nplotter_Vgamma(p,wt,wt2,switch,nd)
-      elseif ((case.eq.'gamgam') .or. (case .eq. 'gmgmjt'))  then
+      elseif (case.eq.'gamgam') then
         call nplotter_gamgam(p,wt,wt2,switch,nd)
+      elseif (case .eq. 'gmgmjt') then
+        call nplotter_gmgmjt(p,wt,wt2,switch)
       elseif (case.eq.'dirgam') then 
         call nplotter_dirgam(p,wt,wt2,switch,nd)
       elseif (case.eq.'trigam') then 
         call nplotter_trigam(p,wt,wt2,switch)
+      elseif (case.eq.'W_2gam')  then
+        call nplotter_wgamgam(p,wt,wt2,switch,nd)
       elseif (case.eq.'Z_2gam')  then
         call nplotter_zgamgam(p,wt,wt2,switch,nd)
       elseif (case.eq.'Zgajet')  then
@@ -118,7 +122,10 @@ c--- photon processes also need to know the dipole number
      & .or.   (case .eq. 'ggZZ4l') 
      & .or.   (case .eq. 'ggZZbx') 
      & .or.   (case .eq. 'HZZqgI') 
-     & .or.   (case .eq. 'ZZlept')) then 
+     & .or.   (case .eq. 'ZZlept')
+     & .or.   (case .eq. 'ggVV4l') 
+     & .or.   (case .eq. 'ggVVbx') 
+     & .or.   (case .eq. 'HVV_tb')) then 
          call nplotter_ZZlept(p,wt,wt2,switch)
       else
          call nplotter_auto(p,wt,wt2)

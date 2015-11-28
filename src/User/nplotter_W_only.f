@@ -48,7 +48,7 @@ c--- the plotting range
         Re5=1d3
         jets=1
 c--- (Upper) limits for the plots
-        ylep=5d0
+        ylep=6d0
         yjet=3d0
         ptlep=100d0
         ptjet=80d0
@@ -125,10 +125,10 @@ c---     xmax:  highest value to bin
 c---       dx:  bin width
 c---   llplot:  equal to "lin"/"log" for linear/log scale
 
-       call bookplot(n,tag,'W rapidity',y34,wt,wt2,-5d0,5d0,0.2d0,'lin')
+       call bookplot(n,tag,'W rapidity',y34,wt,wt2,-6d0,6d0,0.2d0,'lin')
        call ebookplot(n,tag,y34,wt)
        n=n+1
-       call bookplot(n,tag,'W ps-rap',eta34,wt,wt2,-5d0,5d0,0.2d0,'lin')
+       call bookplot(n,tag,'W ps-rap',eta34,wt,wt2,-6d0,6d0,0.2d0,'lin')
        n=n+1
       if(nproc .eq. 1) then
          call bookplot(n,tag,'y(lep)',y4,wt,wt2,-ylep,ylep,0.2d0,'lin')

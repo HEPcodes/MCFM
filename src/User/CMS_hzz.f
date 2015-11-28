@@ -2,7 +2,6 @@
       implicit none 
       include 'constants.f' 
       include 'masses.f'
-      include 'plabel.f'
       double precision p(mxpart,4)
       logical failed_cuts,is_electron,is_muon 
       double precision pt,etarap,ptmu,etamu,ptel,etael,m4lmin,m2lmin

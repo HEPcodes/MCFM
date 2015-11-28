@@ -14,7 +14,10 @@ c--- and the sum is over the pt-squared of each jet in the event
 
       if((case .eq. 'W_1jet') .or.
      &   (case .eq. 'Z_1jet') .or.
-     &   (case .eq. 'ggfus1')) then
+     &   (case .eq. 'ggfus1') .or.
+     &   (case .eq. 'W_2jet') .or.
+     &   (case .eq. 'Z_2jet') .or.
+     &   (case .eq. 'ggfus2')) then
 
 c--- first work out whether this point is real radiation or not
         if (abs(p(npart+2,4)) .gt. 1d-8) then
@@ -24,7 +27,7 @@ c--- first work out whether this point is real radiation or not
         endif
       
 c-- cluster jets but make sure recorded number of jets is not changed
-        oldjets=jets     
+        oldjets=jets
         call genclust2(p,rcut,pjet,isub)
       
 c        write(6,*) 'partons:'
@@ -37,17 +40,18 @@ c        write(6,*)
 
 c--- work out sum of pt-squared
         if     (jets .eq. 1) then
-        sumptsq=pt(5,pjet)**2
-      elseif (jets .eq. 2) then
-        sumptsq=pt(5,pjet)**2+pt(6,pjet)**2
-      else
-        sumptsq=0d0
-      endif
+          sumptsq=pt(5,pjet)**2
+        elseif (jets .eq. 2) then
+          sumptsq=pt(5,pjet)**2+pt(6,pjet)**2
+        elseif (jets .eq. 3) then
+          sumptsq=pt(5,pjet)**2+pt(6,pjet)**2+pt(7,pjet)**2
+        else
+          sumptsq=0d0
+        endif
       
 c--- restore old value of jets
         jets=oldjets
 
-c--- assign scale
         mu0=mass3**2+sumptsq
         mu0=dsqrt(dabs(mu0))
       

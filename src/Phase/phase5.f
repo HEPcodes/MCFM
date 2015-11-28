@@ -94,6 +94,7 @@ c--- a Breit-Wigner at mH, otherwise just linearly
      . .or. (case .eq. 'HZZ_4l')
      . .or. (case .eq. 'HZZ_tb')
      . .or. (case .eq. 'HZZint')
+     . .or. (case .eq. 'HmZZ4l')
      . .or. (case .eq. 'HWWjet')
      . .or. (case .eq. 'HZZjet')
      . ) then

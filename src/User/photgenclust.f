@@ -28,7 +28,7 @@ c--- inside the photon isolation cone; this should be set to TRUE for an
 c--- implementation of the original Frixione algorithm
 c--- (c.f. Step 4 of hep-ph/9801442);
 c--- other implementations (e.g. VBFNLO) correspond to setting this flag FALSE
-      inclusive_inside_cone=.false.
+      inclusive_inside_cone=.true.
       
       jets=0
       nphotons=0

@@ -3,7 +3,6 @@
       integer function count_photo()
       implicit none
       include 'constants.f'
-      include 'plabel.f'
       integer j
       logical is_photon
 
@@ -22,7 +21,6 @@
       implicit none
       include 'constants.f'
       include 'npart.f'
-      include 'plabel.f'
       integer j
       logical is_hadronic
 

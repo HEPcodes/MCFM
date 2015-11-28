@@ -97,13 +97,20 @@ c--- processes that use "gen3jetgaga"
       elseif (case .eq. 'gmgmjt') then
         npart=3
 c        call gen3jetgaga(r,p,pswt,*999)
-        call gen_photons_jets(r,2,1,p,pswt,*999)
+c        call gen_photons_jets(r,2,1,p,pswt,*999)
+        call gen3(r,p,pswt,*999)
+
+      elseif (case .eq. 'gmgmjj') then
+        npart=4
+c        call gen3jetgaga(r,p,pswt,*999)
+        call gen_photons_jets(r,2,2,p,pswt,*999)
 
 c--- processes that use "gen3jetgaga"     
       elseif (case .eq. 'trigam') then
         npart=3
 c        call gen3jetgaga(r,p,pswt,*999)
-        call gen_photons_jets(r,3,0,p,pswt,*999)
+c        call gen_photons_jets(r,3,0,p,pswt,*999)
+        call gen3(r,p,pswt,*999)
 
 c--- processes that use "gen_Vphotons_jets"     
 c--- special treatment for W+gamma+jet and Z+gamma+jet 
@@ -277,9 +284,25 @@ c--- processes that use "gen4h"
      .    .or. (case .eq. 'HWW2lq')
      .    .or. (case .eq. 'HWW_tb')
      .    .or. (case .eq. 'HZZ_4l')
+     .    .or. (case .eq. 'HmZZ4l')
      .    .or. (case .eq. 'HZZ_tb') ) then
         npart=4
         call gen4h(r,p,pswt,*999)
+         
+c--- processes that use "gen4hvv"     
+      elseif ( (case .eq. 'HVV_tb') ) then
+        npart=4
+        call gen4hvv(r,p,pswt,*999)
+         
+c--- processes that use "gen4handcvv"     
+      elseif ( (case .eq. 'ggVV4l') ) then
+        npart=4
+        call gen4handcvv(r,p,pswt,*999)
+         
+c--- processes that use "gen4vv"     
+      elseif ( (case .eq. 'ggVVbx') ) then
+        npart=4
+        call gen4vv(r,p,pswt,*999)
          
 c--- processes that use "gen4mdk"     
       elseif ((case .eq. '4ftjet') 
@@ -337,7 +360,8 @@ c--- processes that use "gen6"
      .    .or. (case .eq. 'WpWp2j')
      .    .or. (case .eq. 'WpmZjj')
      .    .or. (case .eq. 'WpmZbj')
-     .    .or. (case .eq. 'WpmZbb')) then
+     .    .or. (case .eq. 'WpmZbb')
+     .    .or. (case .eq. 'WW2jet')) then
         npart=6
         call gen6(r,p,pswt,*999)
 

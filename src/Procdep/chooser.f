@@ -36,11 +36,16 @@ c---- total cross-section comes out correctly when the BR is removed
       include 'part.f'
       include 'hdecaymode.f'
       include 'breit.f'
-      include 'mcfmplotinfo.f' 
-      include 'lastphot.f' 
-      include 'new_pspace.f' 
-      include 'dm_params.f' 
-      include 'swapxz.f' 
+      include 'mcfmplotinfo.f'
+      include 'lastphot.f'
+      include 'new_pspace.f'
+      include 'dm_params.f'
+      include 'swapxz.f'
+      include 'verbose.f'
+      include 'runstring.f'
+      include 'vdecayid.f'
+      include 'ipsgen.f'
+      include 'nuflav.f'
       double precision wwbr,zzbr,tautaubr,gamgambr,zgambr,Rcut,Rbbmin,
      . alphas,cmass,bmass
       double precision br,BrnRat,brwen,brzee,brznn,brtau,brtop,brcharm
@@ -50,8 +55,6 @@ c---- total cross-section comes out correctly when the BR is removed
       character*72 string
       double precision f0q,f2q,f4q
       double precision Vud,Vus,Vub,Vcd,Vcs,Vcb
-      character*30 runstring
-      common/runstring/runstring
       common/cabib/Vud,Vus,Vub,Vcd,Vcs,Vcb
       common/bitflags/f0q,f2q,f4q
       common/Rbbmin/Rbbmin
@@ -76,7 +79,7 @@ c---- total cross-section comes out correctly when the BR is removed
       open(unit=21,file=string,status='old',err=43)
       call checkversion(21,string)
       
-      write(6,*) 'Chooser:process chosen by nproc=',nproc
+      if (verbose) write(6,*) 'Chooser:process chosen by nproc=',nproc
 
       do j=1,600
       read(21,*,err=44) mproc,pname,order
@@ -90,13 +93,16 @@ c---- total cross-section comes out correctly when the BR is removed
       enddo
       goto 44
 
- 42   write(6,*)
+ 42   continue
+      if (verbose) then
+      write(6,*)
       write(6,*) '*************************** f(p1)+f(p2) --> *****'//
      . '*************************************'
       write(6,*) '* ',pname(19:100),' *'
       write(6,*) '*************************************************'//
      . '*************************************'
       write(6,*)
+      endif
 
       close(unit=21)
 
@@ -130,6 +136,11 @@ c--- set up most parameters
       caonly=.false.
       fourthgen=.false.
       rescale=.false.
+      doipsgen=.false.
+
+c--- default is no interference contributions from identical fermions
+      interference=.false.
+      vsymfact=1d0
 
 c-- Rbbmin is an additional variable, added so that the separation
 c-- between two b jets can be controlled separately from the Delta_R
@@ -1079,8 +1090,8 @@ c--  66 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4))+W^-(-->e^-(p5)+nu~(p6))+f(p7)'
 c--     '  f(p1)+f(p2) --> W^+ + W^- + f(p7) (for total Xsect)' (removebr=.true.)
           case='WW_jet'
           nflav=4
-        nqcdjets=1
-        ndim=13
+          nqcdjets=1
+          ndim=13
           plabel(3)='nl'
           plabel(4)='ea'
           plabel(5)='el'
@@ -1275,10 +1286,10 @@ c--  80 '  f(p1)+f(p2) --> W^-(-->e^-(p3)+nu~(p4))+Z^0(-->2*(u(p5)+u~(p6)))'
 c-----------------------------------------------------------------------
 
       elseif ((nproc .gt. 80) .and. (nproc .le. 90)) then
-        vsymfact=1d0
         case='ZZlept'
         call checkminzmass(1)
-        if ((nproc .eq. 81) .or. (nproc .eq. 83)) call checkminzmass(2)
+        if ((nproc .eq. 81) .or. (nproc .eq. 83)
+     &  .or.(nproc .eq. 90)) call checkminzmass(2)
         call readcoup
         plabel(7)='pp'
         nqcdjets=0
@@ -1293,7 +1304,6 @@ c-----------------------------------------------------------------------
         q1=-1d0
         l1=le
         r1=re
-        interference=.false.
 
         mcfmplotinfo= (/ 34, 56, 3456, (0,j=1,47) /)
         
@@ -1316,6 +1326,34 @@ c--     '  f(p1)+f(p2) --> Z^0 + Z^0 (for total Xsect) (NO GAMMA*)' (removebr=.t
           q2=-1d0
           l2=le
           r2=re
+
+c--- check runstring to change from (e,mu) Z decays to (e,e) or (mu,mu)
+c          if     (index(runstring,'ELEL') .gt. 0) then
+c            plabel(5)='el'
+c            plabel(6)='ea'
+c            interference=.true.
+c            vsymfact=0.25d0
+c          elseif (index(runstring,'MUMU') .gt. 0) then
+c            plabel(3)='ml'
+c            plabel(4)='ma'
+c            interference=.true.
+c            vsymfact=0.25d0
+c          endif
+
+c--- if vector boson decays specified, initialize appropriately
+          if (vdecayid) then
+            call setvdecay(34,0)
+            call setvdecay(56,0)
+            if (plabel(3) .eq. plabel(5)) then
+              if (plabel(3) .ne. 'nl') then
+c------ for both Z decays to neutrinos, neglect interference effects for simplicity
+                interference=.true.
+                vsymfact=0.25d0
+              endif
+            endif
+          endif
+          
+
           if (removebr) then
             plabel(3)='ig'
             plabel(4)='ig'
@@ -1404,6 +1442,8 @@ c--  90 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4)) + Z^0(-->e^-(p5)+e^+(p6))'
             BrnRat=2d0*brzee**2  ! factor of 2 for identical particles
           endif
         
+          mcfmplotinfo= (/ 34, 56, 36, 45, 3456, (0,j=1,45) /)
+
         else
           call nprocinvalid()
         endif 
@@ -1940,7 +1980,7 @@ c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)
 
       elseif ((nproc .eq. 113) .or. (nproc .eq. 123)
      &   .or. (nproc .eq. 124) .or. (nproc .eq. 125)
-     &   .or. (nproc .eq. 126)) then
+     &   .or. (nproc .eq. 126) .or. (nproc .eq. 127)) then
 c--  113 '  f(p1)+f(p2) --> H (--> W^+(nu(p3)+e^+(p4)) + W^-(e^-(p5)+nu~(p6)))'
 c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)
         if     (nproc .eq. 113) then
@@ -1953,6 +1993,8 @@ c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)
           case='HWWH+i'
         elseif (nproc .eq. 126) then
           case='ggWW4l'
+        elseif (nproc .eq. 127) then
+          case='ggWWbx'
         endif           
         call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
 c--- widths according to Kauer et al., for comparison with gg2WW
@@ -1973,6 +2015,12 @@ c        if (abs(hmass-200d0) .lt. 1d-4) hwidth=1.426d0
         mass3=wmass
         width3=wwidth
 
+c--- if vector boson decays specified, initialize appropriately
+        if ((nproc .ge. 123) .and. (vdecayid)) then
+          call setvdecay(34,+1)
+          call setvdecay(56,-1)
+        endif
+
         mcfmplotinfo= (/ 34, 56, 3456, (0,j=1,47) /)
         
 c--- print warning if we're below threshold
@@ -1981,11 +2029,11 @@ c--- print warning if we're below threshold
         write(6,*) 'WARNING: Higgs decay H->WW is below threshold and'
         write(6,*) 'may not yield sensible results - check the number'
         write(6,*) 'of integration points'
-      if (removebr) then
-      write(6,*)
-      write(6,*) 'Cannot remove H->WW BR, not defined below threshold'
+        if (removebr) then
+        write(6,*)
+        write(6,*) 'Cannot remove H->WW BR, not defined below threshold'
         stop
-      endif
+        endif
         if (zerowidth) then
         write(6,*) 'zerowidth=.true. and higgs decay below threshold'
         stop
@@ -2117,7 +2165,6 @@ c-----------------------------------------------------------------------
           case='ggZZ4l'
         elseif (nproc .eq. 132) then
           case='ggZZbx'
-          interference=.false.
         elseif (nproc .eq. 133) then
           case='HZZqgI'
         endif
@@ -2173,22 +2220,39 @@ c--- 133 '  f(p1)+f(p2) --> H(--> Z^0(mu^-(p3)+mu^+(p4)) + Z^0(e^-(p5)+e^+(p6) +
           plabel(4)='ea'
           plabel(5)='ml'
           plabel(6)='ma'
-c--- check runstring to change from (e,mu) Z decays to (e,e) or (mu,mu)
-c--- NOTE: no interference effects are included at present          
-          if     (index(runstring,'ELEL') .gt. 0) then
-            plabel(5)='el'
-            plabel(6)='ea'
-          elseif (index(runstring,'MUMU') .gt. 0) then
-            plabel(3)='ml'
-            plabel(4)='ma'
-          endif
-           
           l1=le
           r1=re
           l2=le
           r2=re
           q1=-1d0
           q2=-1d0
+
+c--- check runstring to change from (e,mu) Z decays to (e,e) or (mu,mu)
+c          if     (index(runstring,'ELEL') .gt. 0) then
+c            plabel(5)='el'
+c            plabel(6)='ea'
+c            interference=.true.
+c            vsymfact=0.25d0
+c          elseif (index(runstring,'MUMU') .gt. 0) then
+c            plabel(3)='ml'
+c            plabel(4)='ma'
+c            interference=.true.
+c            vsymfact=0.25d0
+c          endif
+           
+c--- if vector boson decays specified, initialize appropriately
+          if ((nproc .ge. 128) .and. (vdecayid)) then
+            call setvdecay(34,0)
+            call setvdecay(56,0)
+            if (plabel(3) .eq. plabel(5)) then
+              if (plabel(3) .ne. 'nl') then
+c------ for both Z decays to neutrinos, neglect interference effects for simplicity
+                interference=.true.
+                vsymfact=0.25d0
+              endif
+            endif
+          endif
+          
           if (removebr) then
             call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
             BrnRat=2d0*brzee**2*zzbr  ! factor of 2 for identical particles
@@ -2316,6 +2380,57 @@ c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)
           plabel(5)='ig'
         endif
 
+c-----------------------------------------------------------------------
+
+      elseif ( (nproc .eq. 1281)  .or. (nproc .eq. 1291)
+     &    .or. (nproc .eq. 1301)  .or. (nproc .eq. 1311)
+     &    .or. (nproc .eq. 1321)
+     &    .or. (nproc .eq. 1282)  .or. (nproc .eq. 1292)
+     &    .or. (nproc .eq. 1302)  .or. (nproc .eq. 1312)
+     &    .or. (nproc .eq. 1322) ) then
+        if     ((nproc .eq. 1281) .or. (nproc .eq. 1282)) then
+          case='HVV_tb'  
+        elseif ((nproc .eq. 1291) .or. (nproc .eq. 1292)) then
+          case='HVVint'
+        elseif ((nproc .eq. 1301) .or. (nproc .eq. 1302)) then
+          case='HVVH+i'
+        elseif ((nproc .eq. 1311) .or. (nproc .eq. 1312)) then
+          case='ggVV4l'
+        elseif ((nproc .eq. 1321) .or. (nproc .eq. 1322)) then
+          case='ggVVbx'
+        endif
+        call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
+        plabel(3)='el'
+        plabel(4)='ea'
+        plabel(5)='nl'
+        plabel(6)='na'
+        plabel(7)='pp'
+        l1=le
+        r1=re
+        q1=-1d0
+        l2=ln
+        r2=rn
+        q2=0d0
+        nqcdjets=0
+        nwz=0
+        ndim=10
+        n2=1
+        n3=1
+
+c-- parameters for phase space
+        doipsgen=.true.
+        maxipsgen=2
+
+        if   ( (nproc .eq. 1282)  .or. (nproc .eq. 1292)
+     &    .or. (nproc .eq. 1302)  .or. (nproc .eq. 1312)
+     &    .or. (nproc .eq. 1322) ) then
+          nuflav=3
+        else
+          nuflav=1
+        endif
+
+        mcfmplotinfo= (/ 34, 56, 45, 36, 3456, (0,j=1,45) /)
+ 
 c-----------------------------------------------------------------------
 
       elseif ((nproc .ge. 136) .and. (nproc .le. 138)) then
@@ -2603,6 +2718,9 @@ c--  157 '  f(p1)+f(p2) --> t t~ (for total Xsect)'
         plabel(3)='ig'
         plabel(4)='ig'
         plabel(5)='pp'
+
+        mcfmplotinfo= (/ 34, (0,j=1,49) /)
+        
       elseif (nproc .eq. 158) then
 c--  158 '  f(p1)+f(p2) --> b b~ (for total Xsect)'
         case='bb_tot'
@@ -2615,6 +2733,9 @@ c--  158 '  f(p1)+f(p2) --> b b~ (for total Xsect)'
         plabel(3)='ig'
         plabel(4)='ig'
         plabel(5)='pp'
+
+        mcfmplotinfo= (/ 34, (0,j=1,49) /)
+        
       elseif (nproc .eq. 159) then
 c--  159 '  f(p1)+f(p2) --> c c~ (for total Xsect)'
         case='cc_tot'
@@ -2628,6 +2749,8 @@ c--  159 '  f(p1)+f(p2) --> c c~ (for total Xsect)'
         plabel(4)='ig'
         plabel(5)='pp'
  
+        mcfmplotinfo= (/ 34, (0,j=1,49) /)
+        
       elseif (nproc .eq. 160) then
       if  ((part .eq. 'tota')
      . .or.(part .eq. 'virt')
@@ -4839,7 +4962,7 @@ c-----------------------------------------------------------------------
            write(6,*)
            write(6,*) 'Setting inclusive = .true. '//
      &                  'for direct photon production.'
-           
+
       elseif (nproc .eq. 282) then
              ndim=7 
              case='gamjet'
@@ -4850,7 +4973,7 @@ c-----------------------------------------------------------------------
              lastphot=3
              nqcdjets=2
              n3=0
-                
+
       elseif (nproc .eq. 283) then
              ndim=4 
              case='hflgam'
@@ -4866,7 +4989,7 @@ c-----------------------------------------------------------------------
       elseif (nproc .eq. 284) then
              ndim=4 
              case='hflgam'
-           flav=4
+             flav=4
              plabel(3)='ga'
              plabel(4)='bq'
              plabel(5)='pp'
@@ -4888,6 +5011,9 @@ c-----------------------------------------------------------------------
           elseif (nproc .eq. 286) then
              ndim=7 
              case='gmgmjt'
+c--- this process works best using the new PS generation
+             new_pspace=.true.
+c--- this process works best using the new PS generation
              plabel(3)='ga'
              plabel(4)='ga'
              plabel(5)='pp'
@@ -4899,6 +5025,9 @@ c-----------------------------------------------------------------------
           elseif (nproc .eq. 287) then
              ndim=7 
              case='trigam'
+c--- this process works best using the new PS generation
+             new_pspace=.true.
+c--- this process works best using the new PS generation
              plabel(3)='ga'
              plabel(4)='ga'
              plabel(5)='ga'
@@ -4906,6 +5035,20 @@ c-----------------------------------------------------------------------
              lastphot=5
              nqcdjets=0
              n3=0
+
+             
+          elseif (nproc .eq. 288) then
+             ndim=10 
+             case='gmgmjj'
+             plabel(3)='ga'
+             plabel(4)='ga'
+             plabel(5)='pp'
+             plabel(6)='pp'
+             plabel(7)='pp' 
+             lastphot=4
+             nqcdjets=2
+             n3=0
+                
                 
 c-----------------------------------------------------------------------
 

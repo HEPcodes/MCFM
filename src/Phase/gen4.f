@@ -5,6 +5,7 @@
       include 'debug.f'
       include 'process.f'
       include 'phasemin.f'
+      include 'interference.f'
       integer nu,icount,nproc
       double precision r(mxdim)
       double precision wt4,p1(4),p2(4),p3(4),p4(4),p5(4),p6(4)
@@ -79,18 +80,20 @@ c      endif
       p(7,nu)=0d0
       enddo 
 
-      if (nproc .eq. 90) then
-      if (icount .eq. 1) then
-      icount=icount-1
-      else
-      icount=icount+1
-      do nu=1,4
-      p(4,nu)=p6(nu)
-      p(6,nu)=p4(nu)
-      enddo 
+      if (interference) then
+        if (icount .eq. 1) then
+          bw34_56=.true.
+          icount=icount-1
+        else
+          bw34_56=.false.
+          do nu=1,4
+            p(4,nu)=p6(nu)
+            p(6,nu)=p4(nu)
+          enddo 
+          icount=icount+1
+        endif
       endif
-      endif
-
+      
       wt4=xjac*pswt
       
       if (debug) write(6,*) 'wt4 in gen4',wt4

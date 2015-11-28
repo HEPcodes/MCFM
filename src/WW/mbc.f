@@ -120,7 +120,9 @@ c    (6-->6)
      & *iza(j5,j6) - zb(j4,j6)**2*iza(j1,j2)**2*izb(j4,j3)*izb(j5,j6)
 
       if     ((case .eq. 'HWWint') .or. (case .eq. 'WWqqbr')
-     &   .or. (case .eq. 'HWWH+i') .or. (case .eq. 'ggWW4l')) then
+     &   .or. (case .eq. 'HWWH+i') .or. (case .eq. 'ggWW4l')
+     &   .or. (case .eq. 'ggWWbx')
+     &   .or. (case .eq. 'ggVV4l') .or. (case .eq. 'ggVVbx')) then
       bcoeff(b12)=czip
       bcoeff(b12zm)=czip
       bcoeff(b12m)=czip
@@ -454,7 +456,9 @@ c    (6-->6)
      &    j5,j6)*izb(j4,j3)*zab2(j5,j3,j1,j4)**2*izab2(j1,j3,j4,j2)**2
 
       if     ((case .eq. 'HWWint') .or. (case .eq. 'WWqqbr')
-     &   .or. (case .eq. 'HWWH+i') .or. (case .eq. 'ggWW4l')) then
+     &   .or. (case .eq. 'HWWH+i') .or. (case .eq. 'ggWW4l')
+     &   .or. (case .eq. 'ggWWbx')
+     &   .or. (case .eq. 'ggVV4l') .or. (case .eq. 'ggVVbx')) then
       bcoeff(b12)=bub6(j2,j1,j4,j3,j6,j5,zb,za)
       bcoeff(b12m)=bcoeff(b12zm)-bcoeff(b12)
       elseif ((case .eq. 'HZZint') .or. (case .eq. 'ZZlept')

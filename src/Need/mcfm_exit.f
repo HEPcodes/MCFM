@@ -59,7 +59,7 @@ c---  normalized by sigma(gg->H, finite mt)/sigma(gg->H, mt-> infinity)
         write(6,'(a25,f7.3,a2)') '   (Rescaling factor is ',rescale,')'  
       endif
      
-   53 format(a15,a4,a12,f13.3,a4,f10.3,a3)
+   53 format(a15,a4,a12,f14.4,a4,f11.4,a3)
 
 c--- Print-out a summary of the effects of jets and cuts
       write(6,*) 

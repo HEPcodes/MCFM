@@ -56,7 +56,8 @@ c--- New-style PS generation
         call phi1_2m(0d0,r(4),r(5),r(6),mtbsq,p345,p5,p34,wt56,*99)
         call phi3m(r(7),r(8),p34,p3,p4,mt,mb,wt34,*99)
         wt=wt0*wt3456*wt34*wt56
-      return
+        return
+
       elseif ((case .eq. 'H_tjet') .or. (case .eq. 'H_tdkj')) then
 c--- New-style PS generation
         mtbsq=(mt+hmass)**2
@@ -93,10 +94,12 @@ c--- This branch is good for testing cancellation of IR singularities
       elseif ((case .eq. 'qq_tbgIR') .or. (case .eq. 'qqtbggIR')) then
 c        r(1)=r(1)*1d-5 ! to check small s35
         call phi1_2(r(1),r(2),r(3),r(4),p12,p35,p46,wt3456,*99)
-      call phi3m(r(5),r(6),p35,p3,p5,mt,0d0,wt35,*99)
-      call phi3m(r(7),r(8),p46,p4,p6,mb,0d0,wt46,*99)
+        call phi3m(r(5),r(6),p35,p3,p5,mt,0d0,wt35,*99)
+        call phi3m(r(7),r(8),p46,p4,p6,mb,0d0,wt46,*99)
         wt=wt0*wt3456*wt35*wt46
-      return
+        return
+
+c--- Default case
       else
         call phi1_2(r(1),r(2),r(3),r(4),p12,p56,p34,wt3456,*99)
         call phi3m0(r(7),r(8),p34,p3,p4,wt34,*99)

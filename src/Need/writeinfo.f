@@ -6,6 +6,7 @@
       include 'PDFerrors.f'
       include 'process.f'
       include 'outputflags.f'
+      include 'runstring.f'
       integer unitno,j,k,itno
       double precision xsec,xsec_err
       double precision lord_bypart(-1:1,-1:1),lordnorm,rescale
@@ -13,16 +14,13 @@
      . gqbpart,qbgpart,qbqbpart,qbqpart
       
       character*2 commchars
-      character*30 runstring
       logical dryrun,makecuts
       integer nproc,ih1,ih2,itmx1,itmx2,ncall1,ncall2,origij
       integer NPTYPE,NGROUP,NSET
       double precision sqrts
-      double precision Rcut
- 
+      double precision Rcut 
 
       common/nproc/nproc
-      common/runstring/runstring
       common/energy/sqrts
       common/density/ih1,ih2
       common/iterat/itmx1,ncall1,itmx2,ncall2

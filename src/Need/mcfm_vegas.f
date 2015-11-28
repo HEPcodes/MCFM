@@ -126,7 +126,8 @@ c--- Z+gamma+jet and Z+gamma+gamma processes: we will loop
 c--- over ipsgen=1,..,n where n=2 for Z+gamma+jet and n=4 for  Z+gamma+gamma
       if ( (mynproc .eq. 301) .or. (mynproc .eq. 302)
      & .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)
-     & .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)) then
+     & .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)
+     & .or.(doipsgen)) then
       sumsig=0d0
       sumsigr=0d0
       sumsigf=0d0
@@ -165,7 +166,8 @@ c--- special handling of multiple PS generation for
 c--- Z+gamma+jet and Z+gamma+gamma processes 
       if ( (mynproc .eq. 301) .or. (mynproc .eq. 302)
      & .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)
-     & .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)) then
+     & .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)
+     & .or.(doipsgen)) then
         reset=.true.
         scalereset=.true.
       psgen=getstr(ipsgen)
@@ -212,7 +214,8 @@ c-- special input name for virtual grid
             outgridfile='dvegas_virt.grid'          
             if ( (mynproc .eq. 301) .or. (mynproc .eq. 302)
      &       .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)
-     &       .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)) then
+     &       .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)
+     &       .or.(doipsgen)) then
               outgridfile='dvegas_virt_PS'//psgen(1:1)//'.grid'
           endif
           else
@@ -221,7 +224,8 @@ c-- special input name for virtual grid
             ingridfile='dvegas_virt.grid'
             if ( (mynproc .eq. 301) .or. (mynproc .eq. 302)
      &       .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)
-     &       .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)) then
+     &       .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)
+     &       .or.(doipsgen)) then
               ingridfile='dvegas_virt_PS'//psgen(1:1)//'.grid'
           endif
           endif
@@ -255,7 +259,8 @@ c-- special input name for real grid
             outgridfile='dvegas_real.grid'          
             if ( (mynproc .eq. 301) .or. (mynproc .eq. 302)
      &       .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)
-     &       .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)) then
+     &       .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)
+     &       .or.(doipsgen)) then
               outgridfile='dvegas_real_PS'//psgen(1:1)//'.grid'
           endif
           else
@@ -264,7 +269,8 @@ c-- special input name for real grid
             ingridfile='dvegas_real.grid'
             if ( (mynproc .eq. 301) .or. (mynproc .eq. 302)
      &       .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)
-     &       .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)) then
+     &       .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)
+     &       .or.(doipsgen)) then
               ingridfile='dvegas_real_PS'//psgen(1:1)//'.grid'
           endif
           endif
@@ -453,7 +459,8 @@ c-- special input name for frag grid
             outgridfile='dvegas_frag.grid'          
             if ( (mynproc .eq. 301) .or. (mynproc .eq. 302)
      &       .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)
-     &       .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)) then
+     &       .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)
+     &       .or.(doipsgen)) then
               outgridfile='dvegas_frag_PS'//psgen(1:1)//'.grid'
           endif
           else
@@ -462,7 +469,8 @@ c-- special input name for frag grid
             ingridfile='dvegas_frag.grid'
             if ( (mynproc .eq. 301) .or. (mynproc .eq. 302)
      &       .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)
-     &       .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)) then
+     &       .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)
+     &       .or.(doipsgen)) then
               ingridfile='dvegas_frag_PS'//psgen(1:1)//'.grid'
             endif
           endif
@@ -534,7 +542,8 @@ c--- Z+gamma+jet and Z+gamma+gamma processes: we will loop
 c--- over ipsgen=1,..,n where n=2 for Z+gamma+jet and n=4 for  Z+gamma+gamma
       if ( (mynproc .eq. 301) .or. (mynproc .eq. 302)
      & .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)
-     & .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)) then
+     & .or.(mynproc .eq. 370) .or. (mynproc .eq. 371)
+     & .or.(doipsgen)) then
 c--- store cross section and standard deviation info for this region on first run
         if (myinit .eq. 0) then
           sigips(ipsgen)=sig+sigr+sigfrag
@@ -550,6 +559,7 @@ c--- store cross section and standard deviation info for this region on first ru
         if ((((nproc .eq. 302).or.(nproc .eq. 304)).and.(ipsgen .le. 2))
      &  .or.(((nproc .eq. 301).or.(nproc .eq. 303)).and.(ipsgen .le. 4))
      &  .or.(((nproc .eq. 370).or.(nproc .eq. 371)).and.(ipsgen .le. 4))
+     &  .or.((doipsgen).and.(ipsgen .le. maxipsgen))
      &     ) then
 c--- W+2 photons case
           if ((nproc .eq. 370).or.(nproc .eq. 371)) then
@@ -577,9 +587,9 @@ c--- change number of PS points in different regions
              endif
           endif
           myncall=myncall
-        goto 77
+          goto 77
       endif
-        myncall=myncall
+      myncall=myncall
       sig=sumsig
       sigr=sumsigr
       sigfrag=sumsigf

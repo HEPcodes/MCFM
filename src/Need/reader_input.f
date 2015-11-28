@@ -47,15 +47,16 @@
       include 'breit.f'
       include 'anomHiggs.f'
       include 'anom_higgs.f'
+      include 'vdecayid.f'
+      include 'runstring.f'
 c--- APPLgrid - flag using grid
       include 'ptilde.f'
       include 'APPLinclude.f'
 c--- APPLgrid - end
       character*72 workdir,inputfile
       character*90 line
-      character*30 runstring
       logical spira,dryrun,makecuts
-      integer nmin,nmax
+      integer nmin,nmax,ii
       integer nproc,ih1,ih2,itmx1,itmx2,ncall1,ncall2,idum,origij
       integer NPTYPE,NGROUP,NSET
       double precision rtsmin,sqrts,factor
@@ -72,7 +73,6 @@ c--- APPLgrid - end
       common/rtsmin/rtsmin 
 
       common/nproc/nproc
-      common/runstring/runstring
       common/energy/sqrts
       common/density/ih1,ih2
       common/iterat/itmx1,ncall1,itmx2,ncall2
@@ -140,8 +140,26 @@ c--- APPLgrid - end
 c--- write-out comment line
       read(20,99) line
       if (verbose) write(6,*) '* ',line
-c--- general options 
-      read(20,*) nproc
+c--- general options
+
+c--- read in whole line for nproc
+      read(20,99) line
+      ii=index(line,'.')
+      if (ii .gt. 0) then
+        vdecayid=.true.
+c------ special string present to specify V decays
+        read(line(1:ii-1),*) nproc
+        v34id=line(ii+1:ii+2)
+        v56id=line(ii+3:ii+4)
+c        write(6,*) 'special nproc=',nproc
+c        write(6,*) 'v34id',v34id
+c        write(6,*) 'v56id',v56id
+c        stop
+c------ normal case
+      else
+        vdecayid=.false.
+        read(line,*) nproc
+      endif
       if (verbose) call writeinput(6,' * ',' ','nproc')
       read(20,*) part
       if (verbose) call writeinput(6,' * ',' ','part')

@@ -40,6 +40,7 @@ extern "C" {
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <cstdlib>
 
 #include "TApplication.h"
 #include "TCanvas.h"

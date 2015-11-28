@@ -98,6 +98,7 @@ DIRS	=	$(MCFMHOME):\
                 $(SOURCEDIR)/DM/Vec_DM:$(SOURCEDIR)/DM/GG_DM:\
                 $(SOURCEDIR)/DM/Ax_DM:$(SOURCEDIR)/DM/Scal_DM:\
                 $(SOURCEDIR)/DM/PS_DM:$(SOURCEDIR)/Trigam:  \
+                $(SOURCEDIR)/VV:  \
                 $(SOURCEDIR)/Trigam/Mad:  \
 		$(SOURCEDIR)/pwgplots:$(SOURCEDIR)/Multichan:$(SOURCEDIR)/TopH/Store/Mad\
 		$(SOURCEDIR)/UTools
@@ -122,9 +123,7 @@ checkgvec.o \
 gmgmjetn.o \
 qqb_gmgmjt.o\
 amp_2gam1g.o\
-virt_gmgmjt_nfGaMHV.o\
-virt_gmgmjt_GMHV.o\
-virt_gmgmjt_GaMHV.o\
+virt_gmgmjt.o\
 qqb_gmgmjt_gs.o \
 qqb_gmgmjt_v.o\
 qqb_gmgmjt_z.o\
@@ -135,7 +134,7 @@ amp_2gam2q.o \
 ampsq_2gam2g.o \
 amp_2gam2g.o \
 ampsq_3gam1g.o \
-virt_trigam_MHV.o\
+virt_trigam.o\
 kinem_trigam.o\
 amp_3gam1g.o \
 qqb_dirgam_g_swap.o \
@@ -239,6 +238,7 @@ qqb_wbfromc_gs.o
 
 FRAGFILES = \
 GGdR_frag.o \
+gdrg_NLO_frag.o\
 NP_FragSetI.o \
 NP_FragSetII.o \
 Pert_Frag.o \
@@ -723,6 +723,7 @@ higgsw.o \
 histofin.o \
 itransform.o \
 includedipole.o \
+interpolate_hto.o \
 is_functions.o \
 masscuts.o \
 mcfmmain.o \
@@ -748,12 +749,14 @@ scaleset_Msqpt345sq.o \
 scaleset_Msqpt5sq.o \
 scaleset_Msqptj1sq.o \
 scaleset_Msqsumptjsq.o \
+scaleset_m34sqsumptjsq.o \
 scaleset_ptphoton.o \
 scaleset_HT.o \
 scaleset_ddis.o \
 sethparams.o \
 setmb_msbar.o \
 setrunname.o \
+setvdecay.o \
 smalls.o \
 spinork.o \
 spinoru.o \
@@ -1192,7 +1195,6 @@ mcfm_getunweighted.o \
 mdata.o \
 miscclust.o \
 nplotter.o \
-nplotter_ZZlept.o \
 nplotter_4ftwdk.o \
 nplotter_auto.o \
 nplotter_dirgam.o \
@@ -1200,22 +1202,26 @@ nplotter_dm_monj.o\
 nplotter_dm_mongam.o\
 nplotter_generic.o \
 nplotter_gamgam.o \
+nplotter_gmgmjt.o \
 nplotter_trigam.o \
 nplotter_tbbar.o \
 nplotter_ttbar.o \
 nplotter_ttw.o \
+nplotter_ttZ.o \
 nplotter_Vgamma.o \
 nplotter_VV.o \
 nplotter_W_only.o \
 nplotter_Z_only.o \
 nplotter_Wbbmas.o \
+nplotter_wgamgam.o \
 nplotter_Wjets.o \
 nplotter_WPWP.o \
+nplotter_WWjet.o \
 nplotter_zgamgam.o \
 nplotter_zgamjet.o \
 nplotter_Ztj.o \
 nplotter_Ztjdk.o \
-nplotter_ttZ.o \
+nplotter_ZZlept.o \
 idjet.o \
 photo_iso.o \
 photo_iso_z.o \
@@ -1236,6 +1242,16 @@ qqb_vol.o \
 vol.o \
 vol3_mass.o \
 vol_mass.o
+
+VVFILES = \
+gg_VV.o \
+gg_VV_all.o \
+gg_hvv_tb.o \
+getggHWWamps.o \
+getggWWamps.o \
+gen4vv.o \
+gen4handcvv.o \
+gen4hvv.o
 
 WFILES = \
 qqb_w.o \
@@ -1928,7 +1944,7 @@ OURCODE = $(LIBFILES) $(NEEDFILES)  $(PROCDEPFILES) $(SPINORFILES) \
 	  $(W2JETVIRTFILES) $(WHBBARFILES) $(WGAMFILES) $(ZGAMFILES) \
           $(WWFILES) $(WZFILES) $(ZFILES) $(ZHBBARFILES) \
           $(ZZFILES) $(ZGFILES) $(W1JETFILES) $(Z2JETFILES) \
-	    $(Z1JETFILES) $(HWWFILES) $(HZZFILES) \
+	    $(Z1JETFILES) $(HWWFILES) $(HZZFILES) $(VVFILES) \
           $(TAUTAUFILES) $(HTTBARFILES) \
           $(BBHIGGSFILES) $(WBBFILES) $(ZBBFILES) \
           $(QQHFILES) $(QQHWWFILES) $(QQHZZFILES) $(GGHFILES) $(GGHGFILES) \

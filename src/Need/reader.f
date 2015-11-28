@@ -32,12 +32,12 @@
       include 'pdlabel.f'
       include 'part.f'
       include 'outputflags.f'
+      include 'runstring.f'
       integer ih1,ih2,itmx1,itmx2,ncall1,ncall2,idum,nmin,nmax
       integer nproc,nargs
       double precision sqrts,Rcut,randummy,ran2
       double precision cmass,bmass
       character*72 optionsfile
-      character*30 runstring
       logical makecuts,dryrun
       logical spira
       double precision rtsmin
@@ -46,7 +46,6 @@
       common/nproc/nproc
       common/spira/spira
       common/ranno/idum
-      common/runstring/runstring
       common/Rcut/Rcut
 
 

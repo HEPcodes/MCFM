@@ -86,7 +86,11 @@ c--- Photons: Frixione isolation cuts if no fragmentation included
             call genclustphotons(ptrans,rcut,pjet,isub)
          else 
 c--- Photons: not Frixione, need fragmentation and isolation
-            call genclust2(ptrans,rcut,pjet,isub)
+!---- do not want to cluster partons inside of jet cone, allow 
+!---- isolation to describe these regions, therefore use 
+!---- genclustphotons here 
+            call genclustphotons(ptrans,rcut,pjet,isub)
+!            call genclust2(ptrans,rcut,pjet,isub)
 c---  Isolate photon
             do j=3,mxpart
             if (is_photon(j)) then 

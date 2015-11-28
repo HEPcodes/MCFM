@@ -1,7 +1,7 @@
       block data codeversion_data
       implicit none
       include 'codeversion.f'
-      data codeversion/'6.7'/      
+      data codeversion/'6.8'/      
       data      prelim/.false./      ! if true, print warning message
       end
 
@@ -44,7 +44,7 @@ c--- warning message, if necessary
 
       write(6,*) '*                                                *'
       write(6,*) '* MCFM, v'//codeversion//
-     .                          '              December 6th, 2013  *'
+     .                          '                April 26th, 2014  *'
       write(6,*) '*                                                *'
       write(6,*) '* Authors: John Campbell, Keith Ellis,           *'
       write(6,*) '*          Ciaran Williams                       *'
@@ -53,6 +53,7 @@ c--- warning message, if necessary
       write(6,*) '*                                                *'
       write(6,*) '* For details see:                               *'
       write(6,*) '*                                                *'
+      write(6,*) '*  arXiv:1403.2641 (Triphoton production)        *'
       write(6,*) '*  arXiv:1312.1628 (gg->WW, Higgs interference)  *'
       write(6,*) '*  arXiv:1311.3589 (gg->ZZ, Higgs interference)  *'
       write(6,*) '*  Phys.Rev.D87:114006, arXiv:1302.3856          *'

@@ -10,7 +10,7 @@
       character*(*) filename
 
       read(inpunit,*) fileversion
-      
+
       if (fileversion .ne. codeversion) then
         dat=18
         do j=1,20

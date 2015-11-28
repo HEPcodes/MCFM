@@ -19,6 +19,7 @@
       include 'part.f'
       include 'xs_store_info.f'
       include 'vegas_common.f'
+      include 'ipsgen.f'
       integer itmx1,ncall1,itmx2,ncall2,itmxplots
       double precision integ,integ_err
       logical dryrun
@@ -86,6 +87,10 @@ c--- (so this stage is skipped if nevtrequested <= 0)
       if (nevtrequested .gt. 0) then
         if (part .ne. 'lord') then
           write(6,*) 'LHE events not available beyond LO'
+          stop
+        endif
+        if (doipsgen) then
+          write(6,*) 'LHE events not available for this process'
           stop
         endif
         evtgen=.true.

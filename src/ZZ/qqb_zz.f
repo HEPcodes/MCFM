@@ -26,7 +26,7 @@ c----No statistical factor of 1/2 included.
       include 'interference.f'
 
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),qdks(mxpart,4),
-     & ave,v1(2),v2(2),rescale
+     & ave,v1(2),v2(2),rescale1,rescale2,oprat
      
       double complex qqb(2,2,2),qbq(2,2,2),q_qb,qb_q
       double complex qqb1(2,2,2),qbq1(2,2,2),qqb2(2,2,2),qbq2(2,2,2)
@@ -49,10 +49,15 @@ c     vsymfact=symmetry factor
 
 C----setup factor to avoid summing over too many neutrinos
 C----if coupling enters twice    
-      if (q2 .eq. 0d0) then   
-      rescale=1d0/sqrt(3d0)    
+      if (q1 .eq. 0d0) then   
+      rescale1=1d0/sqrt(3d0)    
       else 
-      rescale=1d0    
+      rescale1=1d0    
+      endif          
+      if (q2 .eq. 0d0) then   
+      rescale2=1d0/sqrt(3d0)    
+      else 
+      rescale2=1d0    
       endif          
                                                                                                                                             
 c--set msq=0 to initalize
@@ -154,9 +159,9 @@ c---for supplementary diagrams.
      &     *(prop34*v1(pol2)*l(j)+q1*q(j))*qqb(polq,pol1,pol2)
         if (srdiags) then
           q_qb=q_qb-(
-     &       +(prop56*v1(pol2)*v2(pol1)+q1*q2)
+     &       +(prop56*v1(pol2)*v2(pol1)+q1*q2)*rescale1
      &       *(prop12*v1(pol2)*l(j)+q1*q(j))*qqb1(polq,pol1,pol2)
-     &       +(prop34*v1(pol2)*v2(pol1)+q1*q2)*rescale
+     &       +(prop34*v1(pol2)*v2(pol1)+q1*q2)*rescale2
      &       *(prop12*v2(pol1)*l(j)+q2*q(j))*qqb2(polq,pol1,pol2))
 
         endif
@@ -165,26 +170,47 @@ c---for supplementary diagrams.
      &     *(prop34*v1(pol2)*r(j)+q1*q(j))*qqb(polq,pol1,pol2)
         if (srdiags) then
          q_qb=q_qb-(
-     &       +(prop56*v1(pol2)*v2(pol1)+q1*q2)
+     &       +(prop56*v1(pol2)*v2(pol1)+q1*q2)*rescale1
      &       *(prop12*v1(pol2)*r(j)+q1*q(j))*qqb1(polq,pol1,pol2)
-     &       +(prop34*v1(pol2)*v2(pol1)+q1*q2)*rescale
+     &       +(prop34*v1(pol2)*v2(pol1)+q1*q2)*rescale2
      &       *(prop12*v2(pol1)*r(j)+q2*q(j))*qqb2(polq,pol1,pol2))
 
         endif
       endif
       q_qb=FAC*q_qb
-      msq(j,k)=msq(j,k)+ave*abs(q_qb)**2
-
-
-      !interference terms
-      if ((ii.eq.1).and.(interference)) then
-         Uncrossed(j,k,polq,pol1,pol2)=q_qb
-      elseif (ii.eq.2) then
-         if (pol1.eq.pol2) then
-      msq(j,k)=msq(j,k)
-     &   -2d0*ave*dble(dconjg(q_qb)*Uncrossed(j,k,polq,pol1,pol2))
-         endif
+      
+      if (interference .eqv. .false.) then
+c--- normal case
+        msq(j,k)=msq(j,k)+ave*abs(q_qb)**2
+      else
+c--- with interference:
+c---    1st pass --> store result
+c---    2nd pass --> fill msq
+        if (ii .eq. 1) then
+          Uncrossed(j,k,polq,pol1,pol2)=q_qb
+        else
+          if (pol1 .eq. pol2) then
+            oprat=1d0
+     &           -2d0*dble(dconjg(q_qb)*Uncrossed(j,k,polq,pol1,pol2))
+     &            /(abs(q_qb)**2+abs(Uncrossed(j,k,polq,pol1,pol2))**2)
+          else
+            oprat=1d0
+          endif
+          if (bw34_56) then
+            msq(j,k)=msq(j,k)
+     &              +ave*2d0*abs(Uncrossed(j,k,polq,pol1,pol2))**2*oprat
+          else
+            msq(j,k)=msq(j,k)+ave*2d0*abs(q_qb)**2*oprat
+          endif
+        endif
       endif
+c         msq(j,k)=msq(j,k)-ave*abs(q_qb)**2
+c         if (pol1.eq.pol2) then
+c         msq(j,k)=msq(j,k)
+c     &   -2d0*ave*dble(dconjg(q_qb)*Uncrossed(j,k,polq,pol1,pol2))
+c     &   -ave*dble(dconjg(q_qb)*Uncrossed(j,k,polq,pol1,pol2))
+c         endif
+c      endif
 
 
       enddo
@@ -201,9 +227,9 @@ c---for supplementary diagrams.
      &     *(prop34*v1(pol2)*l(k)+q1*q(k))*qbq(polq,pol1,pol2)
         if (srdiags) then
          qb_q=qb_q
-     &       +(prop56*v1(pol2)*v2(pol1)+q1*q2)
+     &       +(prop56*v1(pol2)*v2(pol1)+q1*q2)*rescale1
      &       *(prop12*v1(pol2)*l(k)+q1*q(k))*qbq1(polq,pol1,pol2)
-     &       +(prop34*v1(pol2)*v2(pol1)+q1*q2)*rescale
+     &       +(prop34*v1(pol2)*v2(pol1)+q1*q2)*rescale2
      &       *(prop12*v2(pol1)*l(k)+q2*q(k))*qbq2(polq,pol1,pol2)
 
         endif
@@ -212,25 +238,54 @@ c---for supplementary diagrams.
      &     *(prop34*v1(pol2)*r(k)+q1*q(k))*qbq(polq,pol1,pol2)
         if (srdiags) then
          qb_q=qb_q
-     &       +(prop56*v1(pol2)*v2(pol1)+q1*q2)
+     &       +(prop56*v1(pol2)*v2(pol1)+q1*q2)*rescale1
      &       *(prop12*v1(pol2)*r(k)+q1*q(k))*qbq1(polq,pol1,pol2)
-     &       +(prop34*v1(pol2)*v2(pol1)+q1*q2)*rescale
+     &       +(prop34*v1(pol2)*v2(pol1)+q1*q2)*rescale2
      &       *(prop12*v2(pol1)*r(k)+q2*q(k))*qbq2(polq,pol1,pol2)
 
         endif
       endif
       qb_q=FAC*qb_q
-      msq(j,k)=msq(j,k)+ave*abs(qb_q)**2
 
-      !set-up interference terms
-      if ((interference).and.(ii.eq.1)) then
-         Uncrossed(j,k,polq,pol1,pol2)=qb_q
-      elseif (ii.eq.2) then
-         if (pol1.eq.pol2) then
-         msq(j,k)=msq(j,k)
-     &    -2d0*ave*dble(dconjg(qb_q)*Uncrossed(j,k,polq,pol1,pol2))
-         endif
+      if (interference .eqv. .false.) then
+c--- normal case
+        msq(j,k)=msq(j,k)+ave*abs(qb_q)**2
+      else
+c--- with interference:
+c---    1st pass --> store result
+c---    2nd pass --> fill msq
+        if (ii .eq. 1) then
+          Uncrossed(j,k,polq,pol1,pol2)=qb_q
+        else
+          if (pol1 .eq. pol2) then
+            oprat=1d0
+     &           -2d0*dble(dconjg(qb_q)*Uncrossed(j,k,polq,pol1,pol2))
+     &            /(abs(qb_q)**2+abs(Uncrossed(j,k,polq,pol1,pol2))**2)
+          else
+            oprat=1d0
+          endif
+          if (bw34_56) then
+            msq(j,k)=msq(j,k)
+     &              +ave*2d0*abs(Uncrossed(j,k,polq,pol1,pol2))**2*oprat
+          else
+            msq(j,k)=msq(j,k)+ave*2d0*abs(qb_q)**2*oprat
+          endif
+        endif
       endif
+
+c      msq(j,k)=msq(j,k)+ave*abs(qb_q)**2
+
+c      !set-up interference terms
+c      if ((interference).and.(ii.eq.1)) then
+c         Uncrossed(j,k,polq,pol1,pol2)=qb_q
+c      elseif (ii.eq.2) then
+c         msq(j,k)=msq(j,k)-ave*abs(qb_q)**2
+c         if (pol1.eq.pol2) then
+c         msq(j,k)=msq(j,k)
+cc     &    -2d0*ave*dble(dconjg(qb_q)*Uncrossed(j,k,polq,pol1,pol2))
+c     &    -ave*dble(dconjg(qb_q)*Uncrossed(j,k,polq,pol1,pol2))
+c         endif
+c      endif
 
 
 

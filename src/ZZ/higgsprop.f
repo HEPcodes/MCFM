@@ -7,13 +7,12 @@ c--- otherwise it takes the usual Breit-Wigner form
       implicit none
       include 'constants.f'
       include 'masses.f'
-      logical CPscheme,first
+      include 'cpscheme.f'
+      logical first
       double precision s,mhbarsq,mhbar,gammahbar
       double complex cfac
       save first,mhbarsq,cfac
       data first/.true./
-      
-      CPscheme=.false.
 
       if (CPscheme) then
 c--- complex pole scheme propagator      
@@ -23,7 +22,10 @@ c--- complex pole scheme propagator
           gammahbar=mhbar/hmass*hwidth
           cfac=dcmplx(1d0,gammahbar/mhbar)
           first=.false.
+        write(6,*)
+        write(6,*)'****************************************************'
         write(6,*)'*  Using complex pole scheme for Higgs propagator  *'
+        write(6,99) mhbar,gammahbar
         write(6,*)'****************************************************'
         write(6,*)
         endif
@@ -34,6 +36,9 @@ c--- Breit Wigner propagator
       endif
       
       return
+   
+   99 format(' *    MHB = ',f9.4,' GeV    GHB = ',f9.4,' GeV    *')
+      
       end
       
       

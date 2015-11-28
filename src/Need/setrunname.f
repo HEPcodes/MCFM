@@ -7,13 +7,13 @@
       include 'werkdir.f'
       include 'pdlabel.f'
       include 'part.f'
+      include 'vdecayid.f'
+      include 'runstring.f'
       double precision scalestart,fscalestart
       integer nlength,lenocc
-      character*30 runstring
       character*255 outlabel1,runname,outlabeltmp
       character*3 strmh,getstr,strpt
       character*7 strscale
-      common/runstring/runstring
       common/runname/runname
       common/nlength/nlength
 
@@ -35,6 +35,7 @@ c      endif
      .    .or. (case .eq. 'HWWint')
      .    .or. (case .eq. 'HWWH+i')
      .    .or. (case .eq. 'ggWW4l')
+     .    .or. (case .eq. 'ggVV4l')
      .    .or. (case .eq. 'HZZ_4l')
      .    .or. (case .eq. 'HZZ_tb')
      .    .or. (case .eq. 'HZZint')
@@ -66,7 +67,11 @@ c      endif
       endif
       
       nlength=lenocc(outlabel1)
-      runname=outlabel1(1:nlength)//'_'//runstring
+      if (vdecayid) then
+        runname=outlabel1(1:nlength)//'_'//v34id//v56id//'_'//runstring
+      else
+        runname=outlabel1(1:nlength)//'_'//runstring
+      endif
       nlength=lenocc(runname)
 
 c--- add working directory, if necessary 

@@ -1,7 +1,6 @@
       double precision function etmiss(p,etvec)
       implicit none
       include 'constants.f'
-      include 'plabel.f'
       integer j,k
       logical is_neutrino,is_darkmatter
       double precision etvec(4),p(mxpart,4)

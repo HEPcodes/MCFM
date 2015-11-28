@@ -33,6 +33,8 @@ c--- routines for exact definitions of the scales.
         call scaleset_Msqptj1sq(p,mu0)
       elseif (dynstring .eq. 'sqrt(M^2+sumptj^2)') then
         call scaleset_Msqsumptjsq(p,mu0)
+      elseif (dynstring .eq. 'sqrt(m(34)^2+sumptj^2)') then
+        call scaleset_m34sqsumptjsq(p,mu0)
       elseif (dynstring .eq. 'pt(photon)') then
         call scaleset_ptphoton(p,mu0)
       elseif (dynstring .eq. 'HT') then

@@ -3,7 +3,7 @@ c--- Implementation of H->WW cuts in ATLAS-CONF-2013-030 (Njet=0)
       implicit none 
       include 'constants.f' 
       include 'masses.f'
-      include 'plabel.f'
+      include 'runstring.f'
       double precision p(mxpart,4)
       logical failed_cuts
       double precision pt,etarap
@@ -13,8 +13,6 @@ c--- Implementation of H->WW cuts in ATLAS-CONF-2013-030 (Njet=0)
      & mllmin,mllmax,phimax,mwindow,phi,etvec(2),missinget,ptll,ptllmin,
      & Etll,MET,mtrans
       logical first,l1muon,l2muon,highMT
-      character*30 runstring
-      common/runstring/runstring
       data first/.true./
       save first,highMT,mllmax,phimax
  

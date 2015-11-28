@@ -18,7 +18,6 @@
       include 'ptilde.f'
       include 'qcdcouple.f'
       include 'alfacut.f'
-      include 'plabel.f'
       include 'qqgg.f'
       double precision msqc(maxd,-nf:nf,-nf:nf),
      & p(mxpart,4)

@@ -15,6 +15,7 @@ c--- alpha-s will be determined again (in coupling2).
       include 'nflav.f'
       include 'b0.f'
       include 'part.f'
+      include 'verbose.f'
       integer i
       double precision aemmz,alphas,cmass,bmass,lotopdecaywidth
       character*3 inlabel(10)
@@ -169,6 +170,7 @@ c      write(6,*) 'twidth LO',twidth
 c      write(6,*) 'twidth NLO',twidth*topwidth(mt,wmass)
 c      write(6,*) 'twidth (NLO-LO)/LO = ',topwidth(mt,wmass)-1d0
 
+      if (verbose) then
       write(6,*) '************** Electroweak parameters **************'
       write(6,*) '*                                                  *'
       write(6,75) 'zmass',inlabel(1),zmass,'wmass',inlabel(2),wmass
@@ -181,7 +183,8 @@ c      write(6,*) 'twidth (NLO-LO)/LO = ',topwidth(mt,wmass)-1d0
       write(6,*) '*                                                  *'
       write(6,*) '* Parameters marked (+) are input, others derived  *'
       write(6,*) '****************************************************'
-
+      endif
+      
    75 format(' * ',a6,a3,f13.7,3x,a7,a3,f12.7,'  *')
    76 format(' * ',a6,a3,d13.6,3x,a7,a3,f12.7,'  *')
    77 format(' * ',a9,f13.7,1x,a5,19x,'  *')

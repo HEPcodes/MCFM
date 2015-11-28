@@ -42,7 +42,8 @@
       include 'outputoptions.f'
       include 'outputflags.f'
       include 'TRbadpoint.f'
-      include 'dm_params.f' 
+      include 'dm_params.f'
+      include 'runstring.f' 
 c--- APPLgrid - grid includes
       include 'ptilde.f'
       include 'APPLinclude.f'
@@ -77,9 +78,6 @@ c---- SSend
       logical bin,first,includedipole,checkpiDpjk
       double precision QandGint
       character*4 mypart
-      character*30 runstring
-c      double complex ee(mxpart,mxpart),ek(mxpart,mxpart)
-      common/runstring/runstring
       common/density/ih1,ih2
       common/energy/sqrts
       common/bin/bin
@@ -89,7 +87,7 @@ c      double complex ee(mxpart,mxpart),ek(mxpart,mxpart)
       common/bypart/lord_bypart
       common/mypart/mypart
 c      common/ggZZunstable/ggZZunstable
-      data p/48*0d0/
+      data p/56*0d0/
       data nshot/1/
       data first/.true./
       save first,rscalestart,fscalestart

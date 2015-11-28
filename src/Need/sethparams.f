@@ -9,6 +9,8 @@ c---   br,wwbr,zzbr,tautaubr : the LO calculated values
       include 'masses.f'
       include 'anom_higgs.f' 
       include 'process.f' 
+      include 'verbose.f'
+      include 'cpscheme.f'
       double precision br,gamgambr,zgambr,wwbr,zzbr,tautaubr,x_w,x_z,
      & msqgamgam,hzgamwidth,msqhbb,msqhtautau,
      & pw_bb,pw_tautau,pw_gamgam,pw_ww,pw_zz,pw_zgam,
@@ -69,6 +71,17 @@ c--- are not actually used in our calculations
         hwidth=pw_bb+pw_tautau+pw_ww+pw_zz+pw_gamgam+pw_zgam
       endif 
 
+c--- complex pole scheme, if desired
+      CPscheme=.false.
+      if (CPscheme) then
+        call interpolate_hto(hmass,hwidth)
+c        call hto_main_cpH(hmass,hwidth)
+c        write(6,*) 'Call to HTO currently not implemented'
+c        stop
+      endif
+c      hwidth=4.17116d-3 ! HTO width at 126 GeV
+
+
 c--- Set up anomalous width of the Higgs boson if required
       if (abs(hwidth_ratio-1d0) .lt. 1d-6) then
         anom_Higgs=.false.
@@ -77,7 +90,8 @@ c--- Set up anomalous width of the Higgs boson if required
      &   .or.(case .eq. 'HZZH+i') .or. (case .eq. 'ggZZ4l')
      &   .or.(case .eq. 'HZZqgI') .or. (case .eq. 'HWW_tb')
      &   .or.(case .eq. 'HWWint') .or. (case .eq. 'HWWH+i')
-     &   .or.(case .eq. 'ggWW4l') ) then
+     &   .or.(case .eq. 'ggWW4l') .or. (case .eq. 'HVV_tb')
+     &   .or.(case .eq. 'ggVV4l')) then
           anom_Higgs=.true.
           keep_SMhiggs_norm=.true.
           hwidth=hwidth*hwidth_ratio
@@ -143,15 +157,17 @@ c--- Branching ratio H -> Zgam
 *************************** WRITE OUT BRANCHING RATIOS *************************
 
 
-      write(6,99) hmass,hwidth,br,tautaubr,wwbr,zzbr,gamgambr,zgambr
-      if (spira) then
-      write(6,*) '*                                                  *'
-      write(6,*) '* Note: branching ratios reported here can be > 1  *'
-      write(6,*) '*       since the total Higgs width is calculated  *'
-      write(6,*) '*       at NLO but the BR calculation uses a       *'
-      write(6,*) '*       partial width at LO only.                  *'
-      write(6,*) '*                                                  *'
-      write(6,*) '****************************************************'
+      if (verbose) then
+       write(6,99) hmass,hwidth,br,tautaubr,wwbr,zzbr,gamgambr,zgambr
+       if (spira) then
+       write(6,*) '*                                                  *'
+       write(6,*) '* Note: branching ratios reported here can be > 1  *'
+       write(6,*) '*       since the total Higgs width is calculated  *'
+       write(6,*) '*       at NLO but the BR calculation uses a       *'
+       write(6,*) '*       partial width at LO only.                  *'
+       write(6,*) '*                                                  *'
+       write(6,*) '****************************************************'
+       endif
       endif
 
       return

@@ -40,13 +40,14 @@ c--- by the strings 'lstring' and 'rstring'
       include 'part.f'
       include 'anomHiggs.f'
       include 'anom_higgs.f'
+      include 'vdecayid.f'
+      include 'runstring.f'
 c--- APPLgrid - flag using grid
       include 'ptilde.f'
       include 'APPLinclude.f'
 c--- APPLgrid - end
       character*(*) tag,lstring,rstring
-      character*72 f95,f96,f97,f98,f99
-      character*30 runstring
+      character*72 f94,f95,f96,f97,f98,f99
       logical dryrun,makecuts,writeall,spira
       integer unitno, nmin,nmax
       integer nproc,ih1,ih2,itmx1,itmx2,ncall1,ncall2,origij
@@ -60,7 +61,6 @@ c--- APPLgrid - end
 
 
       common/nproc/nproc
-      common/runstring/runstring
       common/energy/sqrts
       common/density/ih1,ih2
       common/iterat/itmx1,ncall1,itmx2,ncall2
@@ -73,6 +73,9 @@ c--- APPLgrid - end
 
       common/origij/origij
       
+c--- f94 integer.XXYY format      
+      f94='('''//lstring//''',11x,i4,''.'',2a2,12x,''['',a,'']'','''
+     & //rstring//''')' 
 c--- f95 2xfloating point format
       f95='('''//lstring//''',f8.3,'','',f8.3,16x,''['',a,'']'','''
      & //rstring//''')' 
@@ -132,8 +135,14 @@ c--- f99 floating point format
       write(unitno,*) lstring//
      & ' [General options to specify the process and execution] )'
       endif
-      if ((tag .eq. 'nproc') .or. (writeall)) then
-      write(unitno,fmt=f97) nproc,'nproc'
+      if (vdecayid) then
+        if ((tag .eq. 'nproc') .or. (writeall)) then
+        write(unitno,fmt=f94) nproc,v34id,v56id,'nproc'
+        endif
+      else
+        if ((tag .eq. 'nproc') .or. (writeall)) then
+        write(unitno,fmt=f97) nproc,'nproc'
+        endif
       endif
       if ((tag .eq. 'part') .or. (writeall)) then
       write(unitno,fmt=f96) part,'part'

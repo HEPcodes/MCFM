@@ -36,27 +36,27 @@ c--- for consistency with function names (and quark j6=3-j5)
 c--- trivial amplitude
       amp(icol,2,2,2,2,2)=czip
 c--- basic MHV amplitudes
-      amp(icol,1,2,2,2,2)=amp_2gam2g_mppppm(j1,j2,j3,j4,j5,j6,za,zb)      
-      amp(icol,2,1,2,2,2)=amp_2gam2g_pmpppm(j1,j2,j3,j4,j5,j6,za,zb)      
-      amp(icol,2,2,1,2,2)=amp_2gam2g_ppmppm(j1,j2,j3,j4,j5,j6,za,zb)      
-      amp(icol,2,2,2,1,2)=amp_2gam2g_pppmpm(j1,j2,j3,j4,j5,j6,za,zb)      
+      amp(icol,1,2,2,2,2)=amp_2gam2g_mppppm(j1,j2,j3,j4,j5,j6,za,zb)
+      amp(icol,2,1,2,2,2)=amp_2gam2g_pmpppm(j1,j2,j3,j4,j5,j6,za,zb)
+      amp(icol,2,2,1,2,2)=amp_2gam2g_ppmppm(j1,j2,j3,j4,j5,j6,za,zb)
+      amp(icol,2,2,2,1,2)=amp_2gam2g_pppmpm(j1,j2,j3,j4,j5,j6,za,zb)
 
 c--- non-MHV amplitudes
-      amp(icol,1,1,2,2,2)=amp_2gam2g_mmpppm(j1,j2,j3,j4,j5,j6,za,zb)      
-      amp(icol,2,1,1,2,2)=amp_2gam2g_pmmppm(j1,j2,j3,j4,j5,j6,za,zb)      
+      amp(icol,1,1,2,2,2)=amp_2gam2g_mmpppm(j1,j2,j3,j4,j5,j6,za,zb)
+      amp(icol,2,1,1,2,2)=amp_2gam2g_pmmppm(j1,j2,j3,j4,j5,j6,za,zb)
       amp(icol,1,2,1,2,2)=amp_2gam2g_mpmppm(j1,j2,j3,j4,j5,j6,za,zb)
 
 c--- parity and charge conjugation
-c--- (complex conjgutate, interchange q, qb and switch gluon order)
+c--- (complex conjugate, interchange q, qb and switch gluon order)
       amp(icol,1,1,1,1,2)=czip
       
-      amp(icol,2,1,1,1,2)=-amp_2gam2g_pmpppm(j2,j1,j3,j4,j6,j5,zb,za)      
-      amp(icol,1,2,1,1,2)=-amp_2gam2g_mppppm(j2,j1,j3,j4,j6,j5,zb,za)      
-      amp(icol,1,1,2,1,2)=-amp_2gam2g_ppmppm(j2,j1,j3,j4,j6,j5,zb,za)      
-      amp(icol,1,1,1,2,2)=-amp_2gam2g_pppmpm(j2,j1,j3,j4,j6,j5,zb,za)      
+      amp(icol,2,1,1,1,2)=-amp_2gam2g_pmpppm(j2,j1,j3,j4,j6,j5,zb,za)
+      amp(icol,1,2,1,1,2)=-amp_2gam2g_mppppm(j2,j1,j3,j4,j6,j5,zb,za)
+      amp(icol,1,1,2,1,2)=-amp_2gam2g_ppmppm(j2,j1,j3,j4,j6,j5,zb,za)
+      amp(icol,1,1,1,2,2)=-amp_2gam2g_pppmpm(j2,j1,j3,j4,j6,j5,zb,za)
       
-      amp(icol,2,2,1,1,2)=-amp_2gam2g_mmpppm(j2,j1,j3,j4,j6,j5,zb,za)      
-      amp(icol,1,2,2,1,2)=-amp_2gam2g_mpmppm(j2,j1,j3,j4,j6,j5,zb,za)  
+      amp(icol,2,2,1,1,2)=-amp_2gam2g_mmpppm(j2,j1,j3,j4,j6,j5,zb,za)
+      amp(icol,1,2,2,1,2)=-amp_2gam2g_mpmppm(j2,j1,j3,j4,j6,j5,zb,za)
       amp(icol,2,1,2,1,2)=-amp_2gam2g_pmmppm(j2,j1,j3,j4,j6,j5,zb,za)
             
       do h1=1,2

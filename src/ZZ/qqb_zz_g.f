@@ -18,7 +18,7 @@ c   for the moment --- radiation only from initial line
       double precision fac,fac1,q34,q56,s127
       common/pchoice/j,k
       double precision P(mxpart,4),msq(-nf:nf,-nf:nf)
-      double precision ave,v34(2),v56(2),rescale
+      double precision ave,v34(2),v56(2),rescale1,rescale2,oprat
       double complex aq12(2,2,2,2),aq34(2,2,2,2),aq56(2,2,2,2)
       double complex qa12(2,2,2,2),qa34(2,2,2,2),qa56(2,2,2,2)
       double complex gq12(2,2,2,2),gq34(2,2,2,2),gq56(2,2,2,2)
@@ -50,11 +50,16 @@ C-set Uncrossed array to zero
 
 C----setup factor to avoid summing over too many neutrinos 
 C----if coupling enters twice
-      if (q56 .eq. 0d0) then
-      rescale=1d0/sqrt(3d0)
+      if (q34 .eq. 0d0) then
+      rescale1=1d0/sqrt(3d0)
       else
-      rescale=1d0
+      rescale1=1d0
       endif
+      if (q56 .eq. 0d0) then   
+      rescale2=1d0/sqrt(3d0)    
+      else 
+      rescale2=1d0    
+      endif          
 
 c--   s returned from sprodx (common block) is 2*dot product
       call spinoru(7,p,za,zb)
@@ -121,9 +126,9 @@ c---case qbar-q
      & *(prop34*v34(h34)*l(k)+q34*q(k))*aq12(hq,h34,h56,hg)
       if (srdiags) then
       amp=amp
-     & +(prop56*v34(h34)*v56(h56)+q34*q56)
+     & +(prop56*v34(h34)*v56(h56)+q34*q56)*rescale1
      & *(prop127*v34(h34)*l(k)+q34*q(k))*aq56(hq,h34,h56,hg)
-     & +(prop34*v34(h34)*v56(h56)+q34*q56)*rescale
+     & +(prop34*v34(h34)*v56(h56)+q34*q56)*rescale2
      & *(prop127*v56(h56)*l(k)+q56*q(k))*aq34(hq,h34,h56,hg)
       endif
       elseif (hq .eq. 2) then
@@ -131,9 +136,9 @@ c---case qbar-q
      & *(prop34*v34(h34)*r(k)+q34*q(k))*aq12(hq,h34,h56,hg)
       if (srdiags) then
       amp=amp
-     & +(prop56*v34(h34)*v56(h56)+q34*q56)
+     & +(prop56*v34(h34)*v56(h56)+q34*q56)*rescale1
      & *(prop127*v34(h34)*r(k)+q34*q(k))*aq56(hq,h34,h56,hg)
-     & +(prop34*v34(h34)*v56(h56)+q34*q56)*rescale
+     & +(prop34*v34(h34)*v56(h56)+q34*q56)*rescale2
      & *(prop127*v56(h56)*r(k)+q56*q(k))*aq34(hq,h34,h56,hg)
       endif
       endif
@@ -145,9 +150,9 @@ c---case q-qbar
      & *(prop34*v34(h34)*l(j)+q34*q(j))*qa12(hq,h34,h56,hg)
       if (srdiags) then
       amp=amp
-     & +(prop56*v34(h34)*v56(h56)+q34*q56)
+     & +(prop56*v34(h34)*v56(h56)+q34*q56)*rescale1
      & *(prop127*v34(h34)*l(j)+q34*q(j))*qa56(hq,h34,h56,hg)
-     & +(prop34*v34(h34)*v56(h56)+q34*q56)*rescale
+     & +(prop34*v34(h34)*v56(h56)+q34*q56)*rescale2
      & *(prop127*v56(h56)*l(j)+q56*q(j))*qa34(hq,h34,h56,hg)
       endif
       elseif (hq .eq. 2) then
@@ -155,9 +160,9 @@ c---case q-qbar
      & *(prop34*v34(h34)*r(j)+q34*q(j))*qa12(hq,h34,h56,hg)
       if (srdiags) then
       amp=amp
-     & +(prop56*v34(h34)*v56(h56)+q34*q56)
+     & +(prop56*v34(h34)*v56(h56)+q34*q56)*rescale1
      & *(prop127*v34(h34)*r(j)+q34*q(j))*qa56(hq,h34,h56,hg)
-     & +(prop34*v34(h34)*v56(h56)+q34*q56)*rescale
+     & +(prop34*v34(h34)*v56(h56)+q34*q56)*rescale2
      & *(prop127*v56(h56)*r(j)+q56*q(j))*qa34(hq,h34,h56,hg)
       endif
       endif
@@ -169,9 +174,9 @@ c---case qbar-g
      & *(prop34*v34(h34)*l(-jk)+q34*q(-jk))*ag12(hq,h34,h56,hg)
       if (srdiags) then
       amp=amp
-     & +(prop56*v34(h34)*v56(h56)+q34*q56)
+     & +(prop56*v34(h34)*v56(h56)+q34*q56)*rescale1
      & *(prop127*v34(h34)*l(-jk)+q34*q(-jk))*ag56(hq,h34,h56,hg)
-     & +(prop34*v34(h34)*v56(h56)+q34*q56)*rescale
+     & +(prop34*v34(h34)*v56(h56)+q34*q56)*rescale2
      & *(prop127*v56(h56)*l(-jk)+q56*q(-jk))*ag34(hq,h34,h56,hg)
       endif
       elseif (hq .eq. 2) then
@@ -179,9 +184,9 @@ c---case qbar-g
      & *(prop34*v34(h34)*r(-jk)+q34*q(-jk))*ag12(hq,h34,h56,hg)
       if (srdiags) then
       amp=amp
-     & +(prop56*v34(h34)*v56(h56)+q34*q56)
+     & +(prop56*v34(h34)*v56(h56)+q34*q56)*rescale1
      & *(prop127*v34(h34)*r(-jk)+q34*q(-jk))*ag56(hq,h34,h56,hg)
-     & +(prop34*v34(h34)*v56(h56)+q34*q56)*rescale
+     & +(prop34*v34(h34)*v56(h56)+q34*q56)*rescale2
      & *(prop127*v56(h56)*r(-jk)+q56*q(-jk))*ag34(hq,h34,h56,hg)
       endif
       endif
@@ -193,9 +198,9 @@ c---case g-qbar
      & *(prop34*v34(h34)*l(-jk)+q34*q(-jk))*ga12(hq,h34,h56,hg)
       if (srdiags) then
       amp=amp
-     & +(prop56*v34(h34)*v56(h56)+q34*q56)
+     & +(prop56*v34(h34)*v56(h56)+q34*q56)*rescale1
      & *(prop127*v34(h34)*l(-jk)+q34*q(-jk))*ga56(hq,h34,h56,hg)
-     & +(prop34*v34(h34)*v56(h56)+q34*q56)*rescale
+     & +(prop34*v34(h34)*v56(h56)+q34*q56)*rescale2
      & *(prop127*v56(h56)*l(-jk)+q56*q(-jk))*ga34(hq,h34,h56,hg)
       endif
       elseif (hq .eq. 2) then
@@ -203,9 +208,9 @@ c---case g-qbar
      & *(prop34*v34(h34)*r(-jk)+q34*q(-jk))*ga12(hq,h34,h56,hg)
       if (srdiags) then
       amp=amp
-     & +(prop56*v34(h34)*v56(h56)+q34*q56)
+     & +(prop56*v34(h34)*v56(h56)+q34*q56)*rescale1
      & *(prop127*v34(h34)*r(-jk)+q34*q(-jk))*ga56(hq,h34,h56,hg)
-     & +(prop34*v34(h34)*v56(h56)+q34*q56)*rescale
+     & +(prop34*v34(h34)*v56(h56)+q34*q56)*rescale2
      & *(prop127*v56(h56)*r(-jk)+q56*q(-jk))*ga34(hq,h34,h56,hg)
       endif
       endif
@@ -217,9 +222,9 @@ c---case q-g
      & *(prop34*v34(h34)*l(+jk)+q34*q(+jk))*qg12(hq,h34,h56,hg)
       if (srdiags) then
       amp=amp
-     & +(prop56*v34(h34)*v56(h56)+q34*q56)
+     & +(prop56*v34(h34)*v56(h56)+q34*q56)*rescale1
      & *(prop127*v34(h34)*l(+jk)+q34*q(+jk))*qg56(hq,h34,h56,hg)
-     & +(prop34*v34(h34)*v56(h56)+q34*q56)*rescale
+     & +(prop34*v34(h34)*v56(h56)+q34*q56)*rescale2
      & *(prop127*v56(h56)*l(+jk)+q56*q(+jk))*qg34(hq,h34,h56,hg)
       endif
       elseif (hq .eq. 2) then
@@ -227,9 +232,9 @@ c---case q-g
      & *(prop34*v34(h34)*r(+jk)+q34*q(+jk))*qg12(hq,h34,h56,hg)
       if (srdiags) then
       amp=amp
-     & +(prop56*v34(h34)*v56(h56)+q34*q56)
+     & +(prop56*v34(h34)*v56(h56)+q34*q56)*rescale1
      & *(prop127*v34(h34)*r(+jk)+q34*q(+jk))*qg56(hq,h34,h56,hg)
-     & +(prop34*v34(h34)*v56(h56)+q34*q56)*rescale
+     & +(prop34*v34(h34)*v56(h56)+q34*q56)*rescale2
      & *(prop127*v56(h56)*r(+jk)+q56*q(+jk))*qg34(hq,h34,h56,hg)
       endif
       endif
@@ -241,9 +246,9 @@ c---case g-q
      & *(prop34*v34(h34)*l(+jk)+q34*q(+jk))*gq12(hq,h34,h56,hg)
       if (srdiags) then
       amp=amp
-     & +(prop56*v34(h34)*v56(h56)+q34*q56)
+     & +(prop56*v34(h34)*v56(h56)+q34*q56)*rescale1
      & *(prop127*v34(h34)*l(+jk)+q34*q(+jk))*gq56(hq,h34,h56,hg)
-     & +(prop34*v34(h34)*v56(h56)+q34*q56)*rescale
+     & +(prop34*v34(h34)*v56(h56)+q34*q56)*rescale2
      & *(prop127*v56(h56)*l(+jk)+q56*q(+jk))*gq34(hq,h34,h56,hg)
       endif
       elseif (hq .eq. 2) then
@@ -251,9 +256,9 @@ c---case g-q
      & *(prop34*v34(h34)*r(+jk)+q34*q(+jk))*gq12(hq,h34,h56,hg)
       if (srdiags) then
       amp=amp
-     & +(prop56*v34(h34)*v56(h56)+q34*q56)
+     & +(prop56*v34(h34)*v56(h56)+q34*q56)*rescale1
      & *(prop127*v34(h34)*r(+jk)+q34*q(+jk))*gq56(hq,h34,h56,hg)
-     & +(prop34*v34(h34)*v56(h56)+q34*q56)*rescale
+     & +(prop34*v34(h34)*v56(h56)+q34*q56)*rescale2
      & *(prop127*v56(h56)*r(+jk)+q56*q(+jk))*gq34(hq,h34,h56,hg)
       endif
       endif
@@ -261,18 +266,44 @@ c---case g-q
       endif
 
       amp=amp*fac
-      msq(j,k)=msq(j,k)+fac1*ave*abs(amp)**2
 
-      
-      !set-up interference terms                                                                                                                                           
-      if ((interference).and.(ii.eq.1)) then
-      Uncrossed(j,k,hq,h34,h56,hg)=amp  
-      elseif (ii.eq.2) then    
-      if (h34.eq.h56) then
-      msq(j,k)=msq(j,k)     
-     &    -fac1*2d0*ave*dble(dconjg(amp)*Uncrossed(j,k,hq,h34,h56,hg))
-      endif   
-      endif      
+c      msq(j,k)=msq(j,k)+fac1*ave*abs(amp)**2      
+c      !set-up interference terms
+c      if ((interference).and.(ii.eq.1)) then
+c      Uncrossed(j,k,hq,h34,h56,hg)=amp  
+c      elseif (ii.eq.2) then    
+c      if (h34.eq.h56) then
+c      msq(j,k)=msq(j,k)     
+c     &    -fac1*2d0*ave*dble(dconjg(amp)*Uncrossed(j,k,hq,h34,h56,hg))
+c      endif   
+c      endif      
+
+
+      if (interference .eqv. .false.) then
+c--- normal case
+        msq(j,k)=msq(j,k)+fac1*ave*abs(amp)**2
+      else
+c--- with interference:
+c---    1st pass --> store result
+c---    2nd pass --> fill msq
+        if (ii .eq. 1) then
+          Uncrossed(j,k,hq,h34,h56,hg)=amp
+        else
+          if (h34 .eq. h56) then
+            oprat=1d0
+     &           -2d0*dble(dconjg(amp)*Uncrossed(j,k,hq,h34,h56,hg))
+     &            /(abs(amp)**2+abs(Uncrossed(j,k,hq,h34,h56,hg))**2)
+          else
+            oprat=1d0
+          endif
+          if (bw34_56) then
+            msq(j,k)=msq(j,k)
+     &        +fac1*ave*2d0*abs(Uncrossed(j,k,hq,h34,h56,hg))**2*oprat
+          else
+            msq(j,k)=msq(j,k)+fac1*ave*2d0*abs(amp)**2*oprat
+          endif
+        endif
+      endif
    
       enddo  ! endloop hg
       enddo  ! endloop h56

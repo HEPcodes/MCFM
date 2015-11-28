@@ -270,6 +270,10 @@ c--- Plots of m(3456) in specific regions
      & pt34,wt,wt2,0d0,10d0,0.1d0,'lin')
       n=n+1
       
+      call bookplot(n,tag,'50 < m(3456) < 250',
+     & m3456,wt,wt2,50d0,250d0,2d0,'log')
+      n=n+1
+      
 ************************************************************************
 *                                                                      *
 *     FINAL BOOKKEEPING                                                *

@@ -202,7 +202,7 @@ c---  are handled with reference to nproc
       elseif ((case .eq. 'WWqqbr') .or. (case .eq. 'WWnpol')
      .    .or.(case .eq. 'WZbbar') .or. (case .eq. 'ZZlept')
      .    .or.(case .eq. 'HWW_4l') .or. (case .eq. 'HZZ_4l')
-     .    .or.(case .eq. 'HWW2lq') 
+     .    .or.(case .eq. 'HWW2lq') .or. (case .eq. 'ggWWbx') 
      .    .or.(case .eq. 'HWW_tb') .or. (case .eq. 'HWWint')
      .    .or.(case .eq. 'HWWH+i') .or. (case .eq. 'ggWW4l')
      .    .or.(case .eq. 'HZZ_tb') .or. (case .eq. 'HZZint')

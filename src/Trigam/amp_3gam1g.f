@@ -133,7 +133,7 @@ c--- Initialize arrays for permutations
       do i12=1,2
       do i34=1,2
 c--- There appear to be errors in this equation in the paper
-c--- (even in the journal version) that I have correctecd here
+c--- (even in the journal version) that I have corrected here
       amp_3gam1g_mmpppm=amp_3gam1g_mmpppm
      & +zb(j5,k3(i34))*za(j6,k2(i12))
      & *(zb(k4(i34),j5)*za(j5,k1(i12))

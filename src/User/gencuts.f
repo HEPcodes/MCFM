@@ -9,11 +9,10 @@
       implicit none
       include 'constants.f'
       include 'process.f'
+      include 'runstring.f'
       logical failed,gencuts_Zt,gencuts_WZjj,gencuts_input
       integer njets
       double precision pjet(mxpart,4)
-      character*30 runstring
-      common/runstring/runstring
       
       gencuts=.false.
       

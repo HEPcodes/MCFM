@@ -1,6 +1,6 @@
- ************** MCFM - version 6.7 ****************
+ ************** MCFM - version 6.8 ****************
  *                                                *
- * MCFM, v6.7                 December 6th, 2013  *
+ * MCFM, v6.8                   April 26th, 2014  *
  *                                                *
  * Authors: John Campbell, Keith Ellis,           *
  *          Ciaran Williams                       *
@@ -9,6 +9,7 @@
  *                                                *
  * For details see:                               *
  *                                                *
+ *  arXiv:1403.2641 (Triphoton production)        *
  *  arXiv:1312.1628 (gg->WW, Higgs interference)  *
  *  arXiv:1311.3589 (gg->ZZ, Higgs interference)  *
  *  Phys.Rev.D87:114006, arXiv:1302.3856          *

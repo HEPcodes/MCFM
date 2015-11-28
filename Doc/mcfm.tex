@@ -25,7 +25,7 @@
 \thispagestyle{empty}
 \vspace*{3cm}
 \begin{center}
-{\Huge MCFM v6.7} \\
+{\Huge MCFM v6.8} \\
 \vspace*{0.5cm}
 \Large{A Monte Carlo for FeMtobarn} \\
 \Large{processes at Hadron Colliders} \\
@@ -38,7 +38,7 @@ John M. Campbell ({\tt johnmc@fnal.gov}) \\
 R. Keith Ellis ({\tt ellis@fnal.gov}) \\
 Ciaran Williams ({\tt ciaran@fnal.gov}) \\
 \vspace*{2cm}
-{\it \small Updated: December 6th, 2013}
+{\it \small Updated: April 26th, 2014}
 \end{center}
 
 \newpage
@@ -468,7 +468,7 @@ contributions.
 Processes 114, 161, 166, 171, 176, 181, 186, 141, 146, 149, 233, 238, 501, 511 only, see sections~\ref{subsec:stop} and
 \ref{subsec:wt} below.
 \item {\tt frag}.
-Processes 280, 285, 290, 295, 300-302, 305-307,  820-823 only, see sections~\ref{subsec:gamgam}, \ref{subsec:wgamma} and
+Processes 280, 285-287, 290, 295, 300-302, 305-307,  820-823 only, see sections~\ref{subsec:gamgam}, \ref{subsec:wgamma} and
 \ref{subsec:zgamma} below.
 
 \end{itemize}
@@ -540,9 +540,12 @@ exceeds a maximum of $10$ TeV (PDF) or $990$ GeV (fragmentation) this value is s
 {\tt sqrt(M\pow 2+pt34\pow 2)} & $M^2 + (\vec{p_T}_3 + \vec{p_T}_4)^2$ & $M=$~mass of particle 3+4 \\
 {\tt sqrt(M\pow 2+pt345\pow 2)} & $M^2 + (\vec{p_T}_3 + \vec{p_T}_4 + \vec{p_T}_5)^2$ & $M=$~mass of particle 3+4+5 \\
 {\tt sqrt(M\pow 2+pt5\pow 2)} & $M^2 + \vec{p_T}_5^2$ & $M=$~mass of particle 3+4 \\
-{\tt sqrt(M\pow 2+ptj1\pow 2)} & $M^2 + \vec{p_T}_{j_1}^2$ & $M=$~mass(3+4), $j_1=$ leading $p_T$ jet \\
+{\tt sqrt(M\pow 2+ptj1\pow 2)} & $M^2 + \vec{p_T}_{j_1}^2$ & $M=$~mass(3+4), leading $p_T$ jet, $j_1$ \\
+{\tt sqrt(M\pow 2+sumptj\pow 2)} & $M^2 + \sum \vec{p_T}_{j}^2$ & $M=$~mass(3+4), sum over all jets \\
+{\tt sqrt(m(34)\pow 2+sumptj\pow 2)} & $(p_3+p_4)^2 + \sum \vec{p_T}_{j}^2$ & sum over all jets \\
 {\tt pt(photon)} & $\vec{p_T}_\gamma^2$ & \\
-{\tt HT} & $\sum_{i=1}^n {p_T}_i$ & $n$ final state particles (partons, not jets) \\
+{\tt HT} & $\sum_{i=1}^n {p_T}_i$ & $n$ final state particles \\
+ &  & (partons, not jets) \\
 \hline 
 \hline\end{tabular}
 \end{center}
@@ -774,7 +777,7 @@ file {\tt src/User/frix.f}.
 
 \item {\tt fragset}. A character*8 variable that is used to choose the particular photon fragmentation set.
 Currently implemented fragmentation functions can be called with `{\tt BFGSet\_I}', `{\tt BFGSetII}'~\cite{Bourhis:1997yu}
-or `{\tt GdRG\_\_LO}'~\cite{GehrmannDeRidder:1998ba}.  
+or `{\tt GdRG\_\_LO}' for the LO and `{\tt GdRG\_NLO}' for the NLO sets of ref.~\cite{GehrmannDeRidder:1998ba}.  
 
 \item {\tt frag\_scale}. A double precision variable that will be used to choose the scale 
 at which the photon fragmentation is evaluated. 
@@ -981,7 +984,7 @@ to standard Catani-Seymour subtraction.
 \item {\tt bfi}. 
 A double precision variable which can be used to
 limit the kinematic range for the subtraction of final-initial dipoles
-in the photon fragmentation case. In this version it is not yet operative.
+in the photon fragmentation case.
 \item {\tt bff}. 
 A double precision variable which can be used to
 limit the kinematic range for the subtraction of final-final dipoles
@@ -1668,7 +1671,11 @@ neither of the $Z$ bosons decays.
 
 In process {\tt 90} the two $Z$ bosons decay to identical charged leptons,
 and interference effects between the decay products of the two $Z$ bosons
-are included. This process may be calculated at LO only.
+are included. This process may be calculated to NLO.
+
+Note that, for processes 81 and 86, alternative final states may also be
+computed by appending additional characters to {\tt NPROC} as described
+in Section~\ref{specifyingZdecays}.
 
 \subsubsection{$ZZ$+jet production, process 85}
 
@@ -1844,7 +1851,7 @@ using a generalization of the formula of \cite{Djouadi:1996yq}. (Generalization 
 account off-shell $Z$-boson and adjustment of the sign of $C_2$ in their Eq.(4)).
 
 
-\subsection{$H \to W^+W^-$ production, processes 123-126}
+\subsection{$H \to W^+W^-$ production, processes 123-127}
 These processes represent the production of a Higgs boson that decays to $W^+ W^-$,
 with subsequent decay into leptons. For process {\tt 123}, the exact form of the triangle
 loop coupling a Higgs boson to two gluons is included, with both top and bottom quarks
@@ -1874,6 +1881,48 @@ Process {\tt 126} calculates the full result for this process from  $gg$-intitia
 This includes diagrams that have a Higgs boson in the $s$-channel, the continuum $W^+W^-$
 diagrams described above and their interference. 
 
+Process {\tt 127}  gives the result for the square of the box diagrams alone, i.e. the process
+$gg \to W^+W^- \to \nu_e e^+ e^- \bar{\nu_e}$.
+
+For those processes that include contributions from the Higgs boson, the form
+of the Higgs propagator may be changed by editing the file
+{\tt src/Need/sethparams.f}.  If the logical variable {\tt CPscheme} is
+changed from the default value {\tt .false.} to {\tt .true.} then the
+Higgs propagator is computed using the ``bar-scheme'' that is
+implemented in the HTO code of G. Passarino~\cite{Goria:2011wa,Passarino:2010qk}.
+The value of the Higgs boson width has been computed with v1.1 of the
+HTO code, for Higgs masses in the interval $50 < m_H< 1500$~GeV.  These
+values are tabulated, in $0.5$~GeV increments, in the file
+{\tt Bin/hto\_output.dat}.  The widths for other masses in this range
+are obtained by linear interpolation.
+
+\subsubsection{Specifying other final states}
+\label{specifyingWdecays}
+As described above, these processes refer to a final state 
+$\nu_e e^+ e^- \bar{\nu_e}$.  It is however possible to specify a final state
+that corresponds to a different set of $W$ boson decays.  This is achieved
+by altering the value of {\tt NPROC} in the input file by appending a
+period, followed by two 2-character strings that identify each of the decays.
+Possible values for the strings, and the corresponding decays, are
+shown in the table below.
+\begin{center}
+\begin{tabular}{ll}
+string & $W^+$ or $W^-$  decay \\
+\hline
+{\tt en,EN} & $(\nu_e,e^+)$ or $(e^-,\bar{\nu_e})$ \\
+{\tt mn,MN} & $(\nu_\mu,\mu^+)$ or $(\mu^-,\bar{\nu_\mu})$ \\
+{\tt tn,TN} & $(\nu_\tau,\tau^+)$ or $(\tau^-,\bar{\nu_\tau})$ \\
+\end{tabular}
+\end{center}
+The labelling of the particles in the output is best
+understood by example.  Setting {\tt nproc=127.ENMN} corresponds to the
+process $gg \to W^+W^- \to \nu_e(p_3) e^+(p_4) \mu^-(p_5) \bar\nu_\mu(p_6)$.
+Note that the default process corresponds to the string {\tt ENEN} so that,
+for instance {\tt nproc=127.ENMN} is entirely equivalent to
+{\tt nproc=127}.
+The effect of changing the lepton flavour is only seen in the output
+of LHE events, where the correct mass is then used when producing the
+event record.
 
 \subsection{$H \to ZZ \to e^- e^+ \mu^- \mu^+$ production, processes 128-133}
 These processes represent the production of a Higgs boson that decays to $Z Z$,
@@ -1904,6 +1953,99 @@ Process {\tt 132}  gives the result for the square of the box diagrams alone, i.
 $gg \to Z/\gamma^*+Z/\gamma^* \to e^- e^+ \mu^- \mu^+$.
 
 Process {\tt 133} calculates the interference for the $qg$ initiated process.
+
+For those processes that include contributions from the Higgs boson, the form
+of the Higgs propagator may be changed by editing the file
+{\tt src/Need/sethparams.f}.  If the logical variable {\tt CPscheme} is
+changed from the default value {\tt .false.} to {\tt .true.} then the
+Higgs propagator is computed using the ``bar-scheme'' that is
+implemented in the HTO code of G. Passarino~\cite{Goria:2011wa,Passarino:2010qk}.
+The value of the Higgs boson width has been computed with v1.1 of the
+HTO code, for Higgs masses in the interval $50 < m_H< 1500$~GeV.  These
+values are tabulated, in $0.5$~GeV increments, in the file
+{\tt Bin/hto\_output.dat}.  The widths for other masses in this range
+are obtained by linear interpolation.
+
+
+\subsubsection{Specifying other final states}
+\label{specifyingZdecays}
+As described above, these processes refer to a final state 
+$e^- e^+ \mu^- \mu^+$.  It is however possible to specify a final state
+that corresponds to a different set of $Z$ boson decays.  This is achieved
+by altering the value of {\tt NPROC} in the input file by appending a
+period, followed by two 2-character strings that identify each of the decays.
+Possible values for the strings, and the corresponding decays, are
+shown in the table below.
+\begin{center}
+\begin{tabular}{ll}
+string & $Z$ decay \\
+\hline
+{\tt el,EL} & $(e^-,e^+)$ \\
+{\tt mu,MU,ml,ML} & $(\mu^-,\mu^+)$ \\
+{\tt tl,TL} & $(\tau^-,\tau^+)$ \\
+{\tt nu,NU,nl,NL} & $(\nu,\bar\nu) \times 3$ \\
+{\tt bq,BQ} & $(b,\bar b)$ \\
+\end{tabular}
+\end{center}
+Note that, for the case of neutrino decays, the sum over three flavours of
+neutrino is performed.  The labelling of the particles in the output is best
+understood by example.  Setting {\tt nproc=132.ELNU} corresponds to the
+process $gg \to Z/\gamma^*+Z/\gamma^* \to e^-(p_3) e^+(p_4) \nu(p_5) \bar\nu(p_6)$.
+Note that the default process corresponds to the string {\tt ELMU} so that,
+for instance {\tt nproc=132.ELMU} is entirely equivalent to
+{\tt nproc=132}.
+The effect of changing the lepton flavour is only seen in the output
+of LHE events, where the correct mass is then used when producing the
+event record.
+
+\subsection{$e^- e^+ \nu_e \bar \nu_e$ production, processes 1281, 1311, 1321}
+These processes compute cross sections relevant for the final state
+$e^- e^+ \nu_e \bar \nu_e$, i.e. with charged leptons and neutrinos from the
+same (electron) doublet.  As a result they receive contributions from diagrams
+with resonant $ZZ$ propagators and resonant $WW$ propagators.  Process
+{\tt 1281} only includes amplitudes containing a Higgs boson {c.f. processes
+{\tt 123} and {\tt 128}. Process
+{\tt 1321} only includes continuum (box-diagram) amplitudes {c.f. processes
+{\tt 127} and {\tt 132}. Process
+{\tt 1311} includes both amplitudes and the effects of the interference
+between them {c.f. processes {\tt 126} and {\tt 131}.
+The effect of the interference between the $WW$ and $ZZ$ diagrams can be assessed
+by, for instance, comparing process {\tt 1281} with the sum of processes
+{\tt 123} and one-third of {\tt 128.ELNU}, where the weighting is to divide out
+the natural sum over three neutrino flavours in process {\tt 128.ELNU}.
+
+Event generation is not available for these processes at present.
+
+\subsection{$e^- e^+ \nu \bar \nu$ production, processes 1282, 1312, 1322}
+These processes compute cross sections relevant for the final state
+$e^- e^+ \nu \bar \nu$, i.e. an electron pair and a sum over all three
+flavours of neutrino.  For muon and tau neutrinos, only $ZZ$ diagrams
+contribute.  For electron neutrinos there are contributions from diagrams
+with resonant $ZZ$ propagators and resonant $WW$ propagators.  Process
+{\tt 1282} only includes amplitudes containing a Higgs boson {c.f. processes
+{\tt 123} and {\tt 128}. Process
+{\tt 1322} only includes continuum (box-diagram) amplitudes {c.f. processes
+{\tt 127} and {\tt 132}. Process
+{\tt 1312} includes both amplitudes and the effects of the interference
+between them {c.f. processes {\tt 126} and {\tt 131}.
+The effect of the interference between the $WW$ and $ZZ$ diagrams can be assessed
+by, for instance, comparing process {\tt 1282} with the sum of processes
+{\tt 123} and {\tt 128.ELNU}.
+
+For those processes that include contributions from the Higgs boson, the form
+of the Higgs propagator may be changed by editing the file
+{\tt src/Need/sethparams.f}.  If the logical variable {\tt CPscheme} is
+changed from the default value {\tt .false.} to {\tt .true.} then the
+Higgs propagator is computed using the ``bar-scheme'' that is
+implemented in the HTO code of G. Passarino~\cite{Goria:2011wa,Passarino:2010qk}.
+The value of the Higgs boson width has been computed with v1.1 of the
+HTO code, for Higgs masses in the interval $50 < m_H< 1500$~GeV.  These
+values are tabulated, in $0.5$~GeV increments, in the file
+{\tt Bin/hto\_output.dat}.  The widths for other masses in this range
+are obtained by linear interpolation.
+
+Event generation is not available for these processes at present.
+
 \subsection{$H+b$ production, processes 136--138}
 \label{subsec:Hb}
 
@@ -2354,7 +2496,7 @@ the cross section is well-defined.
 
 The calculation of process {\tt 283}--{\tt 284} is only available at leading order.
 
-\subsection{$\gamma\gamma$ production, processes 285-286}
+\subsection{$\gamma\gamma$ production, processes 285}
 \label{subsec:gamgam}
 
 Process {\tt 285} represents the production of a pair of real photons.
@@ -2365,9 +2507,9 @@ Thus in order to produce sensible results, the input file must supply values for
 the cross section is well-defined.
 
 The calculation of process {\tt 285} may be performed at NLO using either the
-Frixione algorithm~\cite{Frixione:1998jh} or standard cone isolation.  This process also includes
+Frixione algorithm~\cite{Frixione:1998jh} or standard isolation.  This process also includes
 the one-loop gluon-gluon contribution as given in
-ref.~\cite{Bern:2002jx}.  The production of a photon via parton fragmentation is included at NLO and 
+ref.~\cite{Bern:2002jx}.  The production of a photon via parton fragmentation is included in the NLO calculation and 
 can be run separately by using the {\tt frag} option in {\tt part}. This option includes the contributions from the integrated 
 photon dipole subtraction terms and the LO QCD matrix element multiplied by the fragmentation function.  
 
@@ -2383,11 +2525,31 @@ as {\tt 285 - 287} the $p_T$'s of the individual photons (hardest, next-to harde
 The remaining cuts on $R_{\gamma j}$, $\eta_{\gamma}$ etc. are applied universally to all photons. Users wishing to alter
 this feature should edit the file {\tt{photon\_cuts.f}} in the directory {\tt{src/User}}. 
 
+\subsection{$\gamma\gamma+$ jet production, processes 286}
+\label{subsec:gamgamjet}
+[{\it For more details on this calculation, please refer to 1403.2641}]
 
-Process {\tt 286}, corresponding to $\gamma\gamma+$jet production, can be computed at leading order only.
+Process {\tt 286} represents the production of a pair of real photons in association 
+with a jet.
+Since this process includes two real photons and a jet, the cross section diverges
+when one of the photons (or the jet) is very soft or in the direction of the beam.
+In addition it diverges when the photon and the jet are collinear.
+Thus in order to produce sensible results, the input file must supply values for 
+{\tt ptmin\_photon}, {\tt ptmin\_jet} and {\tt etamax\_photon}, {\tt etamax\_jet},
+as well as the photon--jet separation, {\tt R(photon,jet)\_min}. This will ensure that
+the cross section is well-defined.
+
+The calculation of process {\tt 286} may be performed at NLO using either the
+Frixione algorithm~\cite{Frixione:1998jh} or standard isolation.  
+The production of a photon via parton fragmentation is included in the NLO calculation and 
+can be run separately by using the {\tt frag} option in {\tt part}. This option includes the contributions from the integrated 
+photon dipole subtraction terms and the LO QCD matrix element multiplied by the fragmentation function.  
+
 
 \subsection{$\gamma\gamma\gamma$ production, process 287}
 \label{subsec:trigam}
+[{\it For more details on this calculation, please refer to 1403.2641}]
+
 
 Process {\tt 287} represents the production of three real photons.
 The cross section diverges
@@ -2396,7 +2558,7 @@ Thus in order to produce sensible results, the input file must supply values for
 {\tt ptmin\_photon} and {\tt etamax\_photon}. This will ensure that
 the cross section is well-defined.
 
-The calculation of process {\tt 285} may be performed at NLO using either the
+The calculation of process {\tt 287} may be performed at NLO using either the
 Frixione algorithm~\cite{Frixione:1998jh} or standard cone isolation.  The production of a photon via parton fragmentation is included at NLO and 
 can be run separately by using the {\tt frag} option in {\tt part}. This option includes the contributions from the integrated 
 photon dipole subtraction terms and the LO QCD matrix element multiplied by the fragmentation function.  
@@ -3127,7 +3289,7 @@ The preferred reference to the program depends upon the process under study. The
  J.~M.~Campbell, H.~B.~Hartanto and
                         C.~Williams\\
       {\it {``Next-to-leading order predictions for $Z \gamma$+jet and
-                        Z $\gamma \gamma$ final states at the LHC"}}
+                        Z $\gamma \gamma$ final states at the LHC"}} \\
                         	JHEP {\bf 1211}, 162 (2012), [arXiv:1208.0566 [hep-ph]].	
 \item
  P.~J.~Fox  and
@@ -3136,8 +3298,23 @@ The preferred reference to the program depends upon the process under study. The
                         	 [arXiv:1211.6390 [hep-ph]].	 
 \item
   J.~Campbell, R.~K.~Ellis and R.~R{\"o}ntsch,
-  {\it ``Single top production in association with a Z boson at the LHC,''}
-  arXiv:1302.3856 [hep-ph].
+  {\it ``Single top production in association with a Z boson at the LHC,''} \\
+ Phys.\ Rev.\ D {\bf 87}, no. 11, 114006 (2013)
+  [arXiv:1302.3856 [hep-ph]].
+\item 
+  J.~M.~Campbell, R.~K.~Ellis and C.~Williams,
+  {\it ``Bounding the Higgs width at the LHC using full analytic results for $gg -> e^- e^+ \mu^- \mu^+$,''} \\
+  JHEP {\bf 1404}, 060 (2014)
+  [arXiv:1311.3589 [hep-ph]].
+\item 
+  J.~M.~Campbell, R.~K.~Ellis and C.~Williams,
+  {\it ``Bounding the Higgs width at the LHC: complementary results from $H \to WW$,''} \\
+  Phys.\ Rev.\ D {\bf 89}, 053011 (2014)
+  [arXiv:1312.1628 [hep-ph]].
+\item 
+  J.~M.~Campbell and C.~Williams,
+  {\it ``Triphoton production at hadron colliders,''} \\
+  arXiv:1403.2641 [hep-ph].
 \end{itemize}
 
 The following publications have also made use of calculations
@@ -3294,16 +3471,34 @@ released in the future.
 120 & $ H(\to Z^0(\mu^-(p_{3})+\mu^+(p_{4})) + \gamma(p_{5}))$   & NLO \\
 121 & $ H(\to Z^0(3\times(\nu(p_{3})+\bar{\nu}(p_{4})))) + \gamma(p_{5}))$   & NLO \\
 \hline 
+\end{tabular}
+\end{center}
+\end{table}
+\newpage
+\begin{table}
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline 
 123 & $ H(\to  W^+(\nu(p_3)+e^+(p_{4})) + W^-(e^-(p_{5})+\bar{\nu}(p_{6})))$ [top, bottom loops, exact] & LO \\
 124 & $ H(\to  W^+(\nu(p_3)+e^+(p_{4})) + W^-(e^-(p_{5})+\bar{\nu}(p_{6})))$ [only H, gg$\rightarrow$WW intf. & LO \\
 125 & $ H(\to  W^+(\nu(p_3)+e^+(p_{4})) + W^-(e^-(p_{5})+\bar{\nu}(p_{6})))$ [$|H|^2$ and H,gg$\rightarrow$WW intf.] & LO \\
 126 & $ W^+(\nu(p_3)+e^+(p_{4})) + W^-(e^-(p_{5})+\bar{\nu}(p_{6}))$ [gg only, (H + gg$\rightarrow$WW) squared] & LO \\
+127 & $ W^+(\nu(p_3)+e^+(p_{4})) + W^-(e^-(p_{5})+\bar{\nu}(p_{6}))$ [(gg$\rightarrow$WW) squared] & LO \\
 \hline 
 128 & $ H(\to Z^0(e^-(p3)+e^+(p4)) + Z^0(\mu^-(p5)+\mu^+(p6))$ [top, bottom loops, exact]& LO \\
 129 & $ H(\to Z^0(e^-(p3)+e^+(p4)) + Z^0(\mu^-(p5)+\mu^+(p6))$ [only H, gg$\rightarrow$ZZ intf.] & LO \\
 130 & $ H(\to Z^0(e^-(p3)+e^+(p4)) + Z^0(\mu^-(p5)+\mu^+(p6))$ [$|H|^2$ and H,gg$\rightarrow$ZZ intf.]& LO \\
-131 & $ Z^0(e^-(p3)+e^+(p4)) + Z^0(\mu^-(p5)+\mu^+(p6)$ [gg only, (H + gg$\rightarrow$ZZ) squared]& LO \\
-132 & $ Z^0(e^-(p3)+e^+(p4)) + Z^0(\mu^-(p5)+\mu^+(p6)$ [(gg$\rightarrow$ZZ) squared]& LO \\
+131 & $ Z^0(e^-(p3)+e^+(p4)) + Z^0(\mu^-(p5)+\mu^+(p6))$ [gg only, (H + gg$\rightarrow$ZZ) squared]& LO \\
+132 & $ Z^0(e^-(p3)+e^+(p4)) + Z^0(\mu^-(p5)+\mu^+(p6))$ [(gg$\rightarrow$ZZ) squared]& LO \\
+\hline 
+1281 & $ H(\to e^-(p3)+e^+(p4) \nu_e(p5)+\bar\nu_e(p6)$ [top, bottom loops, exact]& LO \\
+1311 & $ e^-(p3)+e^+(p4)+\nu_e(p5)+\bar\nu_e(p6)$ [gg only, (H + gg$\rightarrow$ZZ) squared]& LO \\
+1321 & $ e^-(p3)+e^+(p4)+\nu_e(p5)+\bar\nu_e(p6)$ [(gg$\rightarrow$ZZ) squared]& LO \\
+\hline 
+1282 & $ H(\to e^-(p3)+e^+(p4)+\nu(p5)+\bar\nu(p6)$ [top, bottom loops, exact]& LO \\
+1312 & $ e^-(p3)+e^+(p4)+\nu(p5)+\bar\nu(p6)$ [gg only, (H + gg$\rightarrow$ZZ) squared]& LO \\
+1322 & $ e^-(p3)+e^+(p4)+\nu(p5)+\bar\nu(p6)$ [(gg$\rightarrow$ZZ) squared]& LO \\
+\hline 
 133 & $ H(\to Z^0(e^-(p3)+e^+(p4)) + Z^0(\mu^-(p5)+\mu^+(p6) + f(p7))$ [intf,no $p_7$ cut]& LO \\
 \hline 
 136 & $ H(\to b(p_{3})+\bar{b}(p_{4})) + b(p_{5}) (+g(p_{6}))$   & NLO \\
@@ -3434,7 +3629,7 @@ released in the future.
 283 & $ f(p_{1})+f(p_{2})\to  \gamma(p_{3})+b(p_{4})$   & LO \\
 284 & $ f(p_{1})+f(p_{2})\to  \gamma(p_{3})+c(p_{4})$   & LO \\
 285 & $ f(p_{1})+f(p_{2})\to  \gamma(p_{3})+\gamma(p_{4})$   & NLO+F \\
-286 & $ f(p_{1})+f(p_{2})\to  \gamma(p_{3})+\gamma(p_{4})+f(p_{5})$   & LO \\
+286 & $ f(p_{1})+f(p_{2})\to  \gamma(p_{3})+\gamma(p_{4})+f(p_{5})$   & NLO+F \\
 287 & $ f(p_{1})+f(p_{2})\to  \gamma(p_{3})+\gamma(p_{4})+\gamma(p_{5})$   & NLO+F \\
 \hline 
 290 & $ W^+(\to \nu(p_{3})+e^+(p_{4}))+\gamma(p_{5})$   & NLO+F \\
@@ -3562,7 +3757,7 @@ released in the future.
 \hline 
 \hline
 \end{tabular}
-\caption{Processes indicated by choice of the variable {\tt nproc}.\label{nproctable}}
+\caption{Processes indicated by choice of the variable {\tt nproc}.}
 \end{center}
 \end{table}
 \newpage
@@ -3612,6 +3807,28 @@ released in the future.
 \end{center}
 \end{table}
 \clearpage
+
+\section{Version 6.8 changelog}
+\label{changelog6.8}
+\begin{itemize}
+\item Added new process for diphoton+jet production ({\tt nproc=286})
+\item Fixed error in triphoton production ({\tt nproc=287})
+\item Included identical-particle interference effects for $ZZ$ final states,
+{\tt nproc=81,86} and {\tt nproc=128,129,130,131,132}; extended {\tt nproc=90} to NLO
+\item Included effect of $WW$/$ZZ$ interference in $2\ell2\nu$ final states,
+{\tt nproc=1281, 1311, 1321} and  {\tt nproc=1282, 1312, 1322}
+\item Added new method for selecting $Z$ boson decays in $ZZ$ final states,
+{\tt nproc=81,86} and {\tt nproc=128,129,130,131,132}; also, additional
+leptonic $W$ boson decay modes in $WW$ final states, {\tt nproc=123,124,125,126,127}
+\item Included implementation of HTO form of propagator for select Higgs processes,
+{\tt nproc=123}--{\tt 126}, {\tt nproc=128}--{\tt 131}, {\tt nproc=1281, 1311}
+and  {\tt nproc=1282, 1312}
+\item Added specific histogram routines for more processes and enabled additional
+dynamic scale choices
+\item Fixed bug in implementation of subleading lepton transverse momentum
+and rapidity cuts
+\item Updated froot.c for compatibility with most modern compilers
+\end{itemize}
 
 \section{Version 6.7 changelog}
 \label{changelog6.7}
@@ -4128,6 +4345,21 @@ Z.\ Phys.\ C {\bf 40}, 419 (1988).
   Nucl.\ Phys.\ B {\bf 309}, 282 (1988).
   %%CITATION = NUPHA,B309,282;%%
   %103 citations counted in INSPIRE as of 20 Aug 2013
+
+%\cite{Goria:2011wa}                                                                    *   
+\bibitem{Goria:2011wa}                                                                  *
+  S.~Goria, G.~Passarino and D.~Rosco,                                                  *
+  %``The Higgs Boson Lineshape,''                                                       *
+  arXiv:1112.5517 [hep-ph].                                                             *
+  %%CITATION = ARXIV:1112.5517;%%                                                       *
+
+%\cite{Passarino:2010qk}                                                                *
+\bibitem{Passarino:2010qk}                                                              *
+  G.~Passarino, C.~Sturm and S.~Uccirati,                                               *
+  %``Higgs Pseudo-Observables, Second Riemann Sheet and All That,''                     *
+  Nucl.\ Phys.\ B {\bf 834} (2010) 77                                                   *
+  [arXiv:1001.3360 [hep-ph]].                                                           *
+  %%CITATION = ARXIV:1001.3360;%%                                                       *
 
 \end{thebibliography}
 

@@ -148,7 +148,7 @@ c--- events with negative weight or events with weights that exceed wtmax
 c--- Miscellaneous info
       idprup=10000+nproc
       scalup=facscale
-      aqedup=-1
+      aqedup=-1d0
       aqcdup=as
 
 c--- junk entries          
@@ -192,7 +192,8 @@ c--- Routine to specify parent particles
       
       if ( (case.eq.'HWW_4l') .or. (case.eq.'HWW_tb')
      & .or.(case.eq.'HWWint') .or. (case.eq.'ggWW4l')
-     & .or.(case.eq.'HWWH+i')) then 
+     & .or.(case.eq.'HWWH+i') .or. (case.eq.'WWqqbr')
+     & .or.(case.eq.'ggWWbx')) then 
         ip_parent= (/ 34, 56, (0,j=1,8) /)
         id_parent= (/ wp_pdg, wm_pdg, (0,j=1,8) /)
       endif
@@ -250,11 +251,15 @@ c--- Z parent
           m=mel   ! electrons
         elseif ((abs(id1).eq.ml_pdg) .and. (abs(id2).eq.ml_pdg)) then
           m=mmu   ! muons
+        elseif ((abs(id1).eq.tl_pdg) .and. (abs(id2).eq.tl_pdg)) then
+          m=mtau  ! taus
         elseif ((abs(id1).eq.bq_pdg) .and. (abs(id2).eq.bq_pdg)) then
           m=mb    ! b-quarks
         elseif ((abs(id1).eq.nel_pdg) .and. (abs(id2).eq.nel_pdg))then
           return  ! massless neutrinos -> nothing to do
         elseif ((abs(id1).eq.nml_pdg) .and. (abs(id2).eq.nml_pdg))then
+          return  ! massless neutrinos -> nothing to do
+        elseif ((abs(id1).eq.ntl_pdg) .and. (abs(id2).eq.ntl_pdg))then
           return  ! massless neutrinos -> nothing to do
         else
           write(6,*) 'Unexpected Z decay products: id1,id2=',id1,id2
@@ -273,11 +278,17 @@ c--- W parent
         elseif ((abs(id1).eq.ml_pdg) .and. (abs(id2).eq.nml_pdg)) then
           m=mmu   ! muon
           imass=1
+        elseif ((abs(id1).eq.tl_pdg) .and. (abs(id2).eq.ntl_pdg)) then
+          m=mtau  ! tau
+          imass=1
         elseif ((abs(id1).eq.nel_pdg) .and. (abs(id2).eq.el_pdg)) then
           m=mel   ! electron
           imass=2
         elseif ((abs(id1).eq.nml_pdg) .and. (abs(id2).eq.ml_pdg)) then
           m=mmu   ! muon
+          imass=2
+        elseif ((abs(id1).eq.ntl_pdg) .and. (abs(id2).eq.tl_pdg)) then
+          m=mtau  ! tau
           imass=2
         else
           write(6,*) 'Unexpected W decay products: id1,id2=',id1,id2
@@ -329,6 +340,14 @@ c--- Routine to convert MCFM plabel to PDG number
         plabeltoPDG=nel_pdg
       elseif (ch .eq. 'na') then
         plabeltoPDG=nea_pdg
+      elseif (ch .eq. 'nm') then
+        plabeltoPDG=nml_pdg
+      elseif (ch .eq. 'bm') then
+        plabeltoPDG=nma_pdg
+      elseif (ch .eq. 'nt') then
+        plabeltoPDG=ntl_pdg
+      elseif (ch .eq. 'bt') then
+        plabeltoPDG=nta_pdg
       elseif (ch .eq. 'pp') then
         plabeltoPDG=g_pdg
       else

@@ -21,7 +21,7 @@
       double precision fsq,D(0:5)
       common/D/D
       integer i 
-
+      double precision conv_P0qqP0qgam,conv_P0qqDqgam
 
       qbqg_sum=0d0 
       qqbg_sum=0d0 
@@ -30,6 +30,7 @@
       qgqb_sum=0d0 
       gqqb_sum=0d0 
       msq(:,:)=0d0 
+      
       
       fsq=frag_scale**2
 c---- Generate array D(j) corresponding to MCFM notation 0=gluon 1=up 2=down ....
@@ -41,12 +42,13 @@ c---- Generate array D(j) corresponding to MCFM notation 0=gluon 1=up 2=down ...
               call get_frag(z_frag,fsq,2,i,D(i))   
            elseif (fragset .eq. 'GdRG__LO') then 
             call GGdR_frag(z_frag,i,D(i),0)
+           elseif (fragset .eq. 'GdRG_NLO') then 
+            call GGdR_frag(z_frag,i,D(i),1)
            else
               write(6,*) 'Unrecognized fragmentation set name: ',fragset
               stop        
            endif
         enddo
-
 
       fac=8d0*cf*xn*gsq*esq**2*statfac
 

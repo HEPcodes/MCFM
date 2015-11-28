@@ -23,6 +23,7 @@
       include 'ipsgen.f'
       include 'outputoptions.f'
       include 'outputflags.f'
+      include 'runstring.f'
 c      include 'ewcorr.f'
       include 'dm_params.f'
 c---- SSbegin                                                                                                                      
@@ -52,15 +53,10 @@ c--- To use VEGAS random number sequence :
       double precision xx(2),flux,vol,vol_mass,vol3_mass,vol_wt,BrnRat
       double precision xmsq_bypart(-1:1,-1:1),lord_bypart(-1:1,-1:1)
       logical bin,first,includedipole,checkpiDpjk
-c      double precision gx1(-nf:nf),gx2(-nf:nf)
-c      integer idum
-c      COMMON/ranno/idum
-      character*30 runstring
       double precision b1scale,q2scale,q1scale,b2scale
       external qg_tbq,BSYqqb_QQbdk_gvec,qqb_QQbdk,qg_tbqdk,qg_tbqdk_gvec,
      & qqb_Waa,qqb_Waa_mad
      & qqb_Zbbmas,qqb_Zbbmas,qqb_totttZ,qqb_totttZ_mad
-      common/runstring/runstring
       common/density/ih1,ih2
       common/energy/sqrts
       common/bin/bin
@@ -68,7 +64,7 @@ c      COMMON/ranno/idum
       common/BrnRat/BrnRat
       common/bypart/lord_bypart
       common/bqscale/b1scale,q2scale,q1scale,b2scale
-      data p/48*0d0/
+      data p/56*0d0/
       data first/.true./
       save first,rscalestart,fscalestart
       external qq_tchan_ztq,qq_tchan_ztq_mad
@@ -257,10 +253,20 @@ c      call checkgvec(-1, 1,5,p,qqb_gamgam_g,qqb_gmgmjt_gvec)
       elseif ((case .eq. 'HWWint') .or. (case .eq. 'HWWH+i')
      &   .or. (case .eq. 'ggWW4l')) then
         call gg_ww_int(p,msq)
+      elseif (case .eq. 'ggWWbx') then
+        msq(:,:)=zip
+        call gg_WW(p,msq(0,0))
       elseif (case .eq. 'HZZ_4l') then
         call qqb_hzz(p,msq)
       elseif (case .eq. 'HZZ_tb') then
         call gg_hzz_tb(p,msq)
+      elseif (case .eq. 'HVV_tb') then
+        call gg_hvv_tb(p,msq)
+      elseif (case .eq. 'ggVV4l') then
+        call gg_VV_all(p,msq)
+      elseif (case .eq. 'ggVVbx') then
+        msq(:,:)=0d0
+        call gg_VV(p,msq(0,0))
       elseif (case .eq. 'HZZint') then
         call gg_zz_int(p,msq)
       elseif (case .eq. 'HZZH+i') then

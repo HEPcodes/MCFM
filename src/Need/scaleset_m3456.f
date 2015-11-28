@@ -20,6 +20,7 @@ c--- invariant mass of particles 3, 4, 5 and 6
      &   (case .eq. 'HWWint') .or.
      &   (case .eq. 'HWWH+i') .or.
      &   (case .eq. 'ggWW4l') .or.
+     &   (case .eq. 'ggWWbx') .or.
      &   (case .eq. 'HZZ_4l') .or.
      &   (case .eq. 'HZZ_tb') .or.
      &   (case .eq. 'HZZint') .or.
@@ -31,6 +32,9 @@ c--- invariant mass of particles 3, 4, 5 and 6
      &   (case .eq. 'HZZ2jt') .or.
      &   (case .eq. 'W_2gam') .or.
      &   (case .eq. 'Z_2gam') .or.
+     &   (case .eq. 'HVV_tb') .or.
+     &   (case .eq. 'ggVV4l') .or.
+     &   (case .eq. 'ggVVbx') .or.
      &   (case .eq. 'ggZZ4l') .or.
      &   (case .eq. 'ggZZbx')) then 
         mu0=(p(3,4)+p(4,4)+p(5,4)+p(6,4))**2

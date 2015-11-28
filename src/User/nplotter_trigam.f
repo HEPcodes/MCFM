@@ -131,8 +131,8 @@ c--- usual plots for 3+4+5
       call autoplot3(p,345,3,4,5,tag,wt,wt2,n)
 
 c--- additional plots that may be present at NLO       
-      if (abs(p(7,4)) .gt. 1d-8) then
-        call autoplot1(p,7,tag,wt,wt2,n)
+      if (abs(p(6,4)) .gt. 1d-8) then
+        call autoplot1(p,6,tag,wt,wt2,n)
       else
         n=n+2
       endif

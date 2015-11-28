@@ -40,5 +40,5 @@
       parameter(czip=(0d0,0d0),cone=(1d0,0d0),ctwo=(2d0,0d0))
 !-----------------------------------------------------
       integer nloop,nf,fn,mxpart
-      parameter(nf=5,fn=-5,nloop=2,mxpart=12)
+      parameter(nf=5,fn=-5,nloop=2,mxpart=14)
 

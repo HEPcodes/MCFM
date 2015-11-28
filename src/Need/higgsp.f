@@ -14,7 +14,7 @@ C  Other branching ratios could be added.
      . ,brtt,brgg,brgamgam(npt),brzgam(npt),brww(npt),brzz(npt)
       logical first
       data first/.true./
-      save brbb,brww,brzz,width
+      save first,brbb,brww,brzz,width
 
       if (first) then
       first=.false.
