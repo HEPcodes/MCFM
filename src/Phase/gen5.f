@@ -2,6 +2,7 @@
       implicit none
       include 'constants.f'
       include 'mxdim.f'
+      include 'process.f'
       integer nu
 
       double precision r(mxdim),sqrts,wt5,
@@ -9,8 +10,6 @@
       double precision pswt,xjac
       double precision xx(2),xmin,tau,y,taumin
 
-      character*6 case
-      common/process/case
       common/energy/sqrts
       common/x1x2/xx
       common/taumin/taumin
@@ -62,6 +61,6 @@ c---if x's out of normal range alternative return
       p(7,nu)=p7(nu)
       enddo 
       wt5=xjac*pswt
-      if(wt5 .eq. 0) return 1
+      if(wt5 .eq. 0d0) return 1
       return
       end

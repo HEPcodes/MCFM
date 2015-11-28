@@ -10,8 +10,8 @@ c     q(-p1)+qbar(-p2)-->q'(p5)+bar{q'}(p6)+n(p3)+ebar(p4)
 c--- note that non-leptonic W decays do not include scattering diagrams
       include 'constants.f'
       include 'masses.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
       include 'zerowidth.f'
       include 'ewcouple.f'
       include 'zcouple.f'

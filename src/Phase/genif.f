@@ -2,7 +2,6 @@
 c----initial-final subtraction.
       implicit none
       include 'constants.f'
-      include 'mxdim.f'
       include 'qcdcouple.f'
       include 'xmin.f'
       include 'debug.f'

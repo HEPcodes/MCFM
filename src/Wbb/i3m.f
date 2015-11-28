@@ -14,19 +14,19 @@
       rtdel3=sqrt(del3)
          if (smax .lt. 0) then
 c---case all negative
-             flag=0
+             flag=0d0
              i3m=i3m1b(smax,smid,smin,rtdel3,flag)
          elseif (smin .gt. 0) then
 c---case all positive
-             flag=0
+             flag=0d0
              i3m=-i3m1b(-smin,-smid,-smax,rtdel3,flag)
          elseif ((smid .lt. 0) .and. (smin .lt. 0)) then
 c---case two negative and one positive
-             flag=+1
+             flag=+1d0
              i3m=i3m1b(smin,smid,smax,rtdel3,flag)
          elseif ((smax .gt. 0).and.(smid .gt. 0)) then
 c---case two positive and one negative
-             flag=-1
+             flag=-1d0
              i3m=-i3m1b(-smax,-smid,-smin,rtdel3,flag)
          endif
       elseif (del3 .lt. 0) then 
@@ -75,7 +75,7 @@ c---case all positive
       argdlx=-argx
       argdly=-argy
 
-      if ((argdlx .gt. 1) .or. (argdly .gt. 1)) then
+      if ((argdlx .gt. 1d0) .or. (argdly .gt. 1d0)) then
       write(6,*) 'problems with call of I3m1b'
       write(6,*) 'argdlx',argdlx
       write(6,*) 'argdly',argdly
@@ -86,8 +86,8 @@ c---case all positive
       ylog=log(abs(argy))
       temp=xlog*ylog+pisq/3d0+(ylog-xlog)*log((one+argy)/(one+argx))
      & +two*(ddilog(argdlx)+ddilog(argdly))
-      I3m1b=temp-abs(flag)*pisq+flag*impi*(xlog+ylog)
-      I3m1b=-I3m1b/rtdel
+      I3m1b=Dcmplx(temp-abs(flag)*pisq)+impi*Dcmplx(flag*(xlog+ylog))
+      I3m1b=-I3m1b/Dcmplx(rtdel)
       end
 
 

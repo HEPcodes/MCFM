@@ -5,8 +5,8 @@ c---Arbitrary conventions of Bern, Dixon, Kosower, Weinzierl,
 c---za(i,j)*zb(j,i)=s(i,j)
       implicit none
       include 'constants.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
+      include 'sprods_com.f'
       double precision p(mxpart,4),rt(mxpart)
       double complex c23(mxpart),f(mxpart)
       integer i,j,N

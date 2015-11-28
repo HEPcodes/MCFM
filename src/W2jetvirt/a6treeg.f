@@ -3,8 +3,8 @@
 c----hep-ph/9708239, Eqs(8.4,8.8,8.14,9.2,9.7,10.1) Multiplied by (-i) 
       integer j1,j2,j3,j4,j5,j6
       include 'constants.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
+      include 'sprods_com.f'
       character*9 st
       double precision t
 

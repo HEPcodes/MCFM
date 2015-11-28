@@ -2,7 +2,8 @@
      . xmsqLR,xmsq1LR,xmsqRL,xmsqLL,xmsqiLL,xmsqiiLL)
       implicit none
       include 'constants.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       include 'masses.f'
       include 'qcdcouple.f'
       include 'ewcouple.f'
@@ -10,9 +11,9 @@
 
       double precision ofac,xmsqLR,xmsq1LR,xmsqLL,xmsqiLL,xmsqiiLL,
      .  xmsqRL
-      double precision s167,s267,s123,s124,s125,s134,s145,
+      double precision s167,s267,s123,s124,s134,s145,
      . s234,s345,s235,s467,s367
-      double precision s67,s23,s34,s12,s14
+      double precision s67,s23,s34,s14
 c      double complex dLR1,dLR2,dLR3,dLR4,dLR5,dLR6,
 c     .               dLR7,dLR8,dLR9,dLR10,dLR11,dLR12
       double complex dLRa1,dLRa2,dLRna1,dLRna2,t2
@@ -39,13 +40,11 @@ c     .               fLL7,fLL8,fLL9,fLL10,fLL11,fLL12
       integer j1,j2,j3,j4,j5,j6,j7
       t2(j1,j2,j3,j4)=zb(j1,j2)*za(j2,j4)+zb(j1,j3)*za(j3,j4)
       s67=s(j6,j7)
-      s12=s(j1,j2)
       s14=s(j1,j4)
       s23=s(j2,j3)
       s34=s(j3,j4)
       s123=s(j1,j2)+s(j1,j3)+s(j2,j3)
       s124=s(j1,j2)+s(j1,j4)+s(j2,j4)
-      s125=s(j1,j2)+s(j1,j5)+s(j2,j5)
       s134=s(j1,j3)+s(j1,j4)+s(j3,j4)
       s145=s(j1,j4)+s(j1,j5)+s(j4,j5)
       s234=s(j2,j3)+s(j2,j4)+s(j3,j4)

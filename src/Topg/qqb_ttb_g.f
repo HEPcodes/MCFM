@@ -14,8 +14,7 @@ C***********************************************************************
       include 'constants.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
-      include 'masses.f'
-      include 'prods.f'
+      include 'zprods_com.f'
       integer b,j,k,h1,h2
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),ampsq(2,2)
       double precision wtgg,wtqqb,wtqbq,wtqg,fac
@@ -77,7 +76,6 @@ C***********************************************************************
       enddo
       enddo
 
-      wtqg=0d0
 
       call diagg1(1,9,2,b,T1)      
       call diagg2(1,9,2,b,T2)      

@@ -1,31 +1,26 @@
-      subroutine genclust_kt(q,R,njet,qfinal,jetlabel)
+      subroutine genclust_kt(q,Rmin,njet,qfinal,jetlabel)
 c--- clusters momenta using plabel to determine which 
 c--- particles should be clustered. Forms njet jets according to
-c--- the standard kT algorithm with cone size R.
+c--- the standard kT algorithm with cone size Rmin.
 c--- Furthermore, the clustered jets are only observed if
-c--- pT(jet) > ptjetmin and y(jet) < yjetmax
+c--- pT(jet) > ptjetmin and eta(jet) < etajetmax
 c--- 
 c--- qfinal is the final vector q1,.... q(4+njets)
 c--- where non-jet four vectors are set equal to the incoming q 
       implicit none
       include 'constants.f'
-      include 'clustering.f'
       include 'bbproc.f'
+      include 'limits.f'
+      include 'npart.f'
+      include 'jetcuts.f'
       double precision q(mxpart,4),qjet(mxpart,4),qfinal(mxpart,4)
-      double precision R,dijmin,dkmin,ayrap,ptjetmin,yjetmax
+      double precision Rmin,dijmin,dkmin,aetarap
       double precision bclustmass,ptjet,m56,m57,m67
       integer njet,i,nu,iter,nmin1,nmin2,maxjet,nk,
-     . npart,nqcdjets,nqcdstart,ajet,jetindex(mxpart),nproc,countb
+     . ajet,jetindex(mxpart),nproc,countb
       character jetlabel(mxpart)*2,plabel(mxpart)*2
-      double precision bbsqmin,bbsqmax,wsqmin,wsqmax
-      character*4 part
-      common/part/part
-      common/limits/bbsqmin,bbsqmax,wsqmin,wsqmax
       common/plabel/plabel
-      common/npart/npart
-      common/nqcdjets/nqcdjets,nqcdstart
       common/nproc/nproc
-      common/jetcuts/ptjetmin,yjetmax
 
       njet=0
       maxjet=0
@@ -80,7 +75,7 @@ c--- step1: find (i,j) pair with lowest measure of all non-jets so far
  
 c--- step2: find jet K with lowest Et
       call findminet(q,qjet,iter,maxjet,dkmin,nk)
-      dkmin=dkmin*R
+      dkmin=dkmin*Rmin
 
 c      write(*,*) 'Comparing pair (',nmin1,',',nmin2,') value of'
 c      write(*,*) 'dijmin = ',dijmin,' with ',nk,' value of dk = ',dkmin
@@ -109,7 +104,7 @@ c        write(*,*) 'Now swapping ',njet,' and ',nk
 c--- in the next iteration we search for jets in pjet from iter+1...maxjet
 c--- so if this condition isn't true then there's one jet left at maxjet
 
-      if (iter. lt. maxjet-1) goto 1
+      if (iter .lt. maxjet-1) goto 1
       
  2    continue      
       njet=njet+1
@@ -143,9 +138,11 @@ c--- restore jets
       do i=1,njet
 c        write(*,*) 'Jet ',i,'(',jetlabel(i),')',jetindex(i)
 c        write(*,*) 'pt: ',ptjet(i,q,qjet),' vs min. ',ptjetmin
-c        write(*,*) 'ay: ',ayrap(i,qjet),' vs max. ',yjetmax
+c        write(*,*) 'aeta: ',aetarap(i,qjet),' vs min. ',etajetmin
+c        write(*,*) 'aeta: ',aetarap(i,qjet),' vs max. ',etajetmax
         if ((ptjet(i,q,qjet) .gt. ptjetmin) .and.
-     .      (ayrap(i,qjet)   .lt. yjetmax)) then     
+     .      (aetarap(i,qjet)   .gt. etajetmin) .and.
+     .      (aetarap(i,qjet)   .lt. etajetmax)) then     
         ajet=ajet+1
         do nu=1,4
           qfinal(jetindex(ajet),nu)=qjet(i,nu)
@@ -188,13 +185,18 @@ c--- check that 5 and 6 are b and b-bar (if appropriate)
       if ((bbproc) .and. (bclustmass(njet,qfinal,jetlabel) .eq. 0d0))
      .  njet=-1    
 
+c--- check that 5 and 6 are not b and b-bar if there are 2 jets 
+      if (((nproc .eq. 24) .or. (nproc .eq. 29)) .and. (njet .eq. 2) 
+     . .and. (bclustmass(njet,qfinal,jetlabel) .ne. 0d0))
+     .  njet=-1    
+
 c--- perform m56 mass cut if there are 2 or more jets
       if (njet .ge. 2) then
         m56=(qfinal(5,4)+qfinal(6,4))**2
      .     -(qfinal(5,1)+qfinal(6,1))**2
      .     -(qfinal(5,2)+qfinal(6,2))**2
      .     -(qfinal(5,3)+qfinal(6,3))**2
-        if (njet. ge. 3) then
+        if (njet .ge. 3) then
         m57=(qfinal(5,4)+qfinal(7,4))**2
      .     -(qfinal(5,1)+qfinal(7,1))**2
      .     -(qfinal(5,2)+qfinal(7,2))**2
@@ -236,71 +238,3 @@ c      write(*,*) 'Found ',njet,' jets'
 
       return
       end
-            
-      subroutine read_jetcuts(read_ptmin,read_ymax)
-      implicit none
-      include 'clustering.f'
-      integer nargs,iargc
-      character*72 jetcutsfile
-      double precision read_ptmin,read_ymax,sqrts
-      double precision ptmin,ymax,ptmin_tev,ymax_tev,ptmin_lhc,ymax_lhc
-      logical useTevcuts,useLHCcuts
-      common/energy/sqrts 
-      
-      nargs=iargc()
-      if (nargs .eq. 2) then
-      call getarg(2,jetcutsfile)
-      else
-      jetcutsfile='jetcuts.DAT'
-      endif      
-                                     
-      open(unit=21,file=jetcutsfile,status='old',err=99)
-      call checkversion(21,jetcutsfile)
-      read(21,*) algorithm
-      read(21,*) inclusive
-      read(21,*) useTevcuts
-      read(21,*) useLHCcuts
-      read(21,*) ptmin
-      read(21,*) ymax
-      read(21,*) ptmin_tev
-      read(21,*) ymax_tev
-      read(21,*) ptmin_lhc
-      read(21,*) ymax_lhc
-      close(21)
-      
-      if     (useTevcuts) then
-c--- preset cuts for the Tevatron
-        read_ptmin=ptmin_tev         
-        read_ymax=ymax_tev         
-      elseif (useLHCcuts) then
-c--- preset cuts for the LHC
-        read_ptmin=ptmin_lhc         
-        read_ymax=ymax_lhc         
-      else
-c--- generic cuts
-        read_ptmin=ptmin         
-        read_ymax=ymax
-      endif         
-      
-      if (useTevcuts .and. useLHCcuts) then
-       write(6,*) 'Cannot use both Tevatron and LHC cuts in jetcuts.DAT'
-       stop
-      endif
-         
-      if ((algorithm .ne. 'ktal') .and. (algorithm .ne. 'cone')) then
-       write(6,*)
-       write(6,*) 'Incorrect choice of algorithm in jetcuts.DAT, use:'
-       write(6,*) '    '''//'ktal'//''' for kt algorithm'
-       write(6,*) '    '''//'cone'//''' for cone algorithm'
-       stop
-      endif
-         
-      return
-      
-   99 write(6,*) 'Error reading ',jetcutsfile
-      call flush(6)
-      stop
-      end
-      
-      
-      

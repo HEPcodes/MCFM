@@ -1,10 +1,8 @@
-      subroutine gen3m_rap(r,p,m3,m4,m5,wt,*)
+      subroutine gen3m_rap(r,p,m3,m4,wt,*)
       implicit none
 
       include 'constants.f'
       include 'mxdim.f'
-      include 'masses.f'
-      include 'limits.f'
 c---- generate phase space for 2-->3 process
 c---- with 3 and 4 (masses m3,m4) and 5 massless.
 c---- r(mxdim) and 
@@ -13,17 +11,15 @@ c---- phase space for -p1-p2 --> p3+p4+p5
 c---- with all 2 pi)
       double precision r(mxdim),y5starmin,y5starmax,plstar,plstarsq,
      . Estar,p(mxpart,4),a,E34st,
-     . wt,p3(4),p4(4),p3cm(4),p5(5),p345(4),p34(4),pstsq,
-     . xmin,sqrts,pt,xx(2),ymin,ymax,phi,wt34,
-     . costh,sinth,dely,sinhy,coshy,y,rtshat,beta,pt2,
+     . wt,p3(4),p4(4),p5(4),p345(4),p34(4),pstsq,
+     . xmin,sqrts,pt5,xx(2),ymin,ymax,phi,wt34,
+     . sinth,dely,sinhy,coshy,y,rtshat,pt2,
      . vs,vsqmax,vsqmin,s34,sinhy5,coshy5,y5,y5max,s34max,s34min,
-     . m3,m4,m5,xjac,ptmax,ptmin,w,wmax,wmin
+     . m3,m4,xjac,w,wmax,wmin
+c      double precision p3cm(4),beta,costh
       integer j,nu
-      character*4 part
-      common/part/part
       common/energy/sqrts
       common/x1x2/xx
-
       wt=0d0
 
       
@@ -39,17 +35,17 @@ C---set all vectors to zero
       xjac=0.5d0/((twopi)**3*sqrts**2)
 
 
-C--- generate PT
+C--- generate PT5
       wmin=dlog(1d-5)
       wmax=dlog((sqrts-m3-m4)/2d0)
       w=wmin+(wmax-wmin)*r(1)
-      pt=exp(w)
-      pt2=pt*pt
+      pt5=exp(w)
+      pt2=pt5*pt5
 C express in terms of dptsq
-      xjac=xjac*pt**2*(wmax-wmin)
+      xjac=xjac*pt5**2*(wmax-wmin)
 C--generate rapidity
 c--- rapidity limited by sqrts=2*pT*coshy
-      a=sqrts/(pt+dsqrt(pt2+(m3+m4)**2))
+      a=sqrts/(pt5+dsqrt(pt2+(m3+m4)**2))
       y5max=dlog(a+dsqrt(a**2-1d0))
       y5=y5max*(2d0*r(2)-1d0)
       sinhy5=dsinh(y5)
@@ -61,13 +57,14 @@ C--generate phi
       xjac=xjac*twopi
 
 C in lab frame
-      p5(4)=pt*coshy5
-      p5(1)=pt*dcos(phi)
-      p5(2)=pt*dsin(phi)
-      p5(3)=pt*sinhy5
+      p5(4)=pt5*coshy5
+      p5(1)=pt5*dcos(phi)
+      p5(2)=pt5*dsin(phi)
+      p5(3)=pt5*sinhy5
         
 
-      s34max=sqrts**2-2d0*sqrts*pt
+C  s34=(p_1+p_2-p_5)^2
+      s34max=sqrts**2-2d0*sqrts*pt5
       s34min=(m3+m4)**2
       vsqmax=1d0/s34min
       vsqmin=1d0/s34max
@@ -83,16 +80,18 @@ C in lab frame
 
 c--- invariant mass of jets
 
-C plstar is longitudinal momentum in 34-5 centre of mass
+C plstar is longitudinal momentum of p5 (and -p34) in 34-5 centre of mass
+C plstar is obtained by solving s=(p5+p34)^2      
       plstarsq=((sqrts**2-s34)**2-4d0*pt2*sqrts**2)/(4d0*sqrts**2)
       if (plstarsq .le. 0d0) then
-      write(6,*) 'gen3m:plstar,s34,pt2',plstar,s34,pt2
+      write(6,*) 'gen3m:plstarsq,s34,pt2',plstarsq,s34,pt2
       return 1
       endif
 
-      plstar=sqrt(plstarsq)
-      Estar=sqrt(plstarsq+pt2)
-      y5starmax=0.5d0*dlog((Estar+plstar)/(Estar-plstar))
+      plstar=dsqrt(plstarsq)
+      Estar=dsqrt(plstarsq+pt2)
+      y5starmax=dlog((Estar+plstar)/pt5)
+ 
       y5starmin=-y5starmax
       ymax=y5-y5starmin
       ymin=y5-y5starmax
@@ -104,6 +103,7 @@ C plstar is longitudinal momentum in 34-5 centre of mass
 c--- now calculate in the centre of mass 
       pstsq=pt2+(p5(3)*coshy-p5(4)*sinhy)**2
       E34st=dsqrt(s34+pstsq)
+
       rtshat=E34st+dsqrt(pstsq)
 
 c--- back in lab frame

@@ -16,8 +16,6 @@
 
       implicit none 
       include 'constants.f'
-      include 'qcdcouple.f'
-      include 'masses.f'
       include 'ptilde.f'
       include 'qqgg.f'
       integer j,k,nd,isub

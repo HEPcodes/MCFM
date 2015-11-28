@@ -29,7 +29,7 @@
       
       if (Qflag .and. Gflag) then
         write(6,*) 'Both Qflag and Gflag cannot be true'
-        write(6,*) 'They are set in file options.DAT'
+        write(6,*) 'They are set in file input.DAT'
         write(6,*) 'Gflag=',Gflag
         write(6,*) 'Qflag=',Qflag
         write(6,*) 'Failed in qqb_w2jet_z.f'

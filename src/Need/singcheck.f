@@ -13,6 +13,7 @@
       include 'constants.f'
       include 'npart.f'
       include 'ptilde.f'
+      include 'process.f'
       integer j,k,jj,kk,jmax,kmax,nd,jets,nqcdjets,nqcdstart
       double precision p(mxpart,4),q(mxpart,4),pjet(mxpart,4),
      . msq(-nf:nf,-nf:nf),msqs(-nf:nf,-nf:nf),msqc(maxd,-nf:nf,-nf:nf),
@@ -25,7 +26,16 @@
       
       if     (npart .eq. 3) then
         jmax=5
-        kmax=200
+        if (case .eq. 'dirgam') then
+          kmax=5
+        elseif (case .eq. 'twojet') then
+          kmax=9
+        elseif ((case .eq. 'tt_tot') .or. (case .eq. 'cc_tot')
+     .   .or. (case .eq. 'bb_tot')) then
+          kmax=4
+        else
+          kmax=2
+        endif
         xtoler=1d3
       elseif (npart .eq. 4) then
         jmax=5
@@ -42,7 +52,16 @@
       do j=1,jmax
       do k=1,kmax
          if     (npart .eq. 3) then
-           call coll3(p,k,j)
+           if ((case .eq. 'tt_tot') .or. (case .eq. 'cc_tot')
+     .   .or. (case .eq. 'bb_tot')) then
+             call coll3m(p,k,j)
+           elseif (case .eq. 'dirgam') then
+             call coll3gam(p,k,j)
+           elseif (case .eq. 'twojet') then
+             call coll3jet(p,k,j)
+           else
+             call coll3(p,k,j)
+           endif
          elseif (npart .eq. 4) then
            call coll4a(p,k,j)
          elseif (npart .eq. 5) then
@@ -67,6 +86,9 @@
            enddo
            goto 68
          endif
+
+
+
 c         write(6,*) '0',jets,msq(2,0),(pjet(5,4)+pjet(6,4))**2
 c     .                      -(pjet(5,1)+pjet(6,1))**2
 c     .                      -(pjet(5,2)+pjet(6,2))**2
@@ -113,10 +135,13 @@ c           goto 68
          if (debugsmall .gt. 1d-3) debugsmall=debugsmall/xtoler/2d0
 c         if (debuglarge/debugsmall .lt. xtoler*1d2) 
 c     .       debugsmall=debuglarge/xtoler
+
          do jj=-nf,nf
          do kk=-nf,nf
+         
          if (msq(jj,kk) .eq. 0d0) then
             if (msqs(jj,kk) .eq. 0d0) then
+               goto 69
                debugmsg='   OK   zero msq and subtraction'
             else
                debugmsg=' FAILED subtraction with msq=0'
@@ -156,6 +181,7 @@ c     .       debugsmall=debuglarge/xtoler
 
    68 continue
       enddo
+      pause
       enddo 
       
       write(6,*) 'Singularity check completed'

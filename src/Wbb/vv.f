@@ -4,7 +4,7 @@
 *     July, 1998.                                                      *
 ************************************************************************
       include 'constants.f'
-      include 'dprodx.f'
+      include 'sprods_com.f'
       include 'scale.f'
       include 'epinv.f'
       integer j1,j2,j3,j4,j5,j6

@@ -1,5 +1,5 @@
 *****************
-* Frisch version*
+* PDFLIB version*
 *****************
       subroutine pdfwrap(pdlabel)
       implicit none
@@ -10,6 +10,9 @@
       integer NPTYPE,NGROUP,NSET
       character*20 pdflib_parm(20)
       double precision pdflib_val(20),alphas2
+      logical newinput
+      common/newinput/newinput
+      common/pdflib/NPTYPE,NGROUP,NSET
       
       common/couple/amz
 
@@ -18,11 +21,14 @@
       call pdfset(pdflib_parm,pdflib_val)
       
       NPTYPE=1
-      open(unit=21,file='pdflib.DAT',status='old',err=999)
-      call checkversion(21,'pdflib.DAT')
-      read(21,*) NGROUP
-      read(21,*) NSET            
-      close(21)
+      
+      if (newinput .eqv. .false.) then
+        open(unit=21,file='pdflib.DAT',status='old',err=999)
+        call checkversion(21,'pdflib.DAT')
+        read(21,*) NGROUP
+        read(21,*) NSET            
+        close(21)
+      endif
       
       write(6,*)
       write(6,*) '**************************'

@@ -5,7 +5,8 @@ c---  averaged(summed) over initial(final) colours and spins
       implicit none
       include 'constants.f'
       include 'masses.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       include 'zcouple.f'
 c      include 'ewcouple.f'
       include 'ewcharge.f'
@@ -113,7 +114,7 @@ c--- qbq from symmetries
             tamp=(Q(j)*q1+R(j)*r1*prop)*qqb_a(2,2,2)
      .          +(Q(1)*q1+R(1)*r1*prop)*qqb_b(2,2,2)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
-          elseif ((j .lt. 0) .and. (k. gt. 0)) then
+          elseif ((j .lt. 0) .and. (k .gt. 0)) then
             tamp=(Q(k)*q1+L(k)*l1*prop)*qbq_a(1,1,1)
      .          +(Q(1)*q1+L(1)*l1*prop)*qbq_b(1,1,1)
             msq(j,k)=faclo*abs(tamp)**2

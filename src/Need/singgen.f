@@ -29,6 +29,7 @@
 c--- initial-final singularity
       if    ((-s(1,jlast1) .lt. 1d-1) .and. (jets .eq. nqcdjets)
      . .and. (-p(1,4) .gt. 1d1) .and. (p(jlast1,4) .gt. 1d0)) then
+        write(6,*) 'Generated point with -sij = ',-s(1,jlast1)
         do j=1,npart+2
           write(6,77) j,p(j,1),p(j,2)
           write(6,78) p(j,3),p(j,4)
@@ -38,6 +39,7 @@ c--- initial-final singularity
 c--- final-final singularity
       if    ((+s(jlast2,jlast1) .lt. 1d-1) .and. (jets .eq. nqcdjets)
      . .and. (p(jlast2,4) .gt. 1d0) .and. (p(jlast1,4) .gt. 1d0)) then
+        write(6,*) 'Generated point with +sij = ',-s(jlast2,jlast1)
         do j=1,npart+2
           write(6,79) j,p(j,1),p(j,2)
           write(6,78) p(j,3),p(j,4)

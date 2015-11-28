@@ -10,27 +10,30 @@
       include 'npart.f'
       include 'mxdim.f'
       include 'efficiency.f'
-      logical verbose,creatent,dswhisto
+      include 'verbose.f'
+      include 'workdir.f'
+      logical creatent,dswhisto
       double precision taumin,rtsmin,sqrts,p1ext(4),p2ext(4),
      . vector(mxdim),p(mxpart,4),s(mxpart,mxpart),val
-      common/outputflags/creatent,dswhisto
-      common/verbose/verbose
+      logical newinput
+      common/newinput/newinput
       common/taumin/taumin
       common/rtsmin/rtsmin
       common/energy/sqrts
       common/pext/p1ext,p2ext
       data p/mxpart*0d0,mxpart*0d0,mxpart*0d0,mxpart*0d0/
       data vector/mxdim*0d0/
+      data newinput/.true./
 
 * Welcome banner
       call banner
 * Read-in the options.DAT file
-      call reader
-
-* Fill common block 'outputflags' to control output (ntuples or not,
-*  DSW histograms or not) - this should probably be in options.DAT
-      creatent=.false.
-      dswhisto=.false.
+      if (newinput) then
+        call reader_input
+      else
+        call reader
+        workdir=''
+      endif
 
 * Initialize efficiency variables      
       njetzero=0
@@ -64,7 +67,7 @@
 * npart=6 is a dummy value, to ensure that all histograms are included
       npart=6
       call dotem(8,p,s)
-      val=1d0   
+      val=1d-15   
       call nplotter(vector,s,p,val,1)
            
       return

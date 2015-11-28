@@ -69,7 +69,7 @@ C             If data file not initialized, do so.
 	    Stop
 	 Endif
 	 IU= NextUt()
-         Open(IU, File=Flnm(Iset), Status='OLD', Err=100)
+         Open(IU, File='Pdfdata/'//Flnm(Iset), Status='OLD', Err=100)
          Call ReadTbl (IU)
          Close (IU)
 	 Isetold=Iset

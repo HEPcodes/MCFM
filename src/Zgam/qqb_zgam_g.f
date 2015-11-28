@@ -5,18 +5,17 @@ C-----September 2002
 c----Matrix element for Z/gamma+gamma production
 C----averaged over initial colours and spins
 c     q(-p1)+qbar(-p2)-->(e^-(p3)+e^+(p4))+gamma(p5)+g(p6)
-c---
       include 'constants.f'
       include 'masses.f'
       include 'ewcouple.f'
       include 'zcouple.f'
       include 'ewcharge.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
+      include 'sprods_com.f'
       integer j,k,h5,h6
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac,s345,s34,
      . qqb(2),qbq(2),gq(2),gqb(2),qg(2),qbg(2)
-      double complex prp345,prp34,
+      double complex pr345,prp34,
      . qbqi(2,2,2,2),qbqf(2,2,2,2),qqbi(2,2,2,2),qqbf(2,2,2,2),
      . qbgi(2,2,2,2),qbgf(2,2,2,2),qgi(2,2,2,2),qgf(2,2,2,2),
      . gqi(2,2,2,2),gqf(2,2,2,2),gqbi(2,2,2,2),gqbf(2,2,2,2)
@@ -39,12 +38,10 @@ c--set msq=0 to initialize
       s345=s(3,4)+s(3,5)+s(4,5)
       
       fac=16d0*esq**3*xn*cf
-c      write(6,*) '4d0*pi/esq',4d0*pi/esq
-
 
 c--   calculate propagator factors
       prp34=s34/Dcmplx((s34-zmass**2),zmass*zwidth)
-      prp345=s345/Dcmplx((s345-zmass**2),zmass*zwidth)
+      pr345=s345/Dcmplx((s345-zmass**2),zmass*zwidth)
 
       call zamps_g(1,2,3,4,5,6,za,zb,qbqi,qbqf)
       call zamps_g(2,1,3,4,5,6,za,zb,qqbi,qqbf)
@@ -53,11 +50,9 @@ c--   calculate propagator factors
       call zamps_g(6,1,3,4,5,2,za,zb,qgi,qgf)
       call zamps_g(1,6,3,4,5,2,za,zb,qbgi,qbgf)
 
-c      write(6,*) 'l1,r1',sqrt(esq)*l1,sqrt(esq)*r1
-c      write(6,*) 'L(1),R(1)',sqrt(esq)*L(1),sqrt(esq)*R(1)
-c      write(6,*) 'L(2),R(2)',sqrt(esq)*L(2),sqrt(esq)*R(2)
- 
+
       do j=1,2
+C---initialize to zero
       qbq(j)=0d0
       qqb(j)=0d0
       gq(j)=0d0
@@ -65,66 +60,64 @@ c      write(6,*) 'L(2),R(2)',sqrt(esq)*L(2),sqrt(esq)*R(2)
       qbg(j)=0d0
       qg(j)=0d0
 
-      enddo
-
-      do j=1,2
+c----sum over helicities
       do h5=1,2
       do h6=1,2
-      qbq(j)=qbq(j)+
+      qbq(j)=qbq(j)
      .       +cdabs(Q(j)*(Q(j)*q1+L(j)*l1*prp34)*qbqi(1,1,h5,h6)
-     .               +q1*(Q(j)*q1+L(j)*l1*prp345)*qbqf(1,1,h5,h6))**2
+     .               +q1*(Q(j)*q1+L(j)*l1*pr345)*qbqf(1,1,h5,h6))**2
      .       +cdabs(Q(j)*(Q(j)*q1+R(j)*r1*prp34)*qbqi(2,2,h5,h6)
-     .               +q1*(Q(j)*q1+R(j)*r1*prp345)*qbqf(2,2,h5,h6))**2
+     .               +q1*(Q(j)*q1+R(j)*r1*pr345)*qbqf(2,2,h5,h6))**2
      .       +cdabs(Q(j)*(Q(j)*q1+L(j)*r1*prp34)*qbqi(1,2,h5,h6)
-     .               +q1*(Q(j)*q1+L(j)*r1*prp345)*qbqf(1,2,h5,h6))**2
+     .               +q1*(Q(j)*q1+L(j)*r1*pr345)*qbqf(1,2,h5,h6))**2
      .       +cdabs(Q(j)*(Q(j)*q1+R(j)*l1*prp34)*qbqi(2,1,h5,h6)
-     .               +q1*(Q(j)*q1+R(j)*l1*prp345)*qbqf(2,1,h5,h6))**2
+     .               +q1*(Q(j)*q1+R(j)*l1*pr345)*qbqf(2,1,h5,h6))**2
       qqb(j)=qqb(j)
      .       +cdabs(Q(j)*(Q(j)*q1+L(j)*l1*prp34)*qqbi(1,1,h5,h6)
-     .               +q1*(Q(j)*q1+L(j)*l1*prp345)*qqbf(1,1,h5,h6))**2
+     .               +q1*(Q(j)*q1+L(j)*l1*pr345)*qqbf(1,1,h5,h6))**2
      .       +cdabs(Q(j)*(Q(j)*q1+R(j)*r1*prp34)*qqbi(2,2,h5,h6)
-     .               +q1*(Q(j)*q1+R(j)*r1*prp345)*qqbf(2,2,h5,h6))**2
+     .               +q1*(Q(j)*q1+R(j)*r1*pr345)*qqbf(2,2,h5,h6))**2
      .       +cdabs(Q(j)*(Q(j)*q1+L(j)*r1*prp34)*qqbi(1,2,h5,h6)
-     .               +q1*(Q(j)*q1+L(j)*r1*prp345)*qqbf(1,2,h5,h6))**2
+     .               +q1*(Q(j)*q1+L(j)*r1*pr345)*qqbf(1,2,h5,h6))**2
      .       +cdabs(Q(j)*(Q(j)*q1+R(j)*l1*prp34)*qqbi(2,1,h5,h6)
-     .               +q1*(Q(j)*q1+R(j)*l1*prp345)*qqbf(2,1,h5,h6))**2
+     .               +q1*(Q(j)*q1+R(j)*l1*pr345)*qqbf(2,1,h5,h6))**2
       gqb(j)=gqb(j)
      .       +cdabs(Q(j)*(Q(j)*q1+L(j)*l1*prp34)*gqbi(1,1,h5,h6)
-     .               +q1*(Q(j)*q1+L(j)*l1*prp345)*gqbf(1,1,h5,h6))**2
+     .               +q1*(Q(j)*q1+L(j)*l1*pr345)*gqbf(1,1,h5,h6))**2
      .       +cdabs(Q(j)*(Q(j)*q1+R(j)*r1*prp34)*gqbi(2,2,h5,h6)
-     .               +q1*(Q(j)*q1+R(j)*r1*prp345)*gqbf(2,2,h5,h6))**2
+     .               +q1*(Q(j)*q1+R(j)*r1*pr345)*gqbf(2,2,h5,h6))**2
      .       +cdabs(Q(j)*(Q(j)*q1+L(j)*r1*prp34)*gqbi(1,2,h5,h6)
-     .               +q1*(Q(j)*q1+L(j)*r1*prp345)*gqbf(1,2,h5,h6))**2
+     .               +q1*(Q(j)*q1+L(j)*r1*pr345)*gqbf(1,2,h5,h6))**2
      .       +cdabs(Q(j)*(Q(j)*q1+R(j)*l1*prp34)*gqbi(2,1,h5,h6)
-     .               +q1*(Q(j)*q1+R(j)*l1*prp345)*gqbf(2,1,h5,h6))**2
+     .               +q1*(Q(j)*q1+R(j)*l1*pr345)*gqbf(2,1,h5,h6))**2
       gq(j)=gq(j)
      .       +cdabs(Q(j)*(Q(j)*q1+L(j)*l1*prp34)*gqi(1,1,h5,h6)
-     .               +q1*(Q(j)*q1+L(j)*l1*prp345)*gqf(1,1,h5,h6))**2
+     .               +q1*(Q(j)*q1+L(j)*l1*pr345)*gqf(1,1,h5,h6))**2
      .       +cdabs(Q(j)*(Q(j)*q1+R(j)*r1*prp34)*gqi(2,2,h5,h6)
-     .               +q1*(Q(j)*q1+R(j)*r1*prp345)*gqf(2,2,h5,h6))**2
+     .               +q1*(Q(j)*q1+R(j)*r1*pr345)*gqf(2,2,h5,h6))**2
      .       +cdabs(Q(j)*(Q(j)*q1+L(j)*r1*prp34)*gqi(1,2,h5,h6)
-     .               +q1*(Q(j)*q1+L(j)*r1*prp345)*gqf(1,2,h5,h6))**2
+     .               +q1*(Q(j)*q1+L(j)*r1*pr345)*gqf(1,2,h5,h6))**2
      .       +cdabs(Q(j)*(Q(j)*q1+R(j)*l1*prp34)*gqi(2,1,h5,h6)
-     .               +q1*(Q(j)*q1+R(j)*l1*prp345)*gqf(2,1,h5,h6))**2
+     .               +q1*(Q(j)*q1+R(j)*l1*pr345)*gqf(2,1,h5,h6))**2
       qbg(j)=qbg(j)
      .       +cdabs(Q(j)*(Q(j)*q1+L(j)*l1*prp34)*qbgi(1,1,h5,h6)
-     .               +q1*(Q(j)*q1+L(j)*l1*prp345)*qbgf(1,1,h5,h6))**2
+     .               +q1*(Q(j)*q1+L(j)*l1*pr345)*qbgf(1,1,h5,h6))**2
      .       +cdabs(Q(j)*(Q(j)*q1+R(j)*r1*prp34)*qbgi(2,2,h5,h6)
-     .               +q1*(Q(j)*q1+R(j)*r1*prp345)*qbgf(2,2,h5,h6))**2
+     .               +q1*(Q(j)*q1+R(j)*r1*pr345)*qbgf(2,2,h5,h6))**2
      .       +cdabs(Q(j)*(Q(j)*q1+L(j)*r1*prp34)*qbgi(1,2,h5,h6)
-     .               +q1*(Q(j)*q1+L(j)*r1*prp345)*qbgf(1,2,h5,h6))**2
+     .               +q1*(Q(j)*q1+L(j)*r1*pr345)*qbgf(1,2,h5,h6))**2
      .       +cdabs(Q(j)*(Q(j)*q1+R(j)*l1*prp34)*qbgi(2,1,h5,h6)
-     .               +q1*(Q(j)*q1+R(j)*l1*prp345)*qbgf(2,1,h5,h6))**2
+     .               +q1*(Q(j)*q1+R(j)*l1*pr345)*qbgf(2,1,h5,h6))**2
 
       qg(j)=qg(j)
      .       +cdabs(Q(j)*(Q(j)*q1+L(j)*l1*prp34)*qgi(1,1,h5,h6)
-     .               +q1*(Q(j)*q1+L(j)*l1*prp345)*qgf(1,1,h5,h6))**2
+     .               +q1*(Q(j)*q1+L(j)*l1*pr345)*qgf(1,1,h5,h6))**2
      .       +cdabs(Q(j)*(Q(j)*q1+R(j)*r1*prp34)*qgi(2,2,h5,h6)
-     .               +q1*(Q(j)*q1+R(j)*r1*prp345)*qgf(2,2,h5,h6))**2
+     .               +q1*(Q(j)*q1+R(j)*r1*pr345)*qgf(2,2,h5,h6))**2
      .       +cdabs(Q(j)*(Q(j)*q1+L(j)*r1*prp34)*qgi(1,2,h5,h6)
-     .               +q1*(Q(j)*q1+L(j)*r1*prp345)*qgf(1,2,h5,h6))**2
+     .               +q1*(Q(j)*q1+L(j)*r1*pr345)*qgf(1,2,h5,h6))**2
      .       +cdabs(Q(j)*(Q(j)*q1+R(j)*l1*prp34)*qgi(2,1,h5,h6)
-     .               +q1*(Q(j)*q1+R(j)*l1*prp345)*qgf(2,1,h5,h6))**2
+     .               +q1*(Q(j)*q1+R(j)*l1*pr345)*qgf(2,1,h5,h6))**2
 
       enddo
       enddo
@@ -140,7 +133,7 @@ c      write(6,*) 'L(2),R(2)',sqrt(esq)*L(2),sqrt(esq)*R(2)
             msq(j,k)=aveqg*fac*gq(kk(k))
           elseif ((j .gt. 0) .and. (k .lt. 0)) then
             msq(j,k)=aveqq*fac*qqb(jj(j))
-          elseif ((j .lt. 0) .and. (k. gt. 0)) then
+          elseif ((j .lt. 0) .and. (k .gt. 0)) then
             msq(j,k)=aveqq*fac*qbq(kk(k))
           elseif ((j .gt. 0) .and. (k .eq. 0)) then
             msq(j,k)=aveqg*fac*qg(jj(j))
@@ -157,361 +150,157 @@ c      write(6,*) 'L(2),R(2)',sqrt(esq)*L(2),sqrt(esq)*R(2)
       subroutine zamps_g(p1,p2,p3,p4,p5,p6,za,zb,ai,af)
       implicit none
       include 'constants.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
-      integer p1,p2,p3,p4,p5,p6
+      include 'zprods_decl.f'
+      include 'sprods_com.f'
+      integer p1,p2,p3,p4,p5,p6,h12,h34,h5,h6
       double precision s34,s345,s156,s256
-      double complex ai(2,2,2,2),af(2,2,2,2),XTOTAL,HDPART,TLPART
-      double complex ILLLL,IRRRR,
-     . IRLLL,ILRLL,ILLRL,ILLLR,
-     . IRRLL,IRLRL,IRLLR,ILRRL,ILRLR,ILLRR,
-     . ILRRR,IRLRR,IRRLR,IRRRL
+      double complex ai(2,2,2,2),af(2,2,2,2),zazb,zbza
+      double complex z6354,z2354,z6453,z3162,z1264
+      double complex z3456,z1263,z4162,z1254,z6254,z3165,z1253
+      double complex z6253,z4165,z3152,z3156,z5264,z4152,z4156,z5263
+      include 'zerowidth.f'
+
+      zazb(p1,p2,p3,p4)=+za(p1,p2)*zb(p2,p4)+za(p1,p3)*zb(p3,p4)
+      zbza(p1,p2,p3,p4)=+zb(p1,p2)*za(p2,p4)+zb(p1,p3)*za(p3,p4)
 
       s34=s(p3,p4)      
       s345=s(p3,p4)+s(p3,p5)+s(p4,p5)      
       s156=s(p1,p5)+s(p1,p6)+s(p5,p6)      
       s256=s(p2,p5)+s(p2,p6)+s(p5,p6)      
 
+      z1263=zazb(p1,p2,p6,p3)
+      z1253=zazb(p1,p2,p5,p3)
 
-C Expression iLLLL
-	XTOTAL=0.
-      HDPART=za(p1,p3)*za(p1,p5)*zb(p1,p2)*zb(p1,p2)*zb(p2,p4)
-     1 /zb(p1,p6)/zb(p2,p5)/zb(p2,p6)
-      TLPART= s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p3)*za(p1,p6)*zb(p1,p2)*zb(p1,p2)*zb(p2,p4)
-     1 /zb(p1,p5)/zb(p2,p5)/zb(p2,p6)
-      TLPART= s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p3)*za(p5,p6)*zb(p1,p2)*zb(p2,p4)/zb(p1,p5)
-     1 /zb(p2,p6)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p3)*za(p5,p6)*zb(p1,p2)*zb(p2,p4)/zb(p1,p6)
-     1 /zb(p2,p5)
-      TLPART= s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p5)*za(p3,p5)*zb(p1,p2)*zb(p2,p4)/zb(p1,p6)
-     1 /zb(p2,p6)
-      TLPART= s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p5)*za(p3,p6)*zb(p1,p2)*zb(p2,p4)/zb(p1,p6)
-     1 /zb(p2,p5)
-      TLPART= s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p6)*za(p3,p5)*zb(p1,p2)*zb(p2,p4)/zb(p1,p5)
-     1 /zb(p2,p6)
-      TLPART= s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p6)*za(p3,p6)*zb(p1,p2)*zb(p2,p4)/zb(p1,p5)
-     1 /zb(p2,p5)
-      TLPART= s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p3,p5)*za(p5,p6)*zb(p2,p4)*zb(p2,p5)/zb(p1,p5)
-     1 /zb(p2,p6)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p3,p5)*za(p5,p6)*zb(p2,p4)/zb(p1,p6)
-      TLPART= s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p3,p6)*za(p5,p6)*zb(p2,p4)*zb(p2,p6)/zb(p1,p6)
-     1 /zb(p2,p5)
-      TLPART= s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p3,p6)*za(p5,p6)*zb(p2,p4)/zb(p1,p5)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-	iLLLL=XTOTAL
-C Punched 12 terms out of 12.
+      z1264=zazb(p1,p2,p6,p4)
+      z1254=zazb(p1,p2,p5,p4)
 
-C Expression iLRLL
-	XTOTAL=0.
-      HDPART=za(p1,p4)*za(p1,p5)*zb(p1,p2)*zb(p1,p2)*zb(p2,p3)
-     1 /zb(p1,p6)/zb(p2,p5)/zb(p2,p6)
-      TLPART= s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p4)*za(p1,p6)*zb(p1,p2)*zb(p1,p2)*zb(p2,p3)
-     1 /zb(p1,p5)/zb(p2,p5)/zb(p2,p6)
-      TLPART= s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p4)*za(p5,p6)*zb(p1,p2)*zb(p2,p3)/zb(p1,p5)
-     1 /zb(p2,p6)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p4)*za(p5,p6)*zb(p1,p2)*zb(p2,p3)/zb(p1,p6)
-     1 /zb(p2,p5)
-      TLPART= s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p5)*za(p4,p5)*zb(p1,p2)*zb(p2,p3)/zb(p1,p6)
-     1 /zb(p2,p6)
-      TLPART= s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p5)*za(p4,p6)*zb(p1,p2)*zb(p2,p3)/zb(p1,p6)
-     1 /zb(p2,p5)
-      TLPART= s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p6)*za(p4,p5)*zb(p1,p2)*zb(p2,p3)/zb(p1,p5)
-     1 /zb(p2,p6)
-      TLPART= s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p6)*za(p4,p6)*zb(p1,p2)*zb(p2,p3)/zb(p1,p5)
-     1 /zb(p2,p5)
-      TLPART= s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p4,p5)*za(p5,p6)*zb(p2,p3)*zb(p2,p5)/zb(p1,p5)
-     1 /zb(p2,p6)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p4,p5)*za(p5,p6)*zb(p2,p3)/zb(p1,p6)
-      TLPART= s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p4,p6)*za(p5,p6)*zb(p2,p3)*zb(p2,p6)/zb(p1,p6)
-     1 /zb(p2,p5)
-      TLPART= s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p4,p6)*za(p5,p6)*zb(p2,p3)/zb(p1,p5)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-	iLRLL=XTOTAL
-C Punched 12 terms out of 12.
-C Expression iLLRL
-	XTOTAL=0.
-      HDPART=za(p1,p2)*za(p1,p3)*za(p1,p6)*zb(p1,p2)*zb(p2,p4)
-     1 /za(p1,p5)/za(p2,p5)/zb(p2,p6)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p2)*za(p1,p3)*zb(p1,p2)*zb(p1,p5)*zb(p2,p4)
-     1 /za(p2,p5)/zb(p1,p6)/zb(p2,p6)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p2)*za(p1,p6)*za(p3,p5)*zb(p2,p4)*zb(p2,p5)
-     1 /za(p1,p5)/za(p2,p5)/zb(p2,p6)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p2)*za(p1,p6)*za(p3,p6)*zb(p2,p4)/za(p1,p5)
-     1 /za(p2,p5)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p2)*za(p3,p6)*zb(p1,p2)*zb(p2,p4)*zb(p5,p6)
-     1 /za(p2,p5)/zb(p1,p6)/zb(p2,p6)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p3)*za(p2,p6)*zb(p1,p5)*zb(p2,p4)/za(p2,p5)
-     1 /zb(p1,p6)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p3)*za(p2,p6)*zb(p2,p4)*zb(p2,p5)/za(p2,p5)
-     1 /zb(p2,p6)
-      TLPART= -s256**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p3)*za(p5,p6)*zb(p2,p5)*zb(p4,p5)/za(p2,p5)
-     1 /zb(p2,p6)
-      TLPART= s256**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p3)*zb(p1,p2)*zb(p4,p5)/za(p2,p5)/zb(p1,p6)
-     1 /zb(p2,p6)
-      TLPART= -s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p2,p6)*za(p3,p6)*zb(p2,p4)*zb(p5,p6)/za(p2,p5)
-     1 /zb(p1,p6)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p3,p6)*zb(p4,p5)/za(p2,p5)/zb(p1,p6)
-      TLPART= -s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-	iLLRL=XTOTAL
-C Punched 11 terms out of 11.
-C Expression iLLLR
-	XTOTAL=0.
-      HDPART=za(p1,p2)*za(p1,p3)*za(p1,p5)*zb(p1,p2)*zb(p2,p4)
-     1 /za(p1,p6)/za(p2,p6)/zb(p2,p5)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p2)*za(p1,p3)*zb(p1,p2)*zb(p1,p6)*zb(p2,p4)
-     1 /za(p2,p6)/zb(p1,p5)/zb(p2,p5)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p2)*za(p1,p5)*za(p3,p5)*zb(p2,p4)/za(p1,p6)
-     1 /za(p2,p6)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p2)*za(p1,p5)*za(p3,p6)*zb(p2,p4)*zb(p2,p6)
-     1 /za(p1,p6)/za(p2,p6)/zb(p2,p5)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p2)*za(p3,p5)*zb(p1,p2)*zb(p2,p4)*zb(p5,p6)
-     1 /za(p2,p6)/zb(p1,p5)/zb(p2,p5)
-      TLPART= s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p3)*za(p2,p5)*zb(p1,p6)*zb(p2,p4)/za(p2,p6)
-     1 /zb(p1,p5)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p3)*za(p2,p5)*zb(p2,p4)*zb(p2,p6)/za(p2,p6)
-     1 /zb(p2,p5)
-      TLPART= -s256**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p3)*za(p5,p6)*zb(p2,p6)*zb(p4,p6)/za(p2,p6)
-     1 /zb(p2,p5)
-      TLPART= -s256**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p3)*zb(p1,p2)*zb(p4,p6)/za(p2,p6)/zb(p1,p5)
-     1 /zb(p2,p5)
-      TLPART= -s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p2,p5)*za(p3,p5)*zb(p2,p4)*zb(p5,p6)/za(p2,p6)
-     1 /zb(p1,p5)
-      TLPART= s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p3,p5)*zb(p4,p6)/za(p2,p6)/zb(p1,p5)
-      TLPART= -s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-	iLLLR=XTOTAL
-C Punched 11 terms out of 11.
-C Expression iLRLR
-	XTOTAL=0.
-      HDPART=za(p1,p2)*za(p1,p4)*za(p1,p5)*zb(p1,p2)*zb(p2,p3)
-     1 /za(p1,p6)/za(p2,p6)/zb(p2,p5)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p2)*za(p1,p4)*zb(p1,p2)*zb(p1,p6)*zb(p2,p3)
-     1 /za(p2,p6)/zb(p1,p5)/zb(p2,p5)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p2)*za(p1,p5)*za(p4,p5)*zb(p2,p3)/za(p1,p6)
-     1 /za(p2,p6)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p2)*za(p1,p5)*za(p4,p6)*zb(p2,p3)*zb(p2,p6)
-     1 /za(p1,p6)/za(p2,p6)/zb(p2,p5)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p2)*za(p4,p5)*zb(p1,p2)*zb(p2,p3)*zb(p5,p6)
-     1 /za(p2,p6)/zb(p1,p5)/zb(p2,p5)
-      TLPART= s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p4)*za(p2,p5)*zb(p1,p6)*zb(p2,p3)/za(p2,p6)
-     1 /zb(p1,p5)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p4)*za(p2,p5)*zb(p2,p3)*zb(p2,p6)/za(p2,p6)
-     1 /zb(p2,p5)
-      TLPART= -s256**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p4)*za(p5,p6)*zb(p2,p6)*zb(p3,p6)/za(p2,p6)
-     1 /zb(p2,p5)
-      TLPART= -s256**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p4)*zb(p1,p2)*zb(p3,p6)/za(p2,p6)/zb(p1,p5)
-     1 /zb(p2,p5)
-      TLPART= -s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p2,p5)*za(p4,p5)*zb(p2,p3)*zb(p5,p6)/za(p2,p6)
-     1 /zb(p1,p5)
-      TLPART= s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p4,p5)*zb(p3,p6)/za(p2,p6)/zb(p1,p5)
-      TLPART= -s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-	iLRLR=XTOTAL
-C Punched 11 terms out of 11.
-C Expression iLRRL
-	XTOTAL=0.
-      HDPART=za(p1,p2)*za(p1,p4)*za(p1,p6)*zb(p1,p2)*zb(p2,p3)
-     1 /za(p1,p5)/za(p2,p5)/zb(p2,p6)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p2)*za(p1,p4)*zb(p1,p2)*zb(p1,p5)*zb(p2,p3)
-     1 /za(p2,p5)/zb(p1,p6)/zb(p2,p6)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p2)*za(p1,p6)*za(p4,p5)*zb(p2,p3)*zb(p2,p5)
-     1 /za(p1,p5)/za(p2,p5)/zb(p2,p6)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p2)*za(p1,p6)*za(p4,p6)*zb(p2,p3)/za(p1,p5)
-     1 /za(p2,p5)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p2)*za(p4,p6)*zb(p1,p2)*zb(p2,p3)*zb(p5,p6)
-     1 /za(p2,p5)/zb(p1,p6)/zb(p2,p6)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p4)*za(p2,p6)*zb(p1,p5)*zb(p2,p3)/za(p2,p5)
-     1 /zb(p1,p6)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p4)*za(p2,p6)*zb(p2,p3)*zb(p2,p5)/za(p2,p5)
-     1 /zb(p2,p6)
-      TLPART= -s256**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p4)*za(p5,p6)*zb(p2,p5)*zb(p3,p5)/za(p2,p5)
-     1 /zb(p2,p6)
-      TLPART= s256**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p1,p4)*zb(p1,p2)*zb(p3,p5)/za(p2,p5)/zb(p1,p6)
-     1 /zb(p2,p6)
-      TLPART= -s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p2,p6)*za(p4,p6)*zb(p2,p3)*zb(p5,p6)/za(p2,p5)
-     1 /zb(p1,p6)
-      TLPART= -s156**(-1)*s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-      HDPART=za(p4,p6)*zb(p3,p5)/za(p2,p5)/zb(p1,p6)
-      TLPART= -s34**(-1)
-	XTOTAL=XTOTAL+HDPART*TLPART
-	iLRRL=XTOTAL
+      z2354=zazb(p2,p3,p5,p4)
+
+      z3152=zazb(p3,p1,p5,p2)
+      z3162=zazb(p3,p1,p6,p2)
+
+      z3156=zazb(p3,p1,p5,p6)
+      z3456=zazb(p3,p4,p5,p6)
+
+      z3165=zazb(p3,p1,p6,p5)
+
+      z4162=zazb(p4,p1,p6,p2)
+      z4152=zazb(p4,p1,p5,p2)
+
+      z4165=zazb(p4,p1,p6,p5)
+      z4156=zazb(p4,p1,p5,p6)
+
+      z5264=zazb(p5,p2,p6,p4)
+      z5263=zazb(p5,p2,p6,p3)
+ 
+      z6354=zazb(p6,p3,p5,p4)
+      z6254=zazb(p6,p2,p5,p4)
+
+      z6453=zazb(p6,p4,p5,p3)
+      z6253=zazb(p6,p2,p5,p3)
+
+      if (zerowidth) then
+      do h12=1,2
+      do h34=1,2
+      do h5=1,2
+      do h6=1,2
+      af(h12,h34,h5,h6)=czip
+      enddo
+      enddo
+      enddo
+      enddo
+C  DKS hep/9803250 Eqs (4.9) - (4.12) Multiplied by -i
+
+
+      ai(1,1,1,1)=zb(p2,p4)**2
+     . /(zb(p4,p3)*zb(p2,p5)*zb(p1,p5)*zb(p2,p6)*zb(p6,p1)*(s345-s34))
+     . *(zb(p2,p5)*zbza(p1,p4,p3,p5)-zb(p1,p5)*zbza(p2,p4,p3,p5))
+
+      ai(1,2,1,1)=zb(p2,p3)**2
+     . /(zb(p3,p4)*zb(p2,p5)*zb(p1,p5)*zb(p2,p6)*zb(p6,p1)*(s345-s34))
+     . *(zb(p2,p5)*zbza(p1,p3,p4,p5)-zb(p1,p5)*zbza(p2,p3,p4,p5))
+
+      ai(1,1,2,1)=
+     . -zb(p2,p4)*za(p6,p1)*zbza(p5,p2,p4,p3)
+     . /(s34*za(p1,p5)*zb(p6,p1)*s156)
+     . +zb(p2,p5)*za(p1,p3)*zbza(p4,p2,p5,p6)
+     . /(s34*za(p2,p5)*zb(p2,p6)*s256)
+     . -zbza(p2,p1,p6,p3)
+     . *(zb(p4,p3)*zb(p2,p5)*za(p3,p1)+zb(p4,p5)*zb(p2,p6)*za(p6,p1))
+     . /(s34*za(p1,p5)*zb(p2,p6)*zb(p6,p1)*(s345-s34))
+     . +zbza(p2,p1,p6,p3)
+     . *(zbza(p5,p1,p6,p3)*zb(p3,p4)+zb(p5,p4)*zb(p1,p6)*za(p6,p1))
+     . /(s34*za(p2,p5)*zb(p2,p6)*zb(p6,p1)*(s345-s34))
+
+      ai(1,2,2,1)=
+     . -zb(p2,p3)*za(p6,p1)*zbza(p5,p2,p3,p4)
+     . /(s34*za(p1,p5)*zb(p6,p1)*s156)
+     . +zb(p2,p5)*za(p1,p4)*zbza(p3,p2,p5,p6)
+     . /(s34*za(p2,p5)*zb(p2,p6)*s256)
+     . -zbza(p2,p1,p6,p4)
+     . *(zb(p3,p4)*zb(p2,p5)*za(p4,p1)+zb(p3,p5)*zb(p2,p6)*za(p6,p1))
+     . /(s34*za(p1,p5)*zb(p2,p6)*zb(p6,p1)*(s345-s34))
+     . +zbza(p2,p1,p6,p4)
+     . *(zbza(p5,p1,p6,p4)*zb(p4,p3)+zb(p5,p3)*zb(p1,p6)*za(p6,p1))
+     . /(s34*za(p2,p5)*zb(p2,p6)*zb(p6,p1)*(s345-s34))
 
 
 
-      af(1,1,1,1) = (
-     . -(za(p1,p3)*zb(p3,p4)-za(p1,p5)*zb(p4,p5))*zb(p1,p2)*zb(p2,p4)
-     . -(za(p3,p6)*zb(p3,p4)-za(p5,p6)*zb(p4,p5))*zb(p2,p4)*zb(p2,p6)
-     . )/(s345*zb(p1,p6)*zb(p2,p6)*zb(p3,p5)*zb(p4,p5))
-      af(2,1,1,1)= (
-     . - (za(p2,p3)*zb(p3,p4)-za(p2,p5)*zb(p4,p5))*zb(p1,p2)*zb(p1,p4)
-     . + (za(p3,p6)*zb(p3,p4)-za(p5,p6)*zb(p4,p5))*zb(p1,p4)*zb(p1,p6)
-     . )/(s345*zb(p1,p6)*zb(p2,p6)*zb(p3,p5)*zb(p4,p5))
-      af(1,2,1,1) =( 
-     . - (za(p1,p4)*zb(p3,p4)+za(p1,p5)*zb(p3,p5))*zb(p1,p2)*zb(p2,p3)
-     . - (za(p4,p6)*zb(p3,p4)+za(p5,p6)*zb(p3,p5))*zb(p2,p3)*zb(p2,p6)
-     . )/(s345*zb(p1,p6)*zb(p2,p6)*zb(p3,p5)*zb(p4,p5))
-      af(1,1,2,1) = 
-     . +(za(p3,p4)*zb(p2,p4)+za(p3,p5)*zb(p2,p5))
-     . *(za(p1,p3)*zb(p1,p2)+za(p3,p6)*zb(p2,p6))
-     .  /(s345*za(p3,p5)*za(p4,p5)*zb(p1,p6)*zb(p2,p6))
-      af(1,1,1,2) = 
-     . +(za(p1,p2)*zb(p2,p4)-za(p1,p6)*zb(p4,p6))
-     . *(za(p1,p3)*zb(p3,p4)-za(p1,p5)*zb(p4,p5))
-     .  /(s345*za(p1,p6)*za(p2,p6)*zb(p3,p5)*zb(p4,p5))
-      af(1,1,2,2) = (
-     . -za(p1,p2)*za(p1,p3)*(za(p3,p4)*zb(p2,p4)+za(p3,p5)*zb(p2,p5))
-     . + za(p1,p3)*za(p1,p6)*(za(p3,p4)*zb(p4,p6)+za(p3,p5)*zb(p5,p6))
-     . )/(s345*za(p1,p6)*za(p2,p6)*za(p3,p5)*za(p4,p5))
-      af(1,2,1,2) = 
-     .  (za(p1,p2)*zb(p2,p3)-za(p1,p6)*zb(p3,p6))
-     . *(za(p1,p4)*zb(p3,p4)+za(p1,p5)*zb(p3,p5))
+c------------------------------------------------------------------
+
+      ai(1,1,2,2)=za(p1,p3)**2
+     . /(za(p3,p4)*za(p1,p5)*za(p2,p5)*za(p1,p6)*za(p6,p2)*(s345-s34))
+     . *(za(p1,p5)*zazb(p2,p3,p4,p5)-za(p2,p5)*zazb(p1,p3,p4,p5))
+
+      ai(1,2,2,2)=za(p1,p4)**2
+     . /(za(p4,p3)*za(p1,p5)*za(p2,p5)*za(p1,p6)*za(p6,p2)*(s345-s34))
+     . *(za(p1,p5)*zazb(p2,p4,p3,p5)-za(p2,p5)*zazb(p1,p4,p3,p5))
+
+      ai(1,1,1,2)=
+     . -za(p1,p3)*zb(p6,p2)*zazb(p5,p1,p3,p4)
+     . /(s34*zb(p2,p5)*za(p6,p2)*s256)
+     . +za(p1,p5)*zb(p2,p4)*zazb(p3,p1,p5,p6)
+     . /(s34*zb(p1,p5)*za(p1,p6)*s156)
+     . -zazb(p1,p2,p6,p4)
+     . *(za(p3,p4)*za(p1,p5)*zb(p4,p2)+za(p3,p5)*za(p1,p6)*zb(p6,p2))
+     . /(s34*zb(p2,p5)*za(p1,p6)*za(p6,p2)*(s345-s34))
+     . +zazb(p1,p2,p6,p4)
+     . *(zazb(p5,p2,p6,p4)*za(p4,p3)+za(p5,p3)*za(p2,p6)*zb(p6,p2))
+     . /(s34*zb(p1,p5)*za(p1,p6)*za(p6,p2)*(s345-s34))
+
+      ai(1,2,1,2)=
+     . -za(p1,p4)*zb(p6,p2)*zazb(p5,p1,p4,p3)
+     . /(s34*zb(p2,p5)*za(p6,p2)*s256)
+     . +za(p1,p5)*zb(p2,p3)*zazb(p4,p1,p5,p6)
+     . /(s34*zb(p1,p5)*za(p1,p6)*s156)
+     . -zazb(p1,p2,p6,p3)
+     . *(za(p4,p3)*za(p1,p5)*zb(p3,p2)+za(p4,p5)*za(p1,p6)*zb(p6,p2))
+     . /(s34*zb(p2,p5)*za(p1,p6)*za(p6,p2)*(s345-s34))
+     . +zazb(p1,p2,p6,p3)
+     . *(zazb(p5,p2,p6,p3)*za(p3,p4)+za(p5,p4)*za(p2,p6)*zb(p6,p2))
+     . /(s34*zb(p1,p5)*za(p1,p6)*za(p6,p2)*(s345-s34))
+
+      ai(2,1,1,1)=Dconjg(ai(1,2,2,2))
+
+      else
+
+      af(1,1,1,1)=+(z6354*zb(p2,p6)+z1264*zb(p1,p2))*zb(p2,p4)
+     . /(s345*zb(p1,p6)*zb(p2,p6)*zb(p3,p5)*zb(p4,p5))
+      af(1,2,1,1)=-(z6453*zb(p2,p6)+z1263*zb(p1,p2))*zb(p2,p3)
+     . /(s345*zb(p1,p6)*zb(p2,p6)*zb(p3,p5)*zb(p4,p5))
+      af(2,1,1,1)=-(z2354*zb(p1,p2)+z6354*zb(p1,p6))*zb(p1,p4)
+     . /(s345*zb(p1,p6)*zb(p2,p6)*zb(p3,p5)*zb(p4,p5))
+      af(1,1,2,2)=+(z3456*za(p1,p6)-z3162*za(p1,p2))*za(p1,p3)
+     . /(s345*za(p1,p6)*za(p2,p6)*za(p3,p5)*za(p4,p5))
+
+      af(1,1,1,2)=-z1264**2 
      . /(s345*za(p1,p6)*za(p2,p6)*zb(p3,p5)*zb(p4,p5))
-      af(1,2,2,1) = 
-     .  +(za(p1,p4)*zb(p1,p2)+za(p4,p6)*zb(p2,p6))
-     .  *(za(p3,p4)*zb(p2,p3)-za(p4,p5)*zb(p2,p5))
-     .  /(s345*za(p3,p5)*za(p4,p5)*zb(p1,p6)*zb(p2,p6))
-
-      ai(1,1,2,2)=za(p1,p3)*za(p1,p3)*za(p1,p2)*zb(p3,p4)
-     . /(s34*za(p1,p5)*za(p2,p5)*za(p1,p6)*za(p2,p6))
-      ai(2,1,1,1)=zb(p1,p4)*zb(p1,p4)*zb(p1,p2)*za(p4,p3)
-     . /(s34*zb(p1,p5)*zb(p2,p5)*zb(p1,p6)*zb(p2,p6))
-
-      ai(1,1,1,1)=iLLLL
-      ai(1,2,1,1)=iLRLL
-      ai(1,1,2,1)=iLLRL
-      ai(1,1,1,2)=iLLLR
-
-      ai(1,2,2,1)=iLRRL
-      ai(1,2,1,2)=iLRLR
-
-*end
-
+      af(1,2,1,2)=+z1263**2 
+     . /(s345*za(p1,p6)*za(p2,p6)*zb(p3,p5)*zb(p4,p5))
+      af(1,1,2,1)=-z3162**2
+     . /(s345*za(p3,p5)*za(p4,p5)*zb(p1,p6)*zb(p2,p6))
+      af(1,2,2,1)=+z4162**2  
+     . /(s345*za(p3,p5)*za(p4,p5)*zb(p1,p6)*zb(p2,p6))
 
       af(1,2,2,2)=Dconjg(af(2,1,1,1))
       af(2,1,2,2)=Dconjg(af(1,2,1,1))
@@ -523,7 +312,43 @@ C Expression iLRRL
       af(2,1,2,1)=Dconjg(af(1,2,1,2))
       af(2,1,1,2)=Dconjg(af(1,2,2,1))
 
+
+      ai(1,1,1,1)=zb(p1,p2)*zb(p2,p4)**2
+     . /(zb(p4,p3)*zb(p1,p5)*zb(p2,p5)*zb(p1,p6)*zb(p2,p6))
+
+      ai(1,2,1,1)=zb(p1,p2)*zb(p2,p3)**2
+     . /(zb(p3,p4)*zb(p1,p5)*zb(p2,p5)*zb(p1,p6)*zb(p2,p6))
+
+      ai(1,1,2,2)=za(p1,p2)*za(p1,p3)**2
+     . /(za(p4,p3)*za(p1,p5)*za(p2,p5)*za(p1,p6)*za(p2,p6))
+
+      ai(2,1,1,1)=zb(p1,p2)*zb(p1,p4)**2
+     . /(zb(p3,p4)*zb(p1,p5)*zb(p2,p5)*zb(p1,p6)*zb(p2,p6))
+
+      ai(1,1,2,1)=-z1254*z3162
+     . /(s34*za(p1,p5)*za(p2,p5)*zb(p1,p6)*zb(p2,p6))
+     . +za(p1,p3)*zb(p2,p5)*z6254/(s34*s256*za(p2,p5)*zb(p2,p6))
+     . +za(p1,p6)*zb(p2,p4)*z3165/(s34*s156*za(p1,p5)*zb(p1,p6))
+
+      ai(1,2,2,1)=-z1253*z4162
+     . /(s34*za(p1,p5)*za(p2,p5)*zb(p1,p6)*zb(p2,p6))
+     . +za(p1,p4)*zb(p2,p5)*z6253/(s34*s256*za(p2,p5)*zb(p2,p6))
+     . +za(p1,p6)*zb(p2,p3)*z4165/(s34*s156*za(p1,p5)*zb(p1,p6))
+
+      ai(1,1,1,2)=-z1264*z3152
+     . /(s34*za(p1,p6)*za(p2,p6)*zb(p1,p5)*zb(p2,p5))
+     . +za(p1,p5)*zb(p2,p4)*z3156/(s34*s156*za(p1,p6)*zb(p1,p5))
+     . +za(p1,p3)*zb(p2,p6)*z5264/(s34*s256*za(p2,p6)*zb(p2,p5))
+
+      ai(1,2,1,2)=-z1263*z4152
+     . /(s34*za(p1,p6)*za(p2,p6)*zb(p1,p5)*zb(p2,p5))
+     . +za(p1,p5)*zb(p2,p3)*z4156/(s34*s156*za(p1,p6)*zb(p1,p5))
+     . +za(p1,p4)*zb(p2,p6)*z5263/(s34*s256*za(p2,p6)*zb(p2,p5))
+
       ai(1,2,2,2)=Dconjg(ai(2,1,1,1))
+
+      endif
+
       ai(2,1,2,2)=Dconjg(ai(1,2,1,1))
       ai(2,2,1,2)=Dconjg(ai(1,1,2,1))
       ai(2,2,2,1)=Dconjg(ai(1,1,1,2))
@@ -532,9 +357,6 @@ C Expression iLRRL
       ai(2,2,1,1)=Dconjg(ai(1,1,2,2))
       ai(2,1,2,1)=Dconjg(ai(1,2,1,2))
       ai(2,1,1,2)=Dconjg(ai(1,2,2,1))
-
-
-
 
       return
       end

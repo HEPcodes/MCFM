@@ -6,10 +6,26 @@ c    cut if radiated parton too close
       integer npart
       double precision s(mxpart,mxpart)
 
-      if (npart .eq. 3) then
+      if (npart .eq. 2) then
+      if ( 
+     .      (-s(1,4) .lt. cutoff)
+     . .or. (-s(2,4) .lt. cutoff)
+     . .or. (+s(3,4) .lt. cutoff)
+     . .or. (-s(1,3) .lt. cutoff)
+     . .or. (-s(2,3) .lt. cutoff)
+     . ) return 1
+
+      elseif (npart .eq. 3) then
       if ( 
      .      (-s(1,5) .lt. cutoff)
-     . .or. (-s(2,5) .lt. cutoff) 
+     . .or. (-s(2,5) .lt. cutoff)
+     . .or. (-s(1,4) .lt. cutoff)
+     . .or. (-s(2,4) .lt. cutoff)
+     . .or. (+s(4,5) .lt. cutoff)
+     . .or. (+s(3,4) .lt. cutoff)
+     . .or. (+s(3,5) .lt. cutoff)
+     . .or. (-s(1,3) .lt. cutoff)
+     . .or. (-s(2,3) .lt. cutoff)
      . ) return 1
 
       elseif (npart .eq. 4) then

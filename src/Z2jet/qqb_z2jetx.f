@@ -12,8 +12,8 @@ c--all momenta incoming
       include 'qcdcouple.f'
       include 'zcouple.f'
       include 'ewcharge.f'
-      include 'prods.f'
-      include 'hardscale.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       include 'flags.f'
       include 'lc.f'
       integer i,j,k,f,pq,pl,nquark,swap(2),swap1(0:2),nup,ndo,

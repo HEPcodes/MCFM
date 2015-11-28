@@ -16,8 +16,8 @@ c   for the moment --- radiation only from initial line
       include 'zcouple.f'
       include 'masses.f'
       include 'ckm.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
       include 'zerowidth.f'
       include 'ewcharge.f'
       include 'anomcoup.f'
@@ -72,8 +72,8 @@ c--- but for Z -> bbbar this diagram contains |V_tb|**2 which we take 0
 
 c-- if Z -> neutrinos, we need to switch c1 and c2
       if (plabel(5) .eq. 'nl') then
-        cl1=1-cl1
-        cl2=1-cl2
+        cl1=1d0-cl1
+        cl2=1d0-cl2
       endif
       
       do jp=-nf,nf

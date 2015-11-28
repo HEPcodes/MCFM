@@ -2,8 +2,8 @@
       implicit none
 c--- returns a double precision number that indicates which bin
 c--- the double-binned et's pt1,pt2 fall into
-      double precision pt1,pt2,bound(20)
-      integer i,j,bin(2),testpt(2),maxbin
+      double precision pt1,pt2,testpt(2),bound(20)
+      integer i,j,bin(2),maxbin
       data bound/20d0,38.1d0,72.5d0,138d0,263d0,500d0,14*0d0/
       data maxbin/5/
       

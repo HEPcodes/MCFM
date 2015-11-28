@@ -5,7 +5,6 @@ c--- this routine calculates the jacobian associated with calculating
 c--- a given final state, by contracting a final-final dipole 
       implicit none
       include 'constants.f'
-      include 'mxdim.f'
       include 'qcdcouple.f'
       include 'debug.f'
       integer i4,i5,j4(2),j5(2),j,k,nperms

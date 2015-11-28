@@ -1,10 +1,11 @@
       subroutine nagy2(i1,i2,i3,i4,i5,i6,i7,a3,a4)
       implicit none
       include 'constants.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       integer j,k,j1,j2,j3,j4,j5,j6,j7,i1,i2,i3,i4,i5,i6,i7
-      integer hq,Qh,lh,hg,h1,h2,h3,h4
-      double precision s167,s267,s134,s234,s345
+      integer hq,Qh,lh,hg,h2,h3,h4
+      double precision s167,s267,s345
       double complex a3(2,2,2,2),a4(2,2,2,2),
      . t2a,xa(mxpart,mxpart),xb(mxpart,mxpart)
 C-----statement function
@@ -27,7 +28,7 @@ C----hq,Qh,hg,lh
             do k=1,mxpart
             xa(j,k)=za(j,k)
             xb(j,k)=zb(j,k)
-            h1=2
+c            h1=2
             h2=Qh
             h3=hg
             h4=lh
@@ -40,7 +41,7 @@ C----hq,Qh,hg,lh
             xb(j,k)=za(k,j)
             enddo
             enddo
-            h1=3-hq
+c            h1=3-hq
             h2=3-Qh
             h3=3-hg
             h4=3-lh
@@ -63,8 +64,8 @@ C----hq,Qh,hg,lh
       s167=s(j1,j6)+s(j1,j7)+s(j6,j7)
       s267=s(j2,j6)+s(j2,j7)+s(j6,j7)
 
-      s134=s(j1,j3)+s(j1,j4)+s(j3,j4)
-      s234=s(j2,j3)+s(j2,j4)+s(j3,j4)
+c      s134=s(j1,j3)+s(j1,j4)+s(j3,j4)
+c      s234=s(j2,j3)+s(j2,j4)+s(j3,j4)
       s345=s(j3,j4)+s(j3,j5)+s(j4,j5)
 
       if (h3.eq.2) then

@@ -18,7 +18,11 @@ C  10    C0R10  charm up              300      0.1175   0.00525  C
 C  11    COR11  charm down            300      0.1175   0.00524  C
 C  12    COR12  larger d/u            300      0.1175   0.00515  C
 
-      if     (pdlabel .eq. 'mrs0119') then
+      if     (pdlabel .eq. 'mrs02nl') then
+      amz=0.1197d0 
+      elseif     (pdlabel .eq. 'mrs02nn') then
+      amz=0.1154d0
+      elseif     (pdlabel .eq. 'mrs0119') then
       amz=0.119d0
       elseif     (pdlabel .eq. 'mrs0117') then
       amz=0.117d0
@@ -67,6 +71,31 @@ c-- modified - DEBUG
       amz=0.1175d0
       write(6,*) 'alpha_s(MZ) for mrs98ht has been modified from'
       write(6,*) 'the inherent 0.1170 to a new value of 0.1175'    
+
+      elseif (pdlabel .eq. 'mrs98l1') then
+      amz=0.125d0
+      elseif (pdlabel .eq. 'mrs98l2') then
+      amz=0.125d0
+      elseif (pdlabel .eq. 'mrs98l3') then
+      amz=0.125d0
+      elseif (pdlabel .eq. 'mrs98l4') then
+      amz=0.120d0
+      elseif (pdlabel .eq. 'mrs98l5') then
+      amz=0.130d0
+C     TEMPORARY NAMING SCHEME:                                   C
+C						                 C
+C  mode  set    comment             L(4)/MeV  a_s(M_Z)  grid#1   C
+C  ----  ---    -------             --------  -------   ------   C
+C								 C
+C  1     LO05A  central gluon, a_s    174      0.1250   0.01518  C
+C  2     LO09A  higher gluon          174      0.1250   0.01616  C
+C  3     LO10A  lower gluon           174      0.1250   0.01533  C
+C  4     LO01A  lower a_s             136      0.1200   0.01652  C
+C  5     LO07A  higher a_s            216      0.1300   0.01522  C
+C						                 C
+C						                 C
+C      The corresponding grid files are called lt05a.dat etc.    C
+C							  	 C
       elseif (pdlabel .eq. 'mrs96r1') then
       amz=0.113d0
       elseif (pdlabel .eq. 'mrs96r2') then
@@ -109,7 +138,6 @@ c---??????
       elseif (pdlabel .eq. 'cteq4_d') then
       amz=0.116d0
       elseif (pdlabel .eq. 'cteq4_l') then 
-c---debug
       amz=0.132d0
       elseif (pdlabel .eq. 'cteq4a1') then
       amz=0.110d0
@@ -133,6 +161,8 @@ c---debug
       amz=0.118d0
       elseif (pdlabel .eq. 'cteq5_l') then
       Call SetCtq5(3)
+      amz=0.127d0
+      elseif (pdlabel .eq. 'cteq5l1') then
       amz=0.127d0
       elseif (pdlabel .eq. 'cteq5hj') then
       Call SetCtq5(4)
@@ -161,6 +191,9 @@ c---debug
       elseif (pdlabel .eq. 'cteq6_l') then
       amz=0.118d0
       Call SetCtq6(3)
+      elseif (pdlabel .eq. 'cteq6l1') then
+      amz=0.130d0
+      Call SetCtq6(4)
 
 c--- NEW ATTEMPT
       elseif (pdlabel .eq. 'mtungb1') then
@@ -169,10 +202,12 @@ c--- need a value here: Lambda = 200 MeV
       else
           write(6,*) 'Unimplemented distribution= ',pdlabel
           write(6,*) 'Implemented are: ',
+     .'mrs02nl,','mrs02nn,',
      .'mrs0119,','mrs0117,','mrs0121,','mrs01_j,',
      .'mrs99_1,','mrs99_2,','mrs99_3,','mrs99_4,','mrs99_5,','mrs99_6,',
      .'mrs99_7,','mrs99_8,','mrs99_9,','mrs9910,','mrs9911,','mrs9912,',
      .'mrs98z1,','mrs98z2,','mrs98z3,','mrs98z4,','mrs98z5,','mrs98ht,',
+     .'mrs98l1,','mrs98l2,','mrs98l3,','mrs98l4,','mrs98l5,',
      .'mrs96r1,','mrs96r2,','mrs96r3,','mrs96r4,',
      .'hmrs90e,','hmrs90b,',
      .'mrs95ap,','mrs95_g,',
@@ -180,8 +215,8 @@ c--- need a value here: Lambda = 200 MeV
      .'cteq4_m,','cteq4_d,','cteq4_l,','cteq4a1,','cteq4a2,',
      .'cteq4a3,','cteq4a4,','cteq4a5,','cteq4hj,','cteq4lq,',
      .'cteq5_m,','cteq5_d,','cteq5_l,','cteq5hj,','cteq5hq,',
-     .'cteq5f3,','cteq5f4,','cteq5m1,','ctq5hq1,',
-     .'cteq6_m,','cteq6_d,','cteq6_l,',
+     .'cteq5f3,','cteq5f4,','cteq5m1,','ctq5hq1,','cteq5l1,',
+     .'cteq6_m,','cteq6_d,','cteq6_l,','cteq6l1,',
      .'mtungb1'
 
       stop

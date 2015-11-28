@@ -5,8 +5,7 @@ c--- to compare with BDKW paper, first flip i1 to outgoing and then
 c--- note that left corresponds to + and right to -
       implicit none
       include 'constants.f'
-      include 'sprodx.f'
-      include 'masses.f'
+      include 'zprods_decl.f'
       integer i1,i2,i3,nhel
       integer j1,j2,j3,j4,j5,j6
       double complex atree

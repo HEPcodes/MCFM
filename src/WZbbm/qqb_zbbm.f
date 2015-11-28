@@ -5,18 +5,17 @@ c---  averaged(summed) over initial(final) colours and spins
       implicit none
       include 'constants.f'
       include 'masses.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       include 'zcouple.f'
       include 'ewcharge.f'
       include 'hardscale.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
-      include 'msq_cs.f'
-      include 'mmsq_cs.f'
-      integer j,k,nu,ics,j1,j2,j3,swap(4),hz,h1,h2,h3,h5,h6
+      integer j,k,nu,swap(4),h1,h3,h5,h6
       double precision p(mxpart,4),p12(mxpart,4),p21(mxpart,4),
-     . msq(-nf:nf,-nf:nf),mmsq(2,2),sumleptL,sumleptR,
-     . pswap(mxpart,4),facqq,facgg,p1Dp(5:6),p2Dp(5:6),lr(2)
+     . msq(-nf:nf,-nf:nf),sumleptL,sumleptR,
+     . facqq,facgg,p1Dp(5:6),p2Dp(5:6),lr(2)
       double complex tamp,prop,coupL,coupR
       double complex qqb_a(2,2,2,2,2),qqb_b(2,2,2,2,2)
       double complex qbq_a(2,2,2,2,2),qbq_b(2,2,2,2,2)
@@ -100,7 +99,7 @@ c ensure that we have a hard process
             enddo
 
 
-          elseif ((j .lt. 0) .and. (k. gt. 0)) then
+          elseif ((j .lt. 0) .and. (k .gt. 0)) then
             do h1=1,2
             do h3=1,2
             do h5=1,2

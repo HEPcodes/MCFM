@@ -4,8 +4,8 @@ C--Results taken from Nagy and Trocsanyi-hep-ph/9806317
 C--Appendix A
       implicit none
       include 'constants.f'
-      include 'masses.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       integer i1,i2,i3,i4,i5,i6,i7,j,k,qh,h2,h3,h4,lh,g1,g2,g3,g4,lg,
      . j6,j7
       double complex t2a,t3a,t3b

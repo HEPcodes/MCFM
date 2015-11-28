@@ -13,7 +13,6 @@ c----i7 label of generated vector
       parameter(wt0=1d0/8d0/pisq)
       common/x1x2/xx
 
-      wt5_4=0d0
       phi=twopi*phit
 c      omxmin=one-xmin
       omxmin=one-xx(i1)

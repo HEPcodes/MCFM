@@ -16,7 +16,6 @@ c--- all momenta are incoming
 
       implicit none 
       include 'constants.f'
-      include 'masses.f'
       include 'ptilde.f'
       include 'qqgg.f'
       include 'flags.f'

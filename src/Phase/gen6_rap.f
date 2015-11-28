@@ -3,20 +3,14 @@
       include 'constants.f'
       include 'masses.f'
       include 'mxdim.f'
-      include 'debug.f'
       integer nu
 
       double precision r(mxdim)
       double precision wt6,p(mxpart,4),tp(4),tm(4),bp(4),bm(4)
-      double precision wtepnn,wtnbem,p1(4),p2(4),ep(4),em(4),nn(4),nb(4)
-      double precision wp(4),wm(4),xmin,tau,taumin
+      double precision wtepnn,wtnbem,ep(4),em(4),nn(4),nb(4),wp(4),wm(4)
       double precision wtttb,wtwp,wtwm,s3min,wt0
-      character*6 case
-      common/process/case
-      common/taumin/taumin
-      parameter(xmin=1d-5)
       parameter(wt0=1d0/twopi**4)
-      data p1,p2,wp,wm,ep,em,nn,nb,bp,bm/40*0d0/
+      data wp,wm,ep,em,nn,nb,bp,bm/32*0d0/
 
 
       integer n2,n3
@@ -28,8 +22,6 @@
 
 
       wt6=0d0
-      mass2=mt
-      mass3=mt
       mass2=mt
       mass3=mt
       call gen2m(r,p,wtttb,*999)

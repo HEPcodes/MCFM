@@ -38,20 +38,30 @@
       include 'epinv.f'
       include 'epinv2.f'
       include 'scheme.f'
+      include 'alfacut.f'
 c--- returns the integral of the subtraction term for an
 c--- initial-initial quark-gluon antenna, either
 c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
-C--MSBR
+C--TH-V
 c-- Id,aqq=
 c--  [delta(1-x)]*(epinv*(epinv-L)+1/2*L^2+3/2*epinv-[pi]^2/6)
 c--  +(1-x)-(1+x)*(L+2*[ln(1-x)])-(1+x^2)*[ln(x)]/[1-x]
 c--  +4*[ln(1-x)/(1-xp)]+2*L/[1-xp]
 
       
+cIIqq = 
+c  + 1 - x - 2*[ln(x)]*[1-x]^-1 + [ln(x)]*[1+x] + [ln(al(x))]*
+c [(1+x^2)/(1-x)] - [1+x]*L - 2*[1+x]*[ln(1-x)] + [1+x]*epinv
+c 
+c + [delta(1-x)]
+c  * ( 1/2*L^2 - 1/6*pisq - epinv*L + epinv^2 )
+c 
+c + [1/(1-x)_(0)]
+c  * ( 2*L + 4*[ln(1-x)] - 2*epinv )
+ 
       if (vorz .eq. 1) then
-        ii_qq=epinv*(epinv2-L)+0.5d0*L**2+1.5d0*epinv-pisqo6
-     .   -epinv*1.5d0
-        if (scheme .eq. 'msbr') then
+        ii_qq=epinv*(epinv2-L)+0.5d0*L**2-pisqo6
+        if (scheme .eq. 'tH-V') then
            return
         elseif (scheme .eq. 'dred') then
            ii_qq=ii_qq-half
@@ -65,7 +75,8 @@ c--  +4*[ln(1-x)/(1-xp)]+2*L/[1-xp]
       
       if (vorz .eq. 2) then
         ii_qq=omx-(one+x)*(two*lomx+L-epinv)-(one+x**2)/omx*lx
-        return
+        if (omx .gt. aii) ii_qq=ii_qq+(one+x**2)/omx*log(aii/omx)
+      return
       endif
       
       ii_qq=two/omx*(two*lomx+L-epinv)
@@ -80,12 +91,19 @@ c--  +4*[ln(1-x)/(1-xp)]+2*L/[1-xp]
       double precision x,L,omx,lx,lomx
       include 'constants.f'
       include 'epinv.f'
-      include 'epinv2.f'
+      include 'alfacut.f'
 c--- returns the integral of the subtraction term for an
 c--- initial-initial gluon-quark antenna, either
 c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
-C--MSBR
+C--TH-V
 c-- Id,aqg=(1-2*x*(1-x))*(-[ln(x)]+L+2*[ln(1-x)])+2*x*(1-x)
+
+c IIqg = 
+c  + 2*x - 2*x^2 - [ln(x)]*[x^2+(1-x)^2] + [ln(al(x))]*
+c [x^2+(1-x)^2] + [x^2+(1-x)^2]*L + 2*[x^2+(1-x)^2]*[ln(1-x)]
+c  - [x^2+(1-x)^2]*epinv
+ 
+
       ii_qg=0d0
       if ((vorz .eq. 1) .or. (vorz .eq. 3)) return
       
@@ -95,6 +113,7 @@ c-- Id,aqg=(1-2*x*(1-x))*(-[ln(x)]+L+2*[ln(1-x)])+2*x*(1-x)
       
       if (vorz .eq. 2) then
         ii_qg=(one-two*x*omx)*(two*lomx-lx+L-epinv)+two*x*omx
+        if (omx .gt. aii) ii_qg=ii_qg+(one-two*x*omx)*log(aii/omx)
       endif
       return
       end
@@ -106,14 +125,18 @@ c-- Id,aqg=(1-2*x*(1-x))*(-[ln(x)]+L+2*[ln(1-x)])+2*x*(1-x)
       double precision x,L,omx,lx,lomx
       include 'constants.f'
       include 'epinv.f'
-      include 'epinv2.f'
+      include 'alfacut.f'
 c--- returns the integral of the subtraction term for an
 c--- initial-initial quark-quark (--> gluon) antenna, either
 c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
-C--MSBR
+C--TH-V
 c-- Id,agq=(1+(1-x)^2)/x*(-[ln(x)]+L+2*[ln(1-x)])+x
 
       
+c IIgq =  + x - [ln(x)]*[(1+(1-x)^2)/x] + [ln(al(x))]*
+c  [(1+(1-x)^2)/x] + [(1+(1-x)^2)/x]*L + 2*[(1+(1-x)^2)/x]*
+c  [ln(1-x)] - [(1+(1-x)^2)/x]*epinv
+ 
       ii_gq=0d0
       if ((vorz .eq. 1) .or. (vorz .eq. 3)) return
       
@@ -123,6 +146,7 @@ c-- Id,agq=(1+(1-x)^2)/x*(-[ln(x)]+L+2*[ln(1-x)])+x
       
       if (vorz .eq. 2) then
         ii_gq=(one+omx**2)/x*(two*lomx-lx+L-epinv)+x
+        if (omx .gt. aii) ii_gq=ii_gq+(one+omx**2)/x*log(aii/omx)
         return
       endif
 
@@ -138,21 +162,32 @@ c-- Id,agq=(1+(1-x)^2)/x*(-[ln(x)]+L+2*[ln(1-x)])+x
       include 'epinv.f'
       include 'epinv2.f'
       include 'scheme.f'
+      include 'alfacut.f'
 c--- returns the integral of the subtraction term for an
 c--- initial-initial gluon-gluon antenna, either
 c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
-C--MSBR
+C--TH-V
 c-- Id,agg=(epinv*(epinv-L)+1/2*L^2+epinv*11/6-[pi]^2/6
 c--  -nf/3/xn*epinv)*[delta(1-x)]
 c--  -2*[ln(x)]/[1-x]
 c--  +2*(-1+x*(1-x)+(1-x)/x)*(-[ln(x)]+L+2*[ln(1-x)])
 c--  +(4*[ln(1-x)/(1-xp)]+2*L/[1-xp])
       
+c  IIgg = 
+c   - 2*[ln(x)]*[1-x]^-1 - 2*[ln(x)]*[(1-x)/x-1+x*(1-x)] + 2*
+c   [1-x]^-1*[ln(al(x))] + 2*[ln(al(x))]*[(1-x)/x-1+x*(1-x)]
+c   + 2*[(1-x)/x-1+x*(1-x)]*L + 4*[(1-x)/x-1+x*(1-x)]*[ln(1-x)]
+c   - 2*[(1-x)/x-1+x*(1-x)]*epinv
+c 
+c   + [delta(1-x)]
+c    * ( 1/2*L^2 - 1/6*pisq - epinv*L + epinv^2 )
+c 
+c   + [1/(1-x)_(0)]
+c    * ( 2*L + 4*[ln(1-x)] - 2*epinv )
+ 
       if (vorz .eq. 1) then
         ii_gg=epinv*(epinv2-L)+half*L**2-pisqo6
-     .       +(11d0-two*nf/xn)/6d0*epinv
-     .       -(11d0-two*nf/xn)/6d0*epinv
-        if (scheme .eq. 'msbr') then
+        if (scheme .eq. 'tH-V') then
         return
         elseif (scheme .eq. 'dred') then
         ii_gg=ii_gg-1d0/6d0
@@ -166,6 +201,8 @@ c--  +(4*[ln(1-x)/(1-xp)]+2*L/[1-xp])
       if (vorz .eq. 2) then
         lx=dlog(x)
         ii_gg=two*(omx/x+x*omx-one)*(two*lomx-lx+L-epinv)-two*lx/omx
+        if (omx .gt. aii) ii_gg=ii_gg
+     .  +two*(one/omx+omx/x+x*omx-one)*log(aii/omx)
         return
       endif
       
@@ -179,6 +216,8 @@ c--  +(4*[ln(1-x)/(1-xp)]+2*L/[1-xp])
 ***********************************************************************
 
 ***************************** Quark-Quark *****************************
+ 
+ 
       double precision function if_qq(x,L,vorz)
       implicit none
       integer vorz
@@ -187,19 +226,19 @@ c--  +(4*[ln(1-x)/(1-xp)]+2*L/[1-xp])
       include 'epinv.f'
       include 'epinv2.f'
       include 'scheme.f'
+      include 'alfacut.f'
 c--- returns the integral of the subtraction term for an
 c--- initial-final quark-gluon antenna, either
 c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
-c-- MSBR
+c-- TH-V
 c-- Id,aqq=(epinv*(epinv-L)+1/2*L^2+3/2*epinv+[pi]^2/6)*[delta(1-x)]
 c--  +(1-x-2/[1-x]*[ln(2-x)]
 c--  -(1+x)*(L+[ln(1-x)])-(1+x^2)*[ln(x)]/[1-x]
 c--  +4*[ln(1-x)/(1-xp)]+2*L/[1-xp]
       
       if (vorz .eq. 1) then
-        if_qq=epinv*(epinv2-L)+half*L**2+1.5d0*epinv+pisqo6
-     . -1.5d0*epinv
-        if (scheme .eq. 'msbr') then
+        if_qq=epinv*(epinv2-L)+half*L**2+pisqo6
+        if (scheme .eq. 'tH-V') then
         return
         elseif (scheme .eq. 'dred') then
         if_qq=if_qq-half
@@ -210,70 +249,26 @@ c--  +4*[ln(1-x)/(1-xp)]+2*L/[1-xp]
       omx=one-x
       lomx=dlog(omx)
       
+cIFqq = 
+c  + 1 - x - 2*[ln(x)]*[1-x]^-1 + [ln(x)]*[1+x] - 2*[1-x]^-1*
+c [ln((1+al-x)/al)] - [ln(al)]*[1+x] - [1+x]*L - [1+x]*[ln(1-x)]
+c  + [1+x]*epinv
+c 
+c + [delta(1-x)]
+c  * ( 1/2*L^2 + 1/6*pisq - epinv*L + epinv^2 )
+c 
+c + [1/(1-x)_(0)]
+c  * ( 2*L + 4*[ln(1-x)] - 2*epinv )
+
       if (vorz .eq. 2) then
-        ltmx=dlog(two-x)
+        ltmx=dlog((omx+aif)/aif)
         lx=dlog(x)
-        if_qq=omx-two*ltmx/omx-(one+x)*(lomx+L-epinv)-(1+x**2)/omx*lx
+        if_qq=omx-two/omx*ltmx-(one+x)*(lomx+L-epinv)-(one+x**2)/omx*lx
+        if_qq=if_qq-log(aif)*(one+x)
         return
       endif
       
       if_qq=two/omx*(two*lomx+L-epinv)
-      
-      return
-      end
-
-***************************** Quark-Gluon *****************************
-      double precision function if_qg(x,L,vorz)
-      implicit none
-      integer vorz
-      double precision x,L,omx,lx,lomx
-      include 'constants.f'
-      include 'epinv.f'
-      include 'epinv2.f'
-c--- returns the integral of the subtraction term for an
-c--- initial-final gluon-quark antenna, either
-c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
-c-- MSBR
-c-- Id,aqg=(1-2*x*(1-x))*(L-[ln(x)]+[ln(1-x)])+2*x*(1-x)
-      
-      if_qg=0d0
-      if ((vorz .eq. 1).or.(vorz .eq. 3)) return
-      
-      omx=one-x
-      lomx=dlog(omx)
-      lx=dlog(x)
-      
-      if (vorz .eq. 2) then
-        if_qg=(one-two*x*omx)*(lomx-lx+L-epinv)+two*x*omx
-      endif
-      
-      return
-      end
-      
-***************************** Gluon-Quark *****************************
-      double precision function if_gq(x,L,vorz)
-      implicit none
-      integer vorz
-      double precision x,L,omx,lx,lomx
-      include 'constants.f'
-      include 'epinv.f'
-      include 'epinv2.f'
-c--- returns the integral of the subtraction term for an
-c--- initial-final gluon-gluon antenna, either
-c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
-c-- MSBR
-c-- Id,agq=(1+(1-x)^2)/x*(L-[ln(x)]+[ln(1-x)])+x
-      
-      if_gq=0d0
-      if ((vorz .eq. 1).or.(vorz .eq. 3)) return
-      
-      omx=one-x
-      lomx=dlog(omx)
-      lx=dlog(x)
-      
-      if (vorz .eq. 2) then
-        if_gq=(one+omx**2)/x*(lomx-lx+L-epinv)+x
-      endif
       
       return
       end
@@ -287,10 +282,11 @@ c-- Id,agq=(1+(1-x)^2)/x*(L-[ln(x)]+[ln(1-x)])+x
       include 'epinv.f'
       include 'epinv2.f'
       include 'scheme.f'
+      include 'alfacut.f'
 c--- returns the integral of the subtraction term for an
 c--- initial-final gluon-gluon antenna, either
 c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
-c-- MSBR
+c-- TH-V
 c-- Id,agg=[delta(1-x)]*(
 c--  epinv*(epinv-L)+1/2*L^2+11/6*epinv+[pi]^2/6-1/3*epinv*nf/xn)
 c--  +2*(-1+(1-x)/x+x*(1-x))*(L-[ln(x)]+[ln(1-x)])
@@ -299,8 +295,7 @@ c--  +4*[ln(1-x)/(1-xp)]+2*L/[1-xp]
       
       if (vorz .eq. 1) then
         if_gg=epinv*(epinv2-L)+half*L**2+pisq/6d0
-c     .       +(11d0-two*nf/xn)*epinv/6d0
-        if (scheme .eq. 'msbr') then
+        if (scheme .eq. 'tH-V') then
         return
         elseif (scheme .eq. 'dred') then 
         if_gg=if_gg-1d0/6d0
@@ -311,10 +306,25 @@ c     .       +(11d0-two*nf/xn)*epinv/6d0
       omx=one-x
       lomx=dlog(omx)
       
+cIFgg = 
+c  - 2*[ln(x)]*[1-x]^-1 - 2*[ln(x)]*[(1-x)/x-1+x*(1-x)] - 2*
+c [1-x]^-1*[ln((1+al-x)/al)] + 2*[ln(al)]*[(1-x)/x-1+x*(1-x)]
+c  + 2*[(1-x)/x-1+x*(1-x)]*L + 2*[(1-x)/x-1+x*(1-x)]*[ln(1-x)]
+c  - 2*[(1-x)/x-1+x*(1-x)]*epinv
+c 
+c + [delta(1-x)]
+c  * ( 1/2*L^2 + 1/6*pisq - epinv*L + epinv^2 )
+c 
+c + [1/(1-x)_(0)]
+c  * ( 2*L + 4*[ln(1-x)] - 2*epinv )
+ 
+
+
       if (vorz .eq. 2) then
-        ltmx=dlog(two-x)
+        ltmx=dlog((omx+aif)/aif)
         lx=dlog(x)
-        if_gg=two*((lomx-lx+L-epinv)*(omx/x+x*omx-one)-(ltmx+lx)/omx)
+        if_gg=two*((lomx-lx+L-epinv+log(aif))*(omx/x+x*omx-one)
+     .  -(ltmx+lx)/omx)
         return
       endif
       
@@ -322,6 +332,71 @@ c     .       +(11d0-two*nf/xn)*epinv/6d0
       
       return
       end
+
+***************************** Quark-Gluon *****************************
+      double precision function if_qg(x,L,vorz)
+      implicit none
+      integer vorz
+      double precision x,L,omx,lx,lomx
+      include 'constants.f'
+      include 'epinv.f'
+      include 'alfacut.f'
+c--- returns the integral of the subtraction term for an
+c--- initial-final gluon-quark antenna, either
+c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
+c-- TH-V
+c-- Id,aqg=(1-2*x*(1-x))*(L-[ln(x)]+[ln(1-x)])+2*x*(1-x)
+cIFqg = 
+c  + 2*x - 2*x^2 - [ln(x)]*[x^2+(1-x)^2] + [ln(al)]*
+c [x^2+(1-x)^2] + [x^2+(1-x)^2]*L + [x^2+(1-x)^2]*[ln(1-x)]
+c  - [x^2+(1-x)^2]*epinv
+
+      
+      if_qg=0d0
+      if ((vorz .eq. 1).or.(vorz .eq. 3)) return
+      
+      omx=one-x
+      lomx=dlog(omx)
+      lx=dlog(x)
+      
+      if (vorz .eq. 2) then
+        if_qg=(one-two*x*omx)*(lomx-lx+L-epinv+log(aif))+two*x*omx
+      endif
+     
+      return
+      end
+      
+***************************** Gluon-Quark *****************************
+c      double precision function if_gq(x,L,vorz)
+c      implicit none
+c      integer vorz
+c      double precision x,L,omx,lx,lomx
+c      include 'constants.f'
+c      include 'epinv.f'
+c      include 'alfacut.f'
+c--- returns the integral of the subtraction term for an
+c--- initial-final gluon-gluon antenna, either
+c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
+c-- TH-V
+c-- Id,agq=(1+(1-x)^2)/x*(L-[ln(x)]+[ln(1-x)])+x
+cIFgq =  + x - [ln(x)]*[(1+(1-x)^2)/x] + [ln(al)]*
+c [(1+(1-x)^2)/x] + [(1+(1-x)^2)/x]*L + [(1+(1-x)^2)/x]*
+c [ln(1-x)] - [(1+(1-x)^2)/x]*epinv
+c 
+c      
+c      if_gq=0d0
+c      if ((vorz .eq. 1).or.(vorz .eq. 3)) return
+      
+c      omx=one-x
+c      lomx=dlog(omx)
+c      lx=dlog(x)
+      
+c      if (vorz .eq. 2) then
+c        if_gq=(one+omx**2)/x*(lomx-lx+L-epinv+log(aif))+x
+c      endif
+      
+c      return
+c      end
 
 ***********************************************************************
 **************************** FINAL-INITIAL ****************************
@@ -331,11 +406,12 @@ c     .       +(11d0-two*nf/xn)*epinv/6d0
       double precision function fi_qq(x,L,vorz)
       implicit none
       integer vorz
-      double precision x,L,omx
+      double precision x,L,omx,theta
       include 'constants.f'
       include 'epinv.f'
       include 'epinv2.f'
       include 'scheme.f'
+      include 'alfacut.f'
 c--- returns the integral of the subtraction term for an
 c--- final-initial quark-gluon antenna, either
 c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
@@ -344,10 +420,22 @@ c-- Id,aqq=(epinv*(epinv-L)+1/2*L^2+3/2*(epinv-L)+7/2-[pi]^2/2)*[delta(1-x)]
 c--  +2/[1-x]*[ln(2-x)]
 c--  +(-2*[ln(1-x)/(1-xp)]-3/2/[1-xp])
       
+cFIq = 
+c  + 2*[1-x]^-1*[ln(2-x)]*[Theta(x-1+al)]
+c 
+c + 2*[ln(1/(1-x))/(1-x)_(1-al)]
+c 
+c + [delta(1-x)]
+c  * ( 7/2 - 3/2*L + 1/2*L^2 - 1/2*pisq - 3/2*[ln(al)] - 
+c [ln(al)]^2 + 3/2*epinv - epinv*L + epinv^2 )
+c 
+c - 3/2*[1/(1-x)_(1-al)]
+      theta=0d0 
+      if (x .gt. 1d0-afi) theta=1d0       
       if (vorz .eq. 1) then
          fi_qq=epinv*(epinv2-L)+half*L**2+1.5d0*(epinv-L)
-     .   +3.5d0-half*pisq
-         if (scheme .eq. 'msbr') then
+     .   +3.5d0-half*pisq-log(afi)*(1.5d0+log(afi))
+         if (scheme .eq. 'tH-V') then
            return
          elseif (scheme .eq. 'dred') then
            fi_qq=fi_qq-half
@@ -358,11 +446,11 @@ c--  +(-2*[ln(1-x)/(1-xp)]-3/2/[1-xp])
       omx=one-x
       
       if (vorz .eq. 2) then
-        fi_qq=two*dlog(two-x)/omx
+        fi_qq=two*dlog(two-x)/omx*theta
         return
       endif
       
-      fi_qq=-(two*dlog(omx)+1.5d0)/omx
+      fi_qq=-(two*dlog(omx)+1.5d0)/omx*theta
       
       return
       end
@@ -371,11 +459,12 @@ c--  +(-2*[ln(1-x)/(1-xp)]-3/2/[1-xp])
       double precision function fi_gg(x,L,vorz)
       implicit none
       integer vorz
-      double precision x,L,omx
+      double precision x,L,omx,theta
       include 'constants.f'
       include 'epinv.f'
       include 'epinv2.f'
       include 'scheme.f'
+      include 'alfacut.f'
 c--- returns the integral of the subtraction term for an
 c--- final-initial gluon-gluon antenna, either
 c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
@@ -389,11 +478,26 @@ c--  *[delta(1-x)]
 c--  +4*[ln(2-x)]/[1-x]
 c--  +2*(-2*[ln(1-x)/(1-xp)]-11/6/[1-xp])
 
+cFIg = 
+c  + 4*[1-x]^-1*[ln(2-x)]*[Theta(x-1+al)]
+c 
+c + 4*[ln(1/(1-x))/(1-x)_(1-al)]
+c 
+c + [delta(1-x)]
+c  * ( 67/9 + L^2 - pisq - 2*[ln(al)]^2 - 2*epinv*L + 2*epinv^2 )
+c 
+c + [delta(1-x)]*CA^-1
+c  * ( - 20/9*Tr*nf - 2*[ln(al)]*b0 - 2*b0*L + 2*b0*epinv )
+c 
+c + [1/(1-x)_(1-al)]*CA^-1
+c  * ( - 2*b0 )
 
+      theta=0d0 
+      if (x .gt. 1d0-afi) theta=1d0       
       if (vorz .eq. 1) then
-        fi_gg=two*epinv*(epinv2-L)+L**2+67d0/9d0-pisq+11d0*(epinv-L)/3d0
-        fi_gg=fi_gg+dfloat(nf)/xn*(2d0/3d0*(-epinv+L)-10d0/9d0)
-        if (scheme .eq. 'msbr') then
+        fi_gg=two*epinv*(epinv2-L)+L**2+67d0/9d0-10d0/9d0*dfloat(nf)/xn
+     .  -pisq+2d0*b0/xn*(epinv-L)-2d0*log(afi)*(b0/xn+log(afi))
+        if (scheme .eq. 'tH-V') then
         return
         elseif (scheme .eq. 'dred') then
         fi_gg=fi_gg-dfloat(nf)/xn/3d0
@@ -404,11 +508,11 @@ c--  +2*(-2*[ln(1-x)/(1-xp)]-11/6/[1-xp])
       omx=one-x
       
       if (vorz .eq. 2) then
-        fi_gg=four*dlog(two-x)/omx
+        fi_gg=four*dlog(two-x)/omx*theta
         return
       endif
       
-      fi_gg=-(four*dlog(omx)+11d0/3d0-dfloat(nf)/xn*2d0/3d0)/omx
+      fi_gg=-(four*dlog(omx)+11d0/3d0-dfloat(nf)/xn*2d0/3d0)/omx*theta
       return
       end
 
@@ -435,7 +539,7 @@ c-- +2/3/[1-xp]
       
 c      if (vorz .eq. 1) then
 c       fi_qg=2d0/3d0*(-epinv+L)-10d0/9d0
-c       if (scheme .eq. 'msbr') then
+c       if (scheme .eq. 'tH-V') then
 c          return
 c       elseif (scheme .eq. 'dred') then
 c          fi_qg=fi_qg-1d0/3d0
@@ -463,16 +567,22 @@ c      end
       include 'epinv.f'
       include 'epinv2.f'
       include 'scheme.f'
+      include 'alfacut.f'
 c--- returns the integral of the subtraction term for an
 c--- final-initial quark-gluon antenna, either
 c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
 C --MSbar
 c Id,aqq=epinv*(epinv-L)+1/2*L^2+3/2*(epinv-L)+5-[pi]^2/2
       
+cFFq = 
+c  + 7/2 - 3/2*L + 1/2*L^2 + 3/2*al - 1/2*pisq - 3/2*[ln(al)]
+c  - [ln(al)]^2 + 3/2*epinv - epinv*L + epinv^2
+
       ff_qq=0d0
       if (vorz .eq. 1) then
         ff_qq=epinv*(epinv2-L)+half*L**2+1.5d0*(epinv-L)+5d0-half*pisq
-        if (scheme .eq. 'msbr') then
+        ff_qq=ff_qq+1.5d0*(aff-1d0+log(aff))-log(aff)**2
+        if (scheme .eq. 'tH-V') then
         return
         elseif (scheme .eq. 'dred') then
         ff_qq=ff_qq-half
@@ -500,7 +610,7 @@ c
 c      ff_qg=0d0
 c      if (vorz .eq. 1) then
 c        ff_qg=-2d0/3d0*(epinv-L)-16d0/9d0
-c        if (scheme .eq. 'msbr') then
+c        if (scheme .eq. 'tH-V') then
 c          return
 c        elseif (scheme .eq. 'dred') then
 c          ff_qg=ff_qg-1d0/3d0
@@ -519,6 +629,7 @@ c      end
       include 'epinv.f'
       include 'epinv2.f'
       include 'scheme.f'
+      include 'alfacut.f'
 c--- returns the integral of the subtraction term for an
 c--- final-initial gluon-gluon antenna, either
 c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
@@ -526,12 +637,17 @@ C --MSbar
 c Id,aqg=-2/3*(epinv-L)-16/9
 c Id,agg=2*epinv*(epinv-L)+L^2+11/3*(epinv-L)+100/9-[pi]^2
       
+cFFg = 
+c  + 67/9 + L^2 - pisq - 2*[ln(al)]^2 - 2*epinv*L + 2*epinv^2
+c + CA^-1
+c  * ( 2*al*b0 - 20/9*Tr*nf - 2*[ln(al)]*b0 - 2*b0*L + 2*b0*epinv ) + 0.
+
       ff_gg=0d0
       if (vorz .eq. 1) then
         ff_gg=two*epinv*(epinv2-L)+L**2+100d0/9d0-pisq
-     .        +11d0/3d0*(epinv-L)
-        ff_gg=ff_gg+dfloat(nf)/xn*(-2d0/3d0*(epinv-L)-16d0/9d0)
-        if (scheme .eq. 'msbr') then
+     .        +two*b0/xn*(epinv-L)-dfloat(nf)/xn*16d0/9d0
+        ff_gg=ff_gg-two*log(aff)**2+two*b0/xn*(aff-1d0-log(aff))
+        if (scheme .eq. 'tH-V') then
           return
         elseif (scheme .eq. 'dred') then
           ff_gg=ff_gg-dfloat(nf)/xn/3d0
@@ -541,3 +657,5 @@ c Id,agg=2*epinv*(epinv-L)+L^2+11/3*(epinv-L)+100/9-[pi]^2
       return
       end
 
+ 
+ 

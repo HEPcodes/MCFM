@@ -1,10 +1,9 @@
       subroutine xmqqgg(i,za,zb,xmatpc,xmatpv)
       implicit none
       include 'constants.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
       include 'nwz.f'
-      real*8 xmatpc,xmatpv,pp1,pp2,pm1,pm2,mp1,mp2,mm1,mm2
+      double precision xmatpc,xmatpv,pp1,pp2,pm1,pm2,mp1,mp2,mm1,mm2
       double complex xla(-1:1,-1:1),yla(-1:1,-1:1),qla(-1:1,-1:1)
       double complex xal(-1:1,-1:1),yal(-1:1,-1:1),qal(-1:1,-1:1)
       integer j,k,i(6)

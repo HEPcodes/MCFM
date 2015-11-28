@@ -1,7 +1,7 @@
       double complex function Fsc(st,j1,j2,j3,j4,j5,j6,za,zb) 
       implicit none
       include 'constants.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       integer j1,j2,j3,j4,j5,j6
       character*9 st
       double complex Fsc1,Fsc2,Fsc3,Fsc4,Fsc5,Fsc6,Fsc7,Fsc8

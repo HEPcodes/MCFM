@@ -8,16 +8,15 @@ c
 c--all momenta incoming
       include 'constants.f'
       include 'masses.f'
-      include 'qcdcouple.f'
       include 'ewcouple.f'
       include 'susycoup.f'
       include 'scheme.f'
       include 'runmb.f'
       include 'scale.f'
-      integer j,k,j1,j2,j3
+      integer j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),s
       double precision coupsq_eff,ghbb_eff
-      double precision amz,alphas,mb_eff,mb_msbar,massfrun
+      double precision amz,mb_eff,mb_msbar,massfrun
       double precision fac,propsq,hdecay,coupsq,ghbb,bbghvirt
       common/couple/amz
 

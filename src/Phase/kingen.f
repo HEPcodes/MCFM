@@ -1,7 +1,6 @@
       subroutine kingen(p)
       implicit none
       include 'constants.f'
-      include 'masses.f'
       integer iout
       double precision p(mxpart,4),s(mxpart,mxpart)
       call dotem(10,p,s)

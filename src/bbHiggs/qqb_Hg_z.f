@@ -9,13 +9,11 @@
       include 'scale.f'
       include 'PR_new.f'
       include 'agq.f'
-      include 'flags.f'
       include 'facscale.f'
       integer is
-      double precision z,xl12,xl15,xl25,p(mxpart,4),dot
-      double precision ii_qq,ii_qg,ii_gq,ii_gg,
-     .                 if_qq,if_gg,
-     .                 fi_qq,fi_gg,
+      double precision z,p(mxpart,4),dot
+      double precision ii_qg,ii_gq,
+     .                 fi_qq,
      .                 ii_gg_fac,if_gg_fac,ii_qq_fac,if_qq_fac
       double precision xl12_ren,xl15_ren,xl25_ren,
      .                 xl12_fac,xl15_fac,xl25_fac
@@ -34,8 +32,8 @@ c--- No (q,qb) terms here
 
 c--- (q,g)
       Q2(g,g,q,is)=ason4pi*xn
-     & *(ii_gg_fac(z,xl12_ren,xl12_fac,is)
-     &  +if_gg_fac(z,xl25_ren,xl25_fac,is)+fi_qq(z,xl25_ren,is))
+     & *(ii_gg_fac(z,xl12_ren,xl12_ren,is)
+     &  +if_gg_fac(z,xl25_ren,xl25_ren,is)+fi_qq(z,xl25_ren,is))
       Q1(q,q,g,is)=ason4pi*xn
      & *(ii_qq_fac(z,xl12_ren,xl12_fac,is)
      & -(if_qq_fac(z,xl15_ren,xl15_fac,is)+fi_qq(z,xl15_ren,is))/xnsq)
@@ -46,8 +44,8 @@ c      Q2(q,g,a,is)=Q2(a,g,q,is)
 
 c--- (g,q)
       Q1(g,g,q,is)=ason4pi*xn
-     & *(ii_gg_fac(z,xl12_ren,xl12_fac,is)
-     &  +if_gg_fac(z,xl15_ren,xl15_fac,is)+fi_qq(z,xl15_ren,is))
+     & *(ii_gg_fac(z,xl12_ren,xl12_ren,is)
+     &  +if_gg_fac(z,xl15_ren,xl15_ren,is)+fi_qq(z,xl15_ren,is))
       Q2(q,q,g,is)=ason4pi*xn
      & *(ii_qq_fac(z,xl12_ren,xl12_fac,is)
      & -(if_qq_fac(z,xl25_ren,xl25_fac,is)+fi_qq(z,xl25_ren,is))/xnsq)
@@ -66,8 +64,8 @@ c--- (g,g)
 
 c--- 4-quark terms
       do is=1,3
-      Q1(g,q,q,is)=ason4pi*(xn-1d0/xn)*ii_gq(z,xl12_fac,is)
-      Q2(g,q,q,is)=ason4pi*(xn-1d0/xn)*ii_gq(z,xl12_fac,is)
+      Q1(g,q,q,is)=ason4pi*(xn-1d0/xn)*ii_gq(z,xl12_ren,is)
+      Q2(g,q,q,is)=ason4pi*(xn-1d0/xn)*ii_gq(z,xl12_ren,is)
       Q1(g,a,a,is)=Q1(g,q,q,is)
       Q2(g,a,a,is)=Q2(g,q,q,is)
       Q1(g,a,q,is)=Q1(g,q,q,is)

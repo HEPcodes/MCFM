@@ -3,7 +3,7 @@
       character pdlabel*7
       double precision fx(-5:5),x,xmu
       double precision u_val,d_val,u_sea,d_sea,s_sea,c_sea,b_sea,gluon
-      double precision Ctq3df,Ctq4Fn,Ctq5Pdf,Ctq6Pdf
+      double precision Ctq3df,Ctq4Fn,Ctq5Pdf,Ctq6Pdf,Ctq5L
       integer mode,Iprtn,ih,Irt
 c---  ih1=+1 proton 
 c---  ih1=-1 pbar 
@@ -18,7 +18,16 @@ C---set to zero if x out of range
  
       if     ((pdlabel(1:3) .eq. 'mrs')
      .   .or. (pdlabel(2:4) .eq. 'mrs')) then
-             if     (pdlabel .eq. 'mrs0119') then
+
+             if     (pdlabel .eq. 'mrs02nl') then
+             mode=1
+             call mrst2002(x,xmu,mode,u_val,d_val,u_sea,d_sea,
+     &                          s_sea,c_sea,b_sea,gluon)
+             elseif     (pdlabel .eq. 'mrs02nn') then
+             mode=2
+             call mrst2002(x,xmu,mode,u_val,d_val,u_sea,d_sea,
+     &                          s_sea,c_sea,b_sea,gluon)
+             elseif     (pdlabel .eq. 'mrs0119') then
              mode=1
              call mrst2001(x,xmu,mode,u_val,d_val,u_sea,d_sea,
      &                          s_sea,c_sea,b_sea,gluon)
@@ -101,6 +110,26 @@ C---set to zero if x out of range
              elseif (pdlabel .eq. 'mrs98z5') then
              mode=5
              call mrs98(x,xmu,mode,u_val,d_val,u_sea,d_sea,
+     &                          s_sea,c_sea,b_sea,gluon)
+             elseif (pdlabel .eq. 'mrs98l1') then
+             mode=1
+             call mrs98lo(x,xmu,mode,u_val,d_val,u_sea,d_sea,
+     &                          s_sea,c_sea,b_sea,gluon)
+             elseif (pdlabel .eq. 'mrs98l2') then
+             mode=2 
+             call mrs98lo(x,xmu,mode,u_val,d_val,u_sea,d_sea,
+     &                          s_sea,c_sea,b_sea,gluon)
+             elseif (pdlabel .eq. 'mrs98l3') then
+             mode=3
+             call mrs98lo(x,xmu,mode,u_val,d_val,u_sea,d_sea,
+     &                          s_sea,c_sea,b_sea,gluon)
+             elseif (pdlabel .eq. 'mrs98l4') then
+             mode=4
+             call mrs98lo(x,xmu,mode,u_val,d_val,u_sea,d_sea,
+     &                          s_sea,c_sea,b_sea,gluon)
+             elseif (pdlabel .eq. 'mrs98l5') then
+             mode=5
+             call mrs98lo(x,xmu,mode,u_val,d_val,u_sea,d_sea,
      &                          s_sea,c_sea,b_sea,gluon)
              elseif (pdlabel .eq. 'mrs98ht') then
              mode=1
@@ -252,6 +281,31 @@ C   10     CTEQ4LQ  Low Q0                  0.114        0.7      cteq4lq.tbl
              endif
              return
 
+      elseif (pdlabel .eq. 'cteq5l1') then
+             fx(-5)=Ctq5L(-5,x,xmu)
+             fx(-4)=Ctq5L(-4,x,xmu)
+             fx(-3)=Ctq5L(-3,x,xmu)
+
+             fx(0)=Ctq5L(0,x,xmu)
+
+             fx(+3)=Ctq5L(+3,x,xmu)
+             fx(+4)=Ctq5L(+4,x,xmu)
+             fx(+5)=Ctq5L(+5,x,xmu)
+
+             if (ih.eq.1) then
+               fx(1)=Ctq5L(+2,x,xmu)
+               fx(2)=Ctq5L(+1,x,xmu)
+               fx(-1)=Ctq5L(-2,x,xmu)
+               fx(-2)=Ctq5L(-1,x,xmu)
+             elseif(ih.eq.-1) then
+               fx(1)=Ctq5L(-2,x,xmu)
+               fx(2)=Ctq5L(-1,x,xmu)
+               fx(-1)=Ctq5L(+2,x,xmu)
+               fx(-2)=Ctq5L(+1,x,xmu)
+             endif
+
+             return
+ 
       elseif ((pdlabel(1:5) .eq. 'cteq5') .or. 
      .        (pdlabel(1:4) .eq. 'ctq5')) then
  
@@ -344,6 +398,7 @@ c-----assign to standard grid
           write(6,*) 'Unimplemented mrs distribution' 
           write(6,*) 'pdlabel= ',pdlabel
           write(6,*) 'Implemented are: ',
+     . 'mrs02nl,mrs02nn,',
      . 'mrs0119,mrs0177,mrs0121,mrs01_j,',
      . 'mrs99_1,mrs99_2,mrs99_3,mrs99_4,mrs99_5,mrs99_6,',
      . 'mrs99_7,mrs99_8,mrs99_9,mrs9910,mrs9911,mrs9912,',
@@ -362,6 +417,7 @@ c-----assign to standard grid
      . 'cteq5_m,',
      . 'cteq5_d,',
      . 'cteq5_l,',
+     . 'cteq5l1,',
      . 'cteq5hj,',
      . 'cteq5hq,',
      . 'cteq5f3,',

@@ -17,10 +17,10 @@ c                           ---> f(p5)+f(p6)
       include 'masses.f'
       include 'qcdcouple.f'
       include 'ckm.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       include 'zcouple.f'
       include 'ewcouple.f'
-      include 'hardscale.f'
       include 'flags.f'
       include 'lc.f'
       integer j,k,n1,n2
@@ -314,7 +314,7 @@ c--- Q G --> Q q qb
      .                   (aveqg/aveqq)*QG_u_duu
      .                  +dfloat(nf-2)*(aveqg/aveqq)*QG_u_dcc
      .                  +(aveqg/aveqq)*QG_u_ddd*0.5d0)
-     .                         +(2d0-Vsq(j,-j+1))*
+     .                +(2d0-Vsq(j,-j+1))*
      .                   (aveqg/aveqq)*QG_d_dsc
         elseif( jj(j) .eq. 1) then
          msq(j,k)=msq(j,k)+Vsq(-j,j+1)*(aveqg/aveqq)*QG_d_ddu*0.5d0
@@ -327,20 +327,21 @@ c--- QB G --> QB qb q
      .                   (aveqg/aveqq)*QbG_d_udd
      .                  +(aveqg/aveqq)*QbG_d_uuu*0.5d0
      .                  +dfloat(nf-2)*(aveqg/aveqq)*QbG_d_ucc)
-     .                         +(2d0-Vsq(j,-j+1))*
+     .                +(2d0-Vsq(j,-j+1))*
      .                   (aveqg/aveqq)*QbG_u_ucs
         elseif( jj(j) .eq. -2) then
-              msq(j,k)=msq(j,k)+(aveqg/aveqq)*QbG_u_uud*0.5d0
-     .                         +(aveqg/aveqq)*QbG_u_ucs
+         msq(j,k)=msq(j,k)+Vsq(-j,j+1)*(aveqg/aveqq)*QbG_u_uud*0.5d0
+     .                    +(2d0-Vsq(-j,j+1))*(aveqg/aveqq)*QbG_u_ucs
         endif
 c--- G Q --> Q q qb
       elseif ((j .eq. 0) .and. (k .gt. 0)) then
         if( kk(k) .eq. 2) then
-         msq(j,k)=msq(j,k)+Vsum(k)*(
+         msq(j,k)=msq(j,k)+Vsq(k,-k+1)*(
      .              (aveqg/aveqq)*GQ_u_udu
      .             +dfloat(nf-2)*(aveqg/aveqq)*GQ_u_dcc
-     .             +(aveqg/aveqq)*GQ_u_ddd*0.5d0
-     .             +(aveqg/aveqq)*GQ_d_dsc)
+     .             +(aveqg/aveqq)*GQ_u_ddd*0.5d0)
+     .          +(2d0-Vsq(k,-k+1))*
+     .              (aveqg/aveqq)*GQ_d_dsc
         elseif( kk(k) .eq. 1) then
          msq(j,k)=msq(j,k)+Vsq(-k,k+1)*(aveqg/aveqq)*GQ_d_ddu*0.5d0
      .                    +(2d0-Vsq(-k,k+1))*(aveqg/aveqq)*GQ_d_dsc
@@ -352,7 +353,7 @@ c--- G QB --> QB qb q
      .                   (aveqg/aveqq)*GQb_d_udd
      .                  +(aveqg/aveqq)*GQb_d_uuu*0.5d0
      .                  +dfloat(nf-2)*(aveqg/aveqq)*GQb_d_ucc)
-     .                         +(2d0-Vsq(k,-k+1))*
+     .                +(2d0-Vsq(k,-k+1))*
      .                   (aveqg/aveqq)*GQb_u_ucs
         elseif( kk(k) .eq. -2) then
          msq(j,k)=msq(j,k)+Vsq(-k,k+1)*(aveqg/aveqq)*GQb_u_uud*0.5d0
@@ -372,7 +373,6 @@ c--- G QB --> QB qb q
       subroutine addhel(i1,i2,i3,i4,i5,i6,i7,xmsq_ud_dd,
      . xmsq_us_ds,xmsq_uu_du)
       implicit none
-      include 'constants.f'
       integer i1,i2,i3,i4,i5,i6,i7
       double precision xmsq_ud_dd,xmsq_us_ds,xmsq_uu_du,
      .uLdR_dLdRp,uLdR_dRdLp,uRuL_dLuRp,uLsL_dLsLp,uLdL_dLdLp,uLuL_dLuLp,

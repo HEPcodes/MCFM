@@ -1,7 +1,7 @@
       subroutine w2jetsq(i1,i2,i3,i4,i5,i6,za,zb,msq)
       implicit none
       include 'constants.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       include 'lc.f'
       include 'mmsq_cs.f'
       double complex qcd1(-1:1,-1:1),qcd2(-1:1,-1:1),qed(-1:1,-1:1)

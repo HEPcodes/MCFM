@@ -30,7 +30,7 @@ c--set msq=0 to initalize
       msq(j,k)=0d0
           if ((j .gt. 0) .and. (k .lt. 0)) then
             msq(j,k)=Vsq(j,k)*qqb
-          elseif ((j .lt. 0) .and. (k. gt. 0)) then
+          elseif ((j .lt. 0) .and. (k .gt. 0)) then
             msq(j,k)=Vsq(j,k)*qbq
           endif
       enddo

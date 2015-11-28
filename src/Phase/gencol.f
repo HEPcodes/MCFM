@@ -4,8 +4,8 @@ c---Generate an x value and store it for later retrieval
       integer emit,lemit
       double precision x,xjac,xmin,xl,xljac,xlmin,r
       save xl,xljac,xlmin,lemit
-      x=1-(1-xmin)*abs(1-2*r)
-      xjac=2*(1-xmin)
+      x=1d0-(1d0-xmin)*abs(1d0-2d0*r)
+      xjac=2d0*(1d0-xmin)
       xl=x
       xljac=xjac
       xlmin=xmin

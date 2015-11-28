@@ -22,7 +22,6 @@ c--- are included in the subtraction terms for the QQGG piece
       implicit none 
       include 'constants.f'
       include 'ckm.f'
-      include 'masses.f'
       include 'ptilde.f'
       include 'qqgg.f'
       include 'flags.f'

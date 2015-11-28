@@ -4,12 +4,10 @@
       double precision cosxi,s,MW,MH,betaw,costh
      .  ,nh_cmw1(4),nh_cmw2(4),nw_cmh1(4),nw_cmh2(4)
       double precision p1(4),p2(4),pw(4),ph(4),dotpr
-      double precision pwDph,pwDpw,pwDp1,phDp1,phDph
+      double precision pwDph,pwDpw,phDph
 
 
       
-      pwDp1=dotpr(pw,p1)
-      phDp1=dotpr(ph,p1)
       pwDph=dotpr(pw,ph)
       pwDpw=dotpr(pw,pw)
       phDph=dotpr(ph,ph)

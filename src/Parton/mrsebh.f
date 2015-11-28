@@ -69,7 +69,7 @@ C :::::::::::: HARRIMAN MARTIN ROBERTS STIRLING (E) sea=ubar=dbar=2sbar at Q0**2
 
       IF(INIT.NE.0) GOTO 10
       open(unit=27,
-     & file='mrse.dat',status='old')
+     & file='Pdfdata/mrse.dat',status='old')
       INIT=1
       DO 20 N=1,nx-1
       DO 20 M=1,19
@@ -151,7 +151,7 @@ C :::::::::::: HARRIMAN MARTIN ROBERTS STIRLING (B) sea=ubar=dbar=2sbar at Q0**2
 
       IF(INIT.NE.0) GOTO 10
       open(unit=28,
-     & file='mrsb.dat',status='old')
+     & file='Pdfdata/mrsb.dat',status='old')
       INIT=1
       DO 20 N=1,nx-1
       DO 20 M=1,19

@@ -20,8 +20,8 @@ c---- example, gg -> qqb as well as gg -> qbq
       include 'qcdcouple.f'
       include 'zcouple.f'
       include 'ewcharge.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
+      include 'sprods_com.f'
 
 C ip is the label of the emitter
 C in is the label of the contracted line

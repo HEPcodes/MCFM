@@ -1,5 +1,5 @@
       double precision pi,pisq,pisqo6
-      parameter(pi=3.141592653589793238d0,pisq=pi*pi,pisqo6=pisq/6d0)
+      parameter(pi=3.14159265358979d0,pisq=pi*pi,pisqo6=pisq/6d0)
       double precision twopi,fourpi,pion4,pion10,pisqm8,rt2onpi
       parameter(twopi=2d0*pi)
       parameter(fourpi=4d0*pi)
@@ -23,7 +23,10 @@ c-----------------------------------------------------
       parameter(three=3d0,four=4d0,eight=8d0)
       double precision rt2,twort2,fourrt2
       parameter(rt2=1.4142135624d0,twort2=two*rt2,fourrt2=four*rt2)
-
+      double precision vevsq
+      parameter(vevsq=1d0/rt2/gf)
+C     This vevsq is defined so that gwsq/(4*wmass**2)=Gf*rt2=1/vevsq
+C     (ie differs from definition in ESW)
       double precision dfbGeV2,fbGeV2,pbGeV2,nbGeV2,overa
       parameter(nbGeV2=0.389379d6)
       parameter(pbGeV2=0.389379d9)
@@ -33,7 +36,7 @@ c----decifemtobarns
       parameter(overa=pbGeV2/xn/256d0/pi)
 c-----------------------------------------------------
       double complex im,impi,czip,cone
-      parameter(im=(0d0,1d0),impi=(0d0,3.141592653589793238d0),
+      parameter(im=(0d0,1d0),impi=(0d0,3.14159265358979d0),
      . czip=(0d0,0d0),cone=(1d0,0d0))
 c-----------------------------------------------------
       integer nloop,nf,fn,mxpart

@@ -6,7 +6,7 @@ c--- first index of T1 refers to b-line(9,10)
 c--- second index refers to initial-line(1,2)
       include 'constants.f'
       include 'masses.f'
-      include 'prods.f'
+      include 'zprods_com.f'
       double complex T1(2,2),fac,pr,pr1687,pr4351
       integer bpass,i1,i2,i3,i4,i5,i6,i7,i8,i9,it,j9,jt,jw,jx,jy,jz
 C--statement function
@@ -43,7 +43,7 @@ c--- second index refers to initial-line(1,2)
       implicit none
       include 'constants.f'
       include 'masses.f'
-      include 'prods.f'
+      include 'zprods_com.f'
       double complex T2(2,2),fac,pr,pr2687,pr4352
       integer bpass,i1,i2,i3,i4,i5,i6,i7,i8,i9,it,j9,jt,jw,jx,jy,jz
 C--statement function
@@ -79,7 +79,7 @@ c--- first index refers to b-line(9,t)
 c--- second index refers to initial-line(1,2)
       include 'constants.f'
       include 'masses.f'
-      include 'prods.f'
+      include 'zprods_com.f'
       double complex T3(2,2),fac,part1,part2,part3,part4
       integer bpass,ipass,i1,i2,i3,i4,i5,i6,i7,i8,i9,it,j1,j2,j9,jt
       do bpass=1,2
@@ -127,7 +127,7 @@ c--- first index refers to b-line(9,10)
 c--- second index refers to initial-line(1,2)
       include 'constants.f'
       include 'masses.f'
-      include 'prods.f'
+      include 'zprods_com.f'
       double complex T4(2,2),fac,part1,part2,part3,part4
       integer bpass,ipass,i1,i2,i3,i4,i5,i6,i7,i8,i9,it,j1,j2,j9,jt
 
@@ -177,7 +177,7 @@ c--- first index refers to b-line(9,10)
 c--- second index refers to initial-line(1,2)
       include 'constants.f'
       include 'masses.f'
-      include 'prods.f'
+      include 'zprods_com.f'
       double complex T5(2,2),fac,part1,part2,part3
       integer bpass,ipass,i1,i2,i3,i4,i5,i6,i7,i8,i9,it,j1,j2,j9,jt
       
@@ -202,7 +202,7 @@ c--- second index refers to initial-line(1,2)
       part1=zb(i8,i6)*za(i6,j9)+zb(i8,jt)*za(jt,j9)
       part2=zb(i4,i3)*za(i3,j2)+zb(i4,i5)*za(i5,j2)
       part3=zb(j1,i6)*za(i6,i7)+zb(j1,i8)*za(i8,i7)+zb(j1,j9)*za(j9,i7)
-     . +zb(j1,jt)*za(jt,i7)
+c     . +zb(j1,jt)*za(jt,i7)
       fac=+16d0*za(i5,i3)*zb(jt,i6)*part1
       T5(bpass,ipass)=fac*(part3*part2-mt**2*zb(i4,j1)*za(j2,i7))
       enddo
@@ -219,7 +219,7 @@ c--- first index refers to b-line(9,10)
 c--- second index refers to initial-line(1,2)
       include 'constants.f'
       include 'masses.f'
-      include 'prods.f'
+      include 'zprods_com.f'
       double complex T6(2,2),fac,part1,part2,part3
       integer bpass,ipass,i1,i2,i3,i4,i5,i6,i7,i8,i9,it,j1,j2,j9,jt
       
@@ -261,10 +261,10 @@ c--- first index refers to b-line(9,10)
 c--- second index refers to initial-line(1,2)
       include 'constants.f'
       include 'masses.f'
-      include 'prods.f'
+      include 'zprods_com.f'
       double complex T7(2,2),fac,p,part1,part2,part3
       integer i1,i2,i3,i4,i5,i6,i7,i8,i9,it,j1,j2,j9,jt,
-     & jw,jx,jy,jz,ipass,bpass
+     . jw,jx,jy,jz,ipass,bpass
 C--statement function
       p(jw,jx,jy,jz)=zb(jw,jx)*za(jx,jz)+zb(jw,jy)*za(jy,jz)
       fac=+16d0*za(i5,i3)*zb(i8,i6)

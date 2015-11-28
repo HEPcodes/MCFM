@@ -1,8 +1,8 @@
       double complex function fpm(j1,j2,j3,j4,j5,j6,za,zb)
       implicit none
       include 'constants.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
       integer j1,j2,j3,j4,j5,j6
       double complex L0,L1,Lnrat,Lsm1,i3m,Lsm1_2mh
       double complex t0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,
@@ -121,7 +121,7 @@
      #/za(j5,j6)*(za(j4,j5)**2+za(j3,j5)**2*(-za(j1,j4)*zb(j1,j3)-za(j2,
      #j4)*zb(j2,j3))/(-za(j1,j3)*zb(j1,j4)-za(j2,j3)*zb(j2,j4)))*zb(j3,j
      #4)*t(j2,j3,j4))
-      s10 = -1
+      s10 = -cone
       s12 = i3m(s(j3,j4),s(j1,j2),s(j5,j6))
       s14 = -1/(-za(j1,j3)*zb(j2,j3)-za(j1,j4)*zb(j2,j4))/(za(j1,j2)*zb(
      #j2,j4)+za(j1,j3)*zb(j3,j4))*(za(j1,j2)*zb(j2,j3)*(-za(j1,j5)*zb(j1

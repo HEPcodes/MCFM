@@ -6,7 +6,8 @@ c--- first index of T1 refers to b-line(9,10)
 c--- second index refers to initial-line(1,2)
       include 'constants.f'
       include 'masses.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       double complex T1(2,2),fac,pr,pr1687,pr4351,den,polnorm
       integer bpass,i1,i2,i9,it,j9,jt,jw,jx,jy,jz
       double precision qDq,rDr,aDa,bDb,mtsq
@@ -66,7 +67,8 @@ c--- second index refers to initial-line(1,2)
       implicit none
       include 'constants.f'
       include 'masses.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       double complex T2(2,2),fac,pr,pr2687,pr4352,den,polnorm
       double precision qDq,rDr,aDa,bDb,mtsq
       integer bpass,i1,i2,i9,it,j9,jt,jw,jx,jy,jz
@@ -123,7 +125,8 @@ c--- first index refers to gluon-line 9
 c--- second index refers to initial-line(1,2)
       include 'constants.f'
       include 'masses.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       double complex T3(2,2),pr,fac,pg687,p4352,p167899,m26789g,
      . den,polnorm
       double precision qDq,rDr,aDa,bDb,mtsq
@@ -192,7 +195,8 @@ c--- first index refers to b-line(9,10)
 c--- second index refers to initial-line(1,2)
       include 'constants.f'
       include 'masses.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       double complex T4(2,2),fac,pr,p1687,p4359,m934591,pg34592,
      . den,polnorm
       double precision qDq,rDr,aDa,bDb,mtsq
@@ -262,7 +266,8 @@ c--- first index refers to b-line(9,10)
 c--- second index refers to initial-line(1,2)
       include 'constants.f'
       include 'masses.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       double complex T5(2,2),fac,pr,p4352,p16897,den,polnorm
       double precision qDq,rDr,aDa,bDb,mtsq
       integer bpass,ipass,i1,i2,i9,it,j1,j2,j9,jt,jw,jx,jy,jz
@@ -323,7 +328,8 @@ c--- first index refers to gluon-line(9)
 c--- second index refers to initial-line(1,2)
       include 'constants.f'
       include 'masses.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       double complex T6(2,2),pr,fac,pg953,p1687,p43592,den,polnorm
       double precision qDq,rDr,aDa,bDb,mtsq
       integer bpass,ipass,i1,i2,i9,it,j1,j2,j9,jt,jw,jx,jy,jz
@@ -383,7 +389,8 @@ c--- first index refers to b-line(9,10)
 c--- second index refers to initial-line(1,2)
       include 'constants.f'
       include 'masses.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       double complex T7(2,2),den,fac,pr,part1,part2,part3,polnorm
       double precision qDq,rDr,aDa,bDb,mtsq
       integer i1,i2,i9,it,j1,j2,j9,jt,jw,jx,jy,jz,ipass,bpass

@@ -13,19 +13,17 @@
 *     quark line, the second for the helicity of the lepton line.      *
 ************************************************************************
       include 'constants.f'
-      include 'prods.f'
+      include 'zprods_com.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'lc.f'
       integer i1(2),i2(2),i3(2),i4(2),i5(2),i6(2),j,lh,h2,h3,hq,h(2:3)
-      double precision mqqb(2,2),mqqb_vec(2,2),mqqb_ax(2,2),x,fac
+      double precision mqqb(2,2),mqqb_vec(2,2),mqqb_ax(2,2),fac
       double complex m(2),ml1(2),ml2(2),ml3,ml4(2)
       double complex ml_vec(2),ml1_ax(2),ml2_ax(2)
       double complex a6treeg1,
      . a61g1lc,a61g1slc,a61g1nf,a63g1,a64v,a64ax,a65ax
       character*9 st1(2,2),st2(2,2),st3(2,2)
-      logical compare
-      parameter(x=xn/cf)
       data i1/1,4/
       data i2/2,3/
       data i3/3,2/
@@ -36,8 +34,6 @@
       data st2/'q+qb-g+g+','q+qb-g+g-','q+qb-g-g+','q+qb-g-g-'/
       data st3/'q+qb-g-g-','q+qb-g-g+','q+qb-g+g-','q+qb-g+g+'/
 
-      compare=.false.
-      
 C ---final matrix element squared is needed as function of quark line helicity
 C----and lepton line helicity
 C----first argument is quark line helicity
@@ -177,8 +173,7 @@ c--- no extra factor here since colour algebra is already done in (2.12)
 c----wrapper to a61g that also includes config st='q+g-g-qb-'
       integer j1,j2,j3,j4,j5,j6
       include 'constants.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
       character*9 st
       double complex a61gcol
 
@@ -196,8 +191,7 @@ c----wrapper to a61g that also includes config st='q+g-g-qb-'
 c----wrapper to a61g that also includes config st='q+g-g-qb-'
       integer j1,j2,j3,j4,j5,j6
       include 'constants.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
       character*9 st
       double complex a61gcol
 
@@ -215,8 +209,7 @@ c----wrapper to a61g that also includes config st='q+g-g-qb-'
 c----wrapper to a61g that also includes config st='q+g-g-qb-'
       integer j1,j2,j3,j4,j5,j6
       include 'constants.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
       character*9 st
       double complex a61gcol
 
@@ -233,7 +226,7 @@ c----wrapper to a61g that also includes config st='q+g-g-qb-'
       implicit none
 C---hep-ph/9708239, Eqn 2.13
       include 'constants.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       integer j1,j2,j3,j4,j5,j6,ncol
       character*9 st
       double complex a6g,a6sg,a6fg,a6tg
@@ -262,8 +255,7 @@ c--- comes with natural colour factor (1/xn)
 c----wrapper to a63g that also includes config st='q+qb-g-g-'
       integer j1,j2,j3,j4,j5,j6
       include 'constants.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
       character*9 st
       double complex a63g
 
@@ -281,8 +273,7 @@ c----wrapper to a63g that also includes config st='q+qb-g-g-'
 c----definition (2.13) of BDK, writes in terms of fvs and fvf
       integer j1,j2,j3,j4,j5,j6
       include 'constants.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
       character*9 st
       double complex fvs,fvf
 
@@ -305,8 +296,7 @@ c----definition (2.13) of BDK, writes in terms of fvs and fvf
 c----definition (2.13) of BDK
       integer j1,j2,j3,j4,j5,j6
       include 'constants.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
       character*9 st
       double complex fax
 
@@ -324,8 +314,7 @@ c----definition (2.13) of BDK
 c----definition (2.13) of BDK
       integer j1,j2,j3,j4,j5,j6
       include 'constants.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
       character*9 st
       double complex faxsl
 

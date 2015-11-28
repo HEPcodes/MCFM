@@ -10,9 +10,7 @@ c--all momenta incoming
       include 'constants.f'
       include 'masses.f'
       include 'ewcouple.f'
-      include 'qcdcouple.f'
-      include 'zcouple.f'
-      include 'dprodx.f'
+      include 'sprods_com.f'
       integer j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),gg,qg,gq,qq,hbb
       double precision ehsvm3,ehsvm4,origmbsq
@@ -58,7 +56,6 @@ c--- matrix element for H -> bbbar
       include 'masses.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
-      include 'zcouple.f'
 c---Matrix element squared Eqn 2.2 of EHSV
       double complex ehsva2,ehsva4
       double precision s,t,u
@@ -87,7 +84,6 @@ c--- approx TRUE uses the heavy fermion approximation to Msq
       include 'masses.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
-      include 'zcouple.f'
 c---Matrix element squared Eqn 2.6 of EHSV
       double complex ehsva5
       double precision s,t,u

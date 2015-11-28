@@ -8,7 +8,6 @@ c     +g(p7)
 c---
       implicit none 
       include 'constants.f'
-      include 'masses.f'
       include 'ptilde.f'
       include 'qqgg.f'
       integer j,k,nd

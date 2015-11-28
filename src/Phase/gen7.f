@@ -1,8 +1,8 @@
       subroutine gen7(r,q,wt7,*)
       implicit none
       include 'constants.f'
-      include 'masses.f'
       include 'mxdim.f'
+      include 'process.f'
       include 'debug.f'
       integer nu
 
@@ -12,8 +12,6 @@
      . p9(4),pswt,xjac,p1ext(4),p2ext(4)
       double precision xx(2),xmin,tau,taumin,x1mx2,surd
       double precision lntaum
-      character*6 case
-      common/process/case
       common/pext/p1ext,p2ext
       common/x1x2/xx
       common/taumin/taumin

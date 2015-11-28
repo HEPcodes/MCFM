@@ -1,2 +1,2 @@
       double precision hscalesq 
-      parameter(hscalesq=21.3444d0)
+      parameter(hscalesq=22.5625d0)

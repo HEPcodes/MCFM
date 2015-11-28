@@ -489,9 +489,9 @@ c---QbarQ
       sa=1d0
       sb=1d0
       sc=1d0
-      if (a. le. 2) sa=-1d0
-      if (b. le. 2) sb=-1d0
-      if (c. le. 2) sc=-1d0
+      if (a .le. 2) sa=-1d0
+      if (b .le. 2) sb=-1d0
+      if (c .le. 2) sc=-1d0
             
       eikf=sa*sc*s(a,c)/(sa*sb*s(a,b)+sb*sc*s(b,c))
      .                 /(sa*sb*s(a,b))*two*gsq

@@ -1,7 +1,6 @@
       subroutine gen8(r,q,wt8,*)
       implicit none
       include 'constants.f'
-      include 'masses.f'
       include 'mxdim.f'
       include 'debug.f'
       integer nu

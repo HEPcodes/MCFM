@@ -3,10 +3,30 @@
 \begin{document}
 \def\GeV{\mbox{GeV}}
 
+\thispagestyle{empty}
+\vspace*{3cm}
+\begin{center}
+{\Huge MCFM v3.4} \\
+\vspace*{0.5cm}
+\Large{A Monte Carlo for FeMtobarn} \\
+\Large{processes at Hadron Colliders} \\
+\vspace*{2cm}
+{\huge Users Guide} \\
+\vspace*{4cm}
+{\it Authors:} \\
+\vspace*{0.2cm}
+J. M. Campbell ({\tt johnmc@hep.anl.gov}) \\
+R. K. Ellis ({\tt ellis@fnal.gov}) \\
+\vspace*{2.5cm}
+{\it \small Updated: 24th April 2003}
+\end{center}
+
+\newpage
+
 \section{Installation}
 
-The tar'ed, gzip'ed, uu-encoded package may be downloaded from \\
-{\tt http://theory.fnal.gov/people/ellis/Programs/mcfm.html}. \\
+The tar'ed, gzip'ed and uu-encoded package may be downloaded from
+the {\tt MCFM} home-page at {\tt http://mcfm.fnal.gov}.
 After extracting, the source can be initialized by running the
 {\tt Install} command and then compiled with {\tt make}. The
 {\tt Install} script may be edited prior to running to include
@@ -18,42 +38,45 @@ The directory structure of the installation is as follows:
 \begin{itemize}
 \item {\tt Doc}. The source for this document.
 \item {\tt Bin}. The directory containing the executable {\tt mcfm},
-various options files and PDF data-files.
+and various essential files -- notably the options file {\tt input.DAT}.
+\item {\tt Bin/Pdfdata}. The directory containing the PDF data-files.
 \item {\tt obj}. The object files produced by the compiler. 
-\item {\tt src}. The Fortran source files. 
+\item {\tt src}. The Fortran source files in various subdirectories.
 \end{itemize}
 
 \section{Input parameters}
-The default input parameters are given in the table above.
+The default input parameters are given in Table~\ref{default}.
 \begin{table}
 \begin{center}
 \begin{tabular}{|c|c|c|c|} \hline
-Parameter & Fortran name & Default value & Location where set                 \\ 
+Parameter & Fortran name & Default value & Location where set:
+{\tt src/} \ldots                \\ 
 \hline
-$m_t$            & {\tt mt}      & 175 GeV             &{\tt /User/mdata.f}   \\
-$m_\tau$         & {\tt mtau}      & 1.777 GeV           &{\tt /User/mdata.f}   \\
-$m^2_\tau(Q=100\GeV)$& {\tt mtausq}  & 3.1602 GeV$^2$      &{\tt /User/mdata.f}   \\
-$m^2_c(Q=100\GeV)$   & {\tt mcsq}    & 0.4  GeV$^2$        &{\tt /User/mdata.f}   \\
-$m^2_b(Q=100\GeV)$   & {\tt mbsq}    & 10.7 GeV$^2$        &{\tt /User/mdata.f}   \\
+$m_t$            & {\tt mt}      & 175 GeV             &{\tt User/mdata.f}   \\
+$m_\tau$         & {\tt mtau}      & 1.777 GeV           &{\tt User/mdata.f}   \\
+$m^2_\tau(Q=100\GeV)$& {\tt mtausq}  & 3.1602 GeV$^2$      &{\tt User/mdata.f}   \\
+$m^2_c(Q=100\GeV)$   & {\tt mcsq}    & 0.4  GeV$^2$        &{\tt User/mdata.f}   \\
+$m^2_b(Q=100\GeV)$   & {\tt mbsq}    & 10.7 GeV$^2$        &{\tt User/mdata.f}   \\
 $\Gamma_\tau$    & {\tt tauwidth}& 2.269$\times$10$^{-12}$~GeV
-                                                       &{\tt /User/mdata.f}   \\
-$M_Z$            & {\tt zmass}   & 91.187 GeV          &{\tt /User/mdata.f}   \\
-$\Gamma_Z$       & {\tt zwidth}  & 2.49 GeV            &{\tt /User/mdata.f}   \\
-$M_W$            & {\tt wmass}   & 80.41 GeV           &{\tt /User/mdata.f}   \\
-$\Gamma_W$       & {\tt wwidth}  & 2.06 GeV            &{\tt /User/mdata.f}   \\
-$\alpha(M_Z)$    & {\tt aemmz}   & 1/128.89            &{\tt /User/mdata.f}   \\
+                                                       &{\tt User/mdata.f}   \\
+$M_Z$            & {\tt zmass}   & 91.187 GeV          &{\tt User/mdata.f}   \\
+$\Gamma_Z$       & {\tt zwidth}  & 2.49 GeV            &{\tt User/mdata.f}   \\
+$M_W$            & {\tt wmass}   & 80.41 GeV           &{\tt User/mdata.f}   \\
+$\Gamma_W$       & {\tt wwidth}  & 2.06 GeV            &{\tt User/mdata.f}   \\
+$\alpha(M_Z)$    & {\tt aemmz}   & 1/128.89            &{\tt User/mdata.f}   \\
 $G_F$            & {\tt gf}      & 1.16639$\times$10$^{-5}$
-                                                       &{\tt /Inc/constants.f}\\
+                                                       &{\tt Inc/constants.f}\\
 $\sin^2 \theta_w$& {\tt xw}      & Calculated          & See text             \\
 $g^2_w$          & {\tt gwsq}    & Calculated          & See text             \\
-$V_{ud}$         & {\tt Vud}     & 0.975               &{\tt /User/mdata.f}   \\
-$V_{us}$         & {\tt Vus}     & 0.22220486          &{\tt /User/mdata.f}   \\
-$V_{ub}$         & {\tt Vub}     & 0.                  &{\tt /User/mdata.f}   \\
-$V_{cd}$         & {\tt Vcd}     & 0.22220486          &{\tt /User/mdata.f}   \\
-$V_{cs}$         & {\tt Vcs}     & 0.975               &{\tt /User/mdata.f}   \\
-$V_{cb}$         & {\tt Vcb}     & 0.                  &{\tt /User/mdata.f}   \\
+$V_{ud}$         & {\tt Vud}     & 0.975               &{\tt User/mdata.f}   \\
+$V_{us}$         & {\tt Vus}     & 0.22220486          &{\tt User/mdata.f}   \\
+$V_{ub}$         & {\tt Vub}     & 0.                  &{\tt User/mdata.f}   \\
+$V_{cd}$         & {\tt Vcd}     & 0.22220486          &{\tt User/mdata.f}   \\
+$V_{cs}$         & {\tt Vcs}     & 0.975               &{\tt User/mdata.f}   \\
+$V_{cb}$         & {\tt Vcb}     & 0.                  &{\tt User/mdata.f}   \\
 \hline
 \end{tabular}
+\caption{Default parameters in {\tt MCFM}.}
 \label{default} 
 \end{center}
 \end{table}
@@ -77,30 +100,37 @@ coupling was specified by $\Lambda$ this requires some calculation/guesswork.
 \begin{center}
 \begin{tabular}{|c|c||c|c|}
 \hline
-{\tt mrs99\_1}  & 0.1175    & {\tt mrs99\_2}  & 0.1175      \\
-{\tt mrs99\_3}  & 0.1175    & {\tt mrs99\_4}  & 0.1125      \\    
-{\tt mrs99\_5}  & 0.1225    & {\tt mrs99\_6}  & 0.1178      \\    
-{\tt mrs99\_7}  & 0.1171    & {\tt mrs99\_8}  & 0.1175      \\    
-{\tt mrs99\_9}  & 0.1175    & {\tt mrs9910}  & 0.1175      \\    
-{\tt mrs9911}  & 0.1175    & {\tt mrs9912}  & 0.1175      \\    
-{\tt mrs98z1}  &  0.1175      & {\tt cteq5hq}  &  0.118  \\
-{\tt mrs98z2}  &  0.1175      & {\tt cteq5f3}  &  0.106  \\
-{\tt mrs98z3}  &  0.1175      & {\tt cteq5f4}  &  0.112  \\
-{\tt mrs98z4}  &  0.1125      & {\tt mtungb1}  &  0.109  \\
-{\tt mrs98z5}  &  0.1225      & {\tt cteq4\_m} &  0.116  \\
-{\tt mrs96r1}  &  0.113       & {\tt cteq4\_d} &  0.116  \\
-{\tt mrs96r2}  &  0.120       & {\tt cteq4\_l} &  0.132  \\
-{\tt mrs96r3}  &  0.113       & {\tt cteq4a1}  &  0.110  \\
-{\tt mrs96r4}  &  0.120       & {\tt cteq4a2}  &  0.113  \\
-{\tt hmrs90e}  &  0.098382675 & {\tt cteq4a3}  &  0.116  \\
-{\tt hmrs90b}  &  0.107961191 & {\tt cteq4a4}  &  0.119  \\
-{\tt cteq5\_m} &  0.118       & {\tt cteq4a5}  &  0.122  \\
-{\tt cteq5\_d} &  0.118       & {\tt cteq4hj}  &  0.116  \\
-{\tt cteq5\_l} &  0.127       & {\tt cteq4lq}  &  0.114  \\
-{\tt cteq5hj}  &  0.118       &   &    \\
+{\tt mrs02nl}   & 0.1197       & {\tt mrs02nn}  & 0.1154  \\
+{\tt mrs0119}   & 0.119        & {\tt mrs0117}  & 0.117   \\
+{\tt mrs0121}   & 0.121        & {\tt mrs01\_j} & 0.121   \\
+{\tt mrs99\_1}  & 0.1175       & {\tt mrs99\_2} & 0.1175  \\
+{\tt mrs99\_3}  & 0.1175       & {\tt mrs99\_4} & 0.1125  \\    
+{\tt mrs99\_5}  & 0.1225       & {\tt mrs99\_6} & 0.1178  \\    
+{\tt mrs99\_7}  & 0.1171       & {\tt mrs99\_8} & 0.1175  \\    
+{\tt mrs99\_9}  & 0.1175       & {\tt mrs9910}  & 0.1175  \\    
+{\tt mrs9911}   & 0.1175       & {\tt mrs9912}  & 0.1175  \\    
+{\tt mrs98z1}   &  0.1175      & {\tt cteq5hq}  &  0.118  \\
+{\tt mrs98z2}   &  0.1175      & {\tt cteq5f3}  &  0.106  \\
+{\tt mrs98z3}   &  0.1175      & {\tt cteq5f4}  &  0.112  \\
+{\tt mrs98z4}   &  0.1125      & {\tt mtungb1}  &  0.109  \\
+{\tt mrs98z5}   &  0.1225      & {\tt cteq4\_m} &  0.116  \\
+{\tt mrs96r1}   &  0.113       & {\tt cteq4\_d} &  0.116  \\
+{\tt mrs96r2}   &  0.120       & {\tt cteq4\_l} &  0.132  \\
+{\tt mrs96r3}   &  0.113       & {\tt cteq4a1}  &  0.110  \\
+{\tt mrs96r4}   &  0.120       & {\tt cteq4a2}  &  0.113  \\
+{\tt hmrs90e}   &  0.098382675 & {\tt cteq4a3}  &  0.116  \\
+{\tt hmrs90b}   &  0.107961191 & {\tt cteq4a4}  &  0.119  \\
+{\tt cteq5\_m}  &  0.118       & {\tt cteq4a5}  &  0.122  \\
+{\tt cteq5\_d}  &  0.118       & {\tt cteq4hj}  &  0.116  \\
+{\tt cteq5\_l}  &  0.127       & {\tt cteq4lq}  &  0.114  \\
+{\tt cteq5l1}   &  0.127       & {\tt cteq5hj}  &  0.118  \\
+{\tt cteq6\_m}  &  0.118       & {\tt cteq6\_d} &  0.118  \\
+{\tt cteq6\_l}  &  0.118       & {\tt cteq6l1}  &  0.130  \\
 \hline
 \end{tabular}
 \end{center}
+\caption{Available pdf sets and their corresponding values of
+$\alpha_S(M_Z)$.}
 \label{pdlabel}
 \end{table}
 
@@ -112,14 +142,15 @@ To use {\tt PDFLIB}, one must first set the variable {\tt CERNLIB}
 in the makefile to point to the directory that contains
 {\tt libpdflib804.a} and then modify {\tt PDFROUTINES} to
 take the value {\tt PDFLIB}. The parameters to choose the
-pdf set are then specified in {\tt Bin/pdflib.DAT}.
+pdf set are then specified in {\tt Bin/input.DAT}.
 
 To use {\tt LHAPDF}, one must first set the variable {\tt LHAPDFLIB}
 in the makefile to point to the directory that contains
 {\tt libLHAPDF.a} and then modify {\tt PDFROUTINES} to
 take the value {\tt LHAPDF}. The parameters to choose the
-pdf set are then provided by {\tt Bin/lhapdf.DAT} - the name of the group 
-on the first line and the integer specifying the set on the second.
+pdf set are then provided in {\tt Bin/input.DAT} - 
+the name of the group and the integer specifying 
+the set.
 {\tt MCFM} expects to find the sets in a sub-directory of {\tt Bin} called
 {\tt PDFsets}, as in the {\tt LHAPDF} distribution. It is easiest to
 simply create a symbolic link appropriately.
@@ -128,147 +159,243 @@ One may always return to the built-in distributions by setting
 {\tt PDFROUTINES} to take the value {\tt NATIVE}.
 
 \section{Runtime options}
-Run time options are chosen by modifying the file 
-{\tt /Bin/options.DAT}. Each line of this file is of the form
+
+{\tt mcfm} execution is performed in the {\tt Bin/} directory,
+with syntax:
+\begin{center}
+{\tt mcfm [}{\it myfile}{\tt .DAT] [}{\it mydir}{\tt ]}
+\end{center}
+If no command line options are given, then {\tt mcfm} will default
+to using the file {\tt input.DAT} in the current directory for
+choosing options\footnote{Note that this is very different from
+previous versions of {\tt MCFM}. All auxiliary input files from v3.2 and
+earlier have now been incorporated into a single file.}.
+The different possibilities are summarized in Table~\ref{clopts}.
+\begin{table}
+\begin{center}
+\begin{tabular}{l|cl}
+Command executed && Location of input file \\
+\hline
+{\tt mcfm}                      && {\tt input.DAT} \\
+{\tt mcfm myfile.DAT}           && {\tt myfile.DAT} \\
+{\tt mcfm mydir}                && {\tt mydir/input.DAT} \\
+{\tt mcfm myfile.DAT mydir}     && {\tt mydir/myfile.DAT} \\
+\end{tabular}
+\end{center}
+\caption{Summary of command line options for running {\tt mcfm}.}
+\label{clopts}
+\end{table}
+In addition, if a working directory {\it mydir} is specified then
+output files will also be produced in this directory. By using these
+options one may, for instance, keep all input and output files for
+different processes in separate directories.
+
+Each parameter in the input file is specified by a line such as
 \begin{displaymath}
-{\tt value} \hspace{3cm} [{\tt parameter}]
+{\tt value} \hspace{3cm} {\tt [parameter]}
 \end{displaymath}
 and we will give a description of all the parameters below, together with
-valid and/or sensible inputs for ${\tt value}$.
+valid and/or sensible inputs for ${\tt value}$. Groups of parameters
+are separated by a blank line and a description of that section, for
+readability.
 
 \begin{itemize}
+\item {\tt file version number}. This should match the version number
+that is printed when {\tt mcfm} is executed.
+
+\begin{center}
+\{blank line\} \\
+{\tt [Flags to specify the mode in which MCFM is run] }
+\end{center}
+
+\item {\tt evtgen}. The default for this, and the following three
+parameters, is {\tt .false.} and this corresponds to the usual mode
+of operation. It is possible to generate n-tuples instead of histograms,
+as well as unweighted events, for some processes. Please contact the
+authors for further information.
+\item {\tt creatent}. {\it See above.}
+\item {\tt skipnt}. {\it See above.}
+\item {\tt dswhisto}. {\it See above.}
+
+\begin{center}
+\{blank line\} \\
+{\tt [General options to specify the process and execution] }
+\end{center}
+
 \item {\tt nproc}.
 The process to be studied is given by
 choosing a process number, according to the following table.
 $f(p_i)$ denotes a generic partonic jet.
+
 \begin{table}
+\vspace*{-1.5cm}
 \begin{center}
-\begin{tabular}{|l|l|}
+\begin{tabular}{|l|l|l|}
 \hline
-{\tt nproc} & $f(p_1)+f(p_2) \to \ldots $ \\
+{\tt nproc} & $f(p_1)+f(p_2) \to \ldots $ & Order \\
 \hline
-0   & $ W^+ ~\mbox{for total cross-section--No $W$-BR} $ \\ 
-1   & $ W^+(\to \nu(p_3)+e^+(p_4)) $ \\ 
-5   & $ W^- ~\mbox{for total cross-section--No $W$-BR} $ \\ 
-6   & $ W^-(\to e^-(p_3)+\bar{\nu}(p_4)) $ \\ 
+0   & $ W^+ ~\mbox{for total cross-section--No $W$-BR} $& NLO \\ 
+1   & $ W^+(\to \nu(p_3)+e^+(p_4)) $& NLO \\ 
+5   & $ W^- ~\mbox{for total cross-section--No $W$-BR} $& NLO \\ 
+6   & $ W^-(\to e^-(p_3)+\bar{\nu}(p_4)) $& NLO \\ 
 \hline
-11  & $ f(p_5)+W^+(\to \nu(p_3)+e^+(p_4)) $ \\ 
-16  & $ f(p_5)+W^-(\to e^-(p_3)+\bar{\nu}(p_4)) $ \\ 
-18  & $ f(p_5)+W^+(\to \nu(p_3)+e^+(p_4)) + \gamma(p5)$ \\ 
-19  & $ f(p_5)+W^-(\to e^-(p_3)+\bar{\nu}(p_4)) + \gamma(p5) $ \\ 
+10  & $ W^+ + f(p_5)(No $W$ BR)$& NLO \\ 
+11  & $ W^+(\to \nu(p_3)+e^+(p_4)) + f(p_5)$& NLO \\ 
+16  & $ W^-(\to e^-(p_3)+\bar{\nu}(p_4)) + f(p_5) $& NLO \\ 
+18  & $ W^+(\to \nu(p_3)+e^+(p_4)) + \gamma(p_5)$& NLO \\ 
+19  & $ W^-(\to e^-(p_3)+\bar{\nu}(p_4)) + \gamma(p_5) $& NLO \\ 
 \hline
-20  & $ W^+(\to \nu(p_3)+e^+(p_4)) + b(p_5)+\bar{b}(p_6)~\mbox{(massive $b$)}$ \\
-21  & $ W^+(\to \nu(p_3)+e^+(p_4)) + b(p_5)+\bar{b}(p_6)$ \\
-22  & $ W^+(\to \nu(p_3)+e^+(p_4))+f(p_5)+f(p_6)$ \\
-23  & $ W^+(\to \nu(p_3)+e^+(p_4))+f(p_5)+f(p_6)+f(p_7)$ \\
-26  & $ W^-(\to e^-(p_3)+\bar{\nu}(p_4))+b(p_5)+\bar{b}(p_6)$ \\
-27  & $ W^-(\to e^-(p_3)+\bar{\nu}(p_4))+f(p_5)+f(p_6)$ \\ 
+20  & $ W^+(\to \nu(p_3)+e^+(p_4)) + b(p_5)+\bar{b}(p_6)~\mbox{(massive $b$)}$& LO \\
+21  & $ W^+(\to \nu(p_3)+e^+(p_4)) + b(p_5)+\bar{b}(p_6)$& NLO \\
+22  & $ W^+(\to \nu(p_3)+e^+(p_4))+f(p_5)+f(p_6)$& NLO \\
+23  & $ W^+(\to \nu(p_3)+e^+(p_4))+f(p_5)+f(p_6)+f(p_7)$& LO \\
+24  & $ W^+(\to \nu(p_3)+e^+(p_4))+b(p_5)+b~(p_6)+f(p_7)$& LO \\
+25  & $ W^-(\to e^-(p_3)+\bar{\nu}(p_4)) + b(p_5)+\bar{b}(p_6)~\mbox{(massive $b$)}$& LO \\
+26  & $ W^-(\to e^-(p_3)+\bar{\nu}(p_4))+b(p_5)+\bar{b}(p_6)$& NLO \\
+27  & $ W^-(\to e^-(p_3)+\bar{\nu}(p_4))+f(p_5)+f(p_6)$& NLO \\ 
+28  & $ W^-(\to e^-(p_3)+\bar{\nu}(p_4))+f(p_5)+f(p_6)+f(p_7)$& LO \\ 
+29  & $ W^-(\to e^-(p_3)+\bar{\nu}(p_4))+b(p_5)+b~(p_6)+f(p_7)$& LO \\
 \hline
-30  & $ Z^0 ~\mbox{for total cross-section--No $Z$-BR} $ \\ 
-31  & $ Z^0(\to e^-(p_3)+e^+(p_4)) $ \\ 
-32  & $ Z_0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) $ \\ 
-33  & $ Z^0(\to b(p_3)+\bar{b}(p_4)) $ \\ 
+30  & $ Z^0 ~\mbox{for total cross-section--No $Z$-BR} $& NLO \\ 
+31  & $ Z^0(\to e^-(p_3)+e^+(p_4)) $& NLO \\ 
+32  & $ Z_0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) $& NLO \\ 
+33  & $ Z^0(\to b(p_3)+\bar{b}(p_4)) $& NLO \\ 
 \hline
-40  & $ Z^0~\mbox{(no BR)} +f(p_5)$ \\
-41  & $ Z^0(\to e^-(p_3)+e^+(p_4)) +f(p_5)$ \\
-42  & $ Z_0(\to 3*(\nu(p_3)+\bar{\nu}(p_4)))-(\mbox{sum over 3} \nu)+f(p_5)$ \\ 
-43  & $ Z^0(\to b(p_3)+\bar{b}(p_4))+f(p_5)$ \\ 
-44  & $ Z^0(\to e^-(p_3)+e^+(p_4))+f(p_5)+f(p_6)$ \\ 
-45  & $ Z^0(\to e^-(p_3)+e^+(p_4))+f(p_5)+f(p_6)+f(p_7)$ \\ 
+40  & $ Z^0~\mbox{(no BR)} +f(p_5)$& NLO \\
+41  & $ Z^0(\to e^-(p_3)+e^+(p_4)) +f(p_5)$& NLO \\
+42  & $ Z_0(\to 3*(\nu(p_3)+\bar{\nu}(p_4)))-(\mbox{sum over 3} \nu)+f(p_5)$& NLO \\ 
+43  & $ Z^0(\to b(p_3)+\bar{b}(p_4))+f(p_5)$& NLO \\ 
+44  & $ Z^0(\to e^-(p_3)+e^+(p_4))+f(p_5)+f(p_6)$& NLO \\ 
+45  & $ Z^0(\to e^-(p_3)+e^+(p_4))+f(p_5)+f(p_6)+f(p_7)$& LO \\ 
+48  & $ Z^0(\to e^-(p_3)+e^+(p_4)) +\gamma(p_5)$& NLO \\
+49  & $ Z_0(\to 3*(\nu(p_3)+\bar{\nu}(p_4)))-(\mbox{sum over 3} \nu)+\gamma(p_5)$& NLO \\ 
 \hline
-50  & $ Z^0(\to e^-(p_3)+e^+(p_4))+b(p_5)+\bar{b}(p_6)~\mbox{(massive $b$)}$ \\ 
-51  & $ Z^0(\to e^-(p_3)+e^+(p_4))+b(p_5)+\bar{b}(p_6)$ \\
-52  & $ Z_0(\to 3*(\nu(p_3)+\bar{\nu}(p_4)))+b(p_5)+\bar{b}(p_6)$ \\
-53  & $ Z^0(\to b(p_3)+\bar{b}(p_4))+b(p_5)+\bar{b}(p_6)$ \\
+50  & $ Z^0(\to e^-(p_3)+e^+(p_4))+b(p_5)+\bar{b}(p_6)~\mbox{(massive $b$)}$& LO \\ 
+51  & $ Z^0(\to e^-(p_3)+e^+(p_4))+b(p_5)+\bar{b}(p_6)$& NLO \\
+52  & $ Z_0(\to 3*(\nu(p_3)+\bar{\nu}(p_4)))+b(p_5)+\bar{b}(p_6)$& NLO \\
+53  & $ Z^0(\to b(p_3)+\bar{b}(p_4))+b(p_5)+\bar{b}(p_6)$& NLO \\
 \hline
-60  & $ W^+ + W^- ~\mbox{for total cross-section--No $W$-BRs} $ \\ 
-61  & $ W^+(\to \nu(p_3)+e^+(p_4)) +W^-(\to e^-(p_5)+\bar{\nu}(p_6)) $ \\ 
-62  & $ W^+(\to \nu(p_3)+e^+(p_4)) +W^-(\to q(p_5)+{\bar q}(p_6)) $ \\ 
-63  & $ W^+(\to q(p_3)+{\bar q}(p_4)) +W^-(\to e^-(p_5)+\bar{\nu}(p_6)) $ \\ 
+60  & $ W^+ + W^- ~\mbox{for total cross-section--No $W$-BRs} $& NLO \\ 
+61  & $ W^+(\to \nu(p_3)+e^+(p_4)) +W^-(\to e^-(p_5)+\bar{\nu}(p_6)) $& NLO \\ 
+62  & $ W^+(\to \nu(p_3)+e^+(p_4)) +W^-(\to q(p_5)+{\bar q}(p_6)) $& NLO \\ 
+63  & $ W^+(\to q(p_3)+{\bar q}(p_4)) +W^-(\to e^-(p_5)+\bar{\nu}(p_6)) $& NLO \\ 
 \hline
-70  & $ Z^0 + W^+ ~\mbox{for total cross-section--No $W$or $Z$-BRs} $ \\ 
-71  & $ Z^0(\to e^-(p_5)+e^+(p_6))+W^+(\to \nu(p_3)+\mu^+(p_4)) $ \\ 
-72  & $ Z^0(\to 3*(\nu(p_5)+\bar{\nu}(p_6)))+W^+(\to \nu(p_3)+e^+(p_4)) $ \\ 
-73  & $ Z^0(\to b(p_5)+\bar{b}(p_6))+W^+(\to \nu(p_3)+e^+(p_4)) $ \\ 
+\end{tabular}
+\end{center}
+\end{table}
+\begin{table}
+\vspace*{-1.5cm}
+\begin{center}
+\begin{tabular}{|l|l|l|}
 \hline
-75  & $ Z^0 + W^- ~\mbox{for total cross-section--No $W$or $Z$-BRs} $ \\ 
-76  & $ Z^0(\to e^-(p_5)+e^+(p_6))+W^-(\to \mu^-(p_3)+\bar{\nu}(p_4)) $ \\ 
-77  & $ Z^0(\to \nu(p_5)+\bar{\nu}(p_6))+W^-(\to e^-(p_3)+\bar{\nu}(p_4)) $ \\ 
-78  & $ Z^0(\to b(p_5)+\bar{b}(p_6))+W^-(\to e^-(p_3)+\bar{\nu}(p_4)) $ \\ 
+{\tt nproc} & $f(p_1)+f(p_2) \to \ldots $& Order \\
+\hline
+70  & $ Z^0 + W^+ ~\mbox{for total cross-section--No $W$or $Z$-BRs} $& NLO \\ 
+71  & $ Z^0(\to e^-(p_5)+e^+(p_6))+W^+(\to \nu(p_3)+\mu^+(p_4)) $& NLO \\ 
+72  & $ Z^0(\to 3*(\nu(p_5)+\bar{\nu}(p_6)))+W^+(\to \nu(p_3)+e^+(p_4)) $& NLO \\ 
+73  & $ Z^0(\to b(p_5)+\bar{b}(p_6))+W^+(\to \nu(p_3)+e^+(p_4)) $& NLO \\ 
+\hline
+75  & $ Z^0 + W^- ~\mbox{for total cross-section--No $W$or $Z$-BRs} $& NLO \\ 
+76  & $ Z^0(\to e^-(p_5)+e^+(p_6))+W^-(\to \mu^-(p_3)+\bar{\nu}(p_4)) $& NLO \\ 
+77  & $ Z^0(\to \nu(p_5)+\bar{\nu}(p_6))+W^-(\to e^-(p_3)+\bar{\nu}(p_4)) $& NLO \\ 
+78  & $ Z^0(\to b(p_5)+\bar{b}(p_6))+W^-(\to e^-(p_3)+\bar{\nu}(p_4)) $& NLO \\ 
+\hline
+80  & $ Z^0 + Z^0 ~\mbox{for total cross-section--No $Z$-BRs} $& NLO \\ 
+81  & $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to \mu^-(p_3)+\mu^+(p_4)) $& NLO \\ 
+82  & $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) $& NLO \\ 
+83  & $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to b(p_3)+\bar{b}(p_4)) $& NLO \\ 
+84  & $ Z^0(\to b(p_5)+\bar{b}(p_6))+Z^0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) $& NLO \\ 
+\hline
+85  & $ Z^0 + Z^0 ~\mbox{for total cross-section} ~(\mathrm{no}~\gamma^*) $& NLO \\ 
+86  & $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to \mu^-(p_3)+\mu^+(p_4)) ~(\mathrm{no}~\gamma^*) $& NLO \\ 
+87  & $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) ~(\mathrm{no}~\gamma^*) $& NLO \\ 
+88  & $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to b(p_3)+\bar{b}(p_4)) ~(\mathrm{no}~\gamma^*) $& NLO \\ 
+89  & $ Z^0(\to
+b(p_5)+\bar{b}(p_6))+Z^0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) ~(\mathrm{no}~\gamma^*) $& NLO \\ 
+\hline
+90  & $ H + W^+ ~\mbox{for total cross-section--No $W$ or $H$-BRs} $& NLO \\ 
+91  & $ H(\to b(p_5)+\bar{b}(p_6)) + W^+(\to \nu(p_3)+e^+(p_4)) $& NLO \\ 
+95  & $ H + W^- ~\mbox{for total cross-section--No $W$ or $H$-BRs} $& NLO \\ 
+96  & $ H(\to b(p_5)+\bar{b}(p_6)) + W^-(\to e^-(p_3)+\bar{\nu}(p_4)) $& NLO \\ 
+\hline
+100 & $ H + Z^0 ~\mbox{for total cross-section--No $Z$ or $H$-BRs} $& NLO \\ 
+101 & $ H(\to b(p_5)+\bar{b}(p_6)) + Z^0(\to e^-(p_3)+e^+(p_4)) $& NLO \\ 
+102 & $ H(\to b(p_5)+\bar{b}(p_6)) + Z^0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) $& NLO \\ 
+103 & $ H(\to b(p_5)+\bar{b}(p_6)) + Z^0(\to b(p_3)+\bar{b}(p_4)) $& NLO \\ 
+\hline
+110 & $ H~\mbox{for total cross-section} $& NLO \\ 
+111 & $ H(\to b(p3) + {\bar b}(p4)) $& NLO \\ 
+112 & $ H(\to W^- W^+) ~\mbox{for total cross-section--No $H$ or $W$-BRs} $& NLO \\ 
+113 & $ H(\to W^-(e^-(p_5)+\bar{\nu}(p_6))+W^+(\nu(p_3)+e^+(p_4))) $& NLO \\ 
+\hline
+121 & $ H(\to Z^0(e^-(p_5)+e^+(p_6))+Z^0(\mu^-(p_3)+\mu^+(p_4)) $& NLO \\ 
+122 & $ H(\to Z^0(e^-(p_5)+e^+(p_6))+Z^0(3*(\nu(p_3)+\bar{\nu}(p_4))) $& NLO \\ 
+123 & $ H(\to Z^0(e^-(p_5)+e^+(p_6))+Z^0(b(p_3)+b~(p_4)) $& NLO \\ 
+\hline
+131 & $ H-->t(-->nu(p_3)+e^+(p_4)+b(p_5))+b~(p_6))+e^-(p_7)+nu~(p_8) $& NLO \\ 
+\hline
+140 & $ H ~\mbox{(no BR)} + b(p_5)$& NLO \\
+141 & $ H ~\mbox{(no BR)} + b(p_5) +g(p_6)$& NLO \\
+142 & $ H ~\mbox{(no BR)} + {\bar b}(p_5) +b(p_6)$& NLO \\
+143 & $ H ~\mbox{(no BR)} + b(p_5) + {\bar q}(p_6)$& NLO \\
+144 & $ H ~\mbox{(no BR)} + b(p_5) + {\bar b}(p_6)$& NLO \\
+145 & $ H ~\mbox{(no BR)} + b(p_5) + {\bar b}(p_6) ~\mbox{(both observed)}$& LO \\
 \hline
 \end{tabular}
 \end{center}
 \end{table}
 
+
 \begin{table}
 \begin{center}
-\begin{tabular}{|l|l|}
+\hspace*{-1.5cm}
+\begin{tabular}{|l|l|l|}
 \hline
-{\tt nproc} & $f(p_1)+f(p_2) \to \ldots $ \\
+{\tt nproc} & $f(p_1)+f(p_2) \to \ldots $& Order \\
 \hline
-80  & $ Z^0 + Z^0 ~\mbox{for total cross-section--No $Z$-BRs} $ \\ 
-81  & $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to \mu^-(p_3)+\mu^+(p_4)) $ \\ 
-82  & $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) $ \\ 
-83  & $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to b(p_3)+\bar{b}(p_4)) $ \\ 
-84  & $ Z^0(\to b(p_5)+\bar{b}(p_6))+Z^0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) $ \\ 
+150 & $ t \bar{t} ~\mbox{for total cross-section} $& LO \\ 
+156 & $ t(\to\nu(p_3)+e^+(p_4)+b(p_5))+{\bar t}(\to
+\bar{b}(p_6))+W^-(\to {\bar \nu}(p_7)+e^-(p_8))$& LO \\ 
 \hline
-85  & $ Z^0 + Z^0 ~\mbox{for total cross-section} ~(\mathrm{no}~\gamma^*) $ \\ 
-86  & $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to \mu^-(p_3)+\mu^+(p_4)) ~(\mathrm{no}~\gamma^*) $ \\ 
-87  & $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) ~(\mathrm{no}~\gamma^*) $ \\ 
-88  & $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to b(p_3)+\bar{b}(p_4)) ~(\mathrm{no}~\gamma^*) $ \\ 
-89  & $ Z^0(\to
-b(p_5)+\bar{b}(p_6))+Z^0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) ~(\mathrm{no}~\gamma^*) $ \\ 
+161 & $ t(\to\nu(p_3)+e^+(p_4)+b(p_5))+\bar{b}(p_6))+q(p_7)~(\mathrm{missing}) $& LO \\ 
 \hline
-90  & $ H + W^+ ~\mbox{for total cross-section--No $W$ or $H$-BRs} $ \\ 
-91  & $ H(\to b(p_5)+\bar{b}(p_6)) + W^+(\to \nu(p_3)+e^+(p_4)) $ \\ 
-96  & $ H(\to b(p_5)+\bar{b}(p_6)) + W^-(\to e^-(p_3)+\bar{\nu}(p_4)) $ \\ 
+171 & $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{b}(p_6)) $& LO \\ 
 \hline
-100 & $ H + Z^0 ~\mbox{for total cross-section--No $Z$ or $H$-BRs} $ \\ 
-101 & $ H(\to b(p_5)+\bar{b}(p_6)) + Z^0(\to e^-(p_3)+e^+(p_4)) $ \\ 
-102 & $ H(\to b(p_5)+\bar{b}(p_6)) + Z^0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) $ \\ 
-103 & $ H(\to b(p_5)+\bar{b}(p_6)) + Z^0(\to b(p_3)+\bar{b}(p_4)) $ \\ 
+180 & $ \tau^- \tau^+ ~\mbox{for total cross-section-Drell-Yan} $& NLO \\ 
+181 & $ \tau^-(\to \nu(p_3)+e^+(p_4)+\nu(p_5))+\tau^+(\to \bar{\nu}(p_6)+e^-(p_8)+\bar{\nu}(p_9)) $& LO \\  
 \hline
-110 & $ H~\mbox{for total cross-section} $ \\ 
-111 & $ H(\to b(p3) + {\bar b}(p4)) $ \\ 
-112 & $ H(\to W^- W^+) ~\mbox{for total cross-section--No $H$ or $W$-BRs} $ \\ 
-113 & $ H(\to W^-(e^-(p_5)+\bar{\nu}(p_6))+W^+(\nu(p_3)+e^+(p_4))) $ \\ 
-\hline
-121 & $ H(\to Z^0(e^-(p_5)+e^+(p_6))+Z^0(\mu^-(p_3)+\mu^+(p_4)) $ \\ 
-122 & $ H(\to Z^0(e^-(p_5)+e^+(p_6))+Z^0(3*(\nu(p_3)+\bar{\nu}(p_4))) $ \\ 
-\hline
-140 & $ H ~\mbox{(no BR)} + b(p_5)$ \\
-141 & $ H ~\mbox{(no BR)} + b(p_5) +g(p_6)$ \\
-142 & $ H ~\mbox{(no BR)} + {\bar b}(p_5) +b(p_6)$ \\
-143 & $ H ~\mbox{(no BR)} + b(p_5) + {\bar q}(p_6)$ \\
-144 & $ H ~\mbox{(no BR)} + b(p_5) + {\bar b}(p_6)$ \\
-145 & $ H ~\mbox{(no BR)} + b(p_5) + {\bar b}(p_6) ~\mbox{(both observed)}$ \\
-\hline
-150 & $ t \bar{t} ~\mbox{for total cross-section} $ \\ 
-151 & $ t(\to\nu(p_3)+e^+(p_4)+b(p_5))+\bar{b}(p_6))+W^-(\to e^-(p_7)+\bar{\nu}(p_8))~(\mathrm{missing}) $ \\ 
-152 & $ t(\to\nu(p_3)+e^+(p_4)+b(p_5))+\bar{b}(p_6))+W^-(\to q(p_7)+{\bar q}(p_8))~(\mathrm{missing}) $ \\ 
-\hline
-161 & $ t(\to\nu(p_3)+e^+(p_4)+b(p_5))+\bar{b}(p_6))+q(p_7)~(\mathrm{missing}) $ \\ 
-\hline
-171 & $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{b}(p_6)) $ \\ 
-\hline
-180 & $ \tau^- \tau^+ ~\mbox{for total cross-section-Drell-Yan} $ \\ 
-181 & $ \tau^-(\to \nu(p_3)+e^+(p_4)+\nu(p_5))+\tau^+(\to \bar{\nu}(p_6)+e^-(p_8)+\bar{\nu}(p_9)) $ \\  
-\hline
-190 & $ t(p_3) + {\bar t}(p_4) + H(p_5) $ \\ 
-191 & $ t(p_3+p_4+p_5) + {\bar t}(p_6+p_7+p_8) + H(p_9+p_{10}) $ \\ 
+190 & $ t(p_3) + {\bar t}(p_4) + H(p_5) $& LO \\ 
+191 & $ t(p_3+p_4+p_5) + {\bar t}(p_6+p_7+p_8) + H(p_9+p_{10}) $& LO \\ 
 192 & $ t(\to \nu(p_3)+e^+(p_4)+b(p_5)) +
-{\bar t}(\to {\bar b}(p_6)+{\bar \nu}(p_7)+e^-(p_8)) + H(p_9+p_{10}) $ \\ 
+{\bar t}(\to {\bar b}(p_6)+{\bar \nu}(p_7)+e^-(p_8)) + H(p_9+p_{10}) $& LO \\ 
+193 & $ t(p_3+p_4+p_5)+{\bar t}(p_6+p_7+p_8)+Z(p_9+p_{10})$& LO \\
+194 & $ t(p_3+p_4+p_5)+{\bar t}(p_6+p_7+p_8)+Z(p_9+p_{10})$&LO \\
+195 & $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+{\bar t}(\to {\bar \nu}(p_7)+e^-(p_8)+{\bar b}(p_6))+Z(e(p_9)+e^-(p_{10}))$&LO \\
+196 & $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+{\bar t}(\to {\bar \nu}(p_7)+e^-(p_8)+{\bar b}(p_6))+Z(b(p_9)+{\bar b}(p_{10}))$&LO \\
 \hline
-200 & $ H(p_3+p_4) + f(p_5) ~\mbox{for total cross-section-No $H$ BR} $ \\ 
-201 & $ H(\to \tau(p_3)+{\bar \tau}(p_4)) + f(p_5)$ \\ 
+200 & $ H(p_3+p_4) + f(p_5) ~\mbox{for total cross-section-No $H$ BR} $& LO \\ 
+201 & $ H(\to \tau(p_3)+{\bar \tau}(p_4)) + f(p_5)$& LO \\ 
 202 & $ H(\to \tau^- (\to \nu_\tau(p_3)+e^-(p_4)+{\bar \nu_e}(p_5))
-+\tau^+(\to {\bar \nu_\tau}(p_6)+\nu_e(p_7)+e^+(p_8)) + f(p_9)$ \\ 
++\tau^+(\to {\bar \nu_\tau}(p_6)+\nu_e(p_7)+e^+(p_8))) + f(p_9)$& LO \\ 
+202 & $ H(\to \tau^- (\to \nu_\tau(p_3)+e^-(p_4)+{\bar \nu_e}(p_5))
++\tau^+(\to {\bar \nu_\tau}(p_6)+\nu_e(p_7)+e^+(p_8))) + f(p_9)$ & NLO\\ 
+205 &$  A(p_3+p_4) + f(p_5) ~\mbox{(for total cross-section-No $A$ BR)}$&   NLO \\
+206 &$  A (\to \tau(p_3) + {\bar \tau}(p_4)) + f(p_5)$&   NLO \\
+211 &$  H(p_3+p_4)+f(p_5)+f(p_6) ~\mbox{ (VV-fusion + interference)}$& LO \\
+212 &$  H(p_3+p_4)+f(p_5)+f(p_6)+f(p_7) ~\mbox{ (VV-fusion + interference)}$& LO \\
+213 &$  H(p_3+p_4)+f(p_5)+f(p_6) ~\mbox{ (WW-fusion for total Xsect)}$& NLO \\
+214 &$  H(p_3+p_4)+f(p_5)+f(p_6)+f(p_7) ~\mbox{ (WW-fusion for total Xsect)}$& NLO \\
+215 &$  H(p_3+p_4)+f(p_5)+f(p_6) ~\mbox{ (ZZ-fusion for total Xsect)}$& NLO \\   
+216 &$  H(p_3+p_4)+f(p_5)+f(p_6)+f(p_7) ~\mbox{ (ZZ-fusion for total Xsect)}$& NLO \\
+217 &$  H(p_3+p_4)+f(p_5)+f(p_6) ~\mbox{ (VV-fusion for total Xsect)}$& NLO \\
+218 &$  H(p_3+p_4)+f(p_5)+f(p_6)+f(p_7) ~\mbox{ (VV-fusion for total Xsect)}$& NLO \\
 \hline
-30$n$ &  Check of volume of $n$-particle phase space \\
+30$n$ &  Check of volume of $n$-particle phase space& --  \\
 \hline
 \end{tabular}
 \end{center}
 \end{table}
+
 
 \item {\tt part}.
 This parameter has 4 possible values, described below:
@@ -277,7 +404,8 @@ This parameter has 4 possible values, described below:
 The calculation is performed at leading order only.
 \item {\tt virt}.
 Virtual (loop) contributions to the next-to-leading order result are
-calculated, (+counterterms to make them finite).
+calculated (+counterterms to make them finite), including also the
+lowest order contribution.
 \item {\tt real}.
 In addition to the loop diagrams calculated by {\tt virt}, the full
 next-to-leading order results must include contributions from diagrams
@@ -285,21 +413,18 @@ involving real gluon emission (-counterterms to make them finite).
 \item {\tt tota}.
 For simplicity, the {\tt tota} option simply runs the {\tt virt} and
 {\tt real} real pieces in series before performing a sum to obtain
-the full next-to-leading order result. In practise, it may be more
-efficient to do this by hand as described below.
+the full next-to-leading order result. In this case, the number of
+points specified by {\tt ncall1} and {\tt ncall2} is automatically
+increased when performing the {\tt real} calculation. In practice,
+it may be more efficient to do run the pieces separately by hand as
+described below.
 \end{itemize}
 
 \item {\tt runstring}.
 When {\tt MCFM} is run, it will write output to several files. The
-label {\tt runstring} (up to 9 characters long) will be appended
-to the names of these files.
+label {\tt runstring} will be appended to the names of these files.
 
-\item {\tt verbose}.
-Setting this flag to {\tt .false.} will disable certain output in
-the initialization stage of the program. It is recommended that
-this be left at the default value {\tt .true.}.
-
-\item {\tt sqrts}. This is the centre-of-mass energy, $\sqrt{S}$ of
+\item {\tt sqrts}. This is the centre-of-mass energy, $\sqrt{s}$ of
 the colliding particles, measured in GeV.
 
 \item {\tt ih1}, {\tt ih2}. The identities of the incoming hadrons
@@ -307,10 +432,6 @@ may be set with these parameters, allowing simulations for both
 $p{\bar p}$ (such as the Tevatron) and $pp$ (such as the LHC)
 simulations. Setting {\tt ih1} equal to ${\tt +1}$ corresponds to
 a proton, whilst ${\tt -1}$ corresponds to an anti-proton.
-
-\item {\tt pdlabel}. The choice of parton distribution is made by
-inserting the appropriate 7-character code from Table~{\ref{pdlabel}}
-here. As mentioned above, this also sets the value of $\alpha_S(M_Z)$.
 
 \item {\tt hmass}. For processes involving the Higgs boson, this
 parameter should be set equal to the putative value of $M_H$.
@@ -323,17 +444,12 @@ instance). For a lowest order calculation, the value of $\alpha_S$ at
 this scale is obtained from $\alpha_S(M_Z)$ via $1$-loop running, but
 for any value of {\tt part} other than {\tt lord}, $2$-loop
 running is used.
-
-\item {\tt m34min}, {\tt m34max}, {\tt m56min}, {\tt m56max}.
-These parameters represent a basic set of cuts that may be applied
-to the calculated cross-section. The only events that contribute to
-the cross-section will have, for example,
-{\tt m34min} $<$ {\tt m34} $<$ {\tt m34max} where {\tt m34} is the
-invariant mass of particles 3 and 4 that are specified by {\tt nproc}.
-
-\item {\tt rtsmin}. This provides a cut-off on the lowest generated
-$\hat{s}$ for the partonic event. This cut-off is required for
-numerical accuracy and should not be altered.
+For the case where particles $3$ and $4$ are produced by the decay of
+a vector boson $V$, there are two special scale choices. Setting
+{\tt scale} equal to {\tt -1d0} selects a scale equal to the mass of
+the boson, $M_V$. An input of {\tt scale} equal to {\tt -2d0}
+generates the scale for each event individually, with a value
+given by $\sqrt{M_V^2+p_T(V)^2}$.
 
 \item {\tt zerowidth}. When set to {\tt .true.} then all vector
 bosons are produced on-shell. This is appropriate for calculations
@@ -341,21 +457,6 @@ of {\it total} cross-sections such as {\tt nproc} $=$ {\tt 60},
 {\tt 70} and {\tt 80}. When interested in decay products of the
 bosons (such as {\tt nproc} $=$ {\tt 61}), this should be set
 to {\tt .false.}.
-
-\item {\tt makecuts}. If this parameter is set to {\tt .false.} then
-no additional cuts are applied to the events. Otherwise, events will
-be rejected according to a set of cuts that is specified by routines
-in {\tt /src/User/} and which varies according to the process
-specified in {\tt nproc}. 
-
-\item {\tt Rcut}. If the final state of the chosen process contains
-either quarks or gluons then for each event an attempt will be made
-to form them into jets. For this it is necessary to define the
-jet separation $\Delta R=\sqrt{{\Delta \eta}^2 + {\Delta \phi}^2}$
-so that after jet combination, all jet pairs are separated by
-$\Delta R >$~{\tt Rcut}. All jets will also satisfy the cuts
-specified in {\tt jetcuts.DAT} (see the section below),
-$E_T^{\rm jet} > p_T^{\rm min}$, $|\eta^{\rm jet}| < \eta^{\rm max}$.
 
 \item {\tt itmx1}, {\tt itmx2}. The program will perform two runs of
 {\tt VEGAS} - once for prec-conditioning and then the final run to
@@ -382,31 +483,140 @@ $\sim 5$ for the {\tt real} calculation.
 and can be altered to give different results for otherwise identical
 runs.
 
-\item {\tt realwt}. This is a technical parameter and its value
-should be left unchanged ({\tt .false.}).
-
-\item {\tt cutoff}. This is a technical parameter and its value
-should be left unchanged ({\tt 10}).
-
 \item {\tt dryrun}. The default value of this parameter is
 {\tt .false.}. When set to {\tt .true.} the pre-conditioning sweeps
 in the {\tt VEGAS} integration are skipped, with the reported
 results coming from a single run.
-
-\item {\tt debug}. This is useful as a debugging measure and as
-such it should be left unchanged ({\tt .false.}).
-
 \item {\tt Qflag}. This only has an effect when running a
-$W+2$~jets or $Z+2$~jets process. Please see Section~\ref{sec:specific}
+$W+2$~jets or $Z+2$~jets process. Please see section~\ref{subsec:v2j}
 below.
 
 \item {\tt Gflag}. This only has an effect when running a
-$W+2$~jets or $Z+2$~jets process. Please see Section~\ref{sec:specific}
+$W+2$~jets or $Z+2$~jets process. Please see section~\ref{subsec:v2j}
 below.
 
-\item {\tt colourchoice}. This only has an effect when running a
-$W+2$~jets or $Z+2$~jets process. Please see Section~\ref{sec:specific}
-below.
+\begin{center}
+\{blank line\} \\
+{\tt [Pdf selection] }
+\end{center}
+
+\item {\tt pdlabel}. The choice of parton distribution is made by
+inserting the appropriate 7-character code from Table~{\ref{pdlabel}}
+here. As mentioned above, this also sets the value of $\alpha_S(M_Z)$.
+
+\item {\tt NGROUP, NSET}. These integers choose the parton distribution
+functions to be used when using the PDFLIB package.
+\item {\tt LHAPDF group, LHAPDF set}. These choose the parton
+distribution functions to be used when using the LHAPDF package --
+the group is specified by a character string and the set by an integer.
+Please see {\tt http://vircol.fnal.gov/} for further details.
+
+\begin{center}
+\{blank line\} \\
+{\tt [Jet definition and event cuts] }
+\end{center}
+
+\item {\tt m34min}, {\tt m34max}, {\tt m56min}, {\tt m56max}.
+These parameters represent a basic set of cuts that may be applied
+to the calculated cross-section. The only events that contribute to
+the cross-section will have, for example,
+{\tt m34min} $<$ {\tt m34} $<$ {\tt m34max} where {\tt m34} is the
+invariant mass of particles 3 and 4 that are specified by {\tt nproc}.
+
+\item {\tt inclusive}.  This logical parameter chooses whether the
+calculated cross-section should be inclusive in the number of jets
+found at NLO. An {\em exclusive}
+cross-section contains the same number of jets at next-to-leading
+order as at leading order. An {\em inclusive} cross-section may
+instead contain an extra jet at NLO.
+
+\item {\tt algorithm} This specifies the jet-finding algorithm that
+is used, and can take the values
+{\tt ktal} (for the Run II $k_T$-algorithm) and {\tt cone} (for
+a midpoint cone algorithm).
+
+\item {\tt ptmin\_jet, etamin\_jet, etamax\_jet}. These specify the values
+of $p_T^{\rm min}$, $|\eta|^{\rm min}$ and $|\eta|^{\rm max}$ for the
+jets that are found by the algorithm. 
+
+\item {\tt Rcut\_jet}. If the final state of the chosen process contains
+either quarks or gluons then for each event an attempt will be made
+to form them into jets. For this it is necessary to define the
+jet separation $\Delta R=\sqrt{{\Delta \eta}^2 + {\Delta \phi}^2}$
+so that after jet combination, all jet pairs are separated by
+$\Delta R >$~{\tt Rcut\_jet}.
+
+\item {\tt makecuts}. If this parameter is set to {\tt .false.} then
+no additional cuts are applied to the events and the remaining
+parameters in this section are ignored. Otherwise, events will
+be rejected according to a set of cuts that is specified below.
+Further options may be implemented by editing {\tt src/User/gencuts.f}
+-- please contact the authors for guidance if necessary.
+
+\item {\tt ptmin\_lepton, ymax\_lepton}. These specify the values
+of $p_T^{\rm min}$ and $|y|^{\rm max}$ for the hardest lepton produced
+in the process.
+\item {\tt ptmin\_missing}. Specifies the minimum missing transverse
+momentum (coming from neutrinos).
+\item {\tt ptmin\_lepton(2nd+), etamax\_lepton(2nd+)}. These specify
+the values of $p_T^{\rm min}$ and $|y|^{\rm max}$ for the remaining
+leptons in the process. This allows for staggered cuts where, for
+instance, only one lepton is required to be hard and central.
+
+\item {\tt R(jet,lept)\_min}. Using the definition of $\Delta R$ above,
+requires that all jet-lepton pairs are separated by
+$\Delta R >$~{\tt R(jet,lept)\_min}.
+
+\item {\tt R(lept,lept)\_min}. When non-zero, all lepton-lepton pairs
+must be separated by $\Delta R >$~{\tt R(lept,lept)\_min}.
+
+\item {\tt Deltay(jet,jet)\_min}. This enforces a rapidity gap between
+the two hardest jets, so that
+$|y^{\rm jet~1} - y^{\rm jet~2}| >$~{\tt Deltay(jet,jet)\_min}.
+
+\item {\tt ptminphoton, etamaxphoton}. These specify the values
+of $p_T^{\rm min}$ and $|y|^{\rm max}$ for any photons produced.
+
+\item {\tt conephoton, coneptcut}. These constitute a photon isolation
+cut which ensures that the amount of hadronic
+transverse momentum in a cone around each photon is less than
+a specified fraction of the photon's $p_T$.
+\begin{displaymath}
+\sum_{R < R_0} p_T^{\rm hadronic} < f \times p_T^{photon},
+\end{displaymath}
+where $R_0$ and $f$ are specified by {\tt cone\_photon} and
+{\tt cone\_ptcut} respectively.
+
+\begin{center}
+\{blank line\} \\
+{\tt [Anomalous couplings of the W and Z] }
+\end{center}
+
+\item {\tt Delta\_g1(Z)}. {\it See section~\ref{subsec:diboson}.}
+\item {\tt Delta\_K(Z)}. {\it See section~\ref{subsec:diboson}.}
+\item {\tt Delta\_K(gamma)}. {\it See section~\ref{subsec:diboson}.}
+\item {\tt Lambda(Z)}. {\it See section~\ref{subsec:diboson}.}
+\item {\tt Lambda(gamma)}. {\it See section~\ref{subsec:diboson}.}
+\item {\tt Form-factor scale, in TeV}. {\it See section~\ref{subsec:diboson}.}
+
+\begin{center}
+\{blank line\} \\
+{\tt [How to resume/save a run] }
+\end{center}
+
+\item {\tt readin}. If {\tt .true.}, the program will read in a
+previously saved {\tt VEGAS} grid from the file specified by
+{\tt ingridfile.grid}. Note that this, and the following 3 options,
+have no effect if {\tt part} is set to {\tt tota} (in this case, grids
+are automatically saved and loaded).
+
+\item {\tt writeout}. If {\tt .true.}, the program will write out
+the {\tt VEGAS} grid at the end of the run, to the file specified by
+{\tt outgridfile.grid}.
+
+\item {\tt ingridfile}.  {\it See above.}
+
+\item {\tt outgridfile}.  {\it See above.}
 
 \end{itemize}
 
@@ -414,6 +624,8 @@ below.
  
 In addition to the direct output of the program to {\tt stdout}, after
 the final sweep of {\tt VEGAS} the program will output two additional files.
+If a working directory was specified in the command line, then these
+output files will be written to that directory.
 
 The standard output will detail the iteration-by-iteration best estimate
 of the total cross-section, together with the accompanying error estimate.
@@ -421,108 +633,32 @@ After all sweeps have been completed, a final summary line will be printed.
 In the {\tt npart}~$=$~{\tt tota} case, this last line will actually be the
 sum of the two separate real and virtual integrations.
 
-The two other files that are output will be {\tt outputname.dat} and
+The two other output files are {\tt outputname.dat} and
 {\tt outputname.top}, which contain data for various histograms associated
 with the calculated process. The first of these is in a raw format 
 which may be read in by a plotting package of the user's choosing. The
-other file contains the histograms as a {\tt TOPDRAWER} file. The structure
+other file contains the histograms as a {\tt TOPDRAWER} file, as well
+as a summary of the options file ({\tt input.DAT}) in the form of
+comments at the beginning. The structure
 of {\tt outputname} is as follows:
 \begin{displaymath}
 {\tt procname\_part\_pdlabel\_scale\_runstring}
 \end{displaymath}
 where {\tt procname} is a label assigned by the program corresponding to
 the calculated process; the remaining labels are as input by the user
-in the file {\tt options.DAT}.
-
-\section{Auxiliary input files}
-
-\subsection{Specifying jet cuts with {\tt jetcuts.DAT}}
-
-To specify the cuts that are used in the jet algorithm to identify
-jets, one must modify the file {\tt jetcuts.DAT}. It is possible
-to specify the value of $p_T^{\rm min}$ and $|\eta|^{\rm max}$ for the
-jets that are found by the algorithm, as well as whether the
-result should be an inclusive cross-section. An {\em exclusive}
-cross-section contains the same number of jets at next-to-leading
-order as at leading order. An {\em inclusive} cross-section may
-instead contain an extra jet at NLO.
- A sample file follows:
-
-\begin{verbatim}
-    T               [inclusive]
-    T               [useTevcuts]
-    F               [useLHCcuts]
-    20d0            [ptmin]
-    2.4d0           [ymax]
-    15d0            [ptmin_Tevatron]
-    2.0d0           [ymax_Tevatron]
-    30d0            [ptmin_LHC]
-    2.5d0           [ymax_LHC]
-\end{verbatim}
-As can be seen from the comments, there are three sets of jet cuts that
-are specified in pairs of lines at the end. The set which is used
-depends on the logical variables above, as follows:
-\begin{eqnarray}
-{\rm If }~{\tt useTevcuts}~{\rm is}~{\tt .TRUE.} &&
- p_T^{\rm min}=15~{\rm GeV}~{\rm and}~|\eta|^{\rm max}=2; \nonumber \\
-{\rm if }~{\tt useLHCcuts}~{\rm is}~{\tt .TRUE.} &&
- p_T^{\rm min}=30~{\rm GeV}~{\rm and}~|\eta|^{\rm max}=2.5; \nonumber \\
-{\rm otherwise~apply} &&
- p_T^{\rm min}=20~{\rm GeV}~{\rm and}~|\eta|^{\rm max}=2.4. \nonumber 
-\end{eqnarray}
-
-\subsection{Specifying generic cuts with {\tt gencuts.DAT}}
-
-A set of simple cuts can be applied to the leptons, jets and photons
-produced in a process, by modifying {\tt gencuts.DAT}. These cuts
-are described below - for more complicated ones a further routine
-must be written [please contact the authors for assistance].
-
-The cuts that may be specified are: $p_T^{\rm min}$
-and $|\eta|^{\rm max}$ for the highest $p_T$ lepton in the event
-($e^\pm$, $\mu^\pm$),
-$p_T^{\rm miss}$ (vector sum of all the neutrino momenta),
-$p_T^{\rm min}$ and $|\eta|^{\rm max}$ for the
-remaining leptons,
-$R({\rm jet},{\rm lepton})$, $R({\rm lepton},{\rm lepton})$
-, $|\eta_{\rm jet}-\eta_{\rm jet}|^{\rm min}$, $p_T^{\rm min}$
-and $|\eta|^{\rm max}$ for photons in the event,
-and finally a photon isolation cut.
-These are represented, in order, by each line of {\tt gencuts.DAT}:
-\begin{verbatim}
-    20d0            [ptmin_lepton]
-    1.5d0           [ymax_lepton]
-    20d0            [ptmin_missing]
-    20d0            [ptmin_lepton(2nd+)]
-    2d0             [ymax_lepton(2nd+)]
-    0d0             [R(jet,lept)_min]
-    0d0             [R(lept,lept)_min]
-    0d0             [Deltay(jet,jet)_min]
-    50d0            [ptmin_photon]
-    1.5d0           [ymax_photon]
-    0.7d0           [cone_photon]
-    0.15d0          [cone_ptcut]
-\end{verbatim}
-The photon isolation cut ensures that the amount of hadronic
-transverse momentum in a cone around each photon is less than
-a specified fraction of the photon's $p_T$:
-\begin{displaymath}
-\sum_{R < R_0} p_T^{\rm hadronic} < f \times p_T^{photon},
-\end{displaymath}
-where $R_0$ and $f$ are specified by {\tt cone\_photon} and
-{\tt cone\_ptcut} respectively.
+in the file {\tt input.DAT}.
 
 \section{Notes on specific processes}
 \label{sec:specific}
 
 \subsection{Di-boson production}
+\label{subsec:diboson}
 
 As of version 3.0, it is possible to specify anomalous trilinear
 couplings for the $W^+W^-Z$ and $W^+W^-\gamma$ vertices that are
 relevant for $WW$ and $WZ$ production. To run in this mode, one
 must set {\tt zerowidth} equal to {\tt .true.}, which should be
-sufficient anyway, and modify the file {\tt anomcoup.DAT}
-appropriately.
+sufficient anyway, and modify the appropriate lines in {\tt input.DAT}.
 
 The anomalous couplings appear in the Lagrangian,
 ${\cal L} = {\cal L}_{SM} + {\cal L}_{anom}$ as follows
@@ -560,7 +696,7 @@ be in the TeV range.
 These form factors should be produced by the new physics associated with the
 anomalous couplings and this choice is somewhat arbitrary.
 
-The file {\tt anomcoup.DAT} contains the values of the $6$ parameters
+The file {\tt input.DAT} contains the values of the $6$ parameters
 which specify the anomalous couplings:
 \begin{verbatim}
     0.0d0           [Delta_g1(Z)]
@@ -576,6 +712,7 @@ $\Lambda$~[TeV] respectively. By setting the first 5 parameters to zero,
 as above, one recovers the Standard Model result.
 
 \subsection{$W/Z+2$~jets production}
+\label{subsec:v2j}
 
 For these processes, the next-to-leading order matrix elements are
 particularly complex and so they have been divided into two groups.
@@ -591,532 +728,58 @@ the ``{\tt Qflag}'' contribution. The real diagrams in this case
 involve only one gluon.
 \end{enumerate}
 
-By specifying {\tt Gflag} and {\tt Qflag} in {\tt options.DAT} one may
+By specifying {\tt Gflag} and {\tt Qflag} in {\tt input.DAT} one may
 select one of these options at a time. The full result may be obtained
 by straightforward addition of the two individual pieces, with no
 meaning attached to either piece separately. In the lowest order calculation,
 both of these may be set to {\tt .true.} simultaneously - however this is
 the only case where this is possible.
 
-For the calculation of the {\tt Gflag} contribution, the value of
-{\tt colourchoice} also has an effect. In almost all cases, this
-should be set to {\tt 0}, indicating that no approximations are made in
-the matrix elements. If speed is an issue - perhaps when new cuts are
-being tested - there may be some gain when setting this to {\tt 1}.
-This indicates that only terms which are leading in the number of colours,
-$N_c$ should be kept. 
+
+\subsection{$H +$~jet production}
+
+The production a standard model Higgs is included in the infinite top
+limit mass limit using an effective Lagrangian approach. The production of 
+a Higgs + one jet (process 271) is included using the virtual matrix elements 
+calculated in refs.~\cite{Ravindran:2002dc} and \cite{Schmidt:1997wr}.
+Phenomenological results have previously been 
+given in refs.~\cite{deFlorian:1999zd},\cite{Ravindran:2002dc} 
+and \cite{Glosser:2002gm}.
+
+\begin{thebibliography}{99}
+%
+%\cite{deFlorian:1999zd}
+\bibitem{deFlorian:1999zd}
+D.~de Florian, M.~Grazzini and Z.~Kunszt,
+%``Higgs production with large transverse momentum in hadronic collisions  at next-to-leading order,''
+Phys.\ Rev.\ Lett.\  {\bf 82}, 5209 (1999)
+[arXiv:hep-ph/9902483].
+%%CITATION = HEP-PH 9902483;%%
+
+\bibitem{Ravindran:2002dc}
+V.~Ravindran, J.~Smith and W.~L.~Van Neerven,
+%``Next-to-leading order QCD corrections to differential distributions of  Higgs boson production in hadron hadron collisions,''
+Nucl.\ Phys.\ B {\bf 634}, 247 (2002)
+[arXiv:hep-ph/0201114].
+%%CITATION = HEP-PH 0201114;%%
+
+%\cite{Schmidt:1997wr}
+\bibitem{Schmidt:1997wr}
+C.~R.~Schmidt,
+%``H $\to$ g g g (g q anti-q) at two loops in the large-M(t) limit,''
+Phys.\ Lett.\ B {\bf 413}, 391 (1997)
+[arXiv:hep-ph/9707448].
+%%CITATION = HEP-PH 9707448;%%
+
+%\cite{Glosser:2002gm}
+\bibitem{Glosser:2002gm}
+C.~J.~Glosser and C.~R.~Schmidt,
+%``Next-to-leading corrections to the Higgs boson transverse momentum  spectrum in gluon fusion,''
+JHEP {\bf 0212}, 016 (2002)
+[arXiv:hep-ph/0209248].
+%%CITATION = HEP-PH 0209248;%%
+
+\end{thebibliography}
+
 
 \end{document}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\documentclass[12pt]{article}
-
-\begin{document}
-\def\GeV{\mbox{GeV}}
-\title{MCFM}
-\section{Input parameters}
-The default input parameters are given in the table above.
-\begin{table}
-\begin{center}
-\begin{tabular}{|c|c|c|c|} \hline
-Parameter & Fortran name & Default value & Location where set                 \\ 
-\hline
-$m_t$            & {\tt mt}      & 175 GeV             &{\tt /User/mdata.f}   \\
-$m_\tau$         & {\tt mtau}      & 1.777 GeV           &{\tt /User/mdata.f}   \\
-$m^2_\tau(Q=100\GeV)$& {\tt mtausq}  & 3.1602 GeV$^2$      &{\tt /User/mdata.f}   \\
-$m^2_c(Q=100\GeV)$   & {\tt mcsq}    & 0.4  GeV$^2$        &{\tt /User/mdata.f}   \\
-$m^2_b(Q=100\GeV)$   & {\tt mbsq}    & 10.7 GeV$^2$        &{\tt /User/mdata.f}   \\
-$\Gamma_\tau$    & {\tt tauwidth}& 2.269$\times$10$^{-12}$~GeV
-                                                       &{\tt /User/mdata.f}   \\
-$M_Z$            & {\tt zmass}   & 91.187 GeV          &{\tt /User/mdata.f}   \\
-$\Gamma_Z$       & {\tt zwidth}  & 2.49 GeV            &{\tt /User/mdata.f}   \\
-$M_W$            & {\tt wmass}   & 80.41 GeV           &{\tt /User/mdata.f}   \\
-$\Gamma_W$       & {\tt wwidth}  & 2.06 GeV            &{\tt /User/mdata.f}   \\
-$\alpha(M_Z)$    & {\tt aemmz}   & 1/128.89            &{\tt /User/mdata.f}   \\
-$G_F$            & {\tt gf}      & 1.16639$\times$10$^{-5}$
-                                                       &{\tt /Inc/constants.f}\\
-$\sin^2 \theta_w$& {\tt xw}      & Calculated          & See text             \\
-$g^2_w$          & {\tt gwsq}    & Calculated          & See text             \\
-$V_{ud}$         & {\tt Vud}     & 0.975               &{\tt /User/mdata.f}   \\
-$V_{us}$         & {\tt Vus}     & 0.22220486          &{\tt /User/mdata.f}   \\
-$V_{ub}$         & {\tt Vub}     & 0.                  &{\tt /User/mdata.f}   \\
-$V_{cd}$         & {\tt Vcd}     & 0.22220486          &{\tt /User/mdata.f}   \\
-$V_{cs}$         & {\tt Vcs}     & 0.975               &{\tt /User/mdata.f}   \\
-$V_{cb}$         & {\tt Vcb}     & 0.                  &{\tt /User/mdata.f}   \\
-\hline
-\end{tabular}
-\label{default} 
-\end{center}
-\end{table}
-We use the effective field theory approach, which is good for all
-except couplings to $b$-quarks (this may be added later). This is
-valid for scales below the top mass.
-      $$e^2 =  4 \pi \alpha(M_Z)$$
-      $$g_w^2 =  8 M^2_W  \frac{G_F}{\sqrt{2}} $$
-      $$\sin \theta_w =  \frac{e^2}{g_w^2}$$
-For further details, see Georgi, {\it Nucl. Phys.} {\bf B363} (1991)
-301. 
-
-\subsection{Parton distributions}
-The value of $\alpha_S(M_Z)$ is not adjustable; it is hardwired with the
-parton distribution. A collection of modern parton  distribution functions
-are included. 
-The distributions, together with their associated $\alpha_S(M_Z)$ values, 
-are given in the table below. For the older distributions, where the coupling 
-was specified by $\Lambda$ this requires some calculation/guesswork.
-\begin{table}[h]
-\begin{center}
-\begin{tabular}{|c|c||c|c|}
-\hline
-{\tt mrs99\_1}  & 0.1175    & {\tt mrs99\_2}  & 0.1175      \\
-{\tt mrs99\_3}  & 0.1175    & {\tt mrs99\_4}  & 0.1125      \\    
-{\tt mrs99\_5}  & 0.1225    & {\tt mrs99\_6}  & 0.1178      \\    
-{\tt mrs99\_7}  & 0.1171    & {\tt mrs99\_8}  & 0.1175      \\    
-{\tt mrs99\_9}  & 0.1175    & {\tt mrs9910}  & 0.1175      \\    
-{\tt mrs9911}  & 0.1175    & {\tt mrs9912}  & 0.1175      \\    
-{\tt mrs98z1}  &  0.1175      & {\tt cteq5hq}  &  0.118  \\
-{\tt mrs98z2}  &  0.1175      & {\tt cteq5f3}  &  0.106  \\
-{\tt mrs98z3}  &  0.1175      & {\tt cteq5f4}  &  0.112  \\
-{\tt mrs98z4}  &  0.1125      & {\tt mtungb1}  &  0.109  \\
-{\tt mrs98z5}  &  0.1225      & {\tt cteq4\_m} &  0.116  \\
-{\tt mrs96r1}  &  0.113       & {\tt cteq4\_d} &  0.116  \\
-{\tt mrs96r2}  &  0.120       & {\tt cteq4\_l} &  0.132  \\
-{\tt mrs96r3}  &  0.113       & {\tt cteq4a1}  &  0.110  \\
-{\tt mrs96r4}  &  0.120       & {\tt cteq4a2}  &  0.113  \\
-{\tt hmrs90e}  &  0.098382675 & {\tt cteq4a3}  &  0.116  \\
-{\tt hmrs90b}  &  0.107961191 & {\tt cteq4a4}  &  0.119  \\
-{\tt cteq5\_m} &  0.118       & {\tt cteq4a5}  &  0.122  \\
-{\tt cteq5\_d} &  0.118       & {\tt cteq4hj}  &  0.116  \\
-{\tt cteq5\_l} &  0.127       & {\tt cteq4lq}  &  0.114  \\
-{\tt cteq5hj}  &  0.118       &   &    \\
-\hline
-\end{tabular}
-\end{center}
-\label{pdlabel}
-\end{table}
-
-Alternatively it would be simple to write a link to PDFLIB. 
-
-\section{Runtime options}
-Run time options are chosen by modifying the file 
-{\tt /bin/options.DAT}. Each line of this file is of the form
-\begin{displaymath}
-{\tt value} \hspace{3cm} [{\tt parameter}]
-\end{displaymath}
-and we will give a description of all the parameters below, together with
-valid and/or sensible inputs for ${\tt value}$.
-
-\begin{itemize}
-\item {\tt nproc}.
-The process to be studied is given by
-choosing a process number, according to the following table.
-$f(p_i)$ denotes a generic partonic jet.
-\begin{table}
-\begin{center}
-\begin{tabular}{|l|l|}
-\hline
-{\tt nproc} & $f(p_1)+f(p_2) \to \ldots $ \\
-\hline
-0   & $ W^+ ~\mbox{for total cross-section--No $W$-BR} $ \\ 
-1   & $ W^+(\to \nu(p_3)+e^+(p_4)) $ \\ 
-5   & $ W^- ~\mbox{for total cross-section--No $W$-BR} $ \\ 
-6   & $ W^-(\to e^-(p_3)+\bar{\nu}(p_4)) $ \\ 
-\hline
-11  & $ f(p_5)+W^+(\to \nu(p_3)+e^+(p_4)) $ \\ 
-16  & $ f(p_5)+W^-(\to e^-(p_3)+\bar{\nu}(p_4)) $ \\ 
-18  & $ f(p_5)+W^+(\to \nu(p_3)+e^+(p_4)) + \gamma(p5)$ \\ 
-19  & $ f(p_5)+W^-(\to e^-(p_3)+\bar{\nu}(p_4)) + \gamma(p5) $ \\ 
-\hline
-20  & $ W^+(\to \nu(p_3)+e^+(p_4)) + b(p_5)+\bar{b}(p_6)~\mbox{(massive $b$)}$ \\
-21  & $ W^+(\to \nu(p_3)+e^+(p_4)) + b(p_5)+\bar{b}(p_6)$ \\
-22  & $ W^+(\to \nu(p_3)+e^+(p_4))+f(p_5)+f(p_6)$ \\
-23  & $ W^+(\to \nu(p_3)+e^+(p_4))+f(p_5)+f(p_6)+f(p_7)$ \\
-26  & $ W^-(\to e^-(p_3)+\bar{\nu}(p_4))+b(p_5)+\bar{b}(p_6)$ \\
-27  & $ W^-(\to e^-(p_3)+\bar{\nu}(p_4))+f(p_5)+f(p_6)$ \\ 
-\hline
-30  & $ Z^0 ~\mbox{for total cross-section--No $Z$-BR} $ \\ 
-31  & $ Z^0(\to e^-(p_3)+e^+(p_4)) $ \\ 
-32  & $ Z_0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) $ \\ 
-33  & $ Z^0(\to b(p_3)+\bar{b}(p_4)) $ \\ 
-\hline
-40  & $ Z^0~\mbox{(no BR)} +f(p_5)$ \\
-41  & $ Z^0(\to e^-(p_3)+e^+(p_4)) +f(p_5)$ \\
-42  & $ Z_0(\to 3*(\nu(p_3)+\bar{\nu}(p_4)))-(\mbox{sum over 3} \nu)+f(p_5)$ \\ 
-43  & $ Z^0(\to b(p_3)+\bar{b}(p_4))+f(p_5)$ \\ 
-44  & $ Z^0(\to e^-(p_3)+e^+(p_4))+f(p_5)+f(p_6)$ \\ 
-45  & $ Z^0(\to e^-(p_3)+e^+(p_4))+f(p_5)+f(p_6)+f(p_7)$ \\ 
-\hline
-50  & $ Z^0(\to e^-(p_3)+e^+(p_4))+b(p_5)+\bar{b}(p_6)~\mbox{(massive $b$)}$ \\ 
-51  & $ Z^0(\to e^-(p_3)+e^+(p_4))+b(p_5)+\bar{b}(p_6)$ \\
-52  & $ Z_0(\to 3*(\nu(p_3)+\bar{\nu}(p_4)))+b(p_5)+\bar{b}(p_6)$ \\
-53  & $ Z^0(\to b(p_3)+\bar{b}(p_4))+b(p_5)+\bar{b}(p_6)$ \\
-\hline
-60  & $ W^+ + W^- ~\mbox{for total cross-section--No $W$-BRs} $ \\ 
-61  & $ W^+(\to \nu(p_3)+e^+(p_4)) +W^-(\to e^-(p_5)+\bar{\nu}(p_6)) $ \\ 
-62  & $ W^+(\to \nu(p_3)+e^+(p_4)) +W^-(\to q(p_5)+{\bar q}(p_6)) $ \\ 
-63  & $ W^+(\to q(p_3)+{\bar q}(p_4)) +W^-(\to e^-(p_5)+\bar{\nu}(p_6)) $ \\ 
-\hline
-70  & $ Z^0 + W^+ ~\mbox{for total cross-section--No $W$or $Z$-BRs} $ \\ 
-71  & $ Z^0(\to e^-(p_5)+e^+(p_6))+W^+(\to \nu(p_3)+\mu^+(p_4)) $ \\ 
-72  & $ Z^0(\to 3*(\nu(p_5)+\bar{\nu}(p_6)))+W^+(\to \nu(p_3)+e^+(p_4)) $ \\ 
-73  & $ Z^0(\to b(p_5)+\bar{b}(p_6))+W^+(\to \nu(p_3)+e^+(p_4)) $ \\ 
-\hline
-75  & $ Z^0 + W^- ~\mbox{for total cross-section--No $W$or $Z$-BRs} $ \\ 
-76  & $ Z^0(\to e^-(p_5)+e^+(p_6))+W^-(\to \mu^-(p_3)+\bar{\nu}(p_4)) $ \\ 
-77  & $ Z^0(\to \nu(p_5)+\bar{\nu}(p_6))+W^-(\to e^-(p_3)+\bar{\nu}(p_4)) $ \\ 
-78  & $ Z^0(\to b(p_5)+\bar{b}(p_6))+W^-(\to e^-(p_3)+\bar{\nu}(p_4)) $ \\ 
-\hline
-\end{tabular}
-\end{center}
-\end{table}
-
-\begin{table}
-\begin{center}
-\begin{tabular}{|l|l|}
-\hline
-{\tt nproc} & $f(p_1)+f(p_2) \to \ldots $ \\
-\hline
-80  & $ Z^0 + Z^0 ~\mbox{for total cross-section--No $Z$-BRs} $ \\ 
-81  & $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to \mu^-(p_3)+\mu^+(p_4)) $ \\ 
-82  & $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) $ \\ 
-83  & $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to b(p_3)+\bar{b}(p_4)) $ \\ 
-84  & $ Z^0(\to b(p_5)+\bar{b}(p_6))+Z^0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) $ \\ 
-\hline
-85  & $ Z^0 + Z^0 ~\mbox{for total cross-section} ~(\mathrm{no}~\gamma^*) $ \\ 
-86  & $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to \mu^-(p_3)+\mu^+(p_4)) ~(\mathrm{no}~\gamma^*) $ \\ 
-87  & $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) ~(\mathrm{no}~\gamma^*) $ \\ 
-88  & $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to b(p_3)+\bar{b}(p_4)) ~(\mathrm{no}~\gamma^*) $ \\ 
-89  & $ Z^0(\to
-b(p_5)+\bar{b}(p_6))+Z^0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) ~(\mathrm{no}~\gamma^*) $ \\ 
-\hline
-90  & $ H + W^+ ~\mbox{for total cross-section--No $W$ or $H$-BRs} $ \\ 
-91  & $ H(\to b(p_5)+\bar{b}(p_6)) + W^+(\to \nu(p_3)+e^+(p_4)) $ \\ 
-96  & $ H(\to b(p_5)+\bar{b}(p_6)) + W^-(\to e^-(p_3)+\bar{\nu}(p_4)) $ \\ 
-\hline
-100 & $ H + Z^0 ~\mbox{for total cross-section--No $Z$ or $H$-BRs} $ \\ 
-101 & $ H(\to b(p_5)+\bar{b}(p_6)) + Z^0(\to e^-(p_3)+e^+(p_4)) $ \\ 
-102 & $ H(\to b(p_5)+\bar{b}(p_6)) + Z^0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) $ \\ 
-103 & $ H(\to b(p_5)+\bar{b}(p_6)) + Z^0(\to b(p_3)+\bar{b}(p_4)) $ \\ 
-\hline
-110 & $ H~\mbox{for total cross-section} $ \\ 
-111 & $ H(\to b(p3) + {\bar b}(p4)) $ \\ 
-112 & $ H(\to W^- W^+) ~\mbox{for total cross-section--No $H$ or $W$-BRs} $ \\ 
-113 & $ H(\to W^-(e^-(p_5)+\bar{\nu}(p_6))+W^+(\nu(p_3)+e^+(p_4))) $ \\ 
-\hline
-121 & $ H(\to Z^0(e^-(p_5)+e^+(p_6))+Z^0(\mu^-(p_3)+\mu^+(p_4)) $ \\ 
-122 & $ H(\to Z^0(e^-(p_5)+e^+(p_6))+Z^0(3*(\nu(p_3)+\bar{\nu}(p_4))) $ \\ 
-\hline
-140 & $ H ~\mbox{(no BR)} + b(p_5)$ \\
-141 & $ H ~\mbox{(no BR)} + b(p_5) +g(p_6)$ \\
-142 & $ H ~\mbox{(no BR)} + {\bar b}(p_5) +b(p_6)$ \\
-143 & $ H ~\mbox{(no BR)} + b(p_5) + {\bar q}(p_6)$ \\
-144 & $ H ~\mbox{(no BR)} + b(p_5) + {\bar b}(p_6)$ \\
-145 & $ H ~\mbox{(no BR)} + b(p_5) + {\bar b}(p_6) ~\mbox{(both observed)}$ \\
-\hline
-150 & $ t \bar{t} ~\mbox{for total cross-section} $ \\ 
-151 & $ t(\to\nu(p_3)+e^+(p_4)+b(p_5))+\bar{b}(p_6))+W^-(\to e^-(p_7)+\bar{\nu}(p_8))~(\mathrm{missing}) $ \\ 
-152 & $ t(\to\nu(p_3)+e^+(p_4)+b(p_5))+\bar{b}(p_6))+W^-(\to q(p_7)+{\bar q}(p_8))~(\mathrm{missing}) $ \\ 
-\hline
-161 & $ t(\to\nu(p_3)+e^+(p_4)+b(p_5))+\bar{b}(p_6))+q(p_7)~(\mathrm{missing}) $ \\ 
-\hline
-171 & $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{b}(p_6)) $ \\ 
-\hline
-180 & $ \tau^- \tau^+ ~\mbox{for total cross-section-Drell-Yan} $ \\ 
-181 & $ \tau^-(\to \nu(p_3)+e^+(p_4)+\nu(p_5))+\tau^+(\to \bar{\nu}(p_6)+e^-(p_8)+\bar{\nu}(p_9)) $ \\  
-\hline
-190 & $ t(p_3) + {\bar t}(p_4) + H(p_5) $ \\ 
-191 & $ t(p_3+p_4+p_5) + {\bar t}(p_6+p_7+p_8) + H(p_9+p_{10}) $ \\ 
-192 & $ t(\to \nu(p_3)+e^+(p_4)+b(p_5)) +
-{\bar t}(\to {\bar b}(p_6)+{\bar \nu}(p_7)+e^-(p_8)) + H(p_9+p_{10}) $ \\ 
-\hline
-200 & $ H(p_3+p_4) + f(p_5) ~\mbox{for total cross-section-No $H$ BR} $ \\ 
-201 & $ H(\to \tau(p_3)+{\bar \tau}(p_4)) + f(p_5)$ \\ 
-202 & $ H(\to \tau^- (\to \nu_\tau(p_3)+e^-(p_4)+{\bar \nu_e}(p_5))
-+\tau^+(\to {\bar \nu_\tau}(p_6)+\nu_e(p_7)+e^+(p_8)) + f(p_9)$ \\ 
-\hline
-30$n$ &  Check of volume of $n$-particle phase space \\
-\hline
-\end{tabular}
-\end{center}
-\end{table}
-
-\item {\tt part}.
-This parameter has 4 possible values, described below:
-\begin{itemize}
-\item {\tt lord}.
-The calculation is performed at leading order only.
-\item {\tt virt}.
-Virtual (loop) contributions to the next-to-leading order result are
-calculated, (+counterterms to make them finite).
-\item {\tt real}.
-In addition to the loop diagrams calculated by {\tt virt}, the full
-next-to-leading order results must include contributions from diagrams
-involving real gluon emission (-counterterms to make them finite).
-\item {\tt tota}.
-For simplicity, the {\tt tota} option simply runs the {\tt virt} and
-{\tt real} real pieces in series before performing a sum to obtain
-the full next-to-leading order result. In practise, it may be more
-efficient to do this by hand as described below.
-\end{itemize}
-
-\item {\tt runstring}.
-When {\tt MCFM} is run, it will write output to several files. The
-label {\tt runstring} (up to 9 characters long) will be appended
-to the names of these files.
-
-\item {\tt verbose}.
-Setting this flag to {\tt .false.} will disable certain output in
-the initialization stage of the program. It is recommended that
-this be left at the default value {\tt .true.}.
-
-\item {\tt sqrts}. This is the centre-of-mass energy, $\sqrt{S}$ of
-the colliding particles, measured in GeV.
-
-\item {\tt ih1}, {\tt ih2}. The identities of the incoming hadrons
-may be set with these parameters, allowing simulations for both
-$p{\bar p}$ (such as the Tevatron) and $pp$ (such as the LHC)
-simulations. Setting {\tt ih1} equal to ${\tt +1}$ corresponds to
-a proton, whilst ${\tt -1}$ corresponds to an anti-proton.
-
-\item {\tt pdlabel}. The choice of parton distribution is made by
-inserting the appropriate 7-character code from Table~{\ref{pdlabel}}
-here. As mentioned above, this also sets the value of $\alpha_S(M_Z)$.
-
-\item {\tt hmass}. For processes involving the Higgs boson, this
-parameter should be set equal to the putative value of $M_H$.
-
-\item {\tt scale}. This parameter may be used to adjust the value
-of the renormalization and factorization scale. This is the scale
-at which $\alpha_S$ is evaluated and will typically be set to
-a mass scale appropriate to the process ($M_W$, $M_Z$, $M_t$ for
-instance). For a lowest order calculation, the value of $\alpha_S$ at
-this scale is obtained from $\alpha_S(M_Z)$ via $1$-loop running, but
-for any value of {\tt part} other than {\tt lord}, $2$-loop
-running is used.
-
-\item {\tt m34min}, {\tt m34max}, {\tt m56min}, {\tt m56max}.
-These parameters represent a basic set of cuts that may be applied
-to the calculated cross-section. The only events that contribute to
-the cross-section will have, for example,
-{\tt m34min} $<$ {\tt m34} $<$ {\tt m34max} where {\tt m34} is the
-invariant mass of particles 3 and 4 that are specified by {\tt nproc}.
-
-\item {\tt rtsmin}. This provides a cut-off on the lowest generated
-$\hat{s}$ for the partonic event. This cut-off is required for
-numerical accuracy and should not be altered.
-
-\item {\tt zerowidth}. When set to {\tt .true.} then all vector
-bosons are produced on-shell. This is appropriate for calculations
-of {\it total} cross-sections such as {\tt nproc} $=$ {\tt 60},
-{\tt 70} and {\tt 80}. When interested in decay products of the
-bosons (such as {\tt nproc} $=$ {\tt 61}), this should be set
-to {\tt .false.}.
-
-\item {\tt makecuts}. If this parameter is set to {\tt .false.} then
-no additional cuts are applied to the events. Otherwise, events will
-be rejected according to a set of cuts that is specified by routines
-in {\tt /src/User/} and which varies according to the process
-specified in {\tt nproc}. 
-
-\item {\tt Rcut}. If the final state of the chosen process contains
-either quarks or gluons then for each event an attempt will be made
-to form them into jets. For this it is necessary to define the
-jet separation $\Delta R=\sqrt{{\Delta \eta}^2 + {\Delta \phi}^2}$
-so that after jet combination, all jet pairs are separated by
-$\Delta R >$~{\tt Rcut}. All jets will also satisfy the cuts
-specified in {\tt jetcuts.DAT} (see the section below),
-$E_T^{\rm jet} > p_T^{\rm min}$, $|\eta^{\rm jet}| < \eta^{\rm max}$.
-
-\item {\tt itmx1}, {\tt itmx2}. The program will perform two runs of
-{\tt VEGAS} - once for prec-conditioning and then the final run to
-collect the total cross-section and fill histograms. The number of
-sweeps for each run is given by {\tt itmx1} (pre-conditioning)
-and {\tt itmx2} (final). The recommended values are the default,
-{\tt 10}.
-
-\item {\tt ncall1}, {\tt ncall2}. For every sweep of {\tt VEGAS},
-the number of events generated will be {\tt ncall1} in the
-pre-conditioning stage and {\tt ncall2} in the final run. The number
-of events required depends upon a number of factors. The error
-estimate on a total cross-section will often be reasonable for a
-fairly small number of events, whereas accurate histograms will
-require a longer run. As the number of particles in the final state
-increases, so should the number of calls per sweep. Typically one
-might make trial runs with {\tt part} set to {\tt lord} to determine
-reasonable values for {\tt ncall1} and {\tt ncall2}. Such values
-should also be appropriate for the {\tt virt} piece of
-next-to-leading order and should probably be increased by a factor of
-$\sim 5$ for the {\tt real} calculation.
-
-\item {\tt ij}. This is the seed for the {\tt VEGAS} integration
-and can be altered to give different results for otherwise identical
-runs.
-
-\item {\tt realwt}. This is a technical parameter and its value
-should be left unchanged ({\tt .true.}).
-
-\item {\tt cutoff}. This is a technical parameter and its value
-should be left unchanged ({\tt 10}).
-
-\item {\tt dryrun}. The default value of this parameter is
-{\tt .false.}. When set to {\tt .true.} the pre-conditioning sweeps
-in the {\tt VEGAS} integration are skipped, with the reported
-results coming from a single run.
-
-\item {\tt debug}. This is useful as a debugging measure and as
-such it should be left unchanged ({\tt .false.}).
-
-\end{itemize}
-
-\section{Output}
- 
-In addition to the direct output of the program to {\tt stdout}, after
-the final sweep of {\tt VEGAS} the program will output two additional files.
-
-The standard output will detail the iteration-by-iteration best estimate
-of the total cross-section, together with the accompanying error estimate.
-After all sweeps have been completed, a final summary line will be printed.
-In the {\tt npart}~$=$~{\tt tota} case, this last line will actually be the
-sum of the two separate real and virtual integrations.
-
-The two other files that are output will be {\tt outputname.dat} and
-{\tt outputname.top}, which contain data for various histograms associated
-with the calculated process. The first of these is in a raw format 
-which may be read in by a plotting package of the user's choosing. The
-other file contains the histograms as a {\tt TOPDRAWER} file. The structure
-of {\tt outputname} is as follows:
-\begin{displaymath}
-{\tt procname\_part\_pdlabel\_scale\_runstring}
-\end{displaymath}
-where {\tt procname} is a label assigned by the program corresponding to
-the calculated process; the remaining labels are as input by the user
-in the file {\tt options.DAT}.
-
-\section{Auxiliary input files}
-
-\subsection{Specifying jet cuts with {\tt jetcuts.DAT}}
-
-To specify the cuts that are used in the jet algorithm to identify
-jets, one must modify the file {\tt jetcuts.DAT}. It is possible
-to specify the value of $p_T^{\rm min}$ and $|\eta|^{\rm max}$ for the
-jets that are found by the algorithm. A sample file follows:
-
-\begin{verbatim}
-    20d0            [ptmin]
-    2.4d0           [ymax]
-    15d0            [ptmin_Tevatron]
-    2.0d0           [ymax_Tevatron]
-    30d0            [ptmin_LHC]
-    2.5d0           [ymax_LHC]
-\end{verbatim}
-As can be seen from the comments, the file consists of three pairs of
-lines that dictate the cuts that should be applied in a variety of
-situations. This file is interpreted as follows:
-\begin{eqnarray}
-{\rm If }~\sqrt{s}=2~{\rm TeV, ~use} &&
- p_T^{\rm min}=15~{\rm GeV}~{\rm and}~|\eta|^{\rm max}=2; \nonumber \\
-{\rm if }~\sqrt{s}=14~{\rm TeV,~use} &&
- p_T^{\rm min}=30~{\rm GeV}~{\rm and}~|\eta|^{\rm max}=2.5; \nonumber \\
-{\rm any~other~value~of }~\sqrt{s} {\rm ,~use} &&
- p_T^{\rm min}=20~{\rm GeV}~{\rm and}~|\eta|^{\rm max}=2.4. \nonumber 
-\end{eqnarray}
-
-\subsection{Specifying generic cuts with {\tt gencuts.DAT}}
-
-A set of simple cuts can be applied to the leptons and jets
-produced in a process, by modifying {\tt gencuts.DAT}. These cuts
-are described below - for more complicated ones a further routine
-must be written [please contact the authors for assistance].
-
-The cuts that may be specified are: $p_T^{\rm min}$
-and $|\eta|^{\rm max}$ for leptons in the event ($e^\pm$, $\mu^\pm$),
-$p_T^{\rm miss}$ (vector sum of all the neutrino momenta),
-$R({\rm jet},{\rm lepton})$, $R({\rm lepton},{\rm lepton})$
-and finally $|\eta_{\rm jet}-\eta_{\rm jet}|^{\rm min}$. These are
-represented, in order, by each line of {\tt gencuts.DAT}:
-\begin{verbatim}
-    20d0            [ptmin_lepton]
-    1.5d0           [ymax_lepton]
-    20d0            [ptmin_missing]
-    0d0             [R(jet,lept)_min]
-    0d0             [R(lept,lept)_min]
-    0d0             [Deltay(jet,jet)_min]
-\end{verbatim}
-
-\section{Notes on specific processes}
-
-\subsection{Di-boson production}
-
-As of version 3.0, it is possible to specify anomalous trilinear
-couplings for the $W^+W^-Z$ and $W^+W^-\gamma$ vertices that are
-relevant for $WW$ and $WZ$ production. To run in this mode, one
-must set {\tt zerowidth} equal to {\tt .true.}, which should be
-sufficient anyway, and modify the file {\tt anomcoup.DAT}
-appropriately.
-
-The anomalous couplings appear in the Lagrangian,
-${\cal L} = {\cal L}_{SM} + {\cal L}_{anom}$ as follows
-(where ${\cal L}_{SM}$ represents the usual Standard Model Lagrangian):
-\begin{eqnarray}
-{\cal L}_{anom} & = & i g_{WWZ} \Biggl[
- \Delta g_1^Z \left( W^*_{\mu\nu}W^\mu Z^\nu - W_{\mu\nu}W^{*\mu} Z^\nu \right)
-+\Delta\kappa^Z W^*_\mu W_\nu Z^{\mu\nu} \nonumber \\
- & &+
- \frac{\lambda^Z}{M_W^2} W^*_{\rho\mu} W^\mu_\nu Z^{\nu\rho} \Biggr]
-+i g_{WW\gamma} \Biggl[ 
- \Delta\kappa^\gamma W^*_\mu W_\nu \gamma^{\mu\nu}
-+\frac{\lambda^\gamma}{M_W^2} W^*_{\rho\mu} W^\mu_\nu\gamma^{\nu\rho}
- \Biggr], \nonumber
-\end{eqnarray}
-where $X_{\mu\nu} \equiv \partial_\mu X_{\nu} - \partial_\nu X_{\mu}$
-and the overall coupling factors are $g_{WWZ}=-e$,
-$g_{WW\gamma}=-e\cot\theta_w$.
-This is the most general Lagrangian that conserves $C$ and $P$
-separately and electromagnetic gauge invariance requires that there
-is no equivalent of the $\Delta g_1^Z$ term for the photon coupling.
-
-In order to avoid a violation of unitarity, these couplings are included
-in {\tt MCFM} only after suppression by dipole form factors,
-\begin{displaymath}
-\Delta g_1^Z \rightarrow \frac{\Delta g_1^Z}{(1+\hat{s}/\Lambda^2)^2}, \qquad
-\Delta \kappa^{Z/\gamma} \rightarrow
- \frac{\Delta \kappa_1^{Z/\gamma}}{(1+\hat{s}/\Lambda^2)^2}, \qquad
-\lambda^{Z/\gamma} \rightarrow
- \frac{\Delta \lambda^{Z/\gamma}}{(1+\hat{s}/\Lambda^2)^2},
-\end{displaymath}
-where $\hat{s}$ is the vector boson pair invariant mass and $\Lambda$
-is an additional parameter giving the scale of new physics, which should
-be in the TeV range.
-These form factors should be produced by the new physics associated with the
-anomalous couplings and this choice is somewhat arbitrary.
-
-The file {\tt anomcoup.DAT} contains the values of the $6$ parameters
-which specify the anomalous couplings:
-\begin{verbatim}
-    0.0d0           [Delta_g1(Z)]
-    0.0d0           [Delta_K(Z)]
-    0.0d0           [Delta_K(gamma)]
-    0.0d0           [Lambda(Z)]
-    0.0d0           [Lambda(gamma)]
-    2.0d0           [Form-factor scale, in TeV]
-\end{verbatim}
-with the lines representing $\Delta g_1^Z$, $\Delta \kappa^Z$,
-$\Delta \kappa^\gamma$, $\lambda^Z$, $\lambda^\gamma$ and
-$\Lambda$~[TeV] respectively. By setting the first 5 parameters to zero,
-as above, one recovers the Standard Model result.
-
-\end{document}
-

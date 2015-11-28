@@ -16,8 +16,8 @@ c----No statistical factor of 1/2 included.
       include 'masses.f'
       include 'ewcouple.f'
       include 'zcouple.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
       include 'scheme.f'
       include 'ewcharge.f'
       logical dronly

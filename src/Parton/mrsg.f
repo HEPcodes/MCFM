@@ -63,7 +63,7 @@ C     THIS IS THE NEW  "Aprime" FIT -- Feb 1995 -- standard Q^2 range
  
       IF(INIT.NE.0) GOTO 10
       INIT=1
-      OPEN(UNIT=20,file='mrs95ap.dat',status='unknown')
+      OPEN(UNIT=20,file='Pdfdata/mrs95ap.dat',status='unknown')
       DO 20 N=1,nx-1
       DO 20 M=1,19
       READ(20,50)F(1,N,M),F(2,N,M),F(3,N,M),F(4,N,M),F(5,N,M),F(7,N,M),
@@ -148,7 +148,7 @@ C     THIS IS THE NEW  "G" FIT -- Feb 1995 -- standard Q^2 range
  
       IF(INIT.NE.0) GOTO 10
       INIT=1
-      OPEN(UNIT=21,file='mrs95_g.dat',status='unknown')
+      OPEN(UNIT=21,file='Pdfdata/mrs95_g.dat',status='unknown')
       DO 20 N=1,nx-1
       DO 20 M=1,19
       READ(21,50)F(1,N,M),F(2,N,M),F(3,N,M),F(4,N,M),F(5,N,M),F(7,N,M),

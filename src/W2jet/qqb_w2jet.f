@@ -12,7 +12,8 @@ c--- all momenta are incoming
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'ckm.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       include 'flags.f'
       include 'msq_cs.f'
       include 'lc.f'
@@ -290,7 +291,7 @@ c--- 4-quark contribution to matrix elements
       mqq(1,j,k)=0d0
       mqq(2,j,k)=0d0
       if ((j .gt. 0) .and. (k .lt. 0)) then
-        if (j. ne. -k) then
+        if (j .ne. -k) then
 c--- Q QBAR - different flavours
            mqq(0,j,k)=facqq*Vsq(j,k)*(qqb_ijii(0)+qqb_ijjj(0))
            mqq(1,j,k)=facqq*Vsq(j,k)*(
@@ -320,7 +321,7 @@ c--- Q QBAR - same flavours
      .             +facqq*Vsum(j)*qqb_iiji(2)
         endif
       elseif ((j .lt. 0) .and. (k .gt. 0)) then
-        if (j. ne. -k) then
+        if (j .ne. -k) then
 c--- QBAR Q - different flavours
           mqq(0,j,k)=facqq*Vsq(j,k)*(
      .             +qbq_ijii(0)+qbq_ijjj(0))
@@ -352,7 +353,7 @@ c--- QBAR Q - same flavours
      .             +facqq*Vsum(k)*qbq_iiji(2)
         endif
       elseif ((j .gt. 0) .and. (k .gt. 0)) then
-        if (j. ne. k) then
+        if (j .ne. k) then
 c--- Q Q - different flavours
           mqq(0,j,k)=
      .          +facqq*half*Vsq(j,-k)*qq_ijjj(0)
@@ -372,7 +373,7 @@ c--- Q Q - same flavours
           mqq(2,j,k)=facqq*Vsum(j)*qq_iiji(2)
         endif
       elseif ((j .lt. 0) .and. (k .lt. 0)) then
-        if (j. ne. k) then
+        if (j .ne. k) then
 c--- QBAR QBAR - different flavours
           mqq(0,j,k)=
      .+facqq*half*Vsq(j,-k)*qbqb_ijjj(0)
@@ -474,7 +475,6 @@ c--- restore proper colourchoice if necessary
      
       subroutine amp_q_QbQ_qb(i1,i2,i5,i6,amp1,amp2,amp3,amp4) 
       implicit none
-      include 'constants.f'
       integer i1,i2,i5,i6
       double complex aqqb_zbb_new,amp1,amp2,amp3,amp4
 c--- Amplitudes for q(i1) + qb(i2) --> qb(i6) + q(i5) + W (-> 3+4)
@@ -500,7 +500,6 @@ c-- this routine transfers the information on the colour structure
 c-- for the W2jet matrix elements into separate arrays for each
 c-- incoming parton case
       implicit none
-      include 'constants.f'
       include 'mmsq_cs.f'
       integer i
       double precision mcs(0:2)

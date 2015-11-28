@@ -8,8 +8,8 @@ c   for the moment --- radiation only from initial line
       include 'masses.f'
       include 'ewcouple.f'
       include 'zcouple.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
       include 'zerowidth.f'
       include 'ewcharge.f'
       integer j,k,jk,polq,pol1,pol2,pol3,jp,kp

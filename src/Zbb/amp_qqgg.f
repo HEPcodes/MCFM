@@ -4,8 +4,8 @@ C--Appendix A
 C  lh is the helicity of lepton pair
       implicit none
       include 'constants.f'
-      include 'masses.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       integer i1,i2,i3,i4,i5,i6,j,k,h1,h2,h3,lh,g1,g2,g3,lg
       double complex xa(mxpart,mxpart),xb(mxpart,mxpart),t2a
       double precision t123,t234

@@ -3,7 +3,7 @@ C----matrix element squared with p5 line contracted with n(mu)
 C----nDp6 should be equal to zero
       implicit none
       include 'constants.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       include 'mmsqv_cs.f'
       double complex qcdabn(2,2,2),qcdban(2,2,2),qedn(2,2,2)
       double complex zab(mxpart,mxpart),zba(mxpart,mxpart)

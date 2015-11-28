@@ -18,15 +18,13 @@ C
       
       integer j,k,nu
       double precision msq(-nf:nf,-nf:nf),pin(mxpart,4),p(mxpart,4)
-      double precision pw1(4),pw2(4),p12(4),q(4),a(4),r(4),b(4),h(4),
-     . x(4),y(4)
-      double precision shat,sh,sw1,sw2,qDq,aDa,rDr,bDb,yDy,xDx,densq,
+      double precision pw1(4),pw2(4),p12(4),q(4),a(4),r(4),b(4),h(4)
+      double precision shat,sh,sw1,sw2,qDq,aDa,rDr,bDb,densq,
      . p3Dp5,p6Dp8
       double precision wtqqb,wtgg,hdecay
-      double precision gamr1,gamr2,gamb1,gamb2,gamx1,gamx2,
-     . gamy1,gamy2,gamq4,gama7,dot
+      double precision gamr1,gamr2,gamb1,gamb2,gamq4,gama7,dot
       double precision fac,denr,denb
-      double precision p1Dr,p2Dr,p1Db,p2Db,p1Dx,p2Dx,p1Dy,p2Dy,p4Dq,p7Da
+      double precision p1Dr,p2Dr,p1Db,p2Db,p4Dq,p7Da
 
 
       integer q4,a7,r1,r2,b1,b2
@@ -43,11 +41,11 @@ C
 
       q(nu)=+p(3,nu)+p(4,nu)+p(5,nu)
       r(nu)=q(nu)+h(nu)
-      x(nu)=q(nu)+p(1,nu)
+c      x(nu)=q(nu)+p(1,nu)
 
       a(nu)=-p(6,nu)-p(7,nu)-p(8,nu)
       b(nu)=a(nu)-h(nu)
-      y(nu)=a(nu)-p(2,nu)
+c      y(nu)=a(nu)-p(2,nu)
       enddo      
 
 
@@ -59,8 +57,6 @@ C
       aDa=(a(4)**2-a(1)**2-a(2)**2-a(3)**2)
       rDr=(r(4)**2-r(1)**2-r(2)**2-r(3)**2)
       bDb=(b(4)**2-b(1)**2-b(2)**2-b(3)**2)
-      xDx=(x(4)**2-x(1)**2-x(2)**2-x(3)**2)
-      yDy=(y(4)**2-y(1)**2-y(2)**2-y(3)**2)
 
 
 
@@ -90,12 +86,6 @@ C (gw/rt2)^4*(gw/2)^2*16 from amplitude
       p1Db=p(1,4)*b(4)-p(1,1)*b(1)-p(1,2)*b(2)-p(1,3)*b(3)
       p2Db=p(2,4)*b(4)-p(2,1)*b(1)-p(2,2)*b(2)-p(2,3)*b(3)
 
-      p1Dx=p(1,4)*x(4)-p(1,1)*x(1)-p(1,2)*x(2)-p(1,3)*x(3)
-      p2Dx=p(2,4)*x(4)-p(2,1)*x(1)-p(2,2)*x(2)-p(2,3)*x(3)
-
-      p1Dy=p(1,4)*y(4)-p(1,1)*y(1)-p(1,2)*y(2)-p(1,3)*y(3)
-      p2Dy=p(2,4)*y(4)-p(2,1)*y(1)-p(2,2)*y(2)-p(2,3)*y(3)
-
       gamq4=qDq/(2d0*p4Dq)
       gama7=aDa/(2d0*p7Da)
 
@@ -103,10 +93,6 @@ C (gw/rt2)^4*(gw/2)^2*16 from amplitude
       gamb2=bDb/(2d0*p2Db)
       gamr1=rDr/(2d0*p1Dr)
       gamr2=rDr/(2d0*p2Dr)
-      gamx1=xDx/(2d0*p1Dx)
-      gamx2=xDx/(2d0*p2Dx)
-      gamy1=yDy/(2d0*p1Dy)
-      gamy2=yDy/(2d0*p2Dy)
 
 C     now the momenta 3,5,6,8,9,10 are no longer needed
 C     so set       

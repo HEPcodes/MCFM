@@ -12,8 +12,8 @@ c---
       include 'ewcouple.f'
       include 'zcouple.f'
       include 'ewcharge.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
       integer j,k,hq,hl,swap(2)
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac
       double complex prop
@@ -116,8 +116,7 @@ c      call zgamps2(5,2,3,4,1,za,zb,AgqbZqb2)
       subroutine zgamps2(j1,j2,j3,j4,j5,za,zb,amps2)
       implicit none
       include 'constants.f'
-      include 'masses.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       double complex amps(2,2,2)
       double precision amps2(2,2)
       integer hq,hl,hg,j1,j2,j3,j4,j5

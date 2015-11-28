@@ -15,7 +15,8 @@ C***********************************************************************
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'masses.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       integer b,j,k,h1,h2,nu
       double precision t(4),r(4),
      . msq(-nf:nf,-nf:nf),p(mxpart,4),ampsq(2,2),ps(mxpart,4)

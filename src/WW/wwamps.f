@@ -3,8 +3,8 @@ c  -first label of fs,ft is gluon polarization, second is qqb line
 
       implicit none
       include 'constants.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
       include 'zerowidth.f'
       include 'masses.f'
       include 'anomcoup.f'

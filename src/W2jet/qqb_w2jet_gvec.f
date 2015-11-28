@@ -15,8 +15,8 @@ c   in the final state.
       include 'masses.f'
       include 'qcdcouple.f'
       include 'ewcouple.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
+      include 'sprods_com.f'
       include 'ckm.f'
       include 'msqv_cs.f'
 C ip is the label of the emitter
@@ -195,8 +195,7 @@ C----matrix element squared with p5 line contracted with n(mu)
 C----nDp6 should be equal to zero
       implicit none
       include 'constants.f'
-      include 'sprodx.f'
-      include 'msqv_cs.f'
+      include 'zprods_decl.f'
       include 'mmsqv_cs.f'
       double complex qcdabn(2,2,2),qcdban(2,2,2),qedn(2,2,2)
       double complex zab(mxpart,mxpart),zba(mxpart,mxpart)
@@ -208,9 +207,9 @@ C----nDp6 should be equal to zero
       nDp6=n(4)*p(i6,4)-n(3)*p(i6,3)-n(2)*p(i6,2)-n(1)*p(i6,1)
 c--- appropriate scale is approx 1d-3*energy(incoming)
 c--- so of order(1) for the Tevatron
-      if (abs(nDp6).gt.1d-3*abs(p(i1,4))) then 
+      if (abs(nDp6).gt.1d-3*abs(p(1,4))) then 
          write(*,*) 'Error for :',i1,i2,i3,i4,i5,i6
-         write(*,*) 'cutoff',1d-3*abs(p(i1,4))
+         write(*,*) 'cutoff',1d-3*abs(p(1,4))
          write(6,*) 'nDp5',nDp5
          write(6,*) 'nDp6',nDp6
          call flush(6)
@@ -240,7 +239,6 @@ C  1=L,2=R
 c-- this routine transfers the information on the colour structure
 c-- for the W2jet_gvec matrix elements into elements (..,i,j) of p1p2
       implicit none
-      include 'constants.f'
       include 'mmsqv_cs.f'
       integer i,j,k
       double precision p1p2(0:2,-1:1,-1:1)

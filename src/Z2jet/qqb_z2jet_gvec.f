@@ -14,8 +14,8 @@ c     q(-p1)+qbar(-p2)--> g(p5)+ g(p6)+Z(f(p3)+af(p4))
       include 'qcdcouple.f'
       include 'zcouple.f'
       include 'ewcharge.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
+      include 'sprods_com.f'
       include 'msqv_cs.f'
       include 'flags.f'
 
@@ -210,7 +210,6 @@ C                       (4) outgoing gluon line contracted with n
 c-- this routine transfers the information on the colour structure
 c-- for the Z2jet_gvec matrix elements into elements of p1p2
       implicit none
-      include 'constants.f'
       include 'mmsqv_cs.f'
       integer icol,pq,pl
       double precision p1p2(0:2,2,2)

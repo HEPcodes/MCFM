@@ -17,8 +17,8 @@ c   in the final state.
       include 'qcdcouple.f'
       include 'zcouple.f'
       include 'ewcharge.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
+      include 'sprods_com.f'
       include 'msqv_cs.f'
       include 'mmsqv_cs.f'
 
@@ -93,7 +93,6 @@ c      fac=fac/8d0
            enddo
       endif
 
-   19 continue
       enddo
       enddo
 
@@ -112,7 +111,7 @@ C                       (i2) incoming quark line
 C                       (i5) outgoing gluon line
 C                       (i6) outgoing gluon line contracted with n
       include 'constants.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       include 'mmsqv_cs.f'
       double complex qcdabn(2,2,2),qcdban(2,2,2),qedn(2,2,2)
       double complex zab(mxpart,mxpart),zba(mxpart,mxpart)

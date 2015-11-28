@@ -7,7 +7,6 @@ c     g(-p1)+g(-p2)-->H --> (b(p3)+bbar(p4))+g(p5)
 c---
       implicit none 
       include 'constants.f'
-      include 'masses.f'
       include 'ptilde.f'
       include 'qqgg.f'
       integer j,k,nd

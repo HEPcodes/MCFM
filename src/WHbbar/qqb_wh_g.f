@@ -17,7 +17,7 @@ c   for the moment --- radiation only from initial line
       include 'constants.f'
       include 'masses.f'
       include 'ckm.f'
-      include 'dprodx.f'
+      include 'sprods_com.f'
       integer j,k
       double precision P(mxpart,4),msq(-nf:nf,-nf:nf)
       double precision radi
@@ -89,7 +89,7 @@ c      write(6,*) 'gqWHq',gqWHq
       include 'qcdcouple.f'
       include 'ewcouple.f'
       include 'masses.f'
-      include 'dprodx.f'
+      include 'sprods_com.f'
       integer j1,j2,j3,j4,j5,j6,j7
       double precision s45,s12,s13,s23,s123,prop
       double precision fac
@@ -114,36 +114,36 @@ c---calculate the 3 propagators
       return
       end
 
-      double precision function radf(j1,j2,j3,j4,j5,j6,j7)
-      implicit none 
-      include 'constants.f'
-      include 'ewcouple.f'
-      include 'qcdcouple.f'
-      include 'masses.f'
-      include 'dprodx.f'
-      integer j1,j2,j3,j4,j5,j6,j7
-      double precision s34,s35,s45,s12,s67,s345,prop
-      double precision fac
+c      double precision function radf(j1,j2,j3,j4,j5,j6,j7)
+c      implicit none 
+c      include 'constants.f'
+c      include 'ewcouple.f'
+c      include 'qcdcouple.f'
+c      include 'masses.f'
+c      include 'sprods_com.f'
+c      integer j1,j2,j3,j4,j5,j6,j7
+c      double precision s34,s35,s45,s12,s67,s345,prop
+c      double precision fac
 
 
-      s12=s(j1,j2)
-      s67=s(j6,j7)
-      s34=s(j3,j4)
-      s35=s(j3,j5)
-      s45=s(j4,j5)
-      s345=s34+s35+s45+2d0*mb**2
+c      s12=s(j1,j2)
+c      s67=s(j6,j7)
+c      s34=s(j3,j4)
+c      s35=s(j3,j5)
+c      s45=s(j4,j5)
+c      s345=s34+s35+s45+2d0*mb**2
 
 c---calculate the 3 propagators
-      prop=     ((s12-wmass**2)**2+(wmass*wwidth)**2)
-      prop=prop*((s67-wmass**2)**2+(wmass*wwidth)**2)
-      prop=prop*((s345-hmass**2)**2+(hmass*hwidth)**2)
-      
-      fac=two*CF*xnsq*gsq*gw**8*mbsq*s(j1,j7)*s(j2,j6)/prop
-      radf=(s45/(s34*s35)-mb**2*(1d0/s34**2+1d0/s35**2))*(s45-2d0*mb**2)
-     & +0.5d0*((s34+s35)**2+2*(s45-mb**2)*(s34+s35))/s34/s35
-     & -mb**2*(s35/s34**2+s34/s35**2) 
-      radf=fac*radf
-      return
-      end
+c      prop=     ((s12-wmass**2)**2+(wmass*wwidth)**2)
+c      prop=prop*((s67-wmass**2)**2+(wmass*wwidth)**2)
+c      prop=prop*((s345-hmass**2)**2+(hmass*hwidth)**2)
+c      
+c      fac=two*CF*xnsq*gsq*gw**8*mbsq*s(j1,j7)*s(j2,j6)/prop
+c      radf=(s45/(s34*s35)-mb**2*(1d0/s34**2+1d0/s35**2))*(s45-2d0*mb**2)
+c     & +0.5d0*((s34+s35)**2+2*(s45-mb**2)*(s34+s35))/s34/s35
+c     & -mb**2*(s35/s34**2+s34/s35**2) 
+c      radf=fac*radf
+c      return
+c      end
 
 

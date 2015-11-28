@@ -9,14 +9,13 @@
 *     July, 1998.                                                      *
 ************************************************************************
       include 'constants.f'
-      include 'dprodx.f'
+      include 'sprods_com.f'
       include 'epinv.f'
+      include 'scale.f'
       include 'epinv2.f'
       integer j1,j2,j3,j4,j5,j6
-      double precision mu,musq
       double complex Lnrat,xl12,xl34,xl23,xl56,Vcc,Vsc
       character*9 st
-      common/scale/mu,musq
 
 
       xl12=Lnrat(musq,-s(j1,j2))

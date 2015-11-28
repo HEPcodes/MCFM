@@ -1,4 +1,8 @@
       subroutine chooser(nproc)
+c---- Note added 4/21/03
+c---- plabel set to 'ig' (for 'ignore') means that this
+c---- particle should not be subject to any cuts, so that the
+c---- total cross-section comes out correctly when the BR is removed
       implicit none
       include 'constants.f'
       include 'masses.f'
@@ -10,6 +14,7 @@
       include 'bbproc.f'
       include 'lc.f'
       include 'nwz.f'
+      include 'process.f'
       character*4 part
       common/part/part
       double precision rtsmin
@@ -18,18 +23,18 @@
       double precision br,BrnRat,brwen,brzee,brtau,brtop
       double precision mass2,width2,mass3,width3
       common/breit/n2,n3,mass2,width2,mass3,width3
-      integer nproc,nnproc,mproc,j,n2,n3,nqcdjets,nqcdstart,isub
+      integer nproc,nnproc,mproc,j,n2,n3,nqcdjets,nqcdstart,isub,notag
       logical spira
       character*66 pname
       character*2 plabel(mxpart)
-      character*6 case
-      common/process/case
+      character*72 string
       common/nproc/nnproc
       common/BrnRat/BrnRat
       common/spira/spira
       common/nqcdjets/nqcdjets,nqcdstart
       common/plabel/plabel
       common/isub/isub
+      common/notag/notag
       do j=1,mxpart
       plabel(j)=''
       enddo
@@ -39,15 +44,17 @@ c set-up twidth
       y=mb/mt
       lambda=sqrt((1d0-(x+y)**2)*(1d0-(x-y)**2))
       twidth=gf*mt**3/(8d0*pi*sqrt(2d0))
-     . *((1d0-x**2)*(1+2d0*x**2)-y**2*(2d0-x**2-y**2))*lambda
-
-      open(unit=21,file='process.DAT',status='old',err=43)
-      call checkversion(21,'process.DAT')
+     . *((1d0-x**2)*(1d0+2d0*x**2)-y**2*(2d0-x**2-y**2))*lambda
+      string='process.DAT' 
+      open(unit=21,file=string,status='old',err=43)
+      call checkversion(21,string)
       
       nnproc=nproc
-c      write(6,*) 'Chooser:process chosen by nproc=',nproc
-      do j=1,300
+      write(6,*) 'Chooser:process chosen by nproc=',nproc
+
+      do j=1,400
       read(21,*,err=44) mproc,pname
+
       if (nproc .lt. 0) then 
       write(6,*) mproc,pname 
       endif
@@ -59,10 +66,10 @@ c      write(6,*) 'Chooser:process chosen by nproc=',nproc
 
 c 42   write(6,*) mproc
  42   write(6,*)
-      write(6,*) '**************************************************'//
+      write(6,*) '*************************************************'//
      . '********************'
-      write(6,*) '* ',pname,' *'
-      write(6,*) '**************************************************'//
+      write(6,*) '*',pname,' *'
+      write(6,*) '*************************************************'//
      . '********************'
       write(6,*)
 
@@ -74,6 +81,7 @@ c 42   write(6,*) mproc
       BrnRat=1d0
       call coupling
 
+      notag=0
       nqcdjets=0
       isub=0
       bbproc=.false.
@@ -103,6 +111,8 @@ c---total cross-section
              if ((nproc .eq. 0) .or. (nproc .eq. 5)) then
              call branch(brwen,brzee,brtau,brtop)
              BrnRat=brwen
+             plabel(3)='ig'
+             plabel(4)='ig'
              endif
 
       elseif ((nproc .ge. 10) .and. (nproc .le. 16)) then
@@ -119,8 +129,8 @@ c---total cross-section
              plabel(6)='pp'
              BrnRat=1d0
              if (nproc .eq. 10) then
-             plabel(3)='nl'
-             plabel(4)='ea'
+             plabel(3)='ig'
+             plabel(4)='ig'
              nwz=1
              call branch(brwen,brzee,brtau,brtop)
              BrnRat=brwen
@@ -223,7 +233,40 @@ c---total cross-section
              mass3=wmass
              width3=wwidth
              endif
+             if (nproc .eq. 24) then
+             nqcdjets=3
+             case='Wbbjet'
+             bbproc=.true.
+             plabel(3)='nl'
+             plabel(4)='ea'
+             plabel(5)='bq'
+             plabel(6)='ba'
+             plabel(7)='pp'
+             nwz=1
+             ndim=13
+             mb=0
+             n2=0
+             n3=1
+             mass3=wmass
+             width3=wwidth
+             endif
 
+             if (nproc .eq. 25) then
+             case='Wbbmas'
+             write(6,*) 'mb=',mb
+             bbproc=.true.
+             plabel(3)='el'
+             plabel(4)='na'
+             plabel(5)='bq'
+             plabel(6)='ba'
+             plabel(7)='pp'
+             nwz=-1
+             ndim=10
+             n2=0
+             n3=1
+             mass3=wmass
+             width3=wwidth
+             endif
              if (nproc .eq. 26) then
              case='Wbbbar'
              bbproc=.true.
@@ -255,10 +298,44 @@ c---total cross-section
              mass3=wmass
              width3=wwidth
              endif
+             if (nproc .eq. 28) then
+             nqcdjets=3
+             case='W_3jet'
+             plabel(3)='el'
+             plabel(4)='na'
+             plabel(5)='pp'
+             plabel(6)='pp'
+             plabel(7)='pp'
+             nwz=-1
+             ndim=13
+             mb=0
+             n2=0
+             n3=1
+             mass3=wmass
+             width3=wwidth
+             endif
+             if (nproc .eq. 29) then
+             nqcdjets=3
+             case='Wbbjet'
+             bbproc=.true.
+             plabel(3)='el'
+             plabel(4)='na'
+             plabel(5)='bq'
+             plabel(6)='ba'
+             plabel(7)='pp'
+             nwz=-1
+             ndim=13
+             mb=0
+             n2=0
+             n3=1
+             mass3=wmass
+             width3=wwidth
+             endif
 
       elseif (nproc/10 .eq. 3) then
              nqcdjets=0
              case='Z_only'
+             call checkminzmass(1)
              nwz=0
              mass3=zmass
              width3=zwidth
@@ -266,8 +343,8 @@ c---total cross-section
              ndim=4
              BrnRat=1d0
              if (nproc .eq. 30) then
-             plabel(3)='el'
-             plabel(4)='ea'
+             plabel(3)='ig'
+             plabel(4)='ig'
              plabel(5)='pp'
              q1=-1d0
              l1=le
@@ -300,6 +377,7 @@ c---total cross-section
       elseif (nproc/10 .eq. 4) then
              nqcdjets=1
              case='Z_1jet'
+             call checkminzmass(1)
              nwz=0
              ndim=7
              mb=0
@@ -308,8 +386,8 @@ c---total cross-section
              mass3=zmass
              width3=zwidth
              if (nproc .eq. 40) then
-             plabel(3)='el'
-             plabel(4)='ea'
+             plabel(3)='ig'
+             plabel(4)='ig'
              plabel(5)='pp'
              plabel(6)='pp'
              q1=-1d0
@@ -345,6 +423,7 @@ c---total cross-section
              r1=r(5)*sqrt(xn)
              elseif (nproc .eq. 44) then
              case='Z_2jet'
+             call checkminzmass(1)
              ndim=10
              nqcdjets=2
              plabel(3)='el'
@@ -358,6 +437,7 @@ c---total cross-section
              elseif (nproc .eq. 45) then
              nqcdjets=3
              case='Z_3jet'
+             call checkminzmass(1)
              ndim=13
              nqcdjets=3
              plabel(3)='el'
@@ -372,6 +452,7 @@ c---total cross-section
              nqcdjets=0
              BrnRat=1d0
              case='Zgamma'
+             call checkminzmass(1)
              q1=-1d0
              l1=le
              r1=re
@@ -386,10 +467,29 @@ c---total cross-section
              plabel(4)='ea'
              plabel(5)='ga'
              plabel(6)='pp'
-             write(6,*) 'chooser',case
+             elseif (nproc .eq. 49) then
+             nqcdjets=0
+             BrnRat=1d0
+             case='Zgamma'
+             call checkminzmass(1)
+             q1=0d0
+             l1=ln*sqrt(3d0)
+             r1=rn*sqrt(3d0)
+             ndim=7
+             mb=0
+             n2=0
+             n3=1
+             mass3=zmass
+             width3=zwidth
+             nwz=0
+             plabel(3)='nl'
+             plabel(4)='na'
+             plabel(5)='ga'
+             plabel(6)='pp'
              endif
       elseif (nproc/10 .eq. 5) then
              case='Zbbbar'
+             call checkminzmass(1)
              colourchoice=0
              ndim=10
              n2=0
@@ -474,6 +574,8 @@ c---case WW
              if    (nproc .eq. 60) then
                call branch(brwen,brzee,brtau,brtop)
                BrnRat=brwen**2
+               plabel(3)='ig'
+               plabel(4)='ig'
              elseif (nproc .eq. 62) then
 c--- note: scattering diagrams are NOT included, only couplings change
                plabel(3)='nl'
@@ -496,6 +598,7 @@ c---case WZ
              call readcoup
              nqcdjets=0
              case='WZbbar'
+             call checkminzmass(2)
              ndim=10
              mb=0
              n2=1
@@ -511,8 +614,8 @@ c---case W^+Z
              q1=-1d0
              l1=le
              r1=re
-             plabel(3)='nl'
-             plabel(4)='ea'
+             plabel(3)='ig'
+             plabel(4)='ig'
              plabel(5)='ml'
              plabel(6)='ma'
              plabel(7)='pp'
@@ -551,16 +654,16 @@ c---case W^+Z
 c---case W^-Z
              nwz=-1
              if (nproc .eq. 75) then
-               plabel(3)='el'
-               plabel(4)='na'
+               plabel(3)='ig'
+               plabel(4)='ig'
                plabel(5)='ml'
                plabel(6)='ma'
                plabel(7)='pp'
                q1=-1d0
                l1=le
                r1=re
-             call branch(brwen,brzee,brtau,brtop)
-             BrnRat=brwen*brzee
+               call branch(brwen,brzee,brtau,brtop)
+               BrnRat=brwen*brzee
              elseif (nproc .eq. 76) then
                plabel(3)='el'
                plabel(4)='na'
@@ -598,7 +701,9 @@ c---case ZZ
              call readcoup
              nqcdjets=0
              case='ZZlept'
-             nwz=1
+             call checkminzmass(1)
+             call checkminzmass(2)
+             nwz=0
              ndim=10
              mb=0
              n2=1
@@ -611,8 +716,8 @@ c---case ZZ
              l1=le
              r1=re
              if (nproc .eq. 80 .or. nproc .eq. 85) then
-               plabel(3)='el'
-               plabel(4)='ea'
+               plabel(3)='ig'
+               plabel(4)='ig'
                plabel(5)='ml'
                plabel(6)='ma'
                plabel(7)='pp'
@@ -699,10 +804,22 @@ c--reset higgs width so that whole gives correct BR
                nwz=1
                call branch(brwen,brzee,brtau,brtop)
                BrnRat=brwen*br
+               plabel(3)='ig'
+               plabel(4)='ig'
+               plabel(5)='ig'
+               plabel(6)='ig'               
              elseif (nproc .eq. 91) then
                bbproc=.true.
                nqcdjets=2
                nwz=1
+             elseif (nproc .eq. 95) then
+               nwz=-1
+               call branch(brwen,brzee,brtau,brtop)
+               BrnRat=brwen*br
+               plabel(3)='ig'
+               plabel(4)='ig'
+               plabel(5)='ig'
+               plabel(6)='ig'               
              elseif (nproc .eq. 96) then
                bbproc=.true.
                nqcdjets=2
@@ -712,6 +829,7 @@ c--reset higgs width so that whole gives correct BR
 c---case ZH
       elseif (nproc/10 .eq. 10) then
              case='ZHbbar'
+             call checkminzmass(1)
              nqcdjets=2
              nqcdstart=5
              plabel(3)='el'
@@ -740,10 +858,10 @@ C--reset higgs width so that whole gives coreect BR
              width3=zwidth
 
              if (nproc .eq. 100) then
-               plabel(3)='el'
-               plabel(4)='ea'
-               plabel(5)='bq'
-               plabel(6)='ba'
+               plabel(3)='ig'
+               plabel(4)='ig'
+               plabel(5)='ig'
+               plabel(6)='ig'
                plabel(7)='pp'
                nqcdjets=2
                q1=-1d0
@@ -797,13 +915,13 @@ C--- NEED TO LOOK AT THIS TO CLUSTER 4 JETS STARTING FROM 3
              if ((nproc .eq. 110) .or. (nproc .eq. 111)) then
 c--reset higgs width so that whole gives correct BR
              hwidth=xn*sqrt(2d0)/8d0/pi*gf*hmass*mbsq
-     .         *(1d0-4d0*mbsq/hmass**2)**1.5d0/br
+     .         *(1d0-4d0*mb**2/hmass**2)**1.5d0/br
 
              case='Hbbbar'
-             plabel(3)='bq'
-             plabel(4)='ba'
-             nqcdjets=2
-             nqcdstart=3
+             plabel(3)='ig'
+             plabel(4)='ig'
+             plabel(5)='pp'
+             nqcdjets=0
              mass3=hmass
              width3=hwidth
              n3=1
@@ -832,7 +950,11 @@ c--reset higgs width so that whole gives correct BR
              endif
              if (nproc .eq. 112) then
              call branch(brwen,brzee,brtau,brtop)
-             BrnRat=brwen**2
+             BrnRat=brwen**2*wwbr
+             plabel(3)='ig'
+             plabel(4)='ig'
+             plabel(5)='ig'
+             plabel(6)='ig'
              endif
       elseif (nproc/10 .eq. 12) then
              case='HZZ_4l'
@@ -891,12 +1013,12 @@ c--reset higgs width so that whole gives correct BR
                l2=l(5)*sqrt(3d0)
                r2=r(5)*sqrt(3d0)
              endif
-      elseif (nproc/10 .eq. 14) then
+      elseif ((nproc .ge. 140) .and. (nproc .le. 145)) then
              case='H_1jet'
              ndim=7
              nqcdstart=5
-             plabel(3)='ml'
-             plabel(4)='ma'
+             plabel(3)='ig'
+             plabel(4)='ig'
              plabel(5)='bq'
              nqcdjets=1
 
@@ -966,6 +1088,36 @@ C mb=0, keeps mbsq in the coupling but ignores it in the phase space)
              width3=hwidth
              BrnRat=1d0
 
+      elseif (nproc .eq. 147) then
+             case='ggfus2'
+             nqcdjets=2
+C set decay products of Higgs to leptons, so they are not clustered
+             plabel(3)='ea'
+             plabel(4)='ea'
+             plabel(5)='pp'
+             plabel(6)='pp'
+             plabel(7)='pp'
+             ndim=10
+             mb=0d0
+             n2=0
+             n3=1
+             write(6,*) 'nproc=',nproc
+             write(6,*) 'case=',case
+             if (spira) then
+                 call higgsp(br,gamgambr,wwbr,zzbr)
+             else
+                 call higgsw(br)
+             endif
+C--reset higgs width so that whole gives correct BR, (if we have set
+C mb=0, keeps mbsq in the coupling but ignores it in the phase space) 
+             hwidth=xn*sqrt(2d0)/8d0/pi*gf*hmass*mbsq
+     .         *(1d0-4d0*mbsq/hmass**2)**1.5d0/br
+             write(6,99) hmass,hwidth,br
+             write(6,*) 'chooser:mbsq',mbsq
+             BrnRat=br
+             mass3=hmass
+             width3=hwidth
+
       elseif ((nproc .ge. 150) .and. (nproc .le. 152)) then
              nwz=1
              ndim=16
@@ -976,12 +1128,13 @@ C mb=0, keeps mbsq in the coupling but ignores it in the phase space)
              mass3=mt
              width3=twidth
              if (nproc .eq. 150) then
-                plabel(3)='nl'
-                plabel(4)='ea'
-                plabel(5)='bq'
-                plabel(6)='ba'
-                plabel(7)='el'
-                plabel(8)='na'
+                plabel(3)='ig'
+                plabel(4)='ig'
+                plabel(5)='ig'
+                plabel(6)='ig'
+                plabel(7)='ig'
+                plabel(8)='ig'
+                nqcdjets=0
                 case='tt_bbl'
                 write(6,*) 'nproc=',nproc
                 write(6,*) 'case=',case
@@ -1071,34 +1224,28 @@ c            nqcdstart=5
              plabel(8)='na'
              plabel(9)='pj'
       elseif (nproc .eq. 157) then
-c--- for now, pretend the heavy quarks are electrons, to avoid
-c--- any jet cuts taking place
              case='tt_tot'
              nqcdjets=0
              ndim=4
              mass2=mt
-             plabel(3)='ea'
-             plabel(4)='ea'
+             plabel(3)='ig'
+             plabel(4)='ig'
              plabel(5)='pp'
       elseif (nproc .eq. 158) then
-c--- for now, pretend the heavy quarks are electrons, to avoid
-c--- any jet cuts taking place
              case='bb_tot'
              nqcdjets=0
              ndim=4
              mass2=mb
-             plabel(3)='ea'
-             plabel(4)='ea'
+             plabel(3)='ig'
+             plabel(4)='ig'
              plabel(5)='pp'
       elseif (nproc .eq. 159) then
-c--- for now, pretend the heavy quarks are electrons, to avoid
-c--- any jet cuts taking place
              case='cc_tot'
              nqcdjets=0
              ndim=4
              mass2=mc
-             plabel(3)='ea'
-             plabel(4)='ea'
+             plabel(3)='ig'
+             plabel(4)='ig'
              plabel(5)='pp'
  
       elseif (nproc/10 .eq. 16) then
@@ -1141,12 +1288,12 @@ c--- any jet cuts taking place
       elseif (nproc/10 .eq. 18) then
              case='tautau'
 C----not correct yet!
-             plabel(3)='nl'
-             plabel(4)='ea'
-             plabel(5)='na'
-             plabel(6)='na'
-             plabel(7)='na'
-             plabel(8)='na'
+             plabel(3)='ig'
+             plabel(4)='ig'
+             plabel(5)='ig'
+             plabel(6)='ig'
+             plabel(7)='ig'
+             plabel(8)='ig'
              write(6,*) 'nproc=',nproc
              write(6,*) 'case=',case
              nqcdjets=0
@@ -1163,13 +1310,21 @@ C----not correct yet!
              BrnRat=brtau**2
              endif
       elseif (nproc .eq. 190) then
+             plabel(3)='ig'
+             plabel(4)='ig'
+             plabel(5)='ig'
+             plabel(6)='ig'
+             plabel(7)='ig'
+             plabel(8)='ig'
+             plabel(9)='ig'
+             plabel(10)='ba'
              case='tottth'
              n2=0
              n3=0
              write(6,*) 'nproc=',nproc
              write(6,*) 'case=',case
-                nwz=1
-                ndim=7
+             nwz=1
+             ndim=7
       elseif ((nproc .eq. 191) .or. (nproc .eq. 192)) then
              case='qq_tth'
                 plabel(3)='nl'
@@ -1294,6 +1449,8 @@ C mb=0, keeps mbsq in the coupling but ignores it in the phase space)
              width3=hwidth
              if     (nproc .eq. 200) then
                BrnRat=br
+               plabel(3)='ig'
+               plabel(4)='ig'
              elseif (nproc .eq. 201) then
 c---first work out width into a tau pair (EHSV, 1.3)
                BrnRat=gwsq/4d0/pi*mtausq*hmass/8d0/wmass**2*
@@ -1318,6 +1475,8 @@ c---now compensate for b-bbar branching ratio
              elseif (nproc .eq. 205) then
                case='attjet'
                BrnRat=br
+               plabel(3)='ig'
+               plabel(4)='ig'
              elseif (nproc .eq. 206) then
                case='attjet'
 c---first work out width into a tau pair (EHSV, 1.3)
@@ -1328,12 +1487,433 @@ c---first work out width into a tau pair (EHSV, 1.3)
 c---now compensate for b-bbar branching ratio
                Brnrat=br/Brnrat
              endif
+
+      elseif (nproc .eq. 211) then
+             case='qq_Hqq'
+             nqcdjets=2
+             nwz=2
+             plabel(3)='ig'
+             plabel(4)='ig'
+             plabel(5)='pp'
+             plabel(6)='pp'
+             plabel(7)='pp'
+             ndim=10
+             mb=0d0
+             n2=0
+             n3=1
+             write(6,*) 'nproc=',nproc
+             write(6,*) 'case=',case
+             if (spira) then
+                 call higgsp(br,gamgambr,wwbr,zzbr)
+             else
+                 call higgsw(br)
+             endif
+C--reset higgs width so that whole gives correct BR, (if we have set
+C mb=0, keeps mbsq in the coupling but ignores it in the phase space) 
+             hwidth=xn*sqrt(2d0)/8d0/pi*gf*hmass*mbsq
+     .         *(1d0-4d0*mbsq/hmass**2)**1.5d0/br
+             write(6,99) hmass,hwidth,br
+             write(6,*) 'chooser:mbsq',mbsq
+             BrnRat=br
+             mass3=hmass
+             width3=hwidth
+
+      elseif (nproc .eq. 212) then
+             case='qqHqqg'
+             nqcdjets=3
+             nwz=2
+             plabel(3)='ig'
+             plabel(4)='ig'
+             plabel(5)='pp'
+             plabel(6)='pp'
+             plabel(7)='pp'
+             plabel(8)='pp'
+             ndim=13
+             mb=0d0
+             n2=0
+             n3=1
+             write(6,*) 'nproc=',nproc
+             write(6,*) 'case=',case
+             if (spira) then
+                 call higgsp(br,gamgambr,wwbr,zzbr)
+             else
+                 call higgsw(br)
+             endif
+C--reset higgs width so that whole gives correct BR, (if we have set
+C mb=0, keeps mbsq in the coupling but ignores it in the phase space) 
+             hwidth=xn*sqrt(2d0)/8d0/pi*gf*hmass*mbsq
+     .         *(1d0-4d0*mbsq/hmass**2)**1.5d0/br
+             write(6,99) hmass,hwidth,br
+             write(6,*) 'chooser:mbsq',mbsq
+             BrnRat=br
+             mass3=hmass
+             width3=hwidth
+
+      elseif (nproc .eq. 213) then
+             case='WW_Hqq'
+             nqcdjets=2
+             nwz=2
+             plabel(3)='ig'
+             plabel(4)='ig'
+             plabel(5)='pp'
+             plabel(6)='pp'
+             plabel(7)='pp'
+             ndim=10
+             mb=0d0
+             n2=0
+             n3=1
+             write(6,*) 'nproc=',nproc
+             write(6,*) 'case=',case
+             if (spira) then
+                 call higgsp(br,gamgambr,wwbr,zzbr)
+             else
+                 call higgsw(br)
+             endif
+C--reset higgs width so that whole gives correct BR, (if we have set
+C mb=0, keeps mbsq in the coupling but ignores it in the phase space) 
+             hwidth=xn*sqrt(2d0)/8d0/pi*gf*hmass*mbsq
+     .         *(1d0-4d0*mbsq/hmass**2)**1.5d0/br
+             write(6,99) hmass,hwidth,br
+             write(6,*) 'chooser:mbsq',mbsq
+             BrnRat=br
+             mass3=hmass
+             width3=hwidth
+
+      elseif (nproc .eq. 214) then
+             case='WWHqqg'
+             nqcdjets=3
+             nwz=2
+             plabel(3)='ig'
+             plabel(4)='ig'
+             plabel(5)='pp'
+             plabel(6)='pp'
+             plabel(7)='pp'
+             ndim=13
+             mb=0d0
+             n2=0
+             n3=1
+             write(6,*) 'nproc=',nproc
+             write(6,*) 'case=',case
+             if (spira) then
+                 call higgsp(br,gamgambr,wwbr,zzbr)
+             else
+                 call higgsw(br)
+             endif
+C--reset higgs width so that whole gives correct BR, (if we have set
+C mb=0, keeps mbsq in the coupling but ignores it in the phase space) 
+             hwidth=xn*sqrt(2d0)/8d0/pi*gf*hmass*mbsq
+     .         *(1d0-4d0*mbsq/hmass**2)**1.5d0/br
+             write(6,99) hmass,hwidth,br
+             write(6,*) 'chooser:mbsq',mbsq
+             BrnRat=br
+             mass3=hmass
+             width3=hwidth
+
+      elseif (nproc .eq. 215) then
+             case='ZZ_Hqq'
+             nqcdjets=2
+             nwz=2
+             plabel(3)='ig'
+             plabel(4)='ig'
+             plabel(5)='pp'
+             plabel(6)='pp'
+             plabel(7)='pp'
+             ndim=10
+             mb=0d0
+             n2=0
+             n3=1
+             write(6,*) 'nproc=',nproc
+             write(6,*) 'case=',case
+             if (spira) then
+                 call higgsp(br,gamgambr,wwbr,zzbr)
+             else
+                 call higgsw(br)
+             endif
+C--reset higgs width so that whole gives correct BR, (if we have set
+C mb=0, keeps mbsq in the coupling but ignores it in the phase space) 
+             hwidth=xn*sqrt(2d0)/8d0/pi*gf*hmass*mbsq
+     .         *(1d0-4d0*mbsq/hmass**2)**1.5d0/br
+             write(6,99) hmass,hwidth,br
+             write(6,*) 'chooser:mbsq',mbsq
+             BrnRat=br
+             mass3=hmass
+             width3=hwidth
+
+      elseif (nproc .eq. 216) then
+             case='ZZHqqg'
+             nqcdjets=3
+             nwz=2
+             plabel(3)='ig'
+             plabel(4)='ig'
+             plabel(5)='pp'
+             plabel(6)='pp'
+             plabel(7)='pp'
+             ndim=13
+             mb=0d0
+             n2=0
+             n3=1
+             write(6,*) 'nproc=',nproc
+             write(6,*) 'case=',case
+             if (spira) then
+                 call higgsp(br,gamgambr,wwbr,zzbr)
+             else
+                 call higgsw(br)
+             endif
+C--reset higgs width so that whole gives correct BR, (if we have set
+C mb=0, keeps mbsq in the coupling but ignores it in the phase space) 
+             hwidth=xn*sqrt(2d0)/8d0/pi*gf*hmass*mbsq
+     .         *(1d0-4d0*mbsq/hmass**2)**1.5d0/br
+             write(6,99) hmass,hwidth,br
+             write(6,*) 'chooser:mbsq',mbsq
+             BrnRat=br
+             mass3=hmass
+             width3=hwidth
+
+      elseif (nproc .eq. 217) then
+             case='VV_Hqq'
+             nqcdjets=2
+             nwz=2
+             plabel(3)='ig'
+             plabel(4)='ig'
+             plabel(5)='pp'
+             plabel(6)='pp'
+             plabel(7)='pp'
+             ndim=10
+             mb=0d0
+             n2=0
+             n3=1
+             write(6,*) 'nproc=',nproc
+             write(6,*) 'case=',case
+             if (spira) then
+                 call higgsp(br,gamgambr,wwbr,zzbr)
+             else
+                 call higgsw(br)
+             endif
+C--reset higgs width so that whole gives correct BR, (if we have set
+C mb=0, keeps mbsq in the coupling but ignores it in the phase space) 
+             hwidth=xn*sqrt(2d0)/8d0/pi*gf*hmass*mbsq
+     .         *(1d0-4d0*mbsq/hmass**2)**1.5d0/br
+             write(6,99) hmass,hwidth,br
+             write(6,*) 'chooser:mbsq',mbsq
+             BrnRat=br
+             mass3=hmass
+             width3=hwidth
+
+      elseif (nproc .eq. 218) then
+             case='VVHqqg'
+             nqcdjets=3
+             nwz=2
+             plabel(3)='ig'
+             plabel(4)='ig'
+             plabel(5)='pp'
+             plabel(6)='pp'
+             plabel(7)='pp'
+             ndim=13
+             mb=0d0
+             n2=0
+             n3=1
+             write(6,*) 'nproc=',nproc
+             write(6,*) 'case=',case
+             if (spira) then
+                 call higgsp(br,gamgambr,wwbr,zzbr)
+             else
+                 call higgsw(br)
+             endif
+C--reset higgs width so that whole gives correct BR, (if we have set
+C mb=0, keeps mbsq in the coupling but ignores it in the phase space) 
+             hwidth=xn*sqrt(2d0)/8d0/pi*gf*hmass*mbsq
+     .         *(1d0-4d0*mbsq/hmass**2)**1.5d0/br
+             write(6,99) hmass,hwidth,br
+             write(6,*) 'chooser:mbsq',mbsq
+             BrnRat=br
+             mass3=hmass
+             width3=hwidth
+
+      elseif (nproc .eq. 230) then
+             ndim=4 
+             case='twojet'
+             plabel(3)='pp'
+             plabel(4)='pp'
+             plabel(5)='pp'
+             nqcdjets=2
+             n3=0
       elseif (nproc .eq. 240) then
              ndim=7 
              case='threeb'
              plabel(3)='bq'
              plabel(4)='bq'
              plabel(5)='ba'
+      elseif (nproc .eq. 250) then
+             ndim=4 
+             case='dirgam'
+             plabel(3)='ga'
+             plabel(4)='pp'
+             plabel(5)='pp'
+             nqcdjets=1
+             n3=0
+      elseif (nproc .eq. 261) then
+             nqcdjets=1
+             case='gQ_ZQb'
+             nwz=0
+             ndim=7
+             mb=0
+             n2=0
+             n3=1
+             mass3=zmass
+             width3=zwidth
+             plabel(3)='el'
+             plabel(4)='ea'
+             plabel(5)='pp'
+             plabel(6)='pp'
+             q1=-1d0
+             l1=le
+             r1=re
+      elseif (nproc .eq. 262) then
+             nqcdjets=1
+             case='gQ_ZQc'
+             nwz=0
+             ndim=7
+             mb=0
+             n2=0
+             n3=1
+             mass3=zmass
+             width3=zwidth
+             plabel(3)='el'
+             plabel(4)='ea'
+             plabel(5)='pp'
+             plabel(6)='pp'
+             q1=-1d0
+             l1=le
+             r1=re
+      elseif (nproc .eq. 263) then
+             notag=1
+             ndim=10
+             n2=0
+             n3=1
+             mass3=zmass
+             width3=zwidth
+             case='Zbbmas'
+             write(6,*) 'mb=',mb
+             nqcdjets=2
+             plabel(3)='el'
+             plabel(4)='ea'
+             plabel(5)='bq'
+             plabel(6)='ba'
+             plabel(7)='pp'
+             q1=-1d0
+             l1=le
+             r1=re
+      elseif (nproc .eq. 264) then
+             notag=1
+             ndim=10
+             n2=0
+             n3=1
+             mass3=zmass
+             width3=zwidth
+             case='Zccmas'
+             mb=mc
+             write(6,*) 'mb=',mb
+             nqcdjets=2
+             plabel(3)='el'
+             plabel(4)='ea'
+             plabel(5)='bq'
+             plabel(6)='ba'
+             plabel(7)='pp'
+             q1=-1d0
+             l1=le
+             r1=re
+      elseif (nproc .eq. 270) then
+C  gluon-gluon fusion
+             case='ggfus0'
+             mb=0
+             nqcdjets=0
+             plabel(3)='ig'
+             plabel(4)='ig'
+             plabel(5)='pp'
+             ndim=4
+      
+             n2=0
+             n3=1
+
+             write(6,*) 'nproc=',nproc
+             write(6,*) 'case=',case
+             if (spira) then
+                 call higgsp(br,gamgambr,wwbr,zzbr)
+             else
+                 call higgsw(br)
+             endif
+C--reset higgs width so that whole gives correct BR, (if we have set
+C mb=0, keeps mbsq in the coupling but ignores it in the phase space) 
+             hwidth=xn*sqrt(2d0)/8d0/pi*gf*hmass*mbsq
+     .         *(1d0-4d0*mbsq/hmass**2)**1.5d0/br
+             write(6,99) hmass,hwidth,br
+             write(6,*) 'chooser:mbsq',mbsq
+             mass3=hmass
+             width3=hwidth
+             BrnRat=br
+      elseif (nproc .eq. 271) then
+C  gluon-gluon fusion+jet
+             case='ggfus1'
+             mb=0
+             nqcdjets=1
+             nqcdstart=5
+             plabel(3)='ig'
+             plabel(4)='ig'
+             plabel(5)='pp'
+             plabel(6)='pp'
+             ndim=7
+      
+             n2=0
+             n3=1
+
+             write(6,*) 'nproc=',nproc
+             write(6,*) 'case=',case
+             if (spira) then
+                 call higgsp(br,gamgambr,wwbr,zzbr)
+             else
+                 call higgsw(br)
+             endif
+C--reset higgs width so that whole gives correct BR, (if we have set
+C mb=0, keeps mbsq in the coupling but ignores it in the phase space) 
+             hwidth=xn*sqrt(2d0)/8d0/pi*gf*hmass*mbsq
+     .         *(1d0-4d0*mbsq/hmass**2)**1.5d0/br
+             write(6,99) hmass,hwidth,br
+             write(6,*) 'chooser:mbsq',mbsq
+             mass3=hmass
+             width3=hwidth
+             BrnRat=br
+      elseif (nproc .eq. 272) then
+C  gluon-gluon fusion+2jets
+             case='ggfus2'
+             mb=0
+             nqcdjets=2
+             nqcdstart=5
+             plabel(3)='ig'
+             plabel(4)='ig'
+             plabel(5)='pp'
+             plabel(6)='pp'
+             plabel(7)='pp'
+             ndim=10
+      
+             n2=0
+             n3=1
+
+             write(6,*) 'nproc=',nproc
+             write(6,*) 'case=',case
+             if (spira) then
+                 call higgsp(br,gamgambr,wwbr,zzbr)
+             else
+                 call higgsw(br)
+             endif
+C--reset higgs width so that whole gives correct BR, (if we have set
+C mb=0, keeps mbsq in the coupling but ignores it in the phase space) 
+             hwidth=xn*sqrt(2d0)/8d0/pi*gf*hmass*mbsq
+     .         *(1d0-4d0*mbsq/hmass**2)**1.5d0/br
+             write(6,99) hmass,hwidth,br
+             write(6,*) 'chooser:mbsq',mbsq
+             mass3=hmass
+             width3=hwidth
+             BrnRat=br
       elseif (nproc/10 .ge. 30) then
              write(6,*) 'Setting part to lord and zerowidth to false'
              zerowidth=.false.
@@ -1358,8 +1938,8 @@ c---now compensate for b-bbar branching ratio
              ndim=10
              n2=1
              n3=1
-             mass2=hmass
-             width2=hwidth
+             mass2=zmass
+             width2=zwidth
              mass3=wmass
              width3=wwidth
           elseif (nproc .eq. 305) then
@@ -1439,3 +2019,30 @@ c---now compensate for b-bbar branching ratio
      .       ' ****************************************************')
      
       end
+
+
+      subroutine checkminzmass(i)
+c--- Checks that the minimum invariant mass specified in the options
+c--- file is not zero for boson 34 (i=1) or boson 56 (i=2)
+      implicit none
+      include 'limits.f'
+      integer i
+      
+      if ((i .eq. 1) .and. (wsqmin .eq. 0d0)) then
+        write(6,*)
+        write(6,*) 'Please set m34min not equal to zero to'
+        write(6,*) 'prevent the virtual photon from becoming real.'
+        stop
+      endif
+
+      if ((i .eq. 2) .and. (bbsqmin .eq. 0d0)) then
+        write(6,*)
+        write(6,*) 'Please set m56min not equal to zero to'
+        write(6,*) 'prevent the virtual photon from becoming real.'
+        stop
+      endif
+      
+      return
+      end
+      
+      

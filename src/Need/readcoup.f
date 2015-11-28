@@ -2,6 +2,10 @@
 c--- reads in the anomalous couplings from the file anomcoup.DAT
       implicit none
       include 'anomcoup.f'
+      logical newinput
+      common/newinput/newinput
+      
+      if (newinput) return      
       
       open(unit=21,file='anomcoup.DAT',status='old',err=999)
       call checkversion(21,'anomcoup.DAT')

@@ -14,7 +14,8 @@
       include 'ewcharge.f'
       include 'ewcouple.f'
       include 'zcouple.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       include 'epinv.f'
       include 'scheme.f'
       include 'flags.f'
@@ -52,7 +53,7 @@ c--set msq=0 to initialize
 c-- if Gflag=.false. then only the endpoint contributions from the
 c-- 4-quark diagrams are included, ie. no pole subtraction for this
 c-- piece. Therefore return 0.
-      if (Gflag .eqv. .false.) return
+c      if (Gflag .eqv. .false.) return
 
 c--calculate spinor and dot-products (using BDK type notation)
       call spinoru(5,p,za,zb)
@@ -71,7 +72,7 @@ c--   calculate propagator
       sz=s(3,4)
       prop=sz/dcmplx((sz-zmass**2),zmass*zwidth)
 
-      FAC=8d0*CF*XNSQ*esq**2*gsq
+      fac=8d0*cf*xnsq*esq**2*gsq
 
       qqbZgLL=aveqq*fac*virt5(iqqbgLL,za,zb)
       qqbZgLR=aveqq*fac*virt5(iqqbgLR,za,zb)

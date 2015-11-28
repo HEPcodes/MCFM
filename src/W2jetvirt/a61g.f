@@ -2,7 +2,7 @@
       implicit none
 C---hep-ph/9708239, Eqn 2.13
       include 'constants.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       integer j1,j2,j3,j4,j5,j6
       character*9 st
       double complex a6g,a6sg,a6fg,a6tg
@@ -19,7 +19,7 @@ C---hep-ph/9708239, Eqn 2.13
       implicit none
 C---hep-ph/9708239, Eqn 2.13
       include 'constants.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       integer j1,j2,j3,j4,j5,j6
       character*9 st,stamp(6)
       double complex a6g
@@ -85,7 +85,7 @@ c---                         and (q,qb , g, g) [for 5 and 6]
       implicit none
 C---hep-ph/9708239, Eqn 2.13
       include 'constants.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       integer j1,j2,j3,j4,j5,j6
       character*9 st
       double complex a6vsg,a6vfg
@@ -98,7 +98,7 @@ C---hep-ph/9708239, Eqn 2.13
       implicit none
 C---hep-ph/9708239, Eqn 2.13
       include 'constants.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       integer j1,j2,j3,j4,j5,j6
       character*9 st
       double complex a6axg
@@ -110,7 +110,7 @@ C---hep-ph/9708239, Eqn 2.13
       implicit none
 C---hep-ph/9708239, Eqn 2.13
       include 'constants.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       character*9 st
       integer j1,j2,j3,j4,j5,j6
       double complex a6axslg
@@ -121,8 +121,8 @@ C---hep-ph/9708239, Eqn 2.13
       double complex function a6sg(st,j1,j2,j3,j4,j5,j6,za,zb)
       implicit none
       include 'constants.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
+      include 'sprods_com.f'
       character*9 st
       integer j1,j2,j3,j4,j5,j6
 c--- modified 4/18/00, according to BDK hep-ph/9708239, eq. (8.2)
@@ -139,7 +139,7 @@ c--- modified 4/18/00, according to BDK hep-ph/9708239, eq. (8.2)
       double complex function a6fg(st,j1,j2,j3,j4,j5,j6,za,zb)
       implicit none
       include 'constants.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       character*9 st
       integer j1,j2,j3,j4,j5,j6
 c--- checked 4/18/00, this piece vanishes identically, eq. (8.3)
@@ -150,8 +150,8 @@ c--- checked 4/18/00, this piece vanishes identically, eq. (8.3)
       double complex function a6tg(st,j1,j2,j3,j4,j5,j6,za,zb)
       implicit none
       include 'constants.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
+      include 'sprods_com.f'
       include 'masses.f'
       character*9 st
       integer j1,j2,j3,j4,j5,j6
@@ -166,7 +166,7 @@ c--- modified 4/18/00, according to BDK hep-ph/9708239, eq. (8.3)
       double complex function a6vfg(st,j1,j4,j2,j3,j5,j6,za,zb)
       implicit none
       include 'constants.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       character*9 st
       integer j1,j2,j3,j4,j5,j6
       a6vfg=czip
@@ -176,7 +176,7 @@ c--- modified 4/18/00, according to BDK hep-ph/9708239, eq. (8.3)
       double complex function a6vsg(st,j1,j4,j2,j3,j5,j6,za,zb)
       implicit none
       include 'constants.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       character*9 st
       integer j1,j2,j3,j4,j5,j6
       a6vsg=czip
@@ -186,7 +186,7 @@ c--- modified 4/18/00, according to BDK hep-ph/9708239, eq. (8.3)
       double complex function a6axg(st,j1,j4,j2,j3,j5,j6,za,zb)
       implicit none
       include 'constants.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       character*9 st
       integer j1,j2,j3,j4,j5,j6
       a6axg=czip
@@ -196,7 +196,7 @@ c--- modified 4/18/00, according to BDK hep-ph/9708239, eq. (8.3)
       double complex function a6axslg(st,j1,j4,j2,j3,j5,j6,za,zb)
       implicit none
       include 'constants.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       character*9 st
       integer j1,j2,j3,j4,j5,j6
       a6axslg=czip

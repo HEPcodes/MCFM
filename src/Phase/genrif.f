@@ -13,7 +13,6 @@ c----i1 is an initial state vector.
 
 c------initial final
  
-      wt5_4=0d0
       phi=twopi*phit
       omxmin=one-xmin
 

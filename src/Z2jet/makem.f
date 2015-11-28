@@ -6,11 +6,9 @@ C     Eq. A.23 with a factor of 2*i*e^2*g^3/s removed
       implicit none
       include 'constants.f'
       include 'masses.f'
-      include 'qcdcouple.f'
       include 'zcouple.f'
       include 'ewcharge.f'
-      include 'dprodx.f'
-      include 'hardscale.f'
+      include 'sprods_com.f'
       integer fa,fb,ha,hb,hg,lh,i1,i2,i3,i4,i5,i6,i7,f(7),j
       double precision vl(2),gq(2,2)
       double complex m1_1234(2,2,2,2,2,2),m2_1234(2,2,2,2,2,2),

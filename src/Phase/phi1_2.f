@@ -11,15 +11,15 @@ c     delta(p2^2-s2) delta(p3^2-s3)
       include 'masses.f'
       include 'process.f'
       include 'zerowidth.f'
+      include 'verbose.f'
       double precision p1(4),p2(4),p3(4),p3cm(4)
       double precision x1,x2,x3,x4,costh,sinth,phi,cphi,sphi
       double precision wt,wt0,w2,w3
       double precision s2max,s2min,s3max,s3min
       double precision m1,m2,s1,s2,s3,lambda,mass2,width2,mass3,width3
       integer j,n2,n3
-      logical first,verbose
+      logical first
       common/breit/n2,n3,mass2,width2,mass3,width3
-      common/verbose/verbose
       common/lambda/lambda,s1,s2,s3
       parameter(wt0=one/8.d0/pi)
       data first/.true./
@@ -42,7 +42,8 @@ c      s2max=min(s1,bbsqmax)
       s2min=0d0
       s2max=s1
       if ((case .eq. 'Wbbmas') .or. (case .eq. 'Zbbmas')
-     .                         .or. (case .eq. 'vlchkm')) then
+     ..or.(case .eq. 'Zccmas') .or. (case .eq. 'vlchkm')
+     ..or. (case .eq. 'Wbbjet')) then
       s2min=4d0*mb**2
       endif
       if (s2min .gt. s2max) return 1

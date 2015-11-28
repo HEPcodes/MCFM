@@ -12,8 +12,8 @@ c---
       include 'ewcouple.f'
       include 'zcouple.f'
       include 'ewcharge.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
       integer j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac
       double complex AqqbZg(2,2,2),AqbqZg(2,2,2),AqgZq(2,2,2),
@@ -126,33 +126,31 @@ c      gqZq=  -aveqg*s(3,4)**2*fac*z1jet(2,5,3,4,1)
       end
  
 
-      double precision function z1jet(j1,j2,j3,j4,j5)
-      implicit none 
-      include 'constants.f'
-      include 'masses.f'
-      include 'dprodx.f'
-      integer j1,j2,j3,j4,j5
-      double precision s12,s15,s25
+c      double precision function z1jet(j1,j2,j3,j4,j5)
+c      implicit none 
+c      include 'constants.f'
+c      include 'sprods_com.f'
+c      integer j1,j2,j3,j4,j5
+c      double precision s12,s15,s25
 
-      s12=s(j1,j2)
-      s15=s(j1,j5)
-      s25=s(j2,j5)
+c      s12=s(j1,j2)
+c      s15=s(j1,j5)
+c      s25=s(j2,j5)
 c---calculate the propagator
-      z1jet=(s(j1,j4)**2+s(j2,j3)**2)/(s25*s15*s(j3,j4))
-c      z1jet=
-c     . (s12*(2d0*s(j1,j4)*s(j2,j3)+s(j1,j4)*s(j3,j5)+s(j2,j3)*s(j4,j5))
-c     . +s15*(s(j1,j4)*s(j2,j3)+s(j1,j4)*s(j3,j5)-s(j2,j3)*s(j2,j4))
-c     . +s25*(s(j1,j4)*s(j2,j3)+s(j2,j3)*s(j4,j5)-s(j1,j3)*s(j1,j4)))
-c     . /(s15*s25*s(j3,j4)**2)
-      return
-      end
+c      z1jet=(s(j1,j4)**2+s(j2,j3)**2)/(s25*s15*s(j3,j4))
+cc      z1jet=
+cc     . (s12*(2d0*s(j1,j4)*s(j2,j3)+s(j1,j4)*s(j3,j5)+s(j2,j3)*s(j4,j5))
+cc     . +s15*(s(j1,j4)*s(j2,j3)+s(j1,j4)*s(j3,j5)-s(j2,j3)*s(j2,j4))
+cc     . +s25*(s(j1,j4)*s(j2,j3)+s(j2,j3)*s(j4,j5)-s(j1,j3)*s(j1,j4)))
+cc     . /(s15*s25*s(j3,j4)**2)
+c      return
+c      end
 
 
       subroutine zgamps(j1,j2,j3,j4,j5,za,zb,amps)
       implicit none
       include 'constants.f'
-      include 'masses.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       double complex amps(2,2,2)
       integer h1,h2,j1,j2,j3,j4,j5
 c-- amplitude helicities are amps(quark,lepton,gluon)

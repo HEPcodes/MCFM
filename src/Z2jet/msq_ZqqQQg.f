@@ -9,9 +9,7 @@
       implicit none
       include 'constants.f'
       include 'masses.f'
-      include 'zcouple.f'
-      include 'dprodx.f'
-      include 'hardscale.f'
+      include 'sprods_com.f'
       integer Qh,hq,hg,lh,f1,f3,i1,i2,i3,i4,i5,i6,i7,j
       double precision A(2,2,2),B(2,2,2),C(2,2,2),D(2,2,2),E(2,2,2),
      . F(2,2,2),G(2,2,2)

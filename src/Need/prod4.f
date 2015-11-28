@@ -2,9 +2,9 @@
 c  extended to deal with negative energies ie with all momenta outgoing
 c---all particle assumed massless
       implicit none
-      real*8 p(6,4),s(6,6)
+      double precision p(6,4),s(6,6)
       double complex za(6,6),zb(6,6),c23(6),f(6),one,im
-      real*8 rt(6)
+      double precision rt(6)
       integer i,j
       parameter(one=(1d0,0d0),im=(0d0,1d0))
       
@@ -40,9 +40,9 @@ c---all particle assumed massless
       subroutine prod2(p,za,zb)
 c  extended to deal with negative energies ie with all momenta outgoing
       implicit none
-      real*8 p(4,4),dot(4,4)
+      double precision p(4,4),dot(4,4)
       double complex za(4,4),zb(4,4),c23(4),f(4),one,im
-      real*8 rt(4)
+      double precision rt(4)
       integer i,j
       parameter(one=(1.d0,0.d0),im=(0.d0,1.d0))
       
@@ -76,9 +76,9 @@ c  extended to deal with negative energies ie with all momenta outgoing
       subroutine prod3(p,za,zb,dot)
 c  extended to deal with negative energies ie with all momenta outgoing
       implicit none
-      real*8 p(5,4),dot(5,5)
+      double precision p(5,4),dot(5,5)
       double complex za(5,5),zb(5,5),c23(5),f(5),one,im
-      real*8 rt(5)
+      double precision rt(5)
       integer i,j
       parameter(one=(1.d0,0.d0),im=(0.d0,1.d0))
       do j=1,5

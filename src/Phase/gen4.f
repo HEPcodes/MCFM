@@ -1,7 +1,6 @@
       subroutine gen4(r,p,wt4,*)
       implicit none
       include 'constants.f'
-      include 'masses.f'
       include 'mxdim.f'
       include 'debug.f'
       include 'process.f'

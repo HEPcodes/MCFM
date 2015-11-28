@@ -24,8 +24,8 @@ c p56 is the b-bbar system
       call phi1_2(r(1),r(2),r(3),r(4),p12,p56,p34,wt3456,*99)
       call phi3m0(r(7),r(8),p34,p3,p4,wt34,*99)
 
-      if ((case .eq. 'Wbbmas') .or. (case .eq. 'Zbbmas')
-     .                         .or. (case .eq. 'vlchkm')) then
+      if ( (case .eq. 'Wbbmas') .or. (case .eq. 'Zbbmas')
+     ..or. (case .eq. 'Zccmas') .or. (case .eq. 'vlchkm')) then
       call phi3m(r(5),r(6),p56,p5,p6,mb,mb,wt56,*99)
       else
       call phi3m0(r(5),r(6),p56,p5,p6,wt56,*99)

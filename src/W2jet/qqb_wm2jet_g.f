@@ -17,10 +17,10 @@ c                           ---> f(p5)+f(p6)
       include 'masses.f'
       include 'qcdcouple.f'
       include 'ckm.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       include 'zcouple.f'
       include 'ewcouple.f'
-      include 'hardscale.f'
       include 'flags.f'
       include 'lc.f'
       integer j,k,n1,n2
@@ -341,7 +341,7 @@ c--- G Q --> Q q qb
      .             +(aveqg/aveqq)*GQ_u_ddd*0.5d0
      .           +(aveqg/aveqq)*GQ_u_udu)
      .                         +(2d0-Vsq(k,-k-1))*
-     .           +(aveqg/aveqq)*GQ_d_dsc
+     .            (aveqg/aveqq)*GQ_d_dsc
         elseif( kk(k) .eq. 2) then
          msq(j,k)=msq(j,k)+Vsq(-k,k-1)*(aveqg/aveqq)*GQ_d_ddu*0.5d0
      .                    +(2d0-Vsq(-k,k-1))*(aveqg/aveqq)*GQ_d_dsc

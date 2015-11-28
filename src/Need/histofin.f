@@ -1,23 +1,22 @@
-      subroutine histofin
+      subroutine histofin(xsec,xsec_err)
       implicit none
       include 'nplot.f'
-      include 'hmass.f'
+      include 'masses.f'
       include 'scale.f'
       include 'verbose.f'
+      include 'process.f'
+      include 'workdir.f'
       integer j,nlength,lenocc
-      character*9 runstring
-      character*6 case
+      character*30 runstring
       character*4 part
+      character*72 outlabel1,outlabel2,outfiledat,outfiletop
+      character*3 strmh,strscale,getstr
+      character*7 pdlabel
+      double precision xsec,xsec_err
       common/part/part
       common/runstring/runstring
-      common/process/case
-      character*72 outlabel1,outlabel2
-      character*3 strmh,strscale,getstr
-      character outfile28*28,outfile32*32
-      character pdlabel*7
       common/pdlabel/pdlabel      
       data linlog/71*'lin',2*'log',19*'lin',7*'log'/
-c      character*(*) graph
 
       strscale=getstr(int(scale))
       if (  (case .eq. 'WHbbar')
@@ -33,26 +32,30 @@ c      character*(*) graph
       nlength=lenocc(outlabel1)
       outlabel2=outlabel1(1:nlength)//'_'//runstring
       nlength=lenocc(outlabel2)
-      if (nlength .ge. 32) then
-        nlength=32
-      else
-        nlength=28
+
+c--- add working directory, if necessary 
+      if (workdir .ne. '') then
+        outlabel2=workdir(1:lenocc(workdir))//'/'//outlabel2
+        nlength=nlength+1+lenocc(workdir)
       endif
-      outlabel2=outlabel2(1:nlength)
+      
       write(6,*)
       write(6,*) '****************************************************'
-      write(6,*) 'output file  ',outlabel2
+      write(6,*) 'output files  ',outlabel2
       write(6,*) '****************************************************'
       call flush(6)
-      if     (nlength .eq. 28) then
-        outfile28=outlabel2        
-        open(unit=98,file=outfile28//'.dat',status='unknown')
-        open(unit=99,file=outfile28//'.top',status='unknown')
-      elseif (nlength .eq. 32) then
-        outfile32=outlabel2        
-        open(unit=98,file=outfile32//'.dat',status='unknown')
-        open(unit=99,file=outfile32//'.top',status='unknown')
-      endif
+
+      outfiledat=outlabel2
+      outfiletop=outlabel2
+      outfiledat(nlength+1:nlength+4)='.dat'
+      outfiletop(nlength+1:nlength+4)='.top'
+
+      open(unit=98,file=outfiledat,status='unknown')
+      open(unit=99,file=outfiletop,status='unknown')
+      
+c--- write out run info to top of files
+      call writeinfo(98,xsec,xsec_err)      
+      call writeinfo(99,xsec,xsec_err)      
       
       do j=1,nplot
       if (verbose) then

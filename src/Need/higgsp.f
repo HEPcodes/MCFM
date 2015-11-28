@@ -3,7 +3,6 @@ C--returns Higgs branching ratios as calculated by
 C  interpolating the Spira tables br.sm1 br.sm2
 C  Other branching ratios could be added.
       implicit none
-      include 'constants.f'
       include 'masses.f'
       integer npt
       parameter(npt=1000)

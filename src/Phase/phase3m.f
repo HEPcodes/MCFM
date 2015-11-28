@@ -7,7 +7,6 @@ c----with all 2 pi's (ie 1/(2*pi)^5)
 c----(p4,p5) are dummies
       implicit none
       include 'constants.f'
-      include 'masses.f'
       include 'mxdim.f'
 
       integer j

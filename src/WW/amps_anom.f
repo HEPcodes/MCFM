@@ -5,8 +5,8 @@ c---  hep-ph/9907305 Eq. 10 (multiplied by a factor of (-i))
 c---  Note that this reduces to the SM result (a6treeb)
 c---  when delg1=0, delk=0, lambda=0
       include 'constants.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
       integer j1,j2,j3,j4,j5,j6
       integer i1,i2,i3,i4
       double complex z2,a6b_1,a6b_2,a6b_3
@@ -43,8 +43,8 @@ c---  when delg1=0, delk=0, lambda=0
       implicit none
 
       include 'constants.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
       integer j1,j2,j3,j4,j5,j6,j7
       integer i1,i2,i3,i4
       double complex z2,a7b_1,a7b_2,a7b_3
@@ -85,8 +85,8 @@ c---  hep-ph/9907305 Eq. 14 (multiplied by a factor of (-i))
 c---  Note that this reduces to the SM result (a6treeb)
 c---  when delg1=0, delk=0, lambda=0
       include 'constants.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
       integer j1,j2,j3,j4,j5,j6
       integer i1,i2,i3,i4
       double complex z2,a6b_1,a6b_2,a6b_3,a6b_4
@@ -127,8 +127,8 @@ c---  hep-ph/9907305 Eq. 15 (multiplied by a factor of (-i))
 c---  Note that this reduces to the SM result (a7treeb)
 c---  when delg1=0, delk=0, lambda=0
       include 'constants.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
       integer j1,j2,j3,j4,j5,j6,j7
       integer i1,i2,i3,i4
       double complex z2,a7b_1,a7b_2,a7b_3,a7b_4

@@ -22,7 +22,7 @@ c--all momenta incoming
       eik25=s(2,5)/(s(2,6)*s(6,5))
 
       facqqb=two*gsq*(xn*(eik15+eik25)-eik12/xn)
-      facqbq=facqbq
+      facqbq=facqqb
       facqg=two*gsq*(xn*(eik12+eik25)-eik15/xn)
       facgq=two*gsq*(xn*(eik12+eik15)-eik25/xn)
       facgqb=two*gsq*(xn*(eik15+eik12)-eik25/xn)

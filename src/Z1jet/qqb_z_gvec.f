@@ -9,12 +9,12 @@ c     u(-p1)+dbar(-p2)--> g(p5)+ Z^+(l(p3)+a(p4))                      *
 C*********************************************************************** 
       implicit none
       include 'constants.f'
-      include 'masses.f'
       include 'qcdcouple.f'
+      include 'masses.f'
       include 'ewcouple.f'
       include 'zcouple.f'
       include 'ewcharge.f'
-      include 'dprodx.f'
+      include 'sprods_com.f'
       integer j,k,in
 C--in is the label of the parton dotted with n
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4)
@@ -28,7 +28,7 @@ C--in is the label of the parton dotted with n
       enddo
       enddo
 
-      call dotem(7,p,s)
+      call dotem(5,p,s)
 
       if (s(3,4) .lt. 4d0*mbsq) return
 
@@ -105,8 +105,7 @@ c   before spin/color average
 c---overall factor of 16 gs**2*gw**4*xw**2*CF*xn removed
 c--note QED propagator included.
       include 'constants.f'
-      include 'masses.f'
-      include 'dprodx.f'
+      include 'sprods_com.f'
 
       integer j1,j2,j3,j4,j5
       double precision n(4),p(mxpart,4),nDn,nDp1,nDp2,nDp3,nDp5

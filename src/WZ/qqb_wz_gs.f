@@ -8,7 +8,6 @@ c                           ---> b(p5)+bb(p6)
 c   positively charged W only
       implicit none 
       include 'constants.f'
-      include 'masses.f'
       include 'ptilde.f'
       include 'qqgg.f'
       integer j,k,nd

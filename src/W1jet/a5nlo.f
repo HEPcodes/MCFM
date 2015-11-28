@@ -8,8 +8,8 @@
 *  (as/4/pi)  (4 pi)^ep  Gamma(1+ep)*Gamma(1-ep)^2/Gamma(1-2*ep)       *
 ************************************************************************
       include 'constants.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
+      include 'sprods_com.f'
       include 'epinv.f'
       include 'scale.f'
       integer j1,j2,j3,j4,j5

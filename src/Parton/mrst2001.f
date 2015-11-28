@@ -79,7 +79,7 @@ c      data xmin,xmax,qsqmin,qsqmax/1d-5,1d0,1.25d0,1d7/
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
-        open(unit=33,file='alf119.dat',status='old')
+        open(unit=33,file='Pdfdata/alf119.dat',status='old')
         do 20 n=1,nx-1
         do 20 m=1,nq
         read(33,50)f1(n,m),f2(n,m),f3(n,m),f4(n,m),
@@ -187,7 +187,7 @@ c      data xmin,xmax,qsqmin,qsqmax/1d-5,1d0,1.25d0,1d7/
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
-        open(unit=33,file='alf117.dat',status='old')
+        open(unit=33,file='Pdfdata/alf117.dat',status='old')
         do 20 n=1,nx-1
         do 20 m=1,nq
         read(33,50)f1(n,m),f2(n,m),f3(n,m),f4(n,m),
@@ -295,7 +295,7 @@ c      data xmin,xmax,qsqmin,qsqmax/1d-5,1d0,1.25d0,1d7/
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
-        open(unit=33,file='alf121.dat',status='old')
+        open(unit=33,file='Pdfdata/alf121.dat',status='old')
         do 20 n=1,nx-1
         do 20 m=1,nq
         read(33,50)f1(n,m),f2(n,m),f3(n,m),f4(n,m),
@@ -403,7 +403,7 @@ c      data xmin,xmax,qsqmin,qsqmax/1d-5,1d0,1.25d0,1d7/
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
-        open(unit=33,file='j121.dat',status='old')
+        open(unit=33,file='Pdfdata/j121.dat',status='old')
         do 20 n=1,nx-1
         do 20 m=1,nq
         read(33,50)f1(n,m),f2(n,m),f3(n,m),f4(n,m),

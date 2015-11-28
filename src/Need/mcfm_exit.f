@@ -18,7 +18,7 @@
 c--- Print-out the value of the integral and its error
       write(6,*) 
       write(6,*)'Value of final ',part,' integral is',
-     . xinteg,'+/-',xinteg_err
+     . xinteg,' +/-',xinteg_err, ' fb'
      
 c--- Print-out a summary of the effects of jets and cuts
       write(6,*) 
@@ -27,6 +27,7 @@ c--- Print-out a summary of the effects of jets and cuts
       write(6,*) 'Number failing jet cuts     : ',njetzero
       write(6,*) 'Number failing process cuts : ',ncutzero
       write(6,*) 
+      call flush(6)
 
 c--- Calculate the actual number of shots that were passed
 c--- through the jet and cut routines
@@ -65,6 +66,7 @@ c--- through the jet and cut routines
      .  (lord_bypart(+1,-1)+lord_bypart(-1,+1))/lordnorm*100d0
         write(6,*) '---------------------------------------'
       endif
+      call flush(6)
 
    54 format(a20,f6.2,'%')
    55 format(4x,a9,'  |',f14.5,f8.2,'%')
@@ -73,16 +75,19 @@ c--- Finalize the histograms, if we're not filling ntuples instead
       if (creatent .eqv. .false.) then
         if (dswhisto .eqv. .false.) then
 c--- Traditional MCFM histograms
-          call histofin
+          call histofin(xinteg,xinteg_err)
         else
 c--- DSW histograms - store the information
 c          call dswhbook(200,'Sigma',1.0d0,0.0d0,10.0d0)
 c          call dswhfill(200,0.5d0,xinteg)
 c          call dswhfill(200,1.5d0,xinteg_err)
 c--- DSW histograms - output and close file
-c          call dswhrout
-c          call dswclose
+          call dswhrout
+          call dswclose
         endif
+      else
+c        call dswhrout
+c        call dswclose
       endif
       
       return

@@ -15,7 +15,8 @@ c--- and returns the result in msqx(col,i,j,k,l)
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'ckm.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       include 'flags.f'
       include 'lc.f'
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),
@@ -135,7 +136,7 @@ c--- calculate 2-quark, 2-gluon amplitudes
         call storecs(ggWqbq2_cs)        
         call w2jetsq(6,5,3,4,1,2,za,zb,ggWqqb2)
         call storecs(ggWqqb2_cs)        
-        call w2jetsq(2,6,3,4,1,5,za,zb,gqWqg2)
+        call w2jetsq(2,6,3,4,1,5,za,zb,gqWgq2)
         call storecs(gqWgq2_cs)
         call w2jetsq(6,2,3,4,1,5,za,zb,gqbWgqb2)
         call storecs(gqbWgqb2_cs)
@@ -504,7 +505,7 @@ c--- 4-quark contribution to matrix elements
       enddo
 
       if ((j .gt. 0) .and. (k .lt. 0)) then
-        if (j. ne. -k) then
+        if (j .ne. -k) then
 c--- Q QBAR - different flavours
            mqq(0,j,k)=facqq*Vsq(j,k)*(qqb_ijii(0)+qqb_ijjj(0))
            mqq(1,j,k)=facqq*Vsq(j,k)*(
@@ -569,7 +570,7 @@ c--- Q QBAR - same flavours
           enddo
         endif
       elseif ((j .lt. 0) .and. (k .gt. 0)) then
-        if (j. ne. -k) then
+        if (j .ne. -k) then
 c--- QBAR Q - different flavours
           mqq(0,j,k)=facqq*Vsq(j,k)*(
      .             +qbq_ijii(0)+qbq_ijjj(0))
@@ -635,7 +636,7 @@ c--- QBAR Q - same flavours
           enddo
         endif
       elseif ((j .gt. 0) .and. (k .gt. 0)) then
-        if (j. ne. k) then
+        if (j .ne. k) then
 c--- Q Q - different flavours
           mqq(0,j,k)=
      .          +facqq*half*Vsq(j,-k)*qq_ijjj(0)
@@ -677,7 +678,7 @@ c--- Q Q - same flavours
           enddo
         endif
       elseif ((j .lt. 0) .and. (k .lt. 0)) then
-        if (j. ne. k) then
+        if (j .ne. k) then
 c--- QBAR QBAR - different flavours
           mqq(0,j,k)=
      .+facqq*half*Vsq(j,-k)*qbqb_ijjj(0)

@@ -13,7 +13,7 @@
 ************************************************************************
       include 'constants.f'
       include 'qcdcouple.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       integer ip(5)
       double complex A5LOm,A5NLOm,A5LOp,A5NLOp
 

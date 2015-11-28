@@ -5,13 +5,13 @@
       integer npar
       common /jetdef/ etminj,etmaxj,delrjj,rapmaxj,rapminj 
       common /clusdef/ rsep,jalg1,jalg2
-      common /jetcom/ icol,ji,jj,jk
+c      common /jetcom/ icol,ji,jj,jk
       common /parmom/ ppar(4,10)
       common /phypar/ w,ipp1,ipp2,rmw,rgw,rmz,rgz,sw2,qcdl
       common/energy/sqrts
       logical first
       data first/.true./
-
+      save first
       w=sqrts
 
       if (first) then

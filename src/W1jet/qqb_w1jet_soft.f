@@ -10,8 +10,6 @@ c--all momenta incoming
       include 'constants.f'
       include 'qcdcouple.f'
       integer j,k
-      logical hhhh
-      common/hhhh/hhhh
       double precision P(mxpart,4),msq(-nf:nf,-nf:nf),
      . msq0(-nf:nf,-nf:nf),s(mxpart,mxpart),
      . facqqb,facqbq,facgqb,facqbg,facgq,facqg
@@ -51,40 +49,13 @@ c      write(6,*) 'eik25',eik26_5+eik56_2
       facqbg=facqg
       facgqb=facgq
 
-c--- SUB-LEADING ONLY
-c      facqqb=two*gsq*(-eik12/xn)
-c      facqbq=facqbq
-c      facqg=two*gsq*(-eik15/xn)
-c      facgq=two*gsq*(-eik25/xn)
-c      facgqb=two*gsq*(-eik25/xn)
-c      facqbg=two*gsq*(-eik15/xn)
-
       call qqb_w_g(p,msq0)
  
 
-c      write(6,*) 
-c      write(6,*) 'In soft'
-c      write(6,*) 'msq0(-1,0)',msq0(-1,0)
-      
-c--debug
       do j=-nf,nf
       do k=-nf,nf
             if ((j .gt. 0) .and. (k.lt.0)) then
                msq(j,k)=facqqb*msq0(j,k)
-c               write(6,*) 'eik16_2*msq0(j,k)/xn',-eik16_2*msq0(j,k)/xn
-c               write(6,*) 'eik26_1*msq0(j,k)/xn',-eik26_1*msq0(j,k)/xn
-c               write(6,*) 'eik16_5*msq0(j,k)*xn',eik16_5*msq0(j,k)*xn
-c               write(6,*) 'eik56_1*msq0(j,k)*xn',eik56_1*msq0(j,k)*xn
-
-c               write(6,*) 'eik16_5*msq0(j,k)*xn+eik56_1*msq0(j,k)*xn',
-c     . eik16_5*msq0(j,k)*xn+eik56_1*msq0(j,k)*xn
-
-c               write(6,*) 'eik56_2*msq0(j,k)*xn',eik56_2*msq0(j,k)*xn
-c               write(6,*) 'eik26_5*msq0(j,k)*xn',eik26_5*msq0(j,k)*xn
-
-c               write(6,*) 'eik56_2*msq0(j,k)*xn+eik26_5*msq0(j,k)*xn',
-c     .         eik56_2*msq0(j,k)*xn+eik26_5*msq0(j,k)*xn
-c      pause
             elseif ((j .lt. 0) .and. (k.gt.0)) then
                msq(j,k)=facqbq*msq0(j,k)
             elseif ((j .gt. 0) .and. (k.eq.0)) then

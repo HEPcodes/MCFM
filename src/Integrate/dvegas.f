@@ -1,8 +1,7 @@
-         block data
+         block data vegas_data
          implicit  double precision (a-h,o-z)
          implicit integer*4 (i-n)
-         include 'mxdim.f'
-         common/bveg1/xl(mxdim),xu(mxdim),acc,ndim,ncall,itmx,nprn
+         include 'vegas_common.f'
          data ncall/10000/,itmx/15/,nprn/1000/,acc/-1.d0/,
      1   xl/mxdim*0.d0/
      2   xu/mxdim*1.d0/
@@ -22,13 +21,12 @@ c        written by G. P. Lepage
 c
          implicit double precision (a-h,o-z)
          implicit integer*4 (i-n)
-         include 'mxdim.f'
+         include 'vegas_common.f' 
          include 'gridinfo.f'
+         include 'maxwt.f'
          parameter(mprod=50*mxdim)
-         common/bveg1/xl(mxdim),xu(mxdim),acc,ndim,ncall,itmx,nprn
          common/bveg2/xi(50,mxdim),si,si2,swgt,schi,ndo,it
          COMMON/ranno/idum
-         common/maxwt/wtmax
          dimension d(50,mxdim),di(50,mxdim),xin(50),r(50),
      1   dx(mxdim),dt(mxdim),x(mxdim),kg(mxdim),ia(mxdim)
          data ndmx/50/,alph/1.5d0/,one/1d0/,mds/1/
@@ -88,10 +86,10 @@ c
 
 c--- read-in grid if necessary
          if (readin) then
-           open(unit=11,file=ingridfile//'.in',status='unknown')
-         write(6,*)'***************************************************'
-         write(6,*)'* Reading in vegas grid from ',ingridfile,'.in  *'
-         write(6,*)'***************************************************'
+           open(unit=11,file=ingridfile//'.grid',status='unknown')
+        write(6,*)'****************************************************'
+        write(6,*)'* Reading in vegas grid from ',ingridfile,'.grid *'
+        write(6,*)'****************************************************'
            call flush(6)
            do j=1,ndim
              read(11,203) jj,(xi(i,j),i=1,nd)
@@ -251,10 +249,10 @@ c
 
 c--- write-out grid if necessary
          if (writeout) then
-           open(unit=11,file=outgridfile//'.out',status='unknown')
-         write(6,*)'***************************************************'
-         write(6,*)'* Writing out vegas grid to ',outgridfile,'.out  *'
-         write(6,*)'***************************************************'
+           open(unit=11,file=outgridfile//'.grid',status='unknown')
+        write(6,*)'****************************************************'
+        write(6,*)'* Writing out vegas grid to ',outgridfile,'.grid  *'
+        write(6,*)'****************************************************'
            call flush(6)
            do j=1,ndim
              write(11,203) jj,(xi(i,j),i=1,nd)

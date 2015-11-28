@@ -2,8 +2,8 @@
       implicit none
       integer j1,j2,j3,j4,j5,j6
       include 'constants.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
+      include 'sprods_com.f'
       include 'masses.f'
       character*9 st
       double complex L1

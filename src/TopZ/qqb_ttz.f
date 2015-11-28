@@ -15,7 +15,7 @@ C
       include 'zcouple.f'
       include 'qcdcouple.f'
       include 'masses.f'
-      include 'prods.f'
+      include 'zprods_com.f'
       
       integer j,k,nu
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),

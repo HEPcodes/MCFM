@@ -2,7 +2,8 @@
       implicit none
       include 'constants.f'
       include 'masses.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       integer p1,p2,p3,p4,t5,t6,swap(2)
       integer h1,h3,h5,h6
       double complex qqb_a(2,2,2,2,2),qqb_b(2,2,2,2,2)

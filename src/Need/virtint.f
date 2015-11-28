@@ -1,25 +1,26 @@
       double precision function virtint(r,wgt)
       implicit none
       include 'constants.f'
-      include 'masses.f'
       include 'noglue.f'
       include 'vegas_common.f'
-      include 'dprodx.f'
+      include 'sprods_com.f'
       include 'npart.f'
       include 'epinv.f'
       include 'epinv2.f'
-      include 'PR_new.f'
       include 'agq.f'
+      include 'PR_new.f'
       include 'PR_cs_new.f'
+      include 'PR_twojet.f'
       include 'msq_cs.f'
       include 'qcdcouple.f'
       include 'scale.f'
       include 'clustering.f'
       include 'efficiency.f'
-      include 'bbproc.f'
       include 'lc.f'
       include 'facscale.f'
+      include 'process.f'
       include 'maxwt.f'
+      include 'limits.f'
       double precision mqq(0:2,fn:nf,fn:nf)
       double precision msqx(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf)
       double precision msqx_cs(0:2,-nf:nf,-nf:nf)
@@ -32,16 +33,13 @@
      . wgt,msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),
      . msq_qq,msq_aa,msq_aq,msq_qa,msq_qg,msq_gq
       double precision xx(2),z,x1onz,x2onz,flux,vol,taumin,omz,
-     . BrnRat,xmsq_old
-      double precision bbsqmin,bbsqmax,wsqmin,wsqmax,rcut     
+     . BrnRat,xmsq_old,tmp
+      double precision rcut     
       integer nqcdjets,nqcdstart,nshot,rvcolourchoice
-      character*6 case
       character pdlabel*7,jetlabel(mxpart)*2
       common/nqcdjets/nqcdjets,nqcdstart
       common/parts/jets,jetlabel
-      common/process/case
       logical bin,makecuts,gencuts,first
-      common/limits/bbsqmin,bbsqmax,wsqmin,wsqmax      
       common/density/ih1,ih2
       common/energy/sqrts
       common/pdlabel/pdlabel
@@ -80,18 +78,26 @@
           call gen6_rap(r,p,pswt,*999)
       elseif ((case .eq. 'W_only')
      .   .or. (case .eq. 'Z_only')
+     .   .or. (case .eq. 'ggfus0')
      .   .or. (case .eq. 'Hbbbar')) then
           npart=2
           call gen2(r,p,pswt,*999)
+      elseif ((case .eq. 'twojet')
+     .   .or. (case .eq. 'dirgam')) then
+          call gen2(r,p,pswt,*999)
+c          call gen2jet(r,p,pswt,*999)
+          npart=2
       elseif ((case .eq. 'tt_tot')
      .   .or. (case .eq. 'bb_tot')
      .   .or. (case .eq. 'cc_tot')) then
           npart=2
           call gen2m(r,p,pswt,*999)
-      elseif  (case .eq. 'Wgamma') then
+      elseif ((case .eq. 'Wgamma')
+     .   .or. (case .eq. 'Zgamma')) then
         npart=3
         call gen3b(r,p,pswt,*999)
       elseif ((case .eq. 'H_1jet')
+     .   .or. (case .eq. 'ggfus1')
      .   .or. (case .eq. 'Z_1jet')
      .   .or. (case .eq. 'W_1jet')) then
         npart=3
@@ -99,6 +105,7 @@
       elseif (
      .        (case .eq. 'W_2jet')
      .   .or. (case .eq. 'Z_2jet')
+     .   .or. (case .eq. 'qq_Hqq')
      .        ) then
         npart=4
         call gen_njets(r,2,p,pswt,*999)
@@ -108,6 +115,12 @@ c        call gen4(r,p,pswt,*999)
      .   .or. (case .eq. 'tt_bbl')) then
           npart=6
           call gen6(r,p,pswt,*999)
+      elseif (
+     .        (case .eq. 'HZZ_4l')
+     .   .or. (case .eq. 'HWW_4l')
+     .        ) then
+          npart=4
+          call gen4h(r,p,pswt,*999)
       else
         npart=4
         call gen4(r,p,pswt,*999)      
@@ -119,7 +132,8 @@ c---impose mass cuts on final state
 c----reject event if any s(i,j) is too small
       call smalls(s,npart,*999)
 
-      if (scalestart .lt. 0d0) call scaleset(scalestart,p)      
+      if ((scalestart .lt. 0d0) .or. (case .eq. 'H_1jet'))
+     . call scaleset(scalestart,p)
 
       do j=-nf,nf
       fx1z(j)=0d0
@@ -194,6 +208,10 @@ c--- point to restart from when checking epsilon poles
       do cs=0,2
         R1(ia,ib,ic,cs,is)=0d0
         R2(ia,ib,ic,cs,is)=0d0
+      do j=1,8
+        S1(ia,ib,ic,j,cs,is)=0d0
+        S2(ia,ib,ic,j,cs,is)=0d0
+      enddo
       enddo
       enddo
       enddo
@@ -258,6 +276,18 @@ c--- point to restart from when checking epsilon poles
          call qqb_wgam(p,msq)
          call qqb_wgam_v(p,msqv)
          call qqb_wgam_z(p,z)
+      elseif (case .eq. 'Zgamma') then
+         call qqb_zgam(p,msq)
+         call qqb_zgam_v(p,msqv)
+         call qqb_zgam_z(p,z)
+      elseif (case .eq. 'dirgam') then
+         call qqb_dirgam(p,msq)
+         call qqb_dirgam_v(p,msqv)
+         call qqb_dirgam_z(p,z)
+      elseif (case .eq. 'twojet') then
+         call qqb_2jetx(p,msq,msqx)
+         call qqb_2jet_v(p,msqv)
+         call qqb_2jet_z(p,z)
       elseif (case .eq. 'W_2jet') then         
          call qqb_w2jetx(p,msq,mqq,msqx,msqx_cs)
          call qqb_w2jet_v(p,msqv)
@@ -278,11 +308,33 @@ c--- point to restart from when checking epsilon poles
          call qqb_ZH(p,msq)
          call qqb_ZH_v(p,msqv)
          call qqb_ZH_z(p,z)
-c      elseif ((case .eq. 'tt_tot')
-c     .   .or. (case .eq. 'bb_tot')
-c     .   .or. (case .eq. 'cc_tot')) then
-c         call qqb_QQb(p,msq)
-c         call qqb_QQb_v(p,msqv)
+      elseif (case .eq. 'qq_Hqq') then
+         call qq_Hqq(p,msq)
+         call qq_Hqq_v(p,msqv)
+         call qq_Hqq_z(p,z)
+      elseif (case .eq. 'ggfus0') then
+         call gg_h(p,msq)
+         call gg_h_v(p,msqv)
+         call gg_h_z(p,z)
+      elseif (case .eq. 'ggfus1') then
+         call gg_hg(p,msq)
+         call gg_hg_v(p,msqv)
+         call gg_hg_z(p,z)
+      elseif ((case .eq. 'tt_tot')
+     .   .or. (case .eq. 'bb_tot')
+     .   .or. (case .eq. 'cc_tot')) then
+         call qqb_QQb(p,msq)
+         call qqb_QQb_v_nodk(p,msqv)
+         call qqb_QQb_z(p,z)
+c         write(6,*) 'EPINV=',epinv
+c         write(6,*) '_v:   msq(1,-1)',msqv(1,-1)
+c         write(6,*) '_v:   msq(0,0)',msqv(0,0)
+c         write(6,*) '_v:   msq(-1,1)',msqv(-1,1)
+c         call qqb_QQb_v_nodk(p,msqv)
+c         write(6,*) 'nodk: msq(1,-1)',msqv(1,-1)
+c         write(6,*) 'nodk: msq(0,0)',msqv(0,0)
+c         write(6,*) 'nodk: msq(-1,1)',msqv(-1,1)
+c         pause
 c      elseif ((case .eq. 'ttbdkl') .or. (case .eq. 'ttbdkh')) then
 c         call qqb_QQbdk(p,msq)
 c         write(6,*) 'msq(1,-1)',msq(1,-1)
@@ -311,18 +363,17 @@ c         pause
 
 C---initialize to zero
       xmsq=0d0
-C----------------------**************************************
 
       do j=-nf,nf
-      do k=-nf,nf    
+      do k=-nf,nf
 
       if (ggonly) then
       if ((j.ne.0) .or. (k.ne.0)) goto 20
       endif
 
-      if (ggexcl) then
-      if ((j.eq.0) .and. (k.eq.0)) goto 20
-      endif
+      if (gqonly) then
+      if (((j.eq.0).and.(k.eq.0)) .or. ((j.ne.0).and.(k.ne.0))) goto 20
+      endif      
       
       if (noglue) then 
       if ((j.eq.0) .or. (k.eq.0)) goto 20
@@ -339,11 +390,52 @@ c--- There is no label for he or she who is emitted.
 c--- Note that in general each piece will be composed of many different
 c--- dipole contributions
 
-      if ((case .eq. 'W_2jet') .or. (case .eq. 'Z_2jet')) then
+      if (case .eq. 'twojet')then
+      
+      xmsq=xmsq+fx1(j)*fx2(k)*(
+     . msqv(j,k)+msq_cs(0,j,k)+msq_cs(1,j,k)+msq_cs(2,j,k))
+
+c--- SUM BY COLOUR STRUCTURES AND FINAL STATES: 2 jets only
+      if      ((j .eq. 0) .and. (k .eq. 0)) then
+      tmp=xmsq
+      do cs=0,2
+      msq_qg=dfloat(nf)*msqx(cs,+1,g,+1,g)
+      msq_gq=dfloat(nf)*msqx(cs,g,+1,+1,g)
+      xmsq=xmsq
+c     & +msqx(cs,g,g,g,g)*(AP(g,g,1)-AP(g,g,3)
+c     &     +S1(g,g,g,gf_gf,cs,1)-S1(g,g,g,gf_gf,cs,3)
+c     &     +AP(g,g,1)-AP(g,g,3)
+c     &     +S2(g,g,g,gf_gf,cs,1)-S2(g,g,g,gf_gf,cs,3))*fx1(g)*fx2(g)
+c     & +msqx(cs,g,g,g,g)*(AP(g,g,2)+AP(g,g,3)
+c     &     +S1(g,g,g,gf_gf,cs,3)+S1(g,g,g,gf_gf,cs,2))*fx1z(g)/z*fx2(g)
+c     & +msqx(cs,g,g,g,g)*(AP(g,g,2)+AP(g,g,3)
+c     &     +S2(g,g,g,gf_gf,cs,3)+S2(g,g,g,gf_gf,cs,2))*fx1(g)*fx2z(g)/z
+     & +msqx(cs,g,g,q,a)*dfloat(nf)*(AP(g,g,1)-AP(g,g,3)
+     &     +S1(g,g,g,qf_af,cs,1)-S1(g,g,g,qf_af,cs,3)
+     &     +AP(g,g,1)-AP(g,g,3)
+     &     +S2(g,g,g,qf_af,cs,1)-S2(g,g,g,qf_af,cs,3))*fx1(g)*fx2(g)
+     & +msqx(cs,g,g,q,a)*dfloat(nf)*(AP(g,g,2)+AP(g,g,3)
+     &     +S1(g,g,g,qf_af,cs,3)+S1(g,g,g,qf_af,cs,2))*fx1z(g)/z*fx2(g)
+     & +msqx(cs,g,g,q,a)*dfloat(nf)*(AP(g,g,2)+AP(g,g,3)
+     &     +S2(g,g,g,qf_af,cs,3)+S2(g,g,g,qf_af,cs,2))*fx1(g)*fx2z(g)/z
+     & +msq_qg*(AP(q,g,2)+S1(q,g,g,qf_gf,cs,2)
+     &         +AP(a,g,2)+S1(a,g,g,af_gf,cs,2))*fx1z(g)/z*fx2(g)
+     & +msq_gq*(AP(q,g,2)+S2(q,g,g,qf_gf,cs,2)
+     &         +AP(a,g,2)+S2(a,g,g,af_gf,cs,2))*fx1(g)*fx2z(g)/z
+      enddo
+      write(6,*) '_v: ',tmp
+      write(6,*) '_z: ',xmsq-tmp
+      endif
+
+      elseif ((case .eq. 'W_2jet') .or. (case .eq. 'Z_2jet')
+     .   .or. (case .eq. 'tt_tot')) then
 c--- SUM BY COLOUR STRUCTURES: W/Z + 2 jet only
 
       xmsq=xmsq+fx1(j)*fx2(k)*(
      . msqv(j,k)+msq_cs(0,j,k)+msq_cs(1,j,k)+msq_cs(2,j,k))
+c      write(6,*) j,k,'-> msqv = ',fx1(j)*fx2(k)*(
+c     . msqv(j,k)+msq_cs(0,j,k)+msq_cs(1,j,k)+msq_cs(2,j,k))
+c      tmp=xmsq
 
       if ((j .gt. 0) .and. (k.gt.0)) then
       do cs=0,2
@@ -373,7 +465,7 @@ c--- SUM BY COLOUR STRUCTURES: W/Z + 2 jet only
      &                  +R2(a,a,a,cs,2)+R2(a,a,a,cs,3))
      & + msq_cs(cs,j,g)*(AP(g,a,2)+R2(g,a,a,cs,2)))*fx1(j)*fx2z(k)/z
       enddo
-      elseif     ((j .gt. 0) .and. (k.lt.0)) then
+      elseif ((j .gt. 0) .and. (k.lt.0)) then
       do cs=0,2
       xmsq=xmsq
      & +msq_cs(cs,j,k)*(AP(q,q,1)-AP(q,q,3)
@@ -387,6 +479,7 @@ c--- SUM BY COLOUR STRUCTURES: W/Z + 2 jet only
      &                  +R2(a,a,q,cs,2)+R2(a,a,q,cs,3))
      & + msq_cs(cs,j,g)*(AP(g,a,2)+R2(g,a,q,cs,2)))*fx1(j)*fx2z(k)/z
       enddo
+
       elseif ((j .lt. 0) .and. (k.gt.0)) then
       do cs=0,2
       xmsq=xmsq
@@ -424,7 +517,6 @@ c--- SUM BY COLOUR STRUCTURES: W/Z + 2 jet only
      &                  +R2(g,g,g,cs,3)+R2(g,g,g,cs,2))
      & + msq_gq*(AP(q,g,2)+R2(q,g,g,cs,2)))*fx1(g)*fx2z(g)/z
       enddo
-      
       elseif ((j .eq. g) .and. (k .gt. 0)) then
       do cs=0,2
       msq_aq=msq_cs(cs,-1,k)+msq_cs(cs,-2,k)+msq_cs(cs,-3,k)
@@ -506,6 +598,8 @@ c--- SUM BY COLOUR STRUCTURES: W/Z + 2 jet only
       enddo
       endif
 
+c      write(6,*) j,k,'-> msqc = ',xmsq-tmp
+
       else
 
 c--- SUM BY TOTAL MATRIX ELEMENTS: everything else
@@ -537,10 +631,12 @@ C--QQbar
      &                +AP(a,a,1)-AP(a,a,3)+Q2(a,a,q,1)-Q2(a,a,q,3)))
      &                *fx1(j)*fx2(k)
      & +(msq(j,k)*(AP(q,q,2)+AP(q,q,3)+Q1(q,q,a,3)+Q1(q,q,a,2))
-     & + msq(g,k)*(AP(g,q,2)+Q1(g,q,a,2)))*fx1z(j)/z*fx2(k)
+     & + msq(g,k)*(AP(g,q,2)+Q1(g,q,a,2))
+     & + msq(g,k)*(AP(g,a,2)+Q1(g,a,a,2)))*fx1z(j)/z*fx2(k)
      & +(msq(j,k)*(AP(a,a,2)+AP(a,a,3)+Q2(a,a,q,3)+Q2(a,a,q,2))
-     & + msq(j,g)*(AP(g,a,2)+Q2(g,a,q,2)))*fx1(j)*fx2z(k)/z
-
+     & + msq(j,g)*(AP(g,a,2)+Q2(g,a,q,2))
+     & + msq(j,g)*(AP(g,q,2)+Q2(g,q,q,2)))*fx1(j)*fx2z(k)/z
+      
       elseif ((j .lt. 0) .and. (k.gt.0)) then
 C--QbarQ
       xmsq=xmsq+(msqv(j,k)
@@ -571,7 +667,6 @@ C--gg
      &      +msq(-5,g)+msq(-4,g)+msq(-3,g)+msq(-2,g)+msq(-1,g)
       msq_gq=msq(g,+5)+msq(g,+4)+msq(g,+3)+msq(g,+2)+msq(g,+1)
      &      +msq(g,-5)+msq(g,-4)+msq(g,-3)+msq(g,-2)+msq(g,-1)
-
       xmsq=xmsq+(msqv(g,g)
      & +msq(g,g)*(one+AP(g,g,1)-AP(g,g,3)+Q1(g,g,g,1)-Q1(g,g,g,3)
      &               +AP(g,g,1)-AP(g,g,3)+Q2(g,g,g,1)-Q2(g,g,g,3)))

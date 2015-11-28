@@ -10,7 +10,7 @@ C                       (i2) incoming quark line
 C                       (i5) outgoing gluon line
 C                       (i6) outgoing gluon line contracted with n
       include 'constants.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       include 'mmsqv_cs.f'
       double complex qcdabn(2,2,2),qcdban(2,2,2),qedn(2,2,2)
       double complex zab(mxpart,mxpart),zba(mxpart,mxpart)
@@ -24,9 +24,9 @@ C                       (i6) outgoing gluon line contracted with n
       nDp6=n(4)*p(i6,4)-n(3)*p(i6,3)-n(2)*p(i6,2)-n(1)*p(i6,1)
 c--- appropriate scale is approx 1d-3*energy(incoming)
 c--- so of order(1) for the Tevatron
-      if (abs(nDp6).gt.1d-3*abs(p(i1,4))) then 
+      if (abs(nDp6).gt.1d-3*abs(p(1,4))) then 
          write(*,*) 'Error for :',i1,i2,i3,i4,i5,i6
-         write(*,*) 'cutoff',1d-3*abs(p(i1,4))
+         write(*,*) 'cutoff',1d-3*abs(p(1,4))
          write(6,*) 'nDp5',nDp5
          write(6,*) 'nDp6',nDp6
          call flush(6)

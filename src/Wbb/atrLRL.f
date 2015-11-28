@@ -4,8 +4,8 @@ c---atrLRL is the amplitude for
 c---q+(-p4)+Q-(-p2)+l+(-p5) ---> q-(p1)+Q+(p3)+l-(p6)
 c---All outgoing particles are except p3 left-handed
       include 'constants.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
+      include 'sprods_com.f'
       include 'masses.f'
       integer j1,j2,j3,j4,j5,j6
       double complex atree

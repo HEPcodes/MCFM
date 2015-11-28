@@ -3,7 +3,7 @@
      .                       qqb_ijii,qqb_ijjj,qqb_iiij,qqb_iiji)
       implicit none
       include 'constants.f'
-      include 'prods.f'
+      include 'zprods_com.f'
       integer i1,i2,i3,i4,i5,i6
       double complex a61_1234(2),a61_3412(2),a61_1432(2),a61_3214(2),
      .               a62_1234(2),a62_3412(2),a62_1432(2),a62_3214(2),

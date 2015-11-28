@@ -1,11 +1,6 @@
       double complex function qcdbpm(j1,j2,j3,j4,j5,j6,j7,jb)
       implicit none
-      include 'constants.f'
       integer j1,j2,j3,j4,j5,j6,j7,jb
-c      double complex d4,d5,d6,d7,d8
-c      double precision s245,s345,s2345,s267,s45
-c      double complex t2
-c      include 'prods.f'
       double complex d4pm,d5pm,d6pm,d9pm,d11pm,d78pm
       qcdbpm=
      & +d4pm(j1,j2,j3,j4,j5,j6,j7,jb)
@@ -20,7 +15,6 @@ c      include 'prods.f'
 
       double complex function qcdbmm(j1,j2,j3,j4,j5,j6,j7,jb)
       implicit none
-      include 'constants.f'
       integer j1,j2,j3,j4,j5,j6,j7,jb
       double complex d4mm,d5mm,d6mm,d9mm,d11mm,d78mm
       qcdbmm=
@@ -35,7 +29,6 @@ c      include 'prods.f'
 
       double complex function qcdbmp(j1,j2,j3,j4,j5,j6,j7,jb)
       implicit none
-      include 'constants.f'
       integer j1,j2,j3,j4,j5,j6,j7,jb
       double complex d4mp,d5mp,d6mp,d9mp,d11mp,d78mp
       qcdbmp=
@@ -51,7 +44,6 @@ c      include 'prods.f'
 
       double complex function qcdbpp(j1,j2,j3,j4,j5,j6,j7,jb)
       implicit none
-      include 'constants.f'
       integer j1,j2,j3,j4,j5,j6,j7,jb
       double complex d4pp,d5pp,d6pp,d9pp,d11pp,d78pp
       qcdbpp=

@@ -3,7 +3,6 @@ c-- this routine transfers the information on the colour structure
 c-- for the Z2jet matrix elements into separate arrays for each
 c-- incoming parton case
       implicit none
-      include 'constants.f'
       include 'mmsq_cs.f'
       integer i,j,k
       double precision mcs(0:2,2,2)

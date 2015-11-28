@@ -10,7 +10,7 @@
 c--- returns the integral of the subtraction term for an
 c--- initial-initial gluon-gluon antenna, either
 c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
-C--MSBR
+C--TH-V
 c-- Id,agg=(epinv*(epinv-L)+1/2*L^2+epinv*11/6-[pi]^2/6
 c--  -nf/3/xn*epinv)*[delta(1-x)]
 c--  -2*[ln(x)]/[1-x]
@@ -19,11 +19,9 @@ c--  +(4*[ln(1-x)/(1-xp)]+2*L/[1-xp])
       
       if (vorz .eq. 1) then
         ii_gg_fac=epinv*(epinv2-L)+half*L**2-pisqo6
-c     .       +(11d0-two*nf/xn)/6d0*epinv
-c     .       -(11d0-two*nf/xn)/6d0*epinv
      .       +(11/6d0-dfloat(nf)/3d0/xn)*(epinv-L)
      .       -(11/6d0-dfloat(nf)/3d0/xn)*(epinv-Lfac)
-        if (scheme .eq. 'msbr') then
+        if (scheme .eq. 'tH-V') then
         return
         elseif (scheme .eq. 'dred') then
         ii_gg_fac=ii_gg_fac-1d0/6d0
@@ -59,7 +57,7 @@ c     .       -(11d0-two*nf/xn)/6d0*epinv
 c--- returns the integral of the subtraction term for an
 c--- initial-final gluon-gluon antenna, either
 c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
-c-- MSBR
+c-- TH-V
 c-- Id,agg=[delta(1-x)]*(
 c--  epinv*(epinv-L)+1/2*L^2+11/6*epinv+[pi]^2/6-1/3*epinv*nf/xn)
 c--  +2*(-1+(1-x)/x+x*(1-x))*(L-[ln(x)]+[ln(1-x)])
@@ -71,7 +69,7 @@ c--  +4*[ln(1-x)/(1-xp)]+2*L/[1-xp]
 c     .       +(11d0-two*nf/xn)*epinv/6d0
      .       +(11/6d0-dfloat(nf)/3d0/xn)*(epinv-L)
      .       -(11/6d0-dfloat(nf)/3d0/xn)*(epinv-Lfac)
-        if (scheme .eq. 'msbr') then
+        if (scheme .eq. 'tH-V') then
         return
         elseif (scheme .eq. 'dred') then 
         if_gg_fac=if_gg_fac-1d0/6d0
@@ -107,7 +105,7 @@ c     .       +(11d0-two*nf/xn)*epinv/6d0
 c--- returns the integral of the subtraction term for an
 c--- initial-initial quark-gluon antenna, either
 c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)     
-C--MSBR
+C--TH-V
 c-- Id,aqq=
 c--  [delta(1-x)]*(epinv*(epinv-L)+1/2*L^2+3/2*epinv-[pi]^2/6)
 c--  +(1-x)-(1+x)*(L+2*[ln(1-x)])-(1+x^2)*[ln(x)]/[1-x]
@@ -115,11 +113,10 @@ c--  +4*[ln(1-x)/(1-xp)]+2*L/[1-xp]
 
       
       if (vorz .eq. 1) then
-        ii_qq_fac=epinv*(epinv2-L)+0.5d0*L**2+1.5d0*epinv-pisqo6
-     .   -1.5d0*epinv
+        ii_qq_fac=epinv*(epinv2-L)+0.5d0*L**2-pisqo6
      .   +1.5d0*(epinv-L)
      .   -1.5d0*(epinv-Lfac)
-        if (scheme .eq. 'msbr') then
+        if (scheme .eq. 'tH-V') then
            return
         elseif (scheme .eq. 'dred') then
            ii_qq_fac=ii_qq_fac-half
@@ -153,18 +150,17 @@ c--  +4*[ln(1-x)/(1-xp)]+2*L/[1-xp]
 c--- returns the integral of the subtraction term for an
 c--- initial-final quark-gluon antenna, either
 c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)
-c-- MSBR
+c-- TH-V
 c-- Id,aqq=(epinv*(epinv-L)+1/2*L^2+3/2*epinv+[pi]^2/6)*[delta(1-x)]
 c--  +(1-x-2/[1-x]*[ln(2-x)]
 c--  -(1+x)*(L+[ln(1-x)])-(1+x^2)*[ln(x)]/[1-x]
 c--  +4*[ln(1-x)/(1-xp)]+2*L/[1-xp]
       
       if (vorz .eq. 1) then
-        if_qq_fac=epinv*(epinv2-L)+half*L**2+1.5d0*epinv+pisqo6
-     .   -1.5d0*epinv
+        if_qq_fac=epinv*(epinv2-L)+half*L**2+pisqo6
      .   +1.5d0*(epinv-L)
      .   -1.5d0*(epinv-Lfac)
-        if (scheme .eq. 'msbr') then
+        if (scheme .eq. 'tH-V') then
         return
         elseif (scheme .eq. 'dred') then
         if_qq_fac=if_qq_fac-half

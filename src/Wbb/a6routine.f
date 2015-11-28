@@ -7,8 +7,8 @@
 *     it is only the sum which is needed.
 
       include 'constants.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
+      include 'sprods_com.f'
       include 'scale.f'
       include 'epinv.f'
       integer j1,j2,j3,j4,j5,j6

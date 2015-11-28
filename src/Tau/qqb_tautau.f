@@ -85,7 +85,7 @@ C----set all elements to zero
       enddo
       
       s12=2d0*dotks(1,2)
-      prop12=s12/(s12-zmass**2+im*zmass*zwidth)
+      prop12=dcmplx(s12)/dcmplx((s12-zmass**2),zmass*zwidth)
       fac=fac*esq**2
 C---fill qb-q and q-qb elements
       do j=-nf,nf

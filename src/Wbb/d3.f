@@ -1,7 +1,8 @@
       double complex function d3pm(j1,j2,j3,j4,j5,j6,j7,jb)
       implicit none
       include 'constants.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       integer j1,j2,j3,j4,j5,j6,j7,jb
       double precision s267,s2367
       double complex t2
@@ -15,7 +16,8 @@
       double complex function d3mm(j1,j2,j3,j4,j5,j6,j7,jb)
       implicit none
       include 'constants.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       integer j1,j2,j3,j4,j5,j6,j7,jb
       double complex t2
       double precision s267,s2367
@@ -28,7 +30,6 @@
       
       double complex function d3pp(j1,j2,j3,j4,j5,j6,j7,jb)
       implicit none
-      include 'constants.f'
       integer j1,j2,j3,j4,j5,j6,j7,jb
       double complex d3pm
       d3pp=d3pm(j1,j2,j3,j5,j4,j6,j7,jb)
@@ -37,7 +38,6 @@
 
       double complex function d3mp(j1,j2,j3,j4,j5,j6,j7,jb)
       implicit none
-      include 'constants.f'
       integer j1,j2,j3,j4,j5,j6,j7,jb
       double complex d3mm
       d3mp=d3mm(j1,j2,j3,j5,j4,j6,j7,jb)

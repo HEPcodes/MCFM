@@ -8,12 +8,10 @@ C For nwz=-1
 c     ubar(-p1)+d(-p2)-->W^-(e^-(p3)+nbar(p4)) + gamma(p5) + g(p6)
 c---
       include 'constants.f'
-      include 'masses.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
-      include 'ewcharge.f'
       include 'ckm.f'
-      include 'prods.f'
+      include 'zprods_com.f'
       include 'nwz.f'
       integer j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac
@@ -55,11 +53,11 @@ c--set msq=0 to initalize
             msq(j,k)=Vsum(k)*gqb
           elseif ((j .eq. 0) .and. (k .gt. 0)) then
             msq(j,k)=Vsum(k)*gq
-          elseif ((j .lt. 0) .and. (k. gt. 0)) then
+          elseif ((j .lt. 0) .and. (k .gt. 0)) then
             msq(j,k)=Vsq(j,k)*qbq
-          elseif ((j .gt. 0) .and. (k. eq. 0)) then
+          elseif ((j .gt. 0) .and. (k .eq. 0)) then
             msq(j,k)=Vsum(j)*qg
-         elseif ((j .lt. 0) .and. (k. eq. 0)) then
+         elseif ((j .lt. 0) .and. (k .eq. 0)) then
             msq(j,k)=Vsum(j)*qbg
           endif
       enddo
@@ -73,22 +71,69 @@ C     Matrix element for
 C     ub(-p1)+d(-p2)=e-(p3)+nu~(p4)+gamma(p5)+g(p6)
       include 'constants.f'
       include 'masses.f'
-      include 'ewcouple.f'
-      include 'ewcharge.f'
-      include 'ckm.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
-      include 'nwz.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
+      include 'zerowidth.f'
       integer p1,p2,p3,p4,p5,p6
-      double complex aLL,aRR,aRL,aLR,prp34,prp345 
-      double precision s156,s256,fac
+      double complex aLL,aRR,aRL,aLR,prp34,prp345
+      double precision s156,s256
 
       s156=s(p1,p5)+s(p1,p6)+s(p5,p6)
       s256=s(p2,p5)+s(p2,p6)+s(p5,p6)
       prp34=dcmplx(s(p3,p4)-wmass**2,wmass*wwidth)
       prp345=dcmplx(s(p3,p4)+s(p3,p5)+s(p4,p5)-wmass**2,wmass*wwidth)
 
-      
+      if (zerowidth) then
+      prp345=dcmplx(s(p3,p5)+s(p4,p5),0d0)
+
+
+
+C  Eqs. 4.9-4.12 Multiplied by i 
+      aLR=+Qd/zb(p2,p5)*(
+     .   +za(p1,p3)*zb(p6,p2)*za(p1,p6)/s256
+     .  *(za(p5,p1)*zb(p1,p4)+za(p5,p3)*zb(p3,p4))
+
+     . +(za(p1,p2)*zb(p2,p4)+za(p1,p6)*zb(p6,p4))/prp345
+     . *((za(p3,p4)*za(p1,p5)*zb(p4,p2)+za(p3,p5)*za(p1,p6)*zb(p6,p2))
+     . ))
+ 
+     .    -Qu/zb(p1,p5)*(
+     .  +za(p1,p5)*zb(p2,p4)*za(p6,p2)/s156
+     .  *(za(p3,p1)*zb(p1,p6)+za(p3,p5)*zb(p5,p6))
+
+     .  +(za(p1,p2)*zb(p2,p4)+za(p1,p6)*zb(p6,p4))
+     . *((za(p5,p2)*zb(p2,p4)+za(p5,p6)*zb(p6,p4))*za(p4,p3)
+     . +za(p5,p3)*za(p2,p6)*zb(p6,p2))/prp345)
+      aLR=aLR/(prp34*za(p1,p6)*za(p6,p2))
+
+      aRL=+Qu/za(p1,p5)*(
+     .   +zb(p2,p4)*za(p6,p1)*zb(p2,p6)/s156
+     .  *(zb(p5,p2)*za(p2,p3)+zb(p5,p4)*za(p4,p3))
+
+     . +(zb(p2,p1)*za(p1,p3)+zb(p2,p6)*za(p6,p3))/prp345
+     . *((zb(p4,p3)*zb(p2,p5)*za(p3,p1)+zb(p4,p5)*zb(p2,p6)*za(p6,p1))
+     . ))
+ 
+     .    -Qd/za(p2,p5)*(
+     .  +zb(p2,p5)*za(p1,p3)*zb(p6,p1)/s256
+     .  *(zb(p4,p2)*za(p2,p6)+zb(p4,p5)*za(p5,p6))
+
+     .  +(zb(p2,p1)*za(p1,p3)+zb(p2,p6)*za(p6,p3))
+     . *((zb(p5,p1)*za(p1,p3)+zb(p5,p6)*za(p6,p3))*zb(p3,p4)
+     . +zb(p5,p4)*zb(p1,p6)*za(p6,p1))/prp345)
+      aRL=aRL/(prp34*zb(p2,p6)*zb(p6,p1))
+
+
+      aRR=+Qu/za(p1,p5)*(za(p1,p3)*zb(p3,p5)+za(p1,p4)*zb(p4,p5))
+     .    -Qd/za(p2,p5)*(za(p2,p3)*zb(p3,p5)+za(p2,p4)*zb(p4,p5))
+      aRR=aRR*za(p1,p3)**2*zb(p4,p3)/(prp34*prp345*za(p1,p6)*za(p6,p2))
+
+      aLL=+Qd/zb(p2,p5)*(zb(p2,p4)*za(p4,p5)+zb(p2,p3)*za(p3,p5))
+     .    -Qu/zb(p1,p5)*(zb(p1,p4)*za(p4,p5)+zb(p1,p3)*za(p3,p5))
+      aLL=aLL*zb(p2,p4)**2*za(p3,p4)/(prp34*prp345*zb(p1,p6)*zb(p6,p2))
+
+      else
+c      prp345=dcmplx(s(p3,p4)+s(p3,p5)+s(p4,p5)-wmass**2,wmass*wwidth)
       aLR=+Qd/zb(p2,p5)*(
      .   +za(p1,p3)*za(p1,p6)*zb(p2,p6)/prp34/s256
      .  *(za(p1,p5)*zb(p1,p4)+za(p3,p5)*zb(p3,p4))
@@ -145,7 +190,7 @@ C     ub(-p1)+d(-p2)=e-(p3)+nu~(p4)+gamma(p5)+g(p6)
      .   +za(p3,p4)*(zb(p1,p4)*za(p4,p5)+zb(p1,p3)*za(p3,p5))/prp34
      .     +(zb(p1,p5)*za(p4,p5)-zb(p1,p3)*za(p3,p4))/zb(p3,p5))
       aLL=aLL*zb(p2,p4)**2/(prp345*zb(p1,p6)*zb(p6,p2))
-
+      endif
       ubdgmsq=cdabs(aLL)**2+cdabs(aRR)**2+cdabs(aRL)**2+cdabs(aLR)**2
       return
       end

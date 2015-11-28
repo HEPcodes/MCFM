@@ -12,10 +12,9 @@ c---ip emitter
 c---kp spectator
 c---in label of gluon which is contracted with n
       include 'constants.f'
-      include 'masses.f'
       include 'qcdcouple.f'
       include 'ewcouple.f'
-      include 'dprodx.f'
+      include 'sprods_com.f'
       include 'ckm.f'
       integer j,k,in
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4)
@@ -82,7 +81,7 @@ c   q(p1)+qbar(p2) --> W(l(p3)+a(p4)+g(p5)
 c   contracted with the vector n(mu)
       include 'constants.f'
       include 'masses.f'
-      include 'dprodx.f'
+      include 'sprods_com.f'
       integer j1,j2,j3,j4,j5
       double precision p(mxpart,4),n(4),nDn,prop,
      .                 nDp1,nDp2,nDp3,nDp4,nDp5

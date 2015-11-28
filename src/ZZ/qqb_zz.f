@@ -18,8 +18,8 @@ c----No statistical factor of 1/2 included.
       include 'masses.f'
       include 'ewcouple.f'
       include 'zcouple.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
       include 'ewcharge.f'
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),qdks(mxpart,4),
      . ave,v1(2),v2(2)

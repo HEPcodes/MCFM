@@ -3,8 +3,6 @@ C---generate two particle phase space and x1,x2 integration
 C---p1+p2 --> p3+p4
       implicit none
       include 'constants.f'
-      include 'masses.f'
-      include 'limits.f'
       include 'mxdim.f'
       integer n2,n3,j,nu
 
@@ -30,13 +28,13 @@ C---p1+p2 --> p3+p4
       s34=1/vs
       w3=(vsqmax-vsqmin)*s34**2
       rtshat=sqrt(s34)
-      ymax=log(sqrts/rtshat)
+      ymax=dlog(sqrts/rtshat)
       yave=ymax*(two*r(1)-1d0)
       
 c----udif=tanh(ydif)
-      beta=sqrt(1d0-4d0*mass2**2/s34)
+      beta=dsqrt(1d0-4d0*mass2**2/s34)
       udif=beta*(two*r(2)-1d0)
-      ydif=half*log((1d0+udif)/(1d0-udif))
+      ydif=half*dlog((1d0+udif)/(1d0-udif))
       xjac=four*ymax*beta
 	  
       y3=yave+ydif
@@ -47,7 +45,7 @@ c----udif=tanh(ydif)
 
       xx(1)=rtshat/sqrts*exp(+yave)
       xx(2)=rtshat/sqrts*exp(-yave)
-      trmass=rtshat/(2d0*cosh(ydif))
+      trmass=rtshat/(2d0*dcosh(ydif))
 
       if   ((xx(1) .gt. 1d0) 
      & .or. (xx(2) .gt. 1d0)
@@ -57,7 +55,7 @@ c----udif=tanh(ydif)
       return 1 
       endif
 
-      pt=sqrt(trmass**2-mass2**2)
+      pt=dsqrt(trmass**2-mass2**2)
 	  
       p(1,4)=-0.5d0*xx(1)*sqrts
       p(1,1)=0d0
@@ -69,15 +67,15 @@ c----udif=tanh(ydif)
       p(2,2)=0d0
       p(2,3)=+0.5d0*xx(2)*sqrts
 
-      p(3,4)=+trmass*cosh(y3)
-      p(3,1)=+pt*sin(phi)
-      p(3,2)=+pt*cos(phi)
-      p(3,3)=+trmass*sinh(y3)
+      p(3,4)=+trmass*dcosh(y3)
+      p(3,1)=+pt*dsin(phi)
+      p(3,2)=+pt*dcos(phi)
+      p(3,3)=+trmass*dsinh(y3)
 
-      p(4,4)=+trmass*cosh(y4)
-      p(4,1)=-pt*sin(phi)
-      p(4,2)=-pt*cos(phi)
-      p(4,3)=+trmass*sinh(y4)
+      p(4,4)=+trmass*dcosh(y4)
+      p(4,1)=-pt*dsin(phi)
+      p(4,2)=-pt*dcos(phi)
+      p(4,3)=+trmass*dsinh(y4)
 
       wt2=wt0*xjac/sqrts**2
 

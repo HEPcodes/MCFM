@@ -1,5 +1,9 @@
       subroutine qqb_wgam_z(p,z)
       implicit none
+c---Integrated Matrix element SUBTRACTION squared averaged 
+C---over initial colors and spins
+c     q(-p1)+qbar(-p2) -->  W^+(nu(p3)+e+(p4))+a(p5)+g(p6)
+c     q(-p1)+qbar(-p2) -->  W^-(e-(p3)+nubar(p4))+a(p5)+g(p6)
       include 'constants.f'
       include 'qcdcouple.f'
       include 'scale.f'

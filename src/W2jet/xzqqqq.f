@@ -1,4 +1,4 @@
-      real*8 function xzqqqq(i,n1,n2)
+      double precision function xzqqqq(i,n1,n2)
       implicit none
 c*******************************************************************
 c     the matrix elements of the  
@@ -70,7 +70,7 @@ Case 1 Non-identical quarks diagonal coupling                *
 C     qi(-p1)+qj(-p2) --> qi(p3)+qj(p4) + Z0,Gamma           *
 c************************************************************* 
 
-      if (n1. ne. n2) then
+      if (n1 .ne. n2) then
       xzqqqq=aveqq*von4*(
      & +abs(mlll1)**2+abs(mllr1)**2     
      & +abs(mrrl1)**2+abs(mrrr1)**2     

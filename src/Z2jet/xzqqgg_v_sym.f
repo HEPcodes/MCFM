@@ -8,7 +8,7 @@
 *                                                                      *
 ************************************************************************
       include 'constants.f'
-      include 'prods.f'
+      include 'zprods_com.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'lc.f'

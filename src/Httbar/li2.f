@@ -2,6 +2,7 @@
 c--complex dilogarithm (spence-function)
       implicit double precision (a-h,o-z)
       double complex x,y,cli2
+      double precision zeta2,zeta3
       common/const/zeta2,zeta3
       zero=1.d-8
       xr=dreal(x)
@@ -76,13 +77,14 @@ c--double precision version of faculty
  
       subroutine bernini
 c--initialization of coefficients for polylogarithms
-      implicit double precision (a-h,o-z)
+      implicit none
+      include 'constants.f'
+      integer nber,i
       parameter(nber=18)
-      dimension b(nber)
-      common/bernoulli/b2(nber)
+      double precision b(nber),b2(nber),zeta2,zeta3,facult
+      common/bernoulli/b2
       common/const/zeta2,zeta3
  
-      pi=4.d0*datan(1.d0)
  
       b(1)=-1.d0/2.d0
       b(2)=1.d0/6.d0

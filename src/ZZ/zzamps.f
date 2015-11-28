@@ -4,7 +4,7 @@ c--- 1=quark, 2=lepton1, 3=lepton2, 4=gluon
 
       implicit none
       include 'constants.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       integer j1,j2,j3,j4,j5,j6,j7,mplus,minus
       double complex A7trees
       double complex f(2,2,2,2)

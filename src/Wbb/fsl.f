@@ -1,8 +1,8 @@
       double complex function fsl(j1,j2,j3,j4,j5,j6,za,zb)
       implicit none
       include 'constants.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
       integer j1,j2,j3,j4,j5,j6
       double complex L0,L1,Lnrat,i3m,Lsm1_2mh
       double complex t0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,
@@ -66,7 +66,7 @@
      #,j4))*(-za(j3,j5)*zb(j3,j6)-za(j4,j5)*zb(j4,j6))*(t(j1,j2,j3)-t(j1
      #,j2,j4))/2
       s7 = s8*s9
-      s9 = -1
+      s9 = -cone
       s11 = Lnrat(-s(j1,j2),-s(j3,j4))
       s13 = -1/(s(j1,j2)**2-2*s(j1,j2)*s(j3,j4)+s(j3,j4)**2-2*s(j1,j2)*s
      #(j5,j6)-2*s(j3,j4)*s(j5,j6)+s(j5,j6)**2)*za(j1,j2)*(-za(j3,j5)*zb(
@@ -158,7 +158,7 @@
      #2)*za(j2,j3)*zb(j3,j6)/(-za(j3,j5)*zb(j4,j5)-za(j3,j6)*zb(j4,j6))/
      #zb(j5,j6)*(za(j2,j4)*zb(j4,j6)+za(j2,j5)*zb(j5,j6))
       s5 = s3
-      s8 = -1
+      s8 = -cone
       s10 = Lnrat(-s(j5,j6),-s(j3,j4))
       s12 = -1/(s(j1,j2)**2-2*s(j1,j2)*s(j3,j4)+s(j3,j4)**2-2*s(j1,j2)*s
      #(j5,j6)-2*s(j3,j4)*s(j5,j6)+s(j5,j6)**2)*za(j5,j6)*zb(j1,j6)*(-za(

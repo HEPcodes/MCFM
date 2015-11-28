@@ -72,7 +72,7 @@ C     ehsv:EqnA.19
           w1=2d0*sqrt(rat-1d0)*asin(temp)
       else 
           temp=2d0*acosh(temp)
-          w1=sqrt(1-rat)*dcmplx(temp,-pi)
+          w1=sqrt(1d0-rat)*dcmplx(temp,-pi)
        endif
       return
       end
@@ -134,7 +134,7 @@ C     ehsv:EqnA.21
       elseif (rat .gt. 1d0) then
            be=0.5d0*(1d0+sqrt(1d0+4d0*t*mbsq/(u*s)))
            al=sqrt(rat-1d0)
-           r=sqrt((al**2+1)/(al**2+(2d0*be-1d0)**2))
+           r=sqrt((al**2+1d0)/(al**2+(2d0*be-1d0)**2))
            phi=acos(r*(al**2+2d0*be-1d0)/(1d0+al**2))
            theta=acos(r*(al**2-2d0*be+1d0)/(1d0+al**2))
            zth=r*dcmplx(cos(theta),sin(theta))

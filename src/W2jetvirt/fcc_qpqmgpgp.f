@@ -2,8 +2,8 @@
       implicit none
       integer j1,j2,j3,j4,j5,j6
       include 'constants.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
+      include 'sprods_com.f'
       double complex L0,Lsm1,Lsm1_2mh,Lsm1_2mht,Lsm1_2me,Lnrat,I3m
       double precision t  
 

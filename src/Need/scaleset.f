@@ -4,16 +4,18 @@
       include 'scale.f'
       include 'masses.f'
       include 'qcdcouple.f'
-      include 'process.f'
-      integer nproc,nqcdjets,nqcdstart
+      include 'nwz.f'
+      include 'facscale.f'
+      integer nproc,facindex
       character*4 part
+      character boson
       common/part/part
       common/nproc/nproc
-      common/nqcdjets/nqcdjets,nqcdstart
       common/couple/amz
       double precision amz,scalestart,p(mxpart,4),alphas,
-     . dot,pt,pttwo,ptb
+     . dot,pt,pttwo,ptb,facsf(8)
       logical first  
+      data facsf/0.25d0,0.33333d0,0.5d0,0.75d0,1d0,2d0,3d0,4d0/
       data first/.true./  
       save first
 
@@ -22,10 +24,53 @@
         write(6,*)'************** Special scale choice ****************'
         write(6,*)'*                                                  *'
       endif
-      
-      if   ((nproc .eq. 18) .or. (nproc .eq. 19)) then
+
+c--- factorization scale is also set here for the bg -> Hb process
+      if (nproc/10 .eq. 14) then
+        if     (scalestart .lt. 0d0) then
+          scale=hmass
+          if (scalestart .gt. -9d0) then
+            facindex=int(-scalestart)
+            facscale=scale*facsf(facindex)
+          else
+            facscale=scale
+          endif
+        elseif (scalestart .lt. 9d0) then
+            facscale=hmass 
+            facindex=int(scalestart)
+            scale=facscale*facsf(facindex)
+        else
+          facscale=scale
+        endif
+        if (first) write(6,76) scale
+        if (first) write(6,77) facscale
+        goto 99
+      endif
+
+c--- universal scale choices
+      if     (scalestart .eq. -1d0) then
+        if (nwz .eq. 0) then
+          scale=zmass
+          boson='z'
+        else
+          scale=wmass
+          boson='w'
+        endif  
+        if (first) write(6,*) '*              Dynamic scale = ',
+     .    boson//'mass','               *'
+      elseif (scalestart .eq. -2d0) then
+        if (nwz .eq. 0) then
+          scale=dsqrt(zmass**2+pttwo(3,4,p)**2)
+          boson='z'
+        else
+          scale=dsqrt(wmass**2+pttwo(3,4,p)**2)
+          boson='w'
+        endif  
+        if (first) write(6,*) 
+     .    '*     Dynamic scale = dsqrt('//boson//'mass**2',
+     .    ' + pt_'//boson//'**2)    *'
+      elseif((nproc .eq. 18) .or. (nproc .eq. 19)) then
         scale=dsqrt(wmass**2+(pttwo(3,4,p)**2+pt(5,p)**2)/2d0)
-        if  (scale .gt. 3000d0) scale=3000d0
         if (first) write(6,*) 
      .    '*    Dynamic scale = dsqrt(wmass**2 + avg. pts)    *'
       elseif((nproc .ge. 70) .and. (nproc .le. 79)) then
@@ -78,6 +123,17 @@
 C       scale approximating NLO corrections
         scale=0.85d0*(mt+0.5d0*hmass)
         endif
+      elseif (nproc .ge. 271) then
+        if (scalestart .eq. -3d0) then
+          scale=hmass
+          if (first) write(*,79) scale
+        elseif (scalestart .eq. -4d0) then
+          scale=dsqrt(hmass**2+pttwo(3,4,p)**2)
+          boson='h'
+        if (first) write(6,*) 
+     .    '*     Dynamic scale = dsqrt('//boson//'mass**2',
+     .    ' + pt_'//boson//'**2)    *'
+        endif  
       elseif ((nproc .eq. 11)
      .  .or. (nproc .eq. 16)
      .  .or. (nproc .eq. 20)
@@ -124,9 +180,14 @@ C       scale approximating NLO corrections
         write(*,*) 'Invalid input: please choose a scale'
         stop
       endif
-      
+
+   99 continue
+
+c--- catch absurdly large scales      
+      if  (scale .gt. 3000d0) scale=3000d0
+
       if (part .eq. 'lord') then
-        as=alphas(scale,amz,1)
+        as=alphas(scale,amz,2)
       else
         as=alphas(scale,amz,2)
       endif
@@ -143,6 +204,8 @@ C       scale approximating NLO corrections
       
       return
       
+   76 format(' *      Renormalization scale =',f7.2,'              *')   
+   77 format(' *        Factorization scale =',f7.2,'              *')   
    78 format(' *  Dynamic scale = ',f4.2,
      .       ' x sqrt(hmass**2+pt(b)**2)  *')
    79 format(' *               Static scale =',f7.2,'              *')   

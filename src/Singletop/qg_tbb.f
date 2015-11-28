@@ -2,7 +2,6 @@
 C----q(p1)+g(p2)--> t(nu(p3)+e^+(p4))+b(p5))+bb(p6)+q'(p7)
       implicit none
       include 'constants.f'
-      include 'masses.f'
       include 'hardscale.f'
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),
      . q_g,qbar_g,g_q,g_qbar
@@ -188,18 +187,18 @@ c      pause
       return
       end
 
-      double precision function det4(p1,p2,p3,p4,q1,q2,q3,q4)
-      implicit none
-      double precision p1(4),p2(4),p3(4),p4(4)
-      double precision q1(4),q2(4),q3(4),q4(4)
-      double precision det3,dot2
-      det4=
-     1 +dot2(p1,q1)*det3(p2,p3,p4,q2,q3,q4)
-     1 -dot2(p2,q1)*det3(p1,p3,p4,q2,q3,q4)
-     1 +dot2(p3,q1)*det3(p1,p2,p4,q2,q3,q4)
-     1 -dot2(p4,q1)*det3(p1,p2,p3,q2,q3,q4)
-      return
-      end
+c      double precision function det4(p1,p2,p3,p4,q1,q2,q3,q4)
+c      implicit none
+c      double precision p1(4),p2(4),p3(4),p4(4)
+c      double precision q1(4),q2(4),q3(4),q4(4)
+c      double precision det3,dot2
+c      det4=
+c     1 +dot2(p1,q1)*det3(p2,p3,p4,q2,q3,q4)
+c     1 -dot2(p2,q1)*det3(p1,p3,p4,q2,q3,q4)
+c     1 +dot2(p3,q1)*det3(p1,p2,p4,q2,q3,q4)
+c     1 -dot2(p4,q1)*det3(p1,p2,p3,q2,q3,q4)
+c      return
+c      end
 
       double precision function det3(p1,p2,p3,q1,q2,q3)
       implicit none

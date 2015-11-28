@@ -15,8 +15,8 @@ c   in the final state.
       include 'masses.f'
       include 'qcdcouple.f'
       include 'ewcouple.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
+      include 'sprods_com.f'
       include 'ckm.f'
 C ip is the label of the emitter
       integer j,k,in,i,n1,n2

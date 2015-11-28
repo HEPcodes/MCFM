@@ -3,19 +3,16 @@
       include 'constants.f'
       include 'masses.f'
       include 'mxdim.f'
-      include 'debug.f'
       integer nu
 
       double precision r(mxdim)
       double precision wt7,p(mxpart,4),tp(4),tm(4),bp(4),bm(4),
      . nn(4),nb(4)
-      double precision wtepnn,wtnbem,p1(4),p2(4),ep(4),em(4),pg(4)
-      double precision wp(4),wm(4),m3,m4,m5
+      double precision wtepnn,wtnbem,ep(4),em(4),pg(4)
+      double precision wp(4),wm(4),m3,m4
       double precision wt0,wtttg,wtwp,wtwm,s3min
-      character*6 case
-      common/process/case
       parameter(wt0=1d0/twopi**4)
-      data p1,p2,wp,wm,ep,em,nn,nb,bp,bm/40*0d0/
+      data wp,wm,ep,em,nn,nb,bp,bm/32*0d0/
 
 
       integer n2,n3
@@ -27,8 +24,7 @@
       wt7=0d0
       m3=mt
       m4=mt
-      m5=0d0
-      call gen3m_rap(r,p,m3,m4,m5,wtttg,*999)
+      call gen3m_rap(r,p,m3,m4,wtttg,*999)
       wtttg=(pi*mt*twidth)**2*wtttg
       do nu=1,4
       tp(nu)=p(3,nu)

@@ -26,9 +26,9 @@
          enddo
       enddo
 c--added by RKE
-      pjet(8,5)=+1
-      pjet(8,6)=+1
-      pjet(8,7)=-1
+      pjet(8,5)=+1d0
+      pjet(8,6)=+1d0
+      pjet(8,7)=-1d0
 c--added by RKE
       if (npar.eq.0) then
          jets=0 
@@ -201,9 +201,9 @@ c--added by RKE
 c----Added by RKE
              if ((ji .eq. 5).or.(ji .eq. 6)
      .       .or.(jj .eq. 5).or.(jj .eq. 6)) then
-             pjet(8,ji)=+1
+             pjet(8,ji)=+1d0
              else 
-             pjet(8,ji)=-1
+             pjet(8,ji)=-1d0
              endif
         jk=ji
 *    pjet(.,jk) is made of ppar(.,ji)+ppar(.,jj)

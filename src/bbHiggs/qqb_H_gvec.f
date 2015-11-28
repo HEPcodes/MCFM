@@ -12,7 +12,7 @@ C***********************************************************************
       include 'masses.f'
       include 'qcdcouple.f'
       include 'ewcouple.f'
-      include 'dprodx.f'
+      include 'sprods_com.f'
       include 'susycoup.f'
       include 'runmb.f'
       include 'scale.f'
@@ -21,7 +21,7 @@ C--in is the label of the parton dotted with n
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4)
       double precision h1jetn,fac,n(4),propsq,hdecay,coupsq,ghbb
       double precision coupsq_eff,ghbb_eff
-      double precision amz,alphas,mb_eff,mb_msbar,massfrun
+      double precision amz,mb_eff,mb_msbar,massfrun
       common/couple/amz
 
       do j=-nf,nf
@@ -76,8 +76,7 @@ c   b(p1)+bbar(p2) --> H(b(p3)+b~(p4))+g(p5)
 c   contracted with the vector n(mu) 
 c   before spin/color average
       include 'constants.f'
-      include 'masses.f'
-      include 'dprodx.f'
+      include 'sprods_com.f'
 
       integer j1,j2,j3,j4,j5
       double precision n(4),p(mxpart,4),nDn,nDp1,nDp2,nDp5

@@ -3,12 +3,9 @@
 C     Author: R.K. Ellis, March 2001
 C     A subroutine calculating Nagy and Trocsanyi, PRD59 014020 (1999) 
 C     Eq. B.56 with a factor of 2*i*e^2*g^3/s removed
-      include 'constants.f'
       integer f1,f2,f3,f4,hq,Qh,hg,i1,i2,i3,i4,i5,i6,i7
       double complex mb1(5,5,5,5,2,2,2),mb2(5,5,5,5,2,2,2),
      .               m1_1234(5,5,5,5,2,2,2),m2_1234(5,5,5,5,2,2,2),
-     .               m3_1234(5,5,5,5,2,2,2),m4_1234(5,5,5,5,2,2,2),
-     .               m1_3412(5,5,5,5,2,2,2),m2_3412(5,5,5,5,2,2,2),
      .               m3_3412(5,5,5,5,2,2,2),m4_3412(5,5,5,5,2,2,2)
 
       call wmakem(i1,i2,i3,i4,i5,i6,i7,m1_1234,m2_1234,m3_3412,m4_3412)

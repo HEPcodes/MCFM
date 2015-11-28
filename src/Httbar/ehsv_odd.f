@@ -42,7 +42,7 @@ C     ehsv:EqnA.11
      .                       -s*w3(s,t,u,hmass2)+s/2d0*w3(t,s,u,hmass2)
      .                       +2d0*s*(0.75d0-u/(s+u))*w2(hmass2)
      .                       -s/2d0*w2(s)
-     .                       -s*(1-2*u/(s+u))*w2(t))/6d0
+     .                       -s*(1d0-2d0*u/(s+u))*w2(t))/6d0
       return 
       end
 

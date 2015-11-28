@@ -8,11 +8,10 @@ C For nwz=-1
 c     d(-p1)+ubar(-p2)--> W^-(e^-(p3)+nbar(p4))+ g(p5) 
 c---
       include 'constants.f'
-      include 'masses.f'
       include 'ckm.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
-      include 'dprodx.f'
+      include 'sprods_com.f'
       integer j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac
       double precision qqbWg,qbqWg,qgWq,qbgWqb,gqbWqb,gqWq,w1jet
@@ -67,7 +66,7 @@ c---calculate the propagator
       implicit none 
       include 'constants.f'
       include 'masses.f'
-      include 'dprodx.f'
+      include 'sprods_com.f'
       integer j1,j2,j5,j3,j4
       double precision prop
 

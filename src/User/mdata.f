@@ -68,4 +68,6 @@ c--- This is the preferred value, aemmz = 1/128.89
       data aemmz/7.7585538055706D-03/
 c--- Use this value for comparing with MADGRAPH, aemmz = 1/128
 c      data aemmz/7.8125D-03/
+c--- Use this value for aemmz = 1/137
+c      data aemmz/7.2992901D-03/
       end 

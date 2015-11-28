@@ -161,15 +161,18 @@ c
       subroutine bookfill(tag,p,wt)
       implicit none
       include 'constants.f'
+      include 'maxwt.f'
 
       character tag*4
       double precision p(mxpart,4)
       double precision wt 
 
-      if (tag.eq.'book') then
-        call dswntuplebook
-      elseif (tag .eq. 'plot') then
-        call dswntuplefill(p,wt)
+      if (.not.skipnt) then
+        if (tag.eq.'book') then
+          call dswntuplebook
+        elseif (tag .eq. 'plot') then
+          call dswntuplefill(p,wt)
+        endif
       endif
 
       return
@@ -217,7 +220,7 @@ c --- Book an extremely simple row-wise ntuple. Make it explicitly
 c --- a disk resident ntuple by specifying the top directory name
 c --- of the previously opened RZ file in the 4th argument 
 c --- (see HBOOK manual, p.19) :
-      call hbookn(300,"MCFM",17,'//HISTOS',4096,CHTAGS)
+      call hbookn(300,'MCFM',17,'//HISTOS',4096,CHTAGS)
 
       return
       end
@@ -251,10 +254,11 @@ c --- Fill the ntuple :
       enddo
       pfill(17)=sngl(wt)
 
+c     write(6,*) 'Filling ntuple with weight',wt
+
       call hfn(300,pfill)
 
       return
       end
 
 c
-

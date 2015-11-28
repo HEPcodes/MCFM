@@ -1,7 +1,6 @@
-      subroutine gamps0(p1,p2,p3,p4,t5,t6,sum,coupL,coupR,temp)
+      subroutine gamps0(p1,p2,p3,p4,t5,t6,sum,coupL,coupR)
       implicit none
       include 'constants.f'
-      include 'prods.f'
       integer p1,p2,p3,p4,t5,t6
       integer hz,h1,h2,h5,h6
       double complex
@@ -9,11 +8,11 @@
      . gg_d(2,2,2,2,2),gg_e(2,2,2,2,2),gg_f(2,2,2,2,2),
      . gg_g(2,2,2,2,2),gg_h(2,2,2,2,2),
      . sum1(2),sum2(2),sum0(2),coupL,coupR
-      double precision sum,s1(2),s2(2),s0(2),temp(2,2,2,2,2)
+      double precision sum
 
-      call gampsabc_old(p1,p2,p3,p4,t5,t6,gg_a,gg_b,gg_c)
-      call gampsdef_old(p1,p2,p3,p4,t5,t6,gg_d,gg_e,gg_f)
-      call gampsgh_old(p1,p2,p3,p4,t5,t6,gg_g,gg_h)
+      call gampsabc(p1,p2,p3,p4,t5,t6,gg_a,gg_b,gg_c)
+      call gampsdef(p1,p2,p3,p4,t5,t6,gg_d,gg_e,gg_f)
+      call gampsgh(p1,p2,p3,p4,t5,t6,gg_g,gg_h)
 
       sum=0d0
 

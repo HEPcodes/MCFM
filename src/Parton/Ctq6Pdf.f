@@ -1,6 +1,7 @@
 C============================================================================
-C                CTEQ Parton Distribution Functions: Version 6.0
-C                             January 24, 2002
+C                CTEQ Parton Distribution Functions: Version 6
+C                             January 24, 2002, v6.0
+C                             April 10, 2002, v6.1
 C
 C   Ref: "New Generation of Parton Distributions with
 C         Uncertainties from Global QCD Analysis"
@@ -15,14 +16,16 @@ C ---------------------------------------------------------------------------
 C   1    CTEQ6M   Standard MSbar scheme   0.118     326   226    cteq6m.tbl
 C   2    CTEQ6D   Standard DIS scheme     0.118     326   226    cteq6d.tbl
 C   3    CTEQ6L   Leading Order           0.118**   326** 226    cteq6l.tbl
+C   4    CTEQ6L1  Leading Order           0.130     215   165    cteq6l1.tbl
 C     ------------------------------
 C   1xx  CTEQ6M1xx  +/- w.r.t. CTEQ6M     0.118     326   226    cteq6m1xx.tbl
 C    (where xx=01--40)
 C ---------------------------------------------------------------------------
-C   ** ALL fits are obtained by using the same coupling strength \alpha_s(Mz)=0.118;
-C   and the NLO running \alpha_s formula.  For the LO fit, the evolution of the PDF
-C   and the hard cross sections are calculated at LO.  More detailed discussions are
-C   given in hep-ph/0201195.
+C   ** ALL fits are obtained by using the same coupling strength 
+C   \alpha_s(Mz)=0.118 and the NLO running \alpha_s formula, except CTEQ6L1 
+C   which uses the LO running \alpha_s and its value determined from the fit.
+C   For the LO fits, the evolution of the PDF and the hard cross sections are
+C   calculated at LO.  More detailed discussions are given in hep-ph/0201195.
 C
 C   The table grids are generated for 10^-6 < x < 1 and 1.3 < Q < 10,000 (GeV).
 C   PDF values outside of the above range are returned using extrapolation.
@@ -95,18 +98,20 @@ C                             ********************
 
       Subroutine SetCtq6 (Iset)
       Implicit Double Precision (A-H,O-Z)
-      Parameter (Isetmax0=3)
+      Parameter (Isetmax0=4)
       Character Flnm(Isetmax0)*6, nn*3, Tablefile*40
       Data (Flnm(I), I=1,Isetmax0)
-     > / 'cteq6m', 'cteq6d', 'cteq6l' /
+     > / 'cteq6m', 'cteq6d', 'cteq6l', 'cteq6l'/
       Data Isetold, Isetmin0, Isetmin1, Isetmax1 /-987,1,101,140/
       save
 
 C             If data file not initialized, do so.
       If(Iset.ne.Isetold) then
          IU= NextUn6()
-         If (Iset.ge.Isetmin0 .and. Iset.le.Isetmax0) Then
+         If (Iset.ge.Isetmin0 .and. Iset.le.3) Then
             Tablefile=Flnm(Iset)//'.tbl'
+         Elseif (Iset.eq.Isetmax0) Then
+            Tablefile=Flnm(Iset)//'1.tbl'
          Elseif (Iset.ge.Isetmin1 .and. Iset.le.Isetmax1) Then
             write(nn,'(I3)') Iset
             Tablefile=Flnm(1)//nn//'.tbl'
@@ -114,7 +119,7 @@ C             If data file not initialized, do so.
             Print *, 'Invalid Iset number in SetCtq6 :', Iset
             Stop
          Endif
-         Open(IU, File=Tablefile, Status='OLD', Err=100)
+         Open(IU, File='Pdfdata/'//Tablefile, Status='OLD', Err=100)
  21      Call ReadTbl6 (IU)
          Close (IU)
          Isetold=Iset

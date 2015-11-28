@@ -8,7 +8,7 @@ c
 c--all momenta incoming
       implicit none
       include 'constants.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       include 'mmsq_cs.f'
       double complex qcd1LL(-1:1,-1:1),qcd2LL(-1:1,-1:1)
       double complex qcd1LR(-1:1,-1:1),qcd2LR(-1:1,-1:1)

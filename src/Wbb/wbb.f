@@ -2,7 +2,7 @@
       implicit none
       include 'constants.f'
       include 'masses.f'
-      include 'dprodx.f'
+      include 'sprods_com.f'
       integer i1,i2,i4,i5,i6,i7
       double precision p1Dp2,p1Dp4,p1Dp5,p1Dp6,p1Dp7
       double precision       p2Dp4,p2Dp5,p2Dp6,p2Dp7

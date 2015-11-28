@@ -3,7 +3,7 @@ c- first label of fs,ft,fu, is gluon polarization, second is zdecay line
 
       implicit none
       include 'constants.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       include 'zerowidth.f'
       include 'anomcoup.f'
       include 'masses.f'
@@ -25,7 +25,7 @@ c--- added amplitude 10 on 4/25/2002, to include anomalous couplings
       enddo
       enddo
       
-      s127=za(1,7)*zb(7,1)+za(2,7)*zb(7,2)+za(1,2)*zb(2,1)
+      s127=dble(za(1,7)*zb(7,1)+za(2,7)*zb(7,2)+za(1,2)*zb(2,1))
 
 c      f(1,mplus,minus)=+A7treeb_anom_wz(j1,j2,j3,j4,j5,j6,j7,za,zb) !fs
       call A7treeb_anom_wz(j1,j2,j3,j4,j5,j6,j7,za,zb,

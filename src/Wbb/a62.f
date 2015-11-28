@@ -9,7 +9,7 @@
 *     with ns=0
 *     character string st can take the value pp or pm
       include 'constants.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       integer j1,j2,j3,j4,j5,j6
       character*2 st
       double complex a6,aa6sf,aa6uv

@@ -2,7 +2,6 @@
       implicit none
       include 'constants.f'
       include 'qcdcouple.f'
-      include 'masses.f'
       include 'epinv.f'
       include 'epinv2.f'
       include 'scheme.f'

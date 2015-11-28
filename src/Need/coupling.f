@@ -24,19 +24,18 @@
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'scale.f'
+      include 'verbose.f'
       character*4 part
       common/part/part
       character*7 pdlabel
       integer nproc
       common/nproc/nproc
       double precision BigA,aemmz,alphas,amz,cmass,bmass
-      logical verbose
       double precision Vud,Vus,Vub,Vcd,Vcs,Vcb
       common/cabib/Vud,Vus,Vub,
      &             Vcd,Vcs,Vcb
       common/qmass/cmass,bmass
       common/pdlabel/pdlabel
-      common/verbose/verbose
       common/em/aemmz
       common/couple/amz
 
@@ -48,15 +47,11 @@ C---see Georgi--NPB 363 (1991) 301
 c      xw=half*(one-sqrt(one-four*BigA/wmass**2*(one-BigA/wmass**2)))
 c      is equal to the above
 
-
       gwsq=fourpi*aemmz/xw
+      
       esq=gwsq*xw
       gw=sqrt(gwsq)
       call couplz(xw)
-
-      
-      
-
 
       if ((nproc .eq. 80) .and. (pdlabel .eq. 'hmrs90b')) then 
 c----for check with Nason
@@ -141,6 +136,7 @@ c      write(6,*) 'xw',xw
       else
         as=alphas(abs(scale),amz,2)
       endif
+      
       ason2pi=as/twopi
       ason4pi=as/fourpi
       gsq=fourpi*as

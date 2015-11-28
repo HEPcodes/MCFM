@@ -10,9 +10,7 @@ C     g(-p1) +q(-p2)=q(p3)+q(p4)+qb(p5)                                *
 C     massless quarks                                                  *
 C***********************************************************************
       include 'constants.f'
-      include 'qcdcouple.f'
-      include 'masses.f'
-      include 'prods.f'
+      include 'sprods_com.f'
       integer j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4)
      . ,wtgq,wtqg,wtga,wtag,qqqqg
@@ -52,7 +50,7 @@ C***********************************************************************
       implicit none
       include 'constants.f'
       include 'qcdcouple.f'
-      include 'prods.f'
+      include 'sprods_com.f'
       integer i1,i2,i3,i4,i5
       double precision ss,tt,uu,sp,tp,up,e1234,e13,e14,e23,e24,e12,e34
 

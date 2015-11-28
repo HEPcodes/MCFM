@@ -2,12 +2,8 @@
       implicit none
       include 'constants.f'
       include 'masses.f'
-      include 'ewcouple.f'
-      include 'qcdcouple.f'
-      include 'zcouple.f'
-      include 'ewcharge.f'
-      include 'prods.f'
-      include 'hardscale.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       integer Qh,hq,hg,lh,f1,f3,i1,i2,i3,i4,i5,i6,i7,j
       double precision A(2,2,2),B(2,2,2),C(2,2,2),D(2,2,2),E(2,2,2),
      . F(2,2,2),G(2,2,2)
@@ -50,7 +46,6 @@ C---corresponding to f1,f3,hq,Qh,hg,lh
       call makemb(i3,i4,i1,i2,i5,i6,i7,mb1_3412,mb2_3412)
       call makemb(i1,i4,i3,i2,i5,i6,i7,mb1_1432,mb2_1432)
 
-c-debug
       do f1=1,2
       do f3=1,2
 
@@ -127,7 +122,6 @@ c-debug
       G(2,f1,f3)=G(2,f1,f3)+two*Dreal(
      . +mb1_1234(f1,f3,hq,Qh,hg,lh)*Dconjg(mb2_3412(f3,f1,Qh,hq,hg,lh))
      . +mb2_1234(f1,f3,hq,Qh,hg,lh)*Dconjg(mb1_3412(f3,f1,Qh,hq,hg,lh)))
- 137  continue
       enddo
       enddo
       enddo

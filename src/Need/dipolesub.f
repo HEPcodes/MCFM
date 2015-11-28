@@ -21,17 +21,22 @@
       include 'qcdcouple.f'
       include 'qqgg.f'
       include 'ptilde.f'
+      include 'alfacut.f'
       double precision p(mxpart,4),ptrans(mxpart,4),sub(4),subv,vecsq
       double precision x,omx,z,omz,y,omy,u,omu,sij,sik,sjk,dot,vec(4)
-      double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf)
+      double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),vtilde
       integer nd,ip,jp,kp,nu,j,k
+      logical includedipole,incldip(0:maxd)
+      common/incldip/incldip
       external subr_born,subr_corr
       
 C---Initialize the dipoles to zero
       do j=1,4
       sub(j)=0d0
       enddo
-
+      subv=0d0
+      call zeromsq(msq,msqv)
+      
       sij=two*dot(p,ip,jp)
       sik=two*dot(p,ip,kp)
       sjk=two*dot(p,jp,kp)
@@ -42,11 +47,24 @@ C---Initialize the dipoles to zero
 ***********************************************************************
         omx=-(sij+sjk)/sik
         x=one-omx
+        vtilde=sij/sik
+
+C---Modification so that only close to singular subtracted
+        if (-vtilde .gt. aii) then
+           incldip(nd)=.false.
+           return
+        endif
         
         call transform(p,ptrans,x,ip,jp,kp)
         call storeptilde(nd,ptrans)
+        
+c-- Check to see if this dipole will be included
+c        incldip(nd)=includedipole(nd,ptrans)
+C--if not return
+c        if (incldip(nd) .eqv. .false.) return
+        
         do nu=1,4
-          vec(nu)=p(jp,nu)-sij/sik*p(kp,nu)
+          vec(nu)=p(jp,nu)-vtilde*p(kp,nu)
         enddo
         vecsq=-sij*sjk/sik
         call subr_born(ptrans,msq)
@@ -62,18 +80,34 @@ C---Initialize the dipoles to zero
 *************************** INITIAL-FINAL *****************************
 ***********************************************************************
       elseif ((ip .le. 2) .and. (kp .gt. 2)) then
+        u=sij/(sij+sik)
+
         omx=-sjk/(sij+sik)
         x=one-omx
-        u=sij/(sij+sik)
         omu=sik/(sij+sik)
 C---npart is the number of particles in the final state
 C---transform the momenta so that only the first npart+1 are filled
         call transform(p,ptrans,x,ip,jp,kp)
         call storeptilde(nd,ptrans)
+
+c-- Check to see if this dipole will be included
+c        incldip(nd)=includedipole(nd,ptrans)
+C-- if not return
+c        if (incldip(nd) .eqv. .false.) return
+
+c--- Calculate the matrix element now because it might be needed
+c--- in the final-initial segment, regardless of whether or not the
+c--- alfa cut fails here
+        call subr_born(ptrans,msq)
+C---Modification so that only close to singular subtracted
+C---Do not set incldip because initial-final can fail 
+C---but final initial needs still to be tested
+        if (u .gt. aif) return
+        
         do nu=1,4
            vec(nu)=p(jp,nu)/u-p(kp,nu)/omu
         enddo
-        call subr_born(ptrans,msq)
+        
         call subr_corr(ptrans,vec,ip,msqv)        
         sub(qq)=-gsq/x/sij*(two/(omx+u)-one-x)
         sub(gq)=-gsq/sij
@@ -84,21 +118,29 @@ C---transform the momenta so that only the first npart+1 are filled
 ***********************************************************************
 *************************** FINAL-INITIAL *****************************
 ***********************************************************************
+c-- Check to see if this dipole will be included - should have been
+c-- already determined at this point in the initial-final phase
+c        if (incldip(nd) .eqv. .false.) return
+        
 c--- note, here we assume that msq kinematics are already taken care of
 c--- for msq, although msqv must be recalculated each time
         omx=-sij/(sjk+sik)
+C---Modification so that only close to singular subtracted
+        if (omx .gt. afi) return
+
         x=one-omx
         z=sik/(sik+sjk)
         omz=sjk/(sik+sjk)
         do nu=1,4
           vec(nu)=z*p(ip,nu)-omz*p(jp,nu)
         enddo
-C---call again because vec has changed
+C---call msqv again because vec has changed
         do j=1,mxpart
         do k=1,4
           ptrans(j,k)=ptilde(nd,j,k)
         enddo
         enddo
+
 c--- do something special if we're doing W+2,Z+2jet (jp .ne. 7)
         if (jp .ne.7) then
           if (ip .lt. 7) then
@@ -125,6 +167,13 @@ C ie for cases 57_i,67_i
       elseif ((ip .gt. 2) .and. (kp .gt. 2)) then
 c------Eq-(5.2)    
        y=sij/(sij+sjk+sik)
+
+C---Modification so that only close to singular subtracted
+       if (y .gt. aff) then
+         incldip(nd)=.false.
+         return
+       endif
+
        z=sik/(sjk+sik)
        omz=one-z
        omy=one-y
@@ -132,6 +181,11 @@ C---calculate the ptrans-momenta
 
        call transform(p,ptrans,y,ip,jp,kp)
        call storeptilde(nd,ptrans)
+
+c-- Check to see if this dipole will be included
+c        incldip(nd)=includedipole(nd,ptrans)
+c        if (incldip(nd) .eqv. .false.) return
+        
        do nu=1,4
          vec(nu)=z*p(ip,nu)-omz*p(jp,nu)
        enddo

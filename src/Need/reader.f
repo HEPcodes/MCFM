@@ -1,8 +1,6 @@
       subroutine reader
       implicit none  
-      include 'constants.f'
       include 'masses.f'
-      include 'qcdcouple.f'
       include 'scale.f'
       include 'debug.f'
       include 'realonly.f'
@@ -17,18 +15,21 @@
       include 'flags.f'
       include 'lc.f'
       include 'gridinfo.f'
+      include 'maxwt.f'
+      include 'verbose.f'
+      include 'process.f'
+      include 'limits.f'
       integer ih1,ih2,itmx1,itmx2,ncall1,ncall2,idum,nmin,nmax
       integer nproc,nargs,iargc
-      double precision sqrts,Rcut
+      double precision sqrts,Rcut,randummy,ran1
       double precision cmass,bmass
       character*7 pdlabel
       character*72 optionsfile
-      character*9 runstring
+      character*30 runstring
       character*4 part
-      character*6 case
-      logical verbose,makecuts,dryrun
+      logical makecuts,dryrun,creatent,dswhisto
       logical msbar,spira
-      double precision bbsqmin,bbsqmax,wsqmin,wsqmax,rtsmin
+      double precision rtsmin
       double precision mbbmin,mbbmax,Mwmin,Mwmax
       common/iterat/itmx1,ncall1,itmx2,ncall2
       common/nproc/nproc
@@ -37,11 +38,8 @@
       common/part/part
       common/runstring/runstring
       common/Rcut/Rcut
-      common/process/case
 
 
-      common/limits/bbsqmin,bbsqmax,wsqmin,wsqmax
-      common/verbose/verbose
       common/makecuts/makecuts
       common/dryrun/dryrun
       common/energy/sqrts
@@ -55,6 +53,7 @@
       common/nmax/nmax
       common/msbar/msbar
       
+      common/outputflags/creatent,dswhisto
  
       data new_pspace/.false./
       data impsample/.false./
@@ -150,8 +149,8 @@ c      if (debug) then
       if (verbose) write(6,*) 'noglue',noglue
       read(21,*) ggonly
       if (verbose) write(6,*) 'ggonly',ggonly
-      read(21,*) ggexcl
-      if (verbose) write(6,*) 'ggexcl',ggexcl
+      read(21,*) gqonly
+      if (verbose) write(6,*) 'gqonly',gqonly
       read(21,*) nmin
       if (verbose) write(6,*) 'nmin',nmin
       read(21,*) nmax
@@ -163,8 +162,8 @@ c      endif
       write(6,*) '****************'
       write(6,*)
  
-      if (ggonly .and. ggexcl) then
-        write(6,*) 'ggonly and ggexcl BOTH .true. - pick one!'
+      if (ggonly .and. gqonly) then
+        write(6,*) 'ggonly and gqonly BOTH .true. - pick one!'
         stop
       endif
 
@@ -200,7 +199,53 @@ c--- read in grid options file
       close(unit=21)
       write(6,*) '****************'
 
+* Fill common block 'outputflags' to control output (ntuples or not,
+*  DSW histograms or not) - this should probably be in options.DAT
+*      creatent = .false.
+* For running MCFM standalone, don't want to skip ntupling :
+*      skipnt   = .false.
+* This determines whether to use hbook or mbook histograms
+* independently of the above option :
+*      dswhisto= .false.
+* this flag determines if we want to generate weighted events
+* (running mcfm in old mode) or the user wants to generate 
+* (unweighted) events 
+*      evtgen = .false.
+
+c--- read in MCFM mode file
+      open(unit=21,file='mcfmmode.DAT',status='old',err=997)
+      call checkversion(21,'mcfmmode.DAT')
+      read(21,*) evtgen
+      read(21,*) creatent
+      read(21,*) skipnt
+      read(21,*) dswhisto
+      close(unit=21)
+
+      write(6,*)
+      if ((evtgen .eqv. .false.) .and. (creatent .eqv. .false.)) then
+        write(6,*) '****************************************'
+        write(6,*) '*   MCFM running in traditional mode   *'
+        if (dswhisto .eqv. .false.) then
+        write(6,*) '*    (traditional MBOOK histograms)    *'
+        else
+        write(6,*) '*           (HBOOK histograms)         *'
+        endif
+        write(6,*) '****************************************'
+      else
+        write(6,*) '****************'
+        write(6,*) 'MCFM mode file:'
+        write(6,*)
+        if (verbose) write(6,*) 'evtgen',evtgen
+        if (verbose) write(6,*) 'creatent',creatent
+        if (verbose) write(6,*) 'skipnt',skipnt
+        if (verbose) write(6,*) 'dswhisto',dswhisto
+        write(6,*) '****************'
+      endif
 c-----initialize various quantities
+
+c--- set-up the random number generator with a negative seed
+      idum=-abs(idum)
+      randummy=ran1(idum)
 
 c---initialize masses for alpha_s routine
       cmass=sqrt(mcsq)
@@ -213,12 +258,24 @@ c---initialize masses for alpha_s routine
       wsqmin=Mwmin**2
       wsqmax=Mwmax**2
 
+c
 
 c-----stange-marciano formula for resolution
 c      deltam=sqrt(0.64d0*hmass+0.03d0**2*hmass**2)
 c      if (verbose) write(6,*) 'delta m',deltam
 
       return
+
+ 997  continue
+      write(6,*) 'Problem reading mcfmmode.DAT'
+      write(6,*)
+      write(6,*) 'Required format is:'
+      write(6,*) 'logical     [evtgen]'
+      write(6,*) 'logical     [creatent]'
+      write(6,*) 'logical     [skipnt]'
+      write(6,*) 'logical     [dswhisto]'
+      write(6,*)
+      stop
 
  998  continue
       write(6,*) 'Problem reading gridinfo.DAT'

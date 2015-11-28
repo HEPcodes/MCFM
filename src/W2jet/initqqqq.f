@@ -1,8 +1,8 @@
       subroutine initqqqq(za,zb)
       implicit none
       include 'constants.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
       include 'basic.f'
       integer j1,j2,j3,j4,qp(4)
       double complex bll
@@ -45,8 +45,8 @@
       double complex function bll(i1,i2,i3,i4,i5,i6,za,zb)
       implicit none
       include 'constants.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
       integer i1,i2,i3,i4,i5,i6
 c--- note that the quarks are labelled by i1 ... i4 and the
 c--- W boson leptons by i5 and i6

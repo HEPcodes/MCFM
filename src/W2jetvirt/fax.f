@@ -2,13 +2,14 @@
       implicit none
       integer j1,j2,j3,j4,j5,j6
       include 'constants.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
+      include 'sprods_com.f'
       include 'masses.f'
       character*9 st
       double complex L0,L1,Lsm1_2mh,Lsm1_2me,I3m,Lnrat
       double precision t,mtsq  
       mtsq=mt**2
+
       if(st.eq.'q+qb-g-g+') then
       Fax=
      .(za(j2,j3)**2*za(j3,j5)*zb(j1,j6))/(12d0*mtsq*s(j5,j6)*za(j2,j4)*z
@@ -99,6 +100,9 @@
      .za(j4,j5)**2*zb(j1,j3)**2*t(j1,j2,j3)**2))/
      .(2d0*za(j5,j6)*zb(j1,j2)*(-(za(j1,j4)*zb(j1,j3))-za(j2,j4)*zb(j2,j
      .3))**4)
+
+
+      Fax=Fax
      .-Lnrat(-s(j1,j2),-s(j3,j4))*((za(j2,j3)*za(j3,j5)**2*zb(j1,j4))/
      .((s(j1,j2)**2-2d0*s(j1,j2)*s(j3,j4)+s(j3,j4)**2-2d0*s(j1,j2)*s(j5,
      .j6)-
@@ -122,8 +126,11 @@
      .((s(j1,j2)**2-2d0*s(j1,j2)*s(j3,j4)+s(j3,j4)**2-2d0*s(j1,j2)*s(j5,
      .j6)-
      .2d0*s(j3,j4)*s(j5,j6)+s(j5,j6)**2)*za(j3,j4)*za(j5,j6)*
-     .(-(za(j1,j4)*zb(j1,j3))-za(j2,j4)*zb(j2,j3))**2))-
-     .I3m(s(j1,j2),s(j3,j4),s(j5,j6))*
+     .(-(za(j1,j4)*zb(j1,j3))-za(j2,j4)*zb(j2,j3))**2))
+
+
+      Fax=Fax
+     .-I3m(s(j1,j2),s(j3,j4),s(j5,j6))*
      .(-((za(j2,j3)*za(j3,j5)*zb(j1,j4)*zb(j4,j6))/
      .(s(j1,j2)**2-2d0*s(j1,j2)*s(j3,j4)+s(j3,j4)**2-2d0*s(j1,j2)*s(j5,j
      .6)-
@@ -154,16 +161,26 @@
      .((s(j1,j2)**2-2d0*s(j1,j2)*s(j3,j4)+s(j3,j4)**2-2d0*s(j1,j2)*s(j5,
      .j6)-
      .2d0*s(j3,j4)*s(j5,j6)+s(j5,j6)**2)*
-     .(-(za(j1,j4)*zb(j1,j3))-za(j2,j4)*zb(j2,j3))**2))+
-     .(L1(-s(j5,j6),-t(j1,j2,j4))*za(j2,j3)**2*zb(j3,j6)*
+     .(-(za(j1,j4)*zb(j1,j3))-za(j2,j4)*zb(j2,j3))**2))
+
+
+      Fax=Fax
+     .+(L1(-s(j5,j6),-t(j1,j2,j4))*za(j2,j3)**2*zb(j3,j6)*
      .(-(za(j1,j2)*zb(j1,j6))+za(j2,j4)*zb(j4,j6)))/
      .(za(j1,j2)*za(j2,j4)*(-(za(j1,j4)*zb(j1,j3))-za(j2,j4)*zb(j2,j3))*
-     .zb(j5,j6)*t(j1,j2,j4))+(Lsm1_2mh(s(j3,j4),t(j1,j2,j4),s(j1,j2),
+     .zb(j5,j6)*t(j1,j2,j4))
+
+
+      Fax=Fax
+     .+(Lsm1_2mh(s(j3,j4),t(j1,j2,j4),s(j1,j2),
      .s(j5,j6))*((-(za(j1,j4)*zb(j1,j6))-za(j2,j4)*zb(j2,j6))**2*
      .(-(za(j1,j2)*zb(j1,j3))-za(j2,j4)*zb(j3,j4))**2-
      .za(j2,j4)**2*zb(j3,j6)**2*t(j1,j2,j4)**2))/
      .(2d0*za(j1,j2)*(-(za(j1,j4)*zb(j1,j3))-za(j2,j4)*zb(j2,j3))**4*zb(
      .j5,j6))
+
+
+      Fax=Fax
      .-I3m(s(j1,j2),s(j3,j4),s(j5,j6))*
      .(-((za(j2,j3)*za(j3,j5)*zb(j1,j4)*zb(j4,j6))/
      .(s(j1,j2)**2-2d0*s(j1,j2)*s(j3,j4)+s(j3,j4)**2-2d0*s(j1,j2)*s(j5,j
@@ -196,8 +213,11 @@
      .((s(j1,j2)**2-2d0*s(j1,j2)*s(j3,j4)+s(j3,j4)**2-2d0*s(j1,j2)*s(j5,
      .j6)-
      .2d0*s(j3,j4)*s(j5,j6)+s(j5,j6)**2)*
-     .(-(za(j1,j4)*zb(j1,j3))-za(j2,j4)*zb(j2,j3))**2))-
-     .Lnrat(-s(j1,j2),-s(j3,j4))*((-6d0*zb(j1,j2)*
+     .(-(za(j1,j4)*zb(j1,j3))-za(j2,j4)*zb(j2,j3))**2))
+
+      
+      Fax=Fax
+     .-Lnrat(-s(j1,j2),-s(j3,j4))*((-6d0*zb(j1,j2)*
      .((-s(j1,j2)+s(j3,j4)-s(j5,j6))*za(j2,j5)-
      .2d0*za(j1,j2)*za(j5,j6)*zb(j1,j6))*
      .(-(za(j1,j3)*zb(j1,j4))-za(j2,j3)*zb(j2,j4))*
@@ -224,7 +244,11 @@
      .2d0*s(j3,j4)*s(j5,j6)+s(j5,j6)**2)*
      .(-(za(j1,j4)*zb(j1,j3))-za(j2,j4)*zb(j2,j3))**2*zb(j3,j4)*zb(j5,j6
      .)
-     .))-Lnrat(-s(j5,j6),-s(j3,j4))*(-((za(j2,j3)**2*za(j3,j5)*zb(j4,j6)
+     .))
+
+
+      Fax=Fax
+     .-Lnrat(-s(j5,j6),-s(j3,j4))*(-((za(j2,j3)**2*za(j3,j5)*zb(j4,j6)
      .)/
      .((s(j1,j2)**2-2d0*s(j1,j2)*s(j3,j4)+s(j3,j4)**2-2d0*s(j1,j2)*s(j5,
      .j6)-
@@ -248,8 +272,11 @@
      .((s(j1,j2)**2-2d0*s(j1,j2)*s(j3,j4)+s(j3,j4)**2-2d0*s(j1,j2)*s(j5,
      .j6)-
      .2d0*s(j3,j4)*s(j5,j6)+s(j5,j6)**2)*za(j1,j2)*za(j3,j4)*
-     .(-(za(j4,j5)*zb(j3,j5))-za(j4,j6)*zb(j3,j6))**2))-
-     .Lnrat(-s(j5,j6),-s(j3,j4))*(-((za(j3,j5)*zb(j1,j4)**2*zb(j4,j6))/
+     .(-(za(j4,j5)*zb(j3,j5))-za(j4,j6)*zb(j3,j6))**2))
+
+
+      Fax=Fax
+     .-Lnrat(-s(j5,j6),-s(j3,j4))*(-((za(j3,j5)*zb(j1,j4)**2*zb(j4,j6))/
      .((s(j1,j2)**2-2d0*s(j1,j2)*s(j3,j4)+s(j3,j4)**2-2d0*s(j1,j2)*s(j5,
      .j6)-
      .2d0*s(j3,j4)*s(j5,j6)+s(j5,j6)**2)*zb(j1,j2)*zb(j3,j4)))-
@@ -273,6 +300,8 @@
      .j6)-
      .2d0*s(j3,j4)*s(j5,j6)+s(j5,j6)**2)*zb(j1,j2)*zb(j3,j4)*
      .(-(za(j4,j5)*zb(j3,j5))-za(j4,j6)*zb(j3,j6))**2))
+
+
       elseif(st.eq.'q+qb-g+g-') then
       Fax= 
      .(Lnrat(-s(j5,j6),-s(j3,j4))*(za(j2,j5)*zb(j1,j2)+za(j4,j5)*zb(j1,j
@@ -365,6 +394,9 @@
      .za(j2,j3)**2*zb(j4,j6)**2*t(j1,j2,j3)**2))/
      .(2d0*za(j1,j2)*(-(za(j1,j3)*zb(j1,j4))-za(j2,j3)*zb(j2,j4))**4*zb(
      .j5,j6))
+
+
+      Fax=Fax
      .+Lnrat(-s(j1,j2),-s(j3,j4))*((-6d0*zb(j1,j2)*
      .((-s(j1,j2)+s(j3,j4)-s(j5,j6))*za(j2,j5)-
      .2d0*za(j1,j2)*za(j5,j6)*zb(j1,j6))*
@@ -392,7 +424,11 @@
      .2d0*s(j3,j4)*s(j5,j6)+s(j5,j6)**2)*
      .(-(za(j1,j3)*zb(j1,j4))-za(j2,j3)*zb(j2,j4))**2*zb(j3,j4)*zb(j5,j6
      .)
-     .))+I3m(s(j1,j2),s(j3,j4),s(j5,j6))*
+     .))
+
+
+      Fax=Fax
+     .+I3m(s(j1,j2),s(j3,j4),s(j5,j6))*
      .(-((za(j2,j4)*za(j4,j5)*zb(j1,j3)*zb(j3,j6))/
      .(s(j1,j2)**2-2d0*s(j1,j2)*s(j3,j4)+s(j3,j4)**2-2d0*s(j1,j2)*s(j5,j
      .6)-
@@ -424,17 +460,26 @@
      .((s(j1,j2)**2-2d0*s(j1,j2)*s(j3,j4)+s(j3,j4)**2-2d0*s(j1,j2)*s(j5,
      .j6)-
      .2d0*s(j3,j4)*s(j5,j6)+s(j5,j6)**2)*
-     .(-(za(j1,j3)*zb(j1,j4))-za(j2,j3)*zb(j2,j4))**2))-
-     .(L1(-s(j5,j6),-t(j1,j2,j4))*za(j3,j5)*zb(j1,j3)*
+     .(-(za(j1,j3)*zb(j1,j4))-za(j2,j3)*zb(j2,j4))**2))
+
+
+      Fax=Fax
+     .-(L1(-s(j5,j6),-t(j1,j2,j4))*za(j3,j5)*zb(j1,j3)*
      .(za(j2,j5)*zb(j1,j2)+za(j4,j5)*zb(j1,j4))*zb(j2,j3))/
      .(za(j5,j6)*zb(j1,j2)*zb(j2,j4)*
-     .(-(za(j1,j3)*zb(j1,j4))-za(j2,j3)*zb(j2,j4))*t(j1,j2,j4))-
-     .(Lsm1_2mh(s(j3,j4),t(j1,j2,j4),s(j1,j2),s(j5,j6))*
+     .(-(za(j1,j3)*zb(j1,j4))-za(j2,j3)*zb(j2,j4))*t(j1,j2,j4))
+
+
+      Fax=Fax
+     .-(Lsm1_2mh(s(j3,j4),t(j1,j2,j4),s(j1,j2),s(j5,j6))*
      .((za(j2,j3)*zb(j1,j2)-za(j3,j4)*zb(j1,j4))**2*
      .(-(za(j1,j5)*zb(j1,j4))-za(j2,j5)*zb(j2,j4))**2-
      .za(j3,j5)**2*zb(j1,j4)**2*t(j1,j2,j4)**2))/
      .(2d0*za(j5,j6)*zb(j1,j2)*(-(za(j1,j3)*zb(j1,j4))-za(j2,j3)*zb(j2,j
      .4))**4)
+
+
+      Fax=Fax
      .+I3m(s(j1,j2),s(j3,j4),s(j5,j6))*
      .(-((za(j2,j4)*za(j4,j5)*zb(j1,j3)*zb(j3,j6))/
      .(s(j1,j2)**2-2d0*s(j1,j2)*s(j3,j4)+s(j3,j4)**2-2d0*s(j1,j2)*s(j5,j
@@ -466,8 +511,11 @@
      .((s(j1,j2)**2-2d0*s(j1,j2)*s(j3,j4)+s(j3,j4)**2-2d0*s(j1,j2)*s(j5,
      .j6)-
      .2d0*s(j3,j4)*s(j5,j6)+s(j5,j6)**2)*
-     .(-(za(j1,j3)*zb(j1,j4))-za(j2,j3)*zb(j2,j4))**2))+
-     .Lnrat(-s(j1,j2),-s(j3,j4))*(-((za(j2,j4)*za(j4,j5)**2*zb(j1,j3))/
+     .(-(za(j1,j3)*zb(j1,j4))-za(j2,j3)*zb(j2,j4))**2))
+
+
+      Fax=Fax
+     .+Lnrat(-s(j1,j2),-s(j3,j4))*(-((za(j2,j4)*za(j4,j5)**2*zb(j1,j3))/
      .((s(j1,j2)**2-2d0*s(j1,j2)*s(j3,j4)+s(j3,j4)**2-2d0*s(j1,j2)*s(j5,
      .j6)-
      .2d0*s(j3,j4)*s(j5,j6)+s(j5,j6)**2)*za(j3,j4)*za(j5,j6)))-
@@ -490,8 +538,11 @@
      .((s(j1,j2)**2-2d0*s(j1,j2)*s(j3,j4)+s(j3,j4)**2-2d0*s(j1,j2)*s(j5,
      .j6)-
      .2d0*s(j3,j4)*s(j5,j6)+s(j5,j6)**2)*za(j3,j4)*za(j5,j6)*
-     .(-(za(j1,j3)*zb(j1,j4))-za(j2,j3)*zb(j2,j4))**2))+
-     .Lnrat(-s(j5,j6),-s(j3,j4))*((za(j4,j5)*zb(j1,j3)**2*zb(j3,j6))/
+     .(-(za(j1,j3)*zb(j1,j4))-za(j2,j3)*zb(j2,j4))**2))
+
+
+      Fax=Fax
+     .+Lnrat(-s(j5,j6),-s(j3,j4))*((za(j4,j5)*zb(j1,j3)**2*zb(j3,j6))/
      .((s(j1,j2)**2-2d0*s(j1,j2)*s(j3,j4)+s(j3,j4)**2-2d0*s(j1,j2)*s(j5,
      .j6)-
      .2d0*s(j3,j4)*s(j5,j6)+s(j5,j6)**2)*zb(j1,j2)*zb(j3,j4))+
@@ -514,8 +565,11 @@
      .((s(j1,j2)**2-2d0*s(j1,j2)*s(j3,j4)+s(j3,j4)**2-2d0*s(j1,j2)*s(j5,
      .j6)-
      .2d0*s(j3,j4)*s(j5,j6)+s(j5,j6)**2)*zb(j1,j2)*zb(j3,j4)*
-     .(-(za(j3,j5)*zb(j4,j5))-za(j3,j6)*zb(j4,j6))**2))+
-     .Lnrat(-s(j5,j6),-s(j3,j4))*((za(j2,j4)**2*za(j4,j5)*zb(j3,j6))/
+     .(-(za(j3,j5)*zb(j4,j5))-za(j3,j6)*zb(j4,j6))**2))
+
+
+      Fax=Fax
+     .+Lnrat(-s(j5,j6),-s(j3,j4))*((za(j2,j4)**2*za(j4,j5)*zb(j3,j6))/
      .((s(j1,j2)**2-2d0*s(j1,j2)*s(j3,j4)+s(j3,j4)**2-2d0*s(j1,j2)*s(j5,
      .j6)-
      .2d0*s(j3,j4)*s(j5,j6)+s(j5,j6)**2)*za(j1,j2)*za(j3,j4))+
@@ -569,5 +623,6 @@
      .za(j2,j4)+(zb(j4,j6)*t(j1,j3,j4))/za(j1,j3)))/
      .(12d0*mtsq*s(j5,j6)*za(j3,j4))
       endif
+
       return
       end

@@ -1,7 +1,9 @@
       subroutine bookplot(n,tag,titlex,var,wt,xmin,xmax,dx,llplot) 
+      implicit none
       include 'nplot.f'
       integer n
-      character titlex*8,llplot*3,tag*4
+      character*(*) titlex
+      character llplot*3,tag*4
       double precision var,wt,xmin,xmax,dx
       logical creatent,dswhisto
       common/outputflags/creatent,dswhisto
@@ -12,7 +14,7 @@ c--- Traditional MCFM histograms
           call mbook(n,titlex,dx,xmin,xmax)
         else
 c--- DSW histograms - call hbook booking routine
-c        call dswhbook(n,titlex,dx,xmin,xmax)
+        call dswhbook(n,titlex,dx,xmin,xmax)
         endif
       elseif (tag .eq. 'plot') then
         if (dswhisto .eqv. .false.) then
@@ -20,7 +22,7 @@ c--- Traditional MCFM histograms
           call mfill(n,var,wt)
         else
 c--- DSW histograms - call hbook filling routine
-c          call dswhfill(n,var,wt)
+          call dswhfill(n,var,wt)
         endif
         linlog(n)=llplot
         titlearray(n)=titlex
@@ -41,19 +43,20 @@ c          call dswhfill(n,var,wt)
       double precision m56,m56_5,m56_10,m56_11,m56_12,m56_13,m56_15,
      . sigma,m34,m345,m346,m3456,m678,m47,etmiss,misset,m35,m45,
      . s(mxpart,mxpart),p(mxpart,4),eta,root,wt1
-      double precision y3,y4,y5,y6,y7,y8,y34,y56,eta34,eta56
-      double precision r34,r35,r45,r36,r46,r56
+      double precision eta3,eta4,eta5,eta6,eta7,eta8,eta34,eta56
+      double precision r34,r35,r45,r36,r46,r56,pt345
       double precision pt3,pt4,pt5,pt6,pt7,pt8,pt34,pt56,pt34a,pt34b
       double precision ptbbsq,ptbbpair,m56smw,gasdev,
-     . pt,yrap,chi,cosphi,phi,var,vector(mxdim),wt,r,
+     . pt,etarap,chi,cosphi,phi,var,vector(mxdim),wt,r,
      . kt12,kt14,kt15,kt24,kt25,kt56,costh,cosnew1,cosnew2,cosnew3
-      double precision transm,transcm,dot,pttwo,yraptwo,sdot30m,mttbar
+      double precision transm,transcm,dot,pttwo,etaraptwo,sdot30m,mttbar
       double precision phill,thetall,fphi,ftheta,mtsqlet,mt1,mt2,mll
       double precision c4,cosnchi,nchi,m56psm20,m56psm40,smearp,swap
       double precision clustermass,m56clust,costhdd,cosllet,coslpairet
       double precision pjet(mxpart,4),bclustmass,rn,etvec(4)
-      double precision dsigdy,dsigdytmp,etaraptwo,transm345,transm435
+      double precision dsigdy,dsigdytmp,transm345,transm435
       double precision es17,es27,es56,es57,es67,etbin,etdoublebin
+      double precision deta53,deta54,r57,r67
       integer nproc,eventpart
       logical first
       logical creatent,dswhisto
@@ -69,19 +72,18 @@ c          call dswhfill(n,var,wt)
         tag='book'
 c--- ensure we initialize all possible histograms
         eventpart=npart+3
-        y3=0d0
+        eta3=0d0
         pt3=0d0
-        y4=0d0
+        eta4=0d0
         pt4=0d0
-        y5=0d0
+        eta5=0d0
         pt5=0d0
-        y6=0d0
+        eta6=0d0
         pt6=0d0
-        y7=0d0
+        eta7=0d0
         pt7=0d0
-        y8=0d0
+        eta8=0d0
         pt8=0d0
-        y34=0d0
         eta34=0d0
         pt34=0d0
         r34=0d0
@@ -89,13 +91,16 @@ c--- ensure we initialize all possible histograms
         r45=0d0
         transm345=0d0
         transm435=0d0
-        y56=0d0
+        deta53=0d0
+        deta54=0d0
         eta56=0d0
         pt56=0d0
         m56clust=0d0
         r36=0d0
         r46=0d0
         r56=0d0
+        r57=0d0
+        r67=0d0
         misset=0d0
         etbin=0d0
         goto 99
@@ -129,6 +134,7 @@ c      pause
         eventpart=npart-switch+2
         if (jets .gt. 0) eventpart=4+jets
         if ((nproc .ge. 60) .and. (nproc .le. 89)) eventpart=6+jets
+        if ((nproc .ge. 230) .and. (nproc .le. 239)) eventpart=2+jets
         
         if (switch .eq. 0) then
           es17=2d0*dot(p,1,7)  
@@ -170,27 +176,26 @@ c--generate a gaussian kick only for event
         sigma=15d0
         m56_15=m56clust+sigma*eta
 
-        y3=yrap(3,p)
+        eta3=etarap(3,p)
         pt3=pt(3,p)
-        y4=yrap(4,p)
+        eta4=etarap(4,p)
         pt4=pt(4,p)        
-        y34=yraptwo(3,4,p)
         eta34=etaraptwo(3,4,p)
         pt34=pttwo(3,4,p)
         r34=R(p,3,4)
-        if ((y34 .lt. -0.5d0) .or. (y34 .gt. 0.5d0)) then
+        if ((eta34 .lt. -0.5d0) .or. (eta34 .gt. 0.5d0)) then
           pt34a=-1d0
         else
           pt34a=pt34
         endif
-        if ((y34 .lt. -0.1d0) .or. (y34 .gt. 0.1d0)) then
+        if ((eta34 .lt. -0.1d0) .or. (eta34 .gt. 0.1d0)) then
           pt34b=-1d0
         else
           pt34b=pt34*5d0
         endif
                 
         if (eventpart .gt. 4) then        
-        y5=yrap(5,p)
+        eta5=etarap(5,p)
         pt5=pt(5,p)
         r35=R(p,3,5)
         r45=R(p,4,5)
@@ -202,17 +207,28 @@ c--generate a gaussian kick only for event
      .           -(p(4,1)+p(5,1))**2
      .           -(p(4,2)+p(5,2))**2
      .           -(p(4,3)+p(5,3))**2)
+        if (eventpart .gt. 5) then
+          pt345=-pt(6,p)
+        else
+          pt345=0d0
+        endif
+ 
+        transm345=dsqrt((dsqrt(m45**2+pttwo(4,5,p)**2)+pt3)**2-pt345**2) 
+        transm435=dsqrt((dsqrt(m35**2+pttwo(3,5,p)**2)+pt4)**2-pt345**2) 
+        
+        deta53=eta5-eta3
+        deta54=eta5-eta4
 
-        transm345=dsqrt((dsqrt(m45**2+(pt4+pt5)**2)+pt3)**2
-     .                 -(pt3+pt4+pt5)**2) 
-        transm435=dsqrt((dsqrt(m35**2+(pt3+pt5)**2)+pt4)**2
-     .                 -(pt3+pt4+pt5)**2) 
+c--- debug: transverse mass cut, this should be removed        
+c        if (transm345 .lt. 90d0) wt=0d0
+c--- debug: transverse mass cut, this should be removed        
+        
         endif
         
         if (eventpart .gt. 5) then        
-        y6=yrap(6,p)
+        eta6=etarap(6,p)
         pt6=pt(6,p)
-        y56=yraptwo(5,6,p)
+        eta56=etaraptwo(5,6,p)
         eta56=etaraptwo(5,6,p)
         pt56=pttwo(5,6,p)
         r36=R(p,3,6)
@@ -223,12 +239,14 @@ c--generate a gaussian kick only for event
         endif
 
         if (eventpart .gt. 6) then        
-        y7=yrap(7,p)
+        eta7=etarap(7,p)
         pt7=pt(7,p)
+        r57=R(p,5,7)
+        r67=R(p,6,7)
         endif
 
         if (eventpart .gt. 7) then        
-        y8=yrap(8,p)
+        eta8=etarap(8,p)
         pt8=pt(8,p)
         endif
          
@@ -252,9 +270,9 @@ c--- case where we have 2 jets to order
           swap=pt5
           pt5=pt6
           pt6=swap
-          swap=y5
-          y5=y6
-          y6=swap
+          swap=eta5
+          eta5=eta6
+          eta6=swap
         endif
       endif
       
@@ -292,14 +310,14 @@ c--- case where we have 3 jets to order
             i7=5
           endif
         endif
-        y5=yrap(i5,p)
+        eta5=etarap(i5,p)
         pt5=pt(i5,p)
-        y6=yrap(i6,p)
+        eta6=etarap(i6,p)
         pt6=pt(i6,p)
-        y56=yraptwo(i5,i6,p)
+        eta56=etaraptwo(i5,i6,p)
         pt56=pttwo(i5,i6,p)
         r56=r(p,i5,i6)
-        y7=yrap(i7,p)
+        eta7=etarap(i7,p)
         pt7=pt(i7,p)
         m56clust=dsqrt((p(i5,4)+p(i6,4))**2
      .                -(p(i5,1)+p(i6,1))**2
@@ -318,25 +336,23 @@ c--- only fill the histograms if we're not creating n-tuples
       n=1                  
 
 c --- Histograms to monitor the weight distributions :
-      call bookplot(n,tag,'wt',wt,1.0d0,-1d-2,1d-2,2d-4,'lin')
+      call bookplot(n,tag,'      wt',wt,1.0d0,-1d-2,1d-2,2d-4,'lin')
       n=n+1
-      call bookplot(n,tag,'log10wt',dlog10(dabs(wt)),
+      call bookplot(n,tag,' log10wt',log10(abs(wt)),
      . 1.0d0,-2d0,0d0,0.1d0,'lin')
      
       n=n+1
-      call bookplot(n,tag,'      y3',y3,wt,-5d0,5d0,0.5d0,'lin')
+      call bookplot(n,tag,'      eta3',eta3,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
       call bookplot(n,tag,'     pt3',pt3,wt,0d0,150d0,5d0,'log')
       n=n+1
-      call bookplot(n,tag,'      y4',y4,wt,-5d0,5d0,0.5d0,'lin')
+      call bookplot(n,tag,'      eta4',eta4,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
       call bookplot(n,tag,'     pt4',pt4,wt,0d0,150d0,5d0,'log')
       n=n+1
-      call bookplot(n,tag,'     y34',y34,wt,-5d0,5d0,0.5d0,'lin')
+      call bookplot(n,tag,'     eta34',eta34,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
-      call bookplot(n,tag,'     y34',y34,wt,-5d0,5d0,0.2d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'   eta34',eta34,wt,-5d0,5d0,0.5d0,'lin')
+      call bookplot(n,tag,'     eta34',eta34,wt,-5d0,5d0,0.2d0,'lin')
       n=n+1
       call bookplot(n,tag,'    pt34',pt34,wt,0d0,200d0,5d0,'log')
       n=n+1
@@ -345,16 +361,16 @@ c --- Histograms to monitor the weight distributions :
       call bookplot(n,tag,'d/pt34^2',pt34,wt/2d0*pt34**3,
      .     20d0,200d0,10d0,'log')
       n=n+1
-      call bookplot(n,tag,'pt34,y=0',pt34a,wt,10d0,150d0,10d0,'log')
+      call bookplot(n,tag,'pt34,eta=0',pt34a,wt,10d0,150d0,10d0,'log')
       n=n+1
-      call bookplot(n,tag,'pt34,y=0',pt34a,wt,20d0,480d0,40d0,'log')
+      call bookplot(n,tag,'pt34,eta=0',pt34a,wt,20d0,480d0,40d0,'log')
       n=n+1
       call bookplot(n,tag,'     m34',m34,wt,5d0,140d0,5d0,'lin')
       n=n+1
       call bookplot(n,tag,'     r34',r34,wt,0d0,4d0,0.1d0,'lin')
       n=n+1
       if (eventpart .gt. 4) then
-      call bookplot(n,tag,'      y5',y5,wt,-5d0,5d0,0.5d0,'lin')
+      call bookplot(n,tag,'      eta5',eta5,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
       call bookplot(n,tag,'     pt5',pt5,wt,0d0,200d0,5d0,'log')
       n=n+1
@@ -370,13 +386,17 @@ c --- Histograms to monitor the weight distributions :
       n=n+1
       call bookplot(n,tag,'trnsm435',transm435,wt,90d0,990d0,1d2,'lin')
       n=n+1
+      call bookplot(n,tag,'  deta53',deta53,wt,-5d0,5d0,0.4d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'  deta54',deta54,wt,-5d0,5d0,0.4d0,'lin')
+      n=n+1
       endif
       if (eventpart .gt. 5) then
-      call bookplot(n,tag,'      y6',y6,wt,-5d0,5d0,0.5d0,'lin')
+      call bookplot(n,tag,'      eta6',eta6,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
       call bookplot(n,tag,'     pt6',pt6,wt,0d0,200d0,5d0,'log')
       n=n+1
-      call bookplot(n,tag,'     y56',y56,wt,-5d0,5d0,0.5d0,'lin')
+      call bookplot(n,tag,'     eta56',eta56,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
       call bookplot(n,tag,'   eta56',eta56,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
@@ -432,120 +452,74 @@ c      n=n+1
       endif
 
       if (eventpart .gt. 6) then
-      call bookplot(n,tag,'      y7',y7,wt,-5d0,5d0,0.5d0,'lin')
+      call bookplot(n,tag,'      eta7',eta7,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
       call bookplot(n,tag,'     pt7',pt7,wt,0d0,100d0,5d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'     r57',r57,wt,0d0,4d0,0.1d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'     r67',r67,wt,0d0,4d0,0.1d0,'lin')
       n=n+1
       endif      
 
       if (eventpart .gt. 7) then
-      call bookplot(n,tag,'      y8',y8,wt,-5d0,5d0,0.5d0,'lin')
+      call bookplot(n,tag,'      eta8',eta8,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
       call bookplot(n,tag,'     pt8',pt8,wt,0d0,100d0,5d0,'lin')
       endif      
 
       else
 c--- Book and fill ntuple if we're not doing histograms       
-c         call bookfill(tag,p,wt)       
+         call bookfill(tag,p,wt)       
       endif
 
       return 
       end
 
-      double precision function pttwo(j,k,p)
-      implicit none
-      include 'constants.f'
-      integer j,k
-      double precision p(mxpart,4)
-      pttwo=dsqrt((p(j,1)+p(k,1))**2+(p(j,2)+p(k,2))**2)
-      return
-      end
-
-c--- this is the rapidity
-      double precision function yraptwo(j,k,p)
-      implicit none
-      include 'constants.f'
-      integer j,k
-      double precision p(mxpart,4)
-      yraptwo=(p(j,4)+p(k,4)+p(j,3)+p(k,3))
-     .       /(p(j,4)+p(k,4)-p(j,3)-p(k,3))
-      if (yraptwo .lt. 1d-13) then
-C-- set to 100 if this is very close to or less than zero
-c-- rapidities of 100 will be rejected by any sensible cuts
-      yraptwo=100d0
-      else 
-      yraptwo=0.5d0*dlog(yraptwo)
-      endif
-            
-      return
-      end
-
-c--- this is the pseudo-rapidity
-      double precision function etaraptwo(j,k,p)
-      implicit none
-      include 'constants.f'
-      integer j,k
-      double precision p(mxpart,4)
-      
-      etaraptwo=dsqrt((p(j,1)+p(k,1))**2+(p(j,2)+p(k,2))**2
-     .               +(p(j,3)+p(k,3))**2)
-      etaraptwo=(etaraptwo+p(j,3)+p(k,3))
-     .         /(etaraptwo-p(j,3)-p(k,3))
-      if (etaraptwo .lt. 1d-13) then
-C-- set to 100 if this is very close to or less than zero
-c-- rapidities of 100 will be rejected by any sensible cuts
-      etaraptwo=100d0
-      else 
-      etaraptwo=0.5d0*dlog(etaraptwo)
-      endif
-      
-      return
-      end
-
 c--- this is trying to be decay angle, but need to unboost i back to (jk)
 c--- rest frame before doing this
-      double precision function sdot30m(i,j,k,p)
-      implicit none
-      include 'constants.f'
-      integer i,j,k,n
-      double precision p(mxpart,4),n1,n2
+c      double precision function sdot30m(i,j,k,p)
+c      implicit none
+c      include 'constants.f'
+c      integer i,j,k,n
+c      double precision p(mxpart,4),n1,n2
       
-      sdot30m=0d0
-      n1=0d0
-      n2=0d0
-      do n=1,3
-      sdot30m=p(i,n)*(p(j,n)+p(k,n))
-      n1=n1+p(i,n)**2
-      n2=n2+(p(j,n)+p(k,n))**2
-      enddo
+c      sdot30m=0d0
+c      n1=0d0
+c      n2=0d0
+c      do n=1,3
+c      sdot30m=p(i,n)*(p(j,n)+p(k,n))
+c      n1=n1+p(i,n)**2
+c      n2=n2+(p(j,n)+p(k,n))**2
+c      enddo
       
-      sdot30m=sdot30m/sqrt(n1*n2)
-      
-      return
-      end
+c      sdot30m=sdot30m/sqrt(n1*n2)
+c      
+c      return
+c      end
      
-      double precision function cosnchi(i,j,k,l,p)
-      implicit none
-      include 'constants.f'
-      integer i,j,k,l,n
-      double precision p(mxpart,4),cr1(3),cr2(3),n1,n2
+c      double precision function cosnchi(i,j,k,l,p)
+c      implicit none
+c      include 'constants.f'
+c      integer i,j,k,l,n
+c      double precision p(mxpart,4),cr1(3),cr2(3),n1,n2
       
-      call cross(p,i,j,cr1)
-      call cross(p,k,l,cr2)
+c      call cross(p,i,j,cr1)
+c      call cross(p,k,l,cr2)
       
-      n1=0d0
-      n2=0d0
-      cosnchi=0d0
-      do n=1,3
-        n1=n1+cr1(n)**2
-        n2=n2+cr2(n)**2
-        cosnchi=cosnchi+cr1(n)*cr2(n)
-      enddo
-
-      cosnchi=cosnchi/dsqrt(n1*n2)
+c      n1=0d0
+c      n2=0d0
+c      cosnchi=0d0
+c      do n=1,3
+c        n1=n1+cr1(n)**2
+c        n2=n2+cr2(n)**2
+c        cosnchi=cosnchi+cr1(n)*cr2(n)
+c      enddo
+c
+c      cosnchi=cosnchi/dsqrt(n1*n2)
       
-      return
-      end
+c      return
+c      end
       
       subroutine cross(p,i,j,r)
       implicit none
@@ -560,93 +534,93 @@ c--- rest frame before doing this
       return
       end
             
-      double precision function smearp(i,j,p,sd)
-      implicit none
-      include 'constants.f'
-      include 'masses.f'     
-      integer i,j,k,idum
-      double precision p(mxpart,4),r1(4),r2(4),gasdev,sm1,sm2,sd
-      data idum/56735345/
+c      double precision function smearp(i,j,p,sd)
+c      implicit none
+c      include 'constants.f'
+c      include 'masses.f'     
+c      integer i,j,k,idum
+c      double precision p(mxpart,4),r1(4),r2(4),gasdev,sm1,sm2,sd
+c      data idum/56735345/
 
-      sm1=1d0+gasdev(idum)/sd
-      sm2=1d0+gasdev(idum)/sd
+c      sm1=1d0+gasdev(idum)/sd
+c      sm2=1d0+gasdev(idum)/sd
 
-      do k=1,4
-        r1(k)=p(i,k)*sm1
-        r2(k)=p(j,k)*sm2
-      enddo
+c      do k=1,4
+c        r1(k)=p(i,k)*sm1
+c        r2(k)=p(j,k)*sm2
+c      enddo
       
-      smearp=sqrt(2d0*(r1(4)*r2(4)-r1(1)*r2(1)-r1(2)*r2(2)-r1(3)*r2(3))
-     . +mb**2)
+c      smearp=sqrt(2d0*(r1(4)*r2(4)-r1(1)*r2(1)-r1(2)*r2(2)-r1(3)*r2(3))
+c     . +mb**2)
       
-      return
-      end
+c      return
+c      end
       
-      double precision function fphi(n1,n2,p)
-      implicit none
-      include 'constants.f'
-      integer n1,n2
-      double precision p(mxpart,4)
+c      double precision function fphi(n1,n2,p)
+c      implicit none
+c      include 'constants.f'
+c      integer n1,n2
+c      double precision p(mxpart,4)
     
-      fphi=p(n1,1)*p(n2,1)+p(n1,2)*p(n2,2)
-      fphi=fphi/dsqrt(p(n1,1)**2+p(n1,2)**2)
-      fphi=fphi/dsqrt(p(n2,1)**2+p(n2,2)**2)
-      if (fphi .gt. 1d0) then
-        fphi=0d0
-      elseif (fphi .lt. -1d0) then
-        fphi=pi
-      else
-        fphi=dacos(fphi)
-      endif
+c      fphi=p(n1,1)*p(n2,1)+p(n1,2)*p(n2,2)
+c      fphi=fphi/dsqrt(p(n1,1)**2+p(n1,2)**2)
+c      fphi=fphi/dsqrt(p(n2,1)**2+p(n2,2)**2)
+c      if (fphi .gt. 1d0) then
+c        fphi=0d0
+c      elseif (fphi .lt. -1d0) then
+c        fphi=pi
+c      else
+c        fphi=dacos(fphi)
+c      endif
 
-      return
-      end
+c      return
+c      end
           
-      double precision function ftheta(n1,n2,p)
-      implicit none
-      include 'constants.f'
-      integer n1,n2
-      double precision p(mxpart,4)
-    
-      ftheta=p(n1,1)*p(n2,1)+p(n1,2)*p(n2,2)+p(n1,3)*p(n2,3)
-      ftheta=ftheta/dsqrt(p(n1,1)**2+p(n1,2)**2+p(n1,3)**2)
-      ftheta=ftheta/dsqrt(p(n2,1)**2+p(n2,2)**2+p(n2,3)**2)
-      if (ftheta .gt. 1d0) then
-        ftheta=0d0
-      elseif (ftheta .lt. -1d0) then
-        ftheta=pi
-      else
-        ftheta=dacos(ftheta)
-      endif
-   
-      return
-      end
+c      double precision function ftheta(n1,n2,p)
+c      implicit none
+c      include 'constants.f'
+c      integer n1,n2
+c      double precision p(mxpart,4)
+c    
+c      ftheta=p(n1,1)*p(n2,1)+p(n1,2)*p(n2,2)+p(n1,3)*p(n2,3)
+c      ftheta=ftheta/dsqrt(p(n1,1)**2+p(n1,2)**2+p(n1,3)**2)
+c      ftheta=ftheta/dsqrt(p(n2,1)**2+p(n2,2)**2+p(n2,3)**2)
+c      if (ftheta .gt. 1d0) then
+c        ftheta=0d0
+c      elseif (ftheta .lt. -1d0) then
+c        ftheta=pi
+c      else
+c        ftheta=dacos(ftheta)
+c      endif
+c   
+c      return
+c      end
       
-      double precision function mtsqlet(n,nm1,nm2,p)
-      implicit none
-      include 'constants.f'
-      integer n,nm1,nm2,i
-      double precision p(mxpart,4),misset(4),etmiss,coslet,pt,pttwo
+c      double precision function mtsqlet(n,nm1,nm2,p)
+c      implicit none
+c      include 'constants.f'
+c      integer n,nm1,nm2,i
+c      double precision p(mxpart,4),misset(4),etmiss,coslet,pt,pttwo
       
-      if (nm2. eq. 0) then
-        etmiss=pt(nm1,p)
-        do i=1,4
-          misset(i)=p(nm1,i)
-        enddo
-      else
-        etmiss=pttwo(nm1,nm2,p)
-        do i=1,4
-          misset(i)=p(nm1,i)+p(nm2,i)
-        enddo
-      endif
+c      if (nm2 .eq. 0) then
+c        etmiss=pt(nm1,p)
+c        do i=1,4
+c          misset(i)=p(nm1,i)
+c        enddo
+c      else
+c        etmiss=pttwo(nm1,nm2,p)
+c        do i=1,4
+c          misset(i)=p(nm1,i)+p(nm2,i)
+c        enddo
+c      endif
       
-      coslet=p(n,1)*misset(1)+p(n,2)*misset(2)
-      coslet=coslet/dsqrt(p(n,1)**2+p(n,2)**2)
-      coslet=coslet/dsqrt(misset(1)**2+misset(2)**2)
-      mtsqlet=2d0*pt(n,p)*etmiss*(1d0-coslet)
-      
-      return
-      end
+c      coslet=p(n,1)*misset(1)+p(n,2)*misset(2)
+c      coslet=coslet/dsqrt(p(n,1)**2+p(n,2)**2)
+c      coslet=coslet/dsqrt(misset(1)**2+misset(2)**2)
+c      mtsqlet=2d0*pt(n,p)*etmiss*(1d0-coslet)
+c      
+c      return
+c      end
             
       double precision function coslpairet(n1,n2,nm1,nm2,p)
       implicit none
@@ -654,7 +628,7 @@ c--- rest frame before doing this
       integer n1,n2,nm1,nm2,i
       double precision p(mxpart,4),misset(4),pp(4),coslet,pt,pttwo
       
-      if (nm2. eq. 0) then
+      if (nm2 .eq. 0) then
         do i=1,4
           misset(i)=p(nm1,i)
         enddo
@@ -678,7 +652,7 @@ c--- rest frame before doing this
       double precision function deltar(i,j,p)
       implicit none
       include 'constants.f'
-      double precision p(mxpart,4),phi1,phi2,yrap,dphi
+      double precision p(mxpart,4),phi1,phi2,etarap,dphi
       integer i,j
       
       phi1=atan2(p(i,1),p(i,2))
@@ -686,37 +660,37 @@ c--- rest frame before doing this
       dphi=phi1-phi2
       if (dphi .gt. pi) dphi=twopi-dphi
       if (dphi .lt. -pi) dphi=twopi+dphi
-      deltar=(yrap(i,p)-yrap(j,p))**2+dphi**2
+      deltar=(etarap(i,p)-etarap(j,p))**2+dphi**2
       deltar=dsqrt(deltar)
       
       return
       end
       
-      double precision function deltarpjet(i,j,p,pjet)
-      implicit none
-      include 'constants.f'
-      double precision p(mxpart,4),pjet(mxpart,4),phi1,phi2,yrap,dphi
-      integer i,j
+c      double precision function deltarpjet(i,j,p,pjet)
+c      implicit none
+c      include 'constants.f'
+c      double precision p(mxpart,4),pjet(mxpart,4),phi1,phi2,etarap,dphi
+c      integer i,j
       
-      phi1=atan2(p(i,1),p(i,2))
-      phi2=atan2(pjet(j,1),pjet(j,2))
-      dphi=phi1-phi2
-      if (dphi .gt. pi) dphi=twopi-dphi
-      if (dphi .lt. -pi) dphi=twopi+dphi
-      deltarpjet=(yrap(i,p)-yrap(j,p))**2+dphi**2
-      deltarpjet=dsqrt(deltarpjet)
+c      phi1=atan2(p(i,1),p(i,2))
+c      phi2=atan2(pjet(j,1),pjet(j,2))
+c      dphi=phi1-phi2
+c      if (dphi .gt. pi) dphi=twopi-dphi
+c      if (dphi .lt. -pi) dphi=twopi+dphi
+c      deltarpjet=(etarap(i,p)-etarap(j,p))**2+dphi**2
+c      deltarpjet=dsqrt(deltarpjet)
       
-      return
-      end
+c      return
+c      end
       
-      double precision function ptqfour(q,j,k,l,m)
-      implicit none
-      include 'constants.f'
-      integer j,k,l,m
-      double precision q(mxpart,4)
-      ptqfour=dsqrt((q(j,1)+q(k,1)+q(l,1)+q(m,1))**2
-     .             +(q(j,2)+q(k,2)+q(l,2)+q(m,2))**2)
-      return
-      end
+c      double precision function ptqfour(q,j,k,l,m)
+c      implicit none
+c      include 'constants.f'
+c      integer j,k,l,m
+c      double precision q(mxpart,4)
+c      ptqfour=dsqrt((q(j,1)+q(k,1)+q(l,1)+q(m,1))**2
+c     .             +(q(j,2)+q(k,2)+q(l,2)+q(m,2))**2)
+c      return
+c      end
 
           

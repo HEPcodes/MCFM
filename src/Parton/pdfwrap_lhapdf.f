@@ -9,14 +9,20 @@
 * LHAPDF variables
       integer PDFmember
       character*50 PDFname      
+      logical newinput
+      common/newinput/newinput
+      common/lhapdf/PDFmember,PDFname
+
       common/couple/amz
 
       
-      open(unit=21,file='lhapdf.DAT',status='old',err=999)
-      call checkversion(21,'lhapdf.DAT')
-      read(21,*) PDFname
-      read(21,*) PDFmember            
-      close(21)
+      if (newinput .eqv. .false.) then
+        open(unit=21,file='lhapdf.DAT',status='old',err=999)
+        call checkversion(21,'lhapdf.DAT')
+        read(21,*) PDFname
+        read(21,*) PDFmember            
+        close(21)
+      endif
       
       write(6,*)
       write(6,*) '**********************************'

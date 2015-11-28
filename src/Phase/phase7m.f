@@ -14,8 +14,6 @@ c---- with all 2 pi's (ie 1/(2*pi)^20)
      . p345(4),p678(4),p45(4),p78(4),p345678(4),
      . smin,wt,wt0,wt129,wt345678,wt345,wt678,wt45,wt78,
      . mass2,width2,mass3,width3
-      character*6 case
-      common/process/case
       common/breit/n2,n3,mass2,width2,mass3,width3 
       parameter(wt0=1d0/twopi**5)
       wt=0d0

@@ -2,11 +2,11 @@
       implicit none
       include 'constants.f'
       include 'npart.f'
+      include 'limits.f'
       logical first
-      double precision bbsqmin,bbsqmax,wsqmin,wsqmax,s(mxpart,mxpart)
+      double precision s(mxpart,mxpart)
       integer nqcdjets,nqcdstart
       common/nqcdjets/nqcdjets,nqcdstart
-      common/limits/bbsqmin,bbsqmax,wsqmin,wsqmax      
       data first/.true./
 
       if (first) then

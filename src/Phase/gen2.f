@@ -3,7 +3,6 @@ C---generate two particle phase space and x1,x2 integration
 C---p1+p2 --> p3+p4
       implicit none
       include 'constants.f'
-      include 'masses.f'
       include 'limits.f'
       include 'mxdim.f'
       integer n2,n3,j,nu
@@ -31,13 +30,13 @@ C---p1+p2 --> p3+p4
          call breitw(r(3),wsqmin,wsqmax,mass3,width3,s34,w3)
       endif
 
-      rtshat=sqrt(s34)
-      ymax=log(sqrts/rtshat)
+      rtshat=dsqrt(s34)
+      ymax=dlog(sqrts/rtshat)
       yave=ymax*(two*r(1)-1d0)
       
 c----udif==tanh(ydif)
       udif=(two*r(2)-1d0)
-      ydif=half*log((1d0+udif)/(1d0-udif))
+      ydif=half*dlog((1d0+udif)/(1d0-udif))
       xjac=four*ymax
 	  
       y3=yave+ydif

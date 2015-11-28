@@ -5,8 +5,8 @@ C---in the natural way this function refers to the process
 c---u(2)+dbar(1)-->nu(3)+e^+(3)+b(5)+bbar(6)+g(7)
       implicit none
       include 'constants.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
       integer j1,j2,j3,j4,j5,j6,j7
       integer i1,i2,i3,i4
       double complex z2
@@ -27,8 +27,8 @@ C---in the natural way this function refers to the process
 c---u(2)+dbar(1)-->nu(3)+e^+(3)+b(5)+bbar(6)+g(7)
       implicit none
       include 'constants.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
       integer j1,j2,j3,j4,j5,j6,j7
       integer i1,i2,i3,i4
       double complex z2

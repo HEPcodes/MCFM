@@ -1,35 +1,30 @@
       subroutine genclust_cone(q,R,njet,qfinal,jetlabel)
-c--- clusters momenta using plabel to determine which 
-c--- particles should be clustered. Forms njet jets according to
-c--- the Run II cone algorithm with cone size R.
-c--- Furthermore, the clustered jets are only observed if
-c--- pT(jet) > ptjetmin and y(jet) < yjetmax
+c---  clusters momenta using plabel to determine which 
+c---  particles should be clustered. Forms njet jets according to
+c---  the Run II cone algorithm with cone size R.
+c---  Furthermore, the clustered jets are only observed if
+c---  pT(jet) > ptjetmin and y(jet) < etajetmax
 c--- 
-c--- qfinal is the final vector q1,.... q(4+njets)
-c--- where non-jet four vectors are set equal to the incoming q 
+c---  qfinal is the final vector q1,.... q(4+njets)
+c---  where non-jet four vectors are set equal to the incoming q 
       implicit none
       include 'constants.f'
-      include 'clustering.f'
       include 'bbproc.f'
+      include 'limits.f'
+      include 'npart.f'
+      include 'jetcuts.f'
       double precision q(mxpart,4),qjet(mxpart,4),qfinal(mxpart,4)
-      double precision R,dijmin,dkmin,ayrap,ptjetmin,yjetmax
+      double precision R,aetarap
       double precision bclustmass,ptjet,m56,m57,m67
-      integer njet,i,j,k,nu,iter,nmin1,nmin2,maxjet,nk,
-     . npart,nqcdjets,nqcdstart,ajet,jetindex(mxpart),nproc,countb
+      integer njet,i,j,k,nu,iter,maxjet,
+     . ajet,jetindex(mxpart),nproc,countb
       character jetlabel(mxpart)*2,plabel(mxpart)*2
-      double precision bbsqmin,bbsqmax,wsqmin,wsqmax
       double precision protoq(mxpart,4),deltar,deltarj,et,etmax,net,
      . qshared(4),sharedet
       integer maxproto,protoc(mxpart,0:mxpart),eti,shared,
      . sharedc(mxpart),ni
-      character*4 part
-      common/part/part
-      common/limits/bbsqmin,bbsqmax,wsqmin,wsqmax
       common/plabel/plabel
-      common/npart/npart
-      common/nqcdjets/nqcdjets,nqcdstart
       common/nproc/nproc
-      common/jetcuts/ptjetmin,yjetmax
 
       njet=0
       maxjet=0
@@ -318,9 +313,10 @@ c--- restore jets
       do i=1,njet
 c        write(*,*) 'Jet ',i,'(',jetlabel(i),')',jetindex(i)
 c        write(*,*) 'pt: ',ptjet(i,q,qjet),' vs min. ',ptjetmin
-c        write(*,*) 'ay: ',ayrap(i,qjet),' vs max. ',yjetmax
+c        write(*,*) 'ay: ',aetarap(i,qjet),' vs max. ',etajetmax
         if ((ptjet(i,q,qjet) .gt. ptjetmin) .and.
-     .      (ayrap(i,qjet)   .lt. yjetmax)) then     
+     .      (aetarap(i,qjet)   .gt. etajetmin) .and.
+     .      (aetarap(i,qjet)   .lt. etajetmax)) then     
         ajet=ajet+1
         do nu=1,4
           qfinal(jetindex(ajet),nu)=qjet(i,nu)
@@ -369,7 +365,7 @@ c--- perform m56 mass cut if there are 2 or more jets
      .     -(qfinal(5,1)+qfinal(6,1))**2
      .     -(qfinal(5,2)+qfinal(6,2))**2
      .     -(qfinal(5,3)+qfinal(6,3))**2
-        if (njet. ge. 3) then
+        if (njet .ge. 3) then
         m57=(qfinal(5,4)+qfinal(7,4))**2
      .     -(qfinal(5,1)+qfinal(7,1))**2
      .     -(qfinal(5,2)+qfinal(7,2))**2

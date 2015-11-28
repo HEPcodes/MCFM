@@ -1,8 +1,8 @@
       double complex function Fsc3(j1,j2,j3,j4,j5,j6,za,zb) 
       implicit none
       include 'constants.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
+      include 'sprods_com.f'
       integer j1,j2,j3,j4,j5,j6
       double complex L1
       double precision t  

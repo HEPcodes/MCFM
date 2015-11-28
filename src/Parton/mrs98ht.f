@@ -64,7 +64,7 @@ C****************************************************************C
       q2save=qsq
       if(init.ne.0) goto 10
 c        open(unit=1,file='ft08a.dat',status='old')
-        open(unit=1,file='ht11b.dat',status='old')
+        open(unit=1,file='Pdfdata/ht11b.dat',status='old')
         do 20 n=1,nx-1
         do 20 m=1,nq
         read(1,50)f(1,n,m),f(2,n,m),f(3,n,m),f(4,n,m),

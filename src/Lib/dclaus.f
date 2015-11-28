@@ -9,14 +9,14 @@
 * Mathlib gen
 *
 *
-      FUNCTION DCLAUS(X)
+      DOUBLE PRECISION FUNCTION DCLAUS(X)
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
 
       DIMENSION A(0:8),B(0:13)
  
-      PARAMETER (R1 = 1, HF =R1/2)
+      PARAMETER (R1 = 1d0, HF =R1/2d0)
       PARAMETER (PI = 3.14159 26535 89793 24D0)
-      PARAMETER (PI2 = 2*PI, PIH = PI/2, RPIH = 2/PI)
+      PARAMETER (PI2 = 2d0*PI, PIH = PI/2d0, RPIH = 2d0/PI)
  
       DATA A( 0) / 0.02795 28319 73575 6613D0/
       DATA A( 1) / 0.00017 63088 74389 8116D0/
@@ -49,25 +49,25 @@
        V=PI2-V
        S=-S
       ENDIF
-      IF(V .EQ. 0 .OR. V .EQ. PI) THEN
-       H=0
+      IF(V .EQ. 0d0 .OR. V .EQ. PI) THEN
+       H=0d0
       ELSEIF(V .LT. PIH) THEN
        U=RPIH*V
-       H=2*U**2-1
+       H=2d0*U**2-1d0
        ALFA=H+H
-       B1=0
-       B2=0
+       B1=0d0
+       B2=0d0
        DO 1 I = 8,0,-1
        B0=A(I)+ALFA*B1-B2
        B2=B1
     1  B1=B0
-       H=V*(1-LOG(V)+HF*V**2*(B0-H*B2))
+       H=V*(1d0-LOG(V)+HF*V**2*(B0-H*B2))
       ELSE
-       U=RPIH*V-2
-       H=2*U**2-1
+       U=RPIH*V-2d0
+       H=2d0*U**2-1d0
        ALFA=H+H
-       B1=0
-       B2=0
+       B1=0d0
+       B2=0d0
        DO 2 I = 13,0,-1
        B0=B(I)+ALFA*B1-B2
        B2=B1

@@ -106,8 +106,8 @@ c---final-final
       QDpk=
      . +BigQ(4)*p(kp,4)-BigQ(1)*p(kp,1)-BigQ(2)*p(kp,2)-BigQ(3)*p(kp,3)
       pijsq=pij(4)**2-pij(1)**2-pij(2)**2-pij(3)**2
-      rat=sqrt((Qsq-mijsq-mksq)**2-4d0*mijsq*mksq)
-      rat=rat/sqrt((Qsq-pijsq-mksq)**2-4d0*pijsq*mksq)
+      rat=dsqrt((Qsq-mijsq-mksq)**2-4d0*mijsq*mksq)
+      rat=rat/dsqrt((Qsq-pijsq-mksq)**2-4d0*pijsq*mksq)
         ipart=1
            do j=1,npart+2
                 do nu=1,4

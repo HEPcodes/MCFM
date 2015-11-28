@@ -1,8 +1,8 @@
       double complex function L34_12(j1,j2,j3,j4,j5,j6,za,zb)
       implicit none
       include 'constants.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
       integer j1,j2,j3,j4,j5,j6
       integer i1,i2,i3,i4
       double complex z2,bit1,bit2

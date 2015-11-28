@@ -1,8 +1,8 @@
       subroutine initqqgg(za,zb,nwz)      
       implicit none
       include 'constants.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
+      include 'sprods_com.f'
 c+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 c     for a given set of momenta (all outgoing)
 c     parton1(-p)+parton2(-q) --> 
@@ -13,10 +13,10 @@ c     for the various
 c     sub-processes and stores them in the common block msq
 c-----------------------------------------------------------------
 
-      real*8 CoupleC,CoupleV
-      real*8 xmatpc,xmatpv,tempc,tempv
-      real*8 PC(-nf:nf,-nf:nf),PV(-nf:nf,-nf:nf)
-      real*8 msqpc(9),msqpv(9)
+      double precision CoupleC,CoupleV
+      double precision xmatpc,xmatpv,tempc,tempv
+      double precision PC(-nf:nf,-nf:nf),PV(-nf:nf,-nf:nf)
+      double precision msqpc(9),msqpv(9)
       common/msq2/msqpc,msqpv     
       common/qqggcouple/PC,PV     
       include 'ckm.f'

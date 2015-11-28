@@ -48,7 +48,7 @@
       subroutine conserve8(p)
       implicit none
       include 'constants.f'
-      double precision p(8,4)
+      double precision p(mxpart,4)
       integer nu
       write(6,*) 
       do nu=1,4

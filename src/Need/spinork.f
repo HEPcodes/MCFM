@@ -34,8 +34,9 @@ C-----positive energy case
       do i=1,N
          do j=1,i
          zabikj(i,j)=f(i)*f(j)
-     & *(pr(i)*kp*pl(j)/(rt(i)*rt(j))-pr(i)*kl*rt(j)/rt(i)
-     & -rt(i)/rt(j)*kr*pl(j)+rt(i)*rt(j)*km)
+     & *(pr(i)*pl(j)*dcmplx(kp/(rt(i)*rt(j)))
+     &    -pr(i)*kl*dcmplx(rt(j)/rt(i))
+     &    -dcmplx(rt(i)/rt(j))*kr*pl(j)+dcmplx(rt(i)*rt(j)*km))
          zbaikj(j,i)=zabikj(i,j) 
          zabikj(j,i)=flip(i)*flip(j)*Dconjg(zabikj(i,j))
          zbaikj(i,j)=flip(i)*flip(j)*Dconjg(zbaikj(j,i))

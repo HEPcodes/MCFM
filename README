@@ -1,7 +1,7 @@
 ****************************************************
-*             MCFM VERSION 3.2                     *
+*             MCFM VERSION 3.4                     *
 *              Build date:                         *
-*       Tue Sep 3 13:54:02 CDT 2002               *
+*       Thu Apr 24 11:21:17 CDT 2003               *
 *                                                  *
 *     John Campbell, johnmc@hep.anl.gov            *
 *     Keith Ellis,   ellis@fnal.gov                *
@@ -11,6 +11,5 @@
 *    Phys.Rev.D62:114012, hep-ph/0006304 (W,Z+bb)  *
 *    Phys.Rev.D60:113006, hep-ph/9905386 (diboson) *
 *                                                  *
-*   On the web:  http://theory.fnal.gov/           *
-*                 people/ellis/Programs/mcfm.html  *
+*   On the web:  http://mcfm.fnal.gov/             *
 ****************************************************

@@ -1,8 +1,8 @@
       double complex function BigT(j1,j2,j3,j4,j5,j6,za,zb)
       implicit none
       include 'constants.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
       integer j1,j2,j3,j4,j5,j6,i1,i2,i3,i4
       double complex z2
       double precision t134,t234,del3,del12,del34,del56

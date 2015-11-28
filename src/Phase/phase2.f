@@ -1,7 +1,6 @@
       subroutine phase2(r,p1,p2,p3,p4,wt,*)
       implicit none
       include 'constants.f'
-      include 'masses.f'
       include 'mxdim.f'
 c---- generate phase space for 2-->2 process
 c---- r(mxdim),p1(4),p2(4) are inputs reversed in sign 

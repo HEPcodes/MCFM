@@ -1,8 +1,8 @@
       double complex function fbgamma(i1,i2,i3,i4,i5,za,zb)
       implicit none
       include 'constants.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
       integer i1,i2,i3,i4,i5
       double complex L0,L1,Lsm1
       fbgamma=

@@ -25,12 +25,9 @@
 
       IMPLICIT NONE
       INCLUDE 'constants.f'
-      INCLUDE 'masses.f'
       INCLUDE 'epinv.f'
-      INCLUDE 'prods.f'
+      include 'sprods_com.f'
       INCLUDE 'qcdcouple.f'
-      INCLUDE 'ewcouple.f'
-      INCLUDE 'susycoup.f'
       INCLUDE 'scale.f'
 
 *     ARGUMENTS 
@@ -43,10 +40,10 @@
       DOUBLE PRECISION SS,TT,UU,SN,TN,UN,MH2
       DOUBLE COMPLEX LNRAT
       DOUBLE COMPLEX xlns,xlnt,xlnu,xlnsm,xlntm,xlnum
-      DOUBLE COMPLEX xlnmh,log1ms,log1mt,log1mu
+      DOUBLE COMPLEX xlnmh
       DOUBLE COMPLEX xln1ms,xln1mt,xln1mu
       DOUBLE PRECISION dilogs,dilogt,dilogu
-      DOUBLE PRECISION c0s,c0t,c0u,c0ms,c0mt,c0mu,d0st,d0su,d0tu
+      DOUBLE PRECISION c0t,c0u,c0ms,c0mt,c0mu,d0st,d0su,d0tu
       DOUBLE PRECISION born,term
 
 C     coupsq=susycoup**2*ghbb**2  => as in the Born function

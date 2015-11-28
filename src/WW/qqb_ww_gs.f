@@ -8,7 +8,6 @@ c                           |
 c                           ---> f(p5)+bar{f}(6)
       implicit none 
       include 'constants.f'
-      include 'masses.f'
       include 'ptilde.f'
       include 'qqgg.f'
       integer j,k,nd

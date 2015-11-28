@@ -6,7 +6,7 @@ C     0 ---> q(p1)+g(p2)+g(p3)+qbar(p4)+l(p5)+a(p6)
 C     mqqb(2,2) has two indices;the first for the helicity quark line;
 C     the second for helicity of lepton line.
       include 'constants.f'
-      include 'prods.f'
+      include 'zprods_com.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'mmsq_cs.f'
@@ -142,7 +142,7 @@ c--- USED TO COMPARE ONLY
 c----wrapper to a6treeg that also includes config st='q+g-g-qb-'
       integer j1,j2,j3,j4,j5,j6
       include 'constants.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       character*9 st
       double complex a6treeg
 

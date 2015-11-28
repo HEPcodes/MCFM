@@ -6,7 +6,8 @@ c---with no couplings included
       include 'constants.f'
       include 'masses.f'
 C---'prods.f' includes both the declaration and the common for s and za,zb
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       integer i1,i2,i3,i4,i5,i6
       double complex t2
       double precision s234,s256,prop

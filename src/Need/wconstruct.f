@@ -2,7 +2,6 @@
       implicit none
       include 'constants.f'
       include 'masses.f'
-      include 'mxdim.f'
       include 'nn.f'
       logical exact_w_mom
       double precision ptn,pte,ple,pln,Ee,En,ptwsq,mtsq,a,b,cosnew1,

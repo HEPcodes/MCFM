@@ -7,12 +7,12 @@
 ! Constants
 !
       double precision  sw2
-      parameter        (sw2 = 0.230123512d0)
+      parameter        (sw2 = 0.225880997d0)
 
 !   masses and widths of fermions
 
       double precision tmass,      bmass,     cmass
-      parameter       (tmass=150d0,bmass=0d0, cmass=0d0)
+      parameter       (tmass=175d0,bmass=4.75d0, cmass=0d0)
       double precision smass,      umass,     dmass
       parameter       (smass=0d0,  umass=0d0, dmass=0d0)
       double precision twidth,     bwidth,    cwidth
@@ -27,13 +27,13 @@
 !   masses and widths of bosons
 
       double precision wmass,         zmass
-      parameter       (wmass=80.41d0,    zmass=91.187d0)
+      parameter       (wmass=80.23d0,    zmass=91.187d0)
       double precision wwidth,        zwidth
-      parameter       (wwidth=2.06d0, zwidth=2.49d0)
+      parameter       (wwidth=2.03d0, zwidth=2.49d0)
       double precision amass,         awidth
       parameter       (amass=0d0,     awidth=0d0)
       double precision hmass,         hwidth
-      parameter       (hmass=150d0,   hwidth=1d0)
+      parameter       (hmass=100d0,   hwidth=2.4251446D-10)
 !
 ! Local Variables
 !

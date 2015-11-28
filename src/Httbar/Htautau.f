@@ -6,8 +6,8 @@ c---     + tau~ (-> vt~(p6) + ve(p7) + e+ (p8) )
       include 'constants.f'
       include 'masses.f'
       include 'ewcouple.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
       integer j,k
       double complex amp1,amp2
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac

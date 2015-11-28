@@ -1,7 +1,8 @@
       subroutine spassign(p,k1,k2,k3,q,l,l_)
       implicit none
       include 'constants.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       include 'debr.f'
 
       HQ1H=za(q,k1)

@@ -7,7 +7,7 @@
 *     character string st can take various values                      *
 ************************************************************************
       include 'constants.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       character*9 st
       integer j1,j2,j3,j4,j5,j6
       double complex a6treeg,vvg,fcc,fsc

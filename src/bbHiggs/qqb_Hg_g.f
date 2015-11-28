@@ -19,7 +19,8 @@ c--all momenta incoming
       include 'qcdcouple.f'
       include 'ewcouple.f'
       include 'susycoup.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       include 'runmb.f'
       include 'scale.f'
       integer j,k,isub

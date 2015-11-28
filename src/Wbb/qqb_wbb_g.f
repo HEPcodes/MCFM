@@ -12,11 +12,11 @@ c                           ---> b(p5)+bb(p6)
 c   positively charged W only
       implicit none 
       include 'constants.f'
-      include 'masses.f'
       include 'qcdcouple.f'
       include 'ewcouple.f'
       include 'ckm.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       include 'hardscale.f'
       integer j,k
       double precision p(mxpart,4),msq(-nf:nf,-nf:nf),redmsq,fac
@@ -79,7 +79,7 @@ c   positively charged W only
 c matrix element squared summed over colors and spins
       include 'constants.f'
       include 'masses.f'
-      include 'prods.f'
+      include 'sprods_com.f'
       integer j1,j2,j3,j4,j5,j6,j7,jb
       double complex qedipp,qedimm,qedimp,qedipm,ipp,imm,imp,ipm
       double complex qedfpp,qedfmm,qedfmp,qedfpm,fpp,fmm,fmp,fpm

@@ -11,17 +11,15 @@
 ************************************************************************
 
       include 'constants.f'
-      include 'prods.f'
+      include 'zprods_com.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'lc.f'
       integer i1(2),i2(2),i3(2),i4(2),i5(2),i6(2),j,lh,h2,h3,hq,h(2:3)
-      double precision mqqb,x,fac
+      double precision mqqb,fac
       double complex m(2),ml1(2),ml2(2),ml3,ml4(2)
       double complex a6treeg1,a61g1lc,a61g1slc,a61g1nf,a63g1
       character*9 st1(2,2),st2(2,2),st3(2,2)
-      logical compare
-      parameter(x=xn/cf)
       data i1/1,4/
       data i2/2,3/
       data i3/3,2/
@@ -32,12 +30,9 @@
       data st2/'q+qb-g+g+','q+qb-g+g-','q+qb-g-g+','q+qb-g-g-'/
       data st3/'q+qb-g-g-','q+qb-g-g+','q+qb-g+g-','q+qb-g+g+'/
       
-      compare=.false.
       
 C ---final matrix element squared is needed for left-handed
 c--  quark and lepton line helicity
-
-      mqqb=0d0
 
       fac=avegg*8d0*gsq**2*esq**2*cf*xn**3*ason2pi
 c--- no extra factor here since colour algebra is already done in (2.12)

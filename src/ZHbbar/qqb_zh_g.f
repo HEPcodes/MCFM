@@ -10,7 +10,7 @@ c   for the moment --- radiation only from initial line
       include 'constants.f'
       include 'masses.f'
       include 'zcouple.f'
-      include 'dprodx.f'
+      include 'sprods_com.f'
       integer j,k
       double precision P(mxpart,4),msq(-nf:nf,-nf:nf)
       double precision radiLL
@@ -83,7 +83,7 @@ c   for the moment --- radiation only from initial line
       include 'constants.f'
       include 'qcdcouple.f'
       include 'masses.f'
-      include 'dprodx.f'
+      include 'sprods_com.f'
       include 'ewcouple.f'
       integer j1,j2,j3,j4,j5,j6,j7
       double precision s45,s12,s13,s23,s123,prop

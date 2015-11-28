@@ -17,7 +17,7 @@
       double precision x,y,r
       double complex l0
       r=x/y
-      L1=(L0(x,y)+one)/(one-r)
+      L1=(L0(x,y)+cone)/dcmplx(one-r)
       return
       end
 
@@ -28,7 +28,7 @@
       double complex Lsm1
       r1=x1/y1
       r2=x2/y2
-      Ls0=Lsm1(x1,y1,x2,y2)/(one-r1-r2)
+      Ls0=Lsm1(x1,y1,x2,y2)/dcmplx(one-r1-r2)
       return
       end
 
@@ -39,7 +39,7 @@
       double complex Ls0,L0
       r1=x1/y1
       r2=x2/y2
-      Ls1=(Ls0(x1,y1,x2,y2)+L0(x1,y1)+L0(x2,y2))/(one-r1-r2)
+      Ls1=(Ls0(x1,y1,x2,y2)+L0(x1,y1)+L0(x2,y2))/dcmplx(one-r1-r2)
       return
       end
 
@@ -55,16 +55,16 @@
       omr1=one-r1
       omr2=one-r2
       if (omr1 .gt. one) then 
-          dilog1=-ddilog(r1)+pisqo6-Lnrat(x1,y1)*log(omr1)
+         dilog1=dcmplx(pisqo6-ddilog(r1))-Lnrat(x1,y1)*dcmplx(log(omr1))
       else
-          dilog1=dcmplx(ddilog(omr1))
+         dilog1=dcmplx(ddilog(omr1))
       endif
       if (omr2 .gt. one) then 
-          dilog2=-ddilog(r2)+pisqo6-Lnrat(x2,y2)*log(omr2)
+         dilog2=dcmplx(pisqo6-ddilog(r2))-Lnrat(x2,y2)*dcmplx(log(omr2))
       else
           dilog2=dcmplx(ddilog(omr2))
       endif
-      lsm1=dilog1+dilog2+Lnrat(x1,y1)*Lnrat(x2,y2)-pisqo6
+      lsm1=dilog1+dilog2+Lnrat(x1,y1)*Lnrat(x2,y2)-dcmplx(pisqo6)
       return
       end
 
@@ -89,12 +89,12 @@
       omr2=one-r2
 
       if (omr1 .gt. one) then 
-      dilog1=-ddilog(r1)+pisqo6-Lnrat(-m1sq,-t)*log(omr1)
+      dilog1=dcmplx(pisqo6-ddilog(r1))-Lnrat(-m1sq,-t)*dcmplx(log(omr1))
       else
       dilog1=dcmplx(ddilog(omr1))
       endif
       if (omr2 .gt. one) then 
-      dilog2=-ddilog(r2)+pisqo6-Lnrat(-m2sq,-t)*log(omr2)
+      dilog2=dcmplx(pisqo6-ddilog(r2))-Lnrat(-m2sq,-t)*dcmplx(log(omr2))
       else
       dilog2=dcmplx(ddilog(omr2))
       endif
@@ -128,7 +128,7 @@
       do j=1,5
          omarg(j)=one-arg(j)
          if (omarg(j) .gt. one) then 
-             Li2(j)=-ddilog(arg(j))+pisqo6-wlog(j)*log(omarg(j))
+             Li2(j)=dcmplx(pisqo6-ddilog(arg(j)))-wlog(j)*log(omarg(j))
           else
              Li2(j)=dcmplx(ddilog(omarg(j)))
          endif

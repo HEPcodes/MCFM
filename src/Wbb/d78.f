@@ -2,7 +2,8 @@
 c---sum of d7+d8
       implicit none
       include 'constants.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       integer j1,j2,j3,j4,j5,j6,j7,jb
       double complex t2,d8,d7
       double precision s45,s267,s2345,s345
@@ -31,12 +32,13 @@ c---sum of d7+d8
 c---sum of d7+d8
       implicit none
       include 'constants.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       integer j1,j2,j3,j4,j5,j6,j7,jb
       double complex t2,d8,d7
       double precision s45,s267,s2345,s345
-      double precision x7sq,x8sq,x78sq
-      common/tempbit/x7sq,x8sq,x78sq
+c      double precision x7sq,x8sq,x78sq
+c      common/tempbit/x7sq,x8sq,x78sq
       s45=s(j4,j5)
       s345=s(j3,j4)+s(j3,j5)+s(j4,j5)
       s2345=s(j2,j3)+s(j2,j4)+s(j2,j5)+s345
@@ -59,7 +61,6 @@ c---sum of d7+d8
 
       double complex function d78pp(j1,j2,j3,j4,j5,j6,j7,jb)
       implicit none
-      include 'constants.f'
       integer j1,j2,j3,j4,j5,j6,j7,jb
       double complex d78pm
       d78pp=d78pm(j1,j2,j3,j5,j4,j6,j7,jb)
@@ -68,7 +69,6 @@ c---sum of d7+d8
 
       double complex function d78mp(j1,j2,j3,j4,j5,j6,j7,jb)
       implicit none
-      include 'constants.f'
       integer j1,j2,j3,j4,j5,j6,j7,jb
       double complex d78mm
       d78mp=d78mm(j1,j2,j3,j5,j4,j6,j7,jb)

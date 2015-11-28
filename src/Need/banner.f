@@ -7,7 +7,7 @@
       character*50 line
       integer vlength,lenocc
       common/versionnumber/codeversion
-      data codeversion/'3.2'/      
+      data codeversion/'3.4'/      
 
       line='**************************************************'
       vlength=lenocc(codeversion)
@@ -19,7 +19,7 @@
       write(6,*) line
       write(6,*) '*                                                *'
       write(6,*) '* MCFM, v'//codeversion//
-     . '              September 3rd, 2002 *'
+     . '              April 24th, 2003 *'
       write(6,*) '*                                                *'
       write(6,*) '* Authors: John Campbell, johnmc@hep.anl.gov     *'
       write(6,*) '*          Keith Ellis,   ellis@fnal.gov,        *'
@@ -29,8 +29,7 @@
       write(6,*) '*  Phys.Rev.D62:114012, hep-ph/0006304 (W,Z+bb)  *'
       write(6,*) '*  Phys.Rev.D60:113006, hep-ph/9905386 (diboson) *'
       write(6,*) '*                                                *'
-      write(6,*) '* On the web:  http://theory.fnal.gov/           *'
-      write(6,*) '*               people/ellis/Programs/mcfm.html  *'
+      write(6,*) '* On the web:  http://mcfm.fnal.gov/             *'
       write(6,*) '**************************************************'
       write(6,*) 
  

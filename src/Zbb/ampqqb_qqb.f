@@ -1,6 +1,5 @@
       subroutine ampqqb_qqb(i1,i2,i5,i6,qqbA,qqbB)
       implicit none
-      include 'constants.f'
       integer i1,i2,i5,i6,swap(2),j,k
       double complex aqqb_zbb_new
       double complex qqbA(2,2,2),qqbB(2,2,2)

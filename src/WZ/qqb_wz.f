@@ -16,8 +16,8 @@ c     Notation to allow room for p3 --- gluon emission.
       include 'ckm.f'
       include 'ewcouple.f'
       include 'zcouple.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
       include 'zerowidth.f'
       include 'ewcharge.f'
       include 'anomcoup.f'
@@ -72,8 +72,8 @@ c--- but for Z -> bbbar this diagram contains |V_tb|**2 which we take 0
       
 c-- if Z -> neutrinos, we need to switch c1 and c2
       if (plabel(5) .eq. 'nl') then
-        cl1=1-cl1
-        cl2=1-cl2
+        cl1=1d0-cl1
+        cl2=1d0-cl2
       endif
       
       v2(1)=l1
@@ -220,7 +220,7 @@ c--no point in wasting time if it gives zero anyway
             AWZP=(FAC*(ZgR(+j)*Fa213465+ZgR(-k)*Fa215643)
      .           +FACM*(v2(2)*cotw*prop56*Fb213465_z
      .                                +q1*Fb213465_g)*prop12)*prop34
-          elseif ((j .lt. 0) .and. (k. gt. 0)) then
+          elseif ((j .lt. 0) .and. (k .gt. 0)) then
             AWZM=(FAC*(ZgL(+k)*Fa123456+ZgL(-j)*Fa126543)
      .           +FACM*(v2(1)*cotw*prop56*Fb123456_z
      .                                +q1*Fb123456_g)*prop12)*prop34
@@ -244,7 +244,7 @@ c---4th term (l-h only) contains two W propagators
             AWZP=AWZP+FAC*prop12*(
      .          (en1*Fa345612+en2*Fa342165)*v2(2)*prop56
      .          +q1*(-1d0)*(cl1*Fa345612+cl2*Fa342165))
-          elseif ((j .lt. 0) .and. (k. gt. 0)) then
+          elseif ((j .lt. 0) .and. (k .gt. 0)) then
             AWZM=AWZM+FAC*prop12*(
      .          (en1*Fa346521+en2*Fa341256)*v2(1)*prop56
      .          +q1*(-1d0)*(cl1*Fa346521+cl2*Fa341256)

@@ -14,7 +14,7 @@ C                                                                      *
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'masses.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       integer nu,np,j,k,h1,h2
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),ampsq(2,2)
       double precision wtgg,wtqqb,wtqbq

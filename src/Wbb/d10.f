@@ -1,7 +1,8 @@
       double complex function d10pm(j1,j2,j3,j4,j5,j6,j7,jb)
       implicit none
       include 'constants.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       integer j1,j2,j3,j4,j5,j6,j7,jb
       double precision s2345,s345
       double complex t2
@@ -16,7 +17,8 @@
       double complex function d10mm(j1,j2,j3,j4,j5,j6,j7,jb)
       implicit none
       include 'constants.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       integer j1,j2,j3,j4,j5,j6,j7,jb
       double precision s2345,s345
       s345=s(j3,j4)+s(j3,j5)+s(j4,j5)
@@ -30,7 +32,8 @@
       double complex function d10pp(j1,j2,j3,j4,j5,j6,j7,jb)
       implicit none
       include 'constants.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       integer j1,j2,j3,j4,j5,j6,j7,jb
       double precision s2345,s345
       double complex t2
@@ -44,7 +47,8 @@
       double complex function d10mp(j1,j2,j3,j4,j5,j6,j7,jb)
       implicit none
       include 'constants.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       integer j1,j2,j3,j4,j5,j6,j7,jb
       double complex t2
       double precision s2345,s345

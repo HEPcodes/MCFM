@@ -10,9 +10,9 @@
       include 'constants.f'
       include 'qcdcouple.f'
       include 'ewcouple.f'
-      include 'masses.f'
       include 'ckm.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       include 'scheme.f'
       include 'hardscale.f'
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),
@@ -21,7 +21,6 @@
       double complex atrLLL,atrLRL,a61LLL,a61LRL
       double complex tLLL,tLRL,fLLL,fLRL
       integer nu,j,k
-      common/twopij/srke
 
       scheme='dred'
 
@@ -32,12 +31,12 @@
       enddo
 
 c---calculate the lowest order matrix element and fill the common block
-c---twopij with srke_{ij}
+c---twopij with s_{ij}
       call qqb_wbb(p,msq)
       if (
-     .      (srke(5,6) .lt. four*hscalesq) 
-     . .or. (srke(1,5)*srke(2,5)/srke(1,2) .lt. hscalesq) 
-     . .or. (srke(1,6)*srke(2,6)/srke(1,2) .lt. hscalesq) ) return 
+     .      (s(5,6) .lt. four*hscalesq) 
+     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. hscalesq) 
+     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. hscalesq) ) return 
 
 c---  Now transform momenta into a notation 
 c---  suitable for calling the BDKW function with notation which is 

@@ -4,9 +4,9 @@ c     q(-p1)+qb(-p2) --> nu(p3)+e^+(p4)+b(p5)+bb(p6)
 c---  averaged(summed) over initial(final) colours and spins
       implicit none
       include 'constants.f'
-      include 'masses.f'
       include 'ckm.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       include 'hardscale.f'
       integer j,k
       double precision p(mxpart,4),msq(-nf:nf,-nf:nf),msqwbb

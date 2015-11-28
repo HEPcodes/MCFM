@@ -58,6 +58,6 @@ c---if x's out of normal range alternative return
       enddo 
 
       wt3=xjac*pswt
-      if(wt3 .eq. 0) return 1
+      if(wt3 .eq. 0d0) return 1
       return
       end

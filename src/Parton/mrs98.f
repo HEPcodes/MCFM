@@ -76,7 +76,7 @@ C****************************************************************C
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
-        open(unit=1,file='ft08a.dat',status='old')
+        open(unit=1,file='Pdfdata/ft08a.dat',status='old')
         do 20 n=1,nx-1
         do 20 m=1,nq
         read(1,50)f(1,n,m),f(2,n,m),f(3,n,m),f(4,n,m),
@@ -159,7 +159,7 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
-        open(unit=1,file='ft09a.dat',status='old')
+        open(unit=1,file='Pdfdata/ft09a.dat',status='old')
         do 20 n=1,nx-1
         do 20 m=1,nq
         read(1,50)f(1,n,m),f(2,n,m),f(3,n,m),f(4,n,m),
@@ -242,7 +242,7 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
-        open(unit=1,file='ft11a.dat',status='old')
+        open(unit=1,file='Pdfdata/ft11a.dat',status='old')
         do 20 n=1,nx-1
         do 20 m=1,nq
         read(1,50)f(1,n,m),f(2,n,m),f(3,n,m),f(4,n,m),
@@ -326,7 +326,7 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
-        open(unit=1,file='ft24a.dat',status='old')
+        open(unit=1,file='Pdfdata/ft24a.dat',status='old')
         do 20 n=1,nx-1
         do 20 m=1,nq
         read(1,50)f(1,n,m),f(2,n,m),f(3,n,m),f(4,n,m),
@@ -409,7 +409,7 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
-        open(unit=1,file='ft23a.dat',status='old')
+        open(unit=1,file='Pdfdata/ft23a.dat',status='old')
         do 20 n=1,nx-1
         do 20 m=1,nq
         read(1,50)f(1,n,m),f(2,n,m),f(3,n,m),f(4,n,m),

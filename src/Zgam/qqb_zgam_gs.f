@@ -3,7 +3,6 @@ c---Matrix element SUBTRACTION squared averaged over initial colors and spins
 c     q(-p1)+qbar(-p2) -->  e-(p3)+e+(p4))+a(p5)+g(p6)
       implicit none 
       include 'constants.f'
-      include 'masses.f'
       include 'ptilde.f'
       include 'qqgg.f'
       integer j,k,nd

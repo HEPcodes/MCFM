@@ -2,7 +2,6 @@
 c----1+2 --> 3+4
       implicit none
       include 'constants.f'
-      include 'masses.f'
       include 'mxdim.f'
       integer nu
       double precision r(mxdim),p(mxpart,4),wt2,xx(2),xmin,sqrts

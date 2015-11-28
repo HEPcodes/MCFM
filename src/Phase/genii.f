@@ -1,7 +1,6 @@
       subroutine genii(nperms,p,wt,msq)
       implicit none
       include 'constants.f'
-      include 'mxdim.f'
       include 'qcdcouple.f'
       include 'debug.f'
       include 'impsample.f'
@@ -33,7 +32,7 @@ c      omxmin=one-xmin
       alpha=-dot(p,i2,3)/dot(p,i1,i2)
       omx=one-x
       a=alpha/omx   
-      oma=1-a
+      oma=1d0-a
       if (impsample) then
       jacbit=four*sqrt(omx*omxmin)/(half/sqrt(a)+half/sqrt(oma))
       else

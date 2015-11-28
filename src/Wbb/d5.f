@@ -1,7 +1,8 @@
       double complex function d5pm(j1,j2,j3,j4,j5,j6,j7,jb)
       implicit none
       include 'constants.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       integer j1,j2,j3,j4,j5,j6,j7,jb
       double precision s267
       double complex t2
@@ -14,7 +15,8 @@
       double complex function d5mm(j1,j2,j3,j4,j5,j6,j7,jb)
       implicit none
       include 'constants.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       integer j1,j2,j3,j4,j5,j6,j7,jb
       double complex t2
       double precision s267
@@ -27,7 +29,6 @@
 
       double complex function d5pp(j1,j2,j3,j4,j5,j6,j7,jb)
       implicit none
-      include 'constants.f'
       integer j1,j2,j3,j4,j5,j6,j7,jb
       double complex d5pm
       d5pp=d5pm(j1,j2,j3,j5,j4,j6,j7,jb)
@@ -36,7 +37,6 @@
 
       double complex function d5mp(j1,j2,j3,j4,j5,j6,j7,jb)
       implicit none
-      include 'constants.f'
       integer j1,j2,j3,j4,j5,j6,j7,jb
       double complex d5mm
       d5mp=d5mm(j1,j2,j3,j5,j4,j6,j7,jb)

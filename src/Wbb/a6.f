@@ -8,7 +8,7 @@
 *     character string st can take the value pp,pm or sl
 ************************************************************************
       include 'constants.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       character*2 st
       integer j1,j2,j3,j4,j5,j6
       double complex atree,vv,ff
@@ -22,7 +22,7 @@
 c-----switchyard function to direct to pm,pp or st
       implicit none
       include 'constants.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       character*2 st
       integer j1,j2,j3,j4,j5,j6
       double complex fpp,fpm,fsl

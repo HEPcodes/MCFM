@@ -4,9 +4,8 @@ c     q(-p1)+qb(-p2) --> nu(p3)+e^+(p4)+b(p5)+bb(p6)
 c---  averaged(summed) over initial(final) colours and spins
       implicit none
       include 'constants.f'
-      include 'masses.f'
       include 'ckm.f'
-      include 'dprodx.f'
+      include 'sprods_com.f'
       include 'hardscale.f'
       include 'qcdcouple.f'
       include 'ewcouple.f'
@@ -27,10 +26,10 @@ C---Fill dot-products
       call dotem(6,p,s)
 
 c ensure that we have a hard process
-      if (
-     .      (s(5,6) .lt. four*hscalesq) 
-     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. hscalesq) 
-     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. hscalesq) ) return
+c      if (
+c     .      (s(5,6) .lt. four*hscalesq) 
+c     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. hscalesq) 
+c     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. hscalesq) ) return
 
       qqb=faclo*sumsq(1,2,3,4,6,5)
       qbq=faclo*sumsq(2,1,3,4,6,5)
@@ -51,7 +50,7 @@ c ensure that we have a hard process
       double precision function sumsq(p1,p2,p3,p4,p5,p6)
       implicit none
       include 'constants.f'
-      include 'dprodx.f'
+      include 'sprods_com.f'
       include 'masses.f'
       integer p1,p2,p3,p4,p5,p6
       double precision s56,s134,s234,prop

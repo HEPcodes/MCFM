@@ -1,8 +1,8 @@
       subroutine subqcd(i1,i2,i3,i4,i5,i6,za,zb,amp)
       implicit none
       include 'constants.f'
-      include 'sprodx.f'
-      include 'dprodx.f'
+      include 'zprods_decl.f'
+      include 'sprods_com.f'
 c*******************************************************************
 c     the matrix elements of the  
 C     helicity amplitudes for the QCD process

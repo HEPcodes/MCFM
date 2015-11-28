@@ -13,11 +13,11 @@ c
       include 'constants.f'
       include 'masses.f'
       include 'qcdcouple.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       include 'zcouple.f'
       include 'ewcouple.f'
       include 'ewcharge.f'
-      include 'hardscale.f'
       include 'flags.f'
       include 'lc.f'
       integer j,k,nquark,jj(-nf:nf),kk(-nf:nf)

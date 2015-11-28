@@ -11,7 +11,7 @@ c---
       include 'ewcouple.f'
       include 'zcouple.f'
       include 'ewcharge.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       integer j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),s,fac,s34
       double complex prop,qqb,qbq
@@ -51,7 +51,7 @@ c      qbq=fac*s(2,4)**2
      .               +cdabs((Q(j)*q1+R(j)*r1*prop)*qqb)**2
      .               +cdabs((Q(j)*q1+L(j)*r1*prop)*qbq)**2
      .               +cdabs((Q(j)*q1+R(j)*l1*prop)*qbq)**2
-          elseif ((j .lt. 0) .and. (k. gt. 0)) then
+          elseif ((j .lt. 0) .and. (k .gt. 0)) then
             msq(j,k)=+cdabs((Q(k)*q1+L(k)*l1*prop)*qbq)**2
      .               +cdabs((Q(k)*q1+R(k)*r1*prop)*qbq)**2
      .               +cdabs((Q(k)*q1+L(k)*r1*prop)*qqb)**2

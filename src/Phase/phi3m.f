@@ -7,7 +7,6 @@ c result is 1/8/pi * 2|p|/sqrts  * domega/(4*pi)
 c     factor of (2*pi)^4 included in definition of phase space
       implicit none
       include 'constants.f'
-      include 'masses.f'
       include 'process.f'
       double precision p0(4),p1(4),p2(4),p1cm(4)
       double precision xth,xphi,phi,s,roots,costh,sinth

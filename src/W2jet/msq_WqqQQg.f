@@ -13,7 +13,8 @@
       include 'qcdcouple.f'
       include 'zcouple.f'
       include 'ewcharge.f'
-      include 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
       include 'hardscale.f'
       integer Qh,hq,hg,f1,f2,f3,f4,i1,i2,i3,i4,i5,i6,i7
       double precision A(5,5,5,5),B(5,5,5,5),C(5,5,5,5),D(5,5,5,5),

@@ -9,7 +9,6 @@ c--all momenta incoming
       implicit none
       include 'constants.f'
       include 'qcdcouple.f'
-      include 'masses.f'
       include 'msq_cs.f'
       integer j,k
 
@@ -29,9 +28,6 @@ c--all momenta incoming
       eik17_2=+s(1,2)/(s(1,7)+s(2,7))/s(1,7)*two*gsq
       eik27_1=+s(1,2)/(s(1,7)+s(2,7))/s(2,7)*two*gsq
 
-      eik67_5=+s(6,5)/(s(6,7)+s(5,7))/s(6,7)*two*gsq
-      eik57_6=+s(6,5)/(s(6,7)+s(5,7))/s(5,7)*two*gsq
-
       eik17_5=+s(1,5)/(-s(1,7)+s(5,7))/s(1,7)*two*gsq
       eik57_1=-s(1,5)/(-s(1,7)+s(5,7))/s(5,7)*two*gsq
 
@@ -44,7 +40,7 @@ c--all momenta incoming
       eik17_6=+s(1,6)/(-s(1,7)+s(6,7))/s(1,7)*two*gsq
       eik67_1=-s(1,6)/(-s(1,7)+s(6,7))/s(6,7)*two*gsq
 
-      eik67_5=+s(5,6)/(s(5,7)+s(6,7))/s(6,7)*two*gsq
+      eik67_5=+s(6,5)/(s(6,7)+s(5,7))/s(6,7)*two*gsq
       eik57_6=+s(6,5)/(s(6,7)+s(5,7))/s(5,7)*two*gsq
 
       facqqb=(eik27_5+eik57_2+eik17_6+eik67_1)*(xn-two/xn)

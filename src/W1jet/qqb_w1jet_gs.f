@@ -11,7 +11,6 @@ c   positively charged W only
 
       implicit none 
       include 'constants.f'
-      include 'masses.f'
       include 'ptilde.f'
       include 'qqgg.f'
       include 'flags.f'
@@ -24,9 +23,11 @@ c --- remember: nd will count the dipoles
      & msq15_2(-nf:nf,-nf:nf),msq25_1(-nf:nf,-nf:nf),
      & msq16_2(-nf:nf,-nf:nf),msq26_1(-nf:nf,-nf:nf),
      & msq15_6(-nf:nf,-nf:nf),msq26_5(-nf:nf,-nf:nf),
+     & msq16_5(-nf:nf,-nf:nf),msq25_6(-nf:nf,-nf:nf),
      & msq56_1v(-nf:nf,-nf:nf),msq56_2v(-nf:nf,-nf:nf),
      & msq26_5v(-nf:nf,-nf:nf),msq26_1v(-nf:nf,-nf:nf),
      & msq15_6v(-nf:nf,-nf:nf),msq16_2v(-nf:nf,-nf:nf),
+     & msq16_5v(-nf:nf,-nf:nf),msq25_6v(-nf:nf,-nf:nf),
      & msq15_2v(-nf:nf,-nf:nf),msq25_1v(-nf:nf,-nf:nf),
      & dummy(-nf:nf,-nf:nf),dummyv(-nf:nf,-nf:nf),
      & sub15_2(4),sub25_1(4),sub16_2(4),sub26_1(4),
@@ -54,15 +55,15 @@ c--- called for final initial the routine only supplies new values for
 c--- sub... and sub...v and msqv
       call dips(5,p,5,6,1,sub56_1,sub56_1v,dummy,msq56_1v,
      . qqb_w_g,qqb_w_gvec)
-      call dips(5,p,1,6,5,sub16_5,sub16_5v,dummy,dummyv,
-     . qqb_w_g,donothing_gvec)
+      call dips(5,p,1,6,5,sub16_5,sub16_5v,msq16_5,msq16_5v,
+     . qqb_w_g,qqb_w_gvec)
 
       call dips(6,p,2,6,5,sub26_5,sub26_5v,msq26_5,msq26_5v,
      . qqb_w_g,qqb_w_gvec)
       call dips(6,p,5,6,2,sub56_2,sub56_2v,dummy,msq56_2v,
      . qqb_w_g,qqb_w_gvec)
-      call dips(6,p,2,5,6,sub25_6,sub25_6v,dummy,dummyv,
-     . qqb_w_g,donothing_gvec)
+      call dips(6,p,2,5,6,sub25_6,sub25_6v,msq25_6,msq25_6v,
+     . qqb_w_g,qqb_w_gvec)
 
       do j=-nf,nf
       do k=-nf,nf      
@@ -72,7 +73,7 @@ c--- sub... and sub...v and msqv
       enddo
       enddo
 
-      if (Gflag) then
+c      if (Gflag) then
       do j=-nf,nf
       do k=-nf,nf
 c--- do only q-qb and qb-q cases      
@@ -85,12 +86,12 @@ c--- do only q-qb and qb-q cases
       msq(5,j,k)=xn*(
      .  +msq15_6(j,k)*(sub15_6(qq)+0.5d0*sub56_1(gg))
      .  +0.5d0*msq56_1v(j,k)*sub56_1v
-     .  +msq15_6(j,k)*(sub16_5(qq)+0.5d0*sub56_1(gg))
+     .  +msq16_5(j,k)*(sub16_5(qq)+0.5d0*sub56_1(gg))
      .  +0.5d0*msq56_1v(j,k)*sub56_1v)
       msq(6,j,k)=xn*(
      .  (msq26_5(j,k)*(sub26_5(qq)+0.5d0*sub56_2(gg))
      .   +0.5d0*msq56_2v(j,k)*sub56_2v)
-     . +(msq26_5(j,k)*(sub25_6(qq)+0.5d0*sub56_2(gg))
+     . +(msq25_6(j,k)*(sub25_6(qq)+0.5d0*sub56_2(gg))
      .   +0.5d0*msq56_2v(j,k)*sub56_2v))
 
 c--- note statistical factor of one half for two gluons in the final state
@@ -98,7 +99,7 @@ c--- note statistical factor of one half for two gluons in the final state
         msq(nd,j,k)=half*msq(nd,j,k)
       enddo
 
-      elseif ((k .eq. 0).and. (j.ne.0)) then
+      elseif ((k .eq. 0).and. (j .ne. 0)) then
 c--- q-g and qb-g cases
       msq(2,j,k)=2d0*tr*(msq25_1(j,-5)+msq25_1(j,-4)+msq25_1(j,-3)
      .                  +msq25_1(j,-2)+msq25_1(j,-1)+msq25_1(j,+1)
@@ -106,7 +107,7 @@ c--- q-g and qb-g cases
      .                  +msq25_1(j,+5))*sub25_1(qg)
       msq(3,j,k)=xn*msq16_2(j,k)*sub16_2(qq)
       msq(4,j,k)=xn*(msq26_1(j,k)*sub26_1(gg)+msq26_1v(j,k)*sub26_1v)
-      msq(5,j,k)=-msq15_6(j,k)*(sub16_5(qq)+sub56_1(qq))/xn
+      msq(5,j,k)=-msq16_5(j,k)*(sub16_5(qq)+sub56_1(qq))/xn
       msq(6,j,k)=xn*(msq26_5(j,k)*sub26_5(gg)+msq26_5v(j,k)*sub26_5v
      .              +msq26_5(j,k)*sub56_2(qq))
 
@@ -118,8 +119,8 @@ c--- g-q and g-qb cases
      .                  +msq15_2(+5,k))*sub15_2(qg)
       msq(3,j,k)=xn*(msq16_2(j,k)*sub16_2(gg)+msq16_2v(j,k)*sub16_2v)
       msq(4,j,k)=xn*msq26_1(j,k)*sub26_1(qq)
-      msq(5,j,k)=xn*(msq15_6(j,k)*sub16_5(gg)+msq15_6v(j,k)*sub16_5v
-     .              +msq15_6(j,k)*sub56_1(qq))
+      msq(5,j,k)=xn*(msq16_5(j,k)*sub16_5(gg)+msq16_5v(j,k)*sub16_5v
+     .              +msq16_5(j,k)*sub56_1(qq))
       msq(6,j,k)=-msq26_5(j,k)*(sub26_5(qq)+sub56_2(qq))/xn
 
       elseif ((j .eq. 0).and.(k .eq. 0)) then
@@ -139,9 +140,9 @@ c--- note g,g = 1,2 and qb=5, q=6 so (15),(25)-->q and (16),(26)-->qb
       
       enddo
       enddo
-      endif
+c      endif
 
-      if (Qflag) then       
+c      if (Qflag) then       
       do j=-nf,nf
       do k=-nf,nf
 
@@ -155,7 +156,7 @@ c--- since Q --> Wq
 
       if ((j .gt. 0) .and. (k .gt. 0)) then
 c--- Q Q - different flavours
-        if (j. ne. k) then
+        if (j .ne. k) then
         msq(1,j,k)=msq(1,j,k)+stat*(xn-1d0/xn)
      .  *(msq15_2(0,k)*sub15_2(gq)+msq15_2v(0,k)*sub15_2v)
         msq(4,j,k)=msq(4,j,k)+stat*(xn-1d0/xn)
@@ -181,7 +182,7 @@ c---        radiation off the 26 line also)
         endif
 
        elseif ((j .lt. 0).and.(k .lt. 0)) then
-        if (j. ne. k) then
+        if (j .ne. k) then
 c--- QBAR QBAR - different flavours
         msq(1,j,k)=msq(1,j,k)+stat*(xn-1d0/xn)
      .    *(msq15_2(0,k)*sub15_2(gq)+msq15_2v(0,k)*sub15_2v)
@@ -244,7 +245,7 @@ c--QBAR Q
 
       enddo
       enddo
-      endif
+c      endif
 
       return
       end

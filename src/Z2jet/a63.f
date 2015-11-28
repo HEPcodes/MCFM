@@ -4,7 +4,7 @@ C     implementation of last parts of
 C     Eqs. (2.15) and (2.16 ) of Nucl Phys. 513, 3 (1998)
 
       include 'constants.f'
-      include 'sprodx.f'
+      include 'zprods_decl.f'
       double complex a6ax
       integer j1,j2,j3,j4,j5,j6
       character*2 st

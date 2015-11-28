@@ -60,12 +60,12 @@ C
 
       beta0 = ( 11.0d0 - Two/Three *nf )/4d0
       beta1 = ( 102d0  - 38d0/Three*nf )/16d0
-      gamma0= 1d0
+      gamma0= one
       gamma1= ( 202d0/3d0  - 20d0/9d0*nf )/16d0
       A1    = -beta1*gamma0/beta0**2+gamma1/beta0
       as    = alphas(scale,asmz,nloop)
       asmf  = alphas(mf   ,asmz,nloop)
-      l2    = (1d0+A1*as/Pi)/(1d0+A1*asmf/Pi)
+      l2    = (one+A1*as/Pi)/(one+A1*asmf/Pi)
       
       massfrun = mf * (as/asmf)**(gamma0/beta0)
 

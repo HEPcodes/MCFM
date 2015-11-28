@@ -14,7 +14,6 @@ c--all momenta incoming so some of the signs may look odd.
 c--initial state gluons coupling to b not included
       implicit none
       include 'constants.f'
-      include 'masses.f'
       include 'ptilde.f'
       include 'qqgg.f'
       include 'hardscale.f'

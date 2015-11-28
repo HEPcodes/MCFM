@@ -1,7 +1,6 @@
       subroutine gen6(r,q,wt6,*)
       implicit none
       include 'constants.f'
-      include 'masses.f'
       include 'mxdim.f'
       include 'debug.f'
       integer nu

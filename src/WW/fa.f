@@ -1,8 +1,8 @@
       double complex function fa(j1,j2,j3,j4,j5,j6,za,zb)
       implicit none
       include 'constants.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
       integer j1,j2,j3,j4,j5,j6
       integer i1,i2,i3,i4
       double complex Lsm1_2mht,z2,BigT,I3m,flipbit
@@ -46,8 +46,8 @@ c     Taken from Eq.(2.14)
       double complex function flipbit(j1,j2,j3,j4,j5,j6,za,zb)
       implicit none
       include 'constants.f'
-      include 'dprodx.f'
-      include 'sprodx.f'
+      include 'sprods_com.f'
+      include 'zprods_decl.f'
       integer j1,j2,j3,j4,j5,j6
       integer i1,i2,i3,i4
       double complex L0,L1,Lnrat,z2,L34_12,fb

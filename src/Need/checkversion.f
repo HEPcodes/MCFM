@@ -6,7 +6,7 @@
       implicit none
       integer inpunit,j,dat
       character*6 fileversion,codeversion
-      character*20 filename
+      character*(*) filename
       common/versionnumber/codeversion
 
       read(inpunit,*) fileversion

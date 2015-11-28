@@ -1,10 +1,7 @@
       subroutine gen_njets(r,njets,p,wt,*)
       implicit none
       include 'constants.f'
-      include 'masses.f'
       include 'mxdim.f'
-      include 'debug.f'
-      include 'process.f'
       include 'limits.f'
       include 'cutoff.f'
 c---- generate phase space for 2-->2+n process
@@ -15,12 +12,12 @@ c---- phase space for -p1-p2 --> p3+p4+p5+p6
 c---- with all 2 pi's (ie 1/(2*pi)^(4+2n))
       double precision r(mxdim)
       double precision p(mxpart,4),p3(4),p34(4),psumjet(4),pcm(4),Q(4)
-      double precision wt,wt3456,wt34,wt56,wt0,xxmin
-      double precision xmin,xmax,delx,x,sqrts,pt,ymax,ymin,xx(2)
+      double precision wt
+      double precision xmin,xmax,delx,x,sqrts,pt,etamax,etamin,xx(2)
       double precision y,sinhy,coshy,phi,mv2,wtbw,mjets
-      double precision ybar,ptsumjet2,shat,acm,ycm,sumpst,q0st,rshat
+      double precision ybar,ptsumjet2,ycm,sumpst,q0st,rshat
       double precision costh,sinth,dely
-      double precision ptjetmin,yjetmax
+      double precision ptjetmin,etajetmin,etajetmax,pbreak
       double precision plstar,estar,plstarsq,y5starmax,y5starmin
       double precision mass2,width2,mass3,width3
       integer j,nu,njets,ijet,n2,n3
@@ -30,17 +27,17 @@ c---- with all 2 pi's (ie 1/(2*pi)^(4+2n))
       common/energy/sqrts
       common/breit/n2,n3,mass2,width2,mass3,width3
       common/x1x2/xx
-      parameter(wt0=1d0/twopi**2)
-      parameter(xxmin=1d-5)
       data first/.true./
-      save first,ptjetmin,yjetmax
+      save first,ptjetmin,etajetmin,etajetmax,pbreak
 
       if (first) then
         first=.false.
-        call read_jetcuts(ptjetmin,yjetmax)
+        call read_jetcuts(ptjetmin,etajetmin,etajetmax)
         if (part .eq. 'real') then
-          ptjetmin=dsqrt(cutoff)
-          yjetmax=10d0
+          pbreak=ptjetmin
+          etajetmax=10d0
+        else
+          pbreak=0d0
         endif
       endif        
 
@@ -58,23 +55,25 @@ c---- with all 2 pi's (ie 1/(2*pi)^(4+2n))
 c--- generate the pt of jet number ijet
 c--- rapidity limited by E=pT*coshy
         wt=wt/16d0/pi**3
-        xmin=2d0/sqrts
-        xmax=1d0/ptjetmin
+c        xmin=2d0/sqrts
+c        xmax=1d0/ptjetmin
+        xmin=1d0/dsqrt((sqrts/2d0)**2+pbreak**2)
+        xmax=1d0/dsqrt(ptjetmin**2+pbreak**2)
         delx=xmax-xmin
         x=xmin+r(ijet)*delx
         pt=1d0/x
-        ymax=sqrts/2d0/pt
-        ymax=dlog(ymax+dsqrt(ymax**2-1d0))
+        etamax=sqrts/2d0/pt
+        etamax=dlog(etamax+dsqrt(etamax**2-1d0))
         
-        ymax=min(ymax,yjetmax)
-        y=ymax*(2d0*r(njets+ijet)-1d0)
-        wt=wt*2d0*ymax
+        etamax=min(etamax,etajetmax)
+        y=etamax*(2d0*r(njets+ijet)-1d0)
+        wt=wt*2d0*etamax
         
         sinhy=dsinh(y)
-        coshy=dsqrt(1+sinhy**2)
+        coshy=dsqrt(1d0+sinhy**2)
         
         p(4+ijet,4)=pt*coshy
-        wt=wt*delx*pt**3
+        wt=wt*delx*(pt**2+pbreak**2)**1.5d0
         
         phi=2d0*pi*r(2*njets+ijet)
         wt=wt*2d0*pi
@@ -107,10 +106,10 @@ c--- invariant mass of jets
       y5starmax=0.5d0*dlog((Estar+plstar)/(Estar-plstar))
       y5starmin=-y5starmax
 
-      ymax=ybar-y5starmin
-      ymin=ybar-y5starmax
-      dely=ymax-ymin
-      ycm=ymin+r(3*njets+2)*dely     
+      etamax=ybar-y5starmin
+      etamin=ybar-y5starmax
+      dely=etamax-etamin
+      ycm=etamin+r(3*njets+2)*dely     
       sinhy=dsinh(ycm)
       coshy=dsqrt(1d0+sinhy**2)
       

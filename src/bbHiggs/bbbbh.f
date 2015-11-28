@@ -19,7 +19,8 @@
 
       IMPLICIT NONE
       INCLUDE 'constants.f'
-      INCLUDE 'prods.f'
+      include 'sprods_com.f'
+      include 'zprods_com.f'
 
 *     ARGUMENTS 
       INTEGER I1,I2,I3,I4

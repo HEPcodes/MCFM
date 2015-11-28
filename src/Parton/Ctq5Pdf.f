@@ -226,7 +226,7 @@ C             If data file not initialized, do so.
 	    Stop
          Else
             Tablefile=Flnm(Iset)
-            Open(IU, File=Tablefile, Status='OLD', Err=100)
+            Open(IU, File='Pdfdata/'//Tablefile, Status='OLD', Err=100)
 	 Endif
          Call ReadTbl (IU)
          Close (IU)
