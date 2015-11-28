@@ -17,10 +17,13 @@ C     USES fxn,ran2,rebin
       DOUBLE PRECISION schi,si,swgt
       character*72 runname
       integer nlength
+      logical bin,dorebin
+      common/bin/bin
       common/runname/runname
       common/nlength/nlength
       COMMON /ranno/ idum
       SAVE
+      dorebin=.true.  
       if(init.le.0)then
         mds=1
         ndo=1
@@ -60,7 +63,7 @@ C     USES fxn,ran2,rebin
 12      continue
 
 c--- read-in grid if necessary
-         if (readin) then
+        if (readin) then
            open(unit=11,file=runname(1:nlength)//'_'
      .           //ingridfile,status='unknown')
         write(6,*)'****************************************************'
@@ -74,7 +77,16 @@ c--- read-in grid if necessary
            close(11)
            ndo=nd
            readin=.false.
-         endif
+c--- do not continue to adapt grid when using a small number of calls
+           if (calls .lt. 1d3) then
+             write(6,*)
+             write(6,*) '--> Small number of calls, so the grid is not',
+     .        ' being adjusted after each iteration <--'
+             write(6,*)
+             call flush(6) 
+             dorebin=.false.
+           endif
+        endif
 
         if(nd.ne.ndo)then
           do 13 i=1,nd
@@ -89,6 +101,7 @@ c--- read-in grid if necessary
      *(j,region(j),j,region(j+ndim),j=1,ndim)
         call flush(6)
       endif
+
       do 28 it=1,itmx
         ti=0d0
         tsi=0d0
@@ -181,8 +194,13 @@ c          write(6,201) it,ti,tsi,tgral,sd,chi2a
             r(i)=((1d0-d(i,j)/dt(j))/(dlog(dt(j))-dlog(d(i,j))))**ALPH
             rc=rc+r(i)
 26        continue
-          call rebin(rc/xnd,nd,r,xin,xi(1,j))
+          if (dorebin) call rebin(rc/xnd,nd,r,xin,xi(1,j))
 27      continue
+c--- added to write out intermediate results
+      if ((bin) .and. (it .lt. itmx)) then
+        write(6,*) 'Writing out intermediate results for iteration',it
+        call histofin(tgral,sd,it) 
+      endif
 28    continue
 
 c--- write-out grid if necessary

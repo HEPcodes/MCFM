@@ -163,7 +163,6 @@ C---corresponding to f1,f3,hq,Qh,hg,lh
      . +mb2_1234(f1,f2,f3,f4,hq,Qh,hg)*d1234
      . *Dconjg(mb1_3412(f3,f4,f1,f2,Qh,hq,hg)*d3412))
 
-c--- DEBUG helicities
       M0(f1,f2,f3,f4)=
      . B(f1,f2,f3,f4)+C(f1,f2,f3,f4)+E(f1,f2,f3,f4)
       Mx(f1,f2,f3,f4)=-0.5d0
@@ -177,19 +176,8 @@ c--- DEBUG helicities
      . ofac*CF**3*xn*(M0(f1,f2,f3,f4)+x*Mx(f1,f2,f3,f4)
      . +y*My(f1,f2,f3,f4)+z*Mz(f1,f2,f3,f4)
      . +x**2*Mxx(f1,f2,f3,f4)+x*y*Mxy(f1,f2,f3,f4))
-      
-c      if ((MN(f1,f2,f3,f4)-temp .gt. 1d-18) .and. (f1 .eq. 2) .and.
-c     . (f2 .eq. 1) .and. (f3 .eq. 2) .and. (f4 .eq. 2)) 
-c     . write(*,*) 'du -',hq,Qh,' -->',hc,hd,':',MN(f1,f2,f3,f4)-temp
-c      if ((MN(f1,f2,f3,f4)-temp .gt. 1d-18) .and. (f1 .eq. 2) .and.
-c     . (f2 .eq. 2) .and. (f3 .eq. 2) .and. (f4 .eq. 1)) 
-c     . write(*,*) 'ud -',hq,Qh,' -->',hc,hd,':',MN(f1,f2,f3,f4)-temp
-c      if ((MN(f1,f2,f3,f4)-temp .gt. 1d-18) .and. (f1 .eq. 1) .and.
-c     . (f2 .eq. 1) .and. (f3 .eq. 4) .and. (f4 .eq. 3)) 
-c     . write(*,*) 'dc -',hq,Qh,' -->',hc,hd,':',MN(f1,f2,f3,f4)-temp
-     
+           
       temp=MN(f1,f2,f3,f4)
-c--- DEBUG helicities
        
       enddo
       enddo 

@@ -1,4 +1,4 @@
-      subroutine writeinfo(unitno,xsec,xsec_err)
+      subroutine writeinfo(unitno,xsec,xsec_err,itno)
 ************************************************************************
 *   Routine to write out run information to a desired unit             *
 ************************************************************************
@@ -16,8 +16,12 @@
       include 'jetcuts.f'
       include 'lhapdf.f'
       include 'pdlabel.f'
-      integer unitno
+      include 'removebr.f'
+      include 'dynamicscale.f'
+      include 'PDFerrors.f'
+      integer unitno,j,itno
       double precision xsec,xsec_err
+      double precision ggpart,gqpart,qgpart,qqpart,qqbpart
       
       character*4 part
       character*30 runstring
@@ -51,10 +55,31 @@
 
       common/origij/origij
 
+      common/finalpart/ggpart,gqpart,qgpart,qqpart,qqbpart
+
+      if (itno .gt. 0) then
+      write(unitno,*) '( Intermediate result for iteration',itno,')'
+      endif
       write(unitno,*) '( Cross-section is: ',xsec,'+/-',xsec_err,')'
       write(unitno,*)
+      if (itno .eq. 0) then
+      write(unitno,*) '( Contribution from parton sub-processes:'
+      write(unitno,95) '   GG    ',ggpart*xsec,ggpart*100d0
+      write(unitno,95) 'GQ + GQB ',gqpart*xsec,gqpart*100d0
+      write(unitno,95) 'QG + QBG ',qgpart*xsec,qgpart*100d0
+      write(unitno,95) 'QQ + QBQB',qqpart*xsec,qqpart*100d0
+      write(unitno,95) '   QQB   ',qqbpart*xsec,qqbpart*100d0
+      write(unitno,*)
+      endif
+
+      if (PDFerrors) then
+        do j=0,maxPDFsets
+          write(unitno,56) j,PDFxsec(j)
+        enddo
+        write(unitno,*)
+      endif
+
       write(unitno,*) '( Run corresponds to this input file)'
-      
       write(unitno,*)
       write(unitno,*)
      . '( [Flags to specify the mode in which MCFM is run] )'
@@ -75,7 +100,9 @@
       write(unitno,99) hmass,'hmass'
       write(unitno,99) scale,'scale'
       write(unitno,99) facscale,'facscale'
+      write(unitno,98) dynamicscale,'dynamicscale'
       write(unitno,98) zerowidth,'zerowidth'
+      write(unitno,98) removebr,'removebr'
       write(unitno,97) itmx1,'itmx1'
       write(unitno,97) ncall1,'ncall1'
       write(unitno,97) itmx2,'itmx2'
@@ -144,6 +171,10 @@
 
       return
 
+c--- 56 character format
+   56 format('( PDF error set ',i3,'  --->',f13.3,' fb  )')
+c--- 95 character format
+   95 format(' (',5x,a9,' |',f15.5,f8.2,'%')
 c--- 96 character format      
    96 format(' (',a20,12x,'[',a,']',' )')  
 c--- 97 integer format      

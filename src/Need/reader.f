@@ -69,6 +69,7 @@
       else
       optionsfile='options.DAT'
       endif
+
       write(6,*) 'Using options file named ',optionsfile
       write(6,*) '****************'
       write(6,*) 'Options file:'

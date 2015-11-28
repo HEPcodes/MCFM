@@ -47,12 +47,18 @@
       double precision mvg(0:2,-nf:nf,-nf:nf)
       double precision mvxg(-nf:nf,-nf:nf,-nf:nf,-nf:nf)
       integer nd,ip,jp,kp,nu,j,k
+c--      logical includedipole
+      logical incldip(0:maxd)
+      common/incldip/incldip
       external subr_born,subr_corr
       
 C---Initialize the dipoles to zero
       do j=1,4
       sub(j)=0d0
       enddo
+      subv=0d0
+      call zeromsq(msq,msqv)
+      incldip(nd)=.true.
 
       sij=two*dot(p,ip,jp)
       sik=two*dot(p,ip,kp)

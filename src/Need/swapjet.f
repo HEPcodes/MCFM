@@ -7,6 +7,9 @@ c--- swaps jets i..j in pjet
       double precision pjet(mxpart,4),tmp
       character*2 chartmp
  
+c--- escape if we're trying to swap the same jets
+      if (i .eq. j) return
+
       do k=1,4
         tmp=pjet(i,k)
         pjet(i,k)=pjet(j,k)

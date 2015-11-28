@@ -349,6 +349,50 @@ c--- grid information
 
       close(20)
 
+c--- reset values of the alpha parameters, for specific runstrings
+      if (runstring(1:5) .eq. 'alpha') then
+        if     (runstring(6:9) .eq. '1111') then
+          aii=1d0
+          aif=1d0
+          afi=1d0
+          aff=1d0
+        elseif (runstring(6:9) .eq. '0111') then
+          aii=0.1d0
+          aif=1d0
+          afi=1d0
+          aff=1d0
+        elseif (runstring(6:9) .eq. '1011') then
+          aii=1d0
+          aif=0.1d0
+          afi=1d0
+          aff=1d0
+        elseif (runstring(6:9) .eq. '1101') then
+          aii=1d0
+          aif=1d0
+          afi=0.1d0
+          aff=1d0
+        elseif (runstring(6:9) .eq. '1110') then
+          aii=1d0
+          aif=1d0
+          afi=1d0
+          aff=0.1d0
+        elseif (runstring(6:9) .eq. '0000') then
+          aii=0.1d0
+          aif=0.1d0
+          afi=0.1d0
+          aff=0.1d0
+        else
+          write(6,*) 'runstring=alpha.... reserved for internal tests'
+          stop
+        endif
+        write(6,*) 'Values of alpha parameters reset, for testing:'
+        write(6,*) '  alpha_ii=',aii
+        write(6,*) '  alpha_if=',aif
+        write(6,*) '  alpha_fi=',afi
+        write(6,*) '  alpha_ff=',aff
+        write(6,*)
+      endif
+
 c-----initialize various quantities
 
 c--- set-up mass window cuts
@@ -376,7 +420,8 @@ c--- check that we have a valid value of 'part'
       if ( (part .ne. 'lord') .and. (part .ne. 'real') .and.
      .     (part .ne. 'virt') .and. (part .ne. 'tota') ) then
         if ( (part .eq. 'todk') .and.
-     .       ((case .eq. 'bq_tpq') .or. (case .eq. 't_bbar')) ) then
+     .       ((case .eq. 'bq_tpq') .or. (case .eq. 't_bbar')
+     .   .or. (case .eq. 'W_twdk')) ) then
 c--- this is an allowed combination
         else 
           write(6,*) 'part=',part,' is not a valid option'

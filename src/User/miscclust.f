@@ -26,6 +26,7 @@ c--- returns dijmin and indices of minimum in (nmin1,nmin2)
       
       if (dijerror) then
         write(*,*) 'Error in dij minimum-finding routine'
+        call writeout(p)
         stop
       endif
       
@@ -36,6 +37,7 @@ c--- returns dijmin and indices of minimum in (nmin1,nmin2)
 c--- this finds the minimum dkmin for pjet indices pjetmin through pjetmax
 c--- returns dijmin and indices of minimum in (nmin1,nmin2)
 C--- calculate the beam proto-jet separation see NPB406(1993)187, Eqn. 7
+C---  S.~Catani, Y.~L.~Dokshitzer, M.~H.~Seymour and B.~R.~Webber
 C--- in  practice this is just the minimum ptsq of protojets       
       implicit none
       include 'constants.f'
@@ -85,7 +87,7 @@ c      dij=dsqrt((yi-yj)**2+(phii-phij)**2)
 
 c--- new method - r() calculates true value of 0 < (phi-phij) < pi
       dij=r(pjet,i,j)
-            
+              
       dij=dij*min(pti,ptj)
       
       return

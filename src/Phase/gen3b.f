@@ -18,8 +18,8 @@ c----p(6,i) and p(7,i) are set equal to zero
       data p7/0d0,0d0,0d0,0d0/
 
       wt3=0d0
-      tau=exp(log(taumin)*r(6))
-      y=0.5d0*log(tau)*(1d0-2d0*r(7))
+      tau=exp(log(taumin)*r(4))
+      y=0.5d0*log(tau)*(1d0-2d0*r(5))
       xjac=log(taumin)*tau*log(tau)
 
       xx(1)=sqrt(tau)*exp(+y)
@@ -42,7 +42,7 @@ c---if x's out of normal range alternative return
       p2(3)=+xx(2)*sqrts*half
 
 
-      call phase3(r,p1,p2,p3,p4,p5,p6,p7,pswt)
+      call phase3(r(1),r(2),r(3),r(6),r(7),p1,p2,p3,p4,p5,p6,p7,pswt)
 
       do nu=1,4
       p(1,nu)=p1(nu)

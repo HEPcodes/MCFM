@@ -14,7 +14,7 @@
       include 'dynamicscale.f'
       character*4 part,mypart
       common/part/part
-      integer i
+      integer i,nproc
       double precision aemmz,alphas,amz,cmass,bmass
       double precision Vud,Vus,Vub,Vcd,Vcs,Vcb
       double precision xsq,topwidth
@@ -25,6 +25,7 @@
       common/em/aemmz
       common/couple/amz
       common/mypart/mypart
+      common/nproc/nproc
 
 c--- blank out labels that indicate input parameters
       do i=1,10
@@ -134,31 +135,6 @@ c--- This vevsq is defined so that gwsq/(4*wmass**2)=Gf*rt2=1/vevsq
 c--- (ie differs from definition in ESW)
       vevsq=1d0/rt2/Gf
 
-c--- Set-up twidth, using LO formula except when including radiation in decay
-      xsq=(wmass/mt)**2
-      twidth=(gw/wmass)**2*mt**3/(64d0*pi)*(1d0-xsq)**2*(1d0+2d0*xsq)
-      if ((part .eq. 'todk') .or. (mypart .eq. 'todk')) then
-        twidth=twidth*topwidth(mt,wmass)
-      endif
-
-      write(6,*) '************** Electroweak parameters **************'
-      write(6,*) '*                                                  *'
-      write(6,75) 'zmass',inlabel(1),zmass,'wmass',inlabel(2),wmass
-      write(6,75) 'zwidth',inlabel(3),zwidth,'wwidth',inlabel(4),wwidth
-      write(6,76) 'Gf',inlabel(5),gf,'1/aemmz',inlabel(6),1d0/aemmz
-      write(6,75) 'xw',inlabel(7),xw,'mtop',inlabel(8),mt
-      write(6,75) 'gwsq',inlabel(9),gwsq,'esq',inlabel(10),esq
-      write(6,77) 'top width',twidth
-      write(6,78) 'mb',mb,'mc',mc
-      write(6,*) '*                                                  *'
-      write(6,*) '* Parameters marked (+) are input, others derived  *'
-      write(6,*) '****************************************************'
-
-   75 format(' * ',a6,a3,f13.7,3x,a7,a3,f12.7,'  *')
-   76 format(' * ',a6,a3,d13.6,3x,a7,a3,f12.7,'  *')
-   77 format(' * ',a9,f13.7,25x,'  *')
-   78 format(' * ',a5,4x,f13.7,6x,a4,2x,f13.7,'  *')
-
 c--- set up the beta-function
       b0=(xn*11d0-2d0*nflav)/6d0
 
@@ -187,11 +163,37 @@ c--- initialize alpha_s
       ason4pi=as/fourpi
       gsq=fourpi*as
 
+c--- Set-up twidth, using LO formula except when including radiation in decay
+      xsq=(wmass/mt)**2
+      twidth=(gw/wmass)**2*mt**3/(64d0*pi)*(1d0-xsq)**2*(1d0+2d0*xsq)
+      if ( (part .eq. 'todk') .or. (mypart .eq. 'todk') ) then
+        twidth=twidth*topwidth(mt,wmass)
+      endif
+
+      write(6,*) '************** Electroweak parameters **************'
+      write(6,*) '*                                                  *'
+      write(6,75) 'zmass',inlabel(1),zmass,'wmass',inlabel(2),wmass
+      write(6,75) 'zwidth',inlabel(3),zwidth,'wwidth',inlabel(4),wwidth
+      write(6,76) 'Gf',inlabel(5),gf,'1/aemmz',inlabel(6),1d0/aemmz
+      write(6,75) 'xw',inlabel(7),xw,'mtop',inlabel(8),mt
+      write(6,75) 'gwsq',inlabel(9),gwsq,'esq',inlabel(10),esq
+      write(6,77) 'top width',twidth
+      write(6,78) 'mb',mb,'mc',mc
+      write(6,*) '*                                                  *'
+      write(6,*) '* Parameters marked (+) are input, others derived  *'
+      write(6,*) '****************************************************'
+
+   75 format(' * ',a6,a3,f13.7,3x,a7,a3,f12.7,'  *')
+   76 format(' * ',a6,a3,d13.6,3x,a7,a3,f12.7,'  *')
+   77 format(' * ',a9,f13.7,25x,'  *')
+   78 format(' * ',a5,4x,f13.7,6x,a4,2x,f13.7,'  *')
+
 ***************************************
 
 c--- if we're doing W + jets, automatically make the CKM matrix
 c--- diagonal since we're not interested in these small effects   
-      if ((case .eq. 'W_1jet') .or. (case .eq. 'W_2jet')) then
+      if ((nproc .eq. 11) .or. (nproc .eq. 16) .or.
+     .    (nproc .eq. 22) .or. (nproc .eq. 27)) then
         Vud=1d0
         Vus=0d0
         Vub=0d0
@@ -207,7 +209,8 @@ c--- diagonal since we're not interested in these small effects
       write(6,47) Vud,Vus,Vub
       write(6,48) Vcd,Vcs,Vcb
       write(6,*) '****************************************************'
-      if ((case .eq. 'W_1jet') .or. (case .eq. 'W_2jet')) then
+      if ((nproc .eq. 11) .or. (nproc .eq. 16) .or.
+     .    (nproc .eq. 22) .or. (nproc .eq. 27)) then
       write(6,*) '* Forced to be diagonal for simplicity in W + jets *'
       write(6,*) '****************************************************'
       endif

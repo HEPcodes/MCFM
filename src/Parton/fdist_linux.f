@@ -1,15 +1,51 @@
-      subroutine fdist(ih,x,xmu,fx)
+      subroutine fdist(ih_call,x,xmu,fx)
       implicit none
       include 'pdlabel.f'
-      double precision fx(-5:5),x,xmu
+      double precision fx(-5:5),x,xmu,xZ,xA,eks98r,xmu_safe
       double precision u_val,d_val,u_sea,d_sea,s_sea,c_sea,b_sea,gluon
       double precision Ctq3df,Ctq4Fn,Ctq5Pdf,Ctq6Pdf,Ctq5L
-      integer mode,Iprtn,ih,Irt
+      integer mode,Iprtn,ih,ih_call,iZ,iA,Irt
+      logical first,nucleon
+      data first/.true./
+      save first
 c---  ih1=+1 proton 
 c---  ih1=-1 pbar 
 
+c---  Extended 5/24/05 to calculate nucleon parton distributions
+c---  for a nucleus of atomic number Z and mass A via:
+C---   K.J. Eskola, V.J. Kolhinen and C.A. Salgado, 
+C---   "The scale dependent nuclear effects in parton distributions for 
+C---   practical applications", Eur. Phys. J. C9 (1999) 61,
+C---   JYFL-8/98, US-FT/14-98, hep-ph/9807297.
+
+      nucleon=.false.
+      if     (ih_call .gt. 1000d0) then
+c--- nucleon distribution functions
+        ih=1
+        nucleon=.true.
+        iA=mod(ih_call,1000)
+        iZ=(ih_call-iZ)/1000
+        xA=dfloat(iA)
+        xZ=dfloat(iZ)
+        if (first) then
+        write(6,*)
+        write(6,*)'******************* Nucleon beam *******************'
+        write(6,*)'*                                                  *'
+        write(6,76) iZ,iA
+        write(6,*)'****************************************************'
+        first=.false.
+        endif
+      elseif (abs(ih_call) .ne. 1) then
+c--- error
+        write(6,*) 'Input beam ih=',ih,' does not make sense!'
+        stop
+      else
+c--- parton distribution functions
+        ih=ih_call  
+      endif
+          
 C---set to zero if x out of range
-      if (x .ge. 1d0) then
+      if ((x .le. 0d0) .or. (x .ge. 1d0)) then
           do Iprtn=-5,5
              fx(Iprtn)=0d0
           enddo
@@ -189,7 +225,6 @@ c-----assign mrs to standard grid
                fx(+1)=d_sea/x
                fx(+2)=u_sea/x
             endif
-      return
 
       elseif (pdlabel(1:5) .eq. 'cteq3') then
 C   1      CTEQ3M   Standard MSbar scheme   0.116
@@ -221,9 +256,6 @@ C   2      CTEQ3D   Standard DIS scheme     0.116
                fx(-1)=Ctq3df(mode,+2,x,xmu,Irt)/x+fx(1)
                fx(-2)=Ctq3df(mode,+1,x,xmu,Irt)/x+fx(2)
              endif
-
-             return
-
 
       elseif (pdlabel(1:5) .eq. 'cteq4') then
 C   1      CTEQ4M   Standard MSbar scheme   0.116        1.6      cteq4m.tbl
@@ -279,7 +311,6 @@ C   10     CTEQ4LQ  Low Q0                  0.114        0.7      cteq4lq.tbl
                fx(-1)=Ctq4Fn(mode,+2,x,xmu)
                fx(-2)=Ctq4Fn(mode,+1,x,xmu)
              endif
-             return
 
       elseif (pdlabel .eq. 'cteq5l1') then
              fx(-5)=Ctq5L(-5,x,xmu)
@@ -304,8 +335,6 @@ C   10     CTEQ4LQ  Low Q0                  0.114        0.7      cteq4lq.tbl
                fx(-2)=Ctq5L(+1,x,xmu)
              endif
 
-             return
- 
       elseif ((pdlabel(1:5) .eq. 'cteq5') .or. 
      .        (pdlabel(1:4) .eq. 'ctq5')) then
  
@@ -330,8 +359,6 @@ C   10     CTEQ4LQ  Low Q0                  0.114        0.7      cteq4lq.tbl
                fx(-1)=Ctq5Pdf(+2,x,xmu)
                fx(-2)=Ctq5Pdf(+1,x,xmu)
              endif
-             return
-
 
       elseif (pdlabel(1:5) .eq. 'cteq6') then
 
@@ -356,7 +383,6 @@ C   10     CTEQ4LQ  Low Q0                  0.114        0.7      cteq4lq.tbl
                fx(-1)=Ctq6Pdf(+2,x,xmu)
                fx(-2)=Ctq6Pdf(+1,x,xmu)
              endif
-             return
 
 c--- NEW ATTEMPT
       elseif (pdlabel(1:5) .eq. 'mtung') then
@@ -429,9 +455,57 @@ c-----assign to standard grid
      . 'mtungn1'
 
          stop
-
+      endif  
+      
+c--- now perform the corrections for a nucleon beam, if necessary
+      if (nucleon) then
+c        write(6,*) 'x,Q',x,xmu
+c        write(6,*) 'before'
+c        write(6,*) 'fx(+5)=',fx(+5)
+c        write(6,*) 'fx(+4)=',fx(+4)
+c        write(6,*) 'fx(+3)=',fx(+3)
+c        write(6,*) 'fx(+2)=',fx(+2)
+c        write(6,*) 'fx(+1)=',fx(+1)
+c        write(6,*) 'fx( 0)=',fx( 0)
+c        write(6,*) 'fx(-1)=',fx(-1)
+c        write(6,*) 'fx(-2)=',fx(-2)
+c        write(6,*) 'fx(-3)=',fx(-3)
+c        write(6,*) 'fx(-4)=',fx(-4)
+c        write(6,*) 'fx(-5)=',fx(-5)
+c--- extract valence and sea components from the parton distributions
+        u_sea=fx(-2)
+        d_sea=fx(-1)
+        u_val=fx(2)-u_sea
+        d_val=fx(1)-d_sea
+c--- apply scale factors from eks98r, with a maximum scale of 100 GeV
+        xmu_safe=min(xmu,100d0)
+        u_val=u_val*eks98r(x,xmu_safe,xA,1)
+        d_val=d_val*eks98r(x,xmu_safe,xA,2)
+        u_sea=u_sea*eks98r(x,xmu_safe,xA,3)
+        d_sea=d_sea*eks98r(x,xmu_safe,xA,4)
+        s_sea=fx(3)*eks98r(x,xmu_safe,xA,5)
+        c_sea=fx(4)*eks98r(x,xmu_safe,xA,6)
+        b_sea=fx(5)*eks98r(x,xmu_safe,xA,7)
+        gluon=fx(0)*eks98r(x,xmu_safe,xA,8)
+c--- write new nucleon distributions
+        fx(1)=(xZ*(d_val+d_sea)+(xA-xZ)*(u_val+u_sea))/xA       
+        fx(2)=(xZ*(u_val+u_sea)+(xA-xZ)*(d_val+d_sea))/xA       
+        fx(-1)=(xZ*d_sea+(xA-xZ)*u_sea)/xA
+        fx(-2)=(xZ*u_sea+(xA-xZ)*d_sea)/xA
+        fx(-3)=s_sea
+        fx(-4)=c_sea
+        fx(-5)=b_sea
+        fx(+3)=s_sea
+        fx(+4)=c_sea
+        fx(+5)=b_sea
+        fx(0)=gluon
       endif      
-
+          
+      return
+      
+   76 format(' *    (Atomic number, mass) = (Z,A) = (',
+     . i4,',',i4,')   *')   
+      
       end
 
   

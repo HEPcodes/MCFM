@@ -94,18 +94,10 @@ c    the subtraction terms involve the (Gflag=TRUE) matrix elements
       enddo
 
 
-      call spinorU(6,p,za,zb)
-C---exclude the photon pole, 4*mbsq choosen as a scale approx above upsilon 
-c--debug
-      if (s(3,4) .lt. 4d0*mbsq) goto 999
+      call spinoru(6,p,za,zb)
 
-c ensure that we have a hard process
-c--debug
-c      if (
-c     .      (s(5,6) .lt. four*hscalesq) 
-c     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. hscalesq) 
-c     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. hscalesq) ) return
-
+C---exclude the photon pole, 4*mbsq choosen as a scale approx above upsilon
+      if (s(3,4) .lt. 4d0*mbsq) return
 
       prop=s(3,4)/dcmplx((s(3,4)-zmass**2),zmass*zwidth)
 

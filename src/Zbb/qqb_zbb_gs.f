@@ -16,10 +16,12 @@ c--initial state gluons coupling to b not included
       include 'ptilde.f'
       include 'qqgg.f'
       include 'masses.f'
+      include 'heavyflav.f'
+      include 'nflav.f'
       integer j,k,nd
 c --- remember: nd will count the dipoles
       
-      double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf),dot
+      double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf),dot,scalesq
       double precision 
      & msq17_2(-nf:nf,-nf:nf),msq27_1(-nf:nf,-nf:nf),
      & msq17_5(-nf:nf,-nf:nf),msq17_5v(-nf:nf,-nf:nf),
@@ -42,8 +44,21 @@ c --- remember: nd will count the dipoles
      &                 mgg57_6v(0:2),mgg67_5v(0:2),
      &                 mgg17_5v(0:2),mgg17_6v(0:2),
      &                 mgg27_5v(0:2),mgg27_6v(0:2)
-
       external qqb_zbb,donothing_gvec,qqb_zbb_gvec
+      logical first
+      data first/.true./
+      save first,scalesq
+
+      if (first) then
+       if     (flav .eq. 5) then
+         scalesq=mbsq
+       elseif (flav .eq. 4) then
+         scalesq=mcsq
+       else
+         write(6,*) 'Invalid flav in qqb_zbb_gs.f, flav=',flav
+       endif
+       first=.false.
+      endif
 
       ndmax=8
 
@@ -56,9 +71,9 @@ c --- remember: nd will count the dipoles
       enddo
 
       if (
-     .      (two*dot(p,5,6) .lt. four*mbsq) 
-     . .or. (two*dot(p,1,5)*dot(p,2,5)/dot(p,1,2) .lt. mbsq) 
-     . .or. (two*dot(p,1,6)*dot(p,2,6)/dot(p,1,2) .lt. mbsq)) return 
+     .      (two*dot(p,5,6) .lt. four*scalesq)
+     . .or. (two*dot(p,1,5)*dot(p,2,5)/dot(p,1,2) .lt. scalesq)
+     . .or. (two*dot(p,1,6)*dot(p,2,6)/dot(p,1,2) .lt. scalesq)) return
 
 c--- calculate all the initial-initial dipoles
       call dips(1,p,1,7,2,sub17_2,sub17_2v,msq17_2,msq17_2v,
@@ -98,8 +113,8 @@ c--- now the basic initial final ones
       call dips(8,p,6,7,2,sub67_2,dsubv,dummy,dummyv,
      . qqb_zbb,donothing_gvec)
       
-      do j=-(nf-1),(nf-1)
-      do k=-(nf-1),(nf-1)
+      do j=-nflav,nflav
+      do k=-nflav,nflav
       
       if ((j.gt.0).and.(k.lt.0)) then
 c----------q-qb

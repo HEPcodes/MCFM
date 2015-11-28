@@ -7,22 +7,24 @@
       implicit none
       include 'efficiency.f'
       include 'PDFerrors.f'
-      integer j,k
+      integer j,k,itno
       double precision xinteg,xinteg_err,minPDFxsec,maxPDFxsec
       double precision PDFerror,PDFperror,PDFnerror
       double precision lord_bypart(-1:1,-1:1),lordnorm
+      double precision ggpart,gqpart,qgpart,qqpart,qqbpart
       character*4 part
       logical creatent,dswhisto
       common/outputflags/creatent,dswhisto
       common/part/part
       common/bypart/lord_bypart
+      common/finalpart/ggpart,gqpart,qgpart,qqpart,qqbpart
       
 c--- Print-out the value of the integral and its error
       write(6,*) 
       write(6,53)'Value of final ',part,' integral is',
      . xinteg,' +/-',xinteg_err, ' fb'
      
-   53 format(a15,a4,a12,f13.3,a4,f10.3,a3)
+   53 format(a15,a4,a12,f15.3,a4,f12.3,a3)
 
 c--- Print-out a summary of the effects of jets and cuts
       write(6,*) 
@@ -50,23 +52,18 @@ c--- through the jet and cut routines
         lordnorm=lordnorm+lord_bypart(j,k)
       enddo
       enddo
+      ggpart=lord_bypart( 0, 0)/lordnorm
+      gqpart=(lord_bypart( 0,+1)+lord_bypart( 0,-1))/lordnorm
+      qgpart=(lord_bypart(+1, 0)+lord_bypart(-1, 0))/lordnorm
+      qqpart=(lord_bypart(+1,+1)+lord_bypart(-1,-1))/lordnorm
+      qqbpart=(lord_bypart(+1,-1)+lord_bypart(-1,+1))/lordnorm
       write(6,*) 'Contribution from parton sub-processes:'
-      write(6,*) '---------------------------------------'
-      write(6,55) '   GG    ',
-     .lord_bypart( 0, 0)/lordnorm*xinteg,
-     .lord_bypart( 0, 0)/lordnorm*100d0
-      write(6,55) 'GQ + GQB ',
-     .(lord_bypart( 0,+1)+lord_bypart( 0,-1))/lordnorm*xinteg,
-     .(lord_bypart( 0,+1)+lord_bypart( 0,-1))/lordnorm*100d0
-      write(6,55) 'QG + QBG ',
-     .(lord_bypart(+1, 0)+lord_bypart(-1, 0))/lordnorm*xinteg,
-     .(lord_bypart(+1, 0)+lord_bypart(-1, 0))/lordnorm*100d0
-      write(6,55) 'QQ + QBQB',
-     .(lord_bypart(+1,+1)+lord_bypart(-1,-1))/lordnorm*xinteg,
-     .(lord_bypart(+1,+1)+lord_bypart(-1,-1))/lordnorm*100d0
-      write(6,55) '   QQB   ',
-     .(lord_bypart(+1,-1)+lord_bypart(-1,+1))/lordnorm*xinteg,
-     .(lord_bypart(+1,-1)+lord_bypart(-1,+1))/lordnorm*100d0
+      write(6,*) '---------------------------------------'      
+      write(6,55) '   GG    ',ggpart*xinteg,ggpart*100d0
+      write(6,55) 'GQ + GQB ',gqpart*xinteg,gqpart*100d0
+      write(6,55) 'QG + QBG ',qgpart*xinteg,qgpart*100d0
+      write(6,55) 'QQ + QBQB',qqpart*xinteg,qqpart*100d0
+      write(6,55) '   QQB   ',qqbpart*xinteg,qqbpart*100d0
       write(6,*) '---------------------------------------'
       call flush(6)
 
@@ -122,17 +119,19 @@ c--- Finalize the histograms, if we're not filling ntuples instead
       if (creatent .eqv. .false.) then
         if (dswhisto .eqv. .false.) then
 c--- Traditional MCFM histograms
-          call histofin(xinteg,xinteg_err)
+          call histofin(xinteg,xinteg_err,0)
         else
 c--- DSW histograms - store the information
-c          call dswhbook(200,'Sigma',1.0d0,0.0d0,10.0d0)
-c          call dswhfill(200,0.5d0,xinteg)
-c          call dswhfill(200,1.5d0,xinteg_err)
+          call dswhbook(200,'Sigma   ',1.0d0,0.0d0,10.0d0)
+          call dswhfill(200,0.5d0,xinteg)
+          call dswhfill(200,1.5d0,xinteg_err)
 c--- DSW histograms - output and close file
           call dswhrout
           call dswclose
         endif
       else
+c--- ADDED - to produce normal histograms as well
+        call histofin(xinteg,xinteg_err,0)
         call dswhrout
         call dswclose
       endif

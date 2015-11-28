@@ -12,7 +12,7 @@ c--- G(p7) represents either a gluon or a light quark
 c---  For the case isub=1, F(p6) represents a light quark
 c---   and thus this corresponds to t-channel W-exchange
 c---  For the case isub=2, F(p6) represents b-bar and thus
-c---   this corresponds to either s-channel production
+c---   this corresponds to s-channel production
 
       include 'constants.f'
       include 'ewcouple.f'
@@ -48,21 +48,34 @@ c--- t production
      .   *(ubtdg_l(6,2,3,4,5,1,7,p)+ubtdg_h(6,2,3,4,5,1,7,p))
         bubar=aveqq*fac
      .   *(ubtdg_l(6,1,3,4,5,2,7,p)+ubtdg_h(6,1,3,4,5,2,7,p))
-c--- Note that the two 'f' radiation terms below correspond to
+c--- Note that the two '_h' radiation terms below correspond to
 c---  diagrams of the form g+b-->W(s+c)+t(->W+b) and are a large
 c---  contribution at the LHC that is not included in B. Harris et al.  
         bg=aveqg*fac
      .   *(ubtdg_l(7,1,3,4,5,6,2,p)+zip*ubtdg_h(7,1,3,4,5,6,2,p))
         gb=aveqg*fac
      .   *(ubtdg_l(7,2,3,4,5,6,1,p)+zip*ubtdg_h(7,2,3,4,5,6,1,p))
+c In this version of the matrix elements, the b-quark is in
+c position 6, for potential merging with the s-channel process
+c        qg= aveqg*fac
+c     .   *(zip*ubtdg_l(1,6,3,4,5,7,2,p)+ubtdg_h(1,6,3,4,5,7,2,p))
+c        gq= aveqg*fac
+c     .   *(zip*ubtdg_l(2,6,3,4,5,7,1,p)+ubtdg_h(2,6,3,4,5,7,1,p))
+c        qbg=aveqg*fac
+c     .   *(zip*ubtdg_l(7,6,3,4,5,1,2,p)+ubtdg_h(7,6,3,4,5,1,2,p))
+c        gqb=aveqg*fac
+c     .   *(zip*ubtdg_l(7,6,3,4,5,2,1,p)+ubtdg_h(7,6,3,4,5,2,1,p))
+c In this version of the matrix elements, the b-quark is in
+c position 7 with label "pp", for counting the extra b-quark
+c contribution - Z. Sullivan 1/25/05
         qg= aveqg*fac
-     .   *(zip*ubtdg_l(1,6,3,4,5,7,2,p)+ubtdg_h(1,6,3,4,5,7,2,p))
+     .   *(zip*ubtdg_l(1,7,3,4,5,6,2,p)+ubtdg_h(1,7,3,4,5,6,2,p))
         gq= aveqg*fac
-     .   *(zip*ubtdg_l(2,6,3,4,5,7,1,p)+ubtdg_h(2,6,3,4,5,7,1,p))
+     .   *(zip*ubtdg_l(2,7,3,4,5,6,1,p)+ubtdg_h(2,7,3,4,5,6,1,p))
         qbg=aveqg*fac
-     .   *(zip*ubtdg_l(7,6,3,4,5,1,2,p)+ubtdg_h(7,6,3,4,5,1,2,p))
+     .   *(zip*ubtdg_l(6,7,3,4,5,1,2,p)+ubtdg_h(6,7,3,4,5,1,2,p))
         gqb=aveqg*fac
-     .   *(zip*ubtdg_l(7,6,3,4,5,2,1,p)+ubtdg_h(7,6,3,4,5,2,1,p))
+     .   *(zip*ubtdg_l(6,7,3,4,5,2,1,p)+ubtdg_h(6,7,3,4,5,2,1,p))
       elseif (isub .eq. 2) then
         qqb=aveqq*fac
      .   *(ubtdg_l(1,6,3,4,5,2,7,p)+ubtdg_h(1,6,3,4,5,2,7,p))
@@ -164,21 +177,34 @@ c--- t~ production
      .   *(ubtdg_l(1,2,4,3,5,6,7,p)+ubtdg_h(1,2,4,3,5,6,7,p))
         bubar=aveqq*fac
      .   *(ubtdg_l(2,1,4,3,5,6,7,p)+ubtdg_h(2,1,4,3,5,6,7,p))
-c--- Note that the two 'f' radiation terms below correspond to
+c--- Note that the two '_h' radiation terms below correspond to
 c---  diagrams of the form g+b-->W(s+c)+t(->W+b) and are a large
 c---  contribution at the LHC that is not included in B. Harris et al.  
         bg=aveqg*fac
      .   *(ubtdg_l(6,1,4,3,5,7,2,p)+zip*ubtdg_h(6,1,4,3,5,7,2,p))
         gb=aveqg*fac
      .   *(ubtdg_l(6,2,4,3,5,7,1,p)+zip*ubtdg_h(6,2,4,3,5,7,1,p))
+c In this version of the matrix elements, the b-quark is in
+c position 6, for potential merging with the s-channel process
+c        qg= aveqg*fac
+c     .   *(zip*ubtdg_l(7,6,4,3,5,1,2,p)+ubtdg_h(7,6,4,3,5,1,2,p))
+c        gq= aveqg*fac
+c     .   *(zip*ubtdg_l(7,6,4,3,5,2,1,p)+ubtdg_h(7,6,4,3,5,2,1,p))
+c        qbg=aveqg*fac
+c     .   *(zip*ubtdg_l(1,6,4,3,5,7,2,p)+ubtdg_h(1,6,4,3,5,7,2,p))
+c        gqb=aveqg*fac
+c     .   *(zip*ubtdg_l(2,6,4,3,5,7,1,p)+ubtdg_h(2,6,4,3,5,7,1,p))
+c In this version of the matrix elements, the b-quark is in
+c position 7 with label "pp", for counting the extra b-quark
+c contribution - Z. Sullivan 1/25/05
         qg= aveqg*fac
-     .   *(zip*ubtdg_l(7,6,4,3,5,1,2,p)+ubtdg_h(7,6,4,3,5,1,2,p))
+     .   *(zip*ubtdg_l(6,7,4,3,5,1,2,p)+ubtdg_h(6,7,4,3,5,1,2,p))
         gq= aveqg*fac
-     .   *(zip*ubtdg_l(7,6,4,3,5,2,1,p)+ubtdg_h(7,6,4,3,5,2,1,p))
+     .   *(zip*ubtdg_l(6,7,4,3,5,2,1,p)+ubtdg_h(6,7,4,3,5,2,1,p))
         qbg=aveqg*fac
-     .   *(zip*ubtdg_l(1,6,4,3,5,7,2,p)+ubtdg_h(1,6,4,3,5,7,2,p))
+     .   *(zip*ubtdg_l(1,7,4,3,5,6,2,p)+ubtdg_h(1,7,4,3,5,6,2,p))
         gqb=aveqg*fac
-     .   *(zip*ubtdg_l(2,6,4,3,5,7,1,p)+ubtdg_h(2,6,4,3,5,7,1,p))
+     .   *(zip*ubtdg_l(2,7,4,3,5,6,1,p)+ubtdg_h(2,7,4,3,5,6,1,p))
       elseif (isub .eq. 2) then
         qqb=aveqq*fac
      .   *(ubtdg_l(2,6,4,3,5,1,7,p)+ubtdg_h(2,6,4,3,5,1,7,p))

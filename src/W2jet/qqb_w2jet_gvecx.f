@@ -48,6 +48,7 @@ c--- two outgoing particles switched (eg. gg->qqb rather than gg->qbq)
       enddo
 
       do i=0,2
+      q1q2(i,0,0)=0d0
       do j=-1,1
       do k=-1,1
       p1p2(i,j,k)=0d0

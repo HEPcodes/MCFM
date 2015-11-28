@@ -19,6 +19,9 @@ C--setup components for vector which is contracted in
 
 c---if one of the vectors happens to be zero this routine fails.
       do j=1,N
+            zabikj(j,j)=czip
+            zbaikj(j,j)=czip
+            
 C-----positive energy case
             if (p(j,4) .gt. 0d0) then
             flip(j)=1d0

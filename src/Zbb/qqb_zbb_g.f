@@ -19,13 +19,29 @@ c                         ---> bb(p5)+b(p6)
       include 'ewcouple.f'
       include 'ewcharge.f'
       include 'noglue.f'
+      include 'heavyflav.f'
+      include 'nflav.f'
       integer j,k,hq,Qh,hg,lh
       double precision P(mxpart,4),msq(-nf:nf,-nf:nf),mmsq(2,2)
-      double precision fac,LRq(2),LRb(2),lr1(2)
+      double precision fac,LRq(2),LRb(2),lr1(2),scalesq
       double precision msq_qqb(2,2,2,2,4),msq_qbq(2,2,2,2,4),
      .                 msq_qg(2,2,2,2,4),msq_qbg(2,2,2,2,4),
      .                 msq_gqb(2,2,2,2,4),msq_gq(2,2,2,2,4)
       double complex prop,czq,czb
+      logical first
+      data first/.true./
+      save first,scalesq
+
+      if (first) then
+       if     (flav .eq. 5) then
+         scalesq=mbsq
+       elseif (flav .eq. 4) then
+         scalesq=mcsq
+       else
+         write(6,*) 'Invalid flav in qqb_zbb_g.f, flav=',flav
+       endif
+       first=.false.
+      endif
 
       do j=-nf,nf
       do k=-nf,nf
@@ -52,9 +68,9 @@ C     0 ---> q(p1)+g(p2)+g(p3)+g(p4)+qbar(p5)+a(p6)+l(p7)
       endif
       
       if (
-     .      (s(5,6) .lt. four*mbsq) 
-     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. mbsq) 
-     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. mbsq) ) return
+     .      (s(5,6) .lt. four*scalesq) 
+     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. scalesq) 
+     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. scalesq) ) return 
 
 c--- note that (2,1) and (4,3) are switched due to crossing from NT
       if (gqonly) then
@@ -84,21 +100,21 @@ c--- note the factor of 4d0*xw**2 relative to wbb
 c--- extra factor of 2**3=8 to compensate for Ta normalization
       fac=fac*8d0
        
-      LRb(1)=L(1)
-      LRb(2)=R(1)
+      LRb(1)=L(flav)
+      LRb(2)=R(flav)
 
-      do j=-(nf-1),(nf-1)
-      do k=-(nf-1),(nf-1)
+      do j=-nflav,nflav
+      do k=-nflav,nflav
       if( j .ne. 0 .and. k .ne. 0 .and. j .ne. -k) goto 19
       
       msq(j,k)=0d0
 
       if     ((j .eq. 0) .and. (k .eq. 0)) then
-C---L(1),R(1) for coupling to down quark
-      msq(j,k)=abs(Q(1)*q1+prop*L(1)*l1)**2*mmsq(1,1)
-     .        +abs(Q(1)*q1+prop*R(1)*l1)**2*mmsq(2,1)
-     .        +abs(Q(1)*q1+prop*L(1)*r1)**2*mmsq(1,2)
-     .        +abs(Q(1)*q1+prop*R(1)*r1)**2*mmsq(2,2)
+C---L(flav),R(flav) for coupling to down quark
+      msq(j,k)=abs(Q(flav)*q1+prop*L(flav)*l1)**2*mmsq(1,1)
+     .        +abs(Q(flav)*q1+prop*R(flav)*l1)**2*mmsq(2,1)
+     .        +abs(Q(flav)*q1+prop*L(flav)*r1)**2*mmsq(1,2)
+     .        +abs(Q(flav)*q1+prop*R(flav)*r1)**2*mmsq(2,2)
       elseif ((j .gt. 0) .and. (k .lt. 0)) then
         LRq(1)=L(j)
         LRq(2)=R(j)
@@ -111,7 +127,7 @@ C---L(1),R(1) for coupling to down quark
 c--- couplings of Z to q (12) and Z to b (56)
 c--- the 2nd of these is conjugated for convenience in interference
           czq=Q(j)*q1+prop*LRq(hq)*lr1(lh)
-          czb=Q(1)*q1+Dconjg(prop)*LRb(Qh)*lr1(lh)
+          czb=Q(flav)*q1+Dconjg(prop)*LRb(Qh)*lr1(lh)
           msq(j,k)=msq(j,k)+aveqq*fac*(
      .      cdabs(czq)**2*msq_qqb(hq,Qh,hg,lh,1)
      .     +cdabs(czb)**2*msq_qqb(hq,Qh,hg,lh,2)
@@ -131,7 +147,7 @@ c--- the 2nd of these is conjugated for convenience in interference
         do hg=1,2
         do lh=1,2
           czq=Q(k)*q1+prop*LRq(hq)*lr1(lh)
-          czb=Q(1)*q1+Dconjg(prop)*LRb(Qh)*lr1(lh)
+          czb=Q(flav)*q1+Dconjg(prop)*LRb(Qh)*lr1(lh)
           msq(j,k)=msq(j,k)+aveqq*fac*(
      .      cdabs(czq)**2*msq_qbq(hq,Qh,hg,lh,1)
      .     +cdabs(czb)**2*msq_qbq(hq,Qh,hg,lh,2)
@@ -151,7 +167,7 @@ c--- the 2nd of these is conjugated for convenience in interference
         do hg=1,2
         do lh=1,2
           czq=Q(j)*q1+prop*LRq(hq)*lr1(lh)
-          czb=Q(1)*q1+Dconjg(prop)*LRb(Qh)*lr1(lh)
+          czb=Q(flav)*q1+Dconjg(prop)*LRb(Qh)*lr1(lh)
           msq(j,k)=msq(j,k)+aveqg*fac*(
      .      cdabs(czq)**2*msq_qg(hq,Qh,hg,lh,1)
      .     +cdabs(czb)**2*msq_qg(hq,Qh,hg,lh,2)
@@ -171,7 +187,7 @@ c--- the 2nd of these is conjugated for convenience in interference
         do hg=1,2
         do lh=1,2
           czq=Q(-j)*q1+prop*LRq(hq)*lr1(lh)
-          czb=Q(1)*q1+Dconjg(prop)*LRb(Qh)*lr1(lh)
+          czb=Q(flav)*q1+Dconjg(prop)*LRb(Qh)*lr1(lh)
           msq(j,k)=msq(j,k)+aveqg*fac*(
      .      cdabs(czq)**2*msq_qbg(hq,Qh,hg,lh,1)
      .     +cdabs(czb)**2*msq_qbg(hq,Qh,hg,lh,2)
@@ -191,7 +207,7 @@ c--- the 2nd of these is conjugated for convenience in interference
         do hg=1,2
         do lh=1,2
           czq=Q(k)*q1+prop*LRq(hq)*lr1(lh)
-          czb=Q(1)*q1+Dconjg(prop)*LRb(Qh)*lr1(lh)
+          czb=Q(flav)*q1+Dconjg(prop)*LRb(Qh)*lr1(lh)
           msq(j,k)=msq(j,k)+aveqg*fac*(
      .      cdabs(czq)**2*msq_gq(hq,Qh,hg,lh,1)
      .     +cdabs(czb)**2*msq_gq(hq,Qh,hg,lh,2)
@@ -211,7 +227,7 @@ c--- the 2nd of these is conjugated for convenience in interference
         do hg=1,2
         do lh=1,2
           czq=Q(-k)*q1+prop*LRq(hq)*lr1(lh)
-          czb=Q(1)*q1+Dconjg(prop)*LRb(Qh)*lr1(lh)
+          czb=Q(flav)*q1+Dconjg(prop)*LRb(Qh)*lr1(lh)
           msq(j,k)=msq(j,k)+aveqg*fac*(
      .      cdabs(czq)**2*msq_gqb(hq,Qh,hg,lh,1)
      .     +cdabs(czb)**2*msq_gqb(hq,Qh,hg,lh,2)

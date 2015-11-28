@@ -1,17 +1,18 @@
-****************************************************
-*             MCFM VERSION 4.01                    *
-*              Build date:                         *
-*        Mon Jan 17 16:51:27 CET 2005              *
-*                                                  *
-*     John Campbell, John.Campbell@cern.ch         *
-*     Keith Ellis,   ellis@fnal.gov                *
-*                                                  *
-*   For details see:                               *
-*   with D Rainwater, hep-ph/0308195 (Vjj at LHC)  *
-*   with F. Tramontano,hep-ph/0408158 (Sngl Top)   *
-*    Phys.Rev.D65:113007, hep-ph/0202176 (W,Z+2j)  *
-*    Phys.Rev.D62:114012, hep-ph/0006304 (W,Z+bb)  *
-*    Phys.Rev.D60:113006, hep-ph/9905386 (diboson) *
-*                                                  *
-*   On the web:  http://mcfm.fnal.gov/             *
-****************************************************
+ ************** MCFM - version 5.0 ****************
+ *                                                *
+ * MCFM, v5.0                   April 12th, 2006  *
+ *                                                *
+ * Authors: John Campbell, Keith Ellis            *
+ * (J.Campbell@physics.gla.ac.uk, ellis@fnal.gov) *
+ *                                                *
+ * For details see:                               *
+ *  N.P.B 726:109(2005), hep-ph/0506289 (W+t)     *
+ *  Phys.Rev.D70:094012, hep-ph/0408158 (Sngl Top)*
+ *       (with Francesco Tramontano)              *
+ *                                                *
+ *  Phys.Rev.D65:113007, hep-ph/0202176 (W,Z+2j)  *
+ *  Phys.Rev.D62:114012, hep-ph/0006304 (W,Z+bb)  *
+ *  Phys.Rev.D60:113006, hep-ph/9905386 (diboson) *
+ *                                                *
+ * On the web:  http://mcfm.fnal.gov/             *
+ **************************************************

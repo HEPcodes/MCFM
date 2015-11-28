@@ -41,6 +41,7 @@ c---- Fill common blocks for Kleiss and Stirling
          write(6,*) 'rmt',rmt
          write(6,*) 'rgw',rgw
          write(6,*) 'rgt',rgt
+         write(6,*) 'rmb',rmb
          write(6,*) 'GS_KS',GS_KS
          write(6,*) 'GW_KS',GW_KS
          write(6,*) 

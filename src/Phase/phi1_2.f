@@ -19,7 +19,7 @@ c     delta(p2^2-s2) delta(p3^2-s3)
       double precision s2max,s2min,s3max,s3min
       double precision m1,m2,s1,s2,s3,lambda,mass2,width2,mass3,width3
       integer j,n2,n3
-      logical first
+      logical first,oldzerowidth
       common/breit/n2,n3,mass2,width2,mass3,width3
       common/lambda/lambda,s1,s2,s3
       parameter(wt0=one/8d0/pi)
@@ -37,13 +37,20 @@ c      if (n3 .eq. 1) write(6,*) 'generating phase space with bw,n3=',n3
       s1=p1(4)**2-p1(1)**2-p1(2)**2-p1(3)**2  
       if (s1 .lt. 0d0) return 1
       m1=dsqrt(s1)
+
+c--- if both particles are produced on-shell, reject if m1 too small
       if (
      . zerowidth 
      . .and. (m1 .lt. mass2*dfloat(n2)+mass3*dfloat(n3))
      .    ) return 1
+
+c--- top is on-shell for W+t processes, so reject if m1 too small
+      if ( ((case .eq. 'W_twdk') .or. (case .eq. 'Wtdkay')
+     .  .or.(case .eq. 'Wtbwdk'))
+     . .and. (m1 .lt. mass2) ) return 1
 c      s2min=bbsqmin
 c      s2max=min(s1,bbsqmax)
-      s2min=0d0
+      s2min=1d-15
       s2max=s1
       if (((case .eq. 'Wbbmas') .and. (flav .eq. 5))
      ..or. (case .eq. 'Zbbmas')
@@ -54,8 +61,14 @@ c      s2max=min(s1,bbsqmax)
         s2min=4d0*mc**2
       elseif (case .eq. 'W_cjet') then
         s2min=mc**2
-      elseif (case .eq. 'W_tndk') then
+      elseif (case .eq. 'W_tndk')  then
         s2min=mt**2
+      elseif (case .eq. 'Wtbndk')  then
+        s2min=(mt+mb)**2
+      elseif ((case .eq. 'W_twdk') .or. (case .eq. 'Wtdkay')
+     .   .or. (case .eq. 'Wtbwdk'))  then
+        oldzerowidth=zerowidth
+        zerowidth=.true.
       endif
       if (s2min .gt. s2max) return 1
       if (n2 .eq. 0) then
@@ -65,10 +78,15 @@ c      s2max=min(s1,bbsqmax)
          call breitw(x1,s2min,s2max,mass2,width2,s2,w2)       
       endif
 
+      if ((case .eq. 'W_twdk') .or. (case .eq. 'Wtdkay')
+     ..or.(case .eq. 'Wtbwdk'))  then
+        zerowidth=oldzerowidth
+      endif
+      
       m2=dsqrt(s2)
       s3min=1d-15
       s3max=(m2-m1)**2
-      if (s3max-s3min .lt. 1d-12) return 1
+c      if (s3max-s3min .lt. 1d-9) return 1
       if (n3 .eq. 0) then
          w3=s3max-s3min
          s3=s3max*x2+s3min*(1d0-x2)
@@ -107,10 +125,16 @@ c      write(6,*) s3min,s3,s3max,m1,m2,sqrt(s1),sqrt(s2)
      & .or. (p2(4) .lt. 0d0) 
      & .or. (p3(4) .lt. 0d0)) then 
        if (case(1:5) .ne. 'vlchk') then 
+        write(6,*) '   m1=',m1
+        write(6,*) 's2min=',s2min
+        write(6,*) 's2max=',s2max
+        write(6,*) 's3min=',s3min
+        write(6,*) 's3max=',s3max
         write(6,*) 'p1',p1(4),p1(4)**2-p1(1)**2-p1(2)**2-p1(3)**2,s1
         write(6,*) 'p2',p2(4),p2(4)**2-p2(1)**2-p2(2)**2-p2(3)**2,s2
         write(6,*) 'p3',p3(4),p3(4)**2-p3(1)**2-p3(2)**2-p3(3)**2,s3
-        write(6,*) n2,n3
+        write(6,*) 'n2,n3',n2,n3
+        write(6,*) 'in phi1_2.f'
        endif
        return 1
       endif

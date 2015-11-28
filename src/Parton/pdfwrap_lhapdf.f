@@ -67,7 +67,7 @@ c      endif
         write(6,*)
         write(6,*) '****************************************'        
         write(6,*) '*        Calculating errors using      *'
-        write(6,*) '*',maxPDFsets,'sets of error PDFs       *'
+        write(6,*) '*        ',maxPDFsets,' sets of error PDFs        *'
         write(6,*) '****************************************'
         call InitPDF(0)
         amz=alphasPDF(zmass)

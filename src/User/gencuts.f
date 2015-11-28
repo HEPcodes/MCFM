@@ -40,13 +40,16 @@
       double precision Rjlmin,Rllmin,delyjjmin,leptpt2,leptrap2
       double precision delta(mxpart),discr,ptjet(mxpart),etabuffer
 c    . ,MJJ
-      logical jetsopphem
+      logical jetsopphem,passed
 c      integer nu
 c      double precision sumjetpt(2)
       double precision ht,qeta,mlbnu,merecon,reconcorr
+      double precision dphi_ll,m_ll,mtrans,scut1,scut2
+      double precision pt34,pttwo
       character*30 runstring
       common/runstring/runstring
       common/stopvars/ht,qeta,mlbnu,merecon,reconcorr
+      common/hwwvars/dphi_ll,m_ll,mtrans,scut1,scut2
       common/leptcuts/leptpt,leptrap,misspt,Rjlmin,Rllmin,delyjjmin,
      . leptpt2,leptrap2,gammpt,gammrap,gammcone,gammcut,
      . lbjscheme,jetsopphem
@@ -67,6 +70,22 @@ c--- do single-top search cuts instead
      .    maxparts=6+njets
         call stopcuts(pjet,maxparts,ht,qeta,mlbnu,merecon,reconcorr)  
         if (ht .lt. 0d0) gencuts=.true.
+        return
+      endif
+       
+      if (runstring(1:3) .eq. 'hww') then
+c--- do H->WW search cuts instead
+        maxparts=6+njets
+        call hwwcuts(pjet,maxparts,dphi_ll,m_ll,mtrans,scut1,scut2)  
+        if (mtrans .lt. 0d0) gencuts=.true.
+        return
+      endif
+       
+      if (runstring(1:3) .eq. 'wbf') then
+c--- do WBF search cuts instead
+        maxparts=4+njets
+        call wbfcuts(pjet,maxparts,passed)  
+        if (passed .eqv. .false.) gencuts=.true.
         return
       endif
        
@@ -351,8 +370,8 @@ c--- j and k point to the two highest pt ('tagging') jets
 
 c--- Requirement that jets be in opposite hemispheres
         if (jetsopphem) then
-          if (etarap(jetindex(j),pjet)*etarap(jetindex(k),pjet) .gt. 0d0)
-     .       ) then
+          if(etarap(jetindex(j),pjet)*etarap(jetindex(k),pjet) .gt. 0d0)
+     .       then
             gencuts=.true.
             return
           endif

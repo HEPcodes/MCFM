@@ -11,7 +11,7 @@
      . msqv(-nf:nf,-nf:nf),msq(-nf:nf,-nf:nf),
      . dot,virt,xl12
 
-      xl12=log(two*dot(p,1,2)/musq)
+      xl12=dlog(two*dot(p,1,2)/musq)
 
 c---  calculate lowest order matrix element
       call qqb_w(p,msq)

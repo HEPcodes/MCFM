@@ -22,9 +22,11 @@ c---- with all 2 pi's (ie 1/(2*pi)^11)
       p12(j)=-p1(j)-p2(j)
       enddo
       smin=0d0
-      call phi1_2(r(1),r(2),r(3),r(4),p12,p34,p567,wt34567,*99)
+
+c--- Note that r(9) and r(10) are used in gen5 to generate x1 and x2
+      call phi1_2(r(1),r(2),r(3),r(4),p12,p567,p34,wt34567,*99)
       call phi3m0(r(5),r(6),p34,p3,p4,wt34,*99)
-      call phi1_2m_bw(zip,r(9),r(10),r(11),smin,p567,p7,p56,
+      call phi1_2m_bw(zip,r(7),r(8),r(11),smin,p567,p7,p56,
      .   wmass,wwidth,wt567,*99)
       call phi3m0(r(12),r(13),p56,p5,p6,wt56,*99)
       

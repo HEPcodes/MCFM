@@ -15,7 +15,7 @@
      . irscale,ifscale,iset
       double precision amz,rscalestart,fscalestart,
      . dot,pttwo,aveptjet,getEt,p(mxpart,4),alphas,
-     . setscale
+     . setscale,pt
       logical first
       double precision mass2,width2,mass3,width3
       common/breit/n2,n3,mass2,width2,mass3,width3
@@ -74,7 +74,17 @@ c--- HT
         enddo
         if (first) msg='*      Dynamic scale = scalar Et sum (HT)'//
      . '          *'
-      elseif ((iset .lt. 1) .or. (iset .gt. 4)) then
+      elseif (iset .eq. 5) then
+c--- geometric mean of pt5, pt6, pt7      
+        setscale=(pt(5,p)*pt(6,p)*pt(7,p))**(1d0/3d0)
+        if (first) msg='*      Dynamic scale = (pt5*pt6*pt7)**(1/3)'//
+     . '        *'
+      elseif (iset .eq. 6) then
+c--- pt7      
+        setscale=pt(7,p)
+        if (first) msg='*                 Dynamic scale = pt7      '//
+     . '        *'
+      elseif ((iset .lt. 1) .or. (iset .gt. 7)) then
 c--- catch invalid inputs
         write(6,*) 'Invalid dynamic scale!'
         stop
@@ -106,6 +116,7 @@ c--- catch invalid inputs
       
 c--- catch absurdly large scales      
       if  (scale .gt. 3000d0) scale=3000d0
+      if  (facscale .gt. 3000d0) facscale=3000d0
 
 c--- run alpha_s
       as=alphas(scale,amz,nlooprun)

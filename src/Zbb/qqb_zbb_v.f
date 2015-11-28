@@ -20,8 +20,10 @@
       include 'scheme.f'
       include 'noglue.f'
       include 'b0.f'
+      include 'heavyflav.f'
+      include 'nflav.f'
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),
-     . p(mxpart,4),q_bdkw(mxpart,4),faclo,subuv,
+     . p(mxpart,4),q_bdkw(mxpart,4),faclo,subuv,scalesq,
      . fac,v2(2),vQ(nf,2),
      . mmsq(2,2),mmsq_vec(2,2),mmsq_ax(2,2),pswap(mxpart,4)
       double complex tamp,lamp,atreez,a61z,prop,
@@ -30,8 +32,23 @@
      . a61z_123456(2,2,2),a61z_214356(2,2,2),
      . a61z_423156(2,2,2),a61z_241356(2,2,2)
       integer nu,j,k,polq,polb,polz
+      logical first
+      data first/.true./
+      save first,scalesq
 
       scheme='dred'
+
+      if (first) then
+       if     (flav .eq. 5) then
+         scalesq=mbsq
+       elseif (flav .eq. 4) then
+         scalesq=mcsq
+       else
+         write(6,*) 'Invalid flav in qqb_zbb_v.f, flav=',flav
+       endif
+       first=.false.
+      endif
+
       do j=-nf,nf
       do k=-nf,nf
       msqv(j,k)=0d0
@@ -46,9 +63,9 @@ c---twopij with s_{ij} (in rke notation)
       call qqb_zbb(p,msq)
 
       if (
-     .      (s(5,6) .lt. four*mbsq) 
-     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. mbsq) 
-     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. mbsq) ) return 
+     .      (s(5,6) .lt. four*scalesq) 
+     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. scalesq) 
+     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. scalesq) ) return 
 
       prop=s(3,4)/dcmplx((s(3,4)-zmass**2),zmass*zwidth)
 
@@ -116,7 +133,7 @@ c--- set-up amplitudes first, to improve efficiency
       enddo
       enddo
 
-      do j=-(nf-1),(nf-1)
+      do j=-nflav,nflav
       k=-j
 
       do polq=1,2
@@ -129,32 +146,32 @@ c--- set-up amplitudes first, to improve efficiency
           tamp=atreez_123456(polq,polb,polz)
      .         *(Q(j)*q1+vQ(j,polq)*v2(polz)*prop)
      .        -atreez_214356(3-polb,3-polq,polz)
-     .         *(Q(1)*q1+vQ(1,polb)*v2(polz)*prop)
+     .         *(Q(flav)*q1+vQ(flav,polb)*v2(polz)*prop)
           lamp=a61z_123456(polq,polb,polz)
      .         *(Q(j)*q1+vQ(j,polq)*v2(polz)*prop)
      .        -a61z_214356(3-polb,3-polq,polz)
-     .         *(Q(1)*q1+vQ(1,polb)*v2(polz)*prop)
+     .         *(Q(flav)*q1+vQ(flav,polb)*v2(polz)*prop)
         elseif ((j .lt. 0) .and. (k .gt. 0)) then
           tamp=atreez_423156(polq,polb,polz)
      .         *(Q(k)*q1+vQ(k,polq)*v2(polz)*prop)
      .        -atreez_241356(3-polb,3-polq,polz)
-     .         *(Q(1)*q1+vQ(1,polb)*v2(polz)*prop)
+     .         *(Q(flav)*q1+vQ(flav,polb)*v2(polz)*prop)
           lamp=a61z_423156(polq,polb,polz)
      .         *(Q(k)*q1+vQ(k,polq)*v2(polz)*prop)
      .        -a61z_241356(3-polb,3-polq,polz)
-     .         *(Q(1)*q1+vQ(1,polb)*v2(polz)*prop)
+     .         *(Q(flav)*q1+vQ(flav,polb)*v2(polz)*prop)
         endif
         msqv(j,k)=msqv(j,k)+fac*2d0*dble(tamp*dconjg(lamp))
       enddo
       if ((j .eq. 0) .and. (k .eq. 0)) then
         msqv(j,k)=msqv(j,k)+mmsq(polq,polz)*(
-     .             cdabs(Q(1)*q1+vQ(1,polq)*v2(polz)*prop)**2)
-     .                     +mmsq_vec(polq,polz)*dble(
-     .             (Q(1)*q1+vQ(1,polq)*v2(polz)*prop)
-     .            *(Q(1)*q1+0.5d0*(vQ(1,1)+vQ(1,2))*v2(polz)*prop))
-     .                     +mmsq_ax(polq,polz)*dble(
-     .             (Q(1)*q1+vQ(1,polq)*v2(polz)*prop)
-     .            *(v2(polz)*prop)/sin2w)
+     .    cdabs(Q(flav)*q1+vQ(flav,polq)*v2(polz)*prop)**2)
+     .            +mmsq_vec(polq,polz)*dble(
+     .    (Q(flav)*q1+vQ(flav,polq)*v2(polz)*prop)
+     .   *(Q(flav)*q1+0.5d0*(vQ(flav,1)+vQ(flav,2))*v2(polz)*prop))
+     .            +mmsq_ax(polq,polz)*dble(
+     .    (Q(flav)*q1+vQ(flav,polq)*v2(polz)*prop)
+     .   *(v2(polz)*prop)/sin2w)
       endif
       enddo
       enddo

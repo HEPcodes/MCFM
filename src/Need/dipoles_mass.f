@@ -202,7 +202,7 @@ c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)
       endif
       omx=one-x
       lomx=dlog(omx)
-      zp=omx/(omx+mbarsq)
+      zp=omx/(omx+x*mbarsq)
       if (vorz .eq. 2) then
          Pqqreg=-(1d0+x)
          lx=dlog(x)
@@ -244,13 +244,13 @@ c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)
          return
       endif
       omx=one-x
-      zp=omx/(omx+mbarsq)
+      zp=omx/(omx+x*mbarsq)
       if (vorz .eq. 2) then
          Pggreg=2d0*(omx/x-1d0+x*omx)
          lx=dlog(x)
          if_mgg=Pggreg*(-(epinv-L)+2d0*dlog(omx)-lx-dlog(x*mbarsq+omx))
      .    +2d0*mbarsq*dlog(x*mbarsq/(x*mbarsq+omx))
-     .    -2d0/omx*(lx+dlog((1d0+x*mbarsq+omx)/(1d0+x*mbarsq)))
+     .    -2d0/omx*(lx+dlog((1d0+x*mbarsq+omx)/(1d0+mbarsq)))
          if (aif .lt. zp) then
            if (aif .eq. 1d0) then
              write(6,*) 'zp > 1 in dipoles_mass.f - this is forbidden'
@@ -261,7 +261,7 @@ c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)
          endif
          return
       elseif (vorz .eq. 3) then
-         if_mgg=2d0/omx*(-(epinv-L)+2d0*dlog(omx)-dlog(1d0+x*mbarsq))
+         if_mgg=2d0/omx*(-(epinv-L)+2d0*dlog(omx)-dlog(1d0+mbarsq))
          return 
       endif
       return
@@ -450,8 +450,8 @@ CDTS 5.62
 
       mbarsq=mbar**2
       ommsq=1d0-mbarsq
-      logm=log(mbarsq)
-      logomm=log(ommsq)
+      logm=dlog(mbarsq)
+      logomm=dlog(ommsq)
 
 C----radiation from massive line with massless spectator
       afftmp=aff       
@@ -459,14 +459,14 @@ C----radiation from massive line with massless spectator
       Ieika=
      . half*logm*(epinv-L)-2d0*ddilog(ommsq)
      . -logm*logomm-0.25d0*logm**2
-     . -log(afftmp)*logm-ddilog(-ommsq/mbarsq)
+     . -dlog(afftmp)*logm-ddilog(-ommsq/mbarsq)
      . +ddilog(-afftmp*ommsq/mbarsq)
       Icolla=
      .  epinv-L+phi+2d0+(1d0+half*phi)*logm
      . +(phi-2d0)*logm/(ommsq)-2d0*logomm
-     . +half*phi*(3d0*afftmp-2d0-(3d0-mbarsq)/ommsq*log(arg)
+     . +half*phi*(3d0*afftmp-2d0-(3d0-mbarsq)/ommsq*dlog(arg)
      . -afftmp/arg)
-     . -2d0*log(afftmp)+2d0*log(arg)/ommsq
+     . -2d0*dlog(afftmp)+2d0*dlog(arg)/ommsq
 
 
 C----radiation from massless line with massive spectator
@@ -483,14 +483,14 @@ C----radiation from massless line with massive spectator
      . +half*epinv*epinv2-half*epinv*L+0.25d0*L**2
      . -logomm*(epinv-L)
      . +ddilog(ommsq)-2.5d0*pisqo6+logomm**2
-     . +half*log(arg1/(arg2*arg3))**2-LOG(arg2/ypp)**2
-     . +2d0*(LOG(ypp)*LOG(arg3/ypm)+LOG(ypp/yp)*LOG(arg1/(ypp*ypm))
+     . +half*dlog(arg1/(arg2*arg3))**2-dLOG(arg2/ypp)**2
+     . +2d0*(dLOG(ypp)*dLOG(arg3/ypm)+dLOG(ypp/yp)*dLOG(arg1/(ypp*ypm))
      . +DDILOG(ypm/ypp)-DDILOG(arg1/ypp**2)
      . +DDILOG(arg3)-DDILOG(ypm))
 
-      Icollb=1.5d0*(epinv-L)-3d0*log(1d0-mbar)+5d0-mbar/(1d0-mbar)
+      Icollb=1.5d0*(epinv-L)-3d0*dlog(1d0-mbar)+5d0-mbar/(1d0-mbar)
      . -2d0*mbar*(1d0-2d0*mbar)/ommsq
-     . +1.5d0*(LOG(YP/afftmp)-YP+afftmp)
+     . +1.5d0*(dLOG(YP/afftmp)-YP+afftmp)
 
 c--- Note: extra factor of half because we include this term once for each
 c---  leg, but this is the sum of both legs

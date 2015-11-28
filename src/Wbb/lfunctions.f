@@ -1,23 +1,70 @@
 ************************************************************************
 *     Author: R.K. Ellis                                               *
-*     July, 1998.                                                      *
+*     July, 1998/July 2005                                             *
 ************************************************************************
+
       double complex function L0(x,y)
       implicit none
       include 'constants.f'
       double complex Lnrat
-      double precision x,y
-      L0=Lnrat(x,y)/(one-x/y)
+      double precision x,y,denom
+      denom=one-x/y
+      if (abs(denom) .lt. 1d-7) then
+      L0=-cone-dcmplx(denom*(half+denom/3d0))
+      else
+      L0=Lnrat(x,y)/dcmplx(denom)
+      endif
       return
       end
 
       double complex function L1(x,y)
       implicit none
       include 'constants.f'
-      double precision x,y,r
-      double complex l0
+      double precision x,y,denom
+      double complex L0
+      denom=one-x/y
+      if (abs(denom) .lt. 1d-7) then
+      L1=-half*cone-dcmplx(denom/3d0*(one+0.75d0*denom))
+      else
+      L1=(L0(x,y)+cone)/dcmplx(denom)
+      endif
+      return
+      end
+
+      double complex function L2(x,y)
+      implicit none
+      include 'constants.f'
+      double complex Lnrat
+      double precision x,y,r,denom
       r=x/y
-      L1=(L0(x,y)+cone)/dcmplx(one-r)
+      denom=one-r
+      if (abs(denom) .lt. 1d-7) then
+      L2=(dcmplx(10d0)+denom*(dcmplx(15d0)+dcmplx(18d0)*denom))
+     . /dcmplx(60d0)
+      else
+      L2=(Lnrat(x,y)-dcmplx(0.5d0*(r-1d0/r)))/dcmplx(denom)**3
+      endif
+      return
+      end
+
+      double complex function L0old(x,y)
+      implicit none
+      include 'constants.f'
+      double complex Lnrat
+      double precision x,y,denom
+      denom=one-x/y
+      L0old=Lnrat(x,y)/dcmplx(denom)
+      return
+      end
+
+
+      double complex function L1old(x,y)
+      implicit none
+      include 'constants.f'
+      double precision x,y,denom
+      double complex L0old
+      denom=one-x/y
+      L1old=(L0old(x,y)+cone)/dcmplx(denom)
       return
       end
 

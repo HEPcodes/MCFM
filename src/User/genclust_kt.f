@@ -3,7 +3,7 @@ c--- clusters momenta using plabel to determine which
 c--- particles should be clustered. Forms 'jets' jets according to
 c--- the standard kT algorithm with cone size Rmin.
 c--- Furthermore, the clustered jets are only observed if
-c--- pT(jet) > ptjetmin and eta(jet) < etajetmax
+c--- pT(jet) >= ptjetmin and etajetmin <= |eta(jet)| <= etajetmax
 c--- 
 c--- qfinal is the final vector q1,.... q(4+jets)
 c--- where non-jet four vectors are set equal to the incoming q 
@@ -147,9 +147,10 @@ c        write(*,*) 'Jet ',i,'(',jetlabel(i),')',jetindex(i)
 c        write(*,*) 'pt: ',pt(i,qjet),' vs min. ',ptjetmin
 c        write(*,*) 'aeta: ',aetarap(i,qjet),' vs min. ',etajetmin
 c        write(*,*) 'aeta: ',aetarap(i,qjet),' vs max. ',etajetmax
-        if ((pt(i,qjet) .gt. ptjetmin) .and.
-     .      (aetarap(i,qjet) .gt. etajetmin) .and.
-     .      (aetarap(i,qjet) .lt. etajetmax)) then 
+
+        if ((pt(i,qjet) .ge. ptjetmin) .and.
+     .      (aetarap(i,qjet) .ge. etajetmin) .and.
+     .      (aetarap(i,qjet) .le. etajetmax)) then 
         ajet=ajet+1
         do nu=1,4
           qfinal(jetindex(ajet),nu)=qjet(i,nu)

@@ -1,7 +1,7 @@
       block data codeversion_data
       implicit none
       include 'codeversion.f'
-      data codeversion/'4.1'/      
+      data codeversion/'5.0'/      
       end
 
       subroutine banner
@@ -22,13 +22,16 @@
       write(6,*) line
       write(6,*) '*                                                *'
       write(6,*) '* MCFM, v'//codeversion//
-     . '              January 17th, 2005  *'
+     . '                April 12th, 2006  *'
       write(6,*) '*                                                *'
-      write(6,*) '* Authors: John Campbell, John.Campbell@cern.ch  *'
-      write(6,*) '*          Keith Ellis,   ellis@fnal.gov,        *'
+      write(6,*) '* Authors: John Campbell, Keith Ellis            *'
+      write(6,*) '* (J.Campbell@physics.gla.ac.uk, ellis@fnal.gov) *'
       write(6,*) '*                                                *'
       write(6,*) '* For details see:                               *'
-      write(6,*) '*w/Francesco Tramontano,hep-ph/0408158 (Sngl Top)*'
+      write(6,*) '*  N.P.B 726:109(2005), hep-ph/0506289 (W+t)     *'
+      write(6,*) '*  Phys.Rev.D70:094012, hep-ph/0408158 (Sngl Top)*'
+      write(6,*) '*       (with Francesco Tramontano)              *'
+      write(6,*) '*                                                *'
       write(6,*) '*  Phys.Rev.D65:113007, hep-ph/0202176 (W,Z+2j)  *'
       write(6,*) '*  Phys.Rev.D62:114012, hep-ph/0006304 (W,Z+bb)  *'
       write(6,*) '*  Phys.Rev.D60:113006, hep-ph/9905386 (diboson) *'

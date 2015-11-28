@@ -162,6 +162,14 @@ C      %%CITATION = NUPHA,B282,642;%%
       double precision P13,P14,P15,P23,P24,P25,P12,P35,P34,P45,S12
       double precision mass2,width2,mass3,width3
       common/breit/n2,n3,mass2,width2,mass3,width3
+      logical first
+      data first/.true./
+      save first
+
+      if (first) then
+      first=.false.
+      write(6,*) 'Heavy Quark mass:',mass2
+      endif 
 
 
       xm2=mass2**2

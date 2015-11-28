@@ -6,6 +6,7 @@ C---returns the value of the pseudorapidity
       double precision p(mxpart,4)
       etarap=dsqrt(p(j,1)**2+p(j,2)**2+p(j,3)**2)
       etarap=(etarap+p(j,3))/(etarap-p(j,3))
+
       if (etarap .lt. 1d-13) then
 C-- set to 100 if this is very close to or less than zero
 c-- rapidities of 100 will be rejected by any sensible cuts

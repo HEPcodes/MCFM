@@ -13,28 +13,43 @@ c---  averaged(summed) over initial(final) colours and spins
       include 'qcdcouple.f'
       include 'msq_cs.f'
       include 'mmsq_cs.f'
+      include 'heavyflav.f'
+      include 'nflav.f'
       integer j,k,nu,ics,j1,j2,j3,swap(2)
       double precision p(mxpart,4),msq(-nf:nf,-nf:nf),mmsq(2,2),
-     . pswap(mxpart,4),faclo
+     . pswap(mxpart,4),faclo,scalesq
       double complex tamp,prop
 c      double complex qqb5,qbq5,qqb6,qbq6,qqb7,qbq7,qqb8,qbq8
       double complex qqb_a(2,2,2),qqb_b(2,2,2)
       double complex qbq_a(2,2,2),qbq_b(2,2,2)
       logical first
+      character qflav
       data swap/2,1/,first/.true./
-      save first,swap
+      save first,swap,scalesq
       
       if (first) then
+       if     (flav .eq. 5) then
+         scalesq=mbsq
+         qflav='b'
+       elseif (flav .eq. 4) then
+         scalesq=mcsq
+         qflav='c'
+       else
+         write(6,*) 'Invalid flav in qqb_zbb.f, flav=',flav
+       endif
        write(6,*)
        write(6,*) '****************** Process info ********************'
        write(6,*) '*                                                  *'
-       write(6,*) '* mb=0 for this process, although cuts are applied *'
-       write(6,*) '* to simulate the effect of the b-mass:            *'
+       write(6,*) '* m'//qflav//
+     .  '=0 for this process, although cuts are applied *'
+       write(6,*) '* to simulate the effect of the '//qflav//
+     .  ' mass:            *'
        write(6,*) '*                                                  *'
-       write(6,99) ' *                pt(b) > ',dsqrt(mbsq),
+       write(6,99) ' *                pt('//qflav//
+     .  ') > ',dsqrt(scalesq),
      .  '                *'
-       write(6,99) ' *                m(bb) > ',two*dsqrt(mbsq),
-     .  '                *'
+       write(6,99) ' *                m('//qflav//qflav//
+     .  ') > ',two*dsqrt(scalesq),'                *'
        write(6,*) '****************************************************'
        first=.false.
       endif
@@ -68,10 +83,9 @@ C---Fill spinor products
       prop=s(3,4)/dcmplx((s(3,4)-zmass**2),zmass*zwidth)
 
 c ensure that we have a hard process
-      if (
-     .      (s(5,6) .lt. four*mbsq) 
-     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. mbsq) 
-     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. mbsq) ) return
+      if (  (s(5,6) .lt. four*scalesq) 
+     . .or. (s(1,5)*s(2,5)/s(1,2) .lt. scalesq) 
+     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. scalesq) ) return
 
 c--- qqb
       call ampqqb_qqb(1,2,6,5,qqb_a,qqb_b)
@@ -88,70 +102,70 @@ c--- qbq from symmetries
 
       faclo=4d0*V*gsq**2*esq**2*aveqq 
 
-      do j=-(nf-1),(nf-1)
+      do j=-nflav,nflav
       k=-j
           if ((j .eq. 0) .and. (k .eq. 0)) then
             msq(j,k)=
-     .      +abs(Q(1)*q1+L(1)*l1*prop)**2*mmsq(1,1)
-     .      +abs(Q(1)*q1+R(1)*l1*prop)**2*mmsq(2,1)
-     .      +abs(Q(1)*q1+L(1)*r1*prop)**2*mmsq(1,2)
-     .      +abs(Q(1)*q1+R(1)*r1*prop)**2*mmsq(2,2)
+     .      +abs(Q(flav)*q1+L(flav)*l1*prop)**2*mmsq(1,1)
+     .      +abs(Q(flav)*q1+R(flav)*l1*prop)**2*mmsq(2,1)
+     .      +abs(Q(flav)*q1+L(flav)*r1*prop)**2*mmsq(1,2)
+     .      +abs(Q(flav)*q1+R(flav)*r1*prop)**2*mmsq(2,2)
             do ics=0,2
             msq_cs(ics,j,k)=
-     .      +abs(Q(1)*q1+L(1)*l1*prop)**2*mmsq_cs(ics,1,1)
-     .      +abs(Q(1)*q1+R(1)*l1*prop)**2*mmsq_cs(ics,2,1)
-     .      +abs(Q(1)*q1+L(1)*r1*prop)**2*mmsq_cs(ics,1,2)
-     .      +abs(Q(1)*q1+R(1)*r1*prop)**2*mmsq_cs(ics,2,2)
+     .      +abs(Q(flav)*q1+L(flav)*l1*prop)**2*mmsq_cs(ics,1,1)
+     .      +abs(Q(flav)*q1+R(flav)*l1*prop)**2*mmsq_cs(ics,2,1)
+     .      +abs(Q(flav)*q1+L(flav)*r1*prop)**2*mmsq_cs(ics,1,2)
+     .      +abs(Q(flav)*q1+R(flav)*r1*prop)**2*mmsq_cs(ics,2,2)
             enddo
           elseif ((j .gt. 0) .and. (k .lt. 0)) then
             tamp=(Q(j)*q1+L(j)*l1*prop)*qqb_a(1,1,1)
-     .          +(Q(1)*q1+L(1)*l1*prop)*qqb_b(1,1,1)
+     .          +(Q(flav)*q1+L(flav)*l1*prop)*qqb_b(1,1,1)
             msq(j,k)=faclo*abs(tamp)**2
             tamp=(Q(j)*q1+L(j)*l1*prop)*qqb_a(1,2,1)
-     .          +(Q(1)*q1+R(1)*l1*prop)*qqb_b(1,2,1)
+     .          +(Q(flav)*q1+R(flav)*l1*prop)*qqb_b(1,2,1)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
             tamp=(Q(j)*q1+L(j)*r1*prop)*qqb_a(1,1,2)
-     .          +(Q(1)*q1+L(1)*r1*prop)*qqb_b(1,1,2)
+     .          +(Q(flav)*q1+L(flav)*r1*prop)*qqb_b(1,1,2)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
             tamp=(Q(j)*q1+L(j)*r1*prop)*qqb_a(1,2,2)
-     .          +(Q(1)*q1+R(1)*r1*prop)*qqb_b(1,2,2)
+     .          +(Q(flav)*q1+R(flav)*r1*prop)*qqb_b(1,2,2)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
             tamp=(Q(j)*q1+R(j)*l1*prop)*qqb_a(2,1,1)
-     .          +(Q(1)*q1+L(1)*l1*prop)*qqb_b(2,1,1)
+     .          +(Q(flav)*q1+L(flav)*l1*prop)*qqb_b(2,1,1)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
             tamp=(Q(j)*q1+R(j)*l1*prop)*qqb_a(2,2,1)
-     .          +(Q(1)*q1+R(1)*l1*prop)*qqb_b(2,2,1)
+     .          +(Q(flav)*q1+R(flav)*l1*prop)*qqb_b(2,2,1)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
             tamp=(Q(j)*q1+R(j)*r1*prop)*qqb_a(2,1,2)
-     .          +(Q(1)*q1+L(1)*r1*prop)*qqb_b(2,1,2)
+     .          +(Q(flav)*q1+L(flav)*r1*prop)*qqb_b(2,1,2)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
             tamp=(Q(j)*q1+R(j)*r1*prop)*qqb_a(2,2,2)
-     .          +(Q(1)*q1+R(1)*r1*prop)*qqb_b(2,2,2)
+     .          +(Q(flav)*q1+R(flav)*r1*prop)*qqb_b(2,2,2)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
           elseif ((j .lt. 0) .and. (k .gt. 0)) then
             tamp=(Q(k)*q1+L(k)*l1*prop)*qbq_a(1,1,1)
-     .          +(Q(1)*q1+L(1)*l1*prop)*qbq_b(1,1,1)
+     .          +(Q(flav)*q1+L(flav)*l1*prop)*qbq_b(1,1,1)
             msq(j,k)=faclo*abs(tamp)**2
             tamp=(Q(k)*q1+L(k)*l1*prop)*qbq_a(1,2,1)
-     .          +(Q(1)*q1+R(1)*l1*prop)*qbq_b(1,2,1)
+     .          +(Q(flav)*q1+R(flav)*l1*prop)*qbq_b(1,2,1)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
             tamp=(Q(k)*q1+L(k)*r1*prop)*qbq_a(1,1,2)
-     .          +(Q(1)*q1+L(1)*r1*prop)*qbq_b(1,1,2)
+     .          +(Q(flav)*q1+L(flav)*r1*prop)*qbq_b(1,1,2)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
             tamp=(Q(k)*q1+L(k)*r1*prop)*qbq_a(1,2,2)
-     .          +(Q(1)*q1+R(1)*r1*prop)*qbq_b(1,2,2)
+     .          +(Q(flav)*q1+R(flav)*r1*prop)*qbq_b(1,2,2)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
             tamp=(Q(k)*q1+R(k)*l1*prop)*qbq_a(2,1,1)
-     .          +(Q(1)*q1+L(1)*l1*prop)*qbq_b(2,1,1)
+     .          +(Q(flav)*q1+L(flav)*l1*prop)*qbq_b(2,1,1)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
             tamp=(Q(k)*q1+R(k)*l1*prop)*qbq_a(2,2,1)
-     .          +(Q(1)*q1+R(1)*l1*prop)*qbq_b(2,2,1)
+     .          +(Q(flav)*q1+R(flav)*l1*prop)*qbq_b(2,2,1)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
             tamp=(Q(k)*q1+R(k)*r1*prop)*qbq_a(2,1,2)
-     .          +(Q(1)*q1+L(1)*r1*prop)*qbq_b(2,1,2)
+     .          +(Q(flav)*q1+L(flav)*r1*prop)*qbq_b(2,1,2)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
             tamp=(Q(k)*q1+R(k)*r1*prop)*qbq_a(2,2,2)
-     .          +(Q(1)*q1+R(1)*r1*prop)*qbq_b(2,2,2)
+     .          +(Q(flav)*q1+R(flav)*r1*prop)*qbq_b(2,2,2)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
           endif
       enddo

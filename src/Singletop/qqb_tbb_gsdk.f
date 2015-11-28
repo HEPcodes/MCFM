@@ -39,6 +39,7 @@ c--- g(p7) represents a gluon
       end
 
       subroutine wtransform(p,q,pbDpg,ptDpg,ptDpb)
+      implicit none
       include 'constants.f'
       double precision p(mxpart,4),pw(4),pt(4),lDt(3:4),lDw(3:4)
       double precision ptDpt,pwDpw,ptDpw,q(mxpart,4),root,hsin,hcos,a,b

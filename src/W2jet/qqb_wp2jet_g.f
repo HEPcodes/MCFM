@@ -313,17 +313,27 @@ c--- Q G --> Q q qb
      .                +(2d0-Vsq(j,-j+1))*
      .                   (aveqg/aveqq)*QG_d_dsc
         elseif( jj(j) .eq. 1) then
-         msq(j,k)=msq(j,k)+Vsq(-j,j+1)*(aveqg/aveqq)*QG_d_ddu*0.5d0
-     .                    +(2d0-Vsq(-j,j+1))*(aveqg/aveqq)*QG_d_dsc
+         if (j .eq. 5) then
+           Vfac=0d0
+         else
+           Vfac=Vsq(-j,j+1)
+         endif
+         msq(j,k)=msq(j,k)+Vfac*(aveqg/aveqq)*QG_d_ddu*0.5d0
+     .                    +(2d0-Vfac)*(aveqg/aveqq)*QG_d_dsc
         endif
       elseif ((j .lt. 0) .and. (k .eq. 0)) then
 c--- QB G --> QB qb q
         if( jj(j) .eq. -1) then
-              msq(j,k)=msq(j,k)+Vsq(j,-j+1)*(
+         if (j .eq. -5) then
+           Vfac=0d0
+         else
+           Vfac=Vsq(j,-j+1)
+         endif
+              msq(j,k)=msq(j,k)+Vfac*(
      .                   (aveqg/aveqq)*QbG_d_udd
      .                  +(aveqg/aveqq)*QbG_d_uuu*0.5d0
      .                  +dfloat(nf-2)*(aveqg/aveqq)*QbG_d_ucc)
-     .                +(2d0-Vsq(j,-j+1))*
+     .                +(2d0-Vfac)*
      .                   (aveqg/aveqq)*QbG_u_ucs
         elseif( jj(j) .eq. -2) then
          msq(j,k)=msq(j,k)+Vsq(-j,j+1)*(aveqg/aveqq)*QbG_u_uud*0.5d0
@@ -339,17 +349,27 @@ c--- G Q --> Q q qb
      .          +(2d0-Vsq(k,-k+1))*
      .              (aveqg/aveqq)*GQ_d_dsc
         elseif( kk(k) .eq. 1) then
-         msq(j,k)=msq(j,k)+Vsq(-k,k+1)*(aveqg/aveqq)*GQ_d_ddu*0.5d0
-     .                    +(2d0-Vsq(-k,k+1))*(aveqg/aveqq)*GQ_d_dsc
+         if (k .eq. 5) then
+           Vfac=0d0
+         else
+           Vfac=Vsq(-k,k+1)
+         endif
+         msq(j,k)=msq(j,k)+Vfac*(aveqg/aveqq)*GQ_d_ddu*0.5d0
+     .                    +(2d0-Vfac)*(aveqg/aveqq)*GQ_d_dsc
         endif
       elseif ((j .eq. 0) .and. (k .lt. 0)) then
 c--- G QB --> QB qb q
         if( kk(k) .eq. -1) then
-              msq(j,k)=msq(j,k)+Vsq(k,-k+1)*(
+         if (k .eq. -5) then
+           Vfac=0d0
+         else
+           Vfac=Vsq(k,-k+1)
+         endif
+              msq(j,k)=msq(j,k)+Vfac*(
      .                   (aveqg/aveqq)*GQb_d_udd
      .                  +(aveqg/aveqq)*GQb_d_uuu*0.5d0
      .                  +dfloat(nf-2)*(aveqg/aveqq)*GQb_d_ucc)
-     .                +(2d0-Vsq(k,-k+1))*
+     .                +(2d0-Vfac)*
      .                   (aveqg/aveqq)*GQb_u_ucs
         elseif( kk(k) .eq. -2) then
          msq(j,k)=msq(j,k)+Vsq(-k,k+1)*(aveqg/aveqq)*GQb_u_uud*0.5d0

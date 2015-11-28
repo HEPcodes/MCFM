@@ -26,27 +26,28 @@
       double precision p(mxpart,4),ptrans(mxpart,4),sub(4),subv,vecsq
       double precision x,omx,z,omz,y,omy,u,omu,sij,sik,sjk,dot,vec(4)
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),vtilde
-      integer nd,ip,jp,kp,nu,j,k
+      integer nd,ip,jp,kp,nu,j,k,ipt
 c--      logical includedipole
       logical incldip(0:maxd)
       common/incldip/incldip
       external subr_born,subr_corr
-      
+            
 C---Initialize the dipoles to zero
       do j=1,4
       sub(j)=0d0
       enddo
       subv=0d0
       call zeromsq(msq,msqv)
+      incldip(nd)=.true.
       
       sij=two*dot(p,ip,jp)
       sik=two*dot(p,ip,kp)
       sjk=two*dot(p,jp,kp)
 
-      if ((ip .le. 2) .and. (kp .le. 2)) then
 ***********************************************************************
 *************************** INITIAL-INITIAL ***************************
 ***********************************************************************
+      if ((ip .le. 2) .and. (kp .le. 2)) then
         omx=-(sij+sjk)/sik
         x=one-omx
         vtilde=sij/sik
@@ -65,10 +66,10 @@ c        incldip(nd)=includedipole(nd,ptrans)
 C--if not return
 c        if (incldip(nd) .eqv. .false.) return
         
-        do nu=1,4
-          vec(nu)=p(jp,nu)-vtilde*p(kp,nu)
-        enddo
         vecsq=-sij*sjk/sik
+        do nu=1,4
+          vec(nu)=(p(jp,nu)-vtilde*p(kp,nu))/dsqrt(-vecsq)
+        enddo
         call subr_born(ptrans,msq)
         call subr_corr(ptrans,vec,ip,msqv)
 
@@ -76,7 +77,7 @@ c        if (incldip(nd) .eqv. .false.) return
         sub(gq)=-gsq/sij
         sub(qg)=-gsq/x/sij*(one-two*x*omx)
         sub(gg)=-2d0*gsq/x/sij*(x/omx+x*omx)
-        subv   =+4d0*gsq/x/sij*omx/x/vecsq
+        subv   =-4d0*gsq/x/sij*omx/x
 
 ***********************************************************************
 *************************** INITIAL-FINAL *****************************
@@ -112,7 +113,7 @@ c--- do nothing
         endif
         
         do nu=1,4
-           vec(nu)=p(jp,nu)/u-p(kp,nu)/omu
+           vec(nu)=(p(jp,nu)/u-p(kp,nu)/omu)/dsqrt(sjk)
         enddo
         
         call subr_corr(ptrans,vec,ip,msqv)        
@@ -120,11 +121,12 @@ c--- do nothing
         sub(gq)=-gsq/sij
         sub(qg)=-gsq/x/sij*(one-two*x*omx)
         sub(gg)=-2d0*gsq/x/sij*(one/(omx+u)-one+x*omx)
-        subv   =-4d0*gsq/x/sij*(omx/x*u*(one-u)/sjk)
-      elseif ((ip .gt. 2) .and. (kp .le. 2)) then
+        subv   =-4d0*gsq/x/sij*(omx/x*u*(one-u))
+
 ***********************************************************************
 *************************** FINAL-INITIAL *****************************
 ***********************************************************************
+      elseif ((ip .gt. 2) .and. (kp .le. 2)) then
 c-- Check to see if this dipole will be included - should have been
 c-- already determined at this point in the initial-final phase
 c        if (incldip(nd) .eqv. .false.) return
@@ -152,21 +154,22 @@ c--- do something special if we're doing W+2,Z+2jet (jp .ne. 7)
         if (jp .ne.7) then
           if (ip .lt. 7) then
 C ie for cases 56_i,65_i
-          call subr_corr(ptrans,vec,5,msqv)
+            ipt=5
           else
 C ie for cases 76_i,75_i
-          call subr_corr(ptrans,vec,6,msqv)
+            ipt=6
           endif
         else
 C ie for cases 57_i,67_i
-          call subr_corr(ptrans,vec,ip,msqv)
+          ipt=ip
         endif
-                
+        
+        call subr_corr(ptrans,vec,ipt,msqv)
+                                
         sub(qq)=+gsq/x/sij*(two/(omz+omx)-one-z)
         sub(gq)=+gsq/x/sij
         sub(gg)=+2d0*gsq/x/sij*(one/(omz+omx)+one/(z+omx)-two) 
         subv   =+4d0*gsq/x/sij/sij
-
 
 ***********************************************************************
 **************************** FINAL-FINAL ******************************

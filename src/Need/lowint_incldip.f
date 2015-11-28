@@ -26,12 +26,11 @@ c --- DSW.
 c --- To use VEGAS random number sequence :
       double precision ran2
       integer ih1,ih2,j,k,nvec,sgnj,sgnk
-      double precision r(mxdim),W,sqrts,xmsq,val,
+      double precision r(mxdim),W,sqrts,xmsq,val,val2,
      . fx1(-nf:nf),fx2(-nf:nf),p(mxpart,4),pjet(mxpart,4),
      . pswt,rscalestart,fscalestart
       double precision wgt,msq(-nf:nf,-nf:nf),m3,m4,m5,xmsqjk
-c      double precision msqa(-nf:nf,-nf:nf),n(4)
-      double precision xx(2),flux,vol,vol_mass,vol3_mass,BrnRat
+      double precision xx(2),flux,vol,vol_mass,vol3_mass,vol_wt,BrnRat
       double precision xmsq_bypart(-1:1,-1:1),lord_bypart(-1:1,-1:1)
       logical bin,first,includedipole
       logical creatent,dswhisto
@@ -85,7 +84,8 @@ c--- processes that use "gen2m"
           
 c--- processes that use "gen3"     
       elseif ( (case .eq. 'W_cjet') 
-     .   .or.  (case .eq. 'W_tndk') ) then
+     .   .or.  (case .eq. 'W_tndk')
+     .   .or.  (case .eq. 'vlchwn') ) then
         npart=3
         call gen3(r,p,pswt,*999)
 
@@ -108,6 +108,13 @@ c--- processes that use "gen3m"
         npart=3
         call gen3m(r,p,m3,m4,m5,pswt,*999)
           
+c--- processes that use "gen3m"     
+      elseif (case .eq. 'tt_glu') then
+        m3=mt
+        m4=mt
+        m5=0d0
+        npart=3
+        call gen3m(r,p,m3,m4,m5,pswt,*999)
 c--- processes that use "gen3m_rap"     
       elseif ( (case .eq. 'vlchm3') ) then
         taumin=(2d0*mt/sqrts)**2
@@ -123,7 +130,7 @@ c--- processes that use "gen4h"
         call gen4h(r,p,pswt,*999)
           
 c--- processes that use "gen5" 
-      elseif ( (case .eq. 'W_twdk') ) then 
+      elseif ( (case .eq. 'W_twdk') .or. (case .eq. 'vlchwt') ) then 
         npart=5 
         call gen5(r,p,pswt,*999)
     
@@ -131,10 +138,13 @@ c--- processes that use "gen6"
       elseif ( (case .eq. 'tt_bbl')
      .    .or. (case .eq. 'tt_bbh')
      .    .or. (case .eq. 'tautau')
-     .    .or. (case .eq. 'vlchk6') ) then
+     .    .or. (case .eq. 'Wtbwdk')
+     .    .or. (case .eq. 'vlchk6')
+     .    .or. (case .eq. 'vlchwg')
+     .    .or. (case .eq. 'vlchwh') ) then
         npart=6
         call gen6(r,p,pswt,*999)
-
+        
 c--- processes that use "gen7"     
       elseif ( (case .eq. 'qq_ttg') ) then
         npart=7
@@ -167,7 +177,8 @@ c--- processes that use "gen_njets" with an argument of "2"
      .    .or. (case .eq. 'qq_Hqq')
      .    .or. (case .eq. 'ggfus2')
      .    .or. (case .eq. 'W_bjet')
-     .    .or. (case .eq. 'Wcjetg') ) then
+     .    .or. (case .eq. 'Wcjetg')
+     .    .or. (case .eq. 'Z_bjet') ) then
         npart=4
         call gen_njets(r,2,p,pswt,*999)         
         
@@ -178,6 +189,8 @@ c--- processes that use "gen_njets" with an argument of "3"
      .    .or. (case .eq. 'Zbbjet') 
      .    .or. (case .eq. 'Wb2jet') 
      .    .or. (case .eq. 'qqHqqg')
+     .    .or. (case .eq. 'ggfus3')
+     .    .or. (case .eq. 'Zbjetg')
      .    .or. (case .eq. 'vlchk5') ) then
         npart=5
         call gen_njets(r,3,p,pswt,*999)      
@@ -208,7 +221,7 @@ c---impose cuts on final state
         call masscuts(s,*999)
       endif
 c----reject event if any s(i,j) is too small
-      call smalls(s,npart,*999)                                                 
+      call smalls(s,npart,*999)                                             
 
 c--- see whether this point will pass cuts - if it will not, do not
 c--- bother calculating the matrix elements for it, instead bail out
@@ -290,6 +303,8 @@ c--- Calculate the required matrix elements
         call qqb_QQb(p,msq)
       elseif (case .eq. 'cc_tot') then
         call qqb_QQb(p,msq)
+      elseif (case .eq. 'tt_glu') then
+        call qqb_QQb_g(p,msq)
       elseif (case .eq. 'bq_tpq') then
         call bq_tpq(p,msq)
       elseif (case .eq. 'ttdkay') then
@@ -304,6 +319,10 @@ c--- Calculate the required matrix elements
         call qqb_w_tndk(p,msq)
       elseif (case .eq. 'W_twdk') then
         call qqb_w_twdk(p,msq)
+      elseif (case .eq. 'Wtbwdk') then
+        call qqb_wtbwdk(p,msq)
+      elseif (case .eq. 'Wtbndk') then
+        call qqb_wtbndk(p,msq)
       elseif (case .eq. 'tottth') then
         call qqb_tottth(p,msq)
       elseif (case .eq. 'qq_tth') then
@@ -319,7 +338,7 @@ c--- Calculate the required matrix elements
       elseif (case .eq. 'qq_Hqq') then
         call VV_hqq(p,msq)
       elseif (case .eq. 'qqHqqg') then
-        call qq_hqq_g(p,msq)
+        call VV_hqq_g(p,msq)
       elseif (case .eq. 'tautau') then
         call qqb_tautau(p,msq)
       elseif (case .eq. 'gQ__ZQ') then
@@ -328,10 +347,16 @@ c--- Calculate the required matrix elements
         call qqb_zccm(p,msq)
       elseif (case .eq. 'ggfus2') then
         call gg_hgg(p,msq)
+      elseif (case .eq. 'ggfus3') then
+        call gg_hggg(p,msq)
       elseif (case .eq. 'W_bjet') then
         call qqb_wbjet(p,msq)
       elseif (case .eq. 'Wcjetg') then
         call qqb_w_cjet_massless_g(p,msq)
+      elseif (case .eq. 'Z_bjet') then
+        call qqb_zbjet(p,msq)
+      elseif (case .eq. 'Zbjetg') then
+        call qqb_zbjet_g(p,msq)
       elseif (case .eq. 'vlchk2') then
         call qqb_vol(p,msq)
         flux=one/vol(W,2)
@@ -416,6 +441,17 @@ c--- Calculate the required matrix elements
         enddo
         fx1(2)=2d0
         fx2(-1)=2d0
+      elseif ((case .eq. 'vlchwt') .or. (case .eq. 'vlchwn')
+     .   .or. (case .eq. 'vlchwg') .or. (case .eq. 'vlchwh')) then
+        taumin=0.0001d0
+        call qqb_vol(p,msq)
+        flux=one/vol_wt(W)
+        do j=-nf,nf
+        fx1(j)=0d0
+        fx2(j)=0d0
+        enddo
+        fx1(2)=1d0
+        fx2(-1)=1d0
       else
         write(6,*) 'Unimplemented process in lowint : case=',case
         stop 
@@ -430,8 +466,11 @@ c--- Calculate the required matrix elements
 
 
       currentPDF=0
-            
-      flux=fbGeV2/(2d0*xx(1)*xx(2)*W)
+
+c--- do not calculate the flux if we're only checking the volume      
+      if (case(1:4) .ne. 'vlch') then      
+        flux=fbGeV2/(2d0*xx(1)*xx(2)*W)
+      endif
       
 c--- initialize a PDF set here, if calculating errors
   777 continue    
@@ -523,6 +562,7 @@ c--- loop over all PDF error sets, if necessary
       enddo
 
       val=lowint*wgt
+      val2=lowint**2*wgt
 c--- update the maximum weight so far, if necessary
 c---  but not if we are already unweighting ...
       if ((.not.unweight) .and. (dabs(val) .gt. wtmax)) then
@@ -531,11 +571,12 @@ c---  but not if we are already unweighting ...
 
       if (bin) then
         val=val/dfloat(itmx)
+        val2=val2/dfloat(itmx)**2
 c ---   DSW. If the user has not selected to generate
 c ---   events, still call nplotter here in order to
 c ---   fill histograms/ntuples with weighted events :
         if (.not.evtgen) then
-          call nplotter(pjet,val,0)
+          call nplotter(pjet,val,val2,0)
         endif
       endif
 
@@ -556,7 +597,7 @@ c         write(6,*) 'Keep event with weight',val
           endif
 c ---     just in case the weight was negative :
           newwt = newwt*dsign(1d0,val)
-          call nplotter(pjet,newwt,0)
+          call nplotter(pjet,newwt,newwt,0)
 c ---     DSW. If I'm storing the event, I need to make a decision
 c ---     about the flavours :
           call decide_flavour(pflav,pbarflav)

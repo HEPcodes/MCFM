@@ -39,8 +39,8 @@
       data first/.true./
 
       if (first) then
-      first=.false.
-      write(6,*) 'dips_mass:mass2',mass2
+        first=.false.
+        write(6,*) 'dips_mass:mass2',mass2
       endif 
       mqsq=mass2**2
 
@@ -62,16 +62,30 @@ c--- if we're doing single-top, reduce # of momenta from 7 to 5
         enddo
       endif
       
+      if ((case .eq. 'W_twdk')) then
+c--- if we're doing W+t, reduce # of momenta from 8 to 6 
+        do nu=1,4
+          p(3,nu)=pold(3,nu)
+          p(4,nu)=pold(4,nu)
+          p(5,nu)=pold(5,nu)+pold(6,nu)+pold(7,nu)
+          p(6,nu)=pold(8,nu)
+          p(7,nu)=0d0
+          p(8,nu)=0d0
+        enddo
+      endif
+      
 C---Initialize the dipoles to zero
       do j=1,4
       sub(j)=0d0
       enddo
       subv=0d0
       call zeromsq(msq,msqv)
+      incldip(nd)=.true.
 
 C--- default is all particles massless
       misq=0d0
       mjsq=0d0
+      mksq=0d0
       mijsq=0d0
 
       pij=two*dot(p,ip,jp)
@@ -94,8 +108,13 @@ C---Modification so that only close to singular subtracted
         
         call transform_mass(p,ptrans,x,ip,jp,kp,misq,mjsq,mksq,mijsq)
 
-        if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')) then
-          call extend_trans(pold,p,ptrans,pext)
+        if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')
+     .  .or.(case .eq. 'W_twdk')) then
+          if (case .eq. 'W_twdk') then
+            call extend_trans_wt(pold,p,ptrans,pext)
+          else
+            call extend_trans(pold,p,ptrans,pext)
+          endif
           do j=1,mxpart
           do nu=1,4
             ptrans(j,nu)=pext(j,nu)
@@ -126,7 +145,7 @@ C---Modification so that only close to singular subtracted
         x=one-omx
         u=pij/(pij+pik)
         omu=pik/(pij+pik)
-        
+
 C---determine mass of spectator
 c      mksq=max(p(kp,4)**2-p(kp,1)**2-p(kp,2)**2-p(kp,3)**2,0d0)
 c      if (mksq.gt.0d0) then
@@ -143,8 +162,13 @@ C---npart is the number of particles in the final state
 C---transform the momenta so that only the first npart+1 are filled
         call transform_mass(p,ptrans,x,ip,jp,kp,misq,mjsq,mksq,mijsq)
 
-        if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')) then
-          call extend_trans(pold,p,ptrans,pext)
+        if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')
+     .  .or.(case .eq. 'W_twdk')) then
+          if (case .eq. 'W_twdk') then
+            call extend_trans_wt(pold,p,ptrans,pext)
+          else
+            call extend_trans(pold,p,ptrans,pext)
+          endif
           do j=1,mxpart
           do nu=1,4
             ptrans(j,nu)=pext(j,nu)
@@ -201,8 +225,13 @@ c---Modification so that only close to singular subtracted
         qijsq=qij(4)**2-qij(1)**2-qij(2)**2-qij(3)**2
         call transform_mass(p,ptrans,x,ip,jp,kp,misq,mjsq,mksq,mijsq)
 
-        if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')) then
-          call extend_trans(pold,p,ptrans,pext)
+        if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')
+     .  .or.(case .eq. 'W_twdk')) then
+          if (case .eq. 'W_twdk') then
+            call extend_trans_wt(pold,p,ptrans,pext)
+          else
+            call extend_trans(pold,p,ptrans,pext)
+          endif
           do j=1,mxpart
           do nu=1,4
             ptrans(j,nu)=pext(j,nu)
@@ -341,8 +370,13 @@ c      ym=2d0*mui*muj/(1d0-muisq-mujsq-muksq)
 C---calculate the ptrans-momenta 
        call transform_mass(p,ptrans,y,ip,jp,kp,misq,mjsq,mksq,mijsq)
 
-        if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')) then
-          call extend_trans(pold,p,ptrans,pext)
+        if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')
+     .  .or.(case .eq. 'W_twdk')) then
+          if (case .eq. 'W_twdk') then
+            call extend_trans_wt(pold,p,ptrans,pext)
+          else
+            call extend_trans(pold,p,ptrans,pext)
+          endif
           do j=1,mxpart
           do nu=1,4
             ptrans(j,nu)=pext(j,nu)

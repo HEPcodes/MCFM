@@ -11,13 +11,12 @@
       include 'efficiency.f'
       include 'limits.f'
       include 'npart.f'
-      include 'mxdim.f'
       include 'phasemin.f'
       include 'facscale.f'
       include 'scale.f'
       include 'verbose.f'
-      include 'workdir.f'
-      logical creatent,dswhisto
+C -- GZ
+      include 'first_time.f'
       double precision rtsmin,sqrts,p1ext(4),p2ext(4),
      . p(mxpart,4),val
       integer j,k
@@ -30,6 +29,7 @@
       call banner
       call reader_input
 
+      first_time = .true. 
 * Initialize efficiency variables      
       njetzero=0
       ncutzero=0
@@ -60,11 +60,14 @@
       p2ext(2)=0d0
       p2ext(3)=+half*sqrts
 
+* Set-up run name
+      call setrunname(scale,facscale)
+
 * Initialize all histograms
 * npart=6 is a dummy value, to ensure that all histograms are included
       npart=6
       val=1d-15   
-      call nplotter(p,val,1)
+      call nplotter(p,val,val**2,1)
        
       do j=1,mxpart
       do k=1,4
@@ -72,9 +75,6 @@
       enddo
       enddo 
 
-* Set-up run name
-      call setrunname(scale,facscale)
-           
       return
       end
             

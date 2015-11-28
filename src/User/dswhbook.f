@@ -15,7 +15,8 @@ c        1         2         3         4         5         6         7
       real*8 dx,xmin,xmax
       logical first
       data first /.true./
-
+      save first
+      
       integer NWPAWC
       parameter(NWPAWC=10000000)
       real         HMEMOR(NWPAWC)
@@ -28,11 +29,15 @@ c        1         2         3         4         5         6         7
 
       integer ISTAT,i
       character*100 outfile
+
+      character*72 runname
+      integer nlength, lenocc
+      common/runname/runname,nlength
 c     ------------------------------------------------------------------
       
       if (first) then
 c ---   Open the file :
-        outfile='mcfm.rz'
+	outfile=runname(1:lenocc(runname))//'.rz'
         call hlimit(NWPAWC)
 c ---   A record length of 8192 words will produce a warning but is 
 c ---   OK for most systems (see HBOOK manual, p.21) : 
@@ -152,7 +157,10 @@ c     ------------------------------------------------------------------
 
       call hrend('HISTOS')
       close(30)
-
+      
+      write(6,*) '<----- Completed a batch of n-tuples ----->' 
+      call flush(6)
+      
       return
       end
 
@@ -242,20 +250,41 @@ c--- Extra definitions to facilitate dummy call to lowint
       integer ISTAT
       character*100 outfile
 
+      character*72 runname
+      integer nlength, lenocc
+      common/runname/runname,nlength
+
+      logical first
+      integer batchno
+      character*3 batchstr,getstr
+      data first/.true./
+      save first,batchno
 c     ------------------------------------------------------------------
 
-c--- Dummy call to lowint to ascertain the correct size for momenta n-tuples
-      do ifill=1,22
-        r(ifill)=0.5d0
-      enddo
-      dummy=lowint(r,wgt)
+c--- Need to ascertain the correct size for momenta n-tuples when this routine
+c--- is called for the first time, achieved via a dummy call to lowint
+      if (first) then      
+        do ifill=1,mxdim
+          r(ifill)=0.5d0
+        enddo
+        dummy=lowint(r,wgt)
       
-      imaxmom=npart
-      if ((part.eq.'real') .or. (part.eq.'tota') .or. (part.eq.'todk'))
-     .  imaxmom=imaxmom+1
+        imaxmom=npart
+        if ((part.eq.'real').or.(part.eq.'tota').or.(part.eq.'todk'))
+     .    imaxmom=imaxmom+1
+	  batchno=-1
+	  first=.false.
+      endif
+      
+c---- Increment the batch number counter and convert to a string    
+      batchno=batchno+1
+      batchstr=getstr(batchno)
       
 c --- Create the output file :
-      outfile='mcfm.rz'
+      outfile=runname(1:lenocc(runname))//batchstr//'.rz'
+      write(6,*) '<----- Creating batch ',batchno,' of n-tuples ----->' 
+      call flush(6)
+
       call hlimit(NWPAWC)
       IQUEST(10) = 65000
 c --- A record length of 8192 words will produce a warning but is 
@@ -312,13 +341,31 @@ c--- Extra common block to carry the information about maximum momenta entries
       integer i
       real pfill(imaxmom*4+5)
 
+c--- Variables to count the number of ntuples filled so far and set the
+c--- maximum number filled per batch; the current value is somewhat arbitrary
+c--- and may be modified by the user
+      integer icount,batchlimit
+      data icount/0/
+      save icount
+      
+      parameter(batchlimit=1000000)
+
+c     ------------------------------------------------------------------
+
 c--- if the weight is zero, don't bother to add the n-tuple
       if (wt .eq. 0d0) then
         return
       endif
 
-c     ------------------------------------------------------------------
-
+c--- The n-tuple should be filled, but first check if the current batch
+c--- is already full; if so, close and then open a new one
+      icount=icount+1
+      if (mod(icount,batchlimit) .eq. 0) then
+        call dswhrout
+	call dswclose
+	call dswntuplebook
+      endif
+      
 c --- Fill the ntuple :
       do i=1,imaxmom
         pfill(4*(i-1)+1)=sngl(p(i+2,1))

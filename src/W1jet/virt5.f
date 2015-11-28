@@ -21,8 +21,10 @@ c   0--> qb_R(1)+q_L(2)+l_L(3)+a_R(4)+g_L(5)
       call A5NLO(ip(1),ip(2),ip(3),ip(4),ip(5),za,zb,A5LOm,A5NLOm)
 c   0--> qb_R(1)+q_L(2)+l_L(3)+a_R(4)+g_R(5)
       call A5NLO(ip(2),ip(1),ip(4),ip(3),ip(5),zb,za,A5LOp,A5NLOp)
+
       virt5=
      . +ason2pi*(Dble(Dconjg(A5LOp)*A5NLOp)+Dble(Dconjg(A5LOm)*A5NLOm))
+
       return
       end
 

@@ -4,13 +4,18 @@
       include 'mxdim.f'
       include 'limits.f'
       include 'xmin.f'
+      include 'nodecay.f'
 c---- generate phase space for 2-->2+n process
 c---- with (34) being a vector boson and 5,..,4+n the jets
 c---- r(mxdim),p1(4),p2(4) are inputs reversed in sign 
 c---- from physical values 
 c---- phase space for -p1-p2 --> p3+p4+p5+p6
 c---- with all 2 pi's (ie 1/(2*pi)^(4+2n))
-      double precision r(mxdim)
+c----
+c---- if 'nodecay' is true, then the vector boson decay into massless
+c---- particles is not included and 2 less integration variables
+c---- are required
+      double precision r(mxdim),rdk1,rdk2
       double precision p(mxpart,4),p3(4),p34(4),psumjet(4),pcm(4),Q(4)
       double precision wt
       double precision hmin,hmax,delh,h,sqrts,pt,etamax,etamin,xx(2)
@@ -21,7 +26,7 @@ c---- with all 2 pi's (ie 1/(2*pi)^(4+2n))
       double precision plstar,estar,plstarsq,y5starmax,y5starmin
       double precision mass2,width2,mass3,width3
       integer j,nu,njets,ijet,n2,n3
-      logical first,xxerror
+      logical first,xxerror,flatreal
       character*4 part
       common/part/part
       common/energy/sqrts
@@ -31,7 +36,8 @@ c---- with all 2 pi's (ie 1/(2*pi)^(4+2n))
       logical reset,scalereset
       data first/.true./,xxerror/.false./
       save first,ptjetmin,etajetmin,etajetmax,pbreak,xxerror
-
+      parameter(flatreal=.false.)
+      
       if (first .or. reset) then
         first=.false.
         reset=.false.
@@ -44,14 +50,14 @@ c--- generate pt approx. 1/x for pt > pbreak and
 c--- pt approx. uniformly for pt < pbreak
           pbreak=ptjetmin
           ptjetmin=0d0
-          etajetmax=10d0
+          etajetmax=20d0
         else
 c--- for lord and virt, the partons produced here can be generated
 c--- right up to the jet cut boundaries and there is no need for pbreak
           pbreak=0d0
         endif
 c--- in case this routine is used for very small values of ptjetmin
-        if (ptjetmin .lt. 5d0) pbreak=5d0
+        if ((ptjetmin .lt. 5d0) .and. (part .ne. 'real')) pbreak=5d0
       endif        
 
       do nu=1,4
@@ -63,23 +69,33 @@ c--- in case this routine is used for very small values of ptjetmin
       enddo 
 
       wt=2d0*pi
-            
+                       
       do ijet=1,njets
 c--- generate the pt of jet number ijet
 c--- rapidity limited by E=pT*coshy
         wt=wt/16d0/pi**3
 c        xmin=2d0/sqrts
 c        xmax=1d0/ptjetmin
-        hmin=1d0/dsqrt((sqrts/2d0)**2+pbreak**2)
-        hmax=1d0/dsqrt(ptjetmin**2+pbreak**2)
-        delh=hmax-hmin
-        h=hmin+r(ijet)*delh
-        pt=dsqrt(1d0/h**2-pbreak**2)
+
+        if ((flatreal) .and. (part .eq. 'real')) then
+c--- generate flat pt for the real contribution
+          pt=r(ijet)*(sqrts/2d0)
+          wt=wt*(sqrts/2d0)*pt
+        else
+c--- favour small pt region 
+          hmin=1d0/dsqrt((sqrts/2d0)**2+pbreak**2)
+          hmax=1d0/dsqrt(ptjetmin**2+pbreak**2)
+          delh=hmax-hmin
+          h=hmin+r(ijet)*delh        
+          pt=dsqrt(1d0/h**2-pbreak**2)
+          wt=wt*delh/h**3
+        endif
+
         etamax=sqrts/2d0/pt
         if (etamax**2 .le. 1d0) then
-            write(6,*) 'etamax**2 .le. 1d0 in gen_njets.f',etamax**2 
-            wt=0d0
-            return 1
+          write(6,*) 'etamax**2 .le. 1d0 in gen_njets.f',etamax**2 
+          wt=0d0
+          return 1
         endif
         etamax=dlog(etamax+dsqrt(etamax**2-1d0))
         
@@ -91,7 +107,6 @@ c        xmax=1d0/ptjetmin
         coshy=dsqrt(1d0+sinhy**2)
         
         p(4+ijet,4)=pt*coshy
-        wt=wt*delh/h**3
         
         phi=2d0*pi*r(2*njets+ijet)
         wt=wt*2d0*pi
@@ -164,10 +179,20 @@ c--- now make the initial state momenta
       p(2,3)=-p(2,4)
       
       wt=wt*rshat/(sqrts**2*q0st)
+      
+c--- dummy values if there's no decay
+      if (nodecay) then
+        rdk1=0.5d0
+        rdk2=0.5d0
+      else
+        rdk1=r(3*njets+3)
+        rdk2=r(3*njets+4)
+      endif
+      
 c--- decay boson into leptons, in boson rest frame
-      costh=2d0*r(3*njets+3)-1d0
+      costh=2d0*rdk1-1d0
       sinth=dsqrt(1d0-costh**2)
-      phi=2d0*pi*r(3*njets+4)
+      phi=2d0*pi*rdk2
       p34(4)=dsqrt(mv2)/2d0
       p34(1)=p34(4)*sinth*dcos(phi)
       p34(2)=p34(4)*sinth*dsin(phi)

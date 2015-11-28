@@ -33,6 +33,10 @@ c p56 is the b-bbar system
         call phi3m(r(5),r(6),p56,p5,p6,mc,mc,wt56,*99)
       elseif (case .eq. 'W_cjet') then
         call phi3m(r(5),r(6),p56,p5,p6,mc,zip,wt56,*99)
+      elseif (case .eq. 'W_tndk') then
+        call phi3m(r(5),r(6),p56,p5,p6,mt,zip,wt56,*99)
+      elseif (case .eq. 'Wtbndk') then
+        call phi3m(r(5),r(6),p56,p5,p6,mt,mb,wt56,*99)
       else
         call phi3m0(r(5),r(6),p56,p5,p6,wt56,*99)
       endif

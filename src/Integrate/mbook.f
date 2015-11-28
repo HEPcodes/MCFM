@@ -95,6 +95,11 @@ C--------------------------------------------------------------------------
      & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
      & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
      & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
+     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
+     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
+     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
+     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
+     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
      & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO'/
       END
 
@@ -104,13 +109,13 @@ C--------------------------------------------------------------------------
       CHARACTER*(*) TIT
       include 'histo.f'
       NHIST=MAX(N,NHIST)
-      TITLE(N)='   '//TIT                     
+      TITLE(N)=TIT                     
       BOOK(N)='YES'
       HDEL(N)=DEL
       HMIN(N)=XMIN
       HMAX(N)=XMAX
       NNBIN=INT((XMAX-XMIN)/DEL)
-      IF (NNBIN .GT. 100) THEN
+      IF (NNBIN .GT. 150) THEN
       WRITE(6,*) XMAX,XMIN,DEL,NNBIN,' BIN SIZE TOO LARGE'
       DEL=(XMAX-XMIN)/99.d0
       NNBIN=INT((XMAX-XMIN)/DEL)
@@ -295,6 +300,7 @@ c    7 FORMAT(4X,'HIST = ',I3,'   19',I2,'-',I2,'-',I2,1X,A5/)
       SUBROUTINE MTOP(N,M,BTIT,LTIT,SCALE)
       IMPLICIT REAL*8 (A-H,O-Z)
       IMPLICIT INTEGER (I-N)
+      DOUBLE PRECISION HISTINT(100)
       CHARACTER*(*) LTIT,BTIT,SCALE
       include 'histo.f'
 c      DATA INI/0/
@@ -303,9 +309,10 @@ c      CALL IDATE(IMON,IDAY,IYEAR)
 c      CALL TIME(CTIME)
 c      INI=1
 c      ENDIF
-
+      
       IF(BOOK(N).NE.'YES') RETURN
-      WRITE(99,100) TITLE(N),BTIT,LTIT,SCALE,HMIN(N),HMAX(N)
+c      WRITE(99,100) TITLE(N),BTIT,LTIT,SCALE,HMIN(N),HMAX(N)
+      WRITE(99,101) TITLE(N),TITLE(N),TITLE(N),SCALE,HMIN(N),HMAX(N)
 c  100 FORMAT( /1x,                               
 c     &' SET WINDOW Y 2.5 TO 7.'/,1X,
 c     &' SET WINDOW X 2.5 TO 10.'/,1X,
@@ -325,6 +332,18 @@ c     &' SET ORDER X Y DY ')
      &' TITLE TOP ','"',A50,'"',/1X,
      &' TITLE BOTTOM ','"',A50,'"',/1X,
      &' TITLE LEFT ','"',A50,'"',/1X,
+     &' SET SCALE Y ',A5,/1X,
+     &' (SET TICKS TOP OFF)   '/1x,     
+     &' SET LIMITS X ',F10.5,' ',F10.5,/1X,
+     &' SET ORDER X Y DY ')
+  101 FORMAT( /1x,                               
+     &' SET WINDOW Y 2.5 TO 7.'/,1X,
+     &' SET WINDOW X 2.5 TO 10.'/,1X,
+     &' SET SYMBOL 5O SIZE 1.8'/,1X,
+     &' TITLE TOP ','"',A,' distribution"',/1X,
+     &' TITLE BOTTOM ','"',A,'"',/1X,
+     &' TITLE LEFT ','"dS/d',A,' [fb]"',/1X,
+     &' CASE       ','" G"',/1X,
      &' SET SCALE Y ',A5,/1X,
      &' (SET TICKS TOP OFF)   '/1x,     
      &' SET LIMITS X ',F10.5,' ',F10.5,/1X,
@@ -359,6 +378,32 @@ c     &' SET TITLE SIZE -2')
      &' SET TITLE SIZE -2')
       WRITE(99,400)
   400 FORMAT('   NEW PLOT')
+  
+c--- added lines for integrated pt plots
+      if (INDEX(TITLE(N),'pt') .GT. 0) then
+        WRITE(99,101) 'Integrated '//TITLE(N),
+     .   TITLE(N),TITLE(N),SCALE,HMIN(N),HMAX(N)
+        HISTINT(NBIN(N))=HIST(N,NBIN(N))*HDEL(N)
+        DO J=NBIN(N)-1,1,-1
+c        write(6,*) J,HIST(N,J)
+        IF(HIST(N,J).EQ.0.) THEN
+          HISTINT(J)=0d0
+        ELSE
+          HISTINT(J)=HIST(N,J)*HDEL(N)+HISTINT(J+1)
+        ENDIF
+        ENDDO
+        DO 2 J=1,NBIN(N)
+        IF(HISTINT(J).EQ.0d0) GO TO 2
+        WRITE(99,'(3X,G13.6,2(2X,G13.6))')  
+     &                              XHIS(N,J),HISTINT(J),0d0
+    2   CONTINUE
+        
+        WRITE(99,200)
+        WRITE(99,300) HINT(N),HAVG(N),HSIG(N),IENT(N),IUSCORE(N)
+     &     ,IOSCORE(N)
+        WRITE(99,400)        
+      endif  
+  
       END
 C*******************************************************************
 C     END OF THE HISTOGRAMMING PACKAGE

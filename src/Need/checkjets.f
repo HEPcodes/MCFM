@@ -24,7 +24,10 @@ c--- also check for t-channel single top when the BR is not removed
      . .or.(case .eq. 'W_cjet') .or. (case .eq. 'Wcjet0')
      . .or.(case .eq. 'ttdkay')
      . .or.(case .eq. 'gQ__ZQ') .or. (case .eq. 'W_bjet')
-     . .or.((case.eq. 'bq_tpq') .and. (removebr .eqv. .false.)) ) then
+     . .or.(case .eq. 'Z_bjet')
+     . .or.((case.eq. 'bq_tpq') .and. (removebr .eqv. .false.))
+     . .or.((case.eq. 'W_twdk') .and. (removebr .eqv. .false.))
+     . .or.((case.eq. 'Wtdkay') .and. (removebr .eqv. .false.)) ) then
         countb=0
         if ((jetsfound .ge. 1) .and. ((jetlabel(1) .eq. 'bq')
      .    .or. (jetlabel(1) .eq. 'ba'))) countb=1
@@ -34,12 +37,14 @@ c--- also check for t-channel single top when the BR is not removed
      .    .or. (jetlabel(3) .eq. 'ba'))) countb=countb+1
         if ((jetsfound .eq. 1) .and. (countb .eq. 0)) failed=.true.
         if (   (     (case .eq. 'bq_tpq') .or. (case .eq. 'ttdkay')
-     .          .or. (case .eq. 'W_bjet') )
+     .          .or. (case .eq. 'W_bjet') .or. (case .eq. 'Z_bjet') )
      .   .and. (countb .lt. 1) ) failed=.true.
         if ((nproc .eq. 142) .and. (jetsfound .eq. 2)
      .      .and. (countb .ne. 1)) failed=.true.
         if ((nproc .eq. 143) .and. (jetsfound .eq. 2)
      .      .and. (countb .ne. 2)) failed=.true.
+        if ((nproc .eq. 342) .and. (jetsfound .eq. 2)
+     .      .and. (countb .ne. 1) .and. (isub .eq. 0)) failed=.true.
       endif
             
 c--- check that 5 and 6 are b and b-bar (if appropriate)
@@ -48,7 +53,7 @@ c--- check that 5 and 6 are b and b-bar (if appropriate)
         if ((nbq .eq. 0) .or. (nba .eq. 0)) failed=.true.    
       endif
 
-c--- perform m56 mass cut if there are 2 or more jetsfound
+c--- perform m56 mass cut if there are 2 or more jets found
       if (jetsfound .ge. 2) then
         m56=(qfinal(5,4)+qfinal(6,4))**2
      .     -(qfinal(5,1)+qfinal(6,1))**2

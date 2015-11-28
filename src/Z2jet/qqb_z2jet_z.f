@@ -217,6 +217,12 @@ c--- ason4pi*xn*(ff_qq(z,xl56,2) + ff_gg(z,xl56,2)/2d0) * (1)
       enddo
       endif
 
+      do is=1,3
+      R2(q,g,q,0,is)=R2(a,g,q,0,is)
+      R2(q,g,q,1,is)=R2(a,g,q,1,is)
+      R2(q,g,q,2,is)=R2(a,g,q,2,is)
+      enddo
+      
 c--- GLUON-QUARK contributions
 c--- additional final-final pieces that are 0:
 c--- ason4pi*xn*(ff_qq(z,xl56,2) + ff_gg(z,xl56,2)/2d0) * (1)
@@ -265,6 +271,12 @@ c--- ason4pi*xn*(ff_qq(z,xl56,2) + ff_gg(z,xl56,2)/2d0) * (1)
       enddo
       endif
 
+      do is=1,3
+      R1(q,g,q,0,is)=R1(a,g,q,0,is)
+      R1(q,g,q,1,is)=R1(a,g,q,1,is)
+      R1(q,g,q,2,is)=R1(a,g,q,2,is)
+      enddo
+      
 c--- GLUON-ANTIQUARK contributions
 c--- additional final-final pieces that are 0:
 c--- ason4pi*xn*(ff_qq(z,xl56,2) + ff_gg(z,xl56,2)/2d0) * (1)
@@ -278,6 +290,9 @@ c--- ason4pi*xn*(ff_qq(z,xl56,2) + ff_gg(z,xl56,2)/2d0) * (1)
       R1(q,g,a,0,is)= R1(a,g,q,0,is)
       R1(q,g,a,1,is)= R1(a,g,q,1,is)
       R1(q,g,a,2,is)= R1(a,g,q,2,is)
+      R1(a,g,a,0,is)= R1(q,g,q,0,is)
+      R1(a,g,a,1,is)= R1(q,g,q,1,is)
+      R1(a,g,a,2,is)= R1(q,g,q,2,is)
       enddo
 
 c--- ANTIQUARK-GLUON contributions
@@ -293,6 +308,9 @@ c--- ason4pi*xn*(ff_qq(z,xl56,2) + ff_gg(z,xl56,2)/2d0) * (1)
       R2(q,g,a,0,is)= R2(a,g,q,0,is)
       R2(q,g,a,1,is)= R2(a,g,q,1,is)
       R2(q,g,a,2,is)= R2(a,g,q,2,is)
+      R2(a,g,a,0,is)= R2(q,g,q,0,is)
+      R2(a,g,a,1,is)= R2(q,g,q,1,is)
+      R2(a,g,a,2,is)= R2(q,g,q,2,is)
       enddo
        
             

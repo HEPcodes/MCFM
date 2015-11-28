@@ -114,7 +114,6 @@ c      pause
       p2(j)=p1(j)-p3(j)
       enddo
 
-
       if (  (p1(4) .lt. 0d0) 
      & .or. (p2(4) .lt. 0d0) 
      & .or. (p3(4) .lt. 0d0)) then  

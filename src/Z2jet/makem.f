@@ -39,7 +39,6 @@ C     Eq. A.23 with a factor of 2*i*e^2*g^3/s removed
                   do hg=1,2
                      do lh=1,2
 
-c--debug
       m1_1234(f(i1),f(i3),ha,hb,hg,lh)=
      . (Q(f(i1))*q1+gq(f(i1),ha)*vl(lh)*prop)*a1(ha,hb,hg,lh)
       m2_1234(f(i1),f(i3),ha,hb,hg,lh)=

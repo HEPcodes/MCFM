@@ -1,4 +1,4 @@
-      subroutine phase3(r,p1,p2,p3,p4,p5,p6,p7,wt)
+      subroutine phase3(r1,r2,r3,r6,r7,p1,p2,p3,p4,p5,p6,p7,wt)
 c----generate phase space for 2-->3 process
 c----r(mxdim),p1(4),p2(4) are inputs 
 c----incoming p1 and p2 reversed in sign from physical values 
@@ -12,16 +12,16 @@ c----(p4,p5) are dummies
       include 'mxdim.f'
 
       integer j
-      double precision r(mxdim)
+      double precision r(mxdim),r1,r2,r3,r6,r7
       double precision p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4)
       double precision p12(4),p34(4),smin
       double precision wt,wt125,wt34,wt0,m5
       parameter(wt0=1d0/twopi)
 
       m5=0d0
-      if (case .eq. 'W_cjet') then 
+      if     (case .eq. 'W_cjet') then 
          m5=mc
-      elseif (case .eq. 'W_tndk') then 
+      elseif ((case .eq. 'W_tndk') .or. (case .eq. 'vlchwn')) then 
          m5=mt
       endif
 
@@ -35,9 +35,9 @@ c----(p4,p5) are dummies
 c---generate p5 and p34, 
 c---smin is the minimum inv mass of 34 system
 c---m5 is the mass of p5
-      call phi1_2m(m5,r(1),r(2),r(3),smin,p12,p5,p34,wt125,*99)
+      call phi1_2m(m5,r1,r2,r3,smin,p12,p5,p34,wt125,*99)
 c---decay 34-system
-      call phi3m0(r(4),r(5),p34,p3,p4,wt34,*99)
+      call phi3m0(r6,r7,p34,p3,p4,wt34,*99)
 
       wt=wt0*wt125*wt34
       return

@@ -19,22 +19,27 @@
       include 'process.f'
       include 'PDFerrors.f'
       include 'wts_bypart.f'
+cz
+      integer nproc
+      common/nproc/nproc
+cz //
       integer ih1,ih2,j,k,nd,nmax,nmin,nvec
-      double precision vector(mxdim),W,val,xint
+      double precision vector(mxdim),W,val,val2,xint,dot,tmp
       double precision sqrts,fx1(-nf:nf),fx2(-nf:nf)
       double precision p(mxpart,4),pjet(mxpart,4),p1ext(4),p2ext(4)
       double precision pswt,rscalestart,fscalestart
       double precision s(mxpart,mxpart),wgt,msq(-nf:nf,-nf:nf)
       double precision msqc(maxd,-nf:nf,-nf:nf),xmsq(0:maxd)
       double precision flux,BrnRat,xreal,xreal2
-      double precision xx1,xx2,q(mxpart,4)
-      double precision m3,m4,m5
+      double precision xx1,xx2,q(mxpart,4),msqa(-nf:nf,-nf:nf)
+      double precision m3,m4,m5,R,Rbbmin
       double precision xmsq_bypart(0:maxd,-1:1,-1:1),xmsqjk,
      . lord_bypart(-1:1,-1:1)
       integer n2,n3,sgnj,sgnk
       double precision mass2,width2,mass3,width3
       common/breit/n2,n3,mass2,width2,mass3,width3
       common/xreal/xreal,xreal2
+      common/Rbbmin/Rbbmin
       logical bin,first,failed
       logical incldip(0:maxd),includedipole,includereal
       logical creatent,dswhisto
@@ -46,7 +51,10 @@
      . qqb_wz_g,qqb_wz_gs,qqb_zz_g,qqb_zz_gs,qqb_wgam_g,qqb_wgam_gs,
      . qqb_QQb_g,qqb_QQb_gs,
      . VV_Hqq_g,VV_Hqq_gs,gg_Hg,gg_H_gs,gg_Hgg,gg_Hg_gs,
-     . gQ_zQ_g,gQ_zQ_gs,qqb_tbb_g,qqb_tbb_gs
+     . gQ_zQ_g,gQ_zQ_gs,qqb_tbb_g,qqb_tbb_gs,
+     . qqb_w_tndk_g,qqb_w_tndk_gs,
+     . qqb_w_twdk_g,qqb_w_twdk_gs,qqb_w_twdk_gdk,qqb_w_twdk_gsdk,
+     . qqb_zbjet_g,qqb_zbjet_gs
       common/density/ih1,ih2
       common/energy/sqrts
       common/bin/bin
@@ -57,6 +65,15 @@
       common/bypart/lord_bypart
       common/incldip/incldip
       common/outputflags/creatent,dswhisto
+cz Add b fraction
+      double precision bwgt
+      common/btagging/ bwgt
+      double precision msqtmp(0:maxd),bwgttmp(0:maxd)
+      double precision realeventp(mxpart,4)
+      common/realeventp/realeventp
+      
+      data bwgt / 0d0 /  ! in common block
+cz // Add b fraction   Note: only msqtmp(0), bwgttmp(0) are used in nplotter.f
       data p/48*0d0/
       data first/.true./
       save first,rscalestart,fscalestart
@@ -103,9 +120,14 @@ c--- processes that use "gen4"
       elseif ( (case .eq. 'W_cjet') 
      .   .or.  (case .eq. 'Wgamma')
      .   .or.  (case .eq. 'Zgamma')
-     .   .or.  (case .eq. '')) then
+     .   .or.  (case .eq. 'W_tndk') ) then
         npart=4
         call gen4(vector,p,pswt,*999)
+                  
+c--- processes that use "gen6"     
+      elseif ( (case .eq. 'W_twdk') .or. (case .eq. 'Wtdkay') ) then
+        npart=6
+        call gen6(vector,p,pswt,*999)
                   
 c--- processes that use "gen_njets" with an argument of "2"     
       elseif ( (case .eq. 'W_1jet')
@@ -126,10 +148,13 @@ c--- processes that use "gen_njets" with an argument of "3"
      .    .or. (case .eq. 'W_2jet')
      .    .or. (case .eq. 'Z_2jet')
      .    .or. (case .eq. 'Zbbbar')
-     .    .or. (case .eq. 'W_bjet') ) then
+     .    .or. (case .eq. 'W_bjet')
+     .    .or. (case .eq. 'Z_bjet')
+     .    .or. (case .eq. 'qq_Hqq')
+     .    .or. (case .eq. 'ggfus2') ) then
         npart=5
-        call gen_njets(vector,3,p,pswt,*999)    
-         
+        call gen_njets(vector,3,p,pswt,*999) 
+        
 c--- processes that use "gen_stop" with an argument of "1"
       elseif ( (case .eq. 'ttdkay')
      .    .or. (case .eq. 'tdecay') ) then
@@ -151,7 +176,7 @@ c--- DEFAULT: processes that use "gen5"
           call gen5(vector,p,pswt,*999)    
         endif
       endif
-      
+            
       nvec=npart+2
       call dotem(nvec,p,s)
       
@@ -159,12 +184,19 @@ c---impose cuts on final state
       call masscuts(s,*999)
 c----reject event if any s(i,j) is too small
       call smalls(s,npart,*999)
-      
+     
+c--- extra cut to divide WQj/ZQj regions
+      if ( (nproc .eq. 312) .or. (nproc .eq. 317)
+     . .or.(nproc .eq. 322) .or. (nproc .eq. 327)
+     . .or.(nproc .eq. 342) .or. (nproc .eq. 352)) then
+        if (R(p,5,6) .lt. Rbbmin) goto 999
+      endif
+
 c--- see whether this point will pass cuts - if it will not, do not
 c--- bother calculating the matrix elements for it, instead set to zero
       includereal=includedipole(0,p)
       incldip(0)=includereal 
-
+ 
       if (includereal .eqv. .false.) then
         do j=-nf,nf
         do k=-nf,nf
@@ -173,9 +205,15 @@ c--- bother calculating the matrix elements for it, instead set to zero
         enddo
       endif
       
+      do j=1,mxpart
+      do k=1,4
+        realeventp(j,k)=p(j,k)
+      enddo
+      enddo
+      
       if (dynamicscale) call scaleset(rscalestart,fscalestart,p)
       
-c---- generate collinear points that satisy the jet cuts (for checking)
+c---- generate collinear points that satisfy the jet cuts (for checking)
 c      call singgen(p,s,*998)
             
 c----calculate the x's for the incoming partons from generated momenta
@@ -212,8 +250,8 @@ c        call singcheck(qqb_wbb_g,qqb_wbb_gs,p)     ! Checked 11/30/01
         if (includereal) call qqb_wbb_g(p,msq)      
         call qqb_wbb_gs(p,msqc)      
       elseif (case .eq. 'W_2jet') then      
-c        call singcheck(qqb_w2jet_g,qqb_w2jet_gs,p) ! Checked 11/16/01
-        if (includereal) call qqb_w2jet_g(p,msq)  
+c        call singcheck(qqb_w2jet_g,qqb_w2jet_gs,p) ! Re-checked 4/26/05
+        if (includereal)  call qqb_w2jet_g(p,msq)  
         call qqb_w2jet_gs(p,msqc)
       elseif (case .eq. 'Z_only') then
 c        call singcheck(qqb_z1jet,qqb_z_gs,p)         ! Checked 11/30/01
@@ -282,12 +320,24 @@ c        call singcheck(qqb_tbb_g_new,qqb_tbb_gs,p)
         call bq_tpq_gsdk(p,msqc)
       elseif (case .eq. 'tdecay') then
 c        call singcheck(qqb_tbb_g_new,qqb_tbb_gs,p)
-       if (includereal)  call qqb_tbb_gdk(p,msq)
+        if (includereal)  call qqb_tbb_gdk(p,msq)
         call qqb_tbb_gsdk(p,msqc)       
-       elseif (case .eq. 'ggfus1') then
-c         call singcheck(gg_hgg,gg_hg_gs,p)
-         if (includereal) call gg_hgg(p,msq)
-         call gg_hg_gs(p,msqc)
+       elseif (case .eq. 'W_tndk') then
+c        call singcheck(qqb_w_tndk_g,qqb_w_tndk_gs,p)	! Checked 12/3/04
+        if (includereal) call qqb_w_tndk_g(p,msq)
+        call qqb_w_tndk_gs(p,msqc)
+      elseif (case .eq. 'W_twdk') then
+c        call singcheck(qqb_w_twdk_g,qqb_w_twdk_gs,p)		! Checked 2/4/05
+        if (includereal) call qqb_w_twdk_g(p,msq)
+        call qqb_w_twdk_gs(p,msqc)
+      elseif (case .eq. 'Wtdkay') then
+c        call singcheck(qqb_w_twdk_gdk,qqb_w_twdk_gsdk,p)	! Checked 2/2/05
+        if (includereal) call qqb_w_twdk_gdk(p,msq)
+        call qqb_w_twdk_gsdk(p,msqc)
+      elseif (case .eq. 'ggfus1') then
+c        call singcheck(gg_hgg,gg_hg_gs,p)
+        if (includereal) call gg_hgg(p,msq)
+        call gg_hg_gs(p,msqc)
       elseif (case .eq. 'qq_Hqq') then
 c        call singcheck(VV_Hqq_g,VV_Hqq_gs,p)
         if (includereal) call VV_Hqq_g(p,msq)
@@ -296,10 +346,18 @@ c        call singcheck(VV_Hqq_g,VV_Hqq_gs,p)
 c        call singcheck(gQ_zQ_g,gQ_zQ_gs,p)
         if (includereal) call gQ_zQ_g(p,msq)
         call gQ_zQ_gs(p,msqc)
+      elseif (case .eq. 'Z_bjet') then
+c        call singcheck(qqb_zbjet_g,qqb_zbjet_gs,p)	! Checked 07/18/05
+        if (includereal) call qqb_zbjet_g(p,msq)
+        call qqb_zbjet_gs(p,msqc)
       endif
       
       do nd=0,ndmax
       xmsq(nd)=0d0
+cz
+      msqtmp(nd)=0d0
+      bwgttmp(nd)=0d0
+cz //
       do j=-1,1
       do k=-1,1
       xmsq_bypart(nd,j,k)=0d0
@@ -315,6 +373,10 @@ c--- initialize a PDF set here, if calculating errors
   777 continue    
       do nd=0,ndmax
       xmsq(nd)=0d0
+cz
+      msqtmp(nd)=0d0
+      bwgttmp(nd)=0d0
+cz //
       enddo
       if (PDFerrors) then
         call InitPDF(currentPDF)
@@ -323,9 +385,11 @@ c--- initialize a PDF set here, if calculating errors
 c--- calculate PDF's  
       call fdist(ih1,xx1,facscale,fx1)
       call fdist(ih2,xx2,facscale,fx2)
-      
+            
       do j=-nflav,nflav
       do k=-nflav,nflav
+c      do j=2,2
+c      do k=0,0
 
       if (ggonly) then
       if ((j.ne.0) .or. (k.ne.0)) goto 20
@@ -368,6 +432,36 @@ c--- calculate PDF's
 
          xmsqjk=fx1(j)*fx2(k)*msq(j,k)
          xmsq(0)=xmsq(0)+xmsqjk
+cz
+cz Extract fraction with b in final state, store in common
+cz
+c     nproc=161 then t-channel: t
+c     isub = 1, nwz = 1
+         if (nproc.eq.161) then ! t
+            msqtmp(0)=msqtmp(0)+xmsqjk
+            if ((j.eq.0).and.((k.lt.0).or.((k.gt.0).and.
+     &           (k.ne.5)))) then
+               bwgttmp(0)=bwgttmp(0)+xmsqjk
+            endif
+            if ((k.eq.0).and.((j.lt.0).or.((j.gt.0).and.
+     &           (j.ne.5)))) then
+               bwgttmp(0)=bwgttmp(0)+xmsqjk
+            endif
+         endif
+c     nproc=166 then t-channel: t~
+         if (nproc.eq.166) then ! t
+            msqtmp(0)=msqtmp(0)+xmsqjk
+            if ((j.eq.0).and.((k.gt.0).or.((k.lt.0).and.
+     &           (k.ne.-5)))) then
+               bwgttmp(0)=bwgttmp(0)+xmsqjk
+            endif
+            if ((k.eq.0).and.((j.gt.0).or.((j.lt.0).and.
+     &           (j.ne.-5)))) then
+               bwgttmp(0)=bwgttmp(0)+xmsqjk
+            endif
+         endif
+cz // end fill index 0
+
          if (currentPDF .eq. 0) then
            xmsq_bypart(0,sgnj,sgnk)=xmsq_bypart(0,sgnj,sgnk)+xmsqjk
          endif
@@ -400,6 +494,9 @@ c--- reset xmsq to the central PDF values
 
       realint=0d0
       xint=0d0
+cz
+      bwgt=0d0
+cz //
 
 c---trial with weight of real alone
 c---first set up all dipole contributions
@@ -436,7 +533,9 @@ c---check whether each counter-event passes the cuts
           q(j,k)=ptilde(nd,j,k)
           enddo
           enddo
-          incldip(nd)=includedipole(nd,q)
+c          write(6,*)
+c          write(6,*) 'Dipole nd=',nd
+          if (incldip(nd)) incldip(nd)=includedipole(nd,q)
           if (incldip(nd) .eqv. .false.) failed=.true.
         endif
 
@@ -449,6 +548,7 @@ c---check whether each counter-event passes the cuts
           xmsq(nd)=0d0
           goto 997         
         endif
+
 c---if it does, add to total
         xint=xint+xmsq(nd)
         do j=-1,1
@@ -459,6 +559,10 @@ c---if it does, add to total
         enddo
 
         val=xmsq(nd)*wgt
+        val2=xmsq(nd)**2*wgt
+cz Fill bwgt if needed
+        if(dabs(msqtmp(nd)).gt.0d0) bwgt=bwgttmp(nd)/msqtmp(nd)
+cz //
         
 c--- update PDF errors
         if (PDFerrors) then
@@ -480,17 +584,16 @@ c---if we're binning, add to histo too
           call getptildejet(nd,pjet)
           call dotem(nvec,pjet,s)
           val=val/dfloat(itmx)
+          val2=val2/dfloat(itmx)**2
           if (nd .eq. 0) then
-            call nplotter(pjet,val,0)
+            call nplotter(pjet,val,val2,0)
           else
-            call nplotter(pjet,val,1)
+            call nplotter(pjet,val,val2,1)
           endif
         endif
 c---otherwise, skip contribution
  997    continue
       enddo
-
-      call dotem(nvec,p,s)
 
 c 998  continue
 
@@ -509,6 +612,7 @@ c 998  continue
       ntotzero=ntotzero+1
  
       return
+      
       end
 
 

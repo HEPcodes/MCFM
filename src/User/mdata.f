@@ -41,6 +41,9 @@ c
       implicit none
       include 'masses.f'
       include 'nflav.f'
+      include 'nores.f'
+c--- if true, nores removes all of the gg contribution
+      data nores/.false./
 c--- Masses: note that "mtausq", "mcsq" and "mbsq" are typically used
 c--- throughout the program to calculate couplings that depend on the
 c--- mass, while "mtau","mc" and "mb" are the masses that appear in
@@ -48,7 +51,7 @@ c--- the rest of the matrix elements and phase space (and may be set
 c--- to zero in the program, depending on the process number) 
       data mtausq,mcsq,mbsq/3.157729d0,2.25d0,21.3444d0/
       data mtau/1.777d0/
-      data mc,mb,mt/1.5d0,4.62d0,178d0/
+      data mc,mb,mt/1.5d0,4.62d0,172.5d0/
 c--- Widths: note that the top width is calculated in the program
       data wwidth,zwidth/2.06d0,2.49d0/
       data tauwidth/2.269d-12/

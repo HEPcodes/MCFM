@@ -21,6 +21,8 @@ c   in the final state.
       include 'sprods_com.f'
       include 'msqv_cs.f'
       include 'mmsqv_cs.f'
+      include 'heavyflav.f'
+      include 'nflav.f'
 
 C ip is the label of the emitter
 C in is the label of the contracted line
@@ -44,7 +46,7 @@ c---ie, za(i,j)*zb(j,i)=s(i,j)
 
 
 C---exclude the photon pole, 4*mbsq choosen as a scale approx above upsilon 
-      if (s(3,4) .lt. 4d0*mbsq) return
+c      if (s(3,4) .lt. 4d0*mbsq) return
 
       do pq=1,2
       do pl=1,2
@@ -53,44 +55,40 @@ C---exclude the photon pole, 4*mbsq choosen as a scale approx above upsilon
       enddo      
 
 c      write(6,*) 'in in qqb_zbb_gvec',in
+
+C arguments 1-4 represent (1) incoming quark line
+C                         (2) incoming quark line
+C                         (3) outgoing gluon line
+C                         (4) outgoing gluon line contracted with n
       if (in .eq. 1) then
-Cargument 1-4 represent (1) incoming quark line
-C                       (2) incoming quark line
-C                       (3) outgoing gluon line
-C                       (4) outgoing gluon line contracted with n
-           call zbbsqn(5,6,2,1,p,n,za,zb,zab,zba,ggqqb)
+        call zbbsqn(5,6,2,1,p,n,za,zb,zab,zba,ggqqb)
       elseif (in .eq. 2)  then
-           call zbbsqn(5,6,1,2,p,n,za,zb,zab,zba,ggqqb)
+        call zbbsqn(5,6,1,2,p,n,za,zb,zab,zba,ggqqb)
       endif
 
       prop=s(3,4)/dcmplx((s(3,4)-zmass**2),zmass*zwidth)
       fac=v*xn/four*(esq*gsq)**2*two
-c--- DEBUG
-c--- fac needs to be factor of 2 higher cf. xzqqgg_alt.f
-c--- but amps in subqcd are bigger by 4 than in a6treeg
-c--- This becomes a total modification of 2/(4**2)=1/8
-c      fac=fac/8d0
       
       do pq=1,2
       do pl=1,2
       ggqqb(pq,pl) =avegg*fac*ggqqb(pq,pl)
       enddo      
       enddo      
-      do j=-nf,nf
-      do k=-nf,nf
+      do j=-nflav,nflav
+      do k=-nflav,nflav
       if     ((j .eq. 0) .and. (k .eq. 0)) then
-           msq(j,k)=
-     .             +cdabs(Q(1)*q1+L(1)*l1*prop)**2*ggqqb(1,1)
-     .             +cdabs(Q(1)*q1+R(1)*r1*prop)**2*ggqqb(2,2)
-     .             +cdabs(Q(1)*q1+L(1)*r1*prop)**2*ggqqb(1,2)
-     .             +cdabs(Q(1)*q1+R(1)*l1*prop)**2*ggqqb(2,1)
-           do ics=0,2
-           msqv_cs(ics,j,k)=
-     .       +cdabs(Q(1)*q1+L(1)*l1*prop)**2*avegg*fac*mmsqv_cs(ics,1,1)
-     .       +cdabs(Q(1)*q1+R(1)*l1*prop)**2*avegg*fac*mmsqv_cs(ics,2,1)
-     .       +cdabs(Q(1)*q1+L(1)*r1*prop)**2*avegg*fac*mmsqv_cs(ics,1,2)
-     .       +cdabs(Q(1)*q1+R(1)*r1*prop)**2*avegg*fac*mmsqv_cs(ics,2,2)
-           enddo
+       msq(j,k)=
+     . +cdabs(Q(flav)*q1+L(flav)*l1*prop)**2*ggqqb(1,1)
+     . +cdabs(Q(flav)*q1+R(flav)*r1*prop)**2*ggqqb(2,2)
+     . +cdabs(Q(flav)*q1+L(flav)*r1*prop)**2*ggqqb(1,2)
+     . +cdabs(Q(flav)*q1+R(flav)*l1*prop)**2*ggqqb(2,1)
+       do ics=0,2
+       msqv_cs(ics,j,k)=
+     . +cdabs(Q(flav)*q1+L(flav)*l1*prop)**2*avegg*fac*mmsqv_cs(ics,1,1)
+     . +cdabs(Q(flav)*q1+R(flav)*l1*prop)**2*avegg*fac*mmsqv_cs(ics,2,1)
+     . +cdabs(Q(flav)*q1+L(flav)*r1*prop)**2*avegg*fac*mmsqv_cs(ics,1,2)
+     . +cdabs(Q(flav)*q1+R(flav)*r1*prop)**2*avegg*fac*mmsqv_cs(ics,2,2)
+       enddo
       endif
 
       enddo

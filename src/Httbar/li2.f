@@ -4,11 +4,20 @@ c--complex dilogarithm (spence-function)
       double complex x,y,cli2
       double precision zeta2,zeta3
       common/const/zeta2,zeta3
+      logical first
+      data first/.true./
+      save first
+
+      if (first) then
+      first=.false.
+      call bernini
+      endif
+
       zero=1.d-8
       xr=dble(x)
       xi=dimag(x)
       r2=xr*xr+xi*xi
-      li2=0
+      li2=dcmplx(0d0,0d0)
       if(r2.le.zero)then
         li2=x+x**2/4.d0
         return
@@ -47,13 +56,7 @@ c--taylor-expansion for complex dilogarithm (spence-function)
       double precision b2(nber) 
       double complex x,z
       common/bernoulli/b2
-      logical first
-      data first/.true./
-      save first
-      if (first) then
-      first=.false.
-      call bernini
-      endif
+
       n=nber-1
       z=-cdlog(1.d0-x)
       cli2=b2(nber)

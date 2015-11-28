@@ -16,7 +16,7 @@
       include 'npart.f'
       double precision p(mxpart,4),q(mxpart,4),x,omx,y,omy,
      . k(4),kt(4),ks(4),kDk,ksDks,kDp(3:mxpart),ksDp(3:mxpart)
-      integer ip,kp,j,nu,jp,ipart
+      integer ip,kp,j,nu,jp,ipart,inp,fip
 
       do j=1,npart+2
       do nu=1,4
@@ -56,16 +56,23 @@ c---initial-initial
       elseif (((ip .le. 2) .and. (kp .gt. 2)) .or.
      .        ((ip .gt. 2) .and. (kp .le. 2))) then
 c---initial-final or final-initial
+        if (ip .le. 2) then
+          inp=ip
+          fip=kp  
+        else
+          inp=kp
+          fip=ip
+        endif
         ipart=1
         omx=one-x
            do j=1,npart+2
                 do nu=1,4
-                   if (j.eq.ip) then
-                   q(ipart,nu)=x*p(ip,nu)
+                   if (j.eq.inp) then
+                   q(ipart,nu)=x*p(inp,nu)
                    elseif (j.eq.jp) then
                    goto 20
-                   elseif (j.eq.kp) then
-                   q(ipart,nu)=p(jp,nu)+p(kp,nu)+omx*p(ip,nu)
+                   elseif (j.eq.fip) then
+                   q(ipart,nu)=p(jp,nu)+p(fip,nu)+omx*p(inp,nu)
                    else
                    q(ipart,nu)=p(j,nu)
                    endif

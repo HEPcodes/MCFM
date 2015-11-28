@@ -25,30 +25,35 @@ c--- .... otherwise, use the percentage of (muR/muF)
         strscale=getstr(int(scalestart/fscalestart*100d0))
       endif
 
-      if (  (case .eq. 'WHbbar')
-     . .or. (case .eq. 'ZHbbar')
-     . .or. (case .eq. 'qq_tth')
-     . .or. (case .eq. 'tottth')
-     .) then
-      strmh=getstr(int(hmass))
-      outlabel1=case//'_'//part//'_'//pdlabel//'_'//strscale//'_'//strmh
+      if     ( (case .eq. 'WHbbar')
+     .    .or. (case .eq. 'ZHbbar')
+     .    .or. (case .eq. 'qq_tth')
+     .    .or. (case .eq. 'tottth')
+     .    .or. (case .eq. 'ggfus0')
+     .    .or. (case .eq. 'ggfus1')
+     .    .or. (case .eq. 'ggfus2')
+     .    .or. (case .eq. 'ggfus3') ) then
+        strmh=getstr(int(hmass))
+        outlabel1=case//'_'//part//'_'//pdlabel//'_'//strscale//
+     .   '_'//strmh
       elseif (  (case .eq. 'H_1jet') ) then
-      strmh=getstr(int(hmass))
-      strpt=getstr(int(ptjetmin))
-      outlabel1=case//'_'//part//'_'//pdlabel//'_'//strscale//
-     . '_'//strmh//'_pt'//strpt(1:2)      
-      elseif (  (case .eq. 'W_2jet')
-     .     .or. (case .eq. 'Z_2jet') ) then
+        strmh=getstr(int(hmass))
+        strpt=getstr(int(ptjetmin))
+        outlabel1=case//'_'//part//'_'//pdlabel//'_'//strscale//
+     .   '_'//strmh//'_pt'//strpt(1:2)      
+      elseif ( (case .eq. 'W_2jet')
+     .    .or. (case .eq. 'Z_2jet') ) then
         if     (Gflag .eqv. .false.) then
-      outlabel1=case//'_'//part//'_'//pdlabel//'_'//strscale//'_qrk'
+          outlabel1=case//'_'//part//'_'//pdlabel//'_'//strscale//'_qrk'
         elseif (Qflag .eqv. .false.) then
-      outlabel1=case//'_'//part//'_'//pdlabel//'_'//strscale//'_glu'
+          outlabel1=case//'_'//part//'_'//pdlabel//'_'//strscale//'_glu'
         else
-      outlabel1=case//'_'//part//'_'//pdlabel//'_'//strscale
+          outlabel1=case//'_'//part//'_'//pdlabel//'_'//strscale
         endif
       else
-      outlabel1=case//'_'//part//'_'//pdlabel//'_'//strscale
+        outlabel1=case//'_'//part//'_'//pdlabel//'_'//strscale
       endif
+      
       nlength=lenocc(outlabel1)
       runname=outlabel1(1:nlength)//'_'//runstring
       nlength=lenocc(runname)

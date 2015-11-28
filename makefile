@@ -1,12 +1,12 @@
 # Makefile routine.
 
 # Replace this with the location of Cernlib on your system (if desired)
-CERNLIB     =
+CERNLIB     = 
 # Replace this with the location of LHAPDF on your system (if desired)
-LHAPDFLIB   =
+LHAPDFLIB   = 
 
-MCFMHOME        = /afs/cern.ch/user/j/johnmc/MCFM-4.1
-SOURCEDIR       = /afs/cern.ch/user/j/johnmc/MCFM-4.1/src
+MCFMHOME        = /home/jcampbel/MCFM-5.0
+SOURCEDIR       = /home/jcampbel/MCFM-5.0/src
 VPATH		= $(DIRS)
 BIN		= $(MCFMHOME)/Bin
 INCPATH  	= $(SOURCEDIR)/Inc
@@ -24,7 +24,7 @@ PDFROUTINES = NATIVE
 NTUPLES = NO
 
 FC = g77
-FFLAGS 	= -fno-automatic -fno-f2c -O0 -I$(INCPATH)
+FFLAGS 	= -fno-automatic -fno-f2c -O2 -g -I$(INCPATH)
 
 DIRS	=	$(MCFMHOME):\
 		$(MCFMHOME)/obj:\
@@ -45,9 +45,11 @@ DIRS	=	$(MCFMHOME):\
 		$(SOURCEDIR)/WZbbm:\
 		$(SOURCEDIR)/Wgam:$(SOURCEDIR)/Zgam:\
                 $(SOURCEDIR)/Z2jet:$(SOURCEDIR)/Zb:\
-		$(SOURCEDIR)/bbHiggs:\
-                $(SOURCEDIR)/qqH:$(SOURCEDIR)/ggH
-
+		$(SOURCEDIR)/bbHiggs:$(SOURCEDIR)/Wt:\
+                $(SOURCEDIR)/qqH:$(SOURCEDIR)/ZQjet:\
+                $(SOURCEDIR)/ggH:$(SOURCEDIR)/ggHg:\
+                $(SOURCEDIR)/ggHggreal:
+		
 # -----------------------------------------------------------------------------
 # Specify the object files. 
 
@@ -64,21 +66,47 @@ qqb_Hg_v.o \
 qqb_Hg_z.o
 
 GGHFILES = \
-hjetfill.o \
 gg_h.o \
-gg_h_v.o \
-gg_h_gvec.o \
-gg_h_z.o \
-gg_h_gs.o \
 gg_hg.o \
+gg_h_gs.o \
+gg_h_gvec.o \
+gg_h_v.o \
+gg_h_z.o \
+hqqgg.o \
+
+GGHGFILES = \
+gg_hgg.o \
+gg_hg_gs.o \
+gg_hg_gvec.o \
 gg_hg_v.o \
 gg_hg_z.o \
-gg_hg_gvec.o \
-gg_hg_gs.o \
-gg_hgg.o \
-hqqgg.o \
+h4q.o \
 h4g.o \
-h4q.o
+hjetfill.o 
+
+GGHGGrealFILES = \
+gg_hggg.o \
+gg_ggg.o \
+amp_h5g.o \
+h5g.o \
+Ampppp.o \
+Appppp.o \
+Ammppp.o \
+iperm.o \
+h2q3g.o \
+a2q3g_mmmpp.o  \
+a2q3g_mmpmp.o \
+a2q3g_mpppp.o \
+a2q3g_mpmmp.o \
+h4qg.o \
+q4ghppp1.o \
+q4ghppp3.o \
+q4ghpmp1.o \
+q4ghpmp3.o \
+extract.o \
+gggghn_amp.o \
+hqqggdfm.o \
+ndveccur.o
 
 HWWFILES = \
 qqb_hww.o \
@@ -211,6 +239,7 @@ gen7.o \
 gen7_rap.o \
 gen8.o \
 gen_njets.o \
+gen_soft.o \
 genff.o \
 genii.o \
 genif.o \
@@ -229,6 +258,8 @@ phase5.o \
 phase5a.o \
 phase51.o \
 phase6.o \
+phase6a.o \
+phase6b.o \
 phase7.o \
 phase7m.o \
 phase8.o \
@@ -273,10 +304,7 @@ bq_tpq_v.o \
 bq_tpq_z.o \
 bq_tpq_gdk.o \
 bq_tpq_gsdk.o \
-bq_tpq_vdk.o \
-qqb_w_tndk.o \
-qqb_w_twdk.o 
-
+bq_tpq_vdk.o
 
 TAUTAUFILES = \
 qqb_tautau.o \
@@ -318,11 +346,13 @@ genclust_kt.o \
 genclust_cone.o \
 gencuts.o \
 getet.o \
+hwwcuts.o \
 jetlabel_to_stdhep.o \
 mdata.o \
 miscclust.o \
 nplotter.o \
 stopcuts.o \
+wbfcuts.o \
 wconstruct.o 
 
 VOLFILES = \
@@ -339,13 +369,14 @@ qqb_w_v.o \
 qqb_w_z.o
 
 W1JETFILES = \
-a5nlo.o \
+A5NLO.o \
+A51.o \
+A52.o \
 qqb_w1jet_gs.o \
 qqb_w1jet_v.o \
 qqb_w1jet_z.o \
 qqb_w_gvec.o \
-virt5.o \
-
+virt5.o
 
 WBJETFILES = \
 qqb_wbjet.o 
@@ -452,11 +483,11 @@ gampsgh.o \
 mamps.o \
 qqb_wbbm.o \
 qqb_zbbm.o \
-#qqb_wbbm_g.o \
-#wbbgmassa.o \
-#wbbgmassb.o \
-#wbbgmassi.o \
-#wbbgmassf.o
+qqb_wbbm_g.o \
+wbbgmassa.o \
+wbbgmassb.o \
+wbbgmassi.o \
+wbbgmassf.o
 
 WBBFILES = \
 a6.o \
@@ -498,7 +529,48 @@ fagamma.o \
 fbgamma.o \
 vpole.o
 
-
+WTFILES = \
+BBamps.o \
+BBamps_nores.o \
+C0fa2m.o \
+C0fb2m.o \
+I3me.o \
+Lsm1_2m.o \
+Lsm2_2m.o \
+extend_trans_wt.o \
+functions.o \
+functions1.o \
+gs_wc_dg.o \
+gs_wt_prog.o \
+gs_wt_prog_nores.o \
+qb_wtq.o \
+qqb_w_tndk.o \
+qqb_w_tndk_g.o \
+qqb_w_tndk_gs.o \
+qqb_w_tndk_gvec.o \
+qqb_w_tndk_v.o \
+qqb_w_tndk_z.o \
+qqb_w_twdk.o \
+qqb_w_twdk_g.o \
+qqb_w_twdk_gdk.o \
+qqb_w_twdk_gs.o \
+qqb_w_twdk_gsdk.o \
+qqb_w_twdk_gvec.o \
+qqb_w_twdk_v.o \
+qqb_w_twdk_vdk.o \
+qqb_w_twdk_z.o \
+qqb_wtbndk.o \
+qqb_wtbwdk.o \
+tree.o \
+virt_mm.o \
+virt_mp.o \
+virt_pm.o \
+virt_pp.o \
+vol_wt.o \
+wamp.o \
+wampd.o \
+wcjetn.o \
+wtransform_wt.o
 
 ZGAMFILES = \
 qqb_zgam.o \
@@ -584,6 +656,16 @@ gQ_zQ_v.o \
 gQ_zQ_z.o \
 qqb_zccm.o
 
+ZQJETFILES = \
+genclust_hqrk.o \
+msq_ZqqQQg_noid.o \
+qqb_zbjet.o \
+qqb_zbjet_g.o \
+qqb_zbjet_gvec.o \
+qqb_zbjet_gs.o \
+qqb_zbjet_v.o \
+qqb_zbjet_z.o
+
 LIBDIR=.
 LIBFLAGS=
 
@@ -595,7 +677,7 @@ ifeq ($(NTUPLES),YES)
   endif
   USERFILES += dswhbook.o
   LIBDIR=$(CERNLIB)
-  LIBFLAGS = -lpacklib -lkernlib -lmathlib -lnsl -lshift
+  LIBFLAGS = -lpacklib -lkernlib -lmathlib -lnsl
   NTUPMSG='   ----> MCFM compiled with optional n-tuple output <----'
  else
   ifeq ($(NTUPLES),NO)
@@ -649,6 +731,7 @@ ifeq ($(PDFROUTINES),NATIVE)
    mrst2001.o \
    mrst2002.o \
    mt.o \
+   eks98r.o \
    fdist_linux.o \
    pdfwrap_linux.o
    PDFMSG='   ----> MCFM compiled with its own PDFs only <----'
@@ -674,8 +757,9 @@ OURCODE = $(LIBFILES) $(NEEDFILES) \
 	    $(Z1JETFILES) $(HWWFILES) $(HZZFILES) \
           $(TAUTAUFILES) $(HTTBARFILES) \
           $(BBHIGGSFILES) $(WBBFILES) $(ZBBFILES) $(WZBBMFILES) \
-          $(QQHFILES) $(GGHFILES) \
-	  $(TOPFILES) $(ZQFILES)
+          $(QQHFILES) $(GGHFILES) $(GGHGFILES) \
+          $(GGHGGrealFILES) \
+	  $(TOPFILES) $(ZQFILES) $(ZQJETFILES) $(WTFILES)
           
 OTHER = $(INTEGRATEFILES) $(PARTONFILES) 
 ALLMCFM = $(OTHER) $(OURCODE)
@@ -686,7 +770,7 @@ ALLMCFM = $(OTHER) $(OURCODE)
 mcfm: $(ALLMCFM)
 	$(FC) $(FFLAGS) -L$(LIBDIR) -o $@ \
 	$(patsubst %,obj/%,$(ALLMCFM)) $(LIBFLAGS) 
-	mv mcfm Bin/mcfm
+	mv mcfm Bin/
 	@echo $(PDFMSG)
 	@echo $(NTUPMSG)
 

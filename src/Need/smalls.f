@@ -46,10 +46,28 @@ c    cut if radiated parton too close
      . .or. (-s(1,7) .lt. cutoff)
      . .or. (-s(2,7) .lt. cutoff)
      . .or. (+s(5,6) .lt. cutoff)
-     . .or. (+s(6,7) .lt. cutoff)
      . .or. (+s(5,7) .lt. cutoff)
+     . .or. (+s(6,7) .lt. cutoff)
      . ) return 1
 
+      elseif (npart .eq. 6) then
+      if ( 
+     .      (-s(1,5) .lt. cutoff)
+     . .or. (-s(2,5) .lt. cutoff)
+     . .or. (-s(1,6) .lt. cutoff)
+     . .or. (-s(2,6) .lt. cutoff)
+     . .or. (-s(1,7) .lt. cutoff)
+     . .or. (-s(2,7) .lt. cutoff)
+     . .or. (-s(1,8) .lt. cutoff)
+     . .or. (-s(2,8) .lt. cutoff)
+     . .or. (+s(5,6) .lt. cutoff)
+     . .or. (+s(5,7) .lt. cutoff)
+     . .or. (+s(5,8) .lt. cutoff)
+     . .or. (+s(6,7) .lt. cutoff)
+     . .or. (+s(6,8) .lt. cutoff)
+     . .or. (+s(7,8) .lt. cutoff)
+     . ) return 1
+      
       endif      
 
       return
