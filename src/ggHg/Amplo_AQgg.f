@@ -19,17 +19,17 @@ c--- new virtual amplitudes
       ba(1,1,2)=A0HAQggmppm(p1,p2,p4,p3,za,zb)
       ba(1,2,1)=A0HAQggmpmp(p1,p2,p4,p3,za,zb)
 
-c--- obtain opposite helicity amplitudes by parity
-      ab(2,1,1)=-ab(1,2,2)
-      ab(2,2,2)=-ab(1,1,1)
-      ab(2,2,1)=-ab(1,1,2)
-      ab(2,1,2)=-ab(1,2,1)
+c--- Obtain opposite helicities through parity relation, c.f. Eq.(4.6) of DS 0906.0008
+      ab(2,1,1)=-A0HAQggmppp(p1,p2,p3,p4,zb,za)
+      ab(2,2,2)=-A0HAQggmpmm(p1,p2,p3,p4,zb,za)
+      ab(2,2,1)=-A0HAQggmpmp(p1,p2,p3,p4,zb,za)
+      ab(2,1,2)=-A0HAQggmppm(p1,p2,p3,p4,zb,za)
 
-      ba(2,1,1)=-ba(1,2,2)
-      ba(2,2,2)=-ba(1,1,1)
-      ba(2,2,1)=-ba(1,1,2)
-      ba(2,1,2)=-ba(1,2,1)
-      
+      ba(2,1,1)=-A0HAQggmppp(p1,p2,p4,p3,zb,za)
+      ba(2,2,2)=-A0HAQggmpmm(p1,p2,p4,p3,zb,za)
+      ba(2,2,1)=-A0HAQggmppm(p1,p2,p4,p3,zb,za)
+      ba(2,1,2)=-A0HAQggmpmp(p1,p2,p4,p3,zb,za)
+
       return
       end
       

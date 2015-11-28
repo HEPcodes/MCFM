@@ -22,7 +22,8 @@ c                           ---> W^+(nu(p5),e^+(p6))W^-(e^-(p7),nub(p8))
       double precision s,prop,fac,qqbWH,qbqWH,s5678
       double precision msq(-nf:nf,-nf:nf),hdecay
 
-      s(j,k)=2*(p(j,4)*p(k,4)-p(j,1)*p(k,1)-p(j,2)*p(k,2)-p(j,3)*p(k,3))
+      s(j,k)=2d0
+     & *(p(j,4)*p(k,4)-p(j,1)*p(k,1)-p(j,2)*p(k,2)-p(j,3)*p(k,3))
       do j=-nf,nf
       do k=-nf,nf
       msq(j,k)=0d0

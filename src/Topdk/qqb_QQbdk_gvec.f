@@ -23,9 +23,8 @@
       include 'zprods_com.f'
 C in is the label of the contracted line
       integer j,k,in,icol,nu
-      double precision q1(4),q2(4),q3(4),q4(4),q5(4),q6(4),q7(4),q8(4)
       double precision msqv(-nf:nf,-nf:nf),p(mxpart,4),res(0:2),s,mt2
-      double precision n(4),nDp1,fac,q(mxpart,4),s1t,s2t,s12
+      double precision n(4),fac,q(mxpart,4),s1t,s2t,s12
       double precision c1,c2,c6,c8,c9,nDn,nDp4
       double complex prop
       double complex zanb(mxpart,mxpart)

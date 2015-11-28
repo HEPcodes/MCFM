@@ -17,9 +17,6 @@ c---   i.e. complete LHS
      . l341,l34,l41,A0phiAgQgmmpp,A0phidAgQgmmpp
       double precision s123,s234,s412,s341,mhsq
       zab2(j1,j2,j3,j4)=+za(j1,j2)*zb(j2,j4)+za(j1,j3)*zb(j3,j4)
-c--- alias from the defintion of Lsm1 in this paper (Eq. (B.2))
-c--- to the one that is implemented in lfunctions.f      
-      Lsm1DS(s123,s234,mhsq)=Lsm1(s123,mhsq,s234,mhsq)
       
       s412=s(j4,j1)+s(j4,j2)+s(j1,j2)
       s123=s(j1,j2)+s(j1,j3)+s(j2,j3)

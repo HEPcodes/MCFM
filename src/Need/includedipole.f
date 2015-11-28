@@ -15,15 +15,16 @@ c--- should be included
       integer i,j,nd,nqcdjets,nqcdstart,notag,isub
       logical gencuts,failedgencuts,photoncuts,makecuts,filterWbbmas,
      & photonfailed,filterW_bjet
-      integer ij,count_photo,nphotons
-      character*30 runstring
-      double precision y32,y43,z3,z4,z5,z6
-      double precision dphizj,pt5sq,pt6sq,pt7sq
+      integer count_photo,nphotons
       logical passed_frix,iso
       logical phot_dip(mxpart)
+c      integer ij
+c      double precision y32,y43,z3,z4,z5,z6
+c      double precision dphizj,pt5sq,pt6sq,pt7sq
 
+c      character*30 runstring
+c      common/runstring/runstring
       common/phot_dip/phot_dip     
-      common/runstring/runstring
       common/nqcdjets/nqcdjets,nqcdstart
       common/rcut/rcut
       common/makecuts/makecuts

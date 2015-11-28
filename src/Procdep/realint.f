@@ -60,8 +60,8 @@ cz //
       external qqb_w2jet_g,qqb_w2jet_gs,qqb_z2jet_g,qqb_z2jet_gs,
      . qqb_w2jet,qqb_w1jet_gs,qqb_z2jet,qqb_z1jet_gs,qqb_Hg_g,qqb_Hg_gs,
      . qqb_hww_g,qqb_hww_gs,qqb_zbb_g,qqb_zbb_gs,
-     . qqb_wh_ww,qqb_wh_ww_gs,
-     . qqb_wh_zz,qqb_wh_zz_gs,
+     . qqb_wh_ww_g,qqb_wh_ww_gs,
+     . qqb_wh_zz_g,qqb_wh_zz_gs,
      . qqb_wbb_g,qqb_wbb_gs,
      . qqb_dirgam_g,qqb_dirgam_gs,
      . qqb_w_g,qqb_w_gs,qqb_z1jet,qqb_z_gs,qqb_ww_g,qqb_ww_gs,
@@ -73,15 +73,12 @@ cz //
      . gg_Hgg,gg_Hg_gs,
      . gQ_zQ_g,gQ_zQ_gs,qqb_tbb_g,qqb_tbb_gs,
      . qqb_w_tndk_g,qqb_w_tndk_gs,
-     . qqb_w_twdk_g,qqb_w_twdk_gs,qqb_w_twdk_gdk,qqb_w_twdk_gsdk,
+     . qqb_w_twdk_g,qqb_w_twdk_gs,
      . qqb_zbjet_g,qqb_zbjet_gs,qqb_w_cjet_g,qqb_w_cjet_gs,
      . qqb_wbfromc_g,qqb_wbfromc_gs,
      . gg_hggg,gg_hgg_gs,
      . qg_tbq_g,qg_tbq_gs,qq_tbg_g,qq_tbg_gs,epem3j_g,epem3j_gs,
-     . qqb_QQbdk_g,qqb_QQbdk_gs,qqb_gamgam_g
-c     . ,qqb_gamgam_g_mad,qqb_wgam_g_mad,qqb_zgam_g_mad,
-c     . qqb_dirgam_g_mad
-      external dkqqb_ww_g,dkqqb_ww_g_mad
+     . qqb_QQbdk_g,qqb_QQbdk_gs,qqb_gamgam_g,dkqqb_ww_g
       common/density/ih1,ih2
       common/energy/sqrts
       common/bin/bin
@@ -813,6 +810,14 @@ c--- and set all PDF entries to zero
 	    enddo
 	  endif
 	enddo
+        if ((case .eq. 'qg_tbq') .or. (case .eq. '4ftwdk')) then
+	  do j=-nf,nf
+	  fx1_H(j)=fx1(j)
+	  fx1_L(j)=fx1(j)
+	  fx2_H(j)=fx2(j)
+	  fx2_L(j)=fx2(j)
+	  enddo
+	endif
       else
         if ((case .eq. 'qg_tbq') .or. (case .eq. '4ftwdk')) then
 c--- for single top + b, make sure to use two different scales

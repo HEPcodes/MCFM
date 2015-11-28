@@ -23,6 +23,7 @@ c--- invariant mass of particles 3 and 4
      &   (case .eq. 'ggfus2') .or.
      &   (case .eq. 'ggfus3') .or.
      &   (case .eq. 'gagajj') .or.
+     &   (case .eq. 'qg_tbq') .or.
      &   (case .eq. 'tt_tot') .or.
      &   (case .eq. 'bb_tot') .or.
      &   (case .eq. 'cc_tot') .or.

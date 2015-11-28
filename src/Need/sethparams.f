@@ -67,18 +67,17 @@ c--- are not actually used in our calculations
         hwidth=pw_bb+pw_tautau+pw_ww+pw_zz+pw_gamgam+pw_zgam
       endif 
 
-      call higgsp(br_sp,tautaubr,gamgambr_sp,zgambr_sp,wwbr_sp,zzbr_sp)
-      write(6,*) 'sethparam:Spira bb     BR',br_sp
-      write(6,*) 'sethparam:MCFM  bb     BR',pw_bb/hwidth
-      write(6,*) 'sethparam:Spira tautau BR',tautaubr_sp
-      write(6,*) 'sethparam:MCFM  tautau BR',pw_tautau/hwidth
-      write(6,*) 'sethparam:Spira Zgam   BR',zgambr_sp
-      write(6,*) 'sethparam:MCFM  Zgam   BR',pw_zgam/hwidth
-      write(6,*) 'sethparam:Spira gamgam BR',gamgambr_sp
-      write(6,*) 'sethparam:MCFM  gamgam BR',pw_gamgam/hwidth
-      write(6,*) 'sethparam:Spira ZZ     BR',zzbr_sp
-      write(6,*) 'sethparam:MCFM  ZZ     BR',pw_zz/hwidth
-
+c      call higgsp(br_sp,tautaubr,gamgambr_sp,zgambr_sp,wwbr_sp,zzbr_sp)
+c      write(6,*) 'sethparam:Spira bb     BR',br_sp
+c      write(6,*) 'sethparam:MCFM  bb     BR',pw_bb/hwidth
+c      write(6,*) 'sethparam:Spira tautau BR',tautaubr_sp
+c      write(6,*) 'sethparam:MCFM  tautau BR',pw_tautau/hwidth
+c      write(6,*) 'sethparam:Spira Zgam   BR',zgambr_sp
+c      write(6,*) 'sethparam:MCFM  Zgam   BR',pw_zgam/hwidth
+c      write(6,*) 'sethparam:Spira gamgam BR',gamgambr_sp
+c      write(6,*) 'sethparam:MCFM  gamgam BR',pw_gamgam/hwidth
+c      write(6,*) 'sethparam:Spira ZZ     BR',zzbr_sp
+c      write(6,*) 'sethparam:MCFM  ZZ     BR',pw_zz/hwidth
 
 **************************** COMPUTE BRANCHING RATIOS **************************
 

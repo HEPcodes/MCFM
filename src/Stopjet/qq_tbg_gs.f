@@ -24,8 +24,7 @@
       include 'nflav.f'
       include 'stopscales.f'
       include 'breit.f'
-      double precision dot,e15,e23,e24,e34,e25,e13,e14,corrL,corrH
-      double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf)
+      double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf),corrH
       double precision
      . msq35_4(-nf:nf,-nf:nf),sub35_4(4),
      . msq36_4(-nf:nf,-nf:nf),sub36_4(4),
@@ -116,7 +115,7 @@ c--- reset mass2 to original value
 
 c--- correction factors to replace the "gsq" that appears in the sub...
 c--- expressions with the correct gsq for that line
-      corrL=as_L/as
+c      corrL=as_L/as
       corrH=as_H/as
       
 c--- leading colour (Ca) goes in (0,0)

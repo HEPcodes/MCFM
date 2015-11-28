@@ -19,7 +19,7 @@ c--- Nucl.\ Phys.\ B {\bf 297}, 221 (1988).
       integer j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),gg,qg,gq,qq,hdecay
       double precision ehsvm3,ehsvm4,origmbsq,s34
-      double precision mb_eff,mt_eff,massfrun,msqhtautau,msqgamgam
+      double precision msqgamgam
       s34=(p(3,4)+p(4,4))**2
      & -(p(3,1)+p(4,1))**2-(p(3,2)+p(4,2))**2-(p(3,3)+p(4,3))**2
 

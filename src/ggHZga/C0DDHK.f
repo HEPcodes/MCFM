@@ -8,8 +8,9 @@ C-----Djouadi,Driesen,Hollik,Kraft arXiv:hep-ph/9701342v1, Eq(5)
 c      double complex qlC0DDHK
       tauZ=4d0*msq/s34
       tauH=4d0*msq/s12
-      C0DDHK=2d0*tauZ*tauH/(tauZ-tauH)*(FFF(tauZ)-FFF(tauH))
-      C0DDHK=C0DDHK/(4d0*msq)
+      C0DDHK=-2d0*tauZ*tauH/(tauZ-tauH)*(FFF(tauZ)-FFF(tauH))
+C-----changed sign in order to agree with normal QCDLoop definition of scalar integral
+      C0DDHK=-C0DDHK/(4d0*msq)
 
 c      write(6,*) C0DDHK
 c      C0DDHK=qlC0DDHK(s12,s34,msq)
@@ -32,7 +33,7 @@ c      double complex qlC2DDHK
       C2DDHK=dcmplx(tauZ*tauH/(2d0*(tauZ-tauH)))
      & +tauZ*tauH**2/(2d0*(tauZ-tauH)**2)
      & *(tauZ*(FFF(tauZ)-FFF(tauH))+2d0*(GGG(tauZ)-GGG(tauH)))
-C-----intrduced sign in order to agree withn QCDLoop result: error in DDHK paper
+C-----changed sign in order to agree with QCDLoop result
       C2DDHK=-C2DDHK/(4d0*msq)
 
 c      write(6,*) C2DDHK

@@ -14,9 +14,6 @@ c---   i.e. complete LHS
       double complex Vlc,Lsm1,Lsm1DS,Lsm1_2me,L0,L1,lnrat,
      & A0phiqarbmpmp,A0phidqarbmpmp
       integer j1,j2,j3,j4
-c--- alias from the defintion of Lsm1 in this paper (Eq. (B.2))
-c--- to the one that is implemented in lfunctions.f      
-      Lsm1DS(s123,s234,mhsq)=Lsm1(s123,mhsq,s234,mhsq)
 
       s12=s(j1,j2)
       s13=s(j1,j3)

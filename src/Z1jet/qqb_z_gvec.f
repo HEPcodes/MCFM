@@ -111,7 +111,7 @@ c--note QED propagator included.
       include 'sprods_com.f'
 
       integer j1,j2,j3,j4,j5
-      double precision n(4),p(mxpart,4),nDn,nDp1,nDp2,nDp3,test
+      double precision n(4),p(mxpart,4),nDn,nDp1,nDp2,nDp3
       j3=3
       j4=4
 

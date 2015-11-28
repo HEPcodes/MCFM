@@ -46,7 +46,7 @@ c      integer idum
 c      COMMON/ranno/idum
       character*30 runstring
       double precision b1scale,q2scale,q1scale,b2scale
-      external qg_tbq,BSYqqb_QQbdk_gvec,qqb_QQbdk,qg_tbqdk,qg_tbqdk_gvec
+      external qg_tbq,qqb_QQbdk,qg_tbqdk
       common/runstring/runstring
       common/density/ih1,ih2
       common/energy/sqrts

@@ -2,7 +2,7 @@
       implicit none
       include 'scale.f'
       double precision mtsq,s12,s34,s56,Del12,Del34,Del56,Del3
-      double complex lnrat,qlI3,bdiff
+      double complex qlI3,bdiff
 
 C     Implementation of BDKW Nucl Phys. 513, 3 (1998)
 C     Eqn. (B.15) upgraded so that is gives the full mass

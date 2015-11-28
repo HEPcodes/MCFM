@@ -7,10 +7,10 @@ c     multiplied by (((a+l)^2-M**2)/(a+l)^2)^2*g^4/gwsq^2/2
       include 'zprods_decl.f'
       include 'mmsq_cs.f'
       double complex qcd1(2,2,2),qcd2(2,2,2),qed(2,2,2)
-      double precision msq1,msq2,msqq,msq,p(mxpart,4),q(mxpart,4),a5,a6
-      double precision uc,us,dc,ds,cs,p156,p256,mch
-      integer i1,i2,i3,i4,i5,i6,i7,nu,j,h1,h2,hf
-      i7=7 
+      double precision msq1,msq2,msqq,msq,p(mxpart,4),q(mxpart,4),a5
+      double precision uc,us,dc,ds,cs,p156,p256,mch,
+     & invtwog1Dc,invtwog2Dc
+      integer i1,i2,i3,i4,i5,i6,nu,j,h1,h2,hf
       uc=p(i1,4)*p(i5,4)-p(i1,1)*p(i5,1)-p(i1,2)*p(i5,2)-p(i1,3)*p(i5,3)
       us=p(i1,4)*p(i6,4)-p(i1,1)*p(i6,1)-p(i1,2)*p(i6,2)-p(i1,3)*p(i6,3)
 
@@ -23,27 +23,29 @@ c     multiplied by (((a+l)^2-M**2)/(a+l)^2)^2*g^4/gwsq^2/2
       p256=2d0*(dc+ds+cs)
 
 C----define massless momenta      
-      a5=0.5d0*mch**2/dc
-      a6=0.5d0*mch**2/ds
+      a5=0.5d0*mch**2/
+     & (p(i1,4)*p(i2,4)-p(i1,1)*p(i2,1)-p(i1,2)*p(i2,2)-p(i1,3)*p(i2,3))
 
       do nu=1,4
-      do j=1,7
-         if     (j.eq.i2) then
-                q(j,nu)=p(i2,nu)-p(i5,nu)*a5
-         elseif (j.eq.i7) then
-                q(j,nu)=p(i2,nu)-p(i6,nu)*a6
-         else
-                q(j,nu)=p(j,nu)
-         endif 
+      do j=1,6
+        if (j.eq.i2) then
+          q(j,nu)=p(i2,nu)-p(i1,nu)*a5
+        else
+          q(j,nu)=p(j,nu)
+        endif 
       enddo
       enddo
+      
+      invtwog1Dc=1d0/2d0/
+     & (p(i5,4)*p(i2,4)-p(i5,1)*p(i2,1)-p(i5,2)*p(i2,2)-p(i5,3)*p(i2,3))
+      invtwog2Dc=1d0/2d0/
+     & (p(i6,4)*p(i2,4)-p(i6,1)*p(i2,1)-p(i6,2)*p(i2,2)-p(i6,3)*p(i2,3))
 
-      call spinoru(7,q,za,zb)
+      call spinoru(6,q,za,zb)      
 
-      call subqcdm(i1,i2,i3,i4,i5,i6,i7,p156,p256,za,zb,qcd1,qcd2,mch)
-
-c      call subqcdm(i1,i7,i3,i4,i6,i5,i2,p156,p256,za,zb,qcd2,qcd1,mch)
-
+      call subqcdm(i1,i2,i3,i4,i5,i6,p156,p256,za,zb,
+     & invtwog1Dc,invtwog2Dc,mch,qcd1,qcd2)
+      
       do hf=1,2
       qed(2,2,hf)=qcd1(2,2,hf)+qcd2(2,2,hf)
       qed(2,1,hf)=qcd1(2,1,hf)+qcd2(2,1,hf)

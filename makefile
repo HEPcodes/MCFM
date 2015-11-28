@@ -5,8 +5,8 @@ CERNLIB     =
 # Replace this with the location of LHAPDF on your system (if desired)
 LHAPDFLIB   = 
 
-MCFMHOME        = /scratch/ellis/play/MCFMdevel
-SOURCEDIR       = /scratch/ellis/play/MCFMdevel/src
+MCFMHOME        = /Users/ellis/MCFM
+SOURCEDIR       = /Users/ellis/MCFM/src
 VPATH		= $(DIRS)
 BIN		= $(MCFMHOME)/Bin
 INCPATH  	= $(SOURCEDIR)/Inc
@@ -481,7 +481,8 @@ F41m.o \
 F41mF.o \
 F42me.o \
 F42meF.o \
-F42mhF.o
+F42mhF.o \
+Lsm1DS.o
 
 HWWFILES = \
 gg_WW_int.o \
@@ -591,6 +592,7 @@ scaleset_m34.o \
 scaleset_m345.o \
 scaleset_m3456.o \
 scaleset_Msqpt34sq.o \
+scaleset_Msqpt345sq.o \
 scaleset_Msqpt5sq.o \
 scaleset_Msqptj1sq.o \
 scaleset_ptphoton.o \

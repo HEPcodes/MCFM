@@ -14,8 +14,8 @@
       include 'epinv.f'
       include 'scale.f'
       include 'includect.f'
-      integer ib,ibb,ig,j,k
-      double precision p(mxpart,4),s,s56,s57,s67,msq,
+      integer ib,ibb
+      double precision p(mxpart,4),s56,msq,
      & ddilog,besq,beta,BigL,ratio
       
       s56=2d0*(p(ib,4)*p(ibb,4)-p(ib,1)*p(ibb,1)

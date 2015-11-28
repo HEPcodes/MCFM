@@ -22,7 +22,7 @@
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4)
       double precision fac,qqb,gg
       double complex  prop,
-     & mtop(2,2),manti(2,2,2),mprod(2,2,2),
+     & mtop(2,2),mprod(2,2,2),
      & mab(2,2,2,2),mba(2,2,2,2)
       double complex Wanti(2,2,2),Wtot(2,2,2,2),
      & Wabtot(2,2,2,2,2),Wbatot(2,2,2,2,2),Wqed(2,2,2,2,2)

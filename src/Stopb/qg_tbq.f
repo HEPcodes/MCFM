@@ -50,9 +50,6 @@ c--- initialize
      &       *fourpi*alphas(b1scale,amz,nlooprun)
         fac2=aveqg*2d0*xn**2*Cf*gwsq**2
      &       *fourpi*alphas(b2scale,amz,nlooprun)
-      elseif (dynamicscale) then
-        fac1=aveqg*2d0*xn**2*Cf*gsq*gwsq**2
-	fac2=fac1
       else
         fac1=aveqg*2d0*xn**2*Cf*gsq_H*gwsq**2
 	fac2=fac1

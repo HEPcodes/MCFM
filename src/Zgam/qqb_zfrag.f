@@ -21,7 +21,7 @@ c---
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac
       double complex AqqbZg(2,2,2),AqbqZg(2,2,2),AqgZq(2,2,2),
      .               AqbgZqb(2,2,2),AgqbZqb(2,2,2),AgqZq(2,2,2),prop
-      double precision fsq,D(0:5),pt,pttwo
+      double precision fsq,D(0:5)
       common/D/D
 
       do j=-nf,nf

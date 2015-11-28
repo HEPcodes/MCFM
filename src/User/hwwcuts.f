@@ -8,7 +8,7 @@ c--- plotting routine; a point that fails the cuts returns mtrans=-1d0
       include 'plabel.f'
       integer ilept(2),ic,j,maxparts
       double precision pt,etarap,p(mxpart,4),etvec(2),plept(4),
-     . missinget,dphi_ll,m_ll,mtrans,scut1,scut2,cosdphi,R,maxpt,minpt
+     . missinget,dphi_ll,m_ll,mtrans,scut1,scut2,cosdphi,maxpt,minpt
             
 c--- initialize all variables  
       dphi_ll=-1d0

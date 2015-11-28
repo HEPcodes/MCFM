@@ -19,8 +19,8 @@
       include 'constants.f'
       include 'nflav.f'
       include 'stopscales.f'
-      double precision p(mxpart,4),pp(mxpart,4),qq(mxpart,4),
-     . msq_qqb_gg_lc,msq_qqb_gg_slc,msq_qbq_gg,msq_qqb_qq,msq_qbq_qq
+      double precision p(mxpart,4),pp(mxpart,4),
+     . msq_qqb_gg_lc,msq_qqb_gg_slc,msq_qqb_qq
       double precision msq(-nf:nf,-nf:nf)
       integer j,k
 
@@ -38,11 +38,11 @@ c--- fill array with 1 and 2 switched, to calculate qqbar matrix element
       do j=1,6
       do k=1,4
       pp(j,k)=p(j,k)
-      if (j .lt. 3) then
-        qq(j,k)=p(3-j,k)
-      else
-        qq(j,k)=p(j,k)
-      endif
+c      if (j .lt. 3) then
+c        qq(j,k)=p(3-j,k)
+c      else
+c        qq(j,k)=p(j,k)
+c      endif
       enddo
       enddo
       

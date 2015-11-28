@@ -301,7 +301,7 @@ C     arXiv:0704.3914v3, Eq.(3.22) (factor of C_\Gamma removed)
       include 'scprods_com.f'
       include 'zprods_decl.f'
       include 'nflav.f'
-      integer j1,j2,j3,j4,j5,i,ii(7)
+      integer j1,j2,j3,j4,i,ii(7)
       double complex A0phiggggmmpp,Born,F31m,F42me,F41m,sum,
      . BGRL3,BGRL2,BGRL1,trm,trm1432,trm2341
       double precision Np,bb0

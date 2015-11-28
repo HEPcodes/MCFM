@@ -40,7 +40,8 @@ c    cut if radiated parton too close
      . .or. (+s(5,6) .lt. cutoff)
      . ) return 1
       if (  (case .eq. 'qq_tbg') .or. (case .eq. 'qqtbgg')
-     . .or. (case .eq. 'epem3j')) then
+     . .or. (case .eq. 'epem3j') .or. (case .eq. 'W_tndk')
+     . .or. (case .eq. 'Z_tjet')) then
       if ( 
      .      (+s(3,4) .lt. cutoff)
      . .or. (+s(3,5) .lt. cutoff)
@@ -106,6 +107,6 @@ c    cut if radiated parton too close
      . ) return 1
       
       endif      
-
+      
       return
       end

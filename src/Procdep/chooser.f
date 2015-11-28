@@ -4686,6 +4686,12 @@ c-- 307 '  f(p1)+f(p2) --> Z^0(-->nu(p3)+nu~(p4))+gamma(p5)+f(p6)'
             q1=0d0
             l1=ln*dsqrt(3d0)
             r1=rn*dsqrt(3d0)
+            if (removebr) then
+              plabel(3)='ig'
+              plabel(4)='ig'
+              call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
+              BrnRat=brznn
+            endif
           endif
 c-----------------------------------------------------------------------
 

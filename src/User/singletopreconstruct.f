@@ -19,11 +19,13 @@ c--- then failed is equal to .true.
       include 'masses.f'
       include 'plabel.f'
       logical failed
-      integer iorder(mxpart),i,j
-      double precision small,tiny,p(mxpart,4),toler,
+      integer i
+      double precision tiny,p(mxpart,4),
      & ptop(4),ptoprest(4),plep(4),plight(4),pleprest(4),plightrest(4),
      & mtcand,costheta,ylight,yrap,ptopalt(4),mtcandalt
-      parameter (small=1d-4,tiny=1d-8,toler=5d9)
+      parameter (tiny=1d-8)
+c      double precision small,toler
+c      parameter (small=1d-4,toler=5d9)
 
 c--- default: reconstruction is okay
       failed=.false.      

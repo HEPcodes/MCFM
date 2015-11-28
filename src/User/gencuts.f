@@ -33,20 +33,15 @@
       logical first,passedlept
       integer njets,j,k,countb,bindex(mxpart),jindex,kindex,ib1,ib2
       integer countlept,leptindex(mxpart),countgamm,
-     & countjet,jetindex(mxpart),pntr,maxparts,notag
+     & countjet,jetindex(mxpart),pntr,notag
       double precision pjet(mxpart,4),etvec(4)
       double precision pt,etarap,etmiss,evtmisset,R,Rcut,etaj,etak,
      & etalept,mll,jetpt,jetrap
-      double precision etabuffer,m3456
-      logical passed,hwwjetcuts
-      double precision ht,qeta,mlbnu,merecon,reconcorr
+      double precision etabuffer
+      logical hwwjetcuts
       double precision dphi_ll,m_ll,mtrans,scut1,scut2
-      double precision pttwo,phill,phillcut,etajet2cut,mllcut
-      double precision deltaeta,deltaphi,pt5sq,pt6sq,ptthree
-      integer ij,i,ilep,igam,inu
-      character*30 runstring
-      common/runstring/runstring
-      common/stopvars/ht,qeta,mlbnu,merecon,reconcorr
+      double precision phill,phillcut,etajet2cut,mllcut
+      integer ilep,igam,inu
       common/hwwvars/dphi_ll,m_ll,mtrans,scut1,scut2
       common/rcut/Rcut
       common/notag/notag

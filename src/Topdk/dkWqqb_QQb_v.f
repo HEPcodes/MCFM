@@ -24,8 +24,7 @@
      & mabtot(2,2,2,2),mbatot(2,2,2,2),mqed(2,2,2,2),
      & mab(2,2,2,2),mba(2,2,2,2),
      & mtopv(2,2),mantiv(2,2),mtotv(2,2,2),
-     & mabtotv(2,2,2,2),mbatotv(2,2,2,2),mqedv(2,2,2,2),
-     & mabv(2,2,2,2),mbav(2,2,2,2)
+     & mabtotv(2,2,2,2),mbatotv(2,2,2,2),mqedv(2,2,2,2)
        parameter(j1max=2,j2min=1)  ! NEED TO RE-CHECK THESE
 
 C----set all elements to zero

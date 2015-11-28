@@ -23,7 +23,6 @@
       
       double precision function msqhbbg(s56,s57,s67)
       implicit none
-      double precision s
       include 'constants.f'
       include 'masses.f'
       include 'qcdcouple.f'

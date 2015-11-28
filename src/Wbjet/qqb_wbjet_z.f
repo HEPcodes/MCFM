@@ -12,11 +12,11 @@
       double precision z,p(mxpart,4),dot
       double precision xl12,xl15,xl16,xl25,xl26,xl56
       double precision 
-     .                 ii_qq,ii_qg,ii_gq,ii_gg,
-     .                 if_qq,if_gg,
-     .                 fi_qq,fi_gg,
-     .                 ff_qq,ff_gg
-      double precision tempgq,tempqg
+     .                 ii_qq,ii_qg,
+     .                 if_qq,
+     .                 fi_qq,
+     .                 ff_qq
+      double precision tempqg
       integer is
       
       xl12=dlog(+two*dot(p,1,2)/musq)

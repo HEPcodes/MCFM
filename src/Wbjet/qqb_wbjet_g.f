@@ -31,7 +31,7 @@ c--- Extended to include charm quark production via the variable "flav"
      . QG_d_dsc,QG_u_dcc,
      . GQ_d_dsc,GQ_u_dcc,
      . QbG_u_ucs,QbG_d_ucc,
-     . GQb_u_ucs,GQb_d_ucc,qgWbbq,redmsqm
+     . GQb_u_ucs,GQb_d_ucc
 
       integer isub
       common/isub/isub

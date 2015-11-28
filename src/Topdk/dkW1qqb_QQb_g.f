@@ -22,7 +22,7 @@
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4)
       double precision fac,qqb,gg
       double complex  prop
-      double complex  mtop(2,2,2),manti(2,2),mprod(2,2,2),
+      double complex  manti(2,2),mprod(2,2,2),
      & mab(2,2,2,2),mba(2,2,2,2)
       double complex Wtop(2,2,2),Wtot(2,2,2,2),
      & Wabtot(2,2,2,2,2),Wbatot(2,2,2,2,2),Wqed(2,2,2,2,2)
@@ -44,7 +44,6 @@ C----set all elements to zero
 c--- include factor for hadronic decays of W
       if (plabel(3) .eq. 'pp') fac=2d0*xn*fac
       if (plabel(7) .eq. 'pp') fac=2d0*xn*fac
-      qqb=0d0
 
       do hb=1,2
       do hg=1,2

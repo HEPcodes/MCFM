@@ -44,10 +44,9 @@
       include 'frag.f'
       include 'outputoptions.f'
       include 'breit.f'
-      character*72 workdir,inputfile,getinput
+      character*72 workdir,inputfile
       character*90 line
       character*30 runstring
-      integer nargs,lenocc,lenarg
       logical spira
       logical creatent,dswhisto,dryrun,makecuts
       integer nmin,nmax

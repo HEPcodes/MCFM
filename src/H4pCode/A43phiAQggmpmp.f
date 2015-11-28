@@ -29,9 +29,6 @@ c---  arXiv:0906.0008 [hep-ph].
       double precision s3,mhsq,s123,s234,s341,s412
       integer j1,j2,j3,j4
       s3(j1,j2,j3)=s(j1,j2)+s(j1,j3)+s(j2,j3)
-c--- alias from the defintion of Lsm1 in this paper (Eq. (B.2))
-c--- to the one that is implemented in lfunctions.f      
-      Lsm1DS(s123,s234,mhsq)=Lsm1(s123,mhsq,s234,mhsq)
 
       s123=s3(j1,j2,j3)
       s234=s3(j2,j3,j4)

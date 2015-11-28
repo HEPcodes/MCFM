@@ -6,7 +6,7 @@
 C  in is the label of the momentum contracted with n
       integer j,k,in
       double precision msq(-nf:nf,-nf:nf)
-      double precision n(4),p(mxpart,4),dot,hdecay,s34,fac,
+      double precision n(4),p(mxpart,4),hdecay,s34,fac,
      . qqghn,ggghn,p1p2(-1:1,-1:1),msqgamgam
 
       do j=-nf,nf

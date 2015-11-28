@@ -25,7 +25,7 @@
 \thispagestyle{empty}
 \vspace*{3cm}
 \begin{center}
-{\Huge MCFM v6.3} \\
+{\Huge MCFM v6.4} \\
 \vspace*{0.5cm}
 \Large{A Monte Carlo for FeMtobarn} \\
 \Large{processes at Hadron Colliders} \\
@@ -38,7 +38,7 @@ John M. Campbell ({\tt johnmc@fnal.gov}) \\
 R. Keith Ellis ({\tt ellis@fnal.gov}) \\
 Ciaran Williams ({\tt ciaran@fnal.gov}) \\
 \vspace*{2cm}
-{\it \small Updated: August 10th, 2012}
+{\it \small Updated: December 19th, 2012}
 \end{center}
 
 \newpage
@@ -528,7 +528,9 @@ exceeds a maximum of $10$ TeV (PDF) or $990$ GeV (fragmentation) this value is s
 {\tt m(345)} & $(p_3+p_4+p_5)^2$ & \\
 {\tt m(3456)} & $(p_3+p_4+p_5+p_6)^2$ & \\
 {\tt sqrt(M\pow 2+pt34\pow 2)} & $M^2 + (\vec{p_T}_3 + \vec{p_T}_4)^2$ & $M=$~mass of particle 3+4 \\
+{\tt sqrt(M\pow 2+pt345\pow 2)} & $M^2 + (\vec{p_T}_3 + \vec{p_T}_4 + \vec{p_T}_5)^2$ & $M=$~mass of particle 3+4+5 \\
 {\tt sqrt(M\pow 2+pt5\pow 2)} & $M^2 + \vec{p_T}_5^2$ & $M=$~mass of particle 3+4 \\
+{\tt sqrt(M\pow 2+ptj1\pow 2)} & $M^2 + \vec{p_T}_{j_1}^2$ & $M=$~mass(3+4), $j_1=$ leading $p_T$ jet \\
 {\tt pt(photon)} & $\vec{p_T}_\gamma^2$ & \\
 {\tt HT} & $\sum_{i=1}^n {p_T}_i$ & $n$ final state particles (partons, not jets) \\
 \hline 
@@ -3053,6 +3055,19 @@ released in the future.
 \caption{Processes indicated by choice of the variable {\tt nproc}.\label{nproctable}}
 \end{table}
 \clearpage
+
+\section{Version 6.4 changelog}
+\label{changelog6.4}
+
+\subsection{Code changes}
+\begin{itemize}
+\item Corrected bug in implementation of $H\bar q q gg$ virtual amplitudes.
+\item Enabled effect of {\tt removebr} for process 307.
+\item Fixed the implementation of a dynamic scale for single top + b processes.
+\item Added a new scale choice for top production ($m(345)^2+p_T(345)^2$).
+\item Improved numerical stability in calculation of virtual contribution to process
+201 and in calculation of real corrections to processes 180--187.  
+\end{itemize}
 
 \section{Version 6.3 changelog}
 \label{changelog6.3}

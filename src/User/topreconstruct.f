@@ -23,12 +23,11 @@ c--- satisfying above condition), then failed is equal to .true.
       include 'plabel.f'
       logical failed
       integer iorder(mxpart),i,j
-      double precision small,tiny,check678,check6789,check345,check3459,
+      double precision tiny,check678,check6789,check345,check3459,
      & ptthree,yrapthree,ptfour,yrapfour,ptsix,yrapsix,yrapseven,
      & ptt,yt,pttb,ytb,ptttb,yttb,mttb,mwp,mwm,p(mxpart,4),toler,
-     & mwtest(mxpart),dot,q(mxpart,4),
-     & check945,check395,check679,check689
-      parameter (small=1d-4,tiny=1d-8,toler=5d9)
+     & mwtest(mxpart),dot,q(mxpart,4)
+      parameter (tiny=1d-8,toler=5d9)
 
 c--- copy array from p to q
 c--- q may now be reshuffled to find best W candidate, if necessary      

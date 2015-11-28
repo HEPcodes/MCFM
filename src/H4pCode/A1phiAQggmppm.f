@@ -10,15 +10,12 @@ c---   i.e. complete LHS
       include 'epinv.f'
       include 'deltar.f'
       integer j1,j2,j3,j4
-      double complex zab2,V1L,A0phiAQggmppm,Lsm1,L2,L1,L0,lnrat,sum,
+      double complex zab2,V1L,A0phiAQggmppm,L2,L1,L0,lnrat,sum,
      . A0phidAQggmppm
       double complex l23,l34,l41,l12,Lsm1_2me,Lsm1DS
       double precision s3,mhsq,s123,s234,s341,s412
       zab2(j1,j2,j3,j4)=+za(j1,j2)*zb(j2,j4)+za(j1,j3)*zb(j3,j4)
       s3(j1,j2,j3)=s(j1,j2)+s(j1,j3)+s(j2,j3)
-c--- alias from the defintion of Lsm1 in this paper (Eq. (B.2))
-c--- to the one that is implemented in lfunctions.f      
-      Lsm1DS(s123,s234,mhsq)=Lsm1(s123,mhsq,s234,mhsq)
       
       s123=s3(j1,j2,j3)
       s234=s3(j2,j3,j4)
@@ -115,13 +112,10 @@ c---   i.e. complete LHS
       include 'deltar.f'
       integer j1,j2,j3,j4
       double complex zab2,VR,A0phiAQggmppm,Lsm1_2me,lnrat,l12,L0,L1,
-     . Lsm1,Lsm1DS
+     . Lsm1DS
       double precision s3,mhsq,s123,s234,s341
       zab2(j1,j2,j3,j4)=+za(j1,j2)*zb(j2,j4)+za(j1,j3)*zb(j3,j4)
       s3(j1,j2,j3)=s(j1,j2)+s(j1,j3)+s(j2,j3)
-c--- alias from the defintion of Lsm1 in this paper (Eq. (B.2))
-c--- to the one that is implemented in lfunctions.f      
-      Lsm1DS(s123,s234,mhsq)=Lsm1(s123,mhsq,s234,mhsq)
       
       mhsq=s(j1,j2)+s(j1,j3)+s(j1,j4)+s(j2,j3)+s(j2,j4)+s(j3,j4)
       l12=lnrat(musq,-s(j1,j2))

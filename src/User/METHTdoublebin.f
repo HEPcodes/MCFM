@@ -3,7 +3,7 @@
 c--- returns a double precision number that indicates which bin
 c--- the double-binned MET and HT fall into
       double precision MET,HT,boundMET(11),boundHT(9)
-      integer i,j,bin(2),maxbinMET,maxbinHT
+      integer j,bin(2),maxbinMET,maxbinHT
       data boundMET/30d0,40d0,50d0,60d0,70d0,80d0,90d0,100d0,
      &  110d0,120d0,130d0/
       data maxbinMET/11/

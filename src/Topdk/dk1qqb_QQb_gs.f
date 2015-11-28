@@ -18,18 +18,12 @@
       include 'ptilde.f'
       include 'qcdcouple.f'
       include 'alfacut.f'
-      include 'plabel.f'
-      include 'qqgg.f'
       double precision msq(-nf:nf,-nf:nf),msqc(maxd,-nf:nf,-nf:nf),
      . p(mxpart,4),q(mxpart,4),omz,z,fac,ptDpg,pbDpg,ptDpb,pwsq,xr,
      . y,ymax
-      double precision 
-     & msq39_4(-nf:nf,-nf:nf),msq49_3(-nf:nf,-nf:nf),
-     & dummyv(-nf:nf,-nf:nf),sub39_4(4),sub49_3(4),dsubv
-      integer j,k,nd
+      integer j,k
       logical incldip(0:maxd)
       common/incldip/incldip
-      external qqb_QQbdk,donothing_gvec
 
       ndmax=1
       

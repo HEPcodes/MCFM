@@ -1,6 +1,6 @@
- ************** MCFM - version 6.3 ****************
+ ************** MCFM - version 6.4 ****************
  *                                                *
- * MCFM, v6.3                   August 9th, 2012  *
+ * MCFM, v6.4                December 19th, 2012  *
  *                                                *
  * Authors: John Campbell, Keith Ellis,           *
  *          Ciaran Williams                       *
@@ -34,16 +34,4 @@
  *                                                *
  * On the web:  http://mcfm.fnal.gov/             *
  **************************************************
- *                                                *
- * To compile:           ./Install                *
- *   and then:           make                     *
- *                                                *
- * To run:               cd Bin                   *
- *                       ./mcfm                   *
- *                                                *
- * To change the process, collider, cuts, etc.    *
- *  edit the file Bin/input.DAT                   *
- *                                                *
- * Further help is in the Doc/ directory.         *
- *                                                *
- **************************************************
+

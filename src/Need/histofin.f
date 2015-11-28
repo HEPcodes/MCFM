@@ -24,7 +24,6 @@ c      character*255 outfilepwg
       character*3 oldbook
       character mop
       double precision xsec,xsec_err,scalefac,itscale
-      integer ibin,index 
       logical scaleplots                  
       integer itmx1,ncall1,itmx2,ncall2
       common/iterat/itmx1,ncall1,itmx2,ncall2

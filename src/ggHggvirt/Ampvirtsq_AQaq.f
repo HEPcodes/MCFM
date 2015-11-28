@@ -9,8 +9,6 @@ c--- helicities and returns the ME in the same fashion as Hqarbvsq
       double precision sum,ren,H4prenorm
       double complex amplo(2,2),ampv(2,2),
      . A0Hqarbmppm,A0Hqarbmpmp,A41Hqarbmppm,A41Hqarbmpmp
-      logical CheckEGZ
-      common/CheckEGZ/CheckEGZ
 
 c--- the routine expects momenta to be labelled:
 c---                                 a(p1)+q(p2) --> Q(p3)+A(p4)
@@ -71,11 +69,8 @@ c--- helicities and returns the ME in the same fashion as Hqarbvsq
       integer p1,p2,p3,p4,j1,j2,j3,j4,h1,h2
       double precision sum,ren,H4prenorm
       double complex amplo_a(2,2),amplo_b(2,2),
-     . amp41_a(2,2),amp41_b(2,2),amp42_a(2,2),amp42_b(2,2),
-     . A0Hqarbmppm,A0Hqarbmpmp,
-     . A41Hqarbmppm,A41Hqarbmpmp,A42Hqarbmppm,A42Hqarbmpmp
-      logical CheckEGZ
-      common/CheckEGZ/CheckEGZ
+     . amp42_a(2,2),amp42_b(2,2),
+     . A0Hqarbmpmp,A42Hqarbmpmp
 
 c--- the routine expects momenta to be labelled:
 c---                                 a(p1)+q(p2) --> Q(p3)+A(p4)

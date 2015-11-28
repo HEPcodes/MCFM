@@ -46,22 +46,22 @@ c---   arXiv: 0910.4481 [hep-ph]
 
       sum=
      & -s134**2/(zb(k4,k1)*zb(k3,k4)*zab2(k2,k1,k4,k3))
-     & *Lsm1(s14,s134,s34,s134) 
+     & *Lsm1(-s14,-s134,-s34,-s134) 
 
      & -zab2(k1,k3,k4,k2)**2/(zab2(k1,k2,k3,k4)*zb(k2,k3)*zb(k3,k4))
-     & *Lsm1(s34,s234,s23,s234) 
+     & *Lsm1(-s34,-s234,-s23,-s234) 
 
      &  +(mhsq**2*za(k1,k4)**2*za(k2,k4)
      & /(za(k1,k2)*zab2(k2,k1,k4,k3)*zab2(k4,k1,k2,k3)*s124)
      &   -zab2(k3,k1,k4,k2)**3
      & /(zb(k1,k2)*zb(k2,k4)*zab2(k3,k1,k2,k4)*s124))
-     & *Lsm1(s14,s124,s12,s124) 
+     & *Lsm1(-s14,-s124,-s12,-s124) 
 
      & +(zb(k2,k3)**2*zab2(k4,k2,k3,k1)**3
      & /(zb(k1,k2)*zb(k1,k3)**3*zab2(k4,k1,k2,k3)*s123)
      & -mhsq**2*za(k1,k3)**3
      & /(za(k1,k2)*zab2(k1,k2,k3,k4)*zab2(k3,k1,k2,k4)*s123))
-     & *Lsm1(s12,s123,s23,s123) 
+     & *Lsm1(-s12,-s123,-s23,-s123) 
 
      &   +za(k3,k4)*s134**2
      & /(zb(k3,k4)*za(k3,k4)*zb(k1,k4)*zab2(k2,k1,k4,k3))
@@ -302,10 +302,10 @@ c---   arXiv: 0910.4481 [hep-ph]
  
       sum=
      &  +zb(k1,k2)**2*zab2(k4,k1,k2,k3)**2/(zb(k1,k3)**3*zb(k2,k3)*s123)
-     & *Lsm1(s12,s123,s23,s123) 
+     & *Lsm1(-s12,-s123,-s23,-s123) 
 
      & +zab2(k3,k1,k4,k2)**2/(zb(k1,k4)*zb(k2,k4)*s124)
-     & *Lsm1(s14,s124,s12,s124) 
+     & *Lsm1(-s14,-s124,-s12,-s124) 
 
      & -zab2(k1,k3,k4,k2)**2/(zb(k2,k3)*zb(k3,k4)*zab2(k1,k2,k3,k4))
      & *Lsm1_2mht(s14,s234,s23,mhsq)

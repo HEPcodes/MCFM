@@ -44,6 +44,8 @@ C -- GZ
       includect=.true.
       
 * Set-up incoming beams and PS integration cut-offs
+c--- Note: version 6.4 onwards, scale cutoff with c.o.m. energy
+      cutoff=cutoff*(sqrts/2000d0)**2
       rtsmin=min(rtsmin,dsqrt(wsqmin+cutoff))
       rtsmin=min(rtsmin,dsqrt(bbsqmin+cutoff))
       taumin=(rtsmin/sqrts)**2

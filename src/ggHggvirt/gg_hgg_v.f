@@ -134,17 +134,20 @@ C     g(1)+q(2)->q(5)+g(6)
       gqqg=+HAQggvsqanal(2,5,1,6)
 
 C     a(1)+g(2)->a(5)+g(6)
-      agag=+HAQggvsqanal(5,1,2,6)
-
+c      agag=+HAQggvsqanal(5,1,2,6)
+      agag=qgqg
+      
 C     g(1)+a(2)->a(5)+g(6)
-      gaag=+HAQggvsqanal(5,2,1,6)
-
+c      gaag=+HAQggvsqanal(5,2,1,6)
+      gaag=gqqg
+      
 C     g(1)+g(2)->q(5)+a(6)
       ggqa=+HAQggvsqanal(6,5,1,2)
 
 C     q(1)+a(2)->g(5)+g(6)
-      qagg=+HAQggvsqanal(1,2,5,6)
-      
+c      qagg=+HAQggvsqanal(1,2,5,6)
+      qagg=aqgg
+                  
 c--- FOUR GLUON PROCESS
       gggg=+Hggggvsqanal(1,2,5,6)
       

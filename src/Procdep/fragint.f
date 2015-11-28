@@ -23,10 +23,8 @@
      & xmsq,xmsqjk,W,msq(-nf:nf,-nf:nf),fx1(-nf:nf),fx2(-nf:nf),
      & ran2,msqdips(-nf:nf,-nf:nf)
       logical bin,first,includedipole,creatent,dswhisto
-      external qqb_w_g,qqb_z1jet,qqb_dirgam,qqb_2jnogg
-      external qqb_2j_t,qqb_2j_s
-      external qqb_z2jetx
-      external qqb_zaa,qqb_zaj
+      external qqb_w_g,qqb_z1jet,qqb_dirgam,qqb_2j_t,qqb_2j_s,
+     & qqb_z2jetx,qqb_zaj
       common/density/ih1,ih2
       common/energy/sqrts
       common/bin/bin

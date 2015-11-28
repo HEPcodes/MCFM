@@ -10,6 +10,7 @@ c--- routines for exact definitions of the scales.
       include 'nlooprun.f'
       include 'qcdcouple.f'
       include 'couple.f'
+      include 'stopscales.f'
       double precision rscalestart,fscalestart,p(mxpart,4),mu0,
      & alphas
       logical first
@@ -24,6 +25,8 @@ c--- routines for exact definitions of the scales.
         call scaleset_m3456(p,mu0)
       elseif (dynstring .eq. 'sqrt(M^2+pt34^2)') then
         call scaleset_Msqpt34sq(p,mu0)
+      elseif (dynstring .eq. 'sqrt(M^2+pt345^2)') then
+        call scaleset_Msqpt345sq(p,mu0)
       elseif (dynstring .eq. 'sqrt(M^2+pt5^2)') then
         call scaleset_Msqpt5sq(p,mu0)
       elseif (dynstring .eq. 'sqrt(M^2+ptj1^2)') then
@@ -79,7 +82,15 @@ c--- run alpha_s
       ason4pi=as/fourpi
       gsq=fourpi*as
       musq=scale**2
-      
+
+c--- these are additional scales used in the t-channel single top + b routines
+      renscale_H=scale
+      renscale_L=scale
+      facscale_H=facscale
+      facscale_L=facscale
+      as_H=as
+      as_L=as
+            
       return
 
  45   format(1x,'* ',a15,f6.2,' x ',a24,' *')

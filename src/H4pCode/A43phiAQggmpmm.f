@@ -54,36 +54,36 @@ c--- new representation of poles
      &  /(zb(j1,j2)*zab2(j4,j1,j2,j3)))/zb(j1,j3)**3
      & -mhsq**2*za(j1,j3)**3
      &  /(za(j1,j2)*zab2(j1,j2,j3,j4)*zab2(j3,j1,j2,j4)))
-     & *Lsm1(s(j1,j2),s123,s(j2,j3),s123)/s123
+     & *Lsm1(-s(j1,j2),-s123,-s(j2,j3),-s123)/s123
 
      & +(mhsq**2*za(j1,j4)**2*za(j2,j4)
      &  /(za(j1,j2)*zab2(j2,j1,j4,j3)*zab2(j4,j1,j2,j3))
      & -zab2(j3,j1,j4,j2)**2*zab2(j3,j2,j4,j1)
      &  /(zb(j1,j4)*zab2(j3,j1,j2,j4)*zb(j1,j2)))
-     & *Lsm1(s(j1,j2),s412,s(j1,j4),s412)/s412
+     & *Lsm1(-s(j1,j2),-s412,-s(j1,j4),-s412)/s412
 
      & +(mhsq**2*za(j1,j3)**2/(zab2(j1,j2,j3,j4)*zab2(j2,j1,j3,j4))
      & -zab2(j4,j1,j3,j2)**2/(zb(j1,j3)*zb(j2,j3)))
-     & *Lsm1(s(j1,j3),s123,s(j2,j3),s123)/s123
+     & *Lsm1(-s(j1,j3),-s123,-s(j2,j3),-s123)/s123
 
      & +s341**2
      & /(zb(j1,j3)*zb(j3,j4)*zab2(j2,j1,j3,j4))
-     & *(Lsm1(s(j1,j3),s341,s(j1,j4),s341)
+     & *(Lsm1(-s(j1,j3),-s341,-s(j1,j4),-s341)
      &  +Lsm1_2mht(s(j2,j3),s341,s(j1,j4),mhsq))
 
      & +s341**2
      & /(zb(j1,j4)*zb(j3,j4)*zab2(j2,j1,j4,j3))
-     & *(Lsm1(s(j1,j4),s341,s(j3,j4),s341)
+     & *(Lsm1(-s(j1,j4),-s341,-s(j3,j4),-s341)
      &  +Lsm1_2mht(s(j1,j2),s341,s(j3,j4),mhsq))
 
      & -zab2(j1,j3,j4,j2)**2
      & /(zb(j2,j3)*zb(j3,j4)*zab2(j1,j2,j3,j4))
-     & *(Lsm1(s(j2,j3),s234,s(j3,j4),s234)
+     & *(Lsm1(-s(j2,j3),-s234,-s(j3,j4),-s234)
      &  +Lsm1_2mht(s(j1,j2),s234,s(j3,j4),mhsq))
 
      & +zb(j2,j4)**2*zab2(j1,j2,j4,j3)**2
      & /(zb(j2,j3)*zb(j3,j4)**3*zab2(j1,j2,j3,j4))
-     & *Lsm1(s(j2,j3),s234,s(j2,j4),s234)     
+     & *Lsm1(-s(j2,j3),-s234,-s(j2,j4),-s234)     
 
      & -zab2(j1,j3,j4,j2)**2
      & /(zab2(j1,j2,j4,j3)*zb(j2,j4)*zb(j3,j4))
