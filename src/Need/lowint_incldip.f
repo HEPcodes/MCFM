@@ -86,20 +86,15 @@ c      call initialize
      .   .or. (case .eq. 'Wbbjet') 
      .   .or. (case .eq. 'Zbbjet') 
      .   .or. (case .eq. 'qqHqqg')
-c     .   .or. (case .eq. 'WWHqqg')
-c     .   .or. (case .eq. 'ZZHqqg')
-c     .   .or. (case .eq. 'VVHqqg')
+     .   .or. (case .eq. 'WWHqqg')
+     .   .or. (case .eq. 'ZZHqqg')
+     .   .or. (case .eq. 'VVHqqg')
      .   .or. (case .eq. 'vlchk5') 
      .        ) then
           npart=5
           call gen_njets(r,3,p,pswt,*999)      
 c          call gen5(r,p,pswt,*999)
 c          call gen5a(r,p,pswt,*999)
-      elseif ((case .eq. 'WWHqqg')
-     .   .or. (case .eq. 'ZZHqqg')
-     .   .or. (case .eq. 'VVHqqg')) then
-          npart=5
-          call gen5(r,p,pswt,*999)
       elseif ((case .eq. 'H_1jet')
      .   .or. (case .eq. 'Z_1jet')
      .   .or. (case .eq. 'W_1jet')
@@ -180,9 +175,9 @@ c          endif
      .   .or. (case .eq. 'Zbbbar')
      .   .or. (case .eq. 'ggfus2')
      .   .or. (case .eq. 'qq_Hqq')
-c     .   .or. (case .eq. 'WW_Hqq')
-c     .   .or. (case .eq. 'ZZ_Hqq')
-c     .   .or. (case .eq. 'VV_Hqq')
+     .   .or. (case .eq. 'WW_Hqq')
+     .   .or. (case .eq. 'ZZ_Hqq')
+     .   .or. (case .eq. 'VV_Hqq')
      .   .or. (case .eq. 'gg_Hgg')
      .        ) then
           npart=4

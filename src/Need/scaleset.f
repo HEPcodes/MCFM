@@ -21,7 +21,7 @@
       logical first  
       data facsf/0.25d0,0.33333d0,0.5d0,0.75d0,1d0,2d0,3d0,4d0/
       data first/.true./  
-      save first
+      save first,facsf
 
       msg=''
 
@@ -50,8 +50,8 @@ c--- factorization scale is also set here for the bg -> Hb process
         write(6,77) facscale
         write(6,*)'****************************************************'
         first=.false.      
-        goto 99
         endif
+        goto 99
       endif
 
 c--- hack for Wbb + jet

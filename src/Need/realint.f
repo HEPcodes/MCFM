@@ -116,6 +116,9 @@ c          call gen4(vector,p,pswt,*999)
           endif
       elseif ((case .eq. 'W_2jet')
      .   .or. (case .eq. 'Z_2jet')
+     .   .or. (case .eq. 'WW_Hqq')
+     .   .or. (case .eq. 'ZZ_Hqq')
+     .   .or. (case .eq. 'VV_Hqq')
      .   .or. (case .eq. 'Wbbbar')
      .   .or. (case .eq. 'Zbbbar')
      .       ) then

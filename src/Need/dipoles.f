@@ -239,10 +239,10 @@ c--  +4*[ln(1-x)/(1-xp)]+2*L/[1-xp]
       if (vorz .eq. 1) then
         if_qq=epinv*(epinv2-L)+half*L**2+pisqo6
         if (scheme .eq. 'tH-V') then
-        return
+          return
         elseif (scheme .eq. 'dred') then
-        if_qq=if_qq-half
-        return
+          if_qq=if_qq-half
+          return
         endif
       endif
       
@@ -328,7 +328,7 @@ c  * ( 2*L + 4*[ln(1-x)] - 2*epinv )
         return
       endif
       
-       if_gg=two/omx*(two*lomx+L-epinv)
+      if_gg=two/omx*(two*lomx+L-epinv)
       
       return
       end

@@ -128,7 +128,7 @@ c---   unsubtracted real emission weight)
         ncall=int(dfloat(myncall)**adjust)
         write(6,*) 'Adjusting number of points for real to',ncall
         call boundregion(ndim+3,region)
-        call vegasnr(region,ndim+3,realint,myinit,myncall,myitmx,
+        call vegasnr(region,ndim+3,realint,myinit,ncall,myitmx,
      .              0,sigr,sdr,chi)
         write(6,*) 
         ncall=myncall

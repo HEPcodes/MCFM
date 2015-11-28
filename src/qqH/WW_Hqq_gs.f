@@ -16,18 +16,17 @@
       integer j,k,nd
 
       double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf)
-      double precision msq17_5(-nf:nf,-nf:nf),msq27_6(-nf:nf,-nf:nf),
-     . msq17_6(-nf:nf,-nf:nf),msq27_5(-nf:nf,-nf:nf),
+      double precision 
+     . msq17_5(-nf:nf,-nf:nf),msq27_6(-nf:nf,-nf:nf),
+     . msq16_2(-nf:nf,-nf:nf),msq27_1(-nf:nf,-nf:nf),
+     . msq15_2(-nf:nf,-nf:nf),msq26_1(-nf:nf,-nf:nf),
      . sub17_5(4),sub27_6(4),sub57_1(4),sub67_2(4),
-     . sub17_6(4),sub27_5(4),sub67_1(4),sub57_2(4),
-     . msq15_7(-nf:nf,-nf:nf),msq26_7(-nf:nf,-nf:nf),
-     . sub15_7(4),sub26_7(4),
-     . msq16_7(-nf:nf,-nf:nf),
-     . sub16_7(4),
+     . sub16_2(4),sub27_1(4),
+     . sub15_2(4),sub26_1(4),
      . dummy(-nf:nf,-nf:nf),dummyv(-nf:nf,-nf:nf),dsubv,stat
       external WW_Hqq,donothing_gvec
 
-      ndmax=5
+      ndmax=6
 
       do j=-nf,nf
       do k=-nf,nf
@@ -50,12 +49,16 @@ c---- entries are left as dummies
       call dips(2,p,6,7,2,sub67_2,dsubv,dummy,dummyv,
      . WW_Hqq,donothing_gvec)
 
-      call dips(3,p,1,5,7,sub15_7,dsubv,msq15_7,dummyv,
+      call dips(3,p,1,5,2,sub15_2,dsubv,msq15_2,dummyv,
      . WW_Hqq,donothing_gvec)
-      call dips(4,p,2,6,7,sub26_7,dsubv,msq26_7,dummyv,
+      call dips(4,p,2,6,1,sub26_1,dsubv,msq26_1,dummyv,
      . WW_Hqq,donothing_gvec)
-      call dips(5,p,1,6,7,sub16_7,dsubv,msq16_7,dummyv,
+
+      call dips(5,p,1,6,2,sub16_2,dsubv,msq16_2,dummyv,
      . WW_Hqq,donothing_gvec)
+      call dips(6,p,2,7,1,sub27_1,dsubv,msq27_1,dummyv,
+     . WW_Hqq,donothing_gvec)
+
 
 c--- Only loop up to (nf-1) to avoid b->t transitions
       do j=-(nf-1),nf-1
@@ -77,34 +80,38 @@ c--- q-q and qb-qb cases
          msq(1,j,k)=2d0*cf*(sub17_5(qq)+sub57_1(qq))*msq17_5(j,k)
          msq(2,j,k)=2d0*cf*(sub27_6(qq)+sub67_2(qq))*msq27_6(j,k)
          endif
+C---qg
       elseif ((j .gt. 0) .and. (k .eq. 0)) then
-         msq(2,j,k)=2d0*tr*sub27_6(qg)*(
-     .              +msq27_6(j,+1)+msq27_6(j,+2)+msq27_6(j,+3)
-     .              +msq27_6(j,+4)+msq27_6(j,+5))
-         msq(4,j,k)=2d0*tr*sub26_7(qg)*(
-     .              +msq26_7(j,-1)+msq26_7(j,-2)+msq26_7(j,-3)
-     .              +msq26_7(j,-4)+msq26_7(j,-5))
+         msq(6,j,k)=2d0*tr*sub27_1(qg)*(
+     .              +msq27_1(j,+1)+msq27_1(j,+2)+msq27_1(j,+3)
+     .              +msq27_1(j,+4)+msq27_1(j,+5))
+         msq(4,j,k)=2d0*tr*sub26_1(qg)*(
+     .              +msq26_1(j,-1)+msq26_1(j,-2)+msq26_1(j,-3)
+     .              +msq26_1(j,-4)+msq26_1(j,-5))
+C---qbg
       elseif ((j .lt. 0) .and. (k .eq. 0)) then
-         msq(2,j,k)=2d0*tr*sub27_6(qg)*(
-     .              +msq27_6(j,-5)+msq27_6(j,-4)+msq27_6(j,-3)
-     .              +msq27_6(j,-2)+msq27_6(j,-1))
-         msq(4,j,k)=2d0*tr*sub26_7(qg)*(
-     .              +msq26_7(j,+1)+msq26_7(j,+2)+msq26_7(j,+3)
-     .              +msq26_7(j,+4)+msq26_7(j,+5))
+         msq(6,j,k)=2d0*tr*sub27_1(qg)*(
+     .              +msq27_1(j,-5)+msq27_1(j,-4)+msq27_1(j,-3)
+     .              +msq27_1(j,-2)+msq27_1(j,-1))
+         msq(4,j,k)=2d0*tr*sub26_1(qg)*(
+     .              +msq26_1(j,+1)+msq26_1(j,+2)+msq26_1(j,+3)
+     .              +msq26_1(j,+4)+msq26_1(j,+5))
+C---gq
        elseif ((j .eq. 0) .and. (k .gt. 0)) then
-         msq(5,j,k)=2d0*tr*sub16_7(qg)*(
-     .              +msq16_7(+5,k)+msq16_7(+4,k)+msq16_7(+3,k)
-     .              +msq16_7(+2,k)+msq16_7(+1,k))
-         msq(3,j,k)=2d0*tr*sub15_7(qg)*(
-     .              +msq15_7(-1,k)+msq15_7(-2,k)+msq15_7(-3,k)
-     .              +msq15_7(-4,k)+msq15_7(-5,k))
+         msq(5,j,k)=2d0*tr*sub16_2(qg)*(
+     .              +msq16_2(+5,k)+msq16_2(+4,k)+msq16_2(+3,k)
+     .              +msq16_2(+2,k)+msq16_2(+1,k))
+         msq(3,j,k)=2d0*tr*sub15_2(qg)*(
+     .              +msq15_2(-1,k)+msq15_2(-2,k)+msq15_2(-3,k)
+     .              +msq15_2(-4,k)+msq15_2(-5,k))
+C---gqb
       elseif ((j .eq. 0) .and. (k .lt. 0)) then
-         msq(5,j,k)=2d0*tr*sub16_7(qg)*(
-     .              +msq16_7(-5,k)+msq16_7(-4,k)+msq16_7(-3,k)
-     .              +msq16_7(-2,k)+msq16_7(-1,k))
-         msq(3,j,k)=2d0*tr*sub15_7(qg)*(
-     .              +msq15_7(+1,k)+msq15_7(+2,k)+msq15_7(+3,k)
-     .              +msq15_7(+4,k)+msq15_7(+5,k))
+         msq(5,j,k)=2d0*tr*sub16_2(qg)*(
+     .              +msq16_2(-5,k)+msq16_2(-4,k)+msq16_2(-3,k)
+     .              +msq16_2(-2,k)+msq16_2(-1,k))
+         msq(3,j,k)=2d0*tr*sub15_2(qg)*(
+     .              +msq15_2(+1,k)+msq15_2(+2,k)+msq15_2(+3,k)
+     .              +msq15_2(+4,k)+msq15_2(+5,k))
       endif
  20   continue
       enddo

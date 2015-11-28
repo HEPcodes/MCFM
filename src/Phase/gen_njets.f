@@ -33,11 +33,21 @@ c---- with all 2 pi's (ie 1/(2*pi)^(4+2n))
         first=.false.
         call read_jetcuts(ptjetmin,etajetmin,etajetmax)
         if (part .eq. 'real') then
+c--- if we're generating phase space for real emissions, then we need
+c--- to produce partons spanning the whole phase space pt>0,eta<10;
+c--- in this case, pbreak=ptjetmin simply means that we
+c--- generate pt approx. 1/x for pt > pbreak and
+c--- pt approx. uniformly for pt < pbreak
           pbreak=ptjetmin
+          ptjetmin=0d0
           etajetmax=10d0
         else
+c--- for lord and virt, the partons produced here can be generated
+c--- right up to the jet cut boundaries and there is no need for pbreak
           pbreak=0d0
         endif
+c--- in case this routine is used for very small values of ptjetmin
+        if (ptjetmin .lt. 5d0) pbreak=5d0
       endif        
 
       do nu=1,4
@@ -60,7 +70,7 @@ c        xmax=1d0/ptjetmin
         xmax=1d0/dsqrt(ptjetmin**2+pbreak**2)
         delx=xmax-xmin
         x=xmin+r(ijet)*delx
-        pt=1d0/x
+        pt=dsqrt(1d0/x**2-pbreak**2)
         etamax=sqrts/2d0/pt
         if (etamax**2 .le. 1d0) then
             write(6,*) 'etamax**2 .le. 1d0 in gen_njets.f',etamax**2 
@@ -77,7 +87,7 @@ c        xmax=1d0/ptjetmin
         coshy=dsqrt(1d0+sinhy**2)
         
         p(4+ijet,4)=pt*coshy
-        wt=wt*delx*(pt**2+pbreak**2)**1.5d0
+        wt=wt*delx/x**3
         
         phi=2d0*pi*r(2*njets+ijet)
         wt=wt*2d0*pi

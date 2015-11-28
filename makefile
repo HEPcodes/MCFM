@@ -5,8 +5,8 @@ CERNLIB     =
 # Replace this with the location of LHAPDF on your system (if desired)
 LHAPDFLIB   = 
 
-MCFMHOME        = /home/johnmc/MCFM-3.4.1
-SOURCEDIR       = /home/johnmc/MCFM-3.4.1/src
+MCFMHOME        = /home/johnmc/MCFM-3.4.2
+SOURCEDIR       = /home/johnmc/MCFM-3.4.2/src
 VPATH		= $(DIRS)
 BIN		= $(MCFMHOME)/Bin
 INCPATH  	= $(SOURCEDIR)/Inc

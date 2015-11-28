@@ -22,10 +22,10 @@ c--  +(4*[ln(1-x)/(1-xp)]+2*L/[1-xp])
      .       +(11/6d0-dfloat(nf)/3d0/xn)*(epinv-L)
      .       -(11/6d0-dfloat(nf)/3d0/xn)*(epinv-Lfac)
         if (scheme .eq. 'tH-V') then
-        return
+           return
         elseif (scheme .eq. 'dred') then
-        ii_gg_fac=ii_gg_fac-1d0/6d0
-        return
+           ii_gg_fac=ii_gg_fac-1d0/6d0
+           return
         endif
       endif
       
@@ -66,7 +66,6 @@ c--  +4*[ln(1-x)/(1-xp)]+2*L/[1-xp]
       
       if (vorz .eq. 1) then
         if_gg_fac=epinv*(epinv2-L)+half*L**2+pisq/6d0
-c     .       +(11d0-two*nf/xn)*epinv/6d0
      .       +(11/6d0-dfloat(nf)/3d0/xn)*(epinv-L)
      .       -(11/6d0-dfloat(nf)/3d0/xn)*(epinv-Lfac)
         if (scheme .eq. 'tH-V') then
@@ -88,7 +87,7 @@ c     .       +(11d0-two*nf/xn)*epinv/6d0
         return
       endif
       
-       if_gg_fac=two/omx*(two*lomx+Lfac-epinv)
+      if_gg_fac=two/omx*(two*lomx+Lfac-epinv)
       
       return
       end
@@ -161,10 +160,10 @@ c--  +4*[ln(1-x)/(1-xp)]+2*L/[1-xp]
      .   +1.5d0*(epinv-L)
      .   -1.5d0*(epinv-Lfac)
         if (scheme .eq. 'tH-V') then
-        return
+          return
         elseif (scheme .eq. 'dred') then
-        if_qq_fac=if_qq_fac-half
-        return
+          if_qq_fac=if_qq_fac-half
+          return
         endif
       endif
       
