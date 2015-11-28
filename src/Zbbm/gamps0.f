@@ -1,4 +1,4 @@
-      subroutine gamps0(p1,p2,p3,p4,t5,t6,sum,coupL,coupR)
+      subroutine gamps0(mq,p1,p2,p3,p4,t5,t6,sum,coupL,coupR)
       implicit none
       include 'constants.f'
       integer p1,p2,p3,p4,t5,t6
@@ -8,11 +8,11 @@
      . gg_d(2,2,2,2,2),gg_e(2,2,2,2,2),gg_f(2,2,2,2,2),
      . gg_g(2,2,2,2,2),gg_h(2,2,2,2,2),
      . sum1(2),sum2(2),sum0(2),coupL,coupR
-      double precision sum
+      double precision sum,mq
 
-      call gampsabc(p1,p2,p3,p4,t5,t6,gg_a,gg_b,gg_c)
-      call gampsdef(p1,p2,p3,p4,t5,t6,gg_d,gg_e,gg_f)
-      call gampsgh(p1,p2,p3,p4,t5,t6,gg_g,gg_h)
+      call gampsabc(mq,p1,p2,p3,p4,t5,t6,gg_a,gg_b,gg_c)
+      call gampsdef(mq,p1,p2,p3,p4,t5,t6,gg_d,gg_e,gg_f)
+      call gampsgh(mq,p1,p2,p3,p4,t5,t6,gg_g,gg_h)
 
       sum=0d0
 

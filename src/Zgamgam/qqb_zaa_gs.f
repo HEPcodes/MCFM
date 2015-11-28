@@ -7,20 +7,17 @@ c     q(-p1)+qbar(-p2) -->  e-(p3)+e+(p4))+a(p5)+g(p6)
       include 'qqgg.f'
       include 'frag.f'
       include 'ewcharge.f'
+      include 'phot_dip.f'
       include 'ipsgen.f'
       integer j,k,nd
-
       double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf)
       double precision msq17_2(-nf:nf,-nf:nf),msq27_1(-nf:nf,-nf:nf),
      . sub17_2(4),sub27_1(4),dummyv(-nf:nf,-nf:nf),dsubv
       double precision sub56_1,sub56_2,msq56_1(-nf:nf,-nf:nf),
      . msq56_2(-nf:nf,-nf:nf)
-      logical phot_dip(mxpart) 
       double precision msq57_1(-nf:nf,-nf:nf),msq57_2(-nf:nf,-nf:nf),
      & msq67_1(-nf:nf,-nf:nf),msq67_2(-nf:nf,-nf:nf),
      & sub57_1,sub57_2,sub67_1,sub67_2
-
-      common/phot_dip/phot_dip
       external qqb_zaa,donothing_gvec
       external qqb_zaj,qqb_zaj_swap
 
@@ -53,12 +50,12 @@ c--------gamma(5) dipoles: only if 5 is radiated from initial state
          if ((ipsgen .eq. 1) .or. (ipsgen .eq. 4)) then
          call dipsfrag(3,p,5,7,1,sub57_1,msq57_1,qqb_zaj_swap)
          call dipsfrag(4,p,5,7,2,sub57_2,msq57_2,qqb_zaj_swap)
-	 endif
+         endif
 c--------gamma(6) dipoles: only if 6 is radiated from initial state
          if ((ipsgen .eq. 1) .or. (ipsgen .eq. 3)) then
          call dipsfrag(5,p,6,7,1,sub67_1,msq67_1,qqb_zaj)
          call dipsfrag(6,p,6,7,2,sub67_2,msq67_2,qqb_zaj)
-	 endif
+         endif
          do j=3,6
             phot_dip(j)=.true.
          enddo
@@ -84,10 +81,10 @@ c--------gamma(6) dipoles: only if 6 is radiated from initial state
          if (frag) then 
             if ((ipsgen .eq. 1) .or. (ipsgen .eq. 4)) then
               msq(3,j,k)=Q(j)**2*msq57_1(j,k)*sub57_1*half
-	    endif
+            endif
             if ((ipsgen .eq. 1) .or. (ipsgen .eq. 3)) then
               msq(5,j,k)=Q(j)**2*msq67_1(j,k)*sub67_1*half
-	    endif
+            endif
          endif
 
       elseif ((j .eq. 0) .and. (k .ne. 0)) then
@@ -95,10 +92,10 @@ c--------gamma(6) dipoles: only if 6 is radiated from initial state
          if (frag) then 
             if ((ipsgen .eq. 1) .or. (ipsgen .eq. 4)) then
               msq(4,j,k)=Q(k)**2*msq57_2(j,k)*sub57_2*half
-	    endif
+            endif
             if ((ipsgen .eq. 1) .or. (ipsgen .eq. 3)) then
               msq(6,j,k)=Q(k)**2*msq67_2(j,k)*sub67_2*half
-	    endif
+            endif
          endif
          
       endif

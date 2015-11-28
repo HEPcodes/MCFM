@@ -178,8 +178,8 @@ c--- subtractions for qg and qbarg
         msq(7,j,k)=xn*(msq26_3(j,k)*sub26_3(gg)+msq26_3v(j,k)*sub26_3v)
      .               *corrH
         msq(8,j,k)=xn*(msq36_2(j,k)*sub36_2(qq))*corrH
-	msq(9,j,k)=-(msq36_4(j,k)*sub36_4(qq))/xn*corrH
-	msq(10,j,k)=-(msq46_3(j,k)*sub46_3(qq))/xn*corrH
+        msq(9,j,k)=-(msq36_4(j,k)*sub36_4(qq))/xn*corrH
+        msq(10,j,k)=-(msq46_3(j,k)*sub46_3(qq))/xn*corrH
       elseif ((j .eq. 0) .and. (k .ne. 0)) then
 c--- subtractions for gq and gqbar
         msq( 2,j,k)=2d0*cf*msq26_5(j,k)*(sub26_5(qq)+sub56_2(qq))*corrL
@@ -189,8 +189,8 @@ c--- subtractions for gq and gqbar
         msq(13,j,k)=xn*(msq16_3(j,k)*sub16_3(gg)+msq16_3v(j,k)*sub16_3v)
      .                *corrH
         msq(14,j,k)=xn*(msq36_1(j,k)*sub36_1(qq))*corrH
-	msq( 9,j,k)=-(msq36_4(j,k)*sub36_4(qq))/xn*corrH
-	msq(10,j,k)=-(msq46_3(j,k)*sub46_3(qq))/xn*corrH
+        msq( 9,j,k)=-(msq36_4(j,k)*sub36_4(qq))/xn*corrH
+        msq(10,j,k)=-(msq46_3(j,k)*sub46_3(qq))/xn*corrH
       elseif ((j .eq. 0) .and. (k .eq. 0)) then
 c--- subtractions for gg
        msq(1,j,k)=2d0*tr*(msq16_5(4,k)+msq16_5(3,k)

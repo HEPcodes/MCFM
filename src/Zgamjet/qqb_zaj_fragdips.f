@@ -91,7 +91,7 @@
         msq_out(j,k)=msq_out(j,k)+2d0*Q(f)**2*virt_dips(1)*
      &   (msqx_cs(0,j,k,f,-f)+msqx_cs(1,j,k,f,-f)+msqx_cs(2,j,k,f,-f))
                     enddo
-	         else
+                 else
            msq_out(j,k)=Q(abs(j))**2*virt_dips(1)
      &   *(msqx_cs(0,j,k,j,k)+msqx_cs(1,j,k,j,k)+msqx_cs(2,j,k,j,k))
            msq_out(j,k)=msq_out(j,k)+Q(abs(k))**2*virt_dips(1)
@@ -103,7 +103,7 @@
         msq_out(j,k)=msq_out(j,k)+2d0*Q(f)**2*virt_dips(1)*
      &   (msqx_cs(0,j,k,f,-f)+msqx_cs(1,j,k,f,-f)+msqx_cs(2,j,k,f,-f))
                     enddo
-	         else
+                 else
            msq_out(j,k)=Q(abs(j))**2*virt_dips(1)
      &   *(msqx_cs(0,j,k,j,k)+msqx_cs(1,j,k,j,k)+msqx_cs(2,j,k,j,k))
            msq_out(j,k)=msq_out(j,k)+Q(abs(k))**2*virt_dips(1)

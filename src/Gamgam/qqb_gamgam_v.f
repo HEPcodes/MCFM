@@ -86,7 +86,7 @@ c---
         deltar=1d0
       else
         write(6,*) 'Invalid scheme in qqb_gamgam_v.f'
-	stop
+        stop
       endif
       
 CId,anscdr=cf*((-2*epinv**2-epinv*(3-2*[ln(-s12)])-7-[ln(-s12)]**2)*T0

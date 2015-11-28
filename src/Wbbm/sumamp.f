@@ -30,7 +30,7 @@ c--- add purely rational term
         write(6,89) str//'(-2) =',amp(-2) 
         write(6,89) str//'(-1) =',amp(-1) 
         write(6,89) str//'( 0) =',amp( 0)
-	write(6,*)
+        write(6,*)
       endif
 
       return

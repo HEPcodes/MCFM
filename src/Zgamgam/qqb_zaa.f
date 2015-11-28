@@ -78,7 +78,7 @@ c-----donehere
       include 'ipsgen.f'
       double precision t
       integer j1,j2,j3,j4,j5,j6
-      double complex a60h(4,8),m60hA(16),m60hB(16),m60hC(16),m60hD(16)
+      double complex a60h(4,16),m60hA(16),m60hB(16),m60hC(16),m60hD(16)
       double complex propzQQ,propzLL,propzQL(3:4)
       double precision m6sq0h(16),msq
       double precision m6sq0hAA(16),m6sq0hBB(16),m6sq0hCC(16),

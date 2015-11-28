@@ -1067,12 +1067,12 @@ c--- (for charge and couplings of top quark, use up-charge)
       enddo
 
       wtgg=0d0
-      do h1=2,1,-1					 
-      do h2=2,1,-1					 
-      do h3=1,2					 
-      wtgg=wtgg					 
-     & +cdabs(xab(h1,h2,h3))**2			 
-     & +cdabs(xba(h1,h2,h3))**2			 
+      do h1=2,1,-1                               
+      do h2=2,1,-1                               
+      do h3=1,2                               
+      wtgg=wtgg                               
+     & +cdabs(xab(h1,h2,h3))**2                   
+     & +cdabs(xba(h1,h2,h3))**2                   
      & -1d0/xnsq*cdabs(xab(h1,h2,h3)+xba(h1,h2,h3))**2 
       enddo
       enddo

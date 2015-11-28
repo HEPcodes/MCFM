@@ -14,16 +14,24 @@ c---          (if applicable), otherwise equal to zero
       implicit none
       include 'constants.f'
       include 'process.f'
+      include 'nplot.f'
       double precision p(mxpart,4),wt,wt2
       integer switch,nproc,nd
       common/nproc/nproc
-
+      character*30 runstring
+      common/runstring/runstring
+      
 c--- This routine simply picks out a process-specific plotting routine
-c---  (if available) and falls back to the generic routine otherwise
-c---  so far available: W_only, Z_only, Wbbbar, Wbbmas, WpWp2j, WpWp3j
+c---  (if available) and falls back to the generic routine otherwise.
+c---  So far available: W_only, Z_only, Wbbbar, Wbbmas, WpWp2j, WpWp3j
 c---  For the convenience of the user who wants to bail out and do their
 c---  own plotting we provide the dummy routine userplotter
 
+c---  the index of the plot - stored in the nplot.f common and used for                                                      
+c---  keeping track of the plot index across different files (GPS)                                                           
+      nextnplot = 1
+
+c---  first allow for user plots
       call userplotter(p,wt,wt2,nd)
 
 c--- switch:  an integer equal to either 0 or 1, depending on the type of event
@@ -34,12 +42,6 @@ c---                1  --> counterterm for real radiation
       else
          switch=0
       endif
-
-c--- Special runstring for CDF W+2j plots
-c      if(runstring(1:10).eq.'cdf_Wdijet') then 
-c         call nplotter_Wdijet_v2(p,wt,wt2,switch,nd)
-c         return 
-c      endif
          
 c--- Special plotting routine for WW -> leptons
       if((nproc.eq.61)) then 
@@ -77,7 +79,8 @@ c--- photon processes also need to know the dipole number
         call nplotter_zgamjet(p,wt,wt2,switch,nd) 
       elseif ((case.eq.'tt_bbl') .or. (case.eq.'tt_ldk')
      &   .or. (case.eq.'tt_bbh') .or. (case.eq.'tt_bbu')
-     &   .or. (case.eq.'tt_hdk') .or. (case.eq.'tthWdk')) then
+     &   .or. (case.eq.'tt_hdk') .or. (case.eq.'tthWdk')
+     &   .or. (case.eq.'tt_udk')) then
         call nplotter_ttbar(p,wt,wt2,switch)
       elseif ((case.eq.'4ftwdk') .or. (case.eq.'dk_4ft')) then
         call nplotter_4ftwdk(p,wt,wt2,switch)
@@ -85,8 +88,19 @@ c--- photon processes also need to know the dipole number
         call nplotter_tbbar(p,wt,wt2,switch)
       elseif (case.eq.'qq_ttw') then
         call nplotter_ttw(p,wt,wt2,switch)
+      elseif ((case .eq. 'H_tjet') .or. (case .eq. 'Z_tjet')) then
+          call nplotter_Ztj(p,wt,wt2,switch)
+      elseif ((case .eq. 'H_tdkj') .or. (case .eq. 'Z_tdkj')) then
+           call nplotter_Ztjdk(p,wt,wt2,switch)
+      elseif (case .eq. 'qqtthz') then
+            call nplotter_ttZ(p,wt,wt2,switch)
+      elseif ((case .eq. 'dm_jet').or.(case.eq.'dm2jet')) then 
+         call nplotter_dm_monj(p,wt,wt2,switch)
+      elseif ((case .eq. 'dm_gam').or.(case.eq.'dm_gaj')) then 
+         call nplotter_dm_mongam(p,wt,wt2,switch,nd)
       else
-        call nplotter_generic(p,wt,wt2,switch)
+         call nplotter_auto(p,wt,wt2)
+c         call nplotter_generic(p,wt,wt2,switch)
       endif
       
       return

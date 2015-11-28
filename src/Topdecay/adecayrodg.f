@@ -33,12 +33,12 @@ C calculate betap
       if (betasq .ge. 0d0) then
         be=dsqrt(betasq)
         bp=0.5d0*(1d0+be)
-	      bm=1d0-bp
+        bm=1d0-bp
         rtbp=sqrt(bp)
       else
         write(6,*) 'betasq < 0 in adecayrodg.f, betasq=',betasq
-	    call flush(6)
-	    stop
+        call flush(6)
+        stop
       endif
       do si=1,4
       q(g,si)=p(pg,si)

@@ -5,14 +5,18 @@ CERNLIB     =
 # Replace this with the location of LHAPDF on your system (if desired)
 LHAPDFLIB   = 
 
-MCFMHOME        = /Users/ellis/MCFM
-SOURCEDIR       = /Users/ellis/MCFM/src
+MCFMHOME        = /home/johnmc/MCFM-6.6
+SOURCEDIR       = /home/johnmc/MCFM-6.6/src
 VPATH		= $(DIRS)
 BIN		= $(MCFMHOME)/Bin
 INCPATH  	= $(SOURCEDIR)/Inc
+OUTPUT_OPTION	= -o $(MCFMHOME)/obj/$@
 QLDIR		= $(MCFMHOME)/QCDLoop/ql
 FFDIR		= $(MCFMHOME)/QCDLoop/ff
-OUTPUT_OPTION	= -o $(MCFMHOME)/obj/$@
+TENSORREDDIR	= $(MCFMHOME)/TensorReduction
+PVDIR		= $(TENSORREDDIR)/pv
+RECURDIR	= $(TENSORREDDIR)/recur
+OVDIR		= $(TENSORREDDIR)/ov
 
 # Set this to NATIVE/PDFLIB/LHAPDF
 #   NATIVE -- internal routines
@@ -28,23 +32,22 @@ PDFROUTINES = NATIVE
 NTUPLES = NO
 
 FC = gfortran
-FFLAGS 	= -fno-automatic -fno-f2c -O0 -g -I$(INCPATH) -Iobj
+FFLAGS 	= -fno-automatic -fno-f2c -g -I$(INCPATH) -I$(TENSORREDDIR)/Include -Iobj
 
 F90 = gfortran
-F90FLAGS = -fno-automatic -fno-f2c -O2 -g -I$(INCPATH) -Iobj -Jobj
+F90FLAGS = -fno-automatic -fno-f2c  -g -I$(INCPATH) -Iobj -Jobj
 
 
 # If using FROOT package for ROOT ntuples, first specify C++ compiler:
 CXX = g++
-CXXFLAGS=$(CXXFLAGS0) $(DROOT) 
+CXXFLAGS=$(CXXFLAGS0) -Wall $(DROOT) 
 # ROOTLIBS and ROOTINCLUDE are locations of ROOT libraries and header files.
 # Find the ROOT directory automatically by running root-config 
 # or specify it manually by editing the variable ROOTDIR 
-
-ROOTDIR= $(shell root-config --prefix)
+ROOTDIR= `root-config --prefix`
 DMYROOT= -DMYROOT
-ROOTLIBS     := $(shell root-config --prefix=$(ROOTDIR)  --libs)
-ROOTINCLUDE     := -I $(shell root-config --prefix=$(ROOTDIR) --incdir)
+ROOTLIBS     := `root-config --prefix=$(ROOTDIR)  --libs`
+ROOTINCLUDE     := -I `root-config --prefix=$(ROOTDIR) --incdir`
 
 
 DIRS	=	$(MCFMHOME):\
@@ -83,6 +86,11 @@ DIRS	=	$(MCFMHOME):\
 		$(SOURCEDIR)/Gamgam:$(SOURCEDIR)/Dirgam:\
 		$(SOURCEDIR)/TopdkBSY:$(SOURCEDIR)/Topdecay:\
 		$(SOURCEDIR)/Frag:$(SOURCEDIR)/Zgamgam:$(SOURCEDIR)/Zgamjet:\
+		$(SOURCEDIR)/SingletopH:$(SOURCEDIR)/SingletopZ:\
+		$(SOURCEDIR)/WpmZbj:$(SOURCEDIR)/DM:$(SOURCEDIR)/DM/Monojet:\
+                $(SOURCEDIR)/DM/Vec_DM:$(SOURCEDIR)/DM/GG_DM:\
+                $(SOURCEDIR)/DM/Ax_DM:$(SOURCEDIR)/DM/Scal_DM:\
+                $(SOURCEDIR)/DM/PS_DM:  \
 		$(SOURCEDIR)/pwgplots
 
 # -----------------------------------------------------------------------------
@@ -298,6 +306,7 @@ qqb_Hg_v.o \
 qqb_Hg_z.o
 
 DIRGAMFILES = \
+qqb_hflgam.o \
 qqb_2jnogg.o \
 qqb_dirgam_swap.o \
 qqb_dirgam.o \
@@ -312,6 +321,65 @@ small.o \
 Bigagam.o \
 Bigbgam.o \
 Bigcgam.o 
+
+DMFILES=\
+gg_dm_monojet_top.o\
+ehsv_dm.o\
+qqb_dm_monojet_v_PSamps.o\
+qqb_dm_monojet_nf_ax.o\
+qqb_dm_monophot_g_Samps.o\
+qqb_dm_monophot_g_PSamps.o\
+qqb_dm_gg_PSamps.o\
+qqb_dm_monophot_v_Samps.o\
+qqb_dm_monophot_v_PSamps.o\
+dmmonojn_scal.o\
+dmmonojn_pscal.o\
+qqb_dm_qqb_Samps.o\
+qqb_dm_gg_Samps.o\
+qqb_dm_monojet_Samps.o\
+qqb_dm_monojet_slc_Samps.o\
+qqb_dm_monojet_lc_Samps.o\
+qqb_dm_monojet_slc_PSamps.o\
+qqb_dm_monojet_lc_PSamps.o\
+qqb_dm_monojet_v_Samps.o\
+qqb_dm_monojet_PSamps.o\
+scalar_dm.o\
+qqb_dm_monojet.o\
+qqb_dmprod.o\
+qqb_dm_monojet_g.o\
+qqb_dm_monophot_v.o\
+qqb_dm_monophot_z.o\
+qqb_dm_monophot_fragdips.o\
+qqb_dm_monophot_frag.o\
+qqb_dm_monojet_Vamps.o\
+qqb_dm_qqb.o\
+qqb_dm_gg_Vamps.o\
+qqb_dm_monophot.o\
+qqb_dm_monojet_v_Vamps.o\
+qqb_dm_monophot_v_Vamps.o\
+qqb_dm_monojet_v.o\
+qqb_dm_monojet_z.o\
+qqb_dm_monojet_lc_Vamps.o\
+qqb_dm_monojet_gs.o\
+qqb_dm_monojet_gvec.o\
+qqb_dm_monojet_slc_Vamps.o\
+qqb_dm_monophot_g.o\
+qqb_dm_monophot_gs.o\
+qqb_dm_monophot_g_Vamps.o\
+gg_dm_monojet.o\
+gg_dm_monojet_g.o\
+gg_dm_monojet_gs.o\
+gg_dm_monojet_gvec.o\
+gg_dm_monojet_v.o\
+gg_dm_monojet_z.o\
+qqb_dm_monojet_AxAmp.o\
+qqb_dm_monojet_slc_Axamps.o\
+qqb_dm_monojet_lc_Axamps.o\
+qqb_dm_monojet_v_Axamps.o\
+qqb_dm_monophot_v_Axamps.o\
+qqb_dm_monophot_g_Axamps.o\
+qqb_dm_gg_Axamps.o\
+qqb_dm_qq_Axamps.o\
 
 GAMGAMFILES = \
 qqb_gamgam.o \
@@ -530,8 +598,13 @@ Li4.o \
 WGPLG.o
 
 NEEDFILES = \
+UbKlSt.o \
+Ubkslash_w.o \
+uspinor0.o \
+ubarspinor0.o \
 hbbdecay.o \
 htautaudecay.o \
+hwwdecay.o \
 hbbdecay_g.o \
 hbbdecay_v.o \
 arraysort.o \
@@ -574,8 +647,7 @@ histofin.o \
 itransform.o \
 includedipole.o \
 masscuts.o \
-mcfm.o \
-mcfm_main.o \
+mcfmmain.o \
 mcfm_exit.o \
 mcfm_init.o \
 mcfm_vegas.o \
@@ -583,6 +655,7 @@ mfrun.o \
 ptyrap.o \
 r.o \
 read_jetcuts.o \
+read_dm_params.o\
 readcoup.o \
 reader_input.o \
 realhistos.o \
@@ -595,6 +668,7 @@ scaleset_Msqpt34sq.o \
 scaleset_Msqpt345sq.o \
 scaleset_Msqpt5sq.o \
 scaleset_Msqptj1sq.o \
+scaleset_Msqsumptjsq.o \
 scaleset_ptphoton.o \
 scaleset_HT.o \
 scaleset_ddis.o \
@@ -645,6 +719,7 @@ gen4.o \
 gen4a.o \
 gen4from3.o \
 gen4h.o \
+gen4m.o\
 gen4mdk.o \
 gen4mdkrad.o \
 gen_HZgamj.o \
@@ -653,6 +728,7 @@ gen5h.o \
 phase5h.o \
 gen5a.o \
 gen5from4.o \
+gen5mdk.o \
 gen6.o \
 gen6_rap.o \
 gen7.o \
@@ -663,6 +739,9 @@ gen8.o \
 gen8_rap.o \
 gen9_rap.o \
 gen9dk_rap.o \
+gen10.o \
+phase10.o \
+genttvdk.o \
 gen_phots_jets.o \
 gen_phots_jets_dkrad.o \
 gen_phots_jets_dkrad2.o \
@@ -710,9 +789,9 @@ PROCDEPFILES = \
 checkorder.o \
 chooser.o \
 fragint.o \
-lowint_incldip.o \
+lowint.o \
 realint.o \
-virtint_incldip.o
+virtint.o
 
 QQHFILES = \
 qq_Hqq_g.o \
@@ -821,6 +900,66 @@ qg_tbqndk_ampanti.o \
 singleatoponshell.o \
 singletoponshell.o
 
+SINGLETOPHFILES = \
+lowerh.o \
+middleh.o \
+qq_tchan_htq_dk.o \
+qq_tchan_htq_dk_gs.o \
+qq_tchan_htq_dk_v.o \
+qq_tchan_htq_dk_z.o \
+qq_tchan_htq.o \
+qq_tchan_htqg_dk.o \
+qq_tchan_htqg.o \
+qq_tchan_htq_gs.o \
+qq_tchan_htq_v.o \
+qq_tchan_htq_z.o \
+scalarh.o \
+stringsh_dk.o \
+stringsh.o \
+ubhtdgsqdk.o \
+ubhtdgsq.o \
+ubhtdsqdk.o \
+ubhtdsq.o \
+ubthdamp_split.o
+
+SINGLETOPZFILES = \
+extend_trans_ztj.o \
+extradk.o \
+extra.o \
+fillgam.o \
+kininv.o \
+lowerdk_partbox.o \
+lowerdk_parttri.o \
+lower_partbox.o \
+lower_parttri.o \
+middledk.o \
+middle.o \
+qq_tchan_ztq_dk.o \
+qq_tchan_ztq_dk_gs.o \
+qq_tchan_ztq_dk_v.o \
+qq_tchan_ztq_dk_z.o \
+qq_tchan_ztq.o \
+qq_tchan_ztqg_dk.o \
+qq_tchan_ztqg.o \
+qq_tchan_ztq_gs.o \
+qq_tchan_ztq_v.o \
+qq_tchan_ztq_z.o \
+scalardk.o \
+scalar.o \
+strings_dk.o \
+strings.o \
+ubtzdamp_dk.o \
+ubtzdsq.o \
+ubztdgsqdk.o \
+ubztdgsq.o \
+upperdk_partbox.o \
+upperdk_parttri.o \
+upper_partbox.o \
+upper_parttri.o \
+vertices_bt2.o \
+vertices_tt1.o \
+vertices_tt2.o
+
 TAUTAUFILES = \
 qqb_tautau.o \
 tautauww.o \
@@ -855,6 +994,11 @@ qqb_QQbdk_gs.o \
 qqb_QQbdk_gvec.o \
 qqb_QQbdk_v.o \
 qqb_QQbdk_z.o \
+dkuqqb_QQb_v.o \
+dk1uqqb_QQb_g.o \
+dk2uqqb_QQb_g.o \
+dk1uqqb_QQb_gs.o \
+dk2uqqb_QQb_gs.o \
 qqb_QQbdku.o \
 qqb_QQbdku_g.o \
 qqb_QQbdku_gs.o \
@@ -920,9 +1064,12 @@ qqbttz.o \
 ggttz.o
 
 USERFILES = \
+autoplots.o \
+bookplot.o \
 cdfhwwcuts.o \
 cms_higgsWW.o \
 ATLAS_hww.o \
+dm_cuts.o\
 deltarj.o \
 durhamalg.o \
 eventhandler.o \
@@ -937,6 +1084,8 @@ genclust_kt.o \
 genclust_cone.o \
 genclustphotons.o \
 gencuts.o \
+gencuts_Zt.o \
+gencuts_WZjj.o \
 genplots.o \
 getet.o \
 hwwcuts.o \
@@ -948,7 +1097,10 @@ mdata.o \
 miscclust.o \
 nplotter.o \
 nplotter_4ftwdk.o \
+nplotter_auto.o \
 nplotter_dirgam.o \
+nplotter_dm_monj.o\
+nplotter_dm_mongam.o\
 nplotter_generic.o \
 nplotter_gamgam.o \
 nplotter_tbbar.o \
@@ -963,14 +1115,18 @@ nplotter_Wjets.o \
 nplotter_WPWP.o \
 nplotter_zgamgam.o \
 nplotter_zgamjet.o \
+nplotter_Ztj.o \
+nplotter_Ztjdk.o \
+nplotter_ttZ.o \
+idjet.o \
 photo_iso.o \
 photgenclust.o \
 photoncuts.o \
 plots_stop_cfmt.o \
+setnotag.o \
 singletopreconstruct.o \
 stopcuts.o \
 topreconstruct.o \
-userplotter.o \
 wbfcuts.o \
 wbfcuts_jeppe.o \
 wconstruct.o 
@@ -1144,21 +1300,6 @@ triangle7new.o \
 triangle9new.o \
 vpole.o \
 wwamps.o
-# compare_madgraph.o \
-# initialize.o \
-# dkqqb_ww_g_mad.o \
-# ddb_veepscbg_dr.o \
-# uub_veepscbg_dr.o \
-# ddb_csbemveg_dr.o \
-# uub_csbemveg_dr.o \
-# ddb_veepscbg_r.o \
-# uub_veepscbg_r.o \
-# ddb_csbemveg_r.o \
-# uub_csbemveg_r.o \
-# ddb_veepscbg_sr.o \
-# uub_veepscbg_sr.o \
-# ddb_csbemveg_sr.o \
-# uub_csbemveg_sr.o \
 
 WZFILES = \
 qqb_wz.o \
@@ -1171,10 +1312,6 @@ dkqqb_wz_g.o \
 dksrwz.o \
 dksrwzc.o \
 dkdrwz.o \
-#dkqqb_wz_g_mad.o \
-#compare_madgraph.o \
-#initialize.o \
-
 
 WBBFILES = \
 a6.o \
@@ -1232,7 +1369,6 @@ qqb_wbbm_v.o \
 qqb_wbbm_z.o \
 spstrng.o \
 sumamp.o \
-Ubkslash_w.o \
 writetable.o \
 Wbb.o \
 zab.o \
@@ -1250,6 +1386,26 @@ qqb_wgam_fragdips.o \
 qqb_wfrag.o \
 fagamma.o \
 fbgamma.o
+
+WPMZBJFILES = \
+qqb_WZjj.o \
+WZddidmsq.o \
+WZuuidmsq.o \
+WZggmsq.o \
+TWZggAB.o \
+TWZggNAB.o \
+TWZggsra.o \
+TWZggsrl.o \
+WZbbmsq.o \
+WZccmsq.o \
+TWZbbnr1.o \
+TWZbbnr2.o \
+TWZbbab.o \
+TWZbbnab.o \
+TWbbpZab.o \
+TWbbmZab.o \
+qqb_WZbb.o \
+qqb_WZbj.o 
 
 WTFILES = \
 BBamps.o \
@@ -1467,7 +1623,14 @@ qqb_zbjet_v.o \
 qqb_zbjet_z.o
 
 LIBDIR=.
-LIBFLAGS=-lqcdloop -lff
+LIBFLAGS=-lqcdloop -lff -lov -lpv -lsmallG -lsmallY -lsmallP -lsmallF
+
+# the files that do not go into the library                                                      
+MAIN = mcfm.o
+
+NONLIB= \
+$(MAIN) \
+usercode_f77.o  
 
 # Check NTUPLES flag
 ifeq ($(NTUPLES),FROOT)
@@ -1565,10 +1728,6 @@ endif
 # Master program.
 # extra lines: -L$(CRNLIB) -L/home/johnmc/madgraph/lib/ 
 #              -ldhelas
-#LIBDIR += -L/Users/johnmc/ciaran/Helas/lib/
-#LIBDIR += -L/Users/ellis/Madgraph/madgraph_orig/lib/
-#LIBDIR += -L/Users/ellis/Fortran/Helas/lib/
-#LIBFLAGS += -ldhelas
 
 OURCODE = $(LIBFILES) $(NEEDFILES)  $(PROCDEPFILES) \
           $(PHASEFILES) $(SINGLETOPFILES) \
@@ -1591,22 +1750,45 @@ OURCODE = $(LIBFILES) $(NEEDFILES)  $(PROCDEPFILES) \
 	  $(WBBMFILES) $(ZBBMFILES) $(FRAGFILES) \
 	  $(TOPDKBSYFILES) $(TOPDECAYFILES) \
 	  $(GGHZGAFILES) $(ZGAMJETFILES) $(ZGAMGAMFILES) \
+	  $(SINGLETOPHFILES) $(SINGLETOPZFILES) \
+	  $(DMFILES) \
+	  $(WPMZBJFILES) \
 	  $(PWGPLOTSFILES) \
 	  $(CHECKINGFILES)
           
 OTHER = $(INTEGRATEFILES) $(PARTONFILES) $(WPWP2JFILES) $(F90FILES) 
 
-ALLMCFM = $(OURCODE) $(OTHER) 
+ALLMCFM = $(OURCODE) $(OTHER) $(NONLIB)
+MCFMLIB = $(OURCODE) $(OTHER) 
 
           
 # CERNLIB libraries for PDFLIB: -lpdflib804 -lmathlib -lpacklib 
 
 mcfm: $(ALLMCFM)
-	$(FC) $(FFLAGS) -L$(LIBDIR) -L$(QLDIR) -L$(FFDIR) -o $@ \
+	$(FC) $(FFLAGS) -L$(LIBDIR) -L$(QLDIR) -L$(FFDIR) -L$(PVDIR) -L$(RECURDIR) -L$(OVDIR) -o $@ \
 	$(patsubst %,obj/%,$(ALLMCFM)) $(LIBFLAGS) 
 	mv mcfm Bin/
 	@echo $(PDFMSG)
 	@echo $(NTUPMSG)
+
+mcfmalt: mcfmlib $(NONLIB)
+	$(FC) $(FFLAGS) -L$(LIBDIR) -L$(QLDIR) -L$(FFDIR)  -L$(PVDIR) -L$(RECURDIR) -L$(OVDIR) -o $@ \
+	$(patsubst %,obj/%,$(NONLIB)) -lmcfm $(LIBFLAGS) 
+	mv mcfmalt Bin/mcfm
+	@echo $(PDFMSG)
+	@echo $(NTUPMSG)
+
+mcfmcc: mcfmlib $(MAIN) cxxusercode.o
+	$(FC) $(FFLAGS) -L$(LIBDIR) -L$(QLDIR) -L$(FFDIR)  -L$(PVDIR) -L$(RECURDIR) -L$(OVDIR) -o $@ \
+	$(patsubst %,obj/%,$(MAIN)) obj/cxxusercode.o -lmcfm $(LIBFLAGS) \
+	`fastjet-config` --libs -lstdc++
+	mv mcfmcc Bin/
+	@echo $(PDFMSG)
+	@echo $(NTUPMSG)
+
+mcfmlib: $(MCFMLIB)
+	ar -r libmcfm.a $(patsubst %,obj/%,$(MCFMLIB))
+	ranlib libmcfm.a
 
 # for FROOT package
 %.co: %.c
@@ -1614,6 +1796,8 @@ mcfm: $(ALLMCFM)
 # TM Include F90 files too
 %.o: %.f90
 	$(F90) $(F90FLAGS) -c -o obj/$@ $<
+%.o: %.cc
+	$(CXX) -c $(CXXFLAGS) `fastjet-config --cxxflags` -o obj/$@ $<
 
 # -----------------------------------------------------------------------------
 # Specify other options.
@@ -1661,6 +1845,6 @@ recurrenceB.o: consts_dp.o spinfns.o recurrenceA.o
 recurrenceC.o: consts_dp.o spinfns.o recurrenceA.o recurrenceB.o
 recurrence.o: consts_dp.o spinfns.o recurrenceA.o recurrenceB.o recurrenceC.o
 qqqqampl.o: consts_dp.o spinfns.o recurrence.o
-qqqqampl.o: consts_dp.o spinfns.o recurrence.o
+qqqqgampl.o: consts_dp.o spinfns.o recurrence.o
 qqb_wpwp_qqb.o: qqqqampl.o consts_dp.o
 qqb_wpwp_qqb_g.o: qqqqgampl.o consts_dp.o

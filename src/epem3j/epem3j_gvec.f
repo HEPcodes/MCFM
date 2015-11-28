@@ -29,7 +29,7 @@ c---in label of gluon which is contracted with n
         p1p2=+aveqq*fac*w1jetn(4,3,2,1,5,p,n)
       else
         write(6,*) 'Error in epem3j_gvec.f: in = ',in
-	stop
+        stop
       endif
 
       msq(0,0)=p1p2

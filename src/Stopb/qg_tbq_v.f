@@ -49,14 +49,14 @@ c      return
 c--- set mass of quark and antiquark according to nwz
       if (nwz .eq. +1) then
         mq=mt
-	ma=mb
-	i3=3
-	i4=4
+        ma=mb
+        i3=3
+        i4=4
       else
         mq=mb
-	ma=mt
-	i3=4
-	i4=3
+        ma=mt
+        i3=4
+        i4=3
       endif
 
 c--- variables to pass renormalization scale in to virtual routines
@@ -106,10 +106,10 @@ c      write(6,*) hg,hc,hs,LOamps_gq(hg,hc,hs),Virtamps_gqbar(hg,hc,hs)
 
 c--- fill matrix elements
       do j=1,4
-	msq(+j,0)=fac*Vsum(+j)*msq_qg
-	msq(-j,0)=fac*Vsum(-j)*msq_qbarg
-	msq(0,+j)=fac*Vsum(+j)*msq_gq
-	msq(0,-j)=fac*Vsum(-j)*msq_gqbar
+      msq(+j,0)=fac*Vsum(+j)*msq_qg
+      msq(-j,0)=fac*Vsum(-j)*msq_qbarg
+      msq(0,+j)=fac*Vsum(+j)*msq_gq
+      msq(0,-j)=fac*Vsum(-j)*msq_gqbar
       enddo
 
       return
@@ -142,8 +142,8 @@ c--- factors of ason2pi now included in this routine
       ason2pi_L=as_L/twopi
             
       do j=1,4
-	q(1,j)=p(i1,j)
-	q(2,j)=p(i2,j)
+        q(1,j)=p(i1,j)
+        q(2,j)=p(i2,j)
         q(3,j)=p(i3,j)-mh**2/2d0/dot(p,i2,i3)*p(i2,j)
         q(4,j)=p(i4,j)-ml**2/2d0/dot(p,i2,i4)*p(i2,j)
         q(5,j)=p(i5,j)

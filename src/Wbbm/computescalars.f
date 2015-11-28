@@ -18,9 +18,9 @@ c--- initialize QCDLoop, if necessary
       if (first) then
         call qlinit
         first=.false.
-	if (writescalars) then
-	  open(unit=67,file='scalars.out',status='unknown')
-	endif
+        if (writescalars) then
+          open(unit=67,file='scalars.out',status='unknown')
+        endif
       endif
 
       

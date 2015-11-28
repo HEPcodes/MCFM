@@ -17,7 +17,7 @@ c     g(-p1)+g(-p2)--> t(p3,p4,p5)+tb(p6,p7,p8)
 
       mtsq=mt**2
 
-      if	  (in .eq. 1) then
+      if  (in .eq. 1) then
         loab(1)= + s2t**(-1) * ( za(q3,p2)*za(p1,p2)*za(q5,q7)*zb(q3,q4
      &    )*zb(p1,p2)*zanb(p2,q5)*s12**(-1)*c8 + za(q3,p2)*za(p1,p2)*
      &    za(q5,q7)*zb(q3,q4)*zb(p1,q8)*zanb(q8,q5)*s12**(-1) )

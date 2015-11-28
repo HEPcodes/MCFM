@@ -70,16 +70,16 @@ c--- is called for the first time, achieved via a dummy call to lowint
 c--- Be careful that dynamic scale choices aren't ruined
 c--- (in versions 5.1 and before, this occured when calling lowint)
         scale_store=scale
-	facscale_store=facscale
+        facscale_store=facscale
         dummy=lowint(r,wgt)
         scale=scale_store
-	facscale=facscale_store
-	
+        facscale=facscale_store
+        
         imaxmom=npart
         if ((part.eq.'real').or.(part.eq.'tota').or.(part.eq.'todk'))
      .    imaxmom=imaxmom+1
 
-	first=.false.
+        first=.false.
       endif
 
 c--- determine if we need space in array to store PDF weights (ipdf)
@@ -128,15 +128,15 @@ c--- If the event weight is zero, don't bother to add the n-tuple
 c--- On the first call, must set-up all branches
       if (first) then
         do i=1,imaxmom
-	  write(labelx,72) i+2
-	  write(labely,73) i+2
-	  write(labelz,74) i+2
-	  write(labelE,71) i+2
+          write(labelx,72) i+2
+          write(labely,73) i+2
+          write(labelz,74) i+2
+          write(labelE,71) i+2
 c---    first, momenta
-	  call AddNTBranch(pfill(4*(i-1)+1),labelx)
-	  call AddNTBranch(pfill(4*(i-1)+2),labely)
-	  call AddNTBranch(pfill(4*(i-1)+3),labelz)
-	  call AddNTBranch(pfill(4*(i-1)+4),labelE)
+          call AddNTBranch(pfill(4*(i-1)+1),labelx)
+          call AddNTBranch(pfill(4*(i-1)+2),labely)
+          call AddNTBranch(pfill(4*(i-1)+3),labelz)
+          call AddNTBranch(pfill(4*(i-1)+4),labelE)
         enddo
 c---    now, the weights
         call AddNTBranch(pfill(imaxmom*4+1),'wt_ALL')
@@ -145,13 +145,13 @@ c---    now, the weights
         call AddNTBranch(pfill(imaxmom*4+4),'wt_qq')
         call AddNTBranch(pfill(imaxmom*4+5),'wt_qqb')
 c---    then include PDF errors if necessary
-	if (PDFerrors) then
+        if (PDFerrors) then
           do i=1,ipdf
           write(labelPDF,75) i
           call AddNTBranch(pfill(imaxmom*4+5+i),labelPDF)
-  	  enddo
-	endif
-	first=.false.
+            enddo
+        endif
+        first=.false.
       endif
       
 
@@ -173,8 +173,8 @@ c---    set up single precision variables for the event weights
 c--- include PDF errors if necessary
       if (PDFerrors) then
         do i=1,ipdf
-	pfill(imaxmom*4+5+i)=sngl(wt*PDFwgt(i)/PDFwgt(0))
-	enddo
+        pfill(imaxmom*4+5+i)=sngl(wt*PDFwgt(i)/PDFwgt(0))
+        enddo
       endif
 
 c--- now that all branches are set-up, fill all entries

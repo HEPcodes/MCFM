@@ -26,7 +26,7 @@ c--- written for real contribution to qq->WH(->WW)+g (and ZH) only
      & .and. (case .ne. 'WH__ZZ')
      & .and. (case .ne. 'ZH__ZZ')) then
         write(6,*) 'Phase space routine not correct - needs updating.'
-	stop
+        stop
       endif
 
       oldzerowidth=zerowidth

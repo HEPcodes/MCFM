@@ -14,7 +14,9 @@
       include 'facscale.f'
       include 'scale.f'
       include 'verbose.f'
+      include 'phot_dip.f'
       include 'includect.f'
+      include 'TRtensorcontrol.f'
 C -- GZ
       include 'first_time.f'
       double precision rtsmin,sqrts,p1ext(4),p2ext(4),
@@ -76,6 +78,11 @@ c--- Note: version 6.4 onwards, scale cutoff with c.o.m. energy
       enddo
       enddo 
 
+* Initialize flag for photon fragmentation dipoles
+      phot_dip(:)=.false.
+* Initialize integer used in TensorReduction to zero
+      TRtensorcontrol=0
+      
       return
       end
             

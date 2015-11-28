@@ -13,12 +13,12 @@ c--- If there are at most 2 jets, returns <0 for y32 and for z5
       
       if     (npartons .gt. 4) then
         write(6,*) 'Too many partons for this version of the Durham'
-	write(6,*) 'algorithm; at most 4 are allowed.'
-	stop
+        write(6,*) 'algorithm; at most 4 are allowed.'
+        stop
       elseif (npartons .lt. 2) then
         write(6,*) 'Too few partons for this version of the Durham'
-	write(6,*) 'algorithm; need at least 2.'
-	stop
+        write(6,*) 'algorithm; need at least 2.'
+        stop
       endif
       
       y43=-1d0
@@ -29,20 +29,20 @@ c--- If there are at most 2 jets, returns <0 for y32 and for z5
 c--- skip to 2-parton section if there are only 2 partons
       if (npartons .eq. 2) then
         do i=3,4
-	do j=1,4
-	r(i,j)=p(i,j)
-	enddo
-	enddo
+        do j=1,4
+        r(i,j)=p(i,j)
+        enddo
+        enddo
         goto 33
       endif
       
 c--- skip to 3-parton section if there are only 3 partons
       if (npartons .eq. 3) then
         do i=3,5
-	do j=1,4
-	q(i,j)=p(i,j)
-	enddo
-	enddo
+        do j=1,4
+        q(i,j)=p(i,j)
+        enddo
+        enddo
         goto 22
       endif
       
@@ -57,8 +57,8 @@ c--- find lowest yij amongst 4 jets
         yij=2d0*min(p(i,4),p(j,4))**2*(1d0-yij)
         if ((yij .lt. y43) .or. ((i.eq.3) .and. (j.eq.4))) then
           imin=i
-	  jmin=j
-	  y43=yij
+          jmin=j
+          y43=yij
         endif
       enddo
       enddo
@@ -72,12 +72,12 @@ c---  and rescale energy to make massless)
       do i=3,6
       do j=1,4
         if     (i .eq. imin) then
-	  q(icount,j)=p(imin,j)+p(jmin,j)
-	elseif (i .eq. jmin) then
-	  continue
-	else
-	  q(icount,j)=p(i,j)
-	endif
+        q(icount,j)=p(imin,j)+p(jmin,j)
+        elseif (i .eq. jmin) then
+        continue
+        else
+          q(icount,j)=p(i,j)
+        endif
       enddo
       if (i .ne. jmin) icount=icount+1
       enddo
@@ -100,8 +100,8 @@ c--- find lowest yij amongst 3 jets
         yij=2d0*min(q(i,4),q(j,4))**2*(1d0-yij)
         if ((yij .lt. y32) .or. ((i.eq.3) .and. (j.eq.4))) then
           imin=i
-	  jmin=j
-	  y32=yij
+          jmin=j
+          y32=yij
         endif
       enddo
       enddo
@@ -115,12 +115,12 @@ c---  and rescale energy to make massless)
       do i=3,5
       do j=1,4
         if     (i .eq. imin) then
-	  r(icount,j)=q(imin,j)+q(jmin,j)
-	elseif (i .eq. jmin) then
-	  continue
-	else
-	  r(icount,j)=q(i,j)
-	endif
+        r(icount,j)=q(imin,j)+q(jmin,j)
+      elseif (i .eq. jmin) then
+        continue
+      else
+        r(icount,j)=q(i,j)
+      endif
       enddo
       if (i .ne. jmin) icount=icount+1
       enddo

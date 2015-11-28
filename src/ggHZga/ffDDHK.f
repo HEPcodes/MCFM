@@ -43,15 +43,15 @@ C-----suitably generalized to allow off-shell Z-line
       parameter(top=2)
       data first/.true./
       save first,mt_eff
-            	    
-      if (first) then	    
+                       
+      if (first) then           
 c--- run mt to appropriate scale
         if (part .eq. 'lord') then
           mt_eff=massfrun(mt_msbar,hmass,amz,1)
         else
           mt_eff=massfrun(mt_msbar,hmass,amz,2)
         endif  
-	first=.false.
+        first=.false.
       endif
       
       cotw=sqrt((1d0-xw)/xw)

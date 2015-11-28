@@ -12,10 +12,10 @@ c--- ttbqqbg amplitudes
       double precision appsq,apmsq,ampsq,ammsq
       
 c-- for q-qb , there are four colour amplitudes:
-c---    sq	proportional to Ta(it,i1)*delta(i2,ib)
-c---    tq	proportional to Ta(i2,ib)*delta(it,i1)
-c---    qq	proportional to Ta(i2,i1)*delta(it,ib)
-c---    rq	proportional to Ta(it,ib)*delta(i2,i1)
+c---    sq        proportional to Ta(it,i1)*delta(i2,ib)
+c---    tq        proportional to Ta(i2,ib)*delta(it,i1)
+c---    qq        proportional to Ta(i2,i1)*delta(it,ib)
+c---    rq        proportional to Ta(it,ib)*delta(i2,i1)
       sq=ttbqqbsqpp(i1,i2,i9,i5,i3,i6,i8)
       tq=ttbqqbtqpp(i1,i2,i9,i5,i3,i6,i8)
       qq=ttbqqbqqpp(i1,i2,i9,i5,i3,i6,i8)

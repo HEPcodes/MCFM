@@ -43,8 +43,8 @@ c--- Check to see whether anomalous couplings are being used
       if (max(abs(delg1_z),abs(lambda_g),abs(lambda_z),
      .        abs(delk_g),abs(delk_z)) .gt. 1d-8) then
         anomtgc=.true.
-	if (zerowidth .eqv. .false.) then
-	write(6,*)
+      if (zerowidth .eqv. .false.) then
+        write(6,*)
         write(6,*)'********************** WARNING *********************'
         write(6,*)'*                                                  *'
         write(6,*)'* No singly resonant diagrams will be included     *'

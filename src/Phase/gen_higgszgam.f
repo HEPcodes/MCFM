@@ -31,8 +31,8 @@
          p5(nu)=0d0 
       enddo
 
-!----- generate Qsq around Higgs BW              
-      call breitw(r(1),wsqmin,sqrts**2,hmass,hwidth,Qsq,xjac)                                                      
+!----- generate Qsq around Higgs BW
+      call breitw(r(1),wsqmin,sqrts**2,hmass,hwidth,Qsq,xjac)
         
       tau=Qsq/sqrts**2
 !------ generate x1 
@@ -43,7 +43,7 @@
       xjac=xjac*(-lnxmin*xx(1))/(xx(1)*sqrts**2)
       xx(2)=Qsq/(xx(1)*sqrts**2) 
   
-c--- check that xx(1) and xx(2) are in range      
+c--- check that xx(1) and xx(2) are in range
       if((xx(1).gt.1d0).or.(xx(2).gt.1d0)) return 1         
    
 !---------- generate intial state 

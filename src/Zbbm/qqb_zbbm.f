@@ -11,16 +11,29 @@ c---  averaged(summed) over initial(final) colours and spins
       include 'ewcharge.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
-      integer j,k,nu,swap(4),h1,h3,h5,h6
+      include 'heavyflav.f'
+      include 'nflav.f'
+      integer j,k,nu,swap(4),h1,h3,h5,h6,iflav
       double precision p(mxpart,4),p12(mxpart,4),p21(mxpart,4),
      . msq(-nf:nf,-nf:nf),sumleptL,sumleptR,
-     . facqq,facgg,p1Dp(5:6),p2Dp(5:6),lr(2)
+     . facqq,facgg,p1Dp(5:6),p2Dp(5:6),lr(2),mQ
       double complex tamp,prop,coupL,coupR
       double complex qqb_a(2,2,2,2,2),qqb_b(2,2,2,2,2)
       double complex qbq_a(2,2,2,2,2),qbq_b(2,2,2,2,2)
+      logical first
       data swap/2,1,3,4/
       save swap
       
+      if     (flav .eq. 6) then
+        mQ=mt
+        iflav=2
+      elseif (flav .eq. 5) then
+        mQ=mb
+        iflav=1
+      else
+        write(6,*) 'Invalid flav in qqb_zbbmas.f, flav=',flav
+      endif
+
 c--initialize to zero
       do j=-nf,nf
       do k=-nf,nf
@@ -40,11 +53,11 @@ c---define modified (zero-mass) vectors
          p12(j,nu)=p(j,nu)
          p21(j,nu)=p(swap(j),nu)
       elseif (j.eq.5) then
-         p12(j,nu)=p(j,nu)-0.5d0*mb**2*p(2,nu)/p2Dp(5)
-         p21(j,nu)=p(j,nu)-0.5d0*mb**2*p(1,nu)/p1Dp(5)
+         p12(j,nu)=p(j,nu)-0.5d0*mQ**2*p(2,nu)/p2Dp(5)
+         p21(j,nu)=p(j,nu)-0.5d0*mQ**2*p(1,nu)/p1Dp(5)
       elseif (j.eq.6) then
-         p12(j,nu)=p(j,nu)-0.5d0*mb**2*p(1,nu)/p1Dp(6)
-         p21(j,nu)=p(j,nu)-0.5d0*mb**2*p(2,nu)/p2Dp(6)
+         p12(j,nu)=p(j,nu)-0.5d0*mQ**2*p(1,nu)/p1Dp(6)
+         p21(j,nu)=p(j,nu)-0.5d0*mQ**2*p(2,nu)/p2Dp(6)
       endif
       enddo
       enddo
@@ -56,22 +69,22 @@ C---Fill spinor products
       facqq=4d0*V*gsq**2*esq**2*aveqq 
 
       call spinoru(6,p12,za,zb)
-      call mamps(1,2,3,4,5,6,qqb_a,qqb_b)
+      call mamps(mQ,1,2,3,4,5,6,qqb_a,qqb_b)
 
-      coupL=Q(1)*q1+L(1)*l1*prop
-      coupR=Q(1)*q1+R(1)*l1*prop
-      call gamps0(1,2,3,4,5,6,sumleptL,coupL,coupR)
-      coupL=Q(1)*q1+L(1)*r1*prop
-      coupR=Q(1)*q1+R(1)*r1*prop
-      call gamps0(1,2,4,3,5,6,sumleptR,coupL,coupR)
+      coupL=Q(iflav)*q1+L(iflav)*l1*prop
+      coupR=Q(iflav)*q1+R(iflav)*l1*prop
+      call gamps0(mQ,1,2,3,4,5,6,sumleptL,coupL,coupR)
+      coupL=Q(iflav)*q1+L(iflav)*r1*prop
+      coupR=Q(iflav)*q1+R(iflav)*r1*prop
+      call gamps0(mQ,1,2,4,3,5,6,sumleptR,coupL,coupR)
 
       call spinoru(6,p21,za,zb)
-      call mamps(1,2,3,4,5,6,qbq_a,qbq_b)
+      call mamps(mQ,1,2,3,4,5,6,qbq_a,qbq_b)
 
       lr(1)=l1
       lr(2)=r1
 
-      do j=-(nf-1),(nf-1)
+      do j=-nflav,nflav
       k=-j
           if ((j .eq. 0) .and. (k .eq. 0)) then
             msq(j,k)=facgg*(sumleptL+sumleptR)
@@ -83,8 +96,8 @@ C---Fill spinor products
             tamp=
      .          +(Q(j)*q1+L(j)*lr(h3)*prop)*qqb_a(1,h1,h3,h5,h6)
      .          +(Q(j)*q1+R(j)*lr(h3)*prop)*qqb_a(2,h1,h3,h5,h6)
-     .          +(Q(1)*q1+L(1)*lr(h3)*prop)*qqb_b(1,h1,h3,h5,h6)
-     .          +(Q(1)*q1+R(1)*lr(h3)*prop)*qqb_b(2,h1,h3,h5,h6)
+     .          +(Q(iflav)*q1+L(iflav)*lr(h3)*prop)*qqb_b(1,h1,h3,h5,h6)
+     .          +(Q(iflav)*q1+R(iflav)*lr(h3)*prop)*qqb_b(2,h1,h3,h5,h6)
             msq(j,k)=msq(j,k)+facqq*abs(tamp)**2
             enddo
             enddo
@@ -100,8 +113,8 @@ C---Fill spinor products
             tamp=
      .          +(Q(k)*q1+L(k)*lr(h3)*prop)*qbq_a(1,h1,h3,h5,h6)
      .          +(Q(k)*q1+R(k)*lr(h3)*prop)*qbq_a(2,h1,h3,h5,h6)
-     .          +(Q(1)*q1+L(1)*lr(h3)*prop)*qbq_b(1,h1,h3,h5,h6)
-     .          +(Q(1)*q1+R(1)*lr(h3)*prop)*qbq_b(2,h1,h3,h5,h6)
+     .          +(Q(iflav)*q1+L(iflav)*lr(h3)*prop)*qbq_b(1,h1,h3,h5,h6)
+     .          +(Q(iflav)*q1+R(iflav)*lr(h3)*prop)*qbq_b(2,h1,h3,h5,h6)
             msq(j,k)=msq(j,k)+facqq*abs(tamp)**2
             enddo
             enddo

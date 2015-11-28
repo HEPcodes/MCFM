@@ -182,8 +182,8 @@ c--- swap jets 5 and 7
       if (gen15 .or. gen25) then
         do nu=1,4
           tmp(nu)=p(4+njets,nu)
-	  p(4+njets,nu)=p(5,nu)
-	  p(5,nu)=tmp(nu)
+          p(4+njets,nu)=p(5,nu)
+          p(5,nu)=tmp(nu)
         enddo
       endif
       
@@ -191,8 +191,8 @@ c--- swap jets 6 and 7
       if (gen16 .or. gen26) then
         do nu=1,4
           tmp(nu)=p(4+njets,nu)
-	  p(4+njets,nu)=p(6,nu)
-	  p(6,nu)=tmp(nu)
+          p(4+njets,nu)=p(6,nu)
+          p(6,nu)=tmp(nu)
         enddo
       endif
       

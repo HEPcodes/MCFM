@@ -13,16 +13,18 @@
 
       if (first) then
       first=.false.
-c--- do not allow a cut on m56 for W/Z+gamma processes
-      if ((case .eq. 'Wgamma') .or. (case .eq. 'Zgamma')) then
+c--- do not allow a cut on m56 for W/Z+gamma processes, tau pairs, or DM
+      if ( (case .eq. 'Wgamma') .or. (case .eq. 'Zgamma')
+     & .or.(case .eq. 'tautau') .or. (case .eq. 'dm_jet')
+     & .or.(case .eq. 'dm_gam') ) then
         bbsqmin=0d0
-	bbsqmax=81d8
+        bbsqmax=81d8
       endif
 
-c--- do not allow a cut on m34 for direct photon process
-      if (case .eq. 'dirgam') then
+c--- do not allow a cut on m34 for direct photon process, or tau pairs
+      if ( (case .eq. 'dirgam')  .or. (case .eq. 'tautau')) then
         wsqmin=0d0
-	wsqmax=81d8
+        wsqmax=81d8
       endif
 
 !---- do not allow cuts on m34 if doing gamma gamma (will be done elsewhere) 
@@ -71,7 +73,7 @@ c--- only apply cuts on s56 if vectors 5 and 6 are defined
 
    98 format(' *      ',f8.2,'  <   ',a12,'  < ',f8.2,'      *')
    99 format(' *          ',f8.2,'  <   ',a3,'  < ',f8.2,'           *')
-     
+
       return
       end
 

@@ -28,17 +28,17 @@ C---p1+p2 --> p3+p4
       if (n3 .eq. 1) then
 c--- generate s34 according to a Breit-Wigner, for gg->H 
         call breitw(r(3),wsqmin,wsqmax,mass3,width3,s34,w3)
-	if     (hdecaymode .eq. 'bqba') then
-	  mass=mb
-	elseif (hdecaymode .eq. 'tlta') then
-	  mass=mtau
-	else
-	  write(6,*) 'Unanticipated hdecaymode in gen2m: ',hdecaymode
-	  stop
-	endif
+      if     (hdecaymode .eq. 'bqba') then
+        mass=mb
+      elseif (hdecaymode .eq. 'tlta') then
+        mass=mtau
+      else
+        write(6,*) 'Unanticipated hdecaymode in gen2m: ',hdecaymode
+        stop
+      endif
       else
 c--- no resonance, for tt~,bb~,cc~
-	mass=mass2
+      mass=mass2
         vsqmax=1d0/(4d0*mass**2)
         vsqmin=1d0/sqrts**2
         xmin=vsqmin/vsqmax

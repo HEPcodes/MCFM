@@ -36,11 +36,13 @@ c--- by the strings 'lstring' and 'rstring'
       include 'frag.f'
       include 'initialscales.f'
       include 'outputoptions.f'
+      include 'outputflags.f'
       include 'part.f'
+      include 'anomHiggs.f'
       character*(*) tag,lstring,rstring
       character*72 f96,f97,f98,f99
       character*30 runstring
-      logical creatent,dswhisto,dryrun,makecuts,writeall,spira
+      logical dryrun,makecuts,writeall,spira
       integer unitno, nmin,nmax
       integer nproc,ih1,ih2,itmx1,itmx2,ncall1,ncall2,origij
       integer NPTYPE,NGROUP,NSET
@@ -51,7 +53,6 @@ c--- by the strings 'lstring' and 'rstring'
       common/nmax/nmax
       common/rtsmin/rtsmin
 
-      common/outputflags/creatent,dswhisto      
 
       common/nproc/nproc
       common/runstring/runstring
@@ -397,6 +398,13 @@ c--- catch special scale choices for stop+b process
       if ((tag .eq. 'tevscale') .or. (writeall)) then
       write(unitno,fmt=f99) tevscale,'tevscale'
       endif
+      if ((tag .eq. 'cttH') .or. (writeall)) then
+      write(unitno,fmt=f99) cttH,'cttH'
+      endif
+      if ((tag .eq. 'cWWH') .or. (writeall)) then
+      write(unitno,fmt=f99) cWWH,'cWWH'
+      endif
+      
 
       if (writeall) then
       write(unitno,*)

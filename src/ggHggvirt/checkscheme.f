@@ -13,7 +13,7 @@ c--- amplitudes in the dred and tH-V schemes
      . A41abDR(2,2,2),A41baDR(2,2,2),A43abDR(2,2,2),A43baDR(2,2,2),
      . A41abHV(2,2,2),A41baHV(2,2,2),A43abHV(2,2,2),A43baHV(2,2,2),
      . Amploqarb(2,2),AmpvqarbDR(2,2),AmpvqarbHV(2,2),
-     . Amploqaqa(2,2),AmpvqaqaDR(2,2),AmpvqaqaHV(2,2),
+     . AmpvqaqaDR(2,2),AmpvqaqaHV(2,2),
      . A0Hqarbmppm,A0Hqarbmpmp,A41Hqarbmppm,A41Hqarbmpmp,
      . A42Hqarbmppm,A42Hqarbmpmp
       double precision renDR,renHV,H4prenorm,diff

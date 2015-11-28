@@ -18,11 +18,10 @@
       include 'qqgg.f'
       include 'frag.f'
       include 'ewcharge.f'
-      include 'ipsgen.f'
-        
+      include 'phot_dip.f'
+      include 'ipsgen.f'        
       integer j,k,nd,f
-c --- remember: nd will count the dipoles
-      
+c --- remember: nd will count the dipoles      
       double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf),nup,ndo
       double precision 
      & msq16_2(-nf:nf,-nf:nf),msq26_1(-nf:nf,-nf:nf),
@@ -50,8 +49,6 @@ c --- remember: nd will count the dipoles
      &  msq57_1x(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf),
      &  msq56_7x(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf),
      &  msq57_6x(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf)
-      logical phot_dip(mxpart)
-      common/phot_dip/phot_dip
       external qqb_zaj,qqb_zaj_gvec
       external qqb_z2jetx
 
@@ -250,7 +247,7 @@ c q-qbar
            msq(8,j,k)=msq(8,j,k)+Q(f)**2*sub57_1*(msq57_1x(0,j,k,-f,f)
      &                      +msq57_1x(1,j,k,-f,f)+msq57_1x(2,j,k,-f,f))
            enddo
-	 else
+         else
            msq(7,j,k)=Q(abs(j))**2*sub56_1
      &   *(msq56_1x(0,j,k,j,k)+msq56_1x(1,j,k,j,k)+msq56_1x(2,j,k,j,k))
            msq(8,j,k)=Q(abs(k))**2*sub57_1
@@ -283,7 +280,7 @@ c--qbar-q
            msq(8,j,k)=msq(8,j,k)+Q(f)**2*sub57_1*(msq57_1x(0,j,k,-f,f)
      &                      +msq57_1x(1,j,k,-f,f)+msq57_1x(2,j,k,-f,f))
            enddo
-	 else
+         else
            msq(7,j,k)=Q(abs(k))**2*sub56_1
      &   *(msq56_1x(0,j,k,k,j)+msq56_1x(1,j,k,k,j)+msq56_1x(2,j,k,k,j))
            msq(8,j,k)=Q(abs(j))**2*sub57_1

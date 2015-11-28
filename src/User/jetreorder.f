@@ -20,11 +20,11 @@ c      call writeout(p)
       
       if (jets .eq. 0) then
         do i=1,mxpart
-	do nu=1,4
-	  q(i,nu)=p(i,nu)
-	enddo
-	enddo
-	return
+      do nu=1,4
+        q(i,nu)=p(i,nu)
+      enddo
+      enddo
+      return
       endif
       
       maxjet=0
@@ -35,23 +35,23 @@ c      call writeout(p)
      .   .or.(plabel(i) .eq. 'qj') ) then
           maxjet=maxjet+1
           jetindex(maxjet)=i
-	  ijet(i)=-1 ! If no match is found, this signifies a parton is lost
-	  if (jets .gt. 0) then
-	    do j=1,jets
-	      if (plabel(i) .eq. jetlabel(j)) then
-	        alreadyfound=.false.
-	        if (maxjet .gt. 0) then
-		  do k=1,maxjet	
-		    if (ijet(jetindex(k)) .eq. j) then
-		      alreadyfound=.true.
-		    endif
-		  enddo
-		endif
-	        if (.not.(alreadyfound)) ijet(i)=j
-	      endif
-	    enddo
-	  endif
-	endif
+        ijet(i)=-1 ! If no match is found, this signifies a parton is lost
+        if (jets .gt. 0) then
+          do j=1,jets
+            if (plabel(i) .eq. jetlabel(j)) then
+              alreadyfound=.false.
+              if (maxjet .gt. 0) then
+              do k=1,maxjet      
+                if (ijet(jetindex(k)) .eq. j) then
+                  alreadyfound=.true.
+                endif
+              enddo
+            endif
+              if (.not.(alreadyfound)) ijet(i)=j
+            endif
+          enddo
+        endif
+      endif
       enddo
       
 c      call writeout(p)
@@ -68,33 +68,33 @@ c      enddo
       do i=3,npart+2-isub
         if     (ijet(i) .eq. 0) then
           j=i ! Not a jet, no swap required
-	elseif (ijet(i) .eq. -1) then
-	  j=-1 ! Jet lost, need to set components to zero
+      elseif (ijet(i) .eq. -1) then
+        j=-1 ! Jet lost, need to set components to zero
         else
           j=jetindex(ijet(i))
         endif
-	if (j .gt. 0) then
-	  do nu=1,4
-	    q(i,nu)=p(j,nu)
+      if (j .gt. 0) then
+        do nu=1,4
+          q(i,nu)=p(j,nu)
           enddo
-	else
-	  do nu=1,4
-	    q(i,nu)=zip
+      else
+        do nu=1,4
+          q(i,nu)=zip
           enddo
-	endif
+      endif
       enddo
       
       do i=1,2
         do nu=1,4
-	  q(1,nu)=p(1,nu)
-	  q(2,nu)=p(2,nu)
-	enddo
+        q(1,nu)=p(1,nu)
+        q(2,nu)=p(2,nu)
+      enddo
       enddo
       
       do i=npart+3-isub,mxpart
-	do nu=1,4
-	  q(i,nu)=zip
-        enddo
+      do nu=1,4
+         q(i,nu)=zip
+      enddo
       enddo
       
 c      call writeout(q)

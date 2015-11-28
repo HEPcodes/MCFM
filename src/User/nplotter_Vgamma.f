@@ -18,6 +18,8 @@ c---                1  --> counterterm for real radiation
       include 'histo.f'
       include 'jetlabel.f'
       include 'frag.f'
+      include 'phot_dip.f'
+      include 'outputflags.f'
       double precision p(mxpart,4),wt,wt2
       double precision etarap,pt,r
       double precision y3,y4,y5,y6,pt3,pt4,pt5,pt6,re5,rea5,re6,rea6
@@ -26,10 +28,7 @@ c---                1  --> counterterm for real radiation
       integer switch,n,nplotmax,nproc,nqcdjets,nqcdstart,nd 
       character*4 tag
       integer j,ilep,igam,inu
-      logical first,creatent,dswhisto
-      logical phot_dip(mxpart) 
-      common/phot_dip/phot_dip
-      common/outputflags/creatent,dswhisto
+      logical first
       common/nplotmax/nplotmax
       common/nproc/nproc
       common/nqcdjets/nqcdjets,nqcdstart
@@ -58,7 +57,7 @@ c----- This corresponds to p(5)->z_frag*p(5) = pt(photon) we want to plot
 c--- Initialize histograms, without computing any quantities; instead
 c--- set them to dummy values
         tag='book'
-	y3=1d3
+        y3=1d3
         y4=1d3
         pt3=1d7
         pt4=1d7
@@ -68,8 +67,8 @@ c---Initialise photon
         pt5=1d7
         yWgam=1d3
         yellgam=1d8
-	m34=-1d0
-	m345=-1d0
+        m34=-1d0
+        m345=-1d0
 c----Initialise jet values will not pass cuts in there is an NLO jet
         y6=1d3
         pt6=1d7
@@ -163,19 +162,19 @@ c--- For nproc=300 plot e^+(4) and e^-(3)
       if(nproc.ne.300) then 
 c---  transverse mass of (e-gam,nu) system for Wgamma     
         if ((nproc .eq. 290) .or. (nproc .eq. 292)) then
-	  inu=3
-	  ilep=4
-	else
-	  inu=4
-	  ilep=3
-	endif
-	igam=5
-	m345=(p(ilep,4)+p(igam,4))**2-(p(ilep,1)+p(igam,1))**2
+          inu=3
+          ilep=4
+        else
+          inu=4
+          ilep=3
+        endif
+        igam=5
+        m345=(p(ilep,4)+p(igam,4))**2-(p(ilep,1)+p(igam,1))**2
      &      -(p(ilep,2)+p(igam,2))**2-(p(ilep,3)+p(igam,3))**2
         m345=m345+(p(ilep,1)+p(igam,1))**2
      &           +(p(ilep,2)+p(igam,2))**2
-	m345=dsqrt(max(m345,0d0))+dsqrt(p(inu,1)**2+p(inu,2)**2)
-	m345=m345**2
+        m345=dsqrt(max(m345,0d0))+dsqrt(p(inu,1)**2+p(inu,2)**2)
+        m345=m345**2
         do j=1,2 
            m345=m345-(p(3,j)+p(4,j)+p(5,j))**2
         enddo
@@ -206,7 +205,7 @@ c--- by # of iterations now that is handled at end for regular histograms
       endif
 
 c--- "n" will count the number of histograms
-      n=1              
+      n=nextnplot
 
 c--- Syntax of "bookplot" routine is:
 c

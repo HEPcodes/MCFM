@@ -34,12 +34,10 @@ c                           ---> W^+(nu(p5),e^+(p6))W^-(e^-(p7),nub(p8))
 c---calculate the 2 W propagators
       prop=     ((s(1,2)-wmass**2)**2+(wmass*wwidth)**2)
       prop=prop*((s(3,4)-wmass**2)**2+(wmass*wwidth)**2)
-
+      prop=prop*((s5678-hmass**2)**2+(hmass*hwidth)**2)
+      
       fac=xn*gwsq**3*wmass**2/prop
-      hdecay=gwsq**3*wmass**2*s(5,7)*s(8,6)
-      hdecay=hdecay/(((s5678-hmass**2)**2+(hmass*hwidth)**2)
-     .   *((s(5,6)-wmass**2)**2+(wmass*wwidth)**2)
-     .   *((s(7,8)-wmass**2)**2+(wmass*wwidth)**2))
+      call hwwdecay(p,5,6,7,8,hdecay)
       fac=fac*hdecay
 
       qqbWH=aveqq*fac*s(1,4)*s(2,3)

@@ -16,20 +16,15 @@ c---                1  --> counterterm for real radiation
       include 'vegas_common.f'
       include 'constants.f'
       include 'histo.f'
-      include 'jetlabel.f'
-      include 'masses.f'
       include 'plabel.f'
-      include 'process.f'
       include 'npart.f'
-      double precision p(mxpart,4),wt,wt2,yrap,pt,tiny,HTjet,MET,
+      include 'outputflags.f'
+      double precision p(mxpart,4),wt,wt2,pt,tiny,HTjet,MET,
      & etmiss,vecmet(4),binindex,METHTdoublebin
-      integer switch,n,nplotmax,nproc,nqcdjets,nqcdstart,j
+      integer switch,n,nplotmax,j
       character*4 tag
-      logical first,creatent,dswhisto,dilepton,failed
-      common/outputflags/creatent,dswhisto
+      logical first
       common/nplotmax/nplotmax
-      common/nproc/nproc
-      common/nqcdjets/nqcdjets,nqcdstart
       parameter(tiny=1d-8)
       data first/.true./
       save first
@@ -83,7 +78,7 @@ c--- by # of iterations now that is handled at end for regular histograms
       endif
 
 c--- "n" will count the number of histograms
-      n=1              
+      n=nextnplot
 
 c--- Syntax of "bookplot" routine is:
 c

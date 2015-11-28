@@ -34,16 +34,16 @@ c--- initialize
 
 c--- implement shortcuts for checking                  
       if (noglue) then
-        msq_qg=0d0		  
-        msq_qbarg=0d0		  
-        msq_gq=0d0		  
-        msq_gqbar=0d0		  
-      else	
+        msq_qg=0d0  
+        msq_qbarg=0d0  
+        msq_gq=0d0  
+        msq_gqbar=0d0  
+      else
          if (ggonly) then
-            msq_qg=0d0		  
-            msq_qbarg=0d0		  
-            msq_gq=0d0		  
-            msq_gqbar=0d0		  
+            msq_qg=0d0  
+            msq_qbarg=0d0  
+            msq_gq=0d0  
+            msq_gqbar=0d0  
          else
 c set mass of quark and antiquark according to nwz
             if (nwz .eq. +1) then

@@ -24,8 +24,9 @@ C---p1+p2 --> p3+p4
 
       if (first) then
         first=.false.
-c--- for dirgam and gamgam, generate using photon pt as cutoff
-        if ((nproc.eq.280) .or. (nproc.eq.285)) then 
+c--- for dirgam, hflgam and gamgam, generate using photon pt as cutoff
+        if ((nproc.eq.280) .or. (nproc.eq.285)
+     &  .or.(nproc.eq.283) .or. (nproc.eq.284)) then 
            ptjetmin=gammpt 
         else
            call read_jetcuts(ptjetmin,etajetmin,etajetmax)

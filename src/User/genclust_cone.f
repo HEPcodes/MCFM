@@ -244,14 +244,14 @@ c--- special combination for W+heavy quarks
      &          (jetlabel(protoc(eti,2)) .eq. 'bq')) ) then
              finallabel(jets)='bb'
            endif 
-	endif
+      endif
         if ((trackdoubleb) .and. (protoc(eti,0) .eq. 3)) then
              finallabel(jets)='bb'
         endif
-c	if (protoc(eti,0) .eq. 3) then
-c	  write(6,*) jetlabel(protoc(eti,1)),jetlabel(protoc(eti,2)),
+c      if (protoc(eti,0) .eq. 3) then
+c        write(6,*) jetlabel(protoc(eti,1)),jetlabel(protoc(eti,2)),
 c     &               jetlabel(protoc(eti,3)),' ->',finallabel(jets)
-c	endif
+c      endif
 c--- shuffle down the proto-jets
         do i=eti+1,maxproto
           do nu=1,4

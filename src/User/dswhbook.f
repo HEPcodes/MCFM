@@ -37,7 +37,7 @@ c     ------------------------------------------------------------------
       
       if (first) then
 c ---   Open the file :
-	outfile=runname(1:lenocc(runname))//'.rz'
+       outfile=runname(1:lenocc(runname))//'.rz'
         call hlimit(NWPAWC)
 c ---   A record length of 8192 words will produce a warning but is 
 c ---   OK for most systems (see HBOOK manual, p.21) : 
@@ -102,8 +102,7 @@ c        1         2         3         4         5         6         7
 
 c --- Common block to control output
 c --- (histograms or ntuple)
-      logical creatent,dswhisto
-      common /outputflags/creatent,dswhisto
+      include 'outputflags.f'
 
       integer ICYCLE,i
 c     ------------------------------------------------------------------
@@ -240,16 +239,16 @@ c--- is called for the first time, achieved via a dummy call to lowint
 c--- Be careful that dynamic scale choices aren't ruined
 c--- (in versions 5.1 and before, this occured when calling lowint)
         scale_store=scale
-	facscale_store=facscale
+       facscale_store=facscale
         dummy=lowint(r,wgt)
         scale=scale_store
-	facscale=facscale_store
-	
+       facscale=facscale_store
+       
         imaxmom=npart
         if ((part.eq.'real').or.(part.eq.'tota').or.(part.eq.'todk'))
      .    imaxmom=imaxmom+1
-	  batchno=-1
-	  first=.false.
+         batchno=-1
+         first=.false.
       endif
 
 c--- determine if we need space in array to store PDF weights (ipdf)
@@ -416,8 +415,8 @@ c--- is already full; if so, close and then open a new one
       icount=icount+1
       if (mod(icount,batchlimit) .eq. 0) then
         call dswhrout
-	call dswclose
-	call dswntuplebook
+        call dswclose
+        call dswntuplebook
       endif
       
 c --- Fill the ntuple :
@@ -436,8 +435,8 @@ c --- Fill the ntuple :
 c--- include PDF errors if necessary
       if (PDFerrors) then
         do i=1,ipdf
-	pfill(imaxmom*4+5+i)=sngl(wt*PDFwgt(i)/PDFwgt(0))
-	enddo
+        pfill(imaxmom*4+5+i)=sngl(wt*PDFwgt(i)/PDFwgt(0))
+        enddo
       endif
       
 c     write(6,*) 'Filling ntuple with weight',wt

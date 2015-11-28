@@ -1,10 +1,9 @@
       ! functions for counting particles 
 
-      integer function count_photo(p)
+      integer function count_photo()
       implicit none
       include 'constants.f'
       include 'plabel.f'
-      double precision p(mxpart,4) 
       integer j
 
       count_photo=0
@@ -18,12 +17,11 @@
       end
 
       
-      integer function count_jets(p)
+      integer function count_jets()
       implicit none
       include 'constants.f'
       include 'npart.f'
       include 'plabel.f'
-      double precision p(mxpart,4) 
       integer j
 
 c---- Count final state jets only pp included initially

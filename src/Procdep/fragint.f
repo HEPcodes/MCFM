@@ -16,22 +16,24 @@
       include 'wts_bypart.f'
       include 'nflav.f'
       include 'ipsgen.f'
+      include 'dm_params.f' 
+      include 'outputflags.f' 
       integer ih1,ih2,j,k,sgnj,sgnk,nvec,pflav,pbarflav
       double precision r(mxdim),wgt,pswt,rscalestart,fscalestart,
      & p(mxpart,4),xx(2),flux,sqrts,xmsq_bypart(-1:1,-1:1),
      & lord_bypart(-1:1,-1:1),BrnRat,pjet(mxpart,4),val,val2,
      & xmsq,xmsqjk,W,msq(-nf:nf,-nf:nf),fx1(-nf:nf),fx2(-nf:nf),
      & ran2,msqdips(-nf:nf,-nf:nf)
-      logical bin,first,includedipole,creatent,dswhisto
+      double precision m3,m4,m5
+      logical bin,first,includedipole
       external qqb_w_g,qqb_z1jet,qqb_dirgam,qqb_2j_t,qqb_2j_s,
-     & qqb_z2jetx,qqb_zaj
+     & qqb_z2jetx,qqb_zaj,qqb_dm_monojet
       common/density/ih1,ih2
       common/energy/sqrts
       common/bin/bin
       common/x1x2/xx
       common/BrnRat/BrnRat
       common/bypart/lord_bypart
-      common/outputflags/creatent,dswhisto
       data first/.true./
       save first,rscalestart,fscalestart
       
@@ -87,11 +89,19 @@ c---  processes that use "gen3jet"
          call gen_phots_jets(r,1,1,p,pswt,*999) 
          z_frag=r(11) 
          frag=.true. 
-
+      elseif( (case.eq.'dm_gam')) then 
+         m3=xmass
+         m4=m3
+         m5=0d0
+         npart=3     
+         call gen3m(r,p,m3,m4,m5,pswt,*999)
+         z_frag=r(8) 
+         frag=.true. 
+         
       else
         write(6,*) 'Fragmentation PS not available for this process.'
-	write(6,*) 'case = ',case
-	stop
+      write(6,*) 'case = ',case
+      stop
       endif
                
 c--------------------------------- PHASE SPACE CUTS ---------------------------
@@ -146,10 +156,13 @@ c-------------------------- CALCULATE MATRIX ELEMENTS --------------------------
       elseif(case.eq.'Zgajet') then 
          call qqb_zaj_frag(p,msq) 
          call qqb_zaj_fragdips(p,qqb_z2jetx,msqdips)
+      elseif(case.eq.'dm_gam') then 
+         call qqb_dm_monophot_frag(p,msq) 
+         call qqb_dm_monophot_fragdips(p,qqb_dm_monojet,msqdips) 
       else
         write(6,*) 'Fragmentation MEs not available for this process.'
-	write(6,*) 'case = ',case
-	stop
+        write(6,*) 'case = ',case
+        stop
       endif
       
       do j=-1,1

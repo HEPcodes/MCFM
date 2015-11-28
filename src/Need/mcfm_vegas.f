@@ -114,10 +114,10 @@ c---   for process 421 (426) we will actually run
 c---   process 411 (416) [5FNS] and then add on the result of process 401 (406) [4FNS]
       if ((mynproc .eq. 421) .or. (mynproc .eq. 426)) then
         nproc=mynproc-10
-	sumsig=0d0
-	sumsigr=0d0
-	sumsd=0d0
-	sumsdr=0d0
+      sumsig=0d0
+      sumsigr=0d0
+      sumsd=0d0
+      sumsdr=0d0
       endif
 
 c--- special handling of multiple PS generation for
@@ -125,37 +125,37 @@ c--- Z+gamma+jet and Z+gamma+gamma processes: we will loop
 c--- over ipsgen=1,..,n where n=2 for Z+gamma+jet and n=4 for  Z+gamma+gamma
       if ( (mynproc .eq. 301) .or. (mynproc .eq. 302)
      & .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)) then
-	sumsig=0d0
-	sumsigr=0d0
-	sumsigf=0d0
-	sumsd=0d0
-	sumsdr=0d0
-	sumsdf=0d0
+      sumsig=0d0
+      sumsigr=0d0
+      sumsigf=0d0
+      sumsd=0d0
+      sumsdr=0d0
+      sumsdf=0d0
       endif
 
    77 continue     
       if ((mynproc .eq. 421) .or. (mynproc .eq. 426)) then
         mb=mymb
-	call chooser
+      call chooser
         reset=.true.
         scalereset=.true.
 c--- special write-out/read-in for 5FNS + 4FNS process
         if (first .eqv. .true.) then
           readin=.false.
           writeout=.true.
-	  if (nproc .ge. 411) then
+        if (nproc .ge. 411) then
             outgridfile='dvegas_5FNS_'//part//'.grid'
-	  else
+        else
             outgridfile='dvegas_4FNS_'//part//'.grid'
-	  endif 	 
+        endif        
         else
           readin=.true.
           writeout=.false.
-	  if (nproc .ge. 411) then
+        if (nproc .ge. 411) then
             ingridfile='dvegas_5FNS_'//part//'.grid'
-	  else
+        else
             ingridfile='dvegas_4FNS_'//part//'.grid'
-	  endif 	 
+        endif        
         endif
       endif    
       
@@ -165,8 +165,8 @@ c--- Z+gamma+jet and Z+gamma+gamma processes
      & .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)) then
         reset=.true.
         scalereset=.true.
-	psgen=getstr(ipsgen)
-	write(6,*) '********* Phase space region ',ipsgen,' *********'
+      psgen=getstr(ipsgen)
+      write(6,*) '********* Phase space region ',ipsgen,' *********'
         if (first .eqv. .true.) then
           readin=.false.
           writeout=.true.
@@ -210,7 +210,7 @@ c-- special input name for virtual grid
             if ( (mynproc .eq. 301) .or. (mynproc .eq. 302)
      &       .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)) then
               outgridfile='dvegas_virt_PS'//psgen(1:1)//'.grid'
-	    endif
+          endif
           else
             readin=.true.
             writeout=.false.
@@ -218,7 +218,7 @@ c-- special input name for virtual grid
             if ( (mynproc .eq. 301) .or. (mynproc .eq. 302)
      &       .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)) then
               ingridfile='dvegas_virt_PS'//psgen(1:1)//'.grid'
-	    endif
+          endif
           endif
         endif
       endif        
@@ -251,7 +251,7 @@ c-- special input name for real grid
             if ( (mynproc .eq. 301) .or. (mynproc .eq. 302)
      &       .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)) then
               outgridfile='dvegas_real_PS'//psgen(1:1)//'.grid'
-	    endif
+          endif
           else
             readin=.true.
             writeout=.false.
@@ -259,7 +259,7 @@ c-- special input name for real grid
             if ( (mynproc .eq. 301) .or. (mynproc .eq. 302)
      &       .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)) then
               ingridfile='dvegas_real_PS'//psgen(1:1)//'.grid'
-	    endif
+          endif
           endif
         endif        
       endif 
@@ -303,8 +303,12 @@ c---   unsubtracted real emission weight)
         xreal2=0d0
         adjust=(dfloat(ndim+3))/(dfloat(ndim+1))
         ncall=int(dfloat(myncall)**adjust)/2
-c--- special adjustment for ttW since PS is so large
-        if (case .eq. 'qq_ttw') ncall=ncall*10
+c--- cap on number of points, may be ndim-dependent, to ensure PS not too large
+c        if (ndim .lt. 20) then        
+c        if (ncall .gt. myncall*20) ncall=myncall*20
+c      else
+        if (ncall .gt. myncall*10) ncall=myncall*10
+c      endif
         write(6,*) 'Adjusting number of points for real to',ncall
         ndim=ndim+3
         call boundregion(ndim,region)
@@ -443,7 +447,7 @@ c-- special input name for frag grid
             if ( (mynproc .eq. 301) .or. (mynproc .eq. 302)
      &       .or.(mynproc .eq. 303) .or. (mynproc .eq. 304)) then
               outgridfile='dvegas_frag_PS'//psgen(1:1)//'.grid'
-	    endif
+          endif
           else
             readin=.true.
             writeout=.false.
@@ -473,11 +477,11 @@ c---   ipsgen=1 (Z+gamma+jet) and ipsgen=1,2 (Z+gamma+gamma)
          scale=myscale
          facscale=myfacscale
          if (mypart .eq. 'frag') then
-	   scalereset=.true.
+         scalereset=.true.
          else
-	   reset=.true.
+         reset=.true.
          endif
-	 rescale=.true.		! turn on rescaling for this piece
+       rescale=.true.            ! turn on rescaling for this piece
          ncall=myncall
 c         write(6,*) 'Adjusting number of points for frag to',ncall
          ndim=ndim+1
@@ -485,7 +489,7 @@ c         write(6,*) 'Adjusting number of points for frag to',ncall
          call vegasnr(region,ndim,fragint,myinit,myncall,myitmx,
      &                 0,sigfrag,sdfrag,chifrag)
          ndim=ndim-1
-	 rescale=.false. 	! turn rescaling off again
+       rescale=.false.       ! turn rescaling off again
       endif
 
    33 continue 
@@ -500,14 +504,14 @@ c---   process 411 (416) [5FNS] and then add on the result of process 401 (406) 
         sumsdr=sumsdr+sdr**2
         if (nproc .ge. 411) then
           nproc=nproc-10
-	  goto 77
-	endif
+        goto 77
+      endif
 c--- return nproc to the value from the input file
-        nproc=mynproc	 
-	sig=sumsig
-	sigr=sumsigr
-	sd=dsqrt(sumsd)
-	sdr=dsqrt(sumsdr)
+        nproc=mynproc       
+      sig=sumsig
+      sigr=sumsigr
+      sd=dsqrt(sumsd)
+      sdr=dsqrt(sumsdr)
       endif
       
 c--- special handling of multiple PS generation for
@@ -537,15 +541,15 @@ c--- change number of PS points in different regions
              endif
           endif
           myncall=myncall
-	  goto 77
-	endif
+        goto 77
+      endif
         myncall=myncall
-	sig=sumsig
-	sigr=sumsigr
-	sigfrag=sumsigf
-	sd=dsqrt(sumsd)
-	sdr=dsqrt(sumsdr)
-	sdfrag=dsqrt(sumsdf)
+      sig=sumsig
+      sigr=sumsigr
+      sigfrag=sumsigf
+      sd=dsqrt(sumsd)
+      sdr=dsqrt(sumsdr)
+      sdfrag=dsqrt(sumsdf)
       endif
       
 c--- calculate integration variables to be returned

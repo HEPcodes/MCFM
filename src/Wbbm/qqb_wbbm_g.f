@@ -32,7 +32,7 @@ C--- set up the correct mass, according to 'flav'
         mQsq=mc**2
       else
         write(6,*) 'Wrong flavour in qqb_wbbm_v.f: flav=',flav
-	call flush(6)
+        call flush(6)
         stop
       endif
       mq=dsqrt(mQsq)

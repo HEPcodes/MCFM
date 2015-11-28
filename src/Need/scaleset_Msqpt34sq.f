@@ -31,7 +31,7 @@ c---  sqrt(M^2+pt34^2), where M is the mass of the particle (34)
       else
         write(6,*) 'dynamicscale sqrt(M^2+pt34^2)'//
      &             ' not supported for this process.'
-	stop
+        stop
       endif
       
       return

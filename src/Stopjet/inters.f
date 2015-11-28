@@ -33,12 +33,12 @@ c particle identifiers:-  NB: changed by JC
 c--- set mass of quark and antiquark according to nwz
       if (nwz .eq. +1) then
         mq=mt
-	ma=mb
+        ma=mb
         t=3
         b=4
       else
         mq=mb
-	ma=mt
+        ma=mt
         t=4
         b=3
       endif
@@ -105,20 +105,20 @@ c---                  and "-2d0" by (xn^2*Cf)*(2d0*Cf-Ca)/2d0
 
                 me_slc=me_slc
      &       +gsq_H*gs2(i,j,k,l)*dconjg(gs2(i,j,k,l))
-     &                     *(xn**2*cf)*(2d0*cf-ca)/2d0	
+     &                     *(xn**2*cf)*(2d0*cf-ca)/2d0        
      &       /(g1g2b*g1g2t*g1t*g2b*(wmass**2 - 2d0*ud))**2
                 me_slc=me_slc
      &       +gsq_H*gs3(i,j,k,l)*dconjg(gs3(i,j,k,l))
-     &                     *(xn**2*cf)*(2d0*cf-ca)/2d0	
+     &                     *(xn**2*cf)*(2d0*cf-ca)/2d0        
      &       /(g1g2b*g1g2t*g1b*g2t*(wmass**2 - 2d0*ud))**2
 c color suppressed terms:
                 me_slc=me_slc
      &       +gsq_H*gs2(i,j,k,l)*dconjg(gs3(i,j,k,l))
-     &                     *(xn**2*cf)*(2d0*cf-ca)/2d0		            
+     &                     *(xn**2*cf)*(2d0*cf-ca)/2d0                            
      &       /(g1g2b**2*g1g2t**2*g1t*g2b*g1b*g2t*(wmass**2 - 2d0*ud)**2)
                 me_slc=me_slc
      &       +gsq_H*gs3(i,j,k,l)*dconjg(gs2(i,j,k,l))
-     &                     *(xn**2*cf)*(2d0*cf-ca)/2d0		            
+     &                     *(xn**2*cf)*(2d0*cf-ca)/2d0                            
      &       /(g1g2b**2*g1g2t**2*g1t*g2b*g1b*g2t*(wmass**2 - 2d0*ud)**2)
 
 c--- LC and SLC explicit
@@ -138,7 +138,7 @@ c                  me=me-gsq_H*gs2(i,j,k,l)*dconjg(gs2(i,j,k,l))*2d0
 c     &       /(g1g2b*g1g2t*g1t*g2b*(wmass**2 - 2d0*ud))**2
 c                  me=me-gsq_H*gs3(i,j,k,l)*dconjg(gs3(i,j,k,l))*2d0
 c     &       /(g1g2b*g1g2t*g1b*g2t*(wmass**2 - 2d0*ud))**2
-	       enddo
+               enddo
             enddo
          enddo
       enddo

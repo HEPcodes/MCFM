@@ -221,18 +221,18 @@ c-----fill the helicity amplitude
          atemp4=czip
 c--------symmetrize over 3 and 4, 2 is coming from lepton line
          do j=1,2
-	    if ((ipsgen .eq. 2) .or. (ipsgen .eq. 3)) then
+            if ((ipsgen .eq. 2) .or. (ipsgen .eq. 3)) then
             m3(j)=amp_qqagg_ql(j1,hq,i2(j),h(i2(j)),i3(j),h(i3(j)),
      .                         i4(j),h(i4(j)),j5,lh,j6,j7)
             atemp3=atemp3+m3(j)
-	    endif
+            endif
          enddo
          do j=3,4
-	    if ((ipsgen .eq. 3) .or. (ipsgen .eq. 4)) then
+            if ((ipsgen .eq. 3) .or. (ipsgen .eq. 4)) then
             m4(j-2)=amp_qqagg_ql(j1,hq,i2(j),h(i2(j)),i3(j),h(i3(j)),
      .                         i4(j),h(i4(j)),j5,lh,j6,j7)
             atemp4=atemp4+m4(j-2)
-	    endif
+            endif
          enddo
          a70h3(hq,h2,h3,h4,lh)=atemp3
          a70h4(hq,h2,h3,h4,lh)=atemp4

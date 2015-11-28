@@ -28,7 +28,7 @@ c---  LO, virtual and dipole pieces for 'dirgam'
          R34=R(pin,3,4)
          
          alpha=ET3/(1d0-dcos(cone_ang))
-	 
+         
 c---- Calculate prefac for check          
          if (R34 .lt. cone_ang) then 
            passed=in_cone(R34,ET4,alpha) 
@@ -57,16 +57,16 @@ c----     2 partons cannot be unresolved at NLO
             passed = .false. 
 c---- This code is not needed
 c           if (R34 .lt. R35) then
-c	     minR=R34
-c	     maxR=R35
-c	     minET=ET4
-c	   else
-c	     minR=R35
-c	     maxR=R34
-c	     minET=ET5
-c	   endif
-c	   passed=in_cone(minR,minET,alpha)
-c	   if (passed) passed=in_cone(maxR,ET4+ET5,alpha)
+c             minR=R34
+c             maxR=R35
+c             minET=ET4
+c           else
+c             minR=R35
+c             maxR=R34
+c             minET=ET5
+c           endif
+c           passed=in_cone(minR,minET,alpha)
+c           if (passed) passed=in_cone(maxR,ET4+ET5,alpha)
          elseif (R34 .lt. cone_ang) then 
             passed=in_cone(R34,ET4,alpha) 
          elseif (R35 .lt. cone_ang) then 

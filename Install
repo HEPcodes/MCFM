@@ -55,5 +55,15 @@ if [ ! -e QCDLoop/ql/libqcdloop.a ]; then
   cd ..
 fi
 
+# Compile TensorReduction libraries if necessary
+mkdir -p TensorReduction/ov/obj
+if [ ! -e TensorReduction/pv/libpv.a ]; then
+  ls
+  echo 'Compiling TensorReduction library'
+  cd TensorReduction 
+  make
+  cd ..
+fi
+
 echo ''
 echo 'Installation complete. You may now compile MCFM by running make.'

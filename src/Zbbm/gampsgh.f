@@ -1,4 +1,4 @@
-      subroutine gampsgh(p1,p2,p3,p4,t5,t6,gg_g,gg_h)
+      subroutine gampsgh(mq,p1,p2,p3,p4,t5,t6,gg_g,gg_h)
       implicit none
       include 'constants.f'
       include 'masses.f'
@@ -7,11 +7,11 @@
       integer p1,p2,p3,p4,t5,t6
       double complex 
      . gg_g(2,2,2,2,2),gg_h(2,2,2,2,2)
-      double precision al5,al6,s125,s126,s34,s25,s16
+      double precision al5,al6,s125,s126,s34,s25,s16,mq
 
-      al5=mb**2/s(p2,t5)
+      al5=mq**2/s(p2,t5)
       s125=(1d0+al5)*s(p1,p2)+s(p1,t5)+s(p2,t5)
-      al6=mb**2/s(p1,t6)
+      al6=mq**2/s(p1,t6)
       s126=(1d0+al6)*s(p1,p2)+s(p1,t6)+s(p2,t6)
       s34=s(p3,p4)
       s25=s(p2,t5)
@@ -62,19 +62,19 @@ c      include 'gg2m.f'
  
       gg_g(2,1,1,1,1)=+ za(p1,t6)*za(p2,p3)*zb(p1,p4)*zb(p2,t5)
      . /zb(p1,p2)/zb(p1,p2)
-     . * (mb**2/s34/s126/s25)
+     . * (mq**2/s34/s126/s25)
  
       gg_g(2,1,1,2,1)=+za(p1,t6)*za(p3,t5)*zb(p1,p4)/zb(p1,p2)/zb(p1,p2)
-     . * (mb/s34/s126)
+     . * (mq/s34/s126)
  
       gg_g(2,1,1,1,2)=
      . +za(p1,t6)*za(p2,p3)*zb(p1,t6)*zb(p2,t5)*zb(p4,t6)
      . /zb(p1,p2)/zb(p1,p2)
-     . * (- mb/s34/s126/s25)
+     . * (- mq/s34/s126/s25)
  
      . +za(p2,p3)*za(p1,p2)*zb(p1,t6)*zb(p2,p4)*zb(p2,t5)
      . /zb(p1,p2)/zb(p1,p2)
-     . * (mb/s34/s126/s25)
+     . * (mq/s34/s126/s25)
  
       gg_g(2,2,2,2,2)=+ za(p1,t6)*za(p3,t5)*zb(p1,t6)*zb(p4,t6)
      . /za(p1,p2)/za(p1,p2)
@@ -85,22 +85,22 @@ c      include 'gg2m.f'
  
       gg_g(2,2,2,1,1)=+ za(p1,t6)*za(p2,p3)*zb(p1,p4)*zb(p2,t5)
      . /za(p1,p2)/za(p1,p2)
-     . * (mb**2/s34/s126/s25)
+     . * (mq**2/s34/s126/s25)
  
       gg_g(2,2,2,2,1)=+za(p1,t6)*za(p3,t5)*zb(p1,p4)/za(p1,p2)/za(p1,p2)
-     . * (mb/s34/s126)
+     . * (mq/s34/s126)
  
       gg_g(2,2,2,1,2)=
      . +za(p1,t6)*za(p2,p3)*zb(p1,t6)*zb(p2,t5)*zb(p4,t6)
      . /za(p1,p2)/za(p1,p2)
-     . * (- mb/s34/s126/s25)
+     . * (- mq/s34/s126/s25)
  
      . +za(p2,p3)*zb(p1,t6)*zb(p2,p4)*zb(p2,t5)/za(p1,p2)
-     . * (mb/s34/s126/s25)
+     . * (mq/s34/s126/s25)
  
       gg_g(1,1,1,2,2)=+ za(p1,p3)*za(p2,t5)*zb(p1,t6)*zb(p2,p4)
      . /zb(p1,p2)/zb(p1,p2)
-     . * (mb**2/s34/s126/s25)
+     . * (mq**2/s34/s126/s25)
  
       gg_g(1,1,1,1,1)=+ za(p1,t6)*za(p2,p3)*zb(p4,t5)/zb(p1,p2)
      . * (1d0/s34/s126)
@@ -110,19 +110,19 @@ c      include 'gg2m.f'
  
       gg_g(1,1,1,2,1)=
      . +za(p1,t6)*za(p2,p3)*za(p2,t5)*zb(p2,p4)/zb(p1,p2)
-     . * (mb/s34/s126/s25)
+     . * (mq/s34/s126/s25)
  
      . +za(p1,t6)*za(p3,t6)*za(p2,t5)*zb(p1,t6)*zb(p2,p4)
      . /zb(p1,p2)/zb(p1,p2)
-     . * (- mb/s34/s126/s25)
+     . * (- mq/s34/s126/s25)
  
       gg_g(1,1,1,1,2)=+ za(p1,p3)*zb(p1,t6)*zb(p4,t5)
      . /zb(p1,p2)/zb(p1,p2)
-     . * (mb/s34/s126)
+     . * (mq/s34/s126)
  
       gg_g(1,2,2,2,2)=+ za(p1,p3)*za(p2,t5)*zb(p1,t6)*zb(p2,p4)
      . /za(p1,p2)/za(p1,p2)
-     . * (mb**2/s34/s126/s25)
+     . * (mq**2/s34/s126/s25)
  
       gg_g(1,2,2,1,1)=
      . +za(p1,t6)*za(p2,p3)*zb(p1,p2)*zb(p4,t5)/za(p1,p2)/za(p1,p2)
@@ -134,15 +134,15 @@ c      include 'gg2m.f'
       gg_g(1,2,2,2,1)=
      . +za(p1,t6)*za(p2,p3)*za(p2,t5)*zb(p1,p2)*zb(p2,p4)
      . /za(p1,p2)/za(p1,p2)
-     . * (mb/s34/s126/s25)
+     . * (mq/s34/s126/s25)
  
      . +za(p1,t6)*za(p3,t6)*za(p2,t5)*zb(p1,t6)*zb(p2,p4)
      . /za(p1,p2)/za(p1,p2)
-     . * (- mb/s34/s126/s25)
+     . * (- mq/s34/s126/s25)
  
       gg_g(1,2,2,1,2)=+ za(p1,p3)*zb(p1,t6)*zb(p4,t5)
      . /za(p1,p2)/za(p1,p2)
-     . * (mb/s34/s126)
+     . * (mq/s34/s126)
  
 
 c      include 'hh2m.f'
@@ -181,146 +181,146 @@ c      include 'hh2m.f'
  
       gg_h(2,1,1,2,2)=
      . +za(p1,p3)*za(p2,t5)*zb(p4,t6)/zb(p1,p2)
-     . * (mb**2/s34/s125/s25)
+     . * (mq**2/s34/s125/s25)
  
      . +za(p2,p3)*za(p1,t5)*zb(p4,t6)/zb(p1,p2)
-     . * (- mb**2/s34/s125/s25 -1d0/s34/s125)
+     . * (- mq**2/s34/s125/s25 -1d0/s34/s125)
  
      . +za(p3,t5)*za(p1,t5)*zb(p1,t5)*zb(p4,t6)/zb(p1,p2)/zb(p1,p2)
      . * (1d0/s34/s125)
  
       gg_h(2,1,1,1,1)=
      . +za(p1,t6)*za(p1,p3)*zb(p1,p4)*zb(p1,t5)/zb(p1,p2)/zb(p1,p2)
-     . * (- mb**2/s34/s125/s16)
+     . * (- mq**2/s34/s125/s16)
  
      . +za(p1,t6)*za(p2,p3)*za(p1,p2)*zb(p1,p4)*zb(p2,t5)/zb(p1,p2)
-     . * (mb**2/s34/s125/s16/s25 + mb**4/s34/s125/s16
+     . * (mq**2/s34/s125/s16/s25 + mq**4/s34/s125/s16
      . /s25**2)
  
      . +za(p1,t6)*za(p3,t5)*za(p1,p2)*zb(p1,p4)*zb(p1,t5)*zb(p2,t5)
      . /zb(p1,p2)/zb(p1,p2)
-     . * (- mb**2/s34/s125/s16/s25)
+     . * (- mq**2/s34/s125/s16/s25)
  
       gg_h(2,1,1,2,1)=
      . +za(p1,t6)*za(p1,p3)*za(p2,t5)*zb(p1,p4)/zb(p1,p2)
-     . * (mb**3/s34/s125/s16/s25)
+     . * (mq**3/s34/s125/s16/s25)
  
      . +za(p1,t6)*za(p2,p3)*za(p1,t5)*zb(p1,p4)/zb(p1,p2)
-     . * (- mb/s34/s125/s16 - mb**3/s34/s125/s16/s25)
+     . * (- mq/s34/s125/s16 - mq**3/s34/s125/s16/s25)
  
      . +za(p1,t6)*za(p3,t5)*za(p1,t5)*zb(p1,p4)*zb(p1,t5)
      . /zb(p1,p2)/zb(p1,p2)
-     . * (mb/s34/s125/s16)
+     . * (mq/s34/s125/s16)
  
       gg_h(2,1,1,1,2)=
      . +za(p1,p3)*zb(p1,t5)*zb(p4,t6)/zb(p1,p2)/zb(p1,p2)
-     . * (- mb/s34/s125)
+     . * (- mq/s34/s125)
  
      . +za(p2,p3)*za(p1,p2)*zb(p2,t5)*zb(p4,t6)/zb(p1,p2)
-     . * (mb/s34/s125/s25 + mb**3/s34/s125/s25**2)
+     . * (mq/s34/s125/s25 + mq**3/s34/s125/s25**2)
  
      . +za(p3,t5)*za(p1,p2)*zb(p1,t5)*zb(p2,t5)*zb(p4,t6)
      . /zb(p1,p2)/zb(p1,p2)
-     . * (- mb/s34/s125/s25)
+     . * (- mq/s34/s125/s25)
  
       gg_h(2,2,2,2,2)=
      . +za(p1,p3)*za(p2,t5)*zb(p1,p2)*zb(p4,t6)/za(p1,p2)/za(p1,p2)
-     . * (mb**2/s34/s125/s25)
+     . * (mq**2/s34/s125/s25)
  
      . +za(p2,p3)*za(p1,t5)*zb(p1,p2)*zb(p4,t6)/za(p1,p2)/za(p1,p2)
-     . * (- mb**2/s34/s125/s25 -1d0/s34/s125)
+     . * (- mq**2/s34/s125/s25 -1d0/s34/s125)
  
      . +za(p3,t5)*za(p1,t5)*zb(p1,t5)*zb(p4,t6)/za(p1,p2)/za(p1,p2)
      . * (1d0/s34/s125)
  
       gg_h(2,2,2,1,1)=
      . +za(p1,t6)*za(p1,p3)*zb(p1,p4)*zb(p1,t5)/za(p1,p2)/za(p1,p2)
-     . * (- mb**2/s34/s125/s16)
+     . * (- mq**2/s34/s125/s16)
  
      . +za(p1,t6)*za(p2,p3)*zb(p1,p2)*zb(p1,p4)*zb(p2,t5)/za(p1,p2)
-     . * (mb**2/s34/s125/s16/s25 + mb**4/s34/s125/s16
+     . * (mq**2/s34/s125/s16/s25 + mq**4/s34/s125/s16
      . /s25**2)
  
      . +za(p1,t6)*za(p3,t5)*zb(p1,p4)*zb(p1,t5)*zb(p2,t5)/za(p1,p2)
-     . * (- mb**2/s34/s125/s16/s25)
+     . * (- mq**2/s34/s125/s16/s25)
  
       gg_h(2,2,2,2,1)=
      . +za(p1,t6)*za(p1,p3)*za(p2,t5)*zb(p1,p2)*zb(p1,p4)
      . /za(p1,p2)/za(p1,p2)
-     . * (mb**3/s34/s125/s16/s25)
+     . * (mq**3/s34/s125/s16/s25)
  
      . +za(p1,t6)*za(p2,p3)*za(p1,t5)*zb(p1,p2)*zb(p1,p4)
      . /za(p1,p2)/za(p1,p2)
-     . * (- mb/s34/s125/s16 - mb**3/s34/s125/s16/s25)
+     . * (- mq/s34/s125/s16 - mq**3/s34/s125/s16/s25)
  
      . +za(p1,t6)*za(p3,t5)*za(p1,t5)*zb(p1,p4)*zb(p1,t5)
      . /za(p1,p2)/za(p1,p2)
-     . * (mb/s34/s125/s16)
+     . * (mq/s34/s125/s16)
  
       gg_h(2,2,2,1,2)=
      . +za(p1,p3)*zb(p1,t5)*zb(p4,t6)/za(p1,p2)/za(p1,p2)
-     . * (- mb/s34/s125)
+     . * (- mq/s34/s125)
  
      . +za(p2,p3)*zb(p1,p2)*zb(p2,t5)*zb(p4,t6)/za(p1,p2)
-     . * (mb/s34/s125/s25 + mb**3/s34/s125/s25**2)
+     . * (mq/s34/s125/s25 + mq**3/s34/s125/s25**2)
  
      . +za(p3,t5)*zb(p1,t5)*zb(p2,t5)*zb(p4,t6)/za(p1,p2)
-     . * (- mb/s34/s125/s25)
+     . * (- mq/s34/s125/s25)
  
       gg_h(1,1,1,2,2)=
      . +za(p1,p3)*za(p1,t5)*za(p2,t5)*zb(p1,t6)*zb(p4,t5)/zb(p1,p2)
-     . * (- mb**2/s34/s125/s16/s25)
+     . * (- mq**2/s34/s125/s16/s25)
  
      . +za(p1,p3)*za(p1,t5)*zb(p1,p4)*zb(p1,t6)/zb(p1,p2)/zb(p1,p2)
-     . * (- mb**2/s34/s125/s16)
+     . * (- mq**2/s34/s125/s16)
  
      . +za(p1,p3)*za(p2,t5)*za(p1,p2)*zb(p1,t6)*zb(p2,p4)/zb(p1,p2)
-     . * (mb**2/s34/s125/s16/s25 + mb**4/s34/s125/s16
+     . * (mq**2/s34/s125/s16/s25 + mq**4/s34/s125/s16
      . /s25**2)
  
       gg_h(1,1,1,1,1)=
      . +za(p3,t6)*za(p1,p2)*zb(p1,p4)*zb(p2,t5)/zb(p1,p2)/zb(p1,p2)
-     . * (mb**2/s34/s125/s25)
+     . * (mq**2/s34/s125/s25)
  
      . +za(p3,t6)*za(p1,p2)*zb(p1,t5)*zb(p2,p4)/zb(p1,p2)/zb(p1,p2)
-     . * (- mb**2/s34/s125/s25 -1d0/s34/s125)
+     . * (- mq**2/s34/s125/s25 -1d0/s34/s125)
  
      . +za(p3,t6)*za(p1,t5)*zb(p1,t5)*zb(p4,t5)/zb(p1,p2)/zb(p1,p2)
      . * (1d0/s34/s125)
  
       gg_h(1,1,1,2,1)=
      . +za(p3,t6)*za(p1,t5)*za(p2,t5)*zb(p4,t5)/zb(p1,p2)
-     . * (- mb/s34/s125/s25)
+     . * (- mq/s34/s125/s25)
  
      . +za(p3,t6)*za(p1,t5)*zb(p1,p4)/zb(p1,p2)/zb(p1,p2)
-     . * (- mb/s34/s125)
+     . * (- mq/s34/s125)
  
      . +za(p3,t6)*za(p2,t5)*za(p1,p2)*zb(p2,p4)/zb(p1,p2)
-     . * (mb/s34/s125/s25 + mb**3/s34/s125/s25**2)
+     . * (mq/s34/s125/s25 + mq**3/s34/s125/s25**2)
  
       gg_h(1,1,1,1,2)=
      . +za(p1,p3)*za(p1,p2)*zb(p1,p4)*zb(p1,t6)*zb(p2,t5)
      . /zb(p1,p2)/zb(p1,p2)
-     . * (mb**3/s34/s125/s16/s25)
+     . * (mq**3/s34/s125/s16/s25)
  
      . +za(p1,p3)*za(p1,p2)*zb(p1,t5)*zb(p1,t6)*zb(p2,p4)
      . /zb(p1,p2)/zb(p1,p2)
-     . * (- mb/s34/s125/s16 - mb**3/s34/s125/s16/s25)
+     . * (- mq/s34/s125/s16 - mq**3/s34/s125/s16/s25)
  
      . +za(p1,p3)*za(p1,t5)*zb(p1,t5)*zb(p1,t6)*zb(p4,t5)
      . /zb(p1,p2)/zb(p1,p2)
-     . * (mb/s34/s125/s16)
+     . * (mq/s34/s125/s16)
  
       gg_h(1,2,2,2,2)=
      . +za(p1,p3)*za(p1,t5)*za(p2,t5)*zb(p1,p2)*zb(p1,t6)*zb(p4,t5)
      . /za(p1,p2)/za(p1,p2)
-     . * (- mb**2/s34/s125/s16/s25)
+     . * (- mq**2/s34/s125/s16/s25)
  
      . +za(p1,p3)*za(p1,t5)*zb(p1,p4)*zb(p1,t6)/za(p1,p2)/za(p1,p2)
-     . * (- mb**2/s34/s125/s16)
+     . * (- mq**2/s34/s125/s16)
  
      . +za(p1,p3)*za(p2,t5)*zb(p1,p2)*zb(p1,t6)*zb(p2,p4)/za(p1,p2)
-     . * (mb**2/s34/s125/s16/s25 + mb**4/s34/s125/s16
+     . * (mq**2/s34/s125/s16/s25 + mq**4/s34/s125/s16
      . /s25**2)
  
       gg_h(1,2,2,1,1)=
@@ -328,32 +328,32 @@ c      include 'hh2m.f'
      . * (1d0/s34/s125)
  
      . +za(p3,t6)*zb(p1,p4)*zb(p2,t5)/za(p1,p2)
-     . * (mb**2/s34/s125/s25)
+     . * (mq**2/s34/s125/s25)
  
      . +za(p3,t6)*zb(p1,t5)*zb(p2,p4)/za(p1,p2)
-     . * (- mb**2/s34/s125/s25 -1d0/s34/s125)
+     . * (- mq**2/s34/s125/s25 -1d0/s34/s125)
  
       gg_h(1,2,2,2,1)=
      . +za(p3,t6)*za(p1,t5)*za(p2,t5)*zb(p1,p2)*zb(p4,t5)
      . /za(p1,p2)/za(p1,p2)
-     . * (- mb/s34/s125/s25)
+     . * (- mq/s34/s125/s25)
  
      . +za(p3,t6)*za(p1,t5)*zb(p1,p4)/za(p1,p2)/za(p1,p2)
-     . * (- mb/s34/s125)
+     . * (- mq/s34/s125)
  
      . +za(p3,t6)*za(p2,t5)*zb(p1,p2)*zb(p2,p4)/za(p1,p2)
-     . * (mb/s34/s125/s25 + mb**3/s34/s125/s25**2)
+     . * (mq/s34/s125/s25 + mq**3/s34/s125/s25**2)
  
       gg_h(1,2,2,1,2)=
      . +za(p1,p3)*za(p1,t5)*zb(p1,t5)*zb(p1,t6)*zb(p4,t5)
      . /za(p1,p2)/za(p1,p2)
-     . * (mb/s34/s125/s16)
+     . * (mq/s34/s125/s16)
  
      . +za(p1,p3)*zb(p1,p4)*zb(p1,t6)*zb(p2,t5)/za(p1,p2)
-     . * (mb**3/s34/s125/s16/s25)
+     . * (mq**3/s34/s125/s16/s25)
  
      . +za(p1,p3)*zb(p1,t5)*zb(p1,t6)*zb(p2,p4)/za(p1,p2)
-     . * (- mb/s34/s125/s16 - mb**3/s34/s125/s16/s25)
+     . * (- mq/s34/s125/s16 - mq**3/s34/s125/s16/s25)
  
 
  

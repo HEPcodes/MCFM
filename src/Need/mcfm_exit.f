@@ -9,14 +9,13 @@
       include 'process.f'
       include 'PDFerrors.f'
       include 'part.f'
+      include 'outputflags.f'
       integer j,k,itmx
       double precision xinteg,xinteg_err,minPDFxsec,maxPDFxsec
       double precision PDFerror,PDFperror,PDFnerror
       double precision lord_bypart(-1:1,-1:1),lordnorm,rescale
       double precision ggpart,gqpart,qgpart,qqpart,qqbpart,
      . gqbpart,qbgpart,qbqbpart,qbqpart
-      logical creatent,dswhisto
-      common/outputflags/creatent,dswhisto
       common/bypart/lord_bypart
       common/finalpart/ggpart,gqpart,qgpart,qqpart,qqbpart
 
@@ -41,9 +40,9 @@ c---  normalized by sigma(gg->H, finite mt)/sigma(gg->H, mt-> infinity)
      &  .and. (case .ne. 'HZZ_tb') ) then
         call finitemtcorr(rescale)
         write(6,*)
-	write(6,*) 'Cross section normalized by the ratio'
-	write(6,*) 'sigma(gg->H, finite mt)/sigma(gg->H, mt-> infinity)'
-	write(6,*) '(i.e. exact for gg->H process, but '//
+      write(6,*) 'Cross section normalized by the ratio'
+      write(6,*) 'sigma(gg->H, finite mt)/sigma(gg->H, mt-> infinity)'
+      write(6,*) '(i.e. exact for gg->H process, but '//
      .               'approx. for gg->H+n jets, n=1,2,3)'
         write(6,*)
         write(6,53)' Rescaled ',part,' integral is',
@@ -130,12 +129,12 @@ c--- (called "HEPDATA" method below)
             PDFerror=PDFerror+(PDFxsec(j)-PDFxsec(j+1))**2
           endif
         enddo
-	PDFperror=0d0
-	PDFnerror=0d0
-	do j=1,maxPDFsets-1,2
-	  PDFperror=PDFperror+max(
+      PDFperror=0d0
+      PDFnerror=0d0
+      do j=1,maxPDFsets-1,2
+        PDFperror=PDFperror+max(
      .     PDFxsec(j)-PDFxsec(0),PDFxsec(j+1)-PDFxsec(0),0d0)**2
-	  PDFnerror=PDFnerror+max(
+        PDFnerror=PDFnerror+max(
      .     PDFxsec(0)-PDFxsec(j),PDFxsec(0)-PDFxsec(j+1),0d0)**2
         enddo
         PDFerror=0.5d0*dsqrt(PDFerror)
@@ -159,9 +158,9 @@ c---  (see Appendix B of arXiv:0808.1231 [hep-ph])
         write(6,58) '* --------------- SUMMARY ---------------- *'
         write(6,58) '*                                          *'
         write(6,58) '*            HEPDATA prescription          *'
-	write(6,58) '*     (see, for example Eqn. (43) of       *'
-	write(6,58) '*      J.Campbell, J.Huston, W.J.Stirling, *'
-	write(6,58) '*      Rep. Prog. Phys. 70 (2007) 89)      *'
+      write(6,58) '*     (see, for example Eqn. (43) of       *'
+      write(6,58) '*      J.Campbell, J.Huston, W.J.Stirling, *'
+      write(6,58) '*      Rep. Prog. Phys. 70 (2007) 89)      *'
         write(6,58) '*                                          *'
         write(6,57) 'Minimum value',minPDFxsec
         write(6,57) 'Central value',PDFxsec(0)
@@ -185,9 +184,9 @@ c---  (see Appendix B of arXiv:0808.1231 [hep-ph])
         write(91,58) '* --------------- SUMMARY ---------------- *'
         write(91,58) '*                                          *'
         write(91,58) '*            HEPDATA prescription          *'
-	write(91,58) '*     (see, for example Eqn. (43) of       *'
-	write(91,58) '*      J.Campbell, J.Huston, W.J.Stirling, *'
-	write(91,58) '*      Rep. Prog. Phys. 70 (2007) 89)      *'
+      write(91,58) '*     (see, for example Eqn. (43) of       *'
+      write(91,58) '*      J.Campbell, J.Huston, W.J.Stirling, *'
+      write(91,58) '*      Rep. Prog. Phys. 70 (2007) 89)      *'
         write(91,58) '*                                          *'
         write(91,57) 'Minimum value',minPDFxsec
         write(91,57) 'Central value',PDFxsec(0)

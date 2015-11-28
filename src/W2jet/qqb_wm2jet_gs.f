@@ -1490,7 +1490,7 @@ C------- Qbar-G
           endif
           if (jj(j) .eq. -2) then
           Vckm=Vsq(j,-j-1)
-	  msq(23,j,k)=msq(23,j,k)+
+          msq(23,j,k)=msq(23,j,k)+
      .      sub27_1(qg)*(aveqg/aveqq)*(xn-xninv )*(
      .     +m27_1x(0,-2,-2,-2,-1)*Vckm
      .     +m27_1x(0,-2,-3,-1,-3)*Vckm*dfloat(nf-2)

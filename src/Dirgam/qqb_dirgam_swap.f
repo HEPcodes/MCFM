@@ -53,9 +53,9 @@ C--ga
 
 !--- restore p4 and p3
 !      do j=1,4
-!	 ptemp(j)=p(3,j)
-!	 p(3,j)=p(4,j)
-!	 p(4,j)=ptemp(j)
+!         ptemp(j)=p(3,j)
+!         p(3,j)=p(4,j)
+!         p(4,j)=ptemp(j)
 !      enddo
 
 

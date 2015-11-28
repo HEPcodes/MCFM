@@ -31,7 +31,7 @@ c---- with all 2 pi's (ie 1/(2*pi)^11)
 c--- the parameters above are appropriate for W+t processes only
       if (case .eq. 'W_cwdk') then
         smin=zip
-	s3min=mc**2
+      s3min=mc**2
       endif
 
 

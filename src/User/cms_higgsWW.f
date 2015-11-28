@@ -36,23 +36,23 @@ c      eta_max_s=2.5d0
 
 !      if (hmass .lt. 160d0) then
 !        pth=25d0
-!	pts=20d0
-!	mllmax=45d0
-!	phimax=60d0
+!        pts=20d0
+!        mllmax=45d0
+!        phimax=60d0
 !      endif
       
 !      if (hmass .gt. 180d0) then
 !        pth=40d0
-!	pts=25d0
-!	mllmax=90d0
-!	phimax=100d0
+!        pts=25d0
+!        mllmax=90d0
+!        phimax=100d0
 !      endif
       
 !      if (hmass .gt. 380d0) then
 !        pth=90d0
-!	pts=25d0!
-!	mllmax=300d0
-!	phimax=175d0
+!        pts=25d0!
+!        mllmax=300d0
+!        phimax=175d0
 !      endif
 
       call HWW_cuts_params(hmass)

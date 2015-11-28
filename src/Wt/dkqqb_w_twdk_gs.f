@@ -41,7 +41,7 @@ c                            --> e^-(p3) + nubar(p4)
       y=2d0*pbDpg/mt**2/(1d0-xr)**2
       if ((z .lt. 1d0-aff) .and. (y .gt. aff*ymax)) then
         incldip(1)=.false.
-	return
+        return
       endif
 
       call qqb_w_twdk(q,msq) 

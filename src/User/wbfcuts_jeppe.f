@@ -22,11 +22,11 @@ c--- check for pairs of jets
         if (  (plabel(j) .eq. 'pp') .or. (plabel(j) .eq. 'qj')
      .   .or. (plabel(j) .eq. 'bq') .or. (plabel(j) .eq. 'ba')) j1=j
         do k=j+1,maxparts
-	  j2=0
+        j2=0
           if (  (plabel(k) .eq. 'pp') .or. (plabel(k) .eq. 'qj')
      .   .  or. (plabel(k) .eq. 'bq') .or. (plabel(k) .eq. 'ba')) j2=k
 c--- only look at jet-jet combinations
-	  if (( j1 .eq. 0) .or. (j2 .eq. 0)) goto 77
+        if (( j1 .eq. 0) .or. (j2 .eq. 0)) goto 77
 
 c--- now do cuts
           etaj1=etarap(j1,p)
@@ -37,9 +37,10 @@ c--- and ensure also that they jets lie in opposite hemispheres
       if ((abs(etaj1-etaj2) .gt. 4.2d0) .and. (etaj1*etaj2 .le. 0d0))
      .  goto 999      
       
-	
-   77   continue	
-	enddo
+      
+   77   continue      
+      
+      enddo
       enddo
       
 

@@ -48,7 +48,7 @@
         endif
       else
         write(6,*) 'Unknown isolation parameter: imode=',imode
-	stop
+        stop
       endif
          
 

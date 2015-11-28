@@ -90,11 +90,11 @@ c--- construct the massless momenta a la Rodrigo
       betasq=1d0-4d0*mQsq/s56
       if (betasq .ge. 0d0) then
         bp=0.5d0*(1d0+dsqrt(betasq))
-	bm=1d0-bp
+        bm=1d0-bp
       else
         write(6,*) 'betasq < 0 in qqb_ttw_v.f, betasq=',betasq
-	call flush(6)
-	stop
+        call flush(6)
+        stop
       endif
       do nu=1,4
       mom(5,nu)=(bp*q(5,nu)-bm*q(6,nu))/dsqrt(betasq)

@@ -25,10 +25,10 @@ c--F  3-jet veto to match with ATLAS analysis. In general we do not want such a 
 c---  20 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4)) +b(p5)+b~(p6) [massive]'
       if ((nproc .eq. 20) .or. (nproc .eq. 25)) then
         if (jets .lt. 2) then
-	  filterWbbmas=.false.
-	  return
+          filterWbbmas=.false.
+          return
 c--- note: jets should already contain bq and ba because of bbproc
-	endif
+        endif
       endif
 
 c--  New final state slicing: Wb, W(bb~), Wbb
@@ -110,66 +110,66 @@ c--- The functionality is (mostly) replicated in processes 520-527.
 cc--- 420 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4))+b(p5) [1 or 2 jets only]'
 c      if ((nproc .eq. 420) .or. (nproc .eq. 425)) then
 c        if ((jets .gt. 2) .or. (jets .lt. 1)) then
-c	  filterWbbmas=.false.
-c	  return
-c	endif
-c	if ((inclusive .eqv. .false.) .and. (jets .eq. 2)) then
-c	  filterWbbmas=.false.
-c	  return
-c	endif
-c	if (jets .eq. 1) then
-c	 if ((jetlabel(1) .ne. 'bq') .and. (jetlabel(1) .ne. 'ba')) then
-c	    filterWbbmas=.false.
-c	    return
-c	  endif
-c	endif
-c	if (jets .eq. 2) then
-c	  if ((jetlabel(1) .eq. 'bb') .or. (jetlabel(2) .eq. 'bb')) then
-c	    filterWbbmas=.false.
-c	    return
-c	  endif
-c	endif
+c          filterWbbmas=.false.
+c          return
+c        endif
+c        if ((inclusive .eqv. .false.) .and. (jets .eq. 2)) then
+c          filterWbbmas=.false.
+c          return
+c        endif
+c        if (jets .eq. 1) then
+c         if ((jetlabel(1) .ne. 'bq') .and. (jetlabel(1) .ne. 'ba')) then
+c            filterWbbmas=.false.
+c            return
+c          endif
+c        endif
+c        if (jets .eq. 2) then
+c          if ((jetlabel(1) .eq. 'bb') .or. (jetlabel(2) .eq. 'bb')) then
+c            filterWbbmas=.false.
+c            return
+c          endif
+c        endif
 c      endif
 c      
 cc--- 421 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4))+(b+b~)(p5) [1 or 2 jets only]'
 c      if ((nproc .eq. 421) .or. (nproc .eq. 426)) then
 c        if ((jets .gt. 2) .or. (jets .lt. 1)) then
-c	  filterWbbmas=.false.
-c	  return
-c	endif
-c	if ((inclusive .eqv. .false.) .and. (jets .eq. 2)) then
-c	  filterWbbmas=.false.
-c	  return
-c	endif
-c	if (jets .eq. 1) then
-c	  if ((jetlabel(1) .ne. 'bb')) then
-c	    filterWbbmas=.false.
-c	    return
-c	  endif
-c	endif
-c	if (jets .eq. 2) then
+c          filterWbbmas=.false.
+c          return
+c        endif
+c        if ((inclusive .eqv. .false.) .and. (jets .eq. 2)) then
+c          filterWbbmas=.false.
+c          return
+c        endif
+c        if (jets .eq. 1) then
+c          if ((jetlabel(1) .ne. 'bb')) then
+c            filterWbbmas=.false.
+c            return
+c          endif
+c        endif
+c        if (jets .eq. 2) then
 c         if ((jetlabel(1) .ne. 'bb') .and. (jetlabel(2) .ne. 'bb')) then
-c	    filterWbbmas=.false.
-c	    return
-c	 endif
-c	endif
+c            filterWbbmas=.false.
+c            return
+c         endif
+c        endif
 c      endif
 c      
 cc--- 422 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4))+b(p5)+jet(p6) [2 or 3 jets only]'
 c      if ((nproc .eq. 422) .or. (nproc .eq. 427)) then
 c        if (jets .lt. 2) then
-c	  filterWbbmas=.false.
-c	  return
-c	endif
-c	if ((inclusive .eqv. .false.) .and. (jets .eq. 3)) then
-c	  filterWbbmas=.false.
-c	  return
-c	endif
-c	if (jets .eq. 2) then
-c	  if ((jetlabel(1) .eq. 'bb') .or. (jetlabel(2) .eq. 'bb')) then
-c	    filterWbbmas=.false.
-c	    return
-c	  endif
-c	endif
+c          filterWbbmas=.false.
+c          return
+c        endif
+c        if ((inclusive .eqv. .false.) .and. (jets .eq. 3)) then
+c          filterWbbmas=.false.
+c          return
+c        endif
+c        if (jets .eq. 2) then
+c          if ((jetlabel(1) .eq. 'bb') .or. (jetlabel(2) .eq. 'bb')) then
+c            filterWbbmas=.false.
+c            return
+c          endif
+c        endif
 c      endif
 

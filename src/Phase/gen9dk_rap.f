@@ -16,7 +16,7 @@
       
       if (first) then
         decay1q2a=1
-	first=.false.
+        first=.false.
       endif
 
 c--- alternate radiation between decay of top (=1) and antitop (=2) quarks
@@ -70,7 +70,7 @@ c--- from top and anti-top quarks at the same time
           p(6,nu)=bm(nu)
           p(7,nu)=ep(nu)
           p(8,nu)=nn(nu)
-	endif
+        endif
         p(9,nu)=n(nu)
         p(10,nu)=e(nu)      
         p(11,nu)=g(nu)

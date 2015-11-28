@@ -52,7 +52,7 @@ c--- initialize
      &       *fourpi*alphas(b2scale,amz,nlooprun)
       else
         fac1=aveqg*2d0*xn**2*Cf*gsq_H*gwsq**2
-	fac2=fac1
+        fac2=fac1
       endif
       
 
@@ -62,14 +62,14 @@ c      fac=fac*(1d0-as_H/2d0/pi*2d0/3d0*log(renscale_H/facscale_H))
 c--- set mass of quark and antiquark according to nwz
       if (nwz .eq. +1) then
         mq=mt
-	ma=mb
-	i3=3
-	i4=4
+        ma=mb
+        i3=3
+        i4=4
       else
         mq=mb
-	ma=mt
-	i3=4
-	i4=3
+        ma=mt
+        i3=4
+        i4=3
       endif
 
 c--- propagator for qg and qbarg amplitudes
@@ -102,10 +102,10 @@ c--- now square up amplitudes and add propagators
 
 c--- fill matrix elements
       do j=1,4
-	msq(+j,0)=fac2*Vsum(+j)*msq_qg
-	msq(-j,0)=fac2*Vsum(-j)*msq_qbarg
-	msq(0,+j)=fac1*Vsum(+j)*msq_gq
-	msq(0,-j)=fac1*Vsum(-j)*msq_gqbar
+        msq(+j,0)=fac2*Vsum(+j)*msq_qg
+        msq(-j,0)=fac2*Vsum(-j)*msq_qbarg
+        msq(0,+j)=fac1*Vsum(+j)*msq_gq
+        msq(0,-j)=fac1*Vsum(-j)*msq_gqbar
       enddo
       
 c--- normal return is here 
@@ -203,8 +203,8 @@ c---  momenta to be permuted according to i1,i2,i5
       double complex amps(2,2,2)
       
       do j=1,4
-	q(1,j)=p(i1,j)
-	q(2,j)=p(i2,j)
+        q(1,j)=p(i1,j)
+        q(2,j)=p(i2,j)
         q(3,j)=p(i3,j)-mh**2/2d0/dot(p,i2,i3)*p(i2,j)
         q(4,j)=p(i4,j)-ml**2/2d0/dot(p,i2,i4)*p(i2,j)
         q(5,j)=p(i5,j)

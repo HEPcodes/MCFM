@@ -180,13 +180,13 @@ c---  J.Campbell, J.Huston, W.J. Stirling, Rep. Prog. Phys. 70 (2007) 89
 
 c--- loop over all PDF sets
       DO J=1,NBIN(N)
-	PDFperror=0d0
-	PDFnerror=0d0
+        PDFperror=0d0
+        PDFnerror=0d0
         DO K=1,maxPDFsets-1,2      
         IF(EHIST(NMATCH,K,J).ne.0.) then
-	  PDFperror=PDFperror+max(0d0,
-     .     EHIST(NMATCH,K,J)-HIST(N,J),EHIST(NMATCH,K+1,J)-HIST(N,J))**2
-	  PDFnerror=PDFnerror+max(0d0,
+          PDFperror=PDFperror+max(0d0,
+     .    EHIST(NMATCH,K,J)-HIST(N,J),EHIST(NMATCH,K+1,J)-HIST(N,J))**2
+          PDFnerror=PDFnerror+max(0d0,
      .     HIST(N,J)-EHIST(NMATCH,K,J),HIST(N,J)-EHIST(NMATCH,K+1,J))**2
         ENDIF
         ENDDO

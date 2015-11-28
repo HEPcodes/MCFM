@@ -27,7 +27,7 @@ c---  averaged(summed) over initial(final) colours and spins
       integer j,k
       double precision p(mxpart,4),qdks(mxpart,4)
       double precision msqv(-nf:nf,-nf:nf),msq(-nf:nf,-nf:nf)
-      double precision facnlo,ave,cotw
+      double precision facnlo,ave,cotw,wwflag
       double precision FAC,FACM
       double complex AWZM,AWZP,BWZM,BWZP,Vpole,Vpole12,suppl
       double complex prop12,prop34,prop56
@@ -47,7 +47,7 @@ c---  averaged(summed) over initial(final) colours and spins
       double complex Fa345621,Fa341265,Fa653412
 c      double complex Fa561243,Fa562143
       double precision v2(2),cl1,cl2,en1,en2,xfac
-      double complex ZgL(-nf:nf),ZgR(-nf:nf)
+      double complex ZgL(1:nf),ZgR(1:nf)
       parameter(ave=0.25d0/xn)
       data cl1,cl2,en1,en2/4*1d0/
 
@@ -75,6 +75,13 @@ c      double complex Fa561243,Fa562143
       v2(2)=r1
       cotw=dsqrt((one-xw)/xw)
 
+c--- wwflag=1 for most cases, indicating presence of diagram with 2 W's
+      wwflag=1d0
+c--- but for Z -> bbbar this diagram contains |V_tb|**2 which we take 0
+      if (plabel(5) .eq. 'bq') then    
+        wwflag=0d0
+      endif
+      
 c-- if Z -> neutrinos, we need to switch c1 and c2
       if (plabel(5) .eq. 'nl') then
         cl1=1d0-cl1
@@ -230,7 +237,7 @@ c---loop diagrams just tree*Vpole since they're all triangle-type
 
 c---set up left/right handed couplings for both Z and gamma*
 c---note that L/R labels the LEPTON coupling v2, NOT the quarks (all L)
-      do j=-nf,nf
+      do j=1,nf
         ZgL(j)=L(j)*v2(1)*prop56+Q(j)*q1           
         ZgR(j)=L(j)*v2(2)*prop56+Q(j)*q1           
       enddo
@@ -276,25 +283,25 @@ c---4th term (l-h only) contains two W propagators
         if     ((j .gt. 0) .and. (k .lt. 0)) then
             suppl=FAC*prop12*(
      .          (en1*Fa346512+en2*Fa342156)*v2(1)*prop56
-     .          +q1**2*(cl1*Fa346512+cl2*Fa342156)
-     .          +0.5d0/xw*prop34*(cl1*Fa652143+cl2*Fa653412))
+     .          +q1*(-1d0)*(cl1*Fa346512+cl2*Fa342156)
+     .          +wwflag*0.5d0/xw*prop34*(cl1*Fa652143+cl2*Fa653412))
             AWZM=AWZM+suppl
             BWZM=BWZM+suppl*Vpole12
             suppl=FAC*prop12*(
      .          (en1*Fa345612+en2*Fa342165)*v2(2)*prop56
-     .          +q1**2*(cl1*Fa345612+cl2*Fa342165))
+     .          +q1*(-1d0)*(cl1*Fa345612+cl2*Fa342165))
             AWZP=AWZP+suppl
             BWZP=BWZP+suppl*Vpole12
         elseif ((j .lt. 0) .and. (k .gt. 0)) then
             suppl=FAC*prop12*(
      .          (en1*Fa346521+en2*Fa341256)*v2(1)*prop56
-     .          +q1**2*(cl1*Fa346521+cl2*Fa341256)
-     .          +0.5d0/xw*prop34*(cl1*Fa651243+cl2*Fa653421))
+     .          +q1*(-1d0)*(cl1*Fa346521+cl2*Fa341256)
+     .          +wwflag*0.5d0/xw*prop34*(cl1*Fa651243+cl2*Fa653421))
             AWZM=AWZM+suppl
             BWZM=BWZM+suppl*Vpole12
             suppl=FAC*prop12*(
      .          (en1*Fa345621+en2*Fa341265)*v2(2)*prop56
-     .          +q1**2*(cl1*Fa345621+cl2*Fa341265))
+     .          +q1*(-1d0)*(cl1*Fa345621+cl2*Fa341265))
             AWZP=AWZP+suppl
             BWZP=BWZP+suppl*Vpole12
         endif

@@ -40,7 +40,7 @@ C***************************************************
         deltar=1d0
       else
         write(6,*) 'Invalid scheme in gg_hgg_v.f'
-	stop
+        stop
       endif
       
 c--- Set this to true to check squared matrix elements against

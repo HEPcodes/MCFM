@@ -57,7 +57,7 @@ c--- right up to the jet cut boundaries and there is no need for pbreak
 c--- in case this routine is used for very small values of ptjetmin
         if ((ptjetmin .lt. 5d0) .and. (part .ne. 'real')) pbreak=5d0
 c--- for processes in which it is safe to jet ptmin to zero at NLO
-	if ((part .eq. 'real') .and. (pbreak .lt. 1d-8)) pbreak=5d0
+      if ((part .eq. 'real') .and. (pbreak .lt. 1d-8)) pbreak=5d0
       endif        
 
 
@@ -88,22 +88,22 @@ c        xmax=1d0/ptjetmin
           pbreak_part=0d0
           if (part .eq. 'real') then
 c--- cannot generate exactly to match, since dipoles transform photon
-	  ptmin_part=0d0
+       ptmin_part=0d0
           etamax_part=20d0
           pbreak_part=gammpt
-	  endif
+       endif
         else
-	  if (part .eq. 'lord') then
+       if (part .eq. 'lord') then
 c--- (gamjet) generate jets according to phase-space boundaries
             ptmin_part=ptjetmin
             etamax_part=etajetmax
             pbreak_part=pbreak
-	  else
+       else
 c--- (dirgam) attempt to generate jets to balance photon
             ptmin_part=0d0
             etamax_part=20d0
             pbreak_part=gammpt
-	  endif
+       endif
         endif
 
         if ((flatreal) .and. (part .eq. 'real')) then
@@ -147,7 +147,7 @@ c--- favour small pt region
         do nu=1,4
           psumjet(nu)=psumjet(nu)+p(2+ijet,nu)
         enddo
-	
+     
       icount=icount+3
       enddo
 

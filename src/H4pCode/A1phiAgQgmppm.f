@@ -13,7 +13,7 @@ c---   i.e. complete LHS
       include 'epinv.f'
       include 'deltar.f'
       integer j1,j2,j3,j4
-      double complex zab2,V2L,l123,l34,l41,lnrat,L0,L1,Lsm1,Lsm1DS,
+      double complex zab2,V2L,l123,l34,l41,lnrat,L0,L1,Lsm1DS,
      . Lsm1_2me,A0phiAgQgmppm
       double precision s123,s234,s412,s341,mhsq
       zab2(j1,j2,j3,j4)=+za(j1,j2)*zb(j2,j4)+za(j1,j3)*zb(j3,j4)

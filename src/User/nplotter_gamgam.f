@@ -20,8 +20,8 @@ c---                1  --> counterterm for real radiation
       include 'histo.f'
       include 'jetlabel.f'
       include 'frag.f'
-      logical phot_dip(mxpart) 
-      common/phot_dip/phot_dip
+      include 'phot_dip.f'
+      include 'outputflags.f'
       double precision p(mxpart,4),wt,wt2
       double precision yrap,pt,r,yraptwo
       double precision y3,y4,y34,y5,pt3,pt4,pt5,r45,r35,r34,s34,m34
@@ -29,8 +29,7 @@ c---                1  --> counterterm for real radiation
       integer switch,n,nplotmax,nqcdjets,nqcdstart
       character*4 tag
       integer nd
-      logical first,creatent,dswhisto
-      common/outputflags/creatent,dswhisto
+      logical first
       common/nplotmax/nplotmax
       common/nqcdjets/nqcdjets,nqcdstart
       data first/.true./
@@ -63,7 +62,7 @@ c--- This corresponds to the logical variable rescale set in chooser
 c--- Initialize histograms, without computing any quantities; instead
 c--- set them to dummy values
         tag='book'
-	y3=1d3
+        y3=1d3
         y4=1d3
         pt3=1d3
         pt4=1d3
@@ -152,7 +151,7 @@ c--- by # of iterations now that is handled at end for regular histograms
       endif
 
 c--- "n" will count the number of histograms
-      n=1              
+      n=nextnplot
 
 c--- Syntax of "bookplot" routine is:
 c

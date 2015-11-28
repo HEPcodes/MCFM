@@ -15,7 +15,7 @@ c---- Extension to photon decay contributed by Fabian Stoeckli
       include 'zcouple.f'
       include 'sprods_com.f'
       integer j,k
-      double precision p(mxpart,4),fac,s34
+      double precision p(mxpart,4),fac
       double precision msq(-nf:nf,-nf:nf),hdecay,
      . ud_ud_LL,udb_udb_LL,ud_ud_LR,udb_udb_LR
       double precision msqgamgam

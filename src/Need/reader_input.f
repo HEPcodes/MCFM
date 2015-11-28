@@ -43,12 +43,13 @@
       include 'vanillafiles.f'
       include 'frag.f'
       include 'outputoptions.f'
+      include 'outputflags.f'
       include 'breit.f'
+      include 'anomHiggs.f'
       character*72 workdir,inputfile
       character*90 line
       character*30 runstring
-      logical spira
-      logical creatent,dswhisto,dryrun,makecuts
+      logical spira,dryrun,makecuts
       integer nmin,nmax
       integer nproc,ih1,ih2,itmx1,itmx2,ncall1,ncall2,idum,origij
       integer NPTYPE,NGROUP,NSET
@@ -67,7 +68,6 @@
       common/nmax/nmax
       common/rtsmin/rtsmin
  
-      common/outputflags/creatent,dswhisto      
 
       common/nproc/nproc
       common/runstring/runstring
@@ -87,6 +87,10 @@
       common/origij/origij
 
       save /ranno/
+
+      data cttH/1.0d0/
+      data cWWH/1.0d0/
+
       
       verbose=.true.
 
@@ -160,19 +164,19 @@ c--- catch special scale choices for stop+b process
       if (((nproc .ge. 231) .and. (nproc .le. 240)) .and.      
      .     (scale .eq. 0d0) .and. (facscale .eq. 0d0)) then
         read(20,*) initrenscale_L
-	renscale_L=initrenscale_L
+      renscale_L=initrenscale_L
         if (verbose) call writeinput(6,' * ',' ','renscale_L')
         read(20,*) initfacscale_L
-	facscale_L=initfacscale_L
+      facscale_L=initfacscale_L
         if (verbose) call writeinput(6,' * ',' ','facscale_L')
         read(20,*) initrenscale_H
-	renscale_H=initrenscale_H
+      renscale_H=initrenscale_H
         if (verbose) call writeinput(6,' * ',' ','renscale_H')
         read(20,*) initfacscale_H
-	facscale_H=initfacscale_H
+      facscale_H=initfacscale_H
         if (verbose) call writeinput(6,' * ',' ','facscale_H')
-	scale=initrenscale_H
-	facscale=initfacscale_H        
+      scale=initrenscale_H
+      facscale=initfacscale_H        
       endif
 
       read(20,*) dynstring 
@@ -349,6 +353,10 @@ c--- anomalous couplings
       read(20,*) tevscale
       if (verbose) call writeinput(6,' * ',' ','tevscale')
 
+      if ( nproc .ge. 550 .and. nproc .le. 557 ) then
+         if (verbose) call writeinput(6,' * ',' ','cttH')
+         if (verbose) call writeinput(6,' * ',' ','cWWH')
+      endif
       if (verbose) write(6,*)
       read(20,99) line
 c--- write-out comment line
@@ -445,24 +453,24 @@ c---- read-in the technical parameters
 
       if ((etajetmin .lt. 0d0) .or. (etajetmax .lt. 0d0)) then
         write(6,*) 'etajetmin and etajetmax are absolute values,'
-	write(6,*) ' please reset to a positive value.'
-	stop
+      write(6,*) ' please reset to a positive value.'
+      stop
       endif
 
 c      if     (index(runstring,'mc1.3') .gt. 0) then
 c        mc=1.3d0
-c	mcsq=mc**2
+c      mcsq=mc**2
 c      elseif (index(runstring,'mc1.4') .gt. 0) then
 c        mc=1.4d0
-c	mcsq=mc**2
+c      mcsq=mc**2
 c      elseif (index(runstring,'mc1.5') .gt. 0) then
 c        mc=1.5d0
-c	mcsq=mc**2
+c      mcsq=mc**2
 c      endif
       
 c      if (runstring(1:3) .eq. 'mlm') then
 c        write(6,*) 'WARNING: cross sections divided by Ecm**2'
-c	write(6,*)
+c      write(6,*)
 c      endif
       
 c---  create logical variable dynamicscale for use in other routines
@@ -476,19 +484,19 @@ c---  create logical variable dynamicscale for use in other routines
 c--- print warning messages if some parton fluxes are not included      
       if (noglue) then
         write(6,*) 'WARNING: no gluon contribution included in PDF'
-	write(6,*)
+      write(6,*)
       endif
       if (ggonly) then
         write(6,*) 'WARNING: only gluon-gluon flux included'
-	write(6,*)
+      write(6,*)
       endif
       if (gqonly) then
         write(6,*) 'WARNING: only gluon-quark flux included'
-	write(6,*)
+      write(6,*)
       endif
       if (omitgg) then
         write(6,*) 'WARNING: no gluon-gluon contribution included'
-	write(6,*)
+      write(6,*)
       endif
       
 c--- assign squared masses for b- and c-quarks
@@ -525,11 +533,12 @@ c--- check that we have a valid value of 'part'
      .      .or. (case .eq. 'W_twdk') .or. (case .eq. 'tt_bbl')
      .      .or. (case .eq. 'tt_bbh') .or. (case .eq. '4ftwdk')
      .      .or. (case .eq. 'HWW2lq') .or. (case .eq. 'qq_ttw')
-     .      .or. (case .eq. 'WWqqbr')) ) then
+     .      .or. (case .eq. 'WWqqbr') .or. (case .eq. 'tt_bbu')) ) then
 c--- this is an allowed combination
         elseif ( (part .eq. 'frag') .and.
      .          ((case .eq. 'Wgamma') .or. (case .eq. 'Zgamma')
      &      .or .(case .eq. 'gamgam') .or. (case .eq. 'dirgam')
+     &      .or .(case .eq. 'dm_gam')
      &      .or .(case .eq. 'Z_2gam') .or. (case .eq. 'Zgajet')) ) then
 c--- this is an allowed combination
         else 
@@ -539,32 +548,43 @@ c--- this is an allowed combination
         endif
       endif      
 
+c--- check that we are not trying to calculate radiation in decay at LO
+      if    ( (part .eq. 'lord') .and.
+     &       ((case .eq. 'WWqqdk') .or. (case .eq. 'HWWdkW')
+     &   .or. (case .eq. 'tt_ldk') .or. (case .eq. 'tt_udk')
+     &   .or. (case .eq. 'tt_hdk') .or. (case .eq. 'tthWdk')
+     &   .or. (case .eq. 'ttdkay') .or. (case .eq. 'Wtdkay')
+     &   .or. (case .eq. 'dk_4ft') .or. (case .eq. 'ttwldk')) ) then
+          write(6,*) 'This process number cannot be used for'
+          write(6,*) 'a LO calculation.'
+          stop     
+      endif
 c--- set up the default choices of static scale, if required
       if (scale .lt. 0d0) then
-	if     (scale .eq. -2d0) then
-	  factor=0.25d0
-	elseif (scale .eq. -3d0) then
-	  factor=0.5d0
-	elseif (scale .eq. -4d0) then
-	  factor=0.75d0
-	elseif (scale .eq. -5d0) then
-	  factor=1d0
-	elseif (scale .eq. -6d0) then
-	  factor=2d0
-	elseif (scale .eq. -7d0) then
-	  factor=4d0
+      if     (scale .eq. -2d0) then
+        factor=0.25d0
+      elseif (scale .eq. -3d0) then
+        factor=0.5d0
+      elseif (scale .eq. -4d0) then
+        factor=0.75d0
+      elseif (scale .eq. -5d0) then
+        factor=1d0
+      elseif (scale .eq. -6d0) then
+        factor=2d0
+      elseif (scale .eq. -7d0) then
+        factor=4d0
         else
-	  factor=1d0
-	endif	  
+        factor=1d0
+      endif        
         if ((n2+n3 .ne. 0) .or. (case .eq. 'tt_tot')) then
         scale=factor*(dfloat(n2)*mass2+dfloat(n3)*mass3)/dfloat(n2+n3)
 c--- special cases where Higgs mass is neither mass2 nor mass3
         if ((case(1:1) .eq. 'H') .or. (case .eq. 'WHbbar')
      . .or. (case .eq. 'ZHbbar') .or. (case .eq. 'qq_Hqq')) then
           scale=factor*hmass
-	endif
+      endif
 c--- special case for t-tbar production
-        if (case .eq. 'tt_tot') scale=factor*mt	
+        if (case .eq. 'tt_tot') scale=factor*mt      
         as=alphas(scale,amz,nlooprun)
         ason2pi=as/twopi
         ason4pi=as/fourpi
@@ -587,21 +607,21 @@ c--- special case for t-tbar production
         endif
       endif
       if (facscale .lt. 0d0) then
-	if     (facscale .eq. -2d0) then
-	  factor=0.25d0
-	elseif (facscale .eq. -3d0) then
-	  factor=0.5d0
-	elseif (facscale .eq. -4d0) then
-	  factor=0.75d0
-	elseif (facscale .eq. -5d0) then
-	  factor=1d0
-	elseif (facscale .eq. -6d0) then
-	  factor=2d0
-	elseif (facscale .eq. -7d0) then
-	  factor=4d0
+      if     (facscale .eq. -2d0) then
+        factor=0.25d0
+      elseif (facscale .eq. -3d0) then
+        factor=0.5d0
+      elseif (facscale .eq. -4d0) then
+        factor=0.75d0
+      elseif (facscale .eq. -5d0) then
+        factor=1d0
+      elseif (facscale .eq. -6d0) then
+        factor=2d0
+      elseif (facscale .eq. -7d0) then
+        factor=4d0
         else
-	  factor=1d0
-	endif	  
+        factor=1d0
+      endif        
         if ((n2+n3 .ne. 0) .or. (case .eq. 'tt_tot')) then
         facscale=factor*
      .           (dfloat(n2)*mass2+dfloat(n3)*mass3)/dfloat(n2+n3)
@@ -609,9 +629,9 @@ c--- special cases where Higgs mass is neither mass2 nor mass3
         if ((case(1:1) .eq. 'H') .or. (case .eq. 'WHbbar')
      . .or. (case .eq. 'ZHbbar') .or. (case .eq. 'qq_Hqq')) then
           facscale=factor*hmass
-	endif
+      endif
 c--- special case for t-tbar production
-        if (case .eq. 'tt_tot') facscale=factor*mt	
+        if (case .eq. 'tt_tot') facscale=factor*mt      
         write(6,*)
         write(6,*)'****************************************************'
         write(6,77) facscale
@@ -626,8 +646,8 @@ c--- special case for t-tbar production
 
    49 format(' *  ',a20,f12.8,16x,'*')
    50 format(' *  ',6x,a8,i1,a25,8x,'*')
-   76 format(' *      Renormalization scale =',f7.2,'              *')   
-   77 format(' *        Factorization scale =',f7.2,'              *')   
+   76 format(' *      Renormalization scale =',f7.2,'              *')
+   77 format(' *        Factorization scale =',f7.2,'              *')
    99 format(a90)
 
   999 continue

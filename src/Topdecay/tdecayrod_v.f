@@ -44,12 +44,12 @@ C calculate betap
       if (betasq .ge. 0d0) then
         be=dsqrt(betasq)
         bp=0.5d0*(1d0+be)
-	bm=1d0-bp
+        bm=1d0-bp
         rtbp=sqrt(bp)
       else
         write(6,*) 'betasq < 0 in tdecayrod_v.f, betasq=',betasq
-	call flush(6)
-	stop
+        call flush(6)
+        stop
       endif
       alb=mb**2/(2d0*dot(p,b,nu))
       do si=1,4

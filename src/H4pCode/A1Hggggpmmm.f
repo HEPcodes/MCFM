@@ -131,7 +131,7 @@ c---  Eq.(8.18)
      . /(2d0*s134*zab2(j2,j1,j4,j3)*zb(j3,j4)*zb(j4,j1))
      .  +za(j3,j4)**3*mhsq**2
      .  /(2d0*s134*zab2(j1,j3,j4,j2)*zab2(j3,j1,j4,j2)*za(j4,j1)))*W2
-					
+
      . +0.25d0/s124
      . *(zab2(j3,j2,j4,j1)**4
      . /(zab2(j3,j1,j4,j2)*zab2(j3,j1,j2,j4)*zb(j2,j1)*zb(j4,j1))

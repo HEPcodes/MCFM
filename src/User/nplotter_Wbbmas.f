@@ -17,18 +17,17 @@ c---                1  --> counterterm for real radiation
       include 'constants.f'
       include 'histo.f'
       include 'jetlabel.f'
+      include 'outputflags.f'
       integer ilept,inu,ibq,iba,ilt
       double precision p(mxpart,4),wt,wt2
       double precision yrap,pt,r,yraptwo,pttwo
       double precision ylept,ptlept,misset,yw,ptw,mw,ybq,ptbq,yba,ptba,
      & ylt,ptlt,yj1,ptj1,yj2,ptj2,yj3,ptj3,mbb,mjj,Rjl
-     & ,dphibqnu, dphibanu, r2
-     & , ptbmax, ybmax
-      double precision etaw, etabq, etaba, etaraptwo, etarap
+     & ,dphibqnu,dphibanu,r2,ybmax
+      double precision etaw, etabq, etaba, etaraptwo
       integer switch,n,nplotmax,nproc
       character*4 tag
-      logical first,creatent,dswhisto
-      common/outputflags/creatent,dswhisto
+      logical first
       common/nplotmax/nplotmax
       common/nproc/nproc
       data first/.true./
@@ -66,7 +65,6 @@ c--- Initialize dummy values for all quantities that could be plotted
       etaw=99d0
       etabq=99d0
       etaba=99d0
-      ptbmax=-1d0
       ybmax=99d0
 
       if (first) then
@@ -95,16 +93,16 @@ c--- Add event in histograms
      &   .or. (nproc .eq. 401) .or. (nproc .eq. 402)
      &   .or. (nproc .eq. 403) .or. (nproc .eq. 411)) then
         ilept=4
-	inu=3
+        inu=3
       elseif ((nproc .eq. 25) .or. (nproc .eq. 26)
      &   .or. (nproc .eq. 316) .or. (nproc .eq. 326)
      &   .or. (nproc .eq. 406) .or. (nproc .eq. 407)
      &   .or. (nproc .eq. 408) .or. (nproc .eq. 416)) then
         ilept=3
-	inu=4
+        inu=4
       else
         write(6,*) 'Unanticipated process in nplotter_Wbbmas.f'
-	stop 
+      stop 
       endif
       
       ylept=yrap(ilept,p)
@@ -157,17 +155,17 @@ c--- this case only occurs for processes 421, 426
       if (ibq .gt. 0) then
         ybq=yrap(ibq,p)
         ptbq=pt(ibq,p)
-	Rjl=min(Rjl,R(p,ilept,ibq))
+        Rjl=min(Rjl,R(p,ilept,ibq))
       endif
       if (iba .gt. 0) then
         yba=yrap(iba,p)
         ptba=pt(iba,p)
-	Rjl=min(Rjl,R(p,ilept,iba))
+        Rjl=min(Rjl,R(p,ilept,iba))
       endif
       if (ilt .gt. 0) then
         ylt=yrap(ilt,p)
         ptlt=pt(ilt,p)
-	Rjl=min(Rjl,R(p,ilept,ilt))
+        Rjl=min(Rjl,R(p,ilept,ilt))
       endif
        
       yj1=yrap(5,p)
@@ -210,18 +208,18 @@ c---  Add deltaphi histogram for bq and ba
 
 c--   pt and rapidity distributions for the highest pt b-quark jet
       if ((iba .lt. 0) .and. (ibq .gt. 0)) then
-         ptbmax = pt(ibq, p)
+c         ptbmax = pt(ibq, p)
          ybmax = yrap(ibq, p)
       elseif ((iba .gt. 0) .and. (ibq .lt. 0)) then
-         ptbmax = pt(iba, p)
+c         ptbmax = pt(iba, p)
          ybmax = yrap(iba, p)
       elseif ((iba .gt. 0) .and. (ibq .gt. 0) .and. 
      &    (pt(iba, p) .gt. pt(ibq, p)) ) then
-         ptbmax = pt(iba, p)
+c         ptbmax = pt(iba, p)
          ybmax = yrap(iba, p)
       elseif ((iba .gt. 0) .and. (ibq .gt. 0) .and.
      &    (pt(iba,p) .le. pt(ibq, p)) ) then
-         ptbmax = pt(ibq, p)
+c         ptbmax = pt(ibq, p)
          ybmax = yrap(ibq, p)
       endif
 
@@ -249,7 +247,7 @@ c--- by # of iterations now that is handled at end for regular histograms
       endif
 
 c--- "n" will count the number of histograms
-      n=1              
+      n=nextnplot
 
 c--- Syntax of "bookplot" routine is:
 c

@@ -224,8 +224,8 @@ c        write(6,89) 'ASL: PLUS-PLUS'
 
       if (numcheck) then
         atreesl=atree('sl',k3,k2,k1,k4,k5,k6,zb,za)
-	write(6,*) 'a6treemp',a6treemp
-	write(6,*) 'atreesl ',atreesl
+        write(6,*) 'a6treemp',a6treemp
+        write(6,*) 'atreesl ',atreesl
         call catanisl(mqsq,k1,k2,k3,k4,k5,k6,coeff2,coeff1)
         write(6,*) 'Catani(-2)*tree',coeff2*atreesl
         write(6,*) 'Catani(-1)*tree',coeff1*atreesl

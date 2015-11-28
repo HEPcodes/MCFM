@@ -74,7 +74,7 @@ c----with factor of i removed
      .              -zab2(j4,j1,j3,j2)**2*za(j1,j3)
      .               /(zb(j2,j3)*s(j1,j2)*s3(j1,j2,j3))
      .              +zab2(j1,j3,j4,j2)**2
-     .               /(za(j1,j2)*zb(j2,j4)*zb(j2,j3)*zb(j3,j4))	    
+     .               /(za(j1,j2)*zb(j2,j4)*zb(j2,j3)*zb(j3,j4))            
      
       
       return
@@ -98,7 +98,7 @@ c----with factor of i removed
      .              +zab2(j1,j2,j4,j3)**2*zb(j2,j4)
      .               /(za(j1,j4)*s(j1,j2)*s3(j4,j1,j2))
      .              -zab2(j1,j3,j4,j2)**2
-     .               /(zb(j1,j2)*za(j1,j3)*za(j1,j4)*za(j3,j4))	    
+     .               /(zb(j1,j2)*za(j1,j3)*za(j1,j4)*za(j3,j4))    
      
       
       return

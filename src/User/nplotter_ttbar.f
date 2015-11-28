@@ -19,17 +19,15 @@ c---                1  --> counterterm for real radiation
       include 'masses.f'
       include 'plabel.f'
       include 'process.f'
+      include 'outputflags.f'
       double precision p(mxpart,4),wt,wt2,yrap,pt,ptjet(mxpart),
-     & pttwo,ptthree,yrapthree,yrapsix,pt345678,y345678,m345678,mll,
-     & ptl,yl,mwtest(mxpart),mt1,mt2,mwhad,pthad,yhad,ptttb,yttb,
-     & ptfour,yrapfour,yrapseven,mt3,mt4,min14,min23,min24,dot,tiny,
-     & ptsix,ptt,pttb,yt,ytb,mttb,mwp,mwm,mlb
+     & pttwo,mll,ptl,yl,ptttb,yttb,dot,tiny,
+     & ptt,pttb,yt,ytb,mttb,mwp,mwm,mlb
       double precision plep(4),ptop(4),pleprest(4),ptoprest(4),mj1j2
       integer switch,n,nplotmax,j,
      & jetindex(mxpart),iorder(mxpart),ijet
       character*4 tag
-      logical first,creatent,dswhisto,dilepton,failed
-      common/outputflags/creatent,dswhisto
+      logical first,dilepton,failed
       common/nplotmax/nplotmax
       parameter(tiny=1d-8)
       data first/.true./
@@ -42,7 +40,8 @@ c---                1  --> counterterm for real radiation
 ************************************************************************
 
 c--- determine whether or not process represents dilepton channel
-      if ((case .eq. 'tt_bbl') .or. (case .eq. 'tt_ldk')) then
+      if ((case .eq. 'tt_bbl') .or. (case .eq. 'tt_ldk')
+     &.or.(case .eq. 'tt_bbu') .or. (case .eq. 'tt_udk') ) then
         dilepton=.true.
       else
         dilepton=.false.
@@ -52,7 +51,7 @@ c--- determine whether or not process represents dilepton channel
 c--- Initialize histograms, without computing any quantities; instead
 c--- set them to dummy values
         tag='book'
-	mj1j2=0d0
+        mj1j2=0d0
         goto 99
       else
 c--- Add event in histograms
@@ -70,10 +69,10 @@ c--- Add event in histograms
          if ((plabel(j) .eq. 'pp') .or. (plabel(j) .eq. 'bq')
      &   .or.(plabel(j) .eq. 'ba')) then
            if (p(j,4) .gt. tiny) then
-	     ijet=ijet+1
-	     jetindex(ijet)=j
-	     ptjet(ijet)=pt(j,p)
-	   endif
+             ijet=ijet+1
+             jetindex(ijet)=j
+             ptjet(ijet)=pt(j,p)
+           endif
          endif
        enddo   
        call arraysort(ijet,ptjet,iorder)
@@ -102,7 +101,7 @@ c--- by # of iterations now that is handled at end for regular histograms
       endif
 
 c--- "n" will count the number of histograms
-      n=1              
+      n=nextnplot              
 
 c--- Syntax of "bookplot" routine is:
 c
@@ -154,10 +153,10 @@ c--- m(l+,l-)
 c--- lepton+jets-specific plots
       if (plabel(4) .eq. 'ea') then
         ptl=pt(4,p)
-	yl=yrap(4,p)
+        yl=yrap(4,p)
       else
         ptl=pt(7,p)
-	yl=yrap(7,p)
+        yl=yrap(7,p)
       endif
       
 c--- pt(lepton)
@@ -312,12 +311,12 @@ c-- lepton asymmetry
         call bookplot(n,tag,'Q(lep)*y(lep)',yrap(4,p),wt,wt2,
      &   -4d0,4d0,4d0,'lin')
         n=n+1
-	endif
+        endif
         if (plabel(7) .eq. 'el') then
         call bookplot(n,tag,'Q(lep)*y(lep)',-yrap(7,p),wt,wt2,
      &   -4d0,4d0,4d0,'lin')
         n=n+1
-	endif
+        endif
       endif
       
 c--- plots for computing ttbar asymmetry

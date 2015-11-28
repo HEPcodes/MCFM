@@ -8,9 +8,16 @@
 /QCDLoop/ff/libff.a
 /QCDLoop/ql/libqcdloop.a
 /QCDLoop/test
+/TensorReduction/ov/libov.a
+/TensorReduction/pv/libpv.a
+/TensorReduction/recur/libsmallF.a
+/TensorReduction/recur/libsmallG.a
+/TensorReduction/recur/libsmallP.a
+/TensorReduction/recur/libsmallY.a
 /Doc/*.aux
 /Doc/*.dvi
 /Doc/*.log
 /Doc/*.out
 /Doc/*.toc
 /mcfm.dSYM
+/QCDLoop/test.dSYM/

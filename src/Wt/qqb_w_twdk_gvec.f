@@ -34,19 +34,19 @@ c---in label of gluon which is contracted with n
 c--- set up lepton variables depending on whether it's t or tbar
       if     (nwz .eq. -1) then
         i3=3
-	i4=4
-	i5=5
-	i6=6
-	iq=+1 ! quark initial state	
+        i4=4
+        i5=5
+        i6=6
+        iq=+1 ! quark initial state      
       elseif (nwz .eq. +1) then
         i3=4
-	i4=3
-	i5=6
-	i6=5
-	iq=-1 ! antiquark initial state
+        i4=3
+        i5=6
+        i6=5
+        iq=-1 ! antiquark initial state
       else
         write(6,*) 'Error in qqb_w_twdk_gvec, nwz is not +1 or -1 :',nwz
-	stop
+        stop
       endif
       
       do j=-1,+1

@@ -17,6 +17,7 @@ c---                1  --> counterterm for real radiation
       include 'constants.f'
       include 'histo.f'
       include 'jetlabel.f'
+      include 'outputflags.f'
       integer i5,i6,i7,nu
       double precision p(mxpart,4),wt,wt2
       double precision etarap,pt,
@@ -26,8 +27,7 @@ c---                1  --> counterterm for real radiation
      & etaraptwo,pttwo
       integer switch,n,nplotmax,nproc
       character*4 tag
-      logical first,creatent,dswhisto
-      common/outputflags/creatent,dswhisto
+      logical first
       common/nplotmax/nplotmax
       common/nproc/nproc
       data first/.true./
@@ -133,14 +133,14 @@ c--- sort for 3 jets
       endif
 c--- perform exchange
       do nu=1,4
-     	tmp5(nu)=p(i5,nu)
-     	tmp6(nu)=p(i6,nu)
-     	tmp7(nu)=p(i7,nu)
+           tmp5(nu)=p(i5,nu)
+           tmp6(nu)=p(i6,nu)
+           tmp7(nu)=p(i7,nu)
       enddo
       do nu=1,4
-     	p(5,nu)=tmp5(nu)
-     	p(6,nu)=tmp6(nu)
-     	p(7,nu)=tmp7(nu)
+           p(5,nu)=tmp5(nu)
+           p(6,nu)=tmp6(nu)
+           p(7,nu)=tmp7(nu)
       enddo
       pt5=oldpt(i5)
       if (jets .gt. 1) pt6=oldpt(i6)
@@ -158,20 +158,20 @@ c--- Calculate quantities to plot
       if (jets .ge. 3) then
         etaj3=etarap(7,p)
         ptj3=pt(7,p)
-	if     (abs(etaj1-etaj3) .gt. 
+      if     (abs(etaj1-etaj3) .gt. 
      &      max(abs(etaj1-etaj2),abs(etaj2-etaj3))) then
           deleta=abs(etaj1-etaj3)
-	  sumeta=etaj1+etaj3
-	  etaj3=etaj2
-	elseif (abs(etaj2-etaj3) .gt. 
+        sumeta=etaj1+etaj3
+        etaj3=etaj2
+      elseif (abs(etaj2-etaj3) .gt. 
      &      max(abs(etaj1-etaj2),abs(etaj1-etaj3))) then
           deleta=abs(etaj2-etaj3)
-	  sumeta=etaj2+etaj3
-	  etaj3=etaj1
-	else
-	  deleta=abs(etaj1-etaj2)	
-	  sumeta=etaj1+etaj2
-	endif
+        sumeta=etaj2+etaj3
+        etaj3=etaj1
+      else
+        deleta=abs(etaj1-etaj2)      
+        sumeta=etaj1+etaj2
+      endif
       endif
 
       rar=(p(5,1)*p(6,1)+p(5,2)*p(6,2))
@@ -191,7 +191,7 @@ c--- Calculate quantities to plot
       endif
             
       if ((jets .eq. 3) .and. (deleta .ge. 2d0)) then
-        etastar=abs(etaj3-sumeta/2d0)	
+        etastar=abs(etaj3-sumeta/2d0)      
       endif
         
 
@@ -211,7 +211,7 @@ c--- by # of iterations now that is handled at end for regular histograms
       endif
 
 c--- "n" will count the number of histograms
-      n=1              
+      n=nextnplot
 
 c--- Syntax of "bookplot" routine is:
 c
@@ -237,15 +237,15 @@ c---   llplot:  equal to "lin"/"log" for linear/log scale
       call bookplot(n,tag,'W pt',pt34,wt,wt2,0d0,1200d0,50d0,'log')
       n=n+1
       if(nproc .eq. 11) then
-	 call bookplot(n,tag,'y(lep)',y4,wt,wt2,-5d0,5d0,0.4d0,'lin')
-	 n=n+1
-	 call bookplot(n,tag,'pt(lep)',pt4,wt,wt2,0d0,200d0,4d0,'lin')
-	 n=n+1
-      else	    
-	 call bookplot(n,tag,'y(lep)',y3,wt,wt2,-5d0,5d0,0.4d0,'lin')
-	 n=n+1
-	 call bookplot(n,tag,'pt(lep)',pt3,wt,wt2,0d0,200d0,4d0,'lin')
-	 n=n+1
+       call bookplot(n,tag,'y(lep)',y4,wt,wt2,-5d0,5d0,0.4d0,'lin')
+       n=n+1
+       call bookplot(n,tag,'pt(lep)',pt4,wt,wt2,0d0,200d0,4d0,'lin')
+       n=n+1
+      else          
+       call bookplot(n,tag,'y(lep)',y3,wt,wt2,-5d0,5d0,0.4d0,'lin')
+       n=n+1
+       call bookplot(n,tag,'pt(lep)',pt3,wt,wt2,0d0,200d0,4d0,'lin')
+       n=n+1
       endif
 
       call bookplot(n,tag,'Jet 1 pt',ptj1,wt,wt2,

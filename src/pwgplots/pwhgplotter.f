@@ -67,7 +67,7 @@ c--- additional parton present in real corrections
          if(part.eq.'real'.and.nd.eq.0) then
             nhep=nhep+1
          endif
-	 
+         
 c------------ EVENT RECORD INITIALIZATION 
 
 c----spuriously set everyone to a gluon?
@@ -92,8 +92,8 @@ c------ W/Z + jets
             do j=1,12
                pjetcom(j,1:4)=pjet(j,1:4)
             enddo
-	 endif
-	 
+         endif
+         
 c------ H + jet
          if(nproc.eq.203) then
             idhep(3)=25
@@ -145,10 +145,10 @@ c                read(*,*)
             endif
             idhep(3)=6
             idhep(4)=-6
-	    idhep(5)=24
-	    idhep(6)=-24
-	    idhep(11)=5
-	    idhep(12)=-5
+            idhep(5)=24
+            idhep(6)=-24
+            idhep(11)=5
+            idhep(12)=-5
          endif
 
 c------ s-channel single top            
@@ -174,11 +174,11 @@ c                   write(*,*) ' t with radiation'
 c                read(*,*)
             endif
             idhep(3)=6
-	    idhep(4)=24
-	    idhep(7)=5
-	    idhep(8)=-5
-	 endif
-	 
+            idhep(4)=24
+            idhep(7)=5
+            idhep(8)=-5
+         endif
+         
 c------ t-channel single top            
          if(nproc.ge.231.and.nproc.le.239) then
             phep(1:4,3)=p(3,:)+p(4,:)+p(5,:)
@@ -203,11 +203,11 @@ c                   write(*,*) ' t with radiation'
 c                read(*,*)
             endif
             idhep(3)=6
-	    idhep(4)=24
-	    idhep(7)=5
-	    idhep(8)=-5
+            idhep(4)=24
+            idhep(7)=5
+            idhep(8)=-5
         endif
-	
+        
 c------ W-t-single top            
          if(nproc.ge.181.and.nproc.le.187) then
             phep(1:4,3)=p(5,:)+p(6,:)+p(7,:)
@@ -233,11 +233,11 @@ c                   write(*,*) ' t with radiation'
 c                read(*,*)
             endif
             idhep(3)=6
-	    idhep(4)=24
-	    idhep(5)=-24
-	    idhep(10)=5
-	 endif
-	 
+            idhep(4)=24
+            idhep(5)=-24
+            idhep(10)=5
+         endif
+         
 c------------ FILL HISTOGRAMS
 
          if(part.ne.'real') then
@@ -265,10 +265,10 @@ c------------ FILL HISTOGRAMS
       
          if(nproc.eq.44) then
             write(6,*) 'No analysis routine written for nproc=',nproc
-	    stop
+            stop
          elseif(nproc.eq.203) then
             write(6,*) 'No analysis routine written for nproc=',nproc
-	    stop
+            stop
          elseif(nproc.ge.141.and.nproc.le.151) then
             call analysis_KN(wt)
          elseif(nproc.ge.171.and.nproc.le.177) then
@@ -279,7 +279,7 @@ c------------ FILL HISTOGRAMS
             call analysis_ST_wt_dk(wt)
          else
             write(6,*) 'No analysis routine written for nproc=',nproc
-	    stop
+            stop
          endif
       end   
 

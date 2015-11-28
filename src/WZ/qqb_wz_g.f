@@ -65,7 +65,7 @@ c   for the moment --- radiation only from initial line
 c--- wwflag=1 for most cases, indicating presence of diagram with 2 W's
       wwflag=1d0
 c--- but for Z -> bbbar this diagram contains |V_tb|**2 which we take 0
-      if (plabel(5) .eq. 'qb') then    
+      if (plabel(5) .eq. 'bq') then    
         wwflag=0d0
       endif
 

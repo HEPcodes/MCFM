@@ -166,11 +166,11 @@ c         m6sqnh(i)=m6sqnhAA(i)+m6sqnhBB(i)+m6sqnhAB(i)
             m6sqnh(i)=m6sqnhAA(i)
          elseif (ipsgen .eq. 2) then
             m6sqnh(i)=m6sqnhBB(i)+m6sqnhAB(i)
-	 else
-	    write(6,*) 'Parameter ipsgen should be 1 or 2'
-	    write(6,*) 'ipsgen = ',ipsgen
-	    stop
-	 endif
+         else
+            write(6,*) 'Parameter ipsgen should be 1 or 2'
+            write(6,*) 'ipsgen = ',ipsgen
+            stop
+         endif
 c         if (new_pspace) then
 c            m6sqnh(i)=m6sqnhBB(i)+m6sqnhAB(i)
 c         else

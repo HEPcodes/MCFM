@@ -108,7 +108,7 @@ C---- %%CITATION = NUPHA,B286,553;%%
         deltar=1d0
       else
         write(6,*) 'Invalid scheme in qqb_gamgam_v.f'
-	stop
+        stop
       endif
       
       qaggam=-(2d0*xn-1d0/xn)*epinv**2*T0

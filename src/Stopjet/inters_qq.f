@@ -28,12 +28,12 @@ c particle identifiers:
 c--- set mass of quark and antiquark according to nwz
       if (nwz .eq. +1) then
         mq=mt
-	ma=mb
+        ma=mb
         t=3
         b=4
       else
         mq=mb
-	ma=mt
+        ma=mt
         t=4
         b=3
       endif

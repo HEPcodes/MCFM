@@ -142,7 +142,7 @@
 		xd = 0
 		xc = xb**2/xa
 	    elseif ( l .eq. 4 .or. j .eq. 4 ) then
-		xb = piDpj(3,4)*xpi(4)*del3(i+k)/del2s
+	        xb = piDpj(3,4)*xpi(4)*del3(i+k)/del2s
 		xd = -xpi(4)*del3(i+k)/sdel2s
 		xc = xpi(4)*xpi(3)*del3(i+k)**2/del2s**2
 	    else

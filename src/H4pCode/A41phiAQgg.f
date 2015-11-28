@@ -5,8 +5,6 @@
       include 'nflav.f'
       integer j1,j2,j3,j4
       double complex A1phiAQggmpmmL,A1phiAQggmpmmR,A1phiAQggmpmmF
-      double complex A1phiAQggmpmmL_ratonly,A1phiAQggmpmmR_ratonly,
-     . A1phiAQggmpmmF_ratonly,A0phiAQggmpmm
 
 c--- implementation of arXiv:0906.0008, Eq.(2.21)
       A41phiAQggmpmm=

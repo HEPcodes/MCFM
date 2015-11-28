@@ -7,8 +7,8 @@
 *                                                                      *
 *     Formula is taken from Eq. (27) of                                *
 *                                                                      *
-*     \bibitem{Czarnecki:1990kv} 				       *
-*     A.~Czarnecki,						       *
+*     \bibitem{Czarnecki:1990kv}                                       *
+*     A.~Czarnecki,                                                    *
 *     ``QCD corrections to the decay t ---> W b                        *
 *       in dimensional regularization,''                               *
 *     Phys.\ Lett.\ B {\bf 252}, 467 (1990).                           *
@@ -30,7 +30,7 @@
 c--- check to see if result has already been computed
       if (abs(mt*mw-mb-cachemass) .lt. tiny) then
         lotopdecaywidth=cachewidth
-	return
+        return
       endif
        
       mt1=mt

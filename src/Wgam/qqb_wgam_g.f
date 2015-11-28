@@ -155,13 +155,14 @@ c---       for the terms proportional to prp34
 c--- additional anomalous coupling component, Eqs. (11)-(16) of hep-ph/0002138
 c---  (multiplied by -i)
 c--- note: there is a typo in Eq. (15), <45> should be replaced by [45]
-      aRR=aRR+prp34*(Qd-Qu)
+c--- note partial fractioning of W propagators to go beyond zerowidth approx.
+      aRR=aRR+(prp34-prp345)*(Qd-Qu)
      & *zb(p4,p5)*(za(p1,p2)*zb(p2,p5)+za(p1,p6)*zb(p6,p5))
      & /(2d0*s(p3,p4)**2*(s345-s(p3,p4))*za(p1,p6)*za(p6,p2))
      & *(xlambda_g*za(p3,p4)*za(p1,p5)*zb(p4,p5)
      &  +(xdelk_g+xlambda_g)*za(p1,p3)*s(p3,p4))
 
-      aLR=aLR+prp34*(Qd-Qu)
+      aLR=aLR+(prp34-prp345)*(Qd-Qu)
      & *za(p3,p5)*za(p1,p5)
      & /(2d0*s(p3,p4)**2*(s345-s(p3,p4))*za(p1,p6)*za(p6,p2))
      & *(xlambda_g*za(p3,p5)*zb(p3,p4)
@@ -169,13 +170,13 @@ c--- note: there is a typo in Eq. (15), <45> should be replaced by [45]
      &  -(xdelk_g+xlambda_g)
      &    *(za(p1,p2)*zb(p2,p4)+za(p1,p6)*zb(p6,p4))*s(p3,p4))
 
-      aLL=aLL+prp34*(Qu-Qd)
+      aLL=aLL+(prp34-prp345)*(Qu-Qd)
      & *za(p3,p5)*(zb(p2,p1)*za(p1,p5)+zb(p2,p6)*za(p6,p5))
      & /(2d0*s(p3,p4)**2*(s345-s(p3,p4))*zb(p2,p6)*zb(p6,p1))
      & *(xlambda_g*zb(p4,p3)*zb(p2,p5)*za(p3,p5)
      &  +(xdelk_g+xlambda_g)*zb(p2,p4)*s(p3,p4))
 
-      aRL=aRL+prp34*(Qu-Qd)
+      aRL=aRL+(prp34-prp345)*(Qu-Qd)
      & *zb(p4,p5)*zb(p2,p5)
      & /(2d0*s(p3,p4)**2*(s345-s(p3,p4))*zb(p2,p6)*zb(p6,p1))
      & *(xlambda_g*zb(p4,p5)*za(p4,p3)

@@ -17,16 +17,17 @@ c---                1  --> counterterm for real radiation
       include 'constants.f'
       include 'histo.f'
       include 'jetlabel.f'
+      include 'outputflags.f'
       double precision p(mxpart,4),wt,wt2
       double precision yrap,pt,yraptwo,pttwo,r
 c---  Z->e+e-(31) or b bbar(33): both measured, rapidities and momenta of 3 and 4 can
 c---  be calculated, also the invariant mass m34
       double precision y3,y4,y5,y34,pt3,pt4,pt5,pt34,m34,r35
-      double precision ylep, yjet, ptlep, ptjet
+      double precision ylep, yjet, ptlep, ptjet,costheta,
+     & p3(4),p4(4),p34(4)
       integer switch,n,nplotmax
       character*4 tag
-      logical first,creatent,dswhisto
-      common/outputflags/creatent,dswhisto
+      logical first
       common/nplotmax/nplotmax
       data first/.true./
       save first    
@@ -41,7 +42,7 @@ c---  be calculated, also the invariant mass m34
 c--- Initialize histograms, without computing any quantities; instead
 c--- set them to dummy values
         tag='book'
-	y3=1d3
+      y3=1d3
         y4=1d3
         y5=1d3
         y34=1d3
@@ -84,8 +85,8 @@ c--- Add event in histograms
          r35=R(p,3,5)
       else
          pt5=-1d0
-	 y5=1d3
-	 r35=1d3
+         y5=1d3
+         r35=1d3
       endif
       
 
@@ -105,7 +106,7 @@ c--- by # of iterations now that is handled at end for regular histograms
       endif
 
 c--- "n" will count the number of histograms
-      n=1              
+      n=nextnplot              
 
 c--- Syntax of "bookplot" routine is:
 c
@@ -142,7 +143,40 @@ c---   llplot:  equal to "lin"/"log" for linear/log scale
       n=n+1
       call bookplot(n,tag,'pt5',pt5,wt,wt2,0d0,ptjet,2d0,'lin')
       n=n+1
-
+      
+c--- compute lepton asymmetry as a function of m34  
+c--- (see for example Eq.(3) of PLB718 (2013) 752)
+      p3(:)=p(3,:)
+      p4(:)=p(4,:)
+      p34(:)=p(3,:)+p(4,:)
+      costheta=p34(3)/abs(p34(3))
+     & *((p3(4)+p3(3))*(p4(4)-p4(3))-(p3(4)-p3(3))*(p4(4)+p4(3)))
+     & /m34/sqrt(m34**2+p34(1)**2+p34(2)**2)
+c--- these histograms must be kept
+      if ((costheta .gt. 0d0) .or. (tag .eq. 'book')) then
+        call bookplot(n, tag,'m34 forward lepton',
+     &   m34,wt,wt2,40d0,200d0,5d0,'lin')
+      endif
+      n=n+1
+      if ((costheta .le. 0d0) .or. (tag .eq. 'book')) then
+        call bookplot(n, tag,'m34 backward lepton',
+     &   m34,wt,wt2,40d0,200d0,5d0,'lin')
+      endif
+      n=n+1
+c--- now compute asymmetry - histograms n+1 and n+2 are only temporary      
+      if (tag .eq. 'book') then
+        call bookplot(n, tag,'lepton FB asymmetry',
+     &   m34,wt,wt2,40d0,200d0,5d0,'lin')
+        call bookplot(n+1, tag,'lepton FB asymmetry',
+     &   m34,wt,wt2,40d0,200d0,5d0,'lin')
+        call bookplot(n+2, tag,'lepton FB asymmetry',
+     &   m34,wt,wt2,40d0,200d0,5d0,'lin')
+      endif
+      call mopera(n-2,'-',n-1,n,1d0,1d0)
+      call mopera(n-2,'+',n-1,n+1,1d0,1d0)
+c--- this is the histogram (n) we will keep
+      call mopera(n,'/',n+1,n,1d0,1d0)
+      n=n+1
 
 
 ************************************************************************

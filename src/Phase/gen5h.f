@@ -63,6 +63,6 @@ c      write(6,*) 'problems with xx(1),xx(2) in gen4h',xx(1),xx(2)
       if (debug) write(6,*) 'wt5 in gen5h',wt5
       return
 
- 999  return 1
+c 999  return 1
       end
 

@@ -62,7 +62,7 @@ c--- right up to the jet cut boundaries and there is no need for pbreak
 c--- in case this routine is used for very small values of ptjetmin
         if ((ptjetmin .lt. 5d0) .and. (part .ne. 'real')) pbreak=5d0
 c--- for processes in which it is safe to jet ptmin to zero at NLO
-	if ((part .eq. 'real') .and. (pbreak .lt. 1d-8)) pbreak=5d0
+        if ((part .eq. 'real') .and. (pbreak .lt. 1d-8)) pbreak=5d0
       endif        
 
       do nu=1,4

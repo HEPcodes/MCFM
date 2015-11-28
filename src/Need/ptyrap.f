@@ -282,7 +282,55 @@ c-- rapidities of 100 will be rejected by any sensible cuts
       else 
       yrapseven=0.5d0*dlog(yrapseven)
       endif
-            
+       return
+       end
+c -- RR: mass definitions
+
+       double precision function onemass(j,p)
+       implicit none
+       include 'constants.f'
+       integer j
+       double precision p(mxpart,4)
+       onemass=p(j,4)**2-p(j,1)**2-p(j,2)**2-p(j,3)**2
+       onemass=dsqrt(onemass)
+       return
+       end
+
+      double precision function twomass(j,k1,p)
+      implicit none
+      include 'constants.f'
+      integer j,k1
+      double precision p(mxpart,4),pjk(4)
+      pjk(:)=p(j,:)+p(k1,:)
+      twomass=pjk(4)**2-pjk(1)**2-pjk(2)**2-pjk(3)**2
+      twomass=dsqrt(twomass)
       return
       end
+
+      double precision function threemass(j,k1,k2,p)
+      implicit none
+      include 'constants.f'
+      integer j,k1,k2
+      double precision p(mxpart,4),ptot(4)
+      ptot(:)=p(j,:)+p(k1,:)+p(k2,:)
+      threemass=ptot(4)**2-ptot(1)**2-ptot(2)**2-ptot(3)**2
+      threemass=dsqrt(threemass)
+      return
+      end
+
+      double precision function fourmass(j,k1,k2,k3,p)
+      implicit none
+      include 'constants.f'
+      integer j,k1,k2,k3
+      double precision p(mxpart,4),ptot(4)
+      ptot(:)=p(j,:)+p(k1,:)+p(k2,:)+p(k3,:)
+      fourmass=ptot(4)**2-ptot(1)**2-ptot(2)**2-ptot(3)**2
+      fourmass=dsqrt(fourmass)
+      return
+      end
+
+      
+
+      
+
 

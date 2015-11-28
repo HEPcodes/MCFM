@@ -34,10 +34,10 @@ c--- (label 5) has been passed in from dipolesub via "n"
 
       if     (in .eq. 1) then
         i1=1
-	i2=2
+        i2=2
       elseif (in .eq. 2) then
         i1=2
-	i2=1
+        i2=1
       else
         write(6,*) 'Unexpected value of in in qqb_gamgam_gvec.f: in=',in
       endif

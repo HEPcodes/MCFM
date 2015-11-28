@@ -1,4 +1,3 @@
-*--#[ log:
 *	$Id: ffcxr.f,v 1.2 1995/11/10 19:04:24 gj Exp $
 *	$Log: ffcxr.f,v $
 c Revision 1.2  1995/11/10  19:04:24  gj
@@ -271,12 +270,12 @@ c
 		if ( abs(xx2p) .lt. xloss ) then
 		    xlog2p = dfflo1(xx2p,ier)
 		else
-		    xlog2p = zxfflg(1-xx2p,0,x1,ier)
+		    xlog2p = dble(zxfflg(1-xx2p,0,x1,ier))
 		endif
 		xhill = xlo1*xlog2p
-*--#]		Hill identity:
+*--		Hill identity:
 	    else
-*--#[		Taylor expansion:
+*--		Taylor expansion:
 *
 *		if the points are close to zero do a Taylor
 *		expansion of the first and last dilogarithm
@@ -321,7 +320,7 @@ c
 		    if ( abs(d2) .lt. xloss ) then
 			xlo1 = dfflo1(d2,ier)
 		    else
-			xlo1 = zxfflg(d21,0,x1,ier)
+			xlo1 = dble(zxfflg(d21,0,x1,ier))
 		    endif
 		endif
 		if ( iclas1 .eq. 2 ) xlo2 = dfflo1(1/y1,ier)
@@ -343,7 +342,7 @@ c
 		if ( abs(xx1p) .lt. xloss ) then
 		    xlog1 = dfflo1(xx1p,ier)
 		else
-		    xlog1 = zxfflg(xx1,0,x1,ier)
+		    xlog1 = dble(zxfflg(xx1,0,x1,ier))
 		endif
 		crr(5) = xlo1*xlog1
 		clog2p = zxfflg(xx2p,ieps,-y1,ier)

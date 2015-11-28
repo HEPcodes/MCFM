@@ -1,8 +1,11 @@
 FC = gfortran
-FFLAGS =  
 HERE   = $(PWD)
+INCDIR  = $(HERE)/Include/
+FFLAGS =  -I $(INCDIR) -g
 QLDIR  = $(HERE)/ql
 FFDIR  = $(HERE)/ff
+QPDIR  = $(HERE)/ql/qp/
+QFDIR  = $(HERE)/ff/qf/
 
 # -----------------------------------------------------------------------------
 # Specify the object files. 
@@ -10,13 +13,23 @@ FFDIR  = $(HERE)/ff
 TEST= \
 test.o 
 
+QPTEST= \
+qptest.o 
+
+
+
 .f.o:	
-		$(FC) $(F77FLAGS) -c $*.f
+		$(FC) $(FFLAGS) -c $*.f
 
 
 # -----------------------------------------------------------------------------
 
 all: test
+
+qptest: qpdir qfdir qldir ffdir		\
+	$(QPTEST)
+	$(FC) $(FFLAGS) -L$(QPDIR) -L$(QFDIR) -L$(QLDIR) -L$(FFDIR) -o $@ \
+            $(QPTEST) -lqpqcdloop -lqf -lqcdloop -lff 
 
 test: qldir ffdir 		\
 	$(TEST)
@@ -26,8 +39,14 @@ test: qldir ffdir 		\
 ffdir:
 	(cd $(FFDIR); make; ranlib libff.a) 
 
+qfdir:
+	(cd $(QFDIR); make; ranlib libqf.a) 
+
+qpdir:
+	(cd $(QPDIR); make; ranlib libqpqcdloop.a) 
+
 qldir:
-	(cd $(QLDIR); make) 
+	(cd $(QLDIR); make; ranlib libqcdloop.a) 
 
 
 # -----------------------------------------------------------------------------

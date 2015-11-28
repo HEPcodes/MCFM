@@ -15,6 +15,7 @@
       write(6,'(a3,4e24.16)') 'p9',p(9,1),p(9,2),p(9,3),p(9,4)
       write(6,'(a3,4e24.16)') 'p10',p(10,1),p(10,2),p(10,3),p(10,4)
       write(6,'(a3,4e24.16)') 'p11',p(11,1),p(11,2),p(11,3),p(11,4)
+      write(6,'(a3,4e24.16)') 'p12',p(12,1),p(12,2),p(12,3),p(12,4)
 
       write(6,*) 's12',2d0*dot(p,1,2)
       write(6,*) 's56',2d0*dot(p,5,6)
@@ -23,6 +24,7 @@
       write(6,*) 'sqrt(s67)',dsqrt(2d0*dot(p,6,7))
       write(6,*) 'sqrt(s78)',dsqrt(2d0*dot(p,7,8))
       write(6,*) 'sqrt(s9,10)',dsqrt(2d0*dot(p,9,10))
+      write(6,*) 'sqrt(s11,12)',dsqrt(2d0*dot(p,11,12))
       write(6,*) 'sqrt(s345)', 
      .   dsqrt(2d0*dot(p,3,4)+2d0*dot(p,3,5)+2d0*dot(p,4,5))
       write(6,*) 'sqrt(s347)', 

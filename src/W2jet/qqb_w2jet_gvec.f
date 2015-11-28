@@ -82,8 +82,8 @@ c      p1p2(0,-1)=aveqg*fac*w2jetn(6,2,3,4,5,1,p,n,za,zb,zab,zba)
 c--- since we have interchanged 1 and 2 to get the gg matrix element,
 c---  the colour structures should be interchanged too
         tmp=p1p2(1,0,0)
-	p1p2(1,0,0)=p1p2(2,0,0)
-	p1p2(2,0,0)=tmp
+        p1p2(1,0,0)=p1p2(2,0,0)
+        p1p2(2,0,0)=tmp
         do i=0,2
           p1p2(i,+1,0)=aveqg*fac*p1p2(i,+1,0)
           p1p2(i,-1,0)=aveqg*fac*p1p2(i,-1,0)

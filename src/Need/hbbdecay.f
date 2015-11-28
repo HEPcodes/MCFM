@@ -35,15 +35,15 @@
       logical first
       data first/.true./
       save first,mb_eff
-            	    
-      if (first) then	    
+
+      if (first) then
 c--- run mb to appropriate scale
         if (part .eq. 'lord') then
           mb_eff=massfrun(mb_msbar,hmass,amz,1)
         else
           mb_eff=massfrun(mb_msbar,hmass,amz,2)
         endif  
-	first=.false.
+        first=.false.
       endif
 
       msqhbb=xn*gwsq*mb_eff**2/(4d0*wmass**2)*2d0*(s-4d0*mb**2)

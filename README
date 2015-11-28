@@ -1,6 +1,6 @@
- ************** MCFM - version 6.4 ****************
+ ************** MCFM - version 6.6 ****************
  *                                                *
- * MCFM, v6.4                December 19th, 2012  *
+ * MCFM, v6.6                    April 1st, 2013  *
  *                                                *
  * Authors: John Campbell, Keith Ellis,           *
  *          Ciaran Williams                       *
@@ -9,15 +9,17 @@
  *                                                *
  * For details see:                               *
  *                                                *
- *  arXiv:1208.0566 (Z+gamma+jet,Z+gamma+gamma)   *
- *       (with H. Hartanto)                       *
+ *  arXiv:1302.3856 (tZ, tH -- with R. Rontsch)   *
+ *  arXiv:1211.6390 (DM, P. Fox and C. Williams)  *
+ *  JHEP 1211:162 (2012), arXiv:1208.0566         *
+ *  (Z+gam+jet,Z+gam+gam -- with H. Hartanto)     *
  *  arXiv:1204.1513 (top production+decay)        *
- *  JHEP 1207:052(2012), arXiv:1204.5678 (ttW)    *
- *  JHEP 1110:005(2011), arXiv:1107.5569          *
+ *  JHEP 1207:052 (2012), arXiv:1204.5678 (ttW)   *
+ *  JHEP 1110:005 (2011), arXiv:1107.5569         *
  *         (gg->WW,Higgs intference)              *
- *  JHEP 1107:018(2011), arXiv:1105.0020          *
+ *  JHEP 1107:018 (2011), arXiv:1105.0020         *
  *         (diboson update)                       *
- *  JHEP 1103:027(2011), arXiv:1011.6647          *
+ *  JHEP 1103:027 (2011), arXiv:1011.6647         *
  *         (Wbb for mb>0, with S. Badger)         *
  *  Phys.Rev.D81:074023, arXiv:1001.4495 (H+2jet) *
  *                                                *
@@ -34,4 +36,16 @@
  *                                                *
  * On the web:  http://mcfm.fnal.gov/             *
  **************************************************
-
+ *                                                *
+ * To compile:           ./Install                *
+ *   and then:           make                     *
+ *                                                *
+ * To run:               cd Bin                   *
+ *                       ./mcfm                   *
+ *                                                *
+ * To change the process, collider, cuts, etc.    *
+ *  edit the file Bin/input.DAT                   *
+ *                                                *
+ * Further help is in the Doc/ directory.         *
+ *                                                *
+ **************************************************

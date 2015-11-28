@@ -51,9 +51,9 @@ c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)
         elseif (scheme .eq. 'dred') then
            ii_mqq=ii_mqq-half
            return
-	else
-	  write(6,*) 'Value of scheme not implemented properly ',scheme
-	  stop
+      else
+        write(6,*) 'Value of scheme not implemented properly ',scheme
+        stop
         endif
       endif
       
@@ -152,9 +152,9 @@ c--- divergent for _v (vorz=1) or finite for _z (vorz=2,3 for reg,plus)
         elseif (scheme .eq. 'dred') then
           ii_mgg=ii_mgg-1d0/6d0
           return
-	else
-	  write(6,*) 'Value of scheme not implemented properly ',scheme
-	  stop
+      else
+        write(6,*) 'Value of scheme not implemented properly ',scheme
+        stop
         endif
       endif
       
@@ -207,9 +207,9 @@ c--- correct form for double pole (normally zero)
         elseif (scheme .eq. 'dred') then
           if_mqq=if_mqq-half
           return
-	else
-	  write(6,*) 'Value of scheme not implemented properly ',scheme
-	  stop
+      else
+        write(6,*) 'Value of scheme not implemented properly ',scheme
+        stop
         endif
       endif
       omx=one-x
@@ -255,9 +255,9 @@ c--- correct form for double pole (normally zero)
         elseif (scheme .eq. 'dred') then
           if_mgg=if_mgg-1d0/6d0
           return
- 	else
-	  write(6,*) 'Value of scheme not implemented properly ',scheme
-	  stop
+       else
+        write(6,*) 'Value of scheme not implemented properly ',scheme
+        stop
         endif
         return
       endif
@@ -274,7 +274,7 @@ c--- correct form for double pole (normally zero)
              write(6,*) 'zp > 1 in dipoles_mass.f - this is forbidden'
              stop
            endif  
-	   omzp=x*mbarsq/(omx+x*mbarsq)
+         omzp=x*mbarsq/(omx+x*mbarsq)
            if_mgg=if_mgg-(two/omx*(dlog(zp*(omx+aif)/(aif*(omx+zp))))
      &     +Pggreg*dlog(zp/aif)+2d0*mbarsq*dlog(omzp/(1d0-aif)))
          endif
@@ -380,8 +380,8 @@ c  )-ffqq;
 
 c      if (aff .lt. 1d0) then
 c        write(6,*) 'Integrated dipole routine ff_mqq does not yet'
-c	write(6,*) ' support values of alpha < 1.'
-c	stop
+c      write(6,*) ' support values of alpha < 1.'
+c      stop
 c      endif
 
       ff_mqq=0d0
@@ -411,8 +411,8 @@ c        ff_mqq=2d0*Ieik+Icoll
 
 c--- now add on the contribution for aff < 1
 c        if (abs(aff-1d0) .gt. 1d-8) then
-	ff_mqq=ff_mqq+ff_alpha(mbar,mbar)
-c	endif 
+      ff_mqq=ff_mqq+ff_alpha(mbar,mbar)
+c      endif 
         return
       endif
       return
@@ -434,28 +434,28 @@ c	endif
 
       if (aff .lt. 1d0) then
         write(6,*) 'Integrated dipole routine ff_2mqq does not yet'
-	write(6,*) ' support values of alpha < 1.'
-	stop
+      write(6,*) ' support values of alpha < 1.'
+      stop
       endif
 
       ff_2mqq=0d0
       if (vorz .eq. 1) then
         mbarsq=mbar**2
-	sbarsq=sbar**2
+      sbarsq=sbar**2
         arg=1d0+mbarsq**2+sbarsq**2-2d0*(mbarsq+sbarsq+mbarsq*sbarsq)
-	arg2=1d0-2d0*sbar+sbarsq-mbarsq
-	den=1d0-mbarsq-sbarsq
+      arg2=1d0-2d0*sbar+sbarsq-mbarsq
+      den=1d0-mbarsq-sbarsq
         if (arg .lt. 0d0) then
             write(6,*) 'Threshold problem in ff_2mqq'
             stop
         endif
         vtijk=dsqrt(arg)/den
 c--- some redundancy here: ro=roj*rok
-	roj=dsqrt((1d0-vtijk+2d0*mbarsq/den)/(1d0+vtijk+2d0*mbarsq/den))
-	rok=dsqrt((1d0-vtijk+2d0*sbarsq/den)/(1d0+vtijk+2d0*sbarsq/den))
+      roj=dsqrt((1d0-vtijk+2d0*mbarsq/den)/(1d0+vtijk+2d0*mbarsq/den))
+      rok=dsqrt((1d0-vtijk+2d0*sbarsq/den)/(1d0+vtijk+2d0*sbarsq/den))
         ro=dsqrt((1d0-vtijk)/(1d0+vtijk))
         Lro=dlog(ro)
-	ff_2mqq=1d0/vtijk*((epinv-L)*Lro-dlog(roj)**2-dlog(rok)**2
+      ff_2mqq=1d0/vtijk*((epinv-L)*Lro-dlog(roj)**2-dlog(rok)**2
      &   -2d0*Lro*dlog(1d0-(mbar+sbar)**2)
      &   +4d0*ddilog(-ro)-4d0*ddilog(1d0-ro)
      &   -ddilog(1d0-roj**2)-ddilog(1d0-rok**2)+pisq/3d0)
@@ -592,8 +592,8 @@ c---       that it can match with ff_mgg
 
       if (aff .lt. 1d0) then
         write(6,*) 'Integrated dipole routine ff_mqq0 does not yet'
-	write(6,*) ' support values of alpha < 1.'
-	stop
+      write(6,*) ' support values of alpha < 1.'
+      stop
       endif
 
       ff_mqq0=0d0 
@@ -611,7 +611,7 @@ c---       that it can match with ff_mgg
      &         -dlog(mbarsq)*(dlog(mbarsq)/2d0-1d0+L)/2d0
      &         -dlog(1d0-mbarsq)*(dlog(mbarsq/(1d0-mbarsq))-L+2d0)
      &         -mbarsq/(1d0-mbarsq)*dlog(mbarsq)
-	
+      
       endif
       
       return
@@ -647,14 +647,14 @@ c  )-ffgg;
 
       if (aff .lt. 1d0) then
         write(6,*) 'Integrated dipole routine ff_mgg does not yet'
-	write(6,*) ' support values of alpha < 1.'
-	stop
+      write(6,*) ' support values of alpha < 1.'
+      stop
       endif
 
       ff_mgg=0d0
       if (vorz .eq. 1) then
         mbarsq=mbar**2
-c	ff_mgg=(epinv-L)*(epinv+dlog(mbarsq)-2d0*dlog(1d0-mbarsq))
+c      ff_mgg=(epinv-L)*(epinv+dlog(mbarsq)-2d0*dlog(1d0-mbarsq))
 c     &   +L**2/2d0+100d0/9d0-pisq*5d0/6d0
 c     &   +2d0*b0/xn*(epinv-L)
 c     &   -2d0*ddilog(1d0-mbarsq)-dlog(mbarsq)**2/2d0
@@ -666,9 +666,9 @@ c     &       4d0/3d0-dlog(1d0-mbar)-mbar/(1d0+mbar)
 c     &      +mbarsq/(1d0-mbarsq)*dlog(2d0*mbar/(1d0+mbar)))
 c--- NB: last term added by JC, 6/10/08 
         if (nfonly) then
-	  ff_mgg=0d0
-	else
-	   ff_mgg=(epinv-L)*(epinv+dlog(mbarsq)-2d0*dlog(1d0-mbarsq))
+        ff_mgg=0d0
+      else
+         ff_mgg=(epinv-L)*(epinv+dlog(mbarsq)-2d0*dlog(1d0-mbarsq))
      &    +L**2/2d0+100d0/9d0-pisq*5d0/6d0
      &    +2d0*11d0/6d0*(epinv-L)
      &    -2d0*ddilog(1d0-mbarsq)-dlog(mbarsq)**2/2d0
@@ -680,15 +680,15 @@ c--- NB: last term added by JC, 6/10/08
           elseif (scheme .eq. 'dred') then
             ff_mgg=ff_mgg-1d0/3d0
             return
-	  else
-	    write(6,*)'Value of scheme not implemented properly ',scheme
-	    stop
+        else
+          write(6,*)'Value of scheme not implemented properly ',scheme
+          stop
           endif
         endif
         if (caonly) then
           continue ! nothing more to do
-	else
-	  ff_mgg=ff_mgg
+      else
+        ff_mgg=ff_mgg
      &   -tr*4d0/3d0*dfloat(nflav)/ca*(epinv-L)
      &   -dfloat(nflav)/ca*2d0*tr*4d0/3d0*(
      &       4d0/3d0-dlog(1d0-mbar)-mbar/(1d0+mbar)

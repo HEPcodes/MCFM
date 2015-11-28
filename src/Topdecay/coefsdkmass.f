@@ -108,7 +108,7 @@ c--- [in units of 2*gsq*Cg*CF -> ason2pi*Cf]
 c      Cz1=2d0*(-0.5d0*(epinv+mulog)-1d0+dlog(4d0*P3b**2/(be*om))
 c     & -(1d0-omsq)*Ypb/P3b-0.5d0*(1d0-omsq-besq)*Ywb/P3b)
 c      Cz2=-2d0*P0b/P3b*(
-c     & 	2d0*Ypb*(-0.5d0*(epinv+mulog)+dlog(4d0*P3b**2*(zm-besq)/be))
+c     &         2d0*Ypb*(-0.5d0*(epinv+mulog)+dlog(4d0*P3b**2*(zm-besq)/be))
 c     & +ddilog(1d0-Pmb)-ddilog(1d0-Ppb)-3d0*ddilog(1d0-Pmb/Ppb)
 c     & -3d0*Ypb**2+2d0*dlog(Pmb)*dlog(1d0-om-Pmb)
 c     & -2d0*dlog(Ppb)*dlog(Ppb-1d0+om))

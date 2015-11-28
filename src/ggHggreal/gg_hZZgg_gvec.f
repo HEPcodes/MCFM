@@ -15,9 +15,10 @@ C  in is the label of the momentum contracted with n
       include 'zprods_com.f'
       integer j,k,in,i5,i6
       double precision msq(-nf:nf,-nf:nf)
-      double precision n(4),p(mxpart,4),hdecay,s34,fac,
-     . qqgghn_ab,qqgghn_ba,qqgghn_sym,ab,ba,sym,
-     . c1234,c1243,c1423,p1p2(-1:1,-1:1),Asq,s3456
+      double precision n(4),p(mxpart,4),hdecay,fac,
+     . qqgghn_ab,qqgghn_ba,qqgghn_sym,
+     . c1234,c1243,c1423,Asq,s3456
+C    & ,p1p2(-1:1,-1:1)
       parameter(i5=7,i6=8)
       do j=-nf,nf
       do k=-nf,nf
@@ -40,11 +41,7 @@ C   Deal with Higgs decay to ZZ
       Asq=(as/(3d0*pi))**2/vevsq
       fac=Asq*gsq**2*hdecay
 
-      do j=-1,+1
-      do k=-1,+1
-      p1p2(j,k)=0d0
-      enddo
-      enddo
+c      p1p2(:,:)=0d0
 
 c      write(6,*) 'qq_HZZgg_gvec.f: in',in
 c--- NOTE: there seems to be some redundancy in the function calls, e.g.

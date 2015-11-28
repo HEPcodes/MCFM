@@ -1,7 +1,7 @@
 FC = gfortran
-FFLAGS 	= 
+FFLAGS 	= -g 
 HERE = $(PWD)
-LIBDIR = $(HERE)/../ff/
+INCDIR = $(HERE)/../Include/
 LIBRARY	      = libqcdloop.a
 
 
@@ -77,7 +77,7 @@ $(LIBRARY):	$(OBJS)
  
 
 .f.o:	
-		$(FC) $(F77FLAGS)  -c $*.f
+		$(FC) $(F77FLAGS) -I $(INCDIR) -c $*.f
 
 
 # -----------------------------------------------------------------------------

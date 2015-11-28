@@ -23,7 +23,7 @@ c---   arXiv: 0910.4481 [hep-ph]
       include 'scale.f'
       include 'epinv.f'
       double complex zab2,V5L,
-     . A0phiAQggmpmm,A0phiAgQgmmpm,lnrat,sum
+     . A0phiAQggmpmm,lnrat,sum
       double complex l34,l12,l24,l13,Lsm1,Lsm1_2mht
       double precision s3,mhsq,s123,s234,s341,s412
       integer j1,j2,j3,j4

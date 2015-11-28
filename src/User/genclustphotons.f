@@ -94,7 +94,7 @@ c        call genclust_hqrk(q,R,qfinal,isub)
           enddo
         enddo
         jets=nqcdjets
-	if ((part .eq. 'real') .and. (isub .eq. 0)) jets=jets+1
+      if ((part .eq. 'real') .and. (isub .eq. 0)) jets=jets+1
         return
       else
         write(6,*) 'Invalid choice of jet algorithm, must be'
@@ -107,12 +107,12 @@ c--- particles for use in the plotting routines
       if (    (case .eq. 'qq_ttg')
      &   .or. (case .eq. 'tt_bbl') 
      &   .or. (case .eq. 'tt_bbh')) then
-	call jetreorder(qfinal,qreorder,isub)
-	do i=1,mxpart
-	  do nu=1,4
-	    qfinal(i,nu)=qreorder(i,nu)
-	  enddo
-	enddo
+      call jetreorder(qfinal,qreorder,isub)
+      do i=1,mxpart
+        do nu=1,4
+          qfinal(i,nu)=qreorder(i,nu)
+        enddo
+      enddo
       endif
 
       return

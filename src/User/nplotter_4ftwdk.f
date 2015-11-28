@@ -16,13 +16,14 @@ c---                1  --> counterterm for real radiation
       include 'vegas_common.f'
       include 'constants.f'
       include 'histo.f'
+      include 'outputflags.f'
       double precision p(mxpart,4),wt,wt2,pt
       double precision tiny,swap,costheta,ylight
-      integer switch,n,nplotmax,j
+      integer switch,n,nplotmax,nqcdjets,nqcdstart,j
       character*4 tag
-      logical first,creatent,dswhisto,failed
-      common/outputflags/creatent,dswhisto
+      logical first,failed
       common/nplotmax/nplotmax
+      common/nqcdjets/nqcdjets,nqcdstart
       parameter(tiny=1d-8)
       data first/.true./
       save first
@@ -53,12 +54,12 @@ c--- quarks are in the correct positions; just have to order jets in
 c--- positions 7 and 8 according to pt
       if (p(8,4) .gt. tiny) then
         if (pt(8,p) .gt. pt(7,p)) then
-	  do j=1,4
-	  swap=p(7,j)
-	  p(7,j)=p(8,j)
-	  p(8,j)=swap
-	  enddo
-	endif
+          do j=1,4
+          swap=p(7,j)
+          p(7,j)=p(8,j)
+          p(8,j)=swap
+          enddo
+        endif
       endif
       
 ************************************************************************
@@ -77,7 +78,7 @@ c--- by # of iterations now that is handled at end for regular histograms
       endif
 
 c--- "n" will count the number of histograms
-      n=1              
+      n=nextnplot
 
 c--- Syntax of "bookplot" routine is:
 c
@@ -118,9 +119,9 @@ c--- single-particle plots
       do j=3,7
         if ((abs(p(j,4)) .gt. tiny) .or. (first)) then
           call genplot1(p,j,tag,wt,wt2,n)
-	else
-	  n=n+2
-	endif
+        else
+          n=n+2
+        endif
       enddo
 c--- two-particle plots
       call genplot2(p,3,4,tag,wt,wt2,n)
@@ -134,7 +135,7 @@ c--- three-particle plots
       if ((abs(p(5,4)) .gt. tiny) .or. (first)) then
         call genplot3(p,3,4,5,tag,wt,wt2,n)
       else
-	n=n+3
+        n=n+3
       endif
 
 c--- additional plots that may be present at NLO       

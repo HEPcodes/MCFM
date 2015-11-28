@@ -51,7 +51,7 @@ C--- in  practice this is just the minimum ptsq of protojets
       
       do i=pjetmin,pjetmax
         dk=pt(i,pjet)
-	if (ipow .ne. 1) dk=dk**(ipow)
+        if (ipow .ne. 1) dk=dk**(ipow)
         if (dk .lt. dkmin) then
           dkmin=dk
           nk=i

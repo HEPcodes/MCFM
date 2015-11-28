@@ -38,11 +38,11 @@ c     u + g  ->  c + s + d  (t-channel single-charm)
 
 c--- set labels of quark and antiquark according to nwz
       if (nwz .eq. +1) then
-	i3=3
-	i4=4
+        i3=3
+        i4=4
       else
-	i3=4
-	i4=3
+        i3=4
+        i4=3
       endif
 
       msq_qqbar=0d0
@@ -51,8 +51,8 @@ c      msq_qbarq=0d0
         msq_qqbar=+qg_tbqn(i3,i4,1,2,5,p,n)
 c        msq_qbarq=+qg_tbqn(i3,i4,2,1,5,p,n)
       else
-	write(6,*) 'Value of in not allowed in qq_tbg_gvec: in=',in
-	stop
+        write(6,*) 'Value of in not allowed in qq_tbg_gvec: in=',in
+        stop
       endif
 
 c--- put result in msq(0,0) element for convenience 
@@ -62,10 +62,10 @@ c--- fill matrix elements
 c      do j=-4,4
 c      do k=-4,4
 c        if     ((j .gt. 0) .and. (k .lt. 0)) then
-c	  msq(j,k)=fac*Vsq(j,k)*msq_qqbar
+c          msq(j,k)=fac*Vsq(j,k)*msq_qqbar
 c        elseif ((j .lt. 0) .and. (k .gt. 0)) then
-c	  msq(j,k)=fac*Vsq(j,k)*msq_qbarq
-c	endif
+c          msq(j,k)=fac*Vsq(j,k)*msq_qbarq
+c        endif
 c      enddo
 c      enddo
 

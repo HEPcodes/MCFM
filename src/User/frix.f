@@ -16,7 +16,8 @@
       integer j,isub
       logical passed,first,is_hadronic,in_cone_n
       integer i,n_pow
-      
+      double precision vsmall 
+      parameter(vsmall=1d-10) 
 
       data first /.true. /
 
@@ -28,21 +29,23 @@
       if(first) then 
          first=.false. 
 !----- check for non-zero parameters, if zero exit with warning 
-         if((epsilon_h.eq.0d0).or.(cone_ang.eq.0d0)) then 
+         if((epsilon_h.lt.vsmall).or.(cone_ang.lt.vsmall)) then 
+       write(6,*)
        write(6,*)'************** Frixione Isolation    ***************'
        write(6,*)'*   Read zero parameters, not isolating            *'
        write(6,*) '* Warning, this may be unsafe in general *'
        write(6,99)'*  eps_phot = ',epsilon_h,' delta_0 = ',cone_ang, '*'
-       write(6,97)'*  n = ',n_pow,'                                   *'     
+       write(6,97)'*  n = ',n_pow,'                                   *'
        write(6,*)'****************************************************'
        return
       endif
       
 
+       write(6,*)
        write(6,*)'************** Frixione Isolation    ***************'
        write(6,*)'*                                                  *'
       write(6,99)'*  eps_phot = ',epsilon_h,' delta_0 = ',cone_ang,  '*'
-       write(6,97)'*  n = ',n_pow,'                                   *'     
+       write(6,97)'*  n = ',n_pow,'                                   *'
        write(6,*)'****************************************************'
       endif
 

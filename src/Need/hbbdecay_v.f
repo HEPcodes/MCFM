@@ -40,7 +40,7 @@ C-----Gamma(1-e)*Gamma(1+e)=1+O(e^2)
 
       if (includect) then
         write(6,*) 'Counter-term not yet included in hbbdecay_v.f'
-	stop
+        stop
       endif
 
       return

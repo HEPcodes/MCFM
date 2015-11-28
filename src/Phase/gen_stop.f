@@ -55,8 +55,9 @@ c--- necessary for t-channel process with notag=1
           pbreak=ptjetmin
           ptjetmin=0d0
           etajetmax=10d0
+          if (pbreak .lt. 20d0) pbreak=20d0 ! in case ptjetmin not set
         else
-c--- proceed as before (the old default)	
+c--- proceed as before (the old default)      
           if (part .eq. 'real') then
 c---   if we're generating phase space for real emissions, then we need
 c---   to produce partons spanning the whole phase space pt>0,eta<10;
@@ -73,7 +74,7 @@ c---   right up to the jet cut boundaries and there is no need for pbreak
           endif
 c--- in case this routine is used for very small values of ptjetmin
           if (ptjetmin .lt. 5d0) pbreak=5d0
-	endif
+      endif
       endif        
 
       do nu=1,4
@@ -127,8 +128,8 @@ c--- generate a b-quark as particle 6 for s-channel processes
      &   .and. (ijet .eq. 1)) then
           mtrans=dsqrt(pt**2+mb**2)
           p(5+ijet,4)=mtrans*coshy
-          p(5+ijet,3)=mtrans*sinhy	
-	endif
+          p(5+ijet,3)=mtrans*sinhy      
+      endif
         
         do nu=1,4
           psumjet(nu)=psumjet(nu)+p(5+ijet,nu)

@@ -139,10 +139,10 @@ c         m70hsq(i)=m70hsqAA(i)+m70hsqBB(i)+m70hsqAB(i)
              m70hsq(i)=m70hsqAA(i)
          elseif (ipsgen .eq. 2) then
              m70hsq(i)=m70hsqBB(i)+m70hsqAB(i)
-	 else
-	    write(6,*) 'Parameter ipsgen should be 1 or 2'
-	    write(6,*) 'ipsgen = ',ipsgen
-	    stop
+         else
+            write(6,*) 'Parameter ipsgen should be 1 or 2'
+            write(6,*) 'ipsgen = ',ipsgen
+            stop
          endif
 c         if (new_pspace) then
 c             m70hsq(i)=m70hsqBB(i)+m70hsqAB(i)

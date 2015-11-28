@@ -15,12 +15,12 @@ c---- Updated: February 24, 2012 to allow for a non-zero b-quark mass
       
       if (nmax .gt. 12) then
         write(6,*) 'Routine wtransform_generic fails, limit nmax=12'
-	stop
+        stop
       endif
       
       if (n3.gt. n4) then
         write(6,*) 'Routine wtransform_generic fails, n3>n4',n3,n4
-	stop
+        stop
       endif
       
       do nu=1,4
@@ -60,7 +60,7 @@ c---dot t and w into decay products of w
           q(j,nu)=p(j,nu)+a*(pt(nu)*lDw(j)-pw(nu)*lDt(j))
      &     +b*(ptDpw*(pt(nu)*ldw(j)+pw(nu)*ldt(j))
      &     -pwDpw*lDt(j)*pt(nu)-ptDpt*lDw(j)*pw(nu))
-	enddo
+        enddo
         q(n5,nu)=-q(1,nu)-q(2,nu)
         do j=3,nmax-1
           if (j .ne. n5) q(n5,nu)=q(n5,nu)-q(j,nu)

@@ -16,8 +16,8 @@ C  in is the label of the momentum contracted with n
       include 'zprods_com.f'
       integer j,k,in,i5,i6
       double precision msq(-nf:nf,-nf:nf)
-      double precision n(4),p(mxpart,4),hdecay,s34,fac,
-     . qqgghn_ab,qqgghn_ba,qqgghn_sym,ab,ba,sym,
+      double precision n(4),p(mxpart,4),hdecay,fac,
+     . qqgghn_ab,qqgghn_ba,qqgghn_sym,
      . c1234,c1243,c1423,p1p2(-1:1,-1:1),Asq,s3456
       parameter(i5=7,i6=8)
       do j=-nf,nf

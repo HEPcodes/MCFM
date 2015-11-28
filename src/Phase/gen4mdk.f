@@ -10,12 +10,13 @@ c--- of one of the heavy particles
       include 'limits.f'
       include 'phasemin.f'
       include 'breit.f'
+      include 'process.f'
       double precision r(mxdim)
       double precision p(mxpart,4),pswt,smin
       double precision p1(4),p2(4),p12(4),p8(4),p34567(4),
      & p7(4),p3456(4),p345(4),p6(4),wt12,wt34567,wt3456
-      double precision p34(4),p5(4),p3(4),p4(4),wt345,wt34
-      double precision mtbsq
+      double precision p567(4),p56(4),p34(4),p5(4),p3(4),p4(4)
+      double precision mtbsq,wt345,wt34,wt567,wt56
       integer nu
       double precision xjac,p1ext(4),p2ext(4),wt0
       double precision xx(2),tau,x1mx2,surd,lntaum,sqrts,tmin
@@ -24,12 +25,37 @@ c--- of one of the heavy particles
       common/energy/sqrts
       parameter(wt0=1d0/twopi**2)
 
+      if ((case .eq. 'Z_tdkj') .or. (case .eq. 'H_tdkj')) then
+      call gen4(r,p,pswt,*99)
+
+      p1(:)=p(1,:)
+      p2(:)=p(2,:)
+      p3(:)=p(3,:)
+      p4(:)=p(4,:)
+      p567(:)=p(5,:)
+      p8(:)=p(6,:)
+
+c--- set up minimum invariant mass for the W in the top decay
+      if (zerowidth) then
+        smin=wmass**2
+      else
+        smin=bbsqmin
+      endif
+      
+c--- decay top -> b W      
+      call phi1_2m_bw(mb,r(11),r(12),r(13),smin,p567,p7,p56,
+     & wmass,wwidth,wt567,*99)
+c--- decay W -> e n      
+      call phi3m0(r(14),r(15),p56,p5,p6,wt56,*99)
+      pswt=pswt/twopi**2*wt567*wt56*pi*mt*twidth
+
+      else
       mtbsq=(mt+mb)**2
       tmin=mtbsq/sqrts**2
  
 c--- this part is taken from gen4
       lntaum=dlog(tmin)
-       tau=dexp(lntaum*(one-r(14)))
+      tau=dexp(lntaum*(one-r(14)))
       xjac=-lntaum*tau
 
       x1mx2=two*r(15)-one
@@ -92,6 +118,8 @@ c--- decay W -> e n
 c--- compute new weight
       pswt=pswt/twopi**2*wt345*wt34*pi*mt*twidth
       
+      endif
+
       do nu=1,4
       p(1,nu)=p1(nu)
       p(2,nu)=p2(nu)
@@ -102,7 +130,7 @@ c--- compute new weight
       p(7,nu)=p7(nu)
       p(8,nu)=p8(nu)
       enddo 
-              
+
       return
       
    99 continue

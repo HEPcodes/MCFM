@@ -64,7 +64,7 @@ C---set to zero if x out of range
             elseif     (pdlabel .eq. 'mstw8nn') then
             prefix = checkpath('Pdfdata/mstw2008nnlo') ! NNLO grid
             endif
-	    call GetAllPDFs(prefix,0,x,xmu,u_val,d_val,u_sea,d_sea,
+            call GetAllPDFs(prefix,0,x,xmu,u_val,d_val,u_sea,d_sea,
      .                      str,sbar,chm,cbar,bot,bbar,gluon,photon)
 c-----assign MSTW to standard grid
             fx(0)=gluon/x

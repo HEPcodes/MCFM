@@ -16,14 +16,16 @@ c---  ('none') to perform no clustering at all
       include 'part.f'
       double precision q(mxpart,4),qfinal(mxpart,4),
      & qreorder(mxpart,4),R,Rbbmin
-      integer nqcdjets,nqcdstart,isub,i,nu
+      integer nqcdjets,nqcdstart,notag,isub,i,nu,njetsmin,njetsmax
       logical first
       common/nqcdjets/nqcdjets,nqcdstart
+      common/notag/notag
       common/Rbbmin/Rbbmin
       data first/.true./
       save first
       
-      if ((first) .and. ((nqcdjets .gt. 0).or.(part .eq. 'real'))) then
+      if ((first) .and.
+     &   ((nqcdjets .gt. 0).or.(part .eq. 'real').or.(notag.gt.0))) then
         first=.false.
         call read_jetcuts(ptjetmin,etajetmin,etajetmax)
       write(6,*)
@@ -65,14 +67,22 @@ c---  ('none') to perform no clustering at all
       write(6,79) ' *   pt(b-jet @ NLO)   < ',ptbjetmin
       write(6,*) '*                                                  *'
       endif
+      njetsmin=nqcdjets-notag
       if (inclusive) then
-      write(6,*) '*        Jet cross-section is INCLUSIVE            *'
+        if(part.eq.'real')then
+          njetsmax=nqcdjets+1
+        else
+          njetsmax=nqcdjets
+        endif
       else
-      write(6,*) '*        Jet cross-section is EXCLUSIVE            *'
+        njetsmax=nqcdjets-notag
       endif
+      write(6,78) njetsmin,njetsmax
       write(6,*) '****************************************************'
       call flush(6)
       endif
+   78 format(' *    Cross-section defined by:  ',i2,' <= jets <=',
+     &        i2,'    *')
    79 format(a25,f8.4,'                   *')
 
       if     (algorithm .eq. 'ktal') then
@@ -90,7 +100,7 @@ c---  ('none') to perform no clustering at all
           enddo
         enddo
         jets=nqcdjets
-	if ((part .eq. 'real') .and. (isub .eq. 0)) jets=jets+1
+      if ((part .eq. 'real') .and. (isub .eq. 0)) jets=jets+1
         return
       else
         write(6,*) 'Invalid choice of jet algorithm, must be'
@@ -105,18 +115,19 @@ c--- particles for use in the plotting routines
      &   .or. (case .eq. 'tt_bbh')
      &   .or. (case .eq. 'tt_ldk') 
      &   .or. (case .eq. 'tt_hdk')
+     &   .or. (case .eq. 'tt_udk') 
      &   .or. (case .eq. 'tthWdk')
      &   .or. (case .eq. 'tt_bbu')
      &   .or. (case .eq. '4ftwdk')
      &   .or. (case .eq. 'dk_4ft')
      &   .or. (case .eq. 'qq_ttw')
      &   .or. (case .eq. 'ttwldk')) then
-	call jetreorder(qfinal,qreorder,isub)
-	do i=1,mxpart
-	  do nu=1,4
-	    qfinal(i,nu)=qreorder(i,nu)
-	  enddo
-	enddo
+      call jetreorder(qfinal,qreorder,isub)
+      do i=1,mxpart
+        do nu=1,4
+          qfinal(i,nu)=qreorder(i,nu)
+        enddo
+      enddo
       endif
 
       return

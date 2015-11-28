@@ -16,6 +16,7 @@
       include 'qcdcouple.f'
       include 'masses.f'
       include 'topzlabels.f'
+      include 'process.f'
       
       integer j,k,nu
       double precision msq(-nf:nf,-nf:nf),pin(mxpart,4),p(mxpart,4)
@@ -104,6 +105,10 @@ c      p(j,nu)=scalefac*pin(j,nu)
       facqqb=V/4d0*(4d0*p3Dp5*p6Dp8)
      & *16d0*gsq**2*esq**2*gwsq**4/densq
       facgg=xn*facqqb
+      if (case .eq. 'qqtthz') then
+      facqqb=2d0*xn*facqqb
+      facgg=2d0*xn*facgg
+      endif
 
       p4Dq=p(4,4)*q(4)-p(4,1)*q(1)-p(4,2)*q(2)-p(4,3)*q(3)
       p7Da=p(7,4)*a(4)-p(7,1)*a(1)-p(7,2)*a(2)-p(7,3)*a(3)

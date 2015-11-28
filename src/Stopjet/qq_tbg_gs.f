@@ -123,27 +123,27 @@ c--- subleading colour (2*Cf-Ca) goes in (0,1)
 c--- Tr terms go in (1,0)
 
 c--- leading contributions
-        msq( 9,0,0)=(half*ca*(
+      msq( 9,0,0)=(half*ca*(
      .               msq56_3(0,0)*sub56_3(gg)+msq56_3v(0,0)*sub56_3v_gg)
      .              )*corrH 
-        msq( 9,1,0)=(half*2d0*Tr*dfloat(nflav)*(
+      msq( 9,1,0)=(half*2d0*Tr*dfloat(nflav)*(
      .               msq56_3(0,0)*sub56_3(gq)-msq56_3v(0,0)*sub56_3v_gq)
      .              )*corrH 
-        msq(10,0,0)=(half*ca*(
+      msq(10,0,0)=(half*ca*(
      .               msq56_4(0,0)*sub56_4(gg)+msq56_4v(0,0)*sub56_4v_gg)
      .              )*corrH 
-        msq(10,1,0)=(half*2d0*Tr*dfloat(nflav)*(
+      msq(10,1,0)=(half*2d0*Tr*dfloat(nflav)*(
      .               msq56_4(0,0)*sub56_4(gq)-msq56_4v(0,0)*sub56_4v_gq)
      .              )*corrH 
-        msq( 3,0,0)=half*ca*(msq35_6(0,0)*sub35_6(qq))*corrH
-        msq( 4,0,0)=half*ca*(msq36_5(0,0)*sub36_5(qq))*corrH
-        msq( 7,0,0)=half*ca*(msq45_6(0,0)*sub45_6(qq))*corrH
-        msq( 8,0,0)=half*ca*(msq46_5(0,0)*sub46_5(qq))*corrH
+      msq( 3,0,0)=half*ca*(msq35_6(0,0)*sub35_6(qq))*corrH
+      msq( 4,0,0)=half*ca*(msq36_5(0,0)*sub36_5(qq))*corrH
+      msq( 7,0,0)=half*ca*(msq45_6(0,0)*sub45_6(qq))*corrH
+      msq( 8,0,0)=half*ca*(msq46_5(0,0)*sub46_5(qq))*corrH
 c--- subleading contributions
-	msq( 1,0,1)=half*(2d0*cf-ca)*(msq35_4(0,0)*sub35_4(qq))*corrH
-	msq( 2,0,1)=half*(2d0*cf-ca)*(msq36_4(0,0)*sub36_4(qq))*corrH
-	msq( 5,0,1)=half*(2d0*cf-ca)*(msq45_3(0,0)*sub45_3(qq))*corrH
-	msq( 6,0,1)=half*(2d0*cf-ca)*(msq46_3(0,0)*sub46_3(qq))*corrH
+      msq( 1,0,1)=half*(2d0*cf-ca)*(msq35_4(0,0)*sub35_4(qq))*corrH
+      msq( 2,0,1)=half*(2d0*cf-ca)*(msq36_4(0,0)*sub36_4(qq))*corrH
+      msq( 5,0,1)=half*(2d0*cf-ca)*(msq45_3(0,0)*sub45_3(qq))*corrH
+      msq( 6,0,1)=half*(2d0*cf-ca)*(msq46_3(0,0)*sub46_3(qq))*corrH
         
 c      do j=-4,4
 c      do k=-4,4
@@ -165,10 +165,10 @@ c        msq( 4,j,k)=half*ca*(msq36_5(j,k)*sub36_5(qq))*corrH
 c        msq( 7,j,k)=half*ca*(msq45_6(j,k)*sub45_6(qq))*corrH
 c        msq( 8,j,k)=half*ca*(msq46_5(j,k)*sub46_5(qq))*corrH
 cc--- subleading contributions
-c	msq( 1,j,k)=half*(2d0*cf-ca)*(msq35_4(j,k)*sub35_4(qq))*corrH
-c	msq( 2,j,k)=half*(2d0*cf-ca)*(msq36_4(j,k)*sub36_4(qq))*corrH
-c	msq( 5,j,k)=half*(2d0*cf-ca)*(msq45_3(j,k)*sub45_3(qq))*corrH
-c	msq( 6,j,k)=half*(2d0*cf-ca)*(msq46_3(j,k)*sub46_3(qq))*corrH
+c      msq( 1,j,k)=half*(2d0*cf-ca)*(msq35_4(j,k)*sub35_4(qq))*corrH
+c      msq( 2,j,k)=half*(2d0*cf-ca)*(msq36_4(j,k)*sub36_4(qq))*corrH
+c      msq( 5,j,k)=half*(2d0*cf-ca)*(msq45_3(j,k)*sub45_3(qq))*corrH
+c      msq( 6,j,k)=half*(2d0*cf-ca)*(msq46_3(j,k)*sub46_3(qq))*corrH
 c      elseif ((j .lt. 0) .and. (k .gt. 0)) then
 cc--- leading contributions
 c        msq( 9,j,k)=(half*ca*(
@@ -186,10 +186,10 @@ c        msq( 4,j,k)=half*ca*(msq36_5(j,k)*sub36_5(qq))*corrH
 c        msq( 7,j,k)=half*ca*(msq45_6(j,k)*sub45_6(qq))*corrH
 c        msq( 8,j,k)=half*ca*(msq46_5(j,k)*sub46_5(qq))*corrH
 cc--- subleading contributions
-c	msq( 1,j,k)=half*(2d0*cf-ca)*(msq35_4(j,k)*sub35_4(qq))*corrH
-c	msq( 2,j,k)=half*(2d0*cf-ca)*(msq36_4(j,k)*sub36_4(qq))*corrH
-c	msq( 5,j,k)=half*(2d0*cf-ca)*(msq45_3(j,k)*sub45_3(qq))*corrH
-c	msq( 6,j,k)=half*(2d0*cf-ca)*(msq46_3(j,k)*sub46_3(qq))*corrH
+c      msq( 1,j,k)=half*(2d0*cf-ca)*(msq35_4(j,k)*sub35_4(qq))*corrH
+c      msq( 2,j,k)=half*(2d0*cf-ca)*(msq36_4(j,k)*sub36_4(qq))*corrH
+c      msq( 5,j,k)=half*(2d0*cf-ca)*(msq45_3(j,k)*sub45_3(qq))*corrH
+c      msq( 6,j,k)=half*(2d0*cf-ca)*(msq46_3(j,k)*sub46_3(qq))*corrH
 c      endif
 c        
 c   99 continue

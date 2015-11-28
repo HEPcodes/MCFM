@@ -13,7 +13,7 @@ c--- u + g  ->  c + s + d  (t-channel single-charm)
       include 'stopf1inc.f'
       double precision q(mxpart,4),dot,cDs,gDs,cDg,mc,ms,
      . mc2,ms2,qsq,s,t,u,xsn,xsd,xs
-      double complex trc,trg,trs,trsgc,zmpp,Ampp,old
+      double complex trc,trg,trs,trsgc,zmpp,Ampp
 
       mc2=mc**2
       ms2=ms**2

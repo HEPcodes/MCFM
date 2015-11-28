@@ -11,20 +11,20 @@ c--- the output of the numerical code
       
       if (nleg .eq. 2) then
         do i=1,cmax
-	corder(i)=corder2(i)
-	enddo
+      corder(i)=corder2(i)
+      enddo
       endif
       
       if (nleg .eq. 3) then
         do i=1,cmax
-	corder(i)=corder3(i)
-	enddo
+      corder(i)=corder3(i)
+      enddo
       endif
       
       if (nleg .eq. 4) then
         do i=1,cmax
-	corder(i)=corder4(i)
-	enddo
+      corder(i)=corder4(i)
+      enddo
       endif
       
       do h1=1,2
@@ -33,7 +33,7 @@ c--- the output of the numerical code
       
       do i=1,cmax
         if (abs(coeff(h1,h2,corder(i))) .gt. 1d-10) then
-	  write(6,*) corder(i),
+        write(6,*) corder(i),
      &               coeff(h1,h2,corder(i)),
      &           abs(coeff(h1,h2,corder(i)))
         endif

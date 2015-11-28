@@ -79,11 +79,11 @@ c--- since we have interchanged 1 and 2 to get the gg matrix element,
 c---  the colour structures should be interchanged too
            do pq=1,2
            do pl=1,2
-	   tmp=ggZqbq_cs(1,pq,pl)
-	   ggZqbq_cs(1,pq,pl)=ggZqbq_cs(2,pq,pl)
-	   ggZqbq_cs(2,pq,pl)=tmp
-	   enddo
-	   enddo
+           tmp=ggZqbq_cs(1,pq,pl)
+           ggZqbq_cs(1,pq,pl)=ggZqbq_cs(2,pq,pl)
+           ggZqbq_cs(2,pq,pl)=tmp
+           enddo
+           enddo
            call z2jetsqn(5,1,6,2,p,n,za,zb,zab,zba,qbgZqbg)
            call storezcsv(qbgZqbg_cs)
            call z2jetsqn(1,5,6,2,p,n,za,zb,zab,zba,qgZqg)

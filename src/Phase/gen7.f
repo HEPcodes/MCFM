@@ -32,12 +32,12 @@ c--- (small error induced if zerowidth false, of order (hwidth/hmass))
         s34=1d0/vs
         rtshat=dsqrt(s34)
         ymax=dlog(sqrts/rtshat)
-        yave=ymax*(two*r(10)-1d0)     	 
+        yave=ymax*(two*r(10)-1d0)           
         xx(1)=rtshat/sqrts*exp(+yave)
         xx(2)=rtshat/sqrts*exp(-yave)
-	xjac=(vsqmax-vsqmin)*s34**2/sqrts**2*two*ymax
+        xjac=(vsqmax-vsqmin)*s34**2/sqrts**2*two*ymax
       elseif ((case .eq. 'tt_ldk') .or. (case .eq. 'tt_hdk')
-     &   .or. (case .eq. 'tthWdk')) then
+     &   .or. (case .eq. 'tt_udk') .or. (case .eq. 'tthWdk')) then
 c--- top production with radiation in decay
         vsqmax=1d0/(4d0*mt**2)
         vsqmin=1d0/sqrts**2
@@ -46,10 +46,10 @@ c--- top production with radiation in decay
         s34=1/vs
         rtshat=dsqrt(s34)
         ymax=dlog(sqrts/rtshat)
-        yave=ymax*(two*r(10)-1d0)     	 
+        yave=ymax*(two*r(10)-1d0)           
         xx(1)=rtshat/sqrts*exp(+yave)
         xx(2)=rtshat/sqrts*exp(-yave)
-	xjac=(vsqmax-vsqmin)*s34**2/sqrts**2*two*ymax
+        xjac=(vsqmax-vsqmin)*s34**2/sqrts**2*two*ymax
       else
 c--- generic process
         tau=dexp(dlog(taumin)*r(9))
@@ -92,11 +92,11 @@ c---if x's out of normal range alternative return
       elseif ((case .eq. 'WH__ZZ') .or. (case .eq. 'ZH__ZZ')) then
         call  phase7b(r,p1,p2,p3,p4,p5,p6,p7,p8,p9,pswt,*999) 
       elseif ((case .eq. 'tt_ldk') .or. (case .eq. 'tt_hdk')
-     &   .or. (case .eq. 'tthWdk')) then
+     &   .or. (case .eq. 'tt_udk') .or. (case .eq. 'tthWdk')) then
         call  phase7dk(r,p1,p2,p3,p4,p5,p6,p7,p8,p9,pswt,*999) 
       else
         write(6,*) 'Unanticipated process in gen7.f!'
-	stop
+        stop
       endif
       
       do nu=1,4

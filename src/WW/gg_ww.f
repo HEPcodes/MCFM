@@ -31,7 +31,7 @@ c--- Triangle (axial) pieces cancel for massless isodoublets
 c--- if noglue or omitgg, set to zero and return
       if (noglue .or. omitgg) then
          msqgg=0d0
-	 return
+       return
       endif
 
       if ((plabel(3) .eq. 'el') .and. (plabel(5) .eq. 'qj')) then 
@@ -82,14 +82,14 @@ c--- omit massless loops for pt(W) < "ptWsafetycut_massless" (for num. stability
         write(6,*)'*                                                  *'
         write(6,*)'****************************************************'
         first=.false. 
-	if (includegen3) call qlinit
+      if (includegen3) call qlinit
       endif
 
 c--- if neither contribution is included, set to zero and return
       if ((includegens1and2 .eqv. .false.) .and.
      &    (includegen3      .eqv. .false.)) then
          msqgg=0d0
-	 return
+       return
       endif
 
 c--- if computing 3rd generation, set up extra flattened vectors 
@@ -159,7 +159,7 @@ c--- for pt(W) < "ptWsafetycut_massless" GeV
             Avec(h1,h2)=czip
           enddo
           enddo
-	else
+      else
           Avec(2,2)=a64v('q+qb-g-g-',3,4,1,2,6,5,zb,za)*(-im)
           Avec(2,1)=a64v('q+qb-g-g+',3,4,1,2,6,5,zb,za)*(-im)
           Avec(1,2)=a64v('q+qb-g+g-',3,4,1,2,6,5,zb,za)*(-im)
@@ -167,10 +167,10 @@ c--- for pt(W) < "ptWsafetycut_massless" GeV
         endif
       else
         do h1=1,2
-	do h2=1,2
-	Avec(h1,h2)=czip
-	enddo
-	enddo
+      do h2=1,2
+      Avec(h1,h2)=czip
+      enddo
+      enddo
       endif
       
 c--- fill amplitudes used for 3rd generation
@@ -206,13 +206,13 @@ c---    this contribution is finite, so we only retain "0" piece
            Agen3(h1,h2)=sum(h1,h2,0)          
           enddo
           enddo
-	endif
+      endif
       else
         do h1=1,2
-	do h2=1,2
-	Agen3(h1,h2)=czip
-	enddo
-	enddo
+      do h2=1,2
+      Agen3(h1,h2)=czip
+      enddo
+      enddo
       endif
 
 c--- factor two for complete massless isodoublets

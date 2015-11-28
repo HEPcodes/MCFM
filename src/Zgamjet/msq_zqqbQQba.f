@@ -79,10 +79,10 @@ c-----square them up and sum them up
             msq(qi,qj)=msqAA(qi,qj)
          elseif (ipsgen.eq.2) then
             msq(qi,qj)=msqBB(qi,qj)+msqAB(qi,qj)
-	 else
-	    write(6,*) 'Parameter ipsgen should be 1 or 2'
-	    write(6,*) 'ipsgen = ',ipsgen
-	    stop
+         else
+            write(6,*) 'Parameter ipsgen should be 1 or 2'
+            write(6,*) 'ipsgen = ',ipsgen
+            stop
          endif
 c         msq(qi,qj)=msqAA(qi,qj)+msqBB(qi,qj)+msqAB(qi,qj)
 c         if (new_pspace) then
@@ -231,10 +231,10 @@ c         m70hsq(i)=m70hsqAA(i)+m70hsqBB(i)+m70hsqAB(i)
             m70hsq(i)=m70hsqAA(i)
          elseif (ipsgen .eq. 2) then
             m70hsq(i)=m70hsqBB(i)+m70hsqAB(i)
-	 else
-	    write(6,*) 'Parameter ipsgen should be 1 or 2'
-	    write(6,*) 'ipsgen = ',ipsgen
-	    stop
+         else
+            write(6,*) 'Parameter ipsgen should be 1 or 2'
+            write(6,*) 'ipsgen = ',ipsgen
+            stop
          endif
 c         if (new_pspace) then
 c            m70hsq(i)=m70hsqBB(i)+m70hsqAB(i)

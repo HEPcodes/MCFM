@@ -18,9 +18,8 @@ c     f(-p1)+f(-p2)--> W^-(e^-(p3)+nbar(p4))+ t(p5) + f(p6)
      .                 facgg,prop
       double precision qgWqg2,qbgWqbg2,gqbWqbg2,gqWqg2,ggWqqb2,ggWqbq2
       double precision qgWqg2_cs(0:2),qbgWqbg2_cs(0:2),
-     .                 gqbWqbg2_cs(0:2),gqWqg2_cs(0:2),
-     .                 ggWqbq2_cs(0:2)
-c     .                ,ggWqqb2_cs(0:2),
+     .                 gqbWqbg2_cs(0:2),gqWqg2_cs(0:2)
+c     .                ,ggWqbq2_cs(0:2),ggWqqb2_cs(0:2),
       double precision sbqWcbq,sqWcq,qsWcq,qsbWcbq,qqbWcsb,qqbWcbs
       double precision s34,msq_gg
       double complex ampgg_ga(2,2,2,2),ampgg_ag(2,2,2,2)
@@ -86,8 +85,8 @@ c--- sum over helicities of gluons and massive quarks
           enddo
           enddo
           enddo
-	endif
-	  
+        endif
+          
       elseif (nwz .eq. -1) then
         call w2jetsq_mass(2,5,3,4,1,6,p,gqWqg2)
         call storecs(gqWqg2_cs)

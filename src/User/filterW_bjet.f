@@ -31,7 +31,7 @@ c--- first check the number of jets (just as in includedipole)
       if ( ((jets .ne. nqcdjets-notag).and.(inclusive.eqv..false.))
      & .or.((jets .lt. nqcdjets-notag).and.(inclusive.eqv..true.))) then
         filterW_bjet=.false.
-	return
+      return
       endif
       
 ************************************************************************
@@ -109,7 +109,7 @@ c--- (this is not normally the case, unless looking at WQ+X final state)
           else
             filterW_bjet=.false.
           endif
-	endif
+      endif
 c--- only need to check jet identities if there are just 2 jets
         if (jets .eq. 2) then
         if (((jetlabel(1) .eq. 'bq').and.(jetlabel(2) .eq. 'pp'))
@@ -169,7 +169,7 @@ c--- check jet identity if there is just 1 jet
           else
             filterW_bjet=.false.
           endif
-	endif
+      endif
 c--- check jet identities if there are just 2 jets
         if (jets .eq. 2) then
           if (((jetlabel(1) .eq. 'bq').or.(jetlabel(2) .eq. 'bq'))
@@ -198,7 +198,7 @@ c--- check jet identity if there is just 1 jet
           else
             filterW_bjet=.false.
           endif
-	endif
+        endif
 c--- check jet identities if there are just 2 jets
         if (jets .eq. 2) then
           if (((jetlabel(1) .eq. 'bb').and.(jetlabel(2) .eq. 'pp'))

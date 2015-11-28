@@ -10,12 +10,14 @@
       enddo
       
       do j=1,mxpart
-        if ((plabel(j) .eq. 'nl') .or. (plabel(j) .eq. 'na')) then
+        if ((plabel(j) .eq. 'nl') .or. (plabel(j) .eq. 'na')
+     &.or.(plabel(j).eq.'xm').or.(plabel(j).eq.'xa')) then
           do k=1,4
             etvec(k)=etvec(k)+p(j,k)
           enddo
         endif
       enddo
+
       
       etmiss=dsqrt(etvec(1)**2+etvec(2)**2)
       

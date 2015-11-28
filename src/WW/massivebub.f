@@ -45,8 +45,8 @@ c---       (k1,k4,k2,k3,k5,k6) ordering in the call
           call mbc(st1,k4,k1,k3,k2,k6,k5,zb,za,bcoeff)
 c--- this call interchanges roles of 1,2 so change coeffs. accordingly
           tmp=bcoeff(b134)
-	  bcoeff(b134)=bcoeff(b234)
-	  bcoeff(b234)=tmp
+        bcoeff(b134)=bcoeff(b234)
+        bcoeff(b234)=tmp
 c--- (-,-) amplitudes
 c      write(6,*) '--'
 c      write(6,*) 'bcoeff(b12)',
@@ -69,14 +69,14 @@ c     & +bcoeff(b234)+bcoeff(b12m)
 c      write(6,*) 'bcoeff(rat)',
 c     & bcoeff(rat),cdabs(bcoeff(rat))
 c      write(6,*)
-	  
+        
       elseif (st.eq.'q+qb-g-g+') then
           st1='q+qb-g+g-'
           call mbc(st1,k4,k1,k2,k3,k5,k6,za,zb,bcoeff)
 c--- this call interchanges roles of 1,2 so change coeffs. accordingly
           tmp=bcoeff(b134)
-	  bcoeff(b134)=bcoeff(b234)
-	  bcoeff(b234)=tmp
+        bcoeff(b134)=bcoeff(b234)
+        bcoeff(b234)=tmp
 c--- (-,+) amplitudes
 c      write(6,*) '-+'
 c      write(6,*) 'bcoeff(b12)',
@@ -99,7 +99,7 @@ c     & +bcoeff(b234)+bcoeff(b12m)
 c      write(6,*) 'bcoeff(rat)',
 c     & bcoeff(rat),cdabs(bcoeff(rat))
 c      write(6,*)
-	  
+        
       elseif (st.eq.'q+qb-g+g+') then
           call mbc(st,k1,k4,k2,k3,k5,k6,za,zb,bcoeff)
 c--- (+,+) amplitudes
@@ -124,7 +124,7 @@ c     & +bcoeff(b234)+bcoeff(b12m)
 c      write(6,*) 'bcoeff(rat)',
 c     & bcoeff(rat),cdabs(bcoeff(rat))
 c      write(6,*)
-	  
+        
       elseif (st.eq.'q+qb-g+g-') then
           call mbc(st,k1,k4,k2,k3,k5,k6,za,zb,bcoeff)
 c--- (+,-) amplitudes
@@ -149,7 +149,7 @@ c     & +bcoeff(b234)+bcoeff(b12m)
 c      write(6,*) 'bcoeff(rat)',
 c     & bcoeff(rat),cdabs(bcoeff(rat))
 c      write(6,*)
-	  
+        
       endif
 
       do j=1,7

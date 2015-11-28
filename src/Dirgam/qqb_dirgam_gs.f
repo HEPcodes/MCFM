@@ -14,12 +14,9 @@
       include 'qqgg.f'
       include 'ewcharge.f'
       include 'frag.f'
+      include 'phot_dip.f'
       integer j,k,nd
 c --- remember: nd will count the dipoles
-      
-      logical phot_dip(mxpart)
-      common/phot_dip/phot_dip
-
       double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf)
       double precision 
      & msq14_2(-nf:nf,-nf:nf),msq24_1(-nf:nf,-nf:nf),

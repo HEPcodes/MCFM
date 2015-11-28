@@ -104,13 +104,14 @@ c---       for the terms proportional to prp34
       endif
  
 c--- additional anomalous coupling component, Eqs. (7)-(9) of hep-ph/0002138
+c--- note partial fractioning of W propagators to go beyond zerowidth approx.
       if     (hgamma .eq. -1) then
-       agamtree=agamtree+prp34*(Qu-Qd)
+       agamtree=agamtree+(prp34-prp12)*(Qu-Qd)
      &  *za(p5,p3)/(2d0*s(p3,p4)*(s(p1,p2)-s(p3,p4))*za(p4,p3))
      &  *((xdelk_g+xlambda_g)*zb(p2,p4)*za(p1,p5)*za(p4,p3)
      &    +xlambda_g*zb(p2,p5)*za(p5,p1)*za(p3,p5))
       elseif (hgamma .eq. +1) then
-       agamtree=agamtree+prp34*(Qd-Qu)
+       agamtree=agamtree+(prp34-prp12)*(Qd-Qu)
      &  *zb(p5,p4)/(2d0*s(p3,p4)*(s(p1,p2)-s(p3,p4))*zb(p3,p4))
      &  *((xdelk_g+xlambda_g)*za(p1,p3)*zb(p2,p5)*zb(p3,p4)
      &    +xlambda_g*za(p1,p5)*zb(p5,p2)*zb(p4,p5))

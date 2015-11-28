@@ -114,7 +114,7 @@ c---- Calcuated g g -> q q without p p -> g g needed for photon dipoles
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac,
      .  qqij_ij,aaij_ij,
      .  qaij_ij,aqij_ij,aqii_jj,qaii_jj,
-     .  qqii_ii,aaii_ii,aqii_ii,qaii_ii,
+     .  qqii_ii,aaii_ii,
      .  aq_gg,gq_gq,ga_ga,qg_qg,ag_ag,gg_qa,qa_gg,ss,tt,uu,
      .  smalla,smallb,smallc 
       
@@ -140,14 +140,10 @@ c---- Calcuated g g -> q q without p p -> g g needed for photon dipoles
       qaii_jj=fac*aveqq*smalla(tt,ss,uu)
       qaij_ij=fac*aveqq*smalla(ss,tt,uu)
       aqii_jj=fac*aveqq*smalla(tt,ss,uu)
-!      aqij_ij=fac*aveqq*smalla(uu,tt,ss)
       aqij_ij=fac*aveqq*smalla(ss,uu,tt)
 
       qqii_ii=fac*aveqq*smallb(ss,tt,uu)*half
       aaii_ii=fac*aveqq*smallb(ss,tt,uu)*half
-      aqii_ii=fac*aveqq*smallb(uu,tt,ss)
-      qaii_ii=fac*aveqq*smallb(uu,tt,ss)
-
      
 
       qg_qg=-fac*aveqg*smallc(tt,ss,uu)
@@ -234,11 +230,11 @@ c---- Calcuated g g -> q q without p p -> g g needed for photon dipoles
       integer j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac,
      &  qqij_ij,aaij_ij,
-     &  qaij_ij,aqij_ij,aqii_jj,qaii_jj,
-     &  qqii_ii,aaii_ii,aqii_ii,qaii_ii,
+     &  qaij_ij,aqij_ij,aqii_jj,
+     &  qqii_ii,aaii_ii,
      &  aq_gg,gq_gq,ga_ga,qg_qg,ag_ag,gg_qa,ss,tt,uu,
      &  smalla,smallb,smallc
-C    & ,gq_qg
+C    & ,gq_qg,qaii_jj,aqii_ii,qaii_ii,
       call dotem(4,p,s)
       fac=gsq**2
       ss=s(1,2)
@@ -248,7 +244,7 @@ C    & ,gq_qg
      
       qqij_ij=fac*aveqq*smalla(ss,tt,uu)
       aaij_ij=fac*aveqq*smalla(ss,tt,uu)
-      qaii_jj=fac*aveqq*smalla(tt,ss,uu)
+c      qaii_jj=fac*aveqq*smalla(tt,ss,uu)
       qaij_ij=fac*aveqq*smalla(ss,tt,uu)
       aqii_jj=fac*aveqq*smalla(tt,ss,uu)
 !      aqij_ij=fac*aveqq*smalla(uu,tt,ss)
@@ -256,8 +252,8 @@ C    & ,gq_qg
       
       qqii_ii=fac*aveqq*smallb(ss,tt,uu)*half
       aaii_ii=fac*aveqq*smallb(ss,tt,uu)*half
-      aqii_ii=fac*aveqq*smallb(tt,uu,ss)
-      qaii_ii=fac*aveqq*smallb(uu,tt,ss)
+c      aqii_ii=fac*aveqq*smallb(tt,uu,ss)
+c      qaii_ii=fac*aveqq*smallb(uu,tt,ss)
 
      
 

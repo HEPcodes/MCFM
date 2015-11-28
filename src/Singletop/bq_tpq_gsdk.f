@@ -37,7 +37,7 @@ c--- g(p7) represents a gluon
       y=2d0*pbDpg/mt**2/(1d0-xr)**2
       if ((z .lt. 1d0-aff) .and. (y .gt. aff*ymax)) then
         incldip(1)=.false.
-	return
+        return
       endif
 
       call bq_tpq(q,msq) 

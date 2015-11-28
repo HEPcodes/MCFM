@@ -18,6 +18,7 @@ C
       include 'couple.f'
       include 'part.f'
       include 'masses.f'
+      include 'plabel.f'
       include 'msbarmasses.f'
       include 'hdecaymode.f'
       
@@ -53,7 +54,7 @@ c--- run mt to appropriate scale
       p(j,nu)=pin(j,nu)
       enddo      
 
-      h(nu)=p(9,nu)+p(10,nu)
+      h(nu)=p(9,nu)+p(10,nu)+p(11,nu)+p(12,nu)
       pw1(nu)=p(3,nu)+p(4,nu)
       pw2(nu)=p(7,nu)+p(8,nu)
 
@@ -102,15 +103,20 @@ C   Deal with Higgs decay
           call htautaudecay(p,9,10,hdecay)
       elseif (hdecaymode == 'bqba') then
           call hbbdecay(p,9,10,hdecay)
+      elseif (hdecaymode == 'wpwm') then
+          call hwwdecay(p,9,10,11,12,hdecay)
       elseif (hdecaymode == 'gaga') then
           hdecay=msqgamgam(hmass)
       else
-      write(6,*) 'Unimplemented process in gg_hgg_v'
+      write(6,*) 'Unimplemented process in qqb_tth'
       stop
       endif
       
       fac=2d0*p3Dp5*2d0*p6Dp8/densq
      &   *gwsq**5*gsq**2*mt_eff**2/wmass**2*hdecay
+C---include factor for hadronic decays of top
+      if (plabel(3) .eq. 'pp') fac=2d0*xn*fac
+      if (plabel(7) .eq. 'pp') fac=2d0*xn*fac
       facqq=aveqq*V/4d0*fac
       facgg=avegg*V*xn/4d0*fac
 

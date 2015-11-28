@@ -41,14 +41,14 @@ c--- initialize
 c--- set mass of quark and antiquark according to nwz
       if (nwz .eq. +1) then
         mq=mt
-	ma=mb
-	i3=3
-	i4=4
+        ma=mb
+        i3=3
+        i4=4
       else
         mq=mb
-	ma=mt
-	i3=4
-	i4=3
+        ma=mt
+        i3=4
+        i4=3
       endif
 
 c--- propagator for qg and qbarg amplitudes
@@ -82,10 +82,10 @@ c--- fill matrix elements
 c      do j=-4,4
 c      do k=-4,4
 c        if     ((j .gt. 0) .and. (k .lt. 0)) then
-c	  msq(j,k)=fac*Vsq(j,k)*msq_qqbar
+c          msq(j,k)=fac*Vsq(j,k)*msq_qqbar
 c        elseif ((j .lt. 0) .and. (k .gt. 0)) then
-c	  msq(j,k)=fac*Vsq(j,k)*msq_qbarq
-c	endif
+c          msq(j,k)=fac*Vsq(j,k)*msq_qbarq
+c        endif
 c      enddo
 c      enddo
       

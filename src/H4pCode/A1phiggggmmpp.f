@@ -350,8 +350,8 @@ c---       s_(i,j+1) to s_(i,j-1) [with j=i+3 here]
      . +Np/3d0*(trm2341/s(j1,j2))**3*BGRL3(sc(2,4),sc(2,3))    
      . -Np/2d0*(trm1432/s(j1,j2))**2*BGRL2(sc(3,1),sc(4,1))    
      . -Np/2d0*(trm2341/s(j1,j2))**2*BGRL2(sc(2,4),sc(2,3))    
-     . +(Np/6d0+bb0/xn)*(trm1432/s(j1,j2))*BGRL1(sc(3,1),sc(4,1))	 
-     . +(Np/6d0+bb0/xn)*(trm2341/s(j1,j2))*BGRL1(sc(2,4),sc(2,3)))	 
+     . +(Np/6d0+bb0/xn)*(trm1432/s(j1,j2))*BGRL1(sc(3,1),sc(4,1)) 
+     . +(Np/6d0+bb0/xn)*(trm2341/s(j1,j2))*BGRL1(sc(2,4),sc(2,3))) 
 
       C4mmpp322=Born*sum
 

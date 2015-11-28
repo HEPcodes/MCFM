@@ -386,9 +386,9 @@ c--- quark-antiquark
      .          cdabs(Q(j)*q1+vQ(j,polq)*v2(polz)*prop)**2)
      .                     +dble(mmsq_qqb_vec(polq,polz)
      .        *dconjg(Q(j)*q1+vQ(j,polq)*v2(polz)*prop)*vcouple(polz))
-     .  		   +dble(mmsq_qqb_ax(polq,polz)
+     .                 +dble(mmsq_qqb_ax(polq,polz)
      .        *dconjg(Q(j)*q1+vQ(j,polq)*v2(polz)*prop)
-     .  	  *(v2(polz)*prop)/sin2w))
+     .          *(v2(polz)*prop)/sin2w))
 
 c--- antiquark-quark
       elseif ((j .lt. 0) .and. (k .gt. 0)) then
@@ -397,9 +397,9 @@ c--- antiquark-quark
      .          cdabs(Q(k)*q1+vQ(k,polq)*v2(polz)*prop)**2)
      .                     +dble(mmsq_qbq_vec(polq,polz)
      .        *dconjg(Q(k)*q1+vQ(k,polq)*v2(polz)*prop)*vcouple(polz))
-     .  		   +dble(mmsq_qbq_ax(polq,polz)
+     .                 +dble(mmsq_qbq_ax(polq,polz)
      .        *dconjg(Q(k)*q1+vQ(k,polq)*v2(polz)*prop)
-     .  	  *(v2(polz)*prop)/sin2w))
+     .          *(v2(polz)*prop)/sin2w))
 
 
 c--- quark-gluon
@@ -418,32 +418,32 @@ c--- MadLoop check: vector couplings only - no Z coupling to leptons and quarks
 c--- MadLoop check: axial couplings only - photon contribution removed
 c------- full Z in Born (no photon)
         msqv(j,k)=msqv(j,k)+(aveqg/avegg)*(
-     .  		+dble(mmsq_qg_ax(polq,polz)
+     .              +dble(mmsq_qg_ax(polq,polz)
      .        *dconjg(Q(j)*q1*0+vQ(j,polq)*v2(polz)*prop)
      .         *(v2(polz)*prop)/sin2w))
 
 c------- axial Z everywehere (Born and virt, quarks and leptons)
 c        msqv(j,k)=msqv(j,k)+(aveqg/avegg)*(
-c     .  		+dble(mmsq_qg_ax(polq,polz)
+c     .              +dble(mmsq_qg_ax(polq,polz)
 c     .         *dconjg(Q(j)*q1*0+
 c     .           (vQ(j,polq)-vQ(j,3-polq))*(v2(polz)-v2(3-polz))*prop)
 c     .         *((v2(polz)-v2(3-polz))*prop)/sin2w))/8d0
-	endif
+      endif
 *************************** END MADLOOP CHECKING CODE *************************
-	
-	if ((checkvector.eqv..false.).and.(checkaxial.eqv..false.)) then
+      
+      if ((checkvector.eqv..false.).and.(checkaxial.eqv..false.)) then
 c--- normal case
-	msqv(j,k)=msqv(j,k)+(aveqg/avegg)*(mmsq_qg(polq,polz)*(
-     .  	cdabs(Q(j)*q1+vQ(j,polq)*v2(polz)*prop)**2)
+      msqv(j,k)=msqv(j,k)+(aveqg/avegg)*(mmsq_qg(polq,polz)*(
+     .        cdabs(Q(j)*q1+vQ(j,polq)*v2(polz)*prop)**2)
      .                     +dble(mmsq_qg_vec(polq,polz)
      .        *dconjg(Q(j)*q1+vQ(j,polq)*v2(polz)*prop)*vcouple(polz))
-     .  		   +dble(mmsq_qg_ax(polq,polz)
+     .                 +dble(mmsq_qg_ax(polq,polz)
      .        *dconjg(Q(j)*q1+vQ(j,polq)*v2(polz)*prop)
-     .  	  *(v2(polz)*prop)/sin2w))
+     .          *(v2(polz)*prop)/sin2w))
 
 
         endif
-	
+      
 c--- antiquark-gluon
       elseif ((j .lt. 0) .and. (k .eq. 0)) then
 
@@ -451,9 +451,9 @@ c--- antiquark-gluon
      .          cdabs(Q(-j)*q1+vQ(-j,polq)*v2(polz)*prop)**2)
      .                     +dble(mmsq_qbg_vec(polq,polz)
      .        *dconjg(Q(-j)*q1+vQ(-j,polq)*v2(polz)*prop)*vcouple(polz))
-     .  		   +dble(mmsq_qbg_ax(polq,polz)
+     .                 +dble(mmsq_qbg_ax(polq,polz)
      .        *dconjg(Q(-j)*q1+vQ(-j,polq)*v2(polz)*prop)
-     .  	  *(v2(polz)*prop)/sin2w))
+     .          *(v2(polz)*prop)/sin2w))
 
 c--- gluon-quark
       elseif ((j .eq. 0) .and. (k .gt. 0)) then
@@ -461,9 +461,9 @@ c--- gluon-quark
      .          cdabs(Q(k)*q1+vQ(k,polq)*v2(polz)*prop)**2)
      .                     +dble(mmsq_gq_vec(polq,polz)
      .        *dconjg(Q(k)*q1+vQ(k,polq)*v2(polz)*prop)*vcouple(polz))
-     .  		   +dble(mmsq_gq_ax(polq,polz)
+     .                 +dble(mmsq_gq_ax(polq,polz)
      .        *dconjg(Q(k)*q1+vQ(k,polq)*v2(polz)*prop)
-     .  	  *(v2(polz)*prop)/sin2w))
+     .          *(v2(polz)*prop)/sin2w))
 
 c--- gluon-antiquark
       elseif ((j .eq. 0) .and. (k .lt. 0)) then
@@ -471,9 +471,9 @@ c--- gluon-antiquark
      .          cdabs(Q(-k)*q1+vQ(-k,polq)*v2(polz)*prop)**2)
      .                     +dble(mmsq_gqb_vec(polq,polz)
      .        *dconjg(Q(-k)*q1+vQ(-k,polq)*v2(polz)*prop)*vcouple(polz))
-     .  		   +dble(mmsq_gqb_ax(polq,polz)
+     .                 +dble(mmsq_gqb_ax(polq,polz)
      .        *dconjg(Q(-k)*q1+vQ(-k,polq)*v2(polz)*prop)
-     .  	  *(v2(polz)*prop)/sin2w))
+     .          *(v2(polz)*prop)/sin2w))
 
 c--- gluon-gluon
       elseif ((j .eq. 0) .and. (k .eq. 0)) then
@@ -481,16 +481,16 @@ c--- gluon-gluon
      .             cdabs(Q(1)*q1+vQ(1,polq)*v2(polz)*prop)**2)
      .                     +dble(mmsq_gg_vec(polq,polz)
      .        *dconjg(Q(1)*q1+vQ(1,polq)*v2(polz)*prop)*vcouple(polz))
-     .  		   +dble(mmsq_gg_ax(polq,polz)
+     .                 +dble(mmsq_gg_ax(polq,polz)
      .        *dconjg(Q(1)*q1+vQ(1,polq)*v2(polz)*prop)
-     .  	  *(v2(polz)*prop)/sin2w))
+     .          *(v2(polz)*prop)/sin2w))
         msqv(j,k)=msqv(j,k)+dfloat(nup)*(mmsq_gg(polq,polz)*(
      .          cdabs(Q(2)*q1+vQ(2,polq)*v2(polz)*prop)**2)
      .                     +dble(mmsq_gg_vec(polq,polz)
      .        *dconjg(Q(2)*q1+vQ(2,polq)*v2(polz)*prop)*vcouple(polz))
-     .  		   +dble(mmsq_gg_ax(polq,polz)
+     .                 +dble(mmsq_gg_ax(polq,polz)
      .        *dconjg(Q(2)*q1+vQ(2,polq)*v2(polz)*prop)
-     .  	  *(v2(polz)*prop)/sin2w))
+     .          *(v2(polz)*prop)/sin2w))
       endif
       enddo
       enddo
@@ -926,7 +926,7 @@ c--- add additional annihilation diagrams if necessary
 c--- write out ug virtual amplitude when checking
       if (checkvector .or. checkaxial) then      
         write(6,*) 'Madloop check: ug Virt',msqv(2,0)
-c	pause
+c      pause
       endif
       
 ************************************************************************

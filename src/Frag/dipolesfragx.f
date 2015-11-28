@@ -84,14 +84,14 @@ c--- 4 dimensional array indexed by initial and final parton labels
          call store_zdip(nd,z)
          omz=one-z
 c----  Check that photon will still pass cuts 
-	 if (phot_pass(ptrans,ip,z) .eqv. .false.) return 
-c--- if using a dynamic scale, set that scale with dipole kinematics	
-	if (dynamicscale) then
+         if (phot_pass(ptrans,ip,z) .eqv. .false.) return 
+c--- if using a dynamic scale, set that scale with dipole kinematics        
+        if (dynamicscale) then
            call rescale_z_dip(ptrans,nd,ip)
            call scaleset(initscale,initfacscale,ptrans)
            call return_z_dip(ptrans,nd,ip)
-	   dipscale(nd)=facscale
-	endif
+           dipscale(nd)=facscale
+        endif
 
          call subr_born(ptrans,msq,mdum1,msqx,mdum2)
          
@@ -120,14 +120,14 @@ c--- Calculate the ptrans-momenta
          call store_zdip(nd,z)
 
 c----  Check that photon will still pass cuts 
-	 if (phot_pass(ptrans,ip,z) .eqv. .false.) return 
-c--- if using a dynamic scale, set that scale with dipole kinematics	
-	if (dynamicscale) then
+         if (phot_pass(ptrans,ip,z) .eqv. .false.) return 
+c--- if using a dynamic scale, set that scale with dipole kinematics        
+        if (dynamicscale) then
            call rescale_z_dip(ptrans,nd,ip)
            call scaleset(initscale,initfacscale,ptrans)
            call return_z_dip(ptrans,nd,ip)
-	   dipscale(nd)=facscale
-	endif
+           dipscale(nd)=facscale
+        endif
 
 
          call subr_born(ptrans,msq,mdum1,msqx,mdum2)

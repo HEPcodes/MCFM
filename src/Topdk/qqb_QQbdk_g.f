@@ -111,7 +111,7 @@ c      write(6,*) 'mmp'
 c      do j3=3,8
 c      a=ttbgggmmp_full(1,2,9,5,3,6,8,j1,j2,j3)
 c      write(6,*) j,a,cdabs(a)
-c      enddo	  
+c      enddo        
 c      write(6,*) 'pmp'
 c      do j3=3,8
 c      a=ttbgggpmp_full(1,2,9,5,3,6,8,j1,j2,j3)
@@ -128,30 +128,30 @@ c--- gauge check of the qqbg pieces (performed on 15/8/08)
 c      write(6,*) 'pp'
 c      do j=3,8
 c      write(6,*) j,cdabs(ttbqqbsqpp_full(1,2,9,5,3,6,8,j)),
-c     .  	   cdabs(ttbqqbtqpp_full(1,2,9,5,3,6,8,j)),
-c     .  	   cdabs(ttbqqbqqpp_full(1,2,9,5,3,6,8,j)),
-c     .  	   cdabs(ttbqqbrqpp_full(1,2,9,5,3,6,8,j))
+c     .           cdabs(ttbqqbtqpp_full(1,2,9,5,3,6,8,j)),
+c     .           cdabs(ttbqqbqqpp_full(1,2,9,5,3,6,8,j)),
+c     .           cdabs(ttbqqbrqpp_full(1,2,9,5,3,6,8,j))
 c      enddo
 c      write(6,*) 'pm'
 c      do j=3,8
 c      write(6,*) j,cdabs(ttbqqbsqpm_full(1,2,9,5,3,6,8,j)),
-c     .  	   cdabs(ttbqqbtqpm_full(1,2,9,5,3,6,8,j)),
-c     .  	   cdabs(ttbqqbqqpm_full(1,2,9,5,3,6,8,j)),
-c     .  	   cdabs(ttbqqbrqpm_full(1,2,9,5,3,6,8,j))
+c     .           cdabs(ttbqqbtqpm_full(1,2,9,5,3,6,8,j)),
+c     .           cdabs(ttbqqbqqpm_full(1,2,9,5,3,6,8,j)),
+c     .           cdabs(ttbqqbrqpm_full(1,2,9,5,3,6,8,j))
 c      enddo
 c      write(6,*) 'mp'
 c      do j=3,8
 c      write(6,*) j,cdabs(ttbqqbsqmp_full(1,2,9,5,3,6,8,j)),
-c     .  	   cdabs(ttbqqbtqmp_full(1,2,9,5,3,6,8,j)),
-c     .  	   cdabs(ttbqqbqqmp_full(1,2,9,5,3,6,8,j)),
-c     .  	   cdabs(ttbqqbrqmp_full(1,2,9,5,3,6,8,j))
+c     .           cdabs(ttbqqbtqmp_full(1,2,9,5,3,6,8,j)),
+c     .           cdabs(ttbqqbqqmp_full(1,2,9,5,3,6,8,j)),
+c     .           cdabs(ttbqqbrqmp_full(1,2,9,5,3,6,8,j))
 c      enddo
 c      write(6,*) 'mm'
 c      do j=3,8
 c      write(6,*) j,cdabs(ttbqqbsqmm_full(1,2,9,5,3,6,8,j)),
-c     .  	   cdabs(ttbqqbtqmm_full(1,2,9,5,3,6,8,j)),
-c     .  	   cdabs(ttbqqbqqmm_full(1,2,9,5,3,6,8,j)),
-c     .  	   cdabs(ttbqqbrqmm_full(1,2,9,5,3,6,8,j))
+c     .           cdabs(ttbqqbtqmm_full(1,2,9,5,3,6,8,j)),
+c     .           cdabs(ttbqqbqqmm_full(1,2,9,5,3,6,8,j)),
+c     .           cdabs(ttbqqbrqmm_full(1,2,9,5,3,6,8,j))
 c      enddo
 c      pause
       
@@ -230,8 +230,8 @@ c--- NB: make sure to permute helicity labels appropriately too
         a3sum3b=a213(h2,h1,h3)+a231(h2,h3,h1)+a321(h3,h2,h1)
         a3sum1b=a321(h2,h1,h3)+a312(h2,h3,h1)+a132(h3,h2,h1)
         a3sum2b=a132(h2,h1,h3)+a123(h2,h3,h1)+a213(h3,h2,h1)
-	a6sum=a3sum1a+a3sum1b
-	wtgg=wtgg+xn**3*cf*(
+      a6sum=a3sum1a+a3sum1b
+      wtgg=wtgg+xn**3*cf*(
      .   (cdabs(a123(h1,h2,h3))**2+cdabs(a132(h1,h3,h2))**2
      .   +cdabs(a213(h2,h1,h3))**2+cdabs(a231(h2,h3,h1))**2
      .   +cdabs(a312(h3,h1,h2))**2+cdabs(a321(h3,h2,h1))**2)
@@ -270,14 +270,14 @@ C---fill qb-q, gg and q-qb elements
       do j=-nf,nf
       if     (j .gt. 0) then
           msq(j,-j)=aveqq*fac*wtqqb
-	  msq(j, 0)=aveqg*fac*wtqg
-	  msq(0, j)=aveqg*fac*wtgq
+          msq(j, 0)=aveqg*fac*wtqg
+          msq(0, j)=aveqg*fac*wtgq
       elseif (j .eq. 0) then
           msq(j,j)=avegg*fac*wtgg
       elseif (j .lt. 0) then
           msq(j,-j)=aveqq*fac*wtqbq
-	  msq(j, 0)=aveqg*fac*wtqbarg
-	  msq(0, j)=aveqg*fac*wtgqbar
+          msq(j, 0)=aveqg*fac*wtqbarg
+          msq(0, j)=aveqg*fac*wtgqbar
       endif
       enddo
       return

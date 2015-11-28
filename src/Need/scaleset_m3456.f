@@ -31,7 +31,7 @@ c--- invariant mass of particles 3, 4, 5 and 6
         mu0=dsqrt(dabs(mu0))
       else
         write(6,*)'dynamicscale m(3456) not supported for this process.'
-	stop
+        stop
       endif
       
       return

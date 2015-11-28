@@ -14,6 +14,8 @@ c     delta(p2^2-s2) delta(p3^2-s3)
       include 'zerowidth.f'
       include 'verbose.f'
       include 'breit.f'
+      include 'limits.f'
+      include 'dm_params.f' 
       double precision p1(4),p2(4),p3(4),p3cm(4)
       double precision x1,x2,x3,x4,costh,sinth,phi,cphi,sphi
       double precision wt,wt0,w2,w3
@@ -46,9 +48,9 @@ c--- if both particles are produced on-shell, reject if m1 too small
 
 c--- top is on-shell for W+t processes, so reject if m1 too small
       if ( ((case .eq. 'W_twdk')
-     &  .or.(case .eq. 'W_cwdk') .or. (case .eq. 'Wtbwdk')
-     &  .or.(case .eq. 'qq_tth') .or. (case .eq. 'qq_ttz')
-     &  .or.(case .eq. 'qq_ttw'))
+     &  .or. (case .eq. 'W_cwdk') .or. (case .eq. 'Wtbwdk')
+     &  .or. (case .eq. 'qq_tth')
+     &  .or. (case .eq. 'qq_ttw'))
      . .and. (m1 .lt. mass2) ) return 1
 c--- for Wt radiation in decay, only on the first call
       if ( (case .eq. 'Wtdkay') .and. (n2 .eq. 1)
@@ -59,15 +61,18 @@ c      s2max=min(s1,bbsqmax)
       s2min=1d-15
       s2max=s1
       if (((case .eq. 'Wbbmas') .and. (flav .eq. 5))
+     ..or.((case .eq. 'Zbbmas') .and. (flav .eq. 5))
      ..or. (case .eq. 'WHbbar')
      ..or. (case .eq. 'ZHbbar')
-     ..or. (case .eq. 'Zbbmas')
      ..or.(case .eq. 'Zccmas') .or. (case .eq. 'vlchkm')
      ..or.(case .eq. 'Wbbjet') .or. (case .eq. 'Wbbjem')
      ..or.(case .eq. 'W_bjet') ) then
         s2min=4d0*mb**2
       elseif ((case .eq. 'Wbbmas') .and. (flav .eq. 4)) then
         s2min=4d0*mc**2
+      elseif (((case .eq. 'Zbbmas') .and. (flav .eq. 6))
+     &    .or. (case .eq. 'qq_ttz') .or. (case .eq. 'qqtthz')) then
+        s2min=4d0*mt**2
       elseif (case .eq. 'W_cjet') then
         s2min=mc**2
       elseif (case .eq. 'Wbfrmc') then
@@ -79,7 +84,7 @@ c      s2max=min(s1,bbsqmax)
       elseif ((case .eq. 'qq_tbg') .or. (case .eq. 'qqtbgg')) then
         s2min=mt**2
       elseif ((case .eq. 'tt_ldk') .or. (case .eq. 'tt_hdk')
-     &   .or. (case .eq. 'tthWdk')
+     &   .or. (case .eq. 'tt_udk') .or. (case .eq. 'tthWdk')
      &   .or. (case .eq. 'ttdkay') .or. (case .eq. 'tdecay')) then
         s2min=mb**2
       elseif ((case .eq. '4ftwdk') .or. (case .eq. '4ftjet')
@@ -87,20 +92,25 @@ c      s2max=min(s1,bbsqmax)
         s2min=(mt+mb)**2
       elseif ((case .eq. 'W_twdk') .or. (case .eq. 'Wtdkay')
      .   .or. (case .eq. 'W_cwdk') .or. (case .eq. 'Wtbwdk')
-     .   .or. (case .eq. 'qq_tth') .or. (case .eq. 'qq_ttz')) then
+     .   .or. (case .eq. 'qq_tth')) then
         oldzerowidth=zerowidth
         zerowidth=.true.
       elseif ((case .eq. 'qq_ttw')
      .   .or. (case .eq. 'Wttmas')) then
         s2min=4d0*mt**2
+      elseif ((case.eq.'dm2jet').or.(case.eq.'dm_gaj')) then 
+         s2min=4d0*xmass**2
+      elseif ((case.eq.'dm_jet').or.(case.eq.'dm_gam')) then 
+         s2min=4d0*xmass**2
+         
       endif
       
       if (case .eq. 'ttwldk') then
         if (abs(m1-mt) .lt. 1d-6) then
-          s2min=mb**2		! when called from gen9dk_rap
-	else
-	  s2min=4d0*mt**2	! when called from gen4/phase4
-	endif
+          s2min=mb**2       ! when called from gen9dk_rap
+        else
+          s2min=4d0*mt**2   ! when called from gen4/phase4
+        endif
       endif
       
       if (s2min .gt. s2max) return 1
@@ -113,16 +123,18 @@ c      s2max=min(s1,bbsqmax)
 
       if ((case .eq. 'W_twdk') .or. (case .eq. 'Wtdkay')
      ..or.(case .eq. 'W_cwdk') .or. (case .eq. 'Wtbwdk')
-     ..or.(case .eq. 'qq_tth') .or. (case .eq. 'qq_ttz'))  then
+     ..or.(case .eq. 'qq_tth'))  then
         zerowidth=oldzerowidth
       endif
       
       m2=dsqrt(s2)
       s3min=1d-15
       if ((case .eq. 'qq_tbg') .or. (case .eq. 'qqtbgg')) s3min=mb**2
-      if ((case .eq. 'qq_tth') .or. (case .eq. 'qq_ttz'))s3min=4d0*mb**2
+      if ((case .eq. 'qq_tth')) 
+     . s3min=4d0*mb**2
 c      s3min=mb**2 ! DEBUG: hack for s36 small
 c      s3min=mt**2 ! DEBUG: hack for s46 small
+      if ((case .eq. 'qq_ttz') .or. (case .eq. 'qqtthz')) s3min=wsqmin
       s3max=(m2-m1)**2
       if (s3max .lt. s3min) return 1 ! for safety
 c      if (s3max-s3min .lt. 1d-9) return 1

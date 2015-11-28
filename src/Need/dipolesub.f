@@ -75,11 +75,11 @@ c        if (incldip(nd) .eqv. .false.) return
           vec(nu)=(p(jp,nu)-vtilde*p(kp,nu))/dsqrt(-vecsq)
         enddo
 
-c--- if using a dynamic scale, set that scale with dipole kinematics	
-	if (dynamicscale) then
-	  call scaleset(initscale,initfacscale,ptrans)
-	  dipscale(nd)=facscale
-	endif
+c--- if using a dynamic scale, set that scale with dipole kinematics      
+      if (dynamicscale) then
+        call scaleset(initscale,initfacscale,ptrans)
+        dipscale(nd)=facscale
+      endif
 
 c--- for "gamgam" process, gvec contribution is not written in
 c--- a canonical way; instead, pass emitted vector directly as "vec"
@@ -87,8 +87,8 @@ c--- a canonical way; instead, pass emitted vector directly as "vec"
           do nu=1,4
             vec(nu)=p(jp,nu)
           enddo
-	endif
-	
+      endif
+      
         call subr_born(ptrans,msq)
         call subr_corr(ptrans,vec,ip,msqv)
 
@@ -117,12 +117,12 @@ c        incldip(nd)=includedipole(nd,ptrans)
 C-- if not return
 c        if (incldip(nd) .eqv. .false.) return
 
-c--- if using a dynamic scale, set that scale with dipole kinematics	
-	if (dynamicscale) then
-	  call scaleset(initscale,initfacscale,ptrans)
-	  dipscale(nd)=facscale
-	endif
-	
+c--- if using a dynamic scale, set that scale with dipole kinematics      
+      if (dynamicscale) then
+        call scaleset(initscale,initfacscale,ptrans)
+        dipscale(nd)=facscale
+      endif
+      
 c--- Calculate the matrix element now because it might be needed
 c--- in the final-initial segment, regardless of whether or not the
 c--- alfa cut fails here
@@ -175,11 +175,11 @@ C---call msqv again because vec has changed
         enddo
         enddo
 
-c--- if using a dynamic scale, set that scale with dipole kinematics	
-	if (dynamicscale) then
-	  call scaleset(initscale,initfacscale,ptrans)
-	  dipscale(nd)=facscale
-	endif	
+c--- if using a dynamic scale, set that scale with dipole kinematics      
+      if (dynamicscale) then
+        call scaleset(initscale,initfacscale,ptrans)
+        dipscale(nd)=facscale
+      endif      
 
 c--- do something special if we're doing W+2,Z+2jet (jp .ne. 7)
         if ((jp .ne. 7) .and. (case .ne. 'HWWjet')
@@ -197,7 +197,7 @@ C ie for cases 76_i,75_i
 C ie for cases 57_i,67_i
           ipt=ip
         endif
-	
+      
 c--- do something special for HWW/HZZ+2 jets
         if ((case .eq. 'HWW2jt') .or. (case .eq. 'HZZ2jt')) then
           if (jp .ne. 9) then
@@ -212,11 +212,11 @@ C ie for cases 98_i,97_i
 C ie for cases 79_i,89_i
             ipt=ip
           endif
-	endif	
+      endif      
         
 c--- do something special for direct photon production
         if (case .eq. 'dirgam') ipt=4
-	
+      
         call subr_corr(ptrans,vec,ipt,msqv)
                                 
         sub(qq)=+gsq/x/sij*(two/(omz+omx)-one-z)
@@ -253,16 +253,16 @@ c        if (incldip(nd) .eqv. .false.) return
           vec(nu)=z*p(ip,nu)-omz*p(jp,nu)
         enddo
 
-c--- if using a dynamic scale, set that scale with dipole kinematics	
+c--- if using a dynamic scale, set that scale with dipole kinematics      
         if (dynamicscale) then
- 	  call scaleset(initscale,initfacscale,ptrans)
- 	  dipscale(nd)=facscale
+         call scaleset(initscale,initfacscale,ptrans)
+         dipscale(nd)=facscale
         endif
-	
+      
         call subr_born(ptrans,msq)
         if (case .eq. 'epem3j') then
           ipt=5
- 	else
+       else
           if (ip .lt. kp) then
             ipt=5
           else
@@ -277,7 +277,7 @@ c--- do something special for HWW/HZZ+2 jets
           else
             ipt=8
           endif
-	endif	
+      endif      
 
         call subr_corr(ptrans,vec,ipt,msqv)
          

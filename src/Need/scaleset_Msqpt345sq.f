@@ -4,6 +4,7 @@ c---  sqrt(M^2+pt345^2), where M is the mass of the particle (345)
       implicit none
       include 'constants.f'
       include 'process.f'
+      include 'breit.f'
       double precision p(mxpart,4),mu0
 
       if((case .eq. 'tt_bbl') .or.
@@ -14,7 +15,7 @@ c---  sqrt(M^2+pt345^2), where M is the mass of the particle (345)
       else
         write(6,*) 'dynamicscale sqrt(M^2+pt345^2)'//
      &             ' not supported for this process.'
-	stop
+        stop
       endif
       
       return

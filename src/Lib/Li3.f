@@ -6,7 +6,7 @@ C     returns Li_3(x) for real x, minf < x < 1
       
       if (x .gt. 1d0) then
         write(6,*) 'x>1 in Li3 function, src/Lib/Li3.f'
-	stop
+        stop
       endif
       
       Li3 = dble(wgplg(2,1,x))

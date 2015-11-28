@@ -45,7 +45,7 @@ c--- diagonal only
          ckmallowed(-1,4)=.true.
          ckmallowed(-3,4)=.true.
          awx=ma_pdg
-	 lwx=nml_pdg	 
+         lwx=nml_pdg         
       elseif (nwz .eq. -1) then
          ckmallowed(-2,1)=.true.
          ckmallowed(-2,3)=.true.
@@ -56,7 +56,7 @@ c--- diagonal only
          ckmallowed(1,-4)=.true.
          ckmallowed(3,-4)=.true.
          awx=nea_pdg
-	 lwx=el_pdg	 
+         lwx=el_pdg         
       else
       write(6,*) 'Error in init_processes.f'
       write(6,*) 'Set jwnz to -1 or +1 in input, current value=',nwz
@@ -65,10 +65,10 @@ c--- diagonal only
 
       nwz=1
          do i=-4,4
-	 do k=-4,4
-	   if(i+k .ne. nwz) ckmallowed(i,k)=.false.
-	 enddo
-	 enddo         
+         do k=-4,4
+           if(i+k .ne. nwz) ckmallowed(i,k)=.false.
+         enddo
+         enddo         
 
       ii1=1
       ii2=2

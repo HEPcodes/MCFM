@@ -25,7 +25,7 @@ c---  arXiv:0906.0008 [hep-ph].
       include 'scale.f'
       include 'epinv.f'
       double complex V5L,V6l,A0phiAQggmppm,lnrat
-      double complex l13,l34,l12,l24,Lsm1DS,Lsm1,Lsm1_2me
+      double complex l13,l34,l12,l24,Lsm1DS,Lsm1_2me
       double precision s3,mhsq,s123,s234,s341,s412
       integer j1,j2,j3,j4
       s3(j1,j2,j3)=s(j1,j2)+s(j1,j3)+s(j2,j3)

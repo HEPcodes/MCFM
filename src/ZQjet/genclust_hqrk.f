@@ -28,13 +28,13 @@ c--- To reject an event, return jets=-1
       
       if (first) then
         if (pseudo) then
-	write(6,*) 'Heavy quark clustering routine using pseudorapidity'
-	else
-	write(6,*) 'Heavy quark clustering routine using rapidity'
-	endif
-	write(6,*) '     (for both cuts and definition of Delta-R)'
-	first=.false.
-      endif	
+      write(6,*) 'Heavy quark clustering routine using pseudorapidity'
+      else
+      write(6,*) 'Heavy quark clustering routine using rapidity'
+      endif
+      write(6,*) '     (for both cuts and definition of Delta-R)'
+      first=.false.
+      endif      
 
 c--- transfer incoming and lepton momenta to the final array
       do j=1,4
@@ -118,9 +118,9 @@ c--- the minimum separation in R
       do k=j+1,icandj        
         if (pseudo) then        
           rtest=R(qjet,j,k)   ! Uses pseudorapidity
-	else
+      else
           rtest=Ry(qjet,j,k)  ! Uses rapidity
-	endif
+      endif
         if (verbalg) write(6,*) jetlabel(j),',',jetlabel(k),' R =',rtest
 c--- check to see if this pair should be merged - pair of b quarks
         if ( ((jetlabel(j).eq.'bq') .and. (jetlabel(k).eq.'ba'))
@@ -161,11 +161,11 @@ c--- check for an error
 c--- if two b's will be merged, set the flag      
       if ( ((jetlabel(ia).eq.'bq') .and. (jetlabel(ib).eq.'ba'))
      . .or.((jetlabel(ia).eq.'ba'). and. (jetlabel(ib).eq.'bq')) ) then
-      	bjetmerge=.true.
+            bjetmerge=.true.
       endif
 c--- do merging      
 c--- ...... set label for merged jet
-      if     ((jetlabel(ia) .eq. 'bq').or.(jetlabel(ib) .eq. 'bq')) then 
+      if     ((jetlabel(ia) .eq. 'bq').or.(jetlabel(ib) .eq. 'bq')) then
         jetlabel(ia)='bq'
       elseif ((jetlabel(ia) .eq. 'ba').or.(jetlabel(ib) .eq. 'ba')) then
         jetlabel(ia)='ba'
@@ -207,10 +207,10 @@ c--- set the "jetmerge" flag properly now
 c--- now check jet pt and rapidity
       do i=1,icandj
         if (pseudo) then
-	  raptest=aetarap(i,qjet)
-	else
-	  raptest=ayrap(i,qjet)
-	endif
+        raptest=aetarap(i,qjet)
+      else
+        raptest=ayrap(i,qjet)
+      endif
 c--- .... for b-quarks
         if ((jetlabel(i) .eq. 'bq') .or. (jetlabel(i) .eq. 'ba')) then
           if ( (pt(i,qjet) .lt. ptbjetmin)

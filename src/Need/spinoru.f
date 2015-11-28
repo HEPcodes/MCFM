@@ -35,7 +35,7 @@ C-----negative energy case
          za(i,j)=f(i)*f(j)
      &   *(c23(i)*dcmplx(rt(j)/rt(i))-c23(j)*dcmplx(rt(i)/rt(j)))
 
-         if (abs(s(i,j)).lt.1d-9) then
+         if (abs(s(i,j)).lt.1d-5) then
          zb(i,j)=-(f(i)*f(j))**2*dconjg(za(i,j))
          else
          zb(i,j)=-dcmplx(s(i,j))/za(i,j)

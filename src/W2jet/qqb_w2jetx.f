@@ -96,8 +96,8 @@ c--- the actual value of colourchoice
         rcolourchoice=colourchoice
 c--- 21/5/09: we only need all the information for Gflag, not Qflag
         if (Gflag) then
-	  colourchoice=0
-	endif
+          colourchoice=0
+        endif
       endif     
 c--- if we're calculating the REAL matrix elements with Qflag=TRUE,
 c    the subtraction terms involve the (Gflag=TRUE) matrix elements

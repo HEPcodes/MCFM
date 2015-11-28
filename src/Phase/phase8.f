@@ -38,7 +38,7 @@ c---- with all 2 pi's (ie 1/(2*pi)^20)
         mass3=hmass
         width3=hwidth
         dkmass=mb
-      elseif (case .eq. 'qq_ttz') then
+      elseif ((case .eq. 'qq_ttz') .or. (case .eq. 'qqtthz')) then
         mass3=zmass
         width3=zwidth
         dkmass=0d0
@@ -48,7 +48,7 @@ c---- with all 2 pi's (ie 1/(2*pi)^20)
         dkmass=0d0
       else
         write(6,*) 'Process not supported in phase8.f: ',case
-	stop
+        stop
       endif
 
       if (iflip .eq. 0) then

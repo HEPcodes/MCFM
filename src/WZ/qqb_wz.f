@@ -35,7 +35,7 @@ c     Notation to allow room for p3 --- gluon emission.
       double complex Fa345612,Fa342165,Fa653421
       double complex Fa346521,Fa341256,Fa651243
       double complex Fa345621,Fa341265,Fa653412
-      double complex ZgL(-nf:nf),ZgR(-nf:nf),A6b_1,A6b_2,A6b_3,A6b_4
+      double complex ZgL(nf),ZgR(nf),A6b_1,A6b_2,A6b_3,A6b_4
       double precision v2(2),cl1,cl2,en1,en2
       double precision ave,cotw,wwflag,xfac
       double precision FAC,FACM
@@ -65,7 +65,7 @@ c     Notation to allow room for p3 --- gluon emission.
 c--- wwflag=1 for most cases, indicating presence of diagram with 2 W's
       wwflag=1d0
 c--- but for Z -> bbbar this diagram contains |V_tb|**2 which we take 0
-      if (plabel(5) .eq. 'qb') then    
+      if (plabel(5) .eq. 'bq') then    
         wwflag=0d0
       endif
       
@@ -207,7 +207,7 @@ c---for supplementary diagrams.
 
 c---set up left/right handed couplings for both Z and gamma*
 c---note that L/R labels the LEPTON coupling v2, NOT the quarks (all L)
-      do j=-nf,nf
+      do j=1,nf
         ZgL(j)=L(j)*v2(1)*prop56+Q(j)*q1           
         ZgR(j)=L(j)*v2(2)*prop56+Q(j)*q1           
       enddo

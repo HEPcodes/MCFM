@@ -34,12 +34,12 @@ c--- separate the initial-final and final-initial dipoles
 
 c--- set up lepton variables depending on whether it's t or tbar
       if     (nwz .eq. -1) then
-	iq=+1 ! quark initial state
+        iq=+1 ! quark initial state
       elseif (nwz .eq. +1) then
-	iq=-1 ! antiquark initial state
+        iq=-1 ! antiquark initial state
       else
         write(6,*) 'Error in qqb_w_twdk_gs, nwz is not +1 or -1 :  ',nwz
-	stop
+      stop
       endif
 
       ndmax=6

@@ -20,7 +20,7 @@ c---                1  --> counterterm for real radiation
       include 'vegas_common.f'
       include 'constants.f'
       include 'histo.f'
-      include 'jetlabel.f'
+      include 'outputflags.f'
 c-----
       character*4 mypart
       common/mypart/mypart
@@ -28,19 +28,18 @@ c-----
       common/nproc/nproc
 c-----
       double precision p(mxpart,4),wt,wt2
-      double precision pt,r,etmiss,etarap
-      double precision deltaPHI,s34,m34
+      double precision r,etmiss
+      double precision s34,m34
 c-----
-      double precision ptgam,ptj1,ptj2
+      double precision ptgam
       double precision m345,ptmiss,etvec(4)
-      double precision Raj1,Raj2,Rajmin,Ralm,ptjmax,ptjmin
+      double precision Raj1,Raj2,Rajmin,Ralm
 
 c-----
       integer switch,n,nplotmax
       character*4 tag
       integer nd
-      logical first,creatent,dswhisto
-      common/outputflags/creatent,dswhisto
+      logical first
       common/nplotmax/nplotmax
       data first/.true./
       save first
@@ -58,8 +57,6 @@ c--- set them to dummy values
         m34=0D0
         m345=0D0
         ptgam=0D0
-        ptj1=0D0
-        ptj2=0D0
         Raj1=0D0
         Raj2=0D0
         Rajmin=0D0
@@ -84,16 +81,6 @@ c-2---m(l,l,gamma)
      .          -(p(3,2)+p(4,2)+p(5,2))**2-(p(3,3)+p(4,3)+p(5,3))**2)
 c-3----pT(photon)
        ptgam = dsqrt(p(5,1)**2+p(5,2)**2)
-c-4----pT(jet)
-       ptj1 = dsqrt(p(6,1)**2+p(6,2)**2)
-       ptj2 = dsqrt(p(7,1)**2+p(7,2)**2)
-       if (jets .eq. 2) then
-          ptjmax = max(ptj1,ptj2)
-          ptjmin = min(ptj1,ptj2)
-       else 
-          ptjmax = ptj1
-          ptjmin = -1d0
-       endif
 c-5-6--R(gam,jet)
        Raj1 = R(p,5,6)
        Raj2 = R(p,5,7)
@@ -153,7 +140,7 @@ c--- by # of iterations now that is handled at end for regular histograms
       endif
 
 c--- "n" will count the number of histograms
-      n=1              
+      n=nextnplot              
 
 c--- Syntax of "bookplot" routine is:
 c
@@ -281,14 +268,14 @@ cccccccccccccc NPLOTTER FOR ZGAMJET: Xsec table w PT(Gam) bin  ccccccccccccccccc
       include 'vegas_common.f'
       include 'constants.f'
       include 'histo.f'
+      include 'outputflags.f'
 c-----
       double precision p(mxpart,4),wt,wt2,ptgam
 c-----
       integer switch,n,nplotmax
       character*4 tag
       integer nd
-      logical first,creatent,dswhisto
-      common/outputflags/creatent,dswhisto
+      logical first
       common/nplotmax/nplotmax
       data first/.true./
       save first
@@ -388,14 +375,14 @@ cccccccccccccc NPLOTTER FOR ZGAMJET: Exclusive Dist.  ccccccccccccccccc
       include 'vegas_common.f'
       include 'constants.f'
       include 'histo.f'
+      include 'outputflags.f'
       double precision p(mxpart,4),wt,wt2
       double precision s34,m34,ptgam,m345
 c-----
       integer switch,n,nplotmax
       character*4 tag
       integer nd
-      logical first,creatent,dswhisto
-      common/outputflags/creatent,dswhisto
+      logical first
       common/nplotmax/nplotmax
       data first/.true./
       save first

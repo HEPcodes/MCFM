@@ -124,15 +124,15 @@ c--- check to see whether parton is inside one of the photon cones
 
 c           write(6,*) i,j,Rgen(pjet,i,pin,photindex(j)),cone_ang
            if(Rgen(pjet,i,pin,photindex(j)) .lt. cone_ang) then 
-	     insideacone=.true.
-	   endif
+           insideacone=.true.
+           endif
          enddo
 
-         if (insideacone) then	       
+         if (insideacone) then             
 c--- if passed frix and is in isolation cone then do not apply cuts
 c--- will add to jet tally
            softjet=softjet+1
-	 else
+         else
 c--- if jet doesnt lie within photon cone apply cuts             
            if ((pt(i,pjet) .ge. ptjetmin) .and. 
      &         (aetarap(i,pjet) .ge. etajetmin) .and.

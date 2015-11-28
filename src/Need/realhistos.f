@@ -46,7 +46,7 @@ c--- count entries
       if (IHIS(3*maxhisto+I,L) .GT. 0) then
         IHIS(I,L)=IHIS(I,L)+1
         IHIS(maxhisto+I,L)=IHIS(maxhisto+I,L)+1
-	added=.true.
+        added=.true.
       endif
 
       ENDDO
@@ -63,7 +63,7 @@ c--- otherwise, increment out of bounds counters if necessary
         elseif (IOSCORE(3*maxhisto+I) .GT. 0) then
           IOSCORE(I)=IOSCORE(I)+1      
           IOSCORE(maxhisto+I)=IOSCORE(maxhisto+I)+1
-	endif
+        endif
       endif
       
       

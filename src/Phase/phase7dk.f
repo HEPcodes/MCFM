@@ -26,7 +26,7 @@ c---- with all 2 pi's (ie 1/(2*pi)^14)
       
       if (first) then
         decay1q2a=1
-	first=.false.
+      first=.false.
       endif
 
 c--- alternate radiation between decay of top (=1) and antitop (=2) quarks
@@ -65,14 +65,14 @@ c--- specific to ttbar including radiation in decay
       if (case .eq. 'tthWdk') then
 c--- radiation from hadronic decay of W
         if (plabel(3) .eq. 'pp') then
-	   decay1q2a=1
-	else
-	   decay1q2a=2
-	endif
+         decay1q2a=1
+      else
+         decay1q2a=2
+      endif
 c--- top decay including radiation
         n3=1
         call phi1_2m(mb,r(5),r(6),r(7),smin,p3459,p5,p349,wt3459,*99)
-	n3=0
+      n3=0
         call phi1_2m(zip,r(8),r(18),r(19),smin,p349,p9,p34,wt349,*99)
         call phi3m0(r(11),r(12),p34,p3,p4,wt34,*99)
 c--- anti-top decay
@@ -96,17 +96,17 @@ c--- from top and anti-top quarks at the same time
              
       if (decay1q2a .eq. 2) then
 c--- perform swap (3,4,5) -> (8,7,6)
-	do nu=1,4
-	tmp=p3(nu)
-	p3(nu)=p8(nu)
-	p8(nu)=tmp
-	tmp=p4(nu)
-	p4(nu)=p7(nu)
-	p7(nu)=tmp
-	tmp=p5(nu)
-	p5(nu)=p6(nu)
-	p6(nu)=tmp
-	enddo
+      do nu=1,4
+      tmp=p3(nu)
+      p3(nu)=p8(nu)
+      p8(nu)=tmp
+      tmp=p4(nu)
+      p4(nu)=p7(nu)
+      p7(nu)=tmp
+      tmp=p5(nu)
+      p5(nu)=p6(nu)
+      p6(nu)=tmp
+      enddo
       endif
  
       return

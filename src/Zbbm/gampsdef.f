@@ -1,4 +1,4 @@
-      subroutine gampsdef(p1,p2,p3,p4,t5,t6,gg_d,gg_e,gg_f)
+      subroutine gampsdef(mq,p1,p2,p3,p4,t5,t6,gg_d,gg_e,gg_f)
       implicit none
       include 'constants.f'
       include 'masses.f'
@@ -7,11 +7,11 @@
       integer p1,p2,p3,p4,t5,t6
       double complex 
      . gg_d(2,2,2,2,2),gg_e(2,2,2,2,2),gg_f(2,2,2,2,2)
-      double precision al5,al6,s125,s126,s34,s12,s25,s16
+      double precision al5,al6,s125,s126,s34,s12,s25,s16,mq
 
-      al5=mb**2/s(p2,t5)
+      al5=mq**2/s(p2,t5)
       s125=(1d0+al5)*s(p1,p2)+s(p1,t5)+s(p2,t5)
-      al6=mb**2/s(p1,t6)
+      al6=mq**2/s(p1,t6)
       s126=(1d0+al6)*s(p1,p2)+s(p1,t6)+s(p2,t6)
       s34=s(p3,p4)
       s12=s(p1,p2)
@@ -32,20 +32,20 @@ C   Notation is hz,h1,h2,h5,h6
  
       gg_d(2,2,1,1,1)=+ za(p2,t6)*za(p2,t6)*za(p2,p3)*zb(p1,p4)
      . /za(p1,t6)/za(p2,t5)
-     . *(- mb**2/s34/s126/s12)
+     . *(- mq**2/s34/s126/s12)
  
       gg_d(2,2,1,2,1)=+ za(p2,t6)*za(p2,t6)*za(p3,t5)*zb(p1,p4)
      . /za(p1,t6)
-     . *(mb/s34/s126/s12)
+     . *(mq/s34/s126/s12)
  
       gg_d(2,2,1,1,2)=
      . +za(p2,t6)*za(p2,p3)*zb(p1,p4)*zb(p1,t6)
      . /za(p1,t6)/za(p2,t5)/zb(p1,p2)
-     . *(- mb/s34/s126)
+     . *(- mq/s34/s126)
  
      . +za(p2,t6)*za(p2,t6)*za(p2,p3)*zb(p1,t6)*zb(p4,t6)
      . /za(p1,t6)/za(p2,t5)
-     . *(mb/s34/s126/s12)
+     . *(mq/s34/s126/s12)
  
       gg_d(2,1,2,2,2)=
      . +za(p1,t6)*za(p3,t5)*zb(p2,t6)*zb(p2,t6)*zb(p4,t6)/zb(p1,t6)
@@ -56,47 +56,47 @@ C   Notation is hz,h1,h2,h5,h6
  
       gg_d(2,1,2,1,1)=
      . +za(p1,t6)*za(p2,p3)*zb(p2,p4)*zb(p2,t6)/za(p2,t5)/zb(p1,t6)
-     . *(- mb**2/s34/s126/s12)
+     . *(- mq**2/s34/s126/s12)
  
      . +za(p1,t6)*za(p2,p3)*zb(p2,t6)*zb(p4,t6)
      . /za(p1,p2)/za(p2,t5)/zb(p1,t6)
      . /zb(p1,t6)
-     . *(mb**2/s34/s126)
+     . *(mq**2/s34/s126)
  
      . +za(p2,p3)*zb(p2,p4)*zb(p2,t6)/za(p2,t5)/zb(p1,t6)/zb(p1,t6)
-     . *(- mb**2/s34/s126)
+     . *(- mq**2/s34/s126)
  
       gg_d(2,1,2,2,1)=
      . +za(p1,t6)*za(p3,t5)*zb(p2,p4)*zb(p2,t6)/zb(p1,t6)
-     . *(mb/s34/s126/s12)
+     . *(mq/s34/s126/s12)
  
      . +za(p1,t6)*za(p3,t5)*zb(p2,t6)*zb(p4,t6)
      . /za(p1,p2)/zb(p1,t6)/zb(p1,t6)
-     . *(- mb/s34/s126)
+     . *(- mq/s34/s126)
  
      . +za(p3,t5)*zb(p2,p4)*zb(p2,t6)/zb(p1,t6)/zb(p1,t6)
-     . *(mb/s34/s126)
+     . *(mq/s34/s126)
  
       gg_d(2,1,2,1,2)=
      . +za(p1,t6)*za(p2,p3)*zb(p2,t6)*zb(p2,t6)*zb(p4,t6)
      . /za(p2,t5)/zb(p1,t6)
-     . *(mb/s34/s126/s12)
+     . *(mq/s34/s126/s12)
  
      . +za(p2,p3)*zb(p2,p4)*zb(p2,t6)*zb(p2,t6)
      . /za(p2,t5)/zb(p1,p2)/zb(p1,t6)
-     . *(mb/s34/s126)
+     . *(mq/s34/s126)
  
       gg_d(1,2,1,2,2)=
      . +za(p2,t6)*za(p2,p3)*zb(p1,t6)*zb(p2,p4)/za(p1,t6)/zb(p2,t5)
-     . *(- mb**2/s34/s126/s12)
+     . *(- mq**2/s34/s126/s12)
  
      . +za(p2,t6)*za(p2,p3)*zb(p2,p4)/za(p1,t6)/za(p1,t6)/zb(p2,t5)
-     . *(- mb**2/s34/s126)
+     . *(- mq**2/s34/s126)
  
      . +za(p2,t6)*za(p3,t6)*zb(p1,t6)*zb(p2,p4)
      . /za(p1,t6)/za(p1,t6)/zb(p1,p2)
      . /zb(p2,t5)
-     . *(mb**2/s34/s126)
+     . *(mq**2/s34/s126)
  
       gg_d(1,2,1,1,1)=
      . +za(p2,t6)*za(p2,t6)*za(p2,p3)*zb(p4,t5)/za(p1,p2)/za(p1,t6)
@@ -108,26 +108,26 @@ C   Notation is hz,h1,h2,h5,h6
       gg_d(1,2,1,2,1)=
      . +za(p2,t6)*za(p2,t6)*za(p2,p3)*zb(p2,p4)
      . /za(p1,p2)/za(p1,t6)/zb(p2,t5)
-     . *(mb/s34/s126)
+     . *(mq/s34/s126)
  
      . +za(p2,t6)*za(p2,t6)*za(p3,t6)*zb(p1,t6)*zb(p2,p4)
      . /za(p1,t6)/zb(p2,t5)
-     . *(mb/s34/s126/s12)
+     . *(mq/s34/s126/s12)
  
       gg_d(1,2,1,1,2)=
      . +za(p2,t6)*za(p2,p3)*zb(p1,t6)*zb(p4,t5)/za(p1,t6)
-     . *(mb/s34/s126/s12)
+     . *(mq/s34/s126/s12)
  
      . +za(p2,t6)*za(p2,p3)*zb(p4,t5)/za(p1,t6)/za(p1,t6)
-     . *(mb/s34/s126)
+     . *(mq/s34/s126)
  
      . +za(p2,t6)*za(p3,t6)*zb(p1,t6)*zb(p4,t5)
      . /za(p1,t6)/za(p1,t6)/zb(p1,p2)
-     . *(- mb/s34/s126)
+     . *(- mq/s34/s126)
  
       gg_d(1,1,2,2,2)=+ za(p1,p3)*zb(p2,p4)*zb(p2,t6)*zb(p2,t6)
      . /zb(p1,t6)/zb(p2,t5)
-     . *(- mb**2/s34/s126/s12)
+     . *(- mq**2/s34/s126/s12)
  
       gg_d(1,1,2,1,1)=
      . +za(p1,t6)*za(p1,p3)*zb(p2,t6)*zb(p4,t5)
@@ -140,15 +140,15 @@ C   Notation is hz,h1,h2,h5,h6
       gg_d(1,1,2,2,1)=
      . +za(p1,t6)*za(p1,p3)*zb(p2,p4)*zb(p2,t6)
      . /za(p1,p2)/zb(p1,t6)/zb(p2,t5)
-     . *(- mb/s34/s126)
+     . *(- mq/s34/s126)
  
      . +za(p1,t6)*za(p3,t6)*zb(p2,p4)*zb(p2,t6)*zb(p2,t6)
      . /zb(p1,t6)/zb(p2,t5)
-     . *(mb/s34/s126/s12)
+     . *(mq/s34/s126/s12)
  
       gg_d(1,1,2,1,2)=+ za(p1,p3)*zb(p2,t6)*zb(p2,t6)*zb(p4,t5)
      . /zb(p1,t6)
-     . *(mb/s34/s126/s12)
+     . *(mq/s34/s126/s12)
  
       gg_d(2,1,1,2,2)=
      . +za(p1,p2)*za(p3,t5)*zb(p1,p4)*zb(p2,t6)/zb(p1,p2)/zb(p1,p2)
@@ -159,29 +159,29 @@ C   Notation is hz,h1,h2,h5,h6
  
       gg_d(2,1,1,1,1)=
      . +za(p1,p2)*za(p2,p3)*zb(p1,p4)/za(p2,t5)/zb(p1,p2)/zb(p1,t6)
-     . *(- mb**2/s34/s126)
+     . *(- mq**2/s34/s126)
  
      . +za(p2,t6)*za(p2,p3)*zb(p1,p4)*zb(p2,t6)
      . /za(p2,t5)/zb(p1,p2)/zb(p1,p2)
      . /zb(p1,t6)
-     . *(- mb**2/s34/s126)
+     . *(- mq**2/s34/s126)
  
       gg_d(2,1,1,2,1)=
      . +za(p1,p2)*za(p3,t5)*zb(p1,p4)/zb(p1,p2)/zb(p1,t6)
-     . *(mb/s34/s126)
+     . *(mq/s34/s126)
  
      . +za(p2,t6)*za(p3,t5)*zb(p1,p4)*zb(p2,t6)
      . /zb(p1,p2)/zb(p1,p2)/zb(p1,t6)
-     . *(mb/s34/s126)
+     . *(mq/s34/s126)
  
       gg_d(2,1,1,1,2)=
      . +za(p1,p2)*za(p2,p3)*zb(p1,p4)*zb(p2,t6)
      . /za(p2,t5)/zb(p1,p2)/zb(p1,p2)
-     . *(mb/s34/s126)
+     . *(mq/s34/s126)
  
      . +za(p2,t6)*za(p2,p3)*zb(p2,t6)*zb(p4,t6)
      . /za(p2,t5)/zb(p1,p2)/zb(p1,p2)
-     . *(mb/s34/s126)
+     . *(mq/s34/s126)
  
       gg_d(2,2,2,2,2)=
      . +za(p2,t6)*za(p3,t5)*zb(p2,p4)*zb(p2,t6)/za(p1,p2)/za(p1,t6)
@@ -200,56 +200,56 @@ C   Notation is hz,h1,h2,h5,h6
      . +za(p2,t6)*za(p2,p3)*zb(p1,p2)*zb(p2,p4)
      . /za(p1,p2)/za(p1,t6)/za(p2,t5)
      . /zb(p1,t6)
-     . *(mb**2/s34/s126)
+     . *(mq**2/s34/s126)
  
      . +za(p2,t6)*za(p2,p3)*zb(p1,p2)*zb(p4,t6)
      . /za(p1,p2)/za(p1,p2)/za(p2,t5)
      . /zb(p1,t6)
-     . *(- mb**2/s34/s126)
+     . *(- mq**2/s34/s126)
  
      . +za(p2,t6)*za(p2,p3)*zb(p2,p4)/za(p1,p2)/za(p1,p2)/za(p2,t5)
-     . *(- mb**2/s34/s126)
+     . *(- mq**2/s34/s126)
  
       gg_d(2,2,2,2,1)=
      . +za(p2,t6)*za(p3,t5)*zb(p1,p2)*zb(p2,p4)
      . /za(p1,p2)/za(p1,t6)/zb(p1,t6)
-     . *(- mb/s34/s126)
+     . *(- mq/s34/s126)
  
      . +za(p2,t6)*za(p3,t5)*zb(p1,p2)*zb(p4,t6)
      . /za(p1,p2)/za(p1,p2)/zb(p1,t6)
-     . *(mb/s34/s126)
+     . *(mq/s34/s126)
  
      . +za(p2,t6)*za(p3,t5)*zb(p2,p4)/za(p1,p2)/za(p1,p2)
-     . *(mb/s34/s126)
+     . *(mq/s34/s126)
  
       gg_d(2,2,2,1,2)=
      . +za(p2,p3)*zb(p1,p2)*zb(p2,p4)/za(p1,t6)/za(p2,t5)
-     . *(- mb/s34/s126)
+     . *(- mq/s34/s126)
  
      . +za(p2,p3)*zb(p1,p2)*zb(p4,t6)/za(p1,p2)/za(p2,t5)
-     . *(mb/s34/s126)
+     . *(mq/s34/s126)
  
      . +za(p2,t6)*za(p2,p3)*zb(p2,p4)*zb(p2,t6)
      . /za(p1,p2)/za(p1,t6)/za(p2,t5)
-     . *(- mb/s34/s126)
+     . *(- mq/s34/s126)
  
      . +za(p2,t6)*za(p2,p3)*zb(p2,t6)*zb(p4,t6)
      . /za(p1,p2)/za(p1,p2)/za(p2,t5)
-     . *(mb/s34/s126)
+     . *(mq/s34/s126)
  
       gg_d(1,1,1,2,2)=
      . +za(p1,p2)*za(p2,p3)*zb(p2,p4)*zb(p2,t6)
      . /za(p1,t6)/zb(p1,p2)/zb(p1,t6)
      . /zb(p2,t5)
-     . *(mb**2/s34/s126)
+     . *(mq**2/s34/s126)
  
      . +za(p1,p2)*za(p3,t6)*zb(p2,p4)*zb(p2,t6)
      . /za(p1,t6)/zb(p1,p2)/zb(p1,p2)
      . /zb(p2,t5)
-     . *(- mb**2/s34/s126)
+     . *(- mq**2/s34/s126)
  
      . +za(p2,p3)*zb(p2,p4)*zb(p2,t6)/zb(p1,p2)/zb(p1,p2)/zb(p2,t5)
-     . *(- mb**2/s34/s126)
+     . *(- mq**2/s34/s126)
  
       gg_d(1,1,1,1,1)=
      . +za(p1,p2)*za(p2,p3)*zb(p4,t5)/zb(p1,t6)
@@ -266,39 +266,39 @@ C   Notation is hz,h1,h2,h5,h6
  
       gg_d(1,1,1,2,1)=
      . +za(p1,p2)*za(p2,p3)*zb(p2,p4)/zb(p1,t6)/zb(p2,t5)
-     . *(- mb/s34/s126)
+     . *(- mq/s34/s126)
  
      . +za(p1,p2)*za(p3,t6)*zb(p2,p4)/zb(p1,p2)/zb(p2,t5)
-     . *(mb/s34/s126)
+     . *(mq/s34/s126)
  
      . +za(p2,t6)*za(p2,p3)*zb(p2,p4)*zb(p2,t6)
      . /zb(p1,p2)/zb(p1,t6)/zb(p2,t5)
-     . *(- mb/s34/s126)
+     . *(- mq/s34/s126)
  
      . +za(p2,t6)*za(p3,t6)*zb(p2,p4)*zb(p2,t6)
      . /zb(p1,p2)/zb(p1,p2)/zb(p2,t5)
-     . *(mb/s34/s126)
+     . *(mq/s34/s126)
  
       gg_d(1,1,1,1,2)=
      . +za(p1,p2)*za(p2,p3)*zb(p2,t6)*zb(p4,t5)
      . /za(p1,t6)/zb(p1,p2)/zb(p1,t6)
-     . *(- mb/s34/s126)
+     . *(- mq/s34/s126)
  
      . +za(p1,p2)*za(p3,t6)*zb(p2,t6)*zb(p4,t5)
      . /za(p1,t6)/zb(p1,p2)/zb(p1,p2)
-     . *(mb/s34/s126)
+     . *(mq/s34/s126)
  
      . +za(p2,p3)*zb(p2,t6)*zb(p4,t5)/zb(p1,p2)/zb(p1,p2)
-     . *(mb/s34/s126)
+     . *(mq/s34/s126)
  
       gg_d(1,2,2,2,2)=
      . +za(p1,p3)*zb(p1,p2)*zb(p2,p4)/za(p1,p2)/za(p1,t6)/zb(p2,t5)
-     . *(- mb**2/s34/s126)
+     . *(- mq**2/s34/s126)
  
      . +za(p2,t6)*za(p1,p3)*zb(p2,p4)*zb(p2,t6)
      . /za(p1,p2)/za(p1,p2)/za(p1,t6)
      . /zb(p2,t5)
-     . *(- mb**2/s34/s126)
+     . *(- mq**2/s34/s126)
  
       gg_d(1,2,2,1,1)=
      . +za(p2,t6)*za(p1,p3)*zb(p1,p2)*zb(p4,t5)/za(p1,p2)/za(p1,p2)
@@ -310,19 +310,19 @@ C   Notation is hz,h1,h2,h5,h6
       gg_d(1,2,2,2,1)=
      . +za(p2,t6)*za(p1,p3)*zb(p1,p2)*zb(p2,p4)
      . /za(p1,p2)/za(p1,p2)/zb(p2,t5)
-     . *(mb/s34/s126)
+     . *(mq/s34/s126)
  
      . +za(p2,t6)*za(p3,t6)*zb(p2,p4)*zb(p2,t6)
      . /za(p1,p2)/za(p1,p2)/zb(p2,t5)
-     . *(mb/s34/s126)
+     . *(mq/s34/s126)
  
       gg_d(1,2,2,1,2)=
      . +za(p1,p3)*zb(p1,p2)*zb(p4,t5)/za(p1,p2)/za(p1,t6)
-     . *(mb/s34/s126)
+     . *(mq/s34/s126)
  
      . +za(p2,t6)*za(p1,p3)*zb(p2,t6)*zb(p4,t5)
      .  /za(p1,p2)/za(p1,p2)/za(p1,t6)
-     . *(mb/s34/s126)
+     . *(mq/s34/s126)
  
 
  
@@ -342,25 +342,25 @@ C   Notation is hz,h1,h2,h5,h6
       gg_e(2,2,1,1,1)=+ za(p2,t6)*za(p2,p3)*zb(p1,p4)*zb(p1,t5)
      . /za(p1,t6)/za(p2,t5)
      . /zb(p1,t6)/zb(p2,t5)
-     . *(- mb**2/s34/s12)
+     . *(- mq**2/s34/s12)
  
       gg_e(2,2,1,2,1)=
      . +za(p2,t6)*za(p2,p3)*zb(p1,p4)
      . /za(p1,p2)/za(p1,t6)/zb(p1,t6)/zb(p2,t5)
-     . *(mb/s34)
+     . *(mq/s34)
  
      . +za(p2,t6)*za(p3,t5)*zb(p1,p4)*zb(p1,t5)
      . /za(p1,t6)/zb(p1,t6)/zb(p2,t5)
-     . *(mb/s34/s12)
+     . *(mq/s34/s12)
  
       gg_e(2,2,1,1,2)=
      . +za(p2,p3)*zb(p1,p4)*zb(p1,t5)
      . /za(p1,t6)/za(p2,t5)/zb(p1,p2)/zb(p2,t5)
-     . *(- mb/s34)
+     . *(- mq/s34)
  
      . +za(p2,t6)*za(p2,p3)*zb(p1,t5)*zb(p4,t6)
      . /za(p1,t6)/za(p2,t5)/zb(p2,t5)
-     . *(mb/s34/s12)
+     . *(mq/s34/s12)
  
       gg_e(2,1,2,2,2)=+ za(p3,t5)*za(p1,t5)*zb(p2,t6)*zb(p4,t6)
      . /za(p2,t5)/zb(p1,t6)
@@ -368,45 +368,45 @@ C   Notation is hz,h1,h2,h5,h6
  
       gg_e(2,1,2,1,1)=
      . +za(p1,p3)*zb(p2,p4)/za(p2,t5)/zb(p1,t6)
-     . *(- mb**2/s34/s12)
+     . *(- mq**2/s34/s12)
  
      . +za(p1,p3)*zb(p4,t6)/za(p1,p2)/za(p2,t5)/zb(p1,t6)/zb(p1,t6)
-     . *(mb**2/s34)
+     . *(mq**2/s34)
  
      . +za(p3,t5)*za(p1,p2)*zb(p2,p4)/za(p2,t5)/za(p2,t5)/zb(p1,t6)
-     . *(mb**2/s34/s12)
+     . *(mq**2/s34/s12)
  
      . +za(p3,t5)*zb(p4,t6)/za(p2,t5)/za(p2,t5)/zb(p1,t6)/zb(p1,t6)
-     . *(- mb**2/s34)
+     . *(- mq**2/s34)
  
       gg_e(2,1,2,2,1)=
      . +za(p3,t5)*za(p1,t5)*zb(p2,p4)/za(p2,t5)/zb(p1,t6)
-     . *(mb/s34/s12)
+     . *(mq/s34/s12)
  
      . +za(p3,t5)*za(p1,t5)*zb(p4,t6)
      . /za(p1,p2)/za(p2,t5)/zb(p1,t6)/zb(p1,t6)
-     . *(- mb/s34)
+     . *(- mq/s34)
  
       gg_e(2,1,2,1,2)=
      . +za(p1,p3)*zb(p2,t6)*zb(p4,t6)/za(p2,t5)/zb(p1,t6)
-     . *(mb/s34/s12)
+     . *(mq/s34/s12)
  
      . +za(p3,t5)*za(p1,p2)*zb(p2,t6)*zb(p4,t6)
      . /za(p2,t5)/za(p2,t5)/zb(p1,t6)
-     . *(- mb/s34/s12)
+     . *(- mq/s34/s12)
  
       gg_e(1,2,1,2,2)=
      . +za(p2,p3)*zb(p1,p2)*zb(p4,t5)/za(p1,t6)/zb(p2,t5)/zb(p2,t5)
-     . *(mb**2/s34/s12)
+     . *(mq**2/s34/s12)
  
      . +za(p2,p3)*zb(p1,p4)/za(p1,t6)/zb(p2,t5)
-     . *(- mb**2/s34/s12)
+     . *(- mq**2/s34/s12)
  
      . +za(p3,t6)*zb(p1,p4)/za(p1,t6)/za(p1,t6)/zb(p1,p2)/zb(p2,t5)
-     . *(mb**2/s34)
+     . *(mq**2/s34)
  
      . +za(p3,t6)*zb(p4,t5)/za(p1,t6)/za(p1,t6)/zb(p2,t5)/zb(p2,t5)
-     . *(- mb**2/s34)
+     . *(- mq**2/s34)
  
       gg_e(1,2,1,1,1)=+ za(p2,t6)*za(p3,t6)*zb(p1,t5)*zb(p4,t5)
      . /za(p1,t6)/zb(p2,t5)
@@ -415,23 +415,23 @@ C   Notation is hz,h1,h2,h5,h6
       gg_e(1,2,1,2,1)=
      . +za(p2,t6)*za(p3,t6)*zb(p1,p2)*zb(p4,t5)
      . /za(p1,t6)/zb(p2,t5)/zb(p2,t5)
-     . *(- mb/s34/s12)
+     . *(- mq/s34/s12)
  
      . +za(p2,t6)*za(p3,t6)*zb(p1,p4)/za(p1,t6)/zb(p2,t5)
-     . *(mb/s34/s12)
+     . *(mq/s34/s12)
  
       gg_e(1,2,1,1,2)=
      . +za(p2,p3)*zb(p1,t5)*zb(p4,t5)/za(p1,t6)/zb(p2,t5)
-     . *(mb/s34/s12)
+     . *(mq/s34/s12)
  
      . +za(p3,t6)*zb(p1,t5)*zb(p4,t5)
      . /za(p1,t6)/za(p1,t6)/zb(p1,p2)/zb(p2,t5)
-     . *(- mb/s34)
+     . *(- mq/s34)
  
       gg_e(1,1,2,2,2)=+ za(p1,p3)*za(p1,t5)*zb(p2,p4)*zb(p2,t6)
      . /za(p1,t6)/za(p2,t5)
      . /zb(p1,t6)/zb(p2,t5)
-     . *(- mb**2/s34/s12)
+     . *(- mq**2/s34/s12)
  
       gg_e(1,1,2,1,1)=
      . +za(p1,p3)*za(p1,t5)*zb(p4,t5)/za(p1,p2)/za(p2,t5)/zb(p1,t6)
@@ -449,20 +449,20 @@ C   Notation is hz,h1,h2,h5,h6
       gg_e(1,1,2,2,1)=
      . +za(p1,p3)*za(p1,t5)*zb(p2,p4)
      . /za(p1,p2)/za(p2,t5)/zb(p1,t6)/zb(p2,t5)
-     . *(- mb/s34)
+     . *(- mq/s34)
  
      . +za(p3,t6)*za(p1,t5)*zb(p2,p4)*zb(p2,t6)
      . /za(p2,t5)/zb(p1,t6)/zb(p2,t5)
-     . *(mb/s34/s12)
+     . *(mq/s34/s12)
  
       gg_e(1,1,2,1,2)=
      . +za(p1,p3)*za(p1,t5)*zb(p2,t6)*zb(p4,t5)
      . /za(p1,t6)/za(p2,t5)/zb(p1,t6)
-     . *(mb/s34/s12)
+     . *(mq/s34/s12)
  
      . +za(p1,p3)*zb(p2,p4)*zb(p2,t6)
      . /za(p1,t6)/za(p2,t5)/zb(p1,p2)/zb(p1,t6)
-     . *(mb/s34)
+     . *(mq/s34)
  
       gg_e(2,1,1,2,2)=
      . +za(p2,p3)*zb(p2,t6)*zb(p4,t6)/zb(p1,p2)/zb(p1,t6)/zb(p2,t5)
@@ -476,31 +476,31 @@ C   Notation is hz,h1,h2,h5,h6
       gg_e(2,1,1,1,1)=
      . +za(p2,p3)*zb(p1,t5)*zb(p2,p4)
      . /za(p2,t5)/zb(p1,p2)/zb(p1,p2)/zb(p1,t6)/zb(p2,t5)
-     . *(- mb**2/s34)
+     . *(- mq**2/s34)
  
      . +za(p2,p3)*zb(p1,t5)*zb(p4,t6)
      . /za(p2,t5)/zb(p1,p2)/zb(p1,t6)/zb(p1,t6)/zb(p2,t5)
-     . *(- mb**2/s34)
+     . *(- mq**2/s34)
  
       gg_e(2,1,1,2,1)=
      . +za(p2,p3)*zb(p2,p4)/zb(p1,p2)/zb(p1,t6)/zb(p2,t5)
-     . *(- mb/s34)
+     . *(- mq/s34)
  
      . +za(p2,p3)*zb(p4,t6)/zb(p1,t6)/zb(p1,t6)/zb(p2,t5)
-     . *(- mb/s34)
+     . *(- mq/s34)
  
      . +za(p3,t5)*zb(p1,t5)*zb(p2,p4)
      . /zb(p1,p2)/zb(p1,p2)/zb(p1,t6)/zb(p2,t5)
-     . *(mb/s34)
+     . *(mq/s34)
  
      . +za(p3,t5)*zb(p1,t5)*zb(p4,t6)
      . /zb(p1,p2)/zb(p1,t6)/zb(p1,t6)/zb(p2,t5)
-     . *(mb/s34)
+     . *(mq/s34)
  
       gg_e(2,1,1,1,2)=+ za(p2,p3)*zb(p1,t5)*zb(p2,t6)*zb(p4,t6)
      . /za(p2,t5)/zb(p1,p2)
      . /zb(p1,p2)/zb(p1,t6)/zb(p2,t5)
-     . *(mb/s34)
+     . *(mq/s34)
  
       gg_e(2,2,2,2,2)=
      . +za(p2,t6)*za(p3,t5)*za(p1,t5)*zb(p4,t6)
@@ -514,40 +514,40 @@ C   Notation is hz,h1,h2,h5,h6
       gg_e(2,2,2,1,1)=
      . +za(p2,t6)*za(p1,p3)*zb(p1,p4)
      . /za(p1,p2)/za(p1,p2)/za(p1,t6)/za(p2,t5)/zb(p1,t6)
-     . *(- mb**2/s34)
+     . *(- mq**2/s34)
  
      . +za(p2,t6)*za(p3,t5)*zb(p1,p4)
      . /za(p1,p2)/za(p1,t6)/za(p2,t5)/za(p2,t5)/zb(p1,t6)
-     . *(mb**2/s34)
+     . *(mq**2/s34)
  
       gg_e(2,2,2,2,1)=+ za(p2,t6)*za(p3,t5)*za(p1,t5)*zb(p1,p4)
      . /za(p1,p2)/za(p1,p2)
      . /za(p1,t6)/za(p2,t5)/zb(p1,t6)
-     . *(mb/s34)
+     . *(mq/s34)
  
       gg_e(2,2,2,1,2)=
      . +za(p1,p3)*zb(p1,p4)/za(p1,p2)/za(p1,t6)/za(p2,t5)
-     . *(mb/s34)
+     . *(mq/s34)
  
      . +za(p2,t6)*za(p1,p3)*zb(p4,t6)
      . /za(p1,p2)/za(p1,p2)/za(p1,t6)/za(p2,t5)
-     . *(mb/s34)
+     . *(mq/s34)
  
      . +za(p2,t6)*za(p3,t5)*zb(p4,t6)
      . /za(p1,p2)/za(p1,t6)/za(p2,t5)/za(p2,t5)
-     . *(- mb/s34)
+     . *(- mq/s34)
  
      . +za(p3,t5)*zb(p1,p4)/za(p1,t6)/za(p2,t5)/za(p2,t5)
-     . *(- mb/s34)
+     . *(- mq/s34)
  
       gg_e(1,1,1,2,2)=
      . +za(p1,p3)*zb(p1,p4)*zb(p2,t6)
      . /za(p1,t6)/zb(p1,p2)/zb(p1,p2)/zb(p1,t6)/zb(p2,t5)
-     . *(- mb**2/s34)
+     . *(- mq**2/s34)
  
      . +za(p1,p3)*zb(p2,t6)*zb(p4,t5)
      . /za(p1,t6)/zb(p1,p2)/zb(p1,t6)/zb(p2,t5)/zb(p2,t5)
-     . *(mb**2/s34)
+     . *(mq**2/s34)
  
       gg_e(1,1,1,1,1)=
      . +za(p1,p3)*zb(p1,t5)*zb(p4,t5)/zb(p1,p2)/zb(p1,t6)/zb(p2,t5)
@@ -560,32 +560,32 @@ C   Notation is hz,h1,h2,h5,h6
  
       gg_e(1,1,1,2,1)=
      . +za(p1,p3)*zb(p1,p4)/zb(p1,p2)/zb(p1,t6)/zb(p2,t5)
-     . *(mb/s34)
+     . *(mq/s34)
  
      . +za(p1,p3)*zb(p4,t5)/zb(p1,t6)/zb(p2,t5)/zb(p2,t5)
-     . *(- mb/s34)
+     . *(- mq/s34)
  
      . +za(p3,t6)*zb(p1,p4)*zb(p2,t6)
      . /zb(p1,p2)/zb(p1,p2)/zb(p1,t6)/zb(p2,t5)
-     . *(mb/s34)
+     . *(mq/s34)
  
      . +za(p3,t6)*zb(p2,t6)*zb(p4,t5)
      . /zb(p1,p2)/zb(p1,t6)/zb(p2,t5)/zb(p2,t5)
-     . *(- mb/s34)
+     . *(- mq/s34)
  
       gg_e(1,1,1,1,2)=+ za(p1,p3)*zb(p1,t5)*zb(p2,t6)*zb(p4,t5)
      . /za(p1,t6)/zb(p1,p2)
      . /zb(p1,p2)/zb(p1,t6)/zb(p2,t5)
-     . *(mb/s34)
+     . *(mq/s34)
  
       gg_e(1,2,2,2,2)=
      . +za(p2,p3)*za(p1,t5)*zb(p2,p4)
      . /za(p1,p2)/za(p1,p2)/za(p1,t6)/za(p2,t5)/zb(p2,t5)
-     . *(- mb**2/s34)
+     . *(- mq**2/s34)
  
      . +za(p3,t6)*za(p1,t5)*zb(p2,p4)
      . /za(p1,p2)/za(p1,t6)/za(p1,t6)/za(p2,t5)/zb(p2,t5)
-     . *(- mb**2/s34)
+     . *(- mq**2/s34)
  
       gg_e(1,2,2,1,1)=
      . +za(p2,t6)*za(p3,t6)*za(p1,t5)*zb(p4,t5)
@@ -599,22 +599,22 @@ C   Notation is hz,h1,h2,h5,h6
       gg_e(1,2,2,2,1)=+ za(p2,t6)*za(p3,t6)*za(p1,t5)*zb(p2,p4)
      . /za(p1,p2)/za(p1,p2)
      . /za(p1,t6)/za(p2,t5)/zb(p2,t5)
-     . *(mb/s34)
+     . *(mq/s34)
  
       gg_e(1,2,2,1,2)=
      . +za(p2,p3)*za(p1,t5)*zb(p4,t5)
      . /za(p1,p2)/za(p1,p2)/za(p1,t6)/za(p2,t5)
-     . *(mb/s34)
+     . *(mq/s34)
  
      . +za(p2,p3)*zb(p2,p4)/za(p1,p2)/za(p1,t6)/za(p2,t5)
-     . *(- mb/s34)
+     . *(- mq/s34)
  
      . +za(p3,t6)*za(p1,t5)*zb(p4,t5)
      . /za(p1,p2)/za(p1,t6)/za(p1,t6)/za(p2,t5)
-     . *(mb/s34)
+     . *(mq/s34)
  
      . +za(p3,t6)*zb(p2,p4)/za(p1,t6)/za(p1,t6)/za(p2,t5)
-     . *(- mb/s34)
+     . *(- mq/s34)
  
  
       gg_f(2,2,1,2,2)=
@@ -622,38 +622,38 @@ C   Notation is hz,h1,h2,h5,h6
      . *(-1d0/s34/s125)
  
      . +za(p2,p3)*zb(p1,p2)*zb(p1,t5)*zb(p4,t6)/zb(p2,t5)/zb(p2,t5)
-     . *(mb**2/s34/s125/s12)
+     . *(mq**2/s34/s125/s12)
  
      . +za(p2,p3)*zb(p1,t5)*zb(p4,t6)/za(p1,p2)/zb(p2,t5)/zb(p2,t5)
-     . *(mb**2/s34/s125)
+     . *(mq**2/s34/s125)
  
      . +za(p3,t5)*za(p2,t5)*zb(p1,t5)*zb(p1,t5)*zb(p4,t6)/zb(p2,t5)
      . *(-1d0/s34/s125/s12)
  
       gg_f(2,2,1,1,1)=+ za(p2,p3)*zb(p1,p4)*zb(p1,t5)*zb(p1,t5)
      . /zb(p1,t6)/zb(p2,t5)
-     . *(- mb**2/s34/s125/s12)
+     . *(- mq**2/s34/s125/s12)
  
       gg_f(2,2,1,2,1)=
      . +za(p2,p3)*za(p2,t5)*zb(p1,p4)*zb(p1,t5)
      . /za(p1,p2)/zb(p1,t6)/zb(p2,t5)
-     . *(mb/s34/s125)
+     . *(mq/s34/s125)
  
      . +za(p2,p3)*zb(p1,p2)*zb(p1,p4)*zb(p1,t5)
      . /zb(p1,t6)/zb(p2,t5)/zb(p2,t5)
-     . *(- mb**3/s34/s125/s12)
+     . *(- mq**3/s34/s125/s12)
  
      . +za(p2,p3)*zb(p1,p4)*zb(p1,t5)/za(p1,p2)
      . /zb(p1,t6)/zb(p2,t5)/zb(p2,t5)
-     . *(- mb**3/s34/s125)
+     . *(- mq**3/s34/s125)
  
      . +za(p3,t5)*za(p2,t5)*zb(p1,p4)*zb(p1,t5)*zb(p1,t5)
      . /zb(p1,t6)/zb(p2,t5)
-     . *(mb/s34/s125/s12)
+     . *(mq/s34/s125/s12)
  
       gg_f(2,2,1,1,2)=+ za(p2,p3)*zb(p1,t5)*zb(p1,t5)*zb(p4,t6)
      . /zb(p2,t5)
-     . *(mb/s34/s125/s12)
+     . *(mq/s34/s125/s12)
  
       gg_f(2,1,2,2,2)=
      . +za(p1,p3)*za(p1,t5)*za(p1,t5)*zb(p4,t6)/za(p1,p2)/za(p2,t5)
@@ -664,47 +664,47 @@ C   Notation is hz,h1,h2,h5,h6
  
       gg_f(2,1,2,1,1)=
      . +za(p1,p3)*za(p1,t5)*zb(p1,p4)*zb(p2,t5)/za(p2,t5)/zb(p1,t6)
-     . *(- mb**2/s34/s125/s12)
+     . *(- mq**2/s34/s125/s12)
  
      . +za(p1,p3)*za(p1,t5)*zb(p1,p4)/za(p2,t5)/za(p2,t5)/zb(p1,t6)
-     . *(- mb**2/s34/s125)
+     . *(- mq**2/s34/s125)
  
      . +za(p3,t5)*za(p1,t5)*za(p1,p2)*zb(p1,p4)*zb(p2,t5)
      . /za(p2,t5)/za(p2,t5)
      . /zb(p1,t6)
-     . *(mb**2/s34/s125/s12)
+     . *(mq**2/s34/s125/s12)
  
       gg_f(2,1,2,2,1)=
      . +za(p1,p3)*za(p1,t5)*za(p1,t5)*zb(p1,p4)
      . /za(p1,p2)/za(p2,t5)/zb(p1,t6)
-     . *(- mb/s34/s125)
+     . *(- mq/s34/s125)
  
      . +za(p3,t5)*za(p1,t5)*za(p1,t5)*zb(p1,p4)*zb(p2,t5)
      . /za(p2,t5)/zb(p1,t6)
-     . *(mb/s34/s125/s12)
+     . *(mq/s34/s125/s12)
  
       gg_f(2,1,2,1,2)=
      . +za(p1,p3)*za(p1,t5)*zb(p2,t5)*zb(p4,t6)/za(p2,t5)
-     . *(mb/s34/s125/s12)
+     . *(mq/s34/s125/s12)
  
      . +za(p1,p3)*za(p1,t5)*zb(p4,t6)/za(p2,t5)/za(p2,t5)
-     . *(mb/s34/s125)
+     . *(mq/s34/s125)
  
      . +za(p3,t5)*za(p1,t5)*za(p1,p2)*zb(p2,t5)*zb(p4,t6)
      . /za(p2,t5)/za(p2,t5)
-     . *(- mb/s34/s125/s12)
+     . *(- mq/s34/s125/s12)
  
       gg_f(1,2,1,2,2)=
      . +za(p1,p3)*za(p2,t5)*zb(p1,p2)*zb(p1,t5)*zb(p4,t5)
      . /za(p1,t6)/zb(p2,t5)
      . /zb(p2,t5)
-     . *(mb**2/s34/s125/s12)
+     . *(mq**2/s34/s125/s12)
  
      . +za(p1,p3)*za(p2,t5)*zb(p1,p4)*zb(p1,t5)/za(p1,t6)/zb(p2,t5)
-     . *(- mb**2/s34/s125/s12)
+     . *(- mq**2/s34/s125/s12)
  
      . +za(p1,p3)*zb(p1,p4)*zb(p1,t5)/za(p1,t6)/zb(p2,t5)/zb(p2,t5)
-     . *(- mb**2/s34/s125)
+     . *(- mq**2/s34/s125)
  
       gg_f(1,2,1,1,1)=
      . +za(p3,t6)*za(p2,t5)*zb(p1,t5)*zb(p1,t5)*zb(p4,t5)/zb(p2,t5)
@@ -716,30 +716,30 @@ C   Notation is hz,h1,h2,h5,h6
       gg_f(1,2,1,2,1)=
      . +za(p3,t6)*za(p2,t5)*zb(p1,p2)*zb(p1,t5)*zb(p4,t5)
      . /zb(p2,t5)/zb(p2,t5)
-     . *(- mb/s34/s125/s12)
+     . *(- mq/s34/s125/s12)
  
      . +za(p3,t6)*za(p2,t5)*zb(p1,p4)*zb(p1,t5)/zb(p2,t5)
-     . *(mb/s34/s125/s12)
+     . *(mq/s34/s125/s12)
  
      . +za(p3,t6)*zb(p1,p4)*zb(p1,t5)/zb(p2,t5)/zb(p2,t5)
-     . *(mb/s34/s125)
+     . *(mq/s34/s125)
  
       gg_f(1,2,1,1,2)=
      . +za(p1,p3)*za(p2,t5)*zb(p1,t5)*zb(p1,t5)*zb(p4,t5)
      . /za(p1,t6)/zb(p2,t5)
-     . *(mb/s34/s125/s12)
+     . *(mq/s34/s125/s12)
  
      . +za(p1,p3)*zb(p1,p4)*zb(p1,t5)*zb(p1,t5)
      . /za(p1,t6)/zb(p1,p2)/zb(p2,t5)
-     . *(- mb/s34/s125)
+     . *(- mq/s34/s125)
  
       gg_f(1,1,2,2,2)=+ za(p1,p3)*za(p1,t5)*za(p1,t5)*zb(p2,p4)
      . /za(p1,t6)/za(p2,t5)
-     . *(- mb**2/s34/s125/s12)
+     . *(- mq**2/s34/s125/s12)
  
       gg_f(1,1,2,1,1)=
      . +za(p3,t6)*za(p1,t5)*za(p1,p2)*zb(p2,p4)/za(p2,t5)/za(p2,t5)
-     . *(mb**2/s34/s125/s12)
+     . *(mq**2/s34/s125/s12)
  
      . +za(p3,t6)*za(p1,t5)*za(p1,t5)*zb(p2,t5)*zb(p4,t5)/za(p2,t5)
      . *(-1d0/s34/s125/s12)
@@ -748,28 +748,28 @@ C   Notation is hz,h1,h2,h5,h6
      . *(-1d0/s34/s125)
  
      . +za(p3,t6)*za(p1,t5)*zb(p2,p4)/za(p2,t5)/za(p2,t5)/zb(p1,p2)
-     . *(mb**2/s34/s125)
+     . *(mq**2/s34/s125)
  
       gg_f(1,1,2,2,1)=+ za(p3,t6)*za(p1,t5)*za(p1,t5)*zb(p2,p4)
      . /za(p2,t5)
-     . *(mb/s34/s125/s12)
+     . *(mq/s34/s125/s12)
  
       gg_f(1,1,2,1,2)=
      . +za(p1,p3)*za(p1,t5)*za(p1,p2)*zb(p2,p4)
      . /za(p1,t6)/za(p2,t5)/za(p2,t5)
-     . *(- mb**3/s34/s125/s12)
+     . *(- mq**3/s34/s125/s12)
  
      . +za(p1,p3)*za(p1,t5)*za(p1,t5)*zb(p2,t5)*zb(p4,t5)
      . /za(p1,t6)/za(p2,t5)
-     . *(mb/s34/s125/s12)
+     . *(mq/s34/s125/s12)
  
      . +za(p1,p3)*za(p1,t5)*zb(p2,p4)*zb(p2,t5)
      . /za(p1,t6)/za(p2,t5)/zb(p1,p2)
-     . *(mb/s34/s125)
+     . *(mq/s34/s125)
  
      . +za(p1,p3)*za(p1,t5)*zb(p2,p4)
      . /za(p1,t6)/za(p2,t5)/za(p2,t5)/zb(p1,p2)
-     . *(- mb**3/s34/s125)
+     . *(- mq**3/s34/s125)
  
       gg_f(2,1,1,2,2)=
      . +za(p1,p3)*za(p1,p2)*zb(p4,t6)/zb(p2,t5)
@@ -788,42 +788,42 @@ C   Notation is hz,h1,h2,h5,h6
      . +za(p1,p3)*za(p1,p2)*zb(p1,p4)*zb(p1,t5)
      . /za(p2,t5)/zb(p1,p2)/zb(p1,t6)
      . /zb(p2,t5)
-     . *(mb**2/s34/s125)
+     . *(mq**2/s34/s125)
  
      . +za(p1,p3)*zb(p1,p4)*zb(p1,t5)/zb(p1,p2)/zb(p1,p2)/zb(p1,t6)
-     . *(- mb**2/s34/s125)
+     . *(- mq**2/s34/s125)
  
      . +za(p3,t5)*za(p1,p2)*zb(p1,p4)*zb(p1,t5)
      . /za(p2,t5)/zb(p1,p2)/zb(p1,p2)
      . /zb(p1,t6)
-     . *(mb**2/s34/s125)
+     . *(mq**2/s34/s125)
  
       gg_f(2,1,1,2,1)=
      . +za(p1,p3)*za(p1,p2)*zb(p1,p4)/zb(p1,t6)/zb(p2,t5)
-     . *(mb/s34/s125)
+     . *(mq/s34/s125)
  
      . +za(p1,p3)*za(p1,t5)*zb(p1,p4)*zb(p1,t5)
      . /zb(p1,p2)/zb(p1,t6)/zb(p2,t5)
-     . *(mb/s34/s125)
+     . *(mq/s34/s125)
  
      . +za(p3,t5)*za(p1,p2)*zb(p1,p4)/zb(p1,p2)/zb(p1,t6)
-     . *(mb/s34/s125)
+     . *(mq/s34/s125)
  
      . +za(p3,t5)*za(p1,t5)*zb(p1,p4)*zb(p1,t5)
      . /zb(p1,p2)/zb(p1,p2)/zb(p1,t6)
-     . *(mb/s34/s125)
+     . *(mq/s34/s125)
  
       gg_f(2,1,1,1,2)=
      . +za(p1,p3)*za(p1,p2)*zb(p1,t5)*zb(p4,t6)
      . /za(p2,t5)/zb(p1,p2)/zb(p2,t5)
-     . *(- mb/s34/s125)
+     . *(- mq/s34/s125)
  
      . +za(p1,p3)*zb(p1,t5)*zb(p4,t6)/zb(p1,p2)/zb(p1,p2)
-     . *(mb/s34/s125)
+     . *(mq/s34/s125)
  
      . +za(p3,t5)*za(p1,p2)*zb(p1,t5)*zb(p4,t6)
      . /za(p2,t5)/zb(p1,p2)/zb(p1,p2)
-     . *(- mb/s34/s125)
+     . *(- mq/s34/s125)
  
       gg_f(2,2,2,2,2)=
      . +za(p2,p3)*za(p1,t5)*zb(p1,p2)*zb(p4,t6)/za(p1,p2)/za(p1,p2)
@@ -836,36 +836,36 @@ C   Notation is hz,h1,h2,h5,h6
      . +za(p2,p3)*za(p1,t5)*zb(p1,p4)*zb(p1,t5)
      . /za(p1,p2)/za(p1,p2)/za(p2,t5)
      . /zb(p1,t6)
-     . *(- mb**2/s34/s125)
+     . *(- mq**2/s34/s125)
  
      . +za(p2,p3)*zb(p1,p2)*zb(p1,p4)/za(p1,p2)/za(p2,t5)/zb(p1,t6)
-     . *(- mb**2/s34/s125)
+     . *(- mq**2/s34/s125)
  
       gg_f(2,2,2,2,1)=
      . +za(p2,p3)*za(p1,t5)*zb(p1,p2)*zb(p1,p4)
      . /za(p1,p2)/za(p1,p2)/zb(p1,t6)
-     . *(- mb/s34/s125)
+     . *(- mq/s34/s125)
  
      . +za(p3,t5)*za(p1,t5)*zb(p1,p4)*zb(p1,t5)
      . /za(p1,p2)/za(p1,p2)/zb(p1,t6)
-     . *(mb/s34/s125)
+     . *(mq/s34/s125)
  
       gg_f(2,2,2,1,2)=
      . +za(p2,p3)*za(p1,t5)*zb(p1,t5)*zb(p4,t6)
      . /za(p1,p2)/za(p1,p2)/za(p2,t5)
-     . *(mb/s34/s125)
+     . *(mq/s34/s125)
  
      . +za(p2,p3)*zb(p1,p2)*zb(p4,t6)/za(p1,p2)/za(p2,t5)
-     . *(mb/s34/s125)
+     . *(mq/s34/s125)
  
       gg_f(1,1,1,2,2)=
      . +za(p1,p3)*za(p1,p2)*zb(p2,p4)/za(p1,t6)/zb(p1,p2)/zb(p2,t5)
-     . *(- mb**2/s34/s125)
+     . *(- mq**2/s34/s125)
  
      . +za(p1,p3)*za(p1,t5)*zb(p1,t5)*zb(p2,p4)
      . /za(p1,t6)/zb(p1,p2)/zb(p1,p2)
      . /zb(p2,t5)
-     . *(- mb**2/s34/s125)
+     . *(- mq**2/s34/s125)
  
       gg_f(1,1,1,1,1)=
      . +za(p3,t6)*za(p1,p2)*zb(p1,t5)*zb(p2,p4)/zb(p1,p2)/zb(p1,p2)
@@ -876,34 +876,34 @@ C   Notation is hz,h1,h2,h5,h6
  
       gg_f(1,1,1,2,1)=
      . +za(p3,t6)*za(p1,p2)*zb(p2,p4)/zb(p1,p2)/zb(p2,t5)
-     . *(mb/s34/s125)
+     . *(mq/s34/s125)
  
      . +za(p3,t6)*za(p1,t5)*zb(p1,t5)*zb(p2,p4)
      . /zb(p1,p2)/zb(p1,p2)/zb(p2,t5)
-     . *(mb/s34/s125)
+     . *(mq/s34/s125)
  
       gg_f(1,1,1,1,2)=
      . +za(p1,p3)*za(p1,p2)*zb(p1,t5)*zb(p2,p4)
      . /za(p1,t6)/zb(p1,p2)/zb(p1,p2)
-     . *(- mb/s34/s125)
+     . *(- mq/s34/s125)
  
      . +za(p1,p3)*za(p1,t5)*zb(p1,t5)*zb(p4,t5)
      . /za(p1,t6)/zb(p1,p2)/zb(p1,p2)
-     . *(mb/s34/s125)
+     . *(mq/s34/s125)
  
       gg_f(1,2,2,2,2)=
      . +za(p1,p3)*za(p1,t5)*zb(p1,p2)*zb(p1,p4)
      . /za(p1,p2)/za(p1,t6)/za(p2,t5)
      . /zb(p2,t5)
-     . *(mb**2/s34/s125)
+     . *(mq**2/s34/s125)
  
      . +za(p1,p3)*za(p1,t5)*zb(p1,p2)*zb(p4,t5)
      . /za(p1,p2)/za(p1,p2)/za(p1,t6)
      . /zb(p2,t5)
-     . *(mb**2/s34/s125)
+     . *(mq**2/s34/s125)
  
      . +za(p1,p3)*za(p1,t5)*zb(p1,p4)/za(p1,p2)/za(p1,p2)/za(p1,t6)
-     . *(- mb**2/s34/s125)
+     . *(- mq**2/s34/s125)
  
       gg_f(1,2,2,1,1)=
      . +za(p3,t6)*za(p1,t5)*zb(p1,p4)*zb(p1,t5)/za(p1,p2)/za(p2,t5)
@@ -921,29 +921,29 @@ C   Notation is hz,h1,h2,h5,h6
       gg_f(1,2,2,2,1)=
      . +za(p3,t6)*za(p1,t5)*zb(p1,p2)*zb(p1,p4)
      . /za(p1,p2)/za(p2,t5)/zb(p2,t5)
-     . *(- mb/s34/s125)
+     . *(- mq/s34/s125)
  
      . +za(p3,t6)*za(p1,t5)*zb(p1,p2)*zb(p4,t5)
      . /za(p1,p2)/za(p1,p2)/zb(p2,t5)
-     . *(- mb/s34/s125)
+     . *(- mq/s34/s125)
  
      . +za(p3,t6)*za(p1,t5)*zb(p1,p4)/za(p1,p2)/za(p1,p2)
-     . *(mb/s34/s125)
+     . *(mq/s34/s125)
  
       gg_f(1,2,2,1,2)=
      . +za(p1,p3)*za(p1,t5)*zb(p1,p4)*zb(p1,t5)
      . /za(p1,p2)/za(p1,t6)/za(p2,t5)
-     . *(mb/s34/s125)
+     . *(mq/s34/s125)
  
      . +za(p1,p3)*za(p1,t5)*zb(p1,t5)*zb(p4,t5)
      . /za(p1,p2)/za(p1,p2)/za(p1,t6)
-     . *(mb/s34/s125)
+     . *(mq/s34/s125)
  
      . +za(p1,p3)*zb(p1,p2)*zb(p1,p4)/za(p1,t6)/za(p2,t5)
-     . *(mb/s34/s125)
+     . *(mq/s34/s125)
  
      . +za(p1,p3)*zb(p1,p2)*zb(p4,t5)/za(p1,p2)/za(p1,t6)
-     . *(mb/s34/s125)
+     . *(mq/s34/s125)
  
 c      include 'ee2m.f'
  
@@ -961,19 +961,19 @@ c      include 'ee2m.f'
      . * (1d0/s34/s16/s25)
  
       gg_e(2,2,1,1,1)=+ za(p2,t6)*za(p2,p3)*zb(p1,p4)*zb(p1,t5)
-     . * (- mb**2/s34/s16/s25/s12)
+     . * (- mq**2/s34/s16/s25/s12)
  
       gg_e(2,2,1,2,1)=+za(p2,t6)*za(p2,p3)*za(p2,t5)*zb(p1,p4)/za(p1,p2)
-     . * (mb/s34/s16/s25)
+     . * (mq/s34/s16/s25)
  
      . +za(p2,t6)*za(p3,t5)*za(p2,t5)*zb(p1,p4)*zb(p1,t5)
-     . * (mb/s34/s16/s25/s12)
+     . * (mq/s34/s16/s25/s12)
  
       gg_e(2,2,1,1,2)=+za(p2,p3)*zb(p1,p4)*zb(p1,t5)*zb(p1,t6)/zb(p1,p2)
-     . * (- mb/s34/s16/s25)
+     . * (- mq/s34/s16/s25)
  
      . +za(p2,t6)*za(p2,p3)*zb(p1,t5)*zb(p1,t6)*zb(p4,t6)
-     . * (mb/s34/s16/s25/s12)
+     . * (mq/s34/s16/s25/s12)
  
       gg_e(2,1,2,2,2)=+za(p1,t6)*za(p3,t5)*za(p1,t5)*zb(p2,t5)*zb(p2,t6)
      . *zb(p4,t6)
@@ -981,45 +981,45 @@ c      include 'ee2m.f'
  
       gg_e(2,1,2,1,1)=
      . +za(p1,t6)*za(p1,p3)*zb(p2,p4)*zb(p2,t5)
-     . * (- mb**2/s34/s16/s25/s12)
+     . * (- mq**2/s34/s16/s25/s12)
  
      . +za(p1,t6)*za(p1,t6)*za(p1,p3)*zb(p2,t5)*zb(p4,t6)/za(p1,p2)
-     . * (- mb**2/s34/s16**2/s25)
+     . * (- mq**2/s34/s16**2/s25)
  
      . +za(p1,t6)*za(p1,t6)*za(p3,t5)*zb(p2,t5)*zb(p2,t5)*zb(p4,t6)
-     . * (- mb**2/s34/s16**2/s25**2)
+     . * (- mq**2/s34/s16**2/s25**2)
  
      . +za(p1,t6)*za(p3,t5)*za(p1,p2)*zb(p2,p4)*zb(p2,t5)*zb(p2,t5)
-     . * (- mb**2/s34/s16/s25**2/s12)
+     . * (- mq**2/s34/s16/s25**2/s12)
  
       gg_e(2,1,2,2,1)=
      . +za(p1,t6)*za(p1,t6)*za(p3,t5)*za(p1,t5)*zb(p2,t5)*zb(p4,t6)
      . /za(p1,p2)
-     . * (mb/s34/s16**2/s25)
+     . * (mq/s34/s16**2/s25)
  
      . +za(p1,t6)*za(p3,t5)*za(p1,t5)*zb(p2,p4)*zb(p2,t5)
-     . * (mb/s34/s16/s25/s12)
+     . * (mq/s34/s16/s25/s12)
  
       gg_e(2,1,2,1,2)=
      . +za(p1,t6)*za(p1,p3)*zb(p2,t5)*zb(p2,t6)*zb(p4,t6)
-     . * (mb/s34/s16/s25/s12)
+     . * (mq/s34/s16/s25/s12)
  
      . +za(p1,t6)*za(p3,t5)*za(p1,p2)*zb(p2,t5)*zb(p2,t5)*zb(p2,t6)
      . *zb(p4,t6)
-     . * (mb/s34/s16/s25**2/s12)
+     . * (mq/s34/s16/s25**2/s12)
  
       gg_e(1,2,1,2,2)=
      . +za(p2,p3)*za(p2,t5)*za(p2,t5)*zb(p1,p2)*zb(p1,t6)*zb(p4,t5)
-     . * (- mb**2/s34/s16/s25**2/s12)
+     . * (- mq**2/s34/s16/s25**2/s12)
  
      . +za(p2,p3)*za(p2,t5)*zb(p1,p4)*zb(p1,t6)
-     . * (- mb**2/s34/s16/s25/s12)
+     . * (- mq**2/s34/s16/s25/s12)
  
      . +za(p3,t6)*za(p2,t5)*za(p2,t5)*zb(p1,t6)*zb(p1,t6)*zb(p4,t5)
-     . * (- mb**2/s34/s16**2/s25**2)
+     . * (- mq**2/s34/s16**2/s25**2)
  
      . +za(p3,t6)*za(p2,t5)*zb(p1,p4)*zb(p1,t6)*zb(p1,t6)/zb(p1,p2)
-     . * (- mb**2/s34/s16**2/s25)
+     . * (- mq**2/s34/s16**2/s25)
  
       gg_e(1,2,1,1,1)=+ za(p2,t6)*za(p3,t6)*za(p2,t5)*zb(p1,t5)
      . *zb(p1,t6)*zb(p4,t5)
@@ -1028,21 +1028,21 @@ c      include 'ee2m.f'
       gg_e(1,2,1,2,1)=
      . +za(p2,t6)*za(p3,t6)*za(p2,t5)*za(p2,t5)*zb(p1,p2)
      . *zb(p1,t6)*zb(p4,t5)
-     . * (mb/s34/s16/s25**2/s12)
+     . * (mq/s34/s16/s25**2/s12)
  
      . +za(p2,t6)*za(p3,t6)*za(p2,t5)*zb(p1,p4)*zb(p1,t6)
-     . * (mb/s34/s16/s25/s12)
+     . * (mq/s34/s16/s25/s12)
  
       gg_e(1,2,1,1,2)=
      . +za(p2,p3)*za(p2,t5)*zb(p1,t5)*zb(p1,t6)*zb(p4,t5)
-     . * (mb/s34/s16/s25/s12)
+     . * (mq/s34/s16/s25/s12)
  
      . +za(p3,t6)*za(p2,t5)*zb(p1,t5)*zb(p1,t6)*zb(p1,t6)*zb(p4,t5)
      . /zb(p1,p2)
-     . * (mb/s34/s16**2/s25)
+     . * (mq/s34/s16**2/s25)
  
       gg_e(1,1,2,2,2)=+ za(p1,p3)*za(p1,t5)*zb(p2,p4)*zb(p2,t6)
-     . * (- mb**2/s34/s16/s25/s12)
+     . * (- mq**2/s34/s16/s25/s12)
  
       gg_e(1,1,2,1,1)=
      . +za(p1,t6)*za(p1,p3)*za(p1,t5)*zb(p2,t5)*zb(p4,t5)/za(p1,p2)
@@ -1058,16 +1058,16 @@ c      include 'ee2m.f'
      . * (-1d0/s34/s16/s25/s12)
  
       gg_e(1,1,2,2,1)=+za(p1,t6)*za(p1,p3)*za(p1,t5)*zb(p2,p4)/za(p1,p2)
-     . * (- mb/s34/s16/s25)
+     . * (- mq/s34/s16/s25)
  
      . +za(p1,t6)*za(p3,t6)*za(p1,t5)*zb(p2,p4)*zb(p2,t6)
-     . * (mb/s34/s16/s25/s12)
+     . * (mq/s34/s16/s25/s12)
  
       gg_e(1,1,2,1,2)=+za(p1,p3)*za(p1,t5)*zb(p2,t5)*zb(p2,t6)*zb(p4,t5)
-     . * (mb/s34/s16/s25/s12)
+     . * (mq/s34/s16/s25/s12)
  
      . +za(p1,p3)*zb(p2,p4)*zb(p2,t5)*zb(p2,t6)/zb(p1,p2)
-     . * (mb/s34/s16/s25)
+     . * (mq/s34/s16/s25)
  
       gg_e(2,1,1,2,2)=
      . +za(p1,t6)*za(p2,p3)*za(p2,t5)*zb(p2,t6)*zb(p4,t6)/zb(p1,p2)
@@ -1079,30 +1079,30 @@ c      include 'ee2m.f'
  
       gg_e(2,1,1,1,1)=
      . +za(p1,t6)*za(p1,t6)*za(p2,p3)*zb(p1,t5)*zb(p4,t6)/zb(p1,p2)
-     . * (mb**2/s34/s16**2/s25)
+     . * (mq**2/s34/s16**2/s25)
  
      . +za(p1,t6)*za(p2,p3)*zb(p1,t5)*zb(p2,p4)/zb(p1,p2)/zb(p1,p2)
-     . * (- mb**2/s34/s16/s25)
+     . * (- mq**2/s34/s16/s25)
  
       gg_e(2,1,1,2,1)=
      . +za(p1,t6)*za(p1,t6)*za(p2,p3)*za(p2,t5)*zb(p4,t6)
-     . * (mb/s34/s16**2/s25)
+     . * (mq/s34/s16**2/s25)
  
      . +za(p1,t6)*za(p1,t6)*za(p3,t5)*za(p2,t5)*zb(p1,t5)*zb(p4,t6)
      . /zb(p1,p2)
-     . * (- mb/s34/s16**2/s25)
+     . * (- mq/s34/s16**2/s25)
  
      . +za(p1,t6)*za(p2,p3)*za(p2,t5)*zb(p2,p4)/zb(p1,p2)
-     . * (- mb/s34/s16/s25)
+     . * (- mq/s34/s16/s25)
  
      . +za(p1,t6)*za(p3,t5)*za(p2,t5)*zb(p1,t5)*zb(p2,p4)
      . /zb(p1,p2)/zb(p1,p2)
-     . * (mb/s34/s16/s25)
+     . * (mq/s34/s16/s25)
  
       gg_e(2,1,1,1,2)=+ za(p1,t6)*za(p2,p3)*zb(p1,t5)*zb(p2,t6)
      . *zb(p4,t6)/zb(p1,p2)
      . /zb(p1,p2)
-     . * (mb/s34/s16/s25)
+     . * (mq/s34/s16/s25)
  
       gg_e(2,2,2,2,2)=
      . +za(p2,t6)*za(p3,t5)*za(p1,t5)*zb(p1,t6)*zb(p2,t5)*zb(p4,t6)
@@ -1114,37 +1114,37 @@ c      include 'ee2m.f'
  
       gg_e(2,2,2,1,1)=
      . +za(p2,t6)*za(p1,p3)*zb(p1,p4)*zb(p2,t5)/za(p1,p2)/za(p1,p2)
-     . * (- mb**2/s34/s16/s25)
+     . * (- mq**2/s34/s16/s25)
  
      . +za(p2,t6)*za(p3,t5)*zb(p1,p4)*zb(p2,t5)*zb(p2,t5)/za(p1,p2)
-     . * (- mb**2/s34/s16/s25**2)
+     . * (- mq**2/s34/s16/s25**2)
  
       gg_e(2,2,2,2,1)=+ za(p2,t6)*za(p3,t5)*za(p1,t5)*zb(p1,p4)
      . *zb(p2,t5)/za(p1,p2)
      . /za(p1,p2)
-     . * (mb/s34/s16/s25)
+     . * (mq/s34/s16/s25)
  
       gg_e(2,2,2,1,2)=
      . +za(p1,p3)*zb(p1,p4)*zb(p1,t6)*zb(p2,t5)/za(p1,p2)
-     . * (mb/s34/s16/s25)
+     . * (mq/s34/s16/s25)
  
      . +za(p2,t6)*za(p1,p3)*zb(p1,t6)*zb(p2,t5)*zb(p4,t6)
      . /za(p1,p2)/za(p1,p2)
-     . * (mb/s34/s16/s25)
+     . * (mq/s34/s16/s25)
  
      . +za(p2,t6)*za(p3,t5)*zb(p1,t6)*zb(p2,t5)*zb(p2,t5)
      . *zb(p4,t6)/za(p1,p2)
-     . * (mb/s34/s16/s25**2)
+     . * (mq/s34/s16/s25**2)
  
      . +za(p3,t5)*zb(p1,p4)*zb(p1,t6)*zb(p2,t5)*zb(p2,t5)
-     . * (mb/s34/s16/s25**2)
+     . * (mq/s34/s16/s25**2)
  
       gg_e(1,1,1,2,2)=
      . +za(p1,p3)*za(p2,t5)*za(p2,t5)*zb(p2,t6)*zb(p4,t5)/zb(p1,p2)
-     . * (- mb**2/s34/s16/s25**2)
+     . * (- mq**2/s34/s16/s25**2)
  
      . +za(p1,p3)*za(p2,t5)*zb(p1,p4)*zb(p2,t6)/zb(p1,p2)/zb(p1,p2)
-     . * (- mb**2/s34/s16/s25)
+     . * (- mq**2/s34/s16/s25)
  
       gg_e(1,1,1,1,1)=
      . +za(p1,t6)*za(p1,p3)*za(p2,t5)*zb(p1,t5)*zb(p4,t5)/zb(p1,p2)
@@ -1157,30 +1157,30 @@ c      include 'ee2m.f'
  
       gg_e(1,1,1,2,1)=
      . +za(p1,t6)*za(p1,p3)*za(p2,t5)*za(p2,t5)*zb(p4,t5)
-     . * (mb/s34/s16/s25**2)
+     . * (mq/s34/s16/s25**2)
  
      . +za(p1,t6)*za(p1,p3)*za(p2,t5)*zb(p1,p4)/zb(p1,p2)
-     . * (mb/s34/s16/s25)
+     . * (mq/s34/s16/s25)
  
      . +za(p1,t6)*za(p3,t6)*za(p2,t5)*za(p2,t5)*zb(p2,t6)
      . *zb(p4,t5)/zb(p1,p2)
-     . * (mb/s34/s16/s25**2)
+     . * (mq/s34/s16/s25**2)
  
      . +za(p1,t6)*za(p3,t6)*za(p2,t5)*zb(p1,p4)*zb(p2,t6)
      . /zb(p1,p2)/zb(p1,p2)
-     . * (mb/s34/s16/s25)
+     . * (mq/s34/s16/s25)
  
       gg_e(1,1,1,1,2)=+ za(p1,p3)*za(p2,t5)*zb(p1,t5)*zb(p2,t6)
      . *zb(p4,t5)/zb(p1,p2)
      . /zb(p1,p2)
-     . * (mb/s34/s16/s25)
+     . * (mq/s34/s16/s25)
  
       gg_e(1,2,2,2,2)=
      . +za(p2,p3)*za(p1,t5)*zb(p1,t6)*zb(p2,p4)/za(p1,p2)/za(p1,p2)
-     . * (- mb**2/s34/s16/s25)
+     . * (- mq**2/s34/s16/s25)
  
      . +za(p3,t6)*za(p1,t5)*zb(p1,t6)*zb(p1,t6)*zb(p2,p4)/za(p1,p2)
-     . * (mb**2/s34/s16**2/s25)
+     . * (mq**2/s34/s16**2/s25)
  
       gg_e(1,2,2,1,1)=
      . +za(p2,t6)*za(p3,t6)*za(p1,t5)*zb(p1,t6)*zb(p2,t5)
@@ -1194,22 +1194,22 @@ c      include 'ee2m.f'
       gg_e(1,2,2,2,1)=+ za(p2,t6)*za(p3,t6)*za(p1,t5)*zb(p1,t6)
      . *zb(p2,p4)/za(p1,p2)
      . /za(p1,p2)
-     . * (mb/s34/s16/s25)
+     . * (mq/s34/s16/s25)
  
       gg_e(1,2,2,1,2)=
      . +za(p2,p3)*za(p1,t5)*zb(p1,t6)*zb(p2,t5)*zb(p4,t5)
      . /za(p1,p2)/za(p1,p2)
-     . * (mb/s34/s16/s25)
+     . * (mq/s34/s16/s25)
  
      . +za(p2,p3)*zb(p1,t6)*zb(p2,p4)*zb(p2,t5)/za(p1,p2)
-     . * (- mb/s34/s16/s25)
+     . * (- mq/s34/s16/s25)
  
      . +za(p3,t6)*za(p1,t5)*zb(p1,t6)*zb(p1,t6)*zb(p2,t5)*zb(p4,t5)
      . /za(p1,p2)
-     . * (- mb/s34/s16**2/s25)
+     . * (- mq/s34/s16**2/s25)
  
      . +za(p3,t6)*zb(p1,t6)*zb(p1,t6)*zb(p2,p4)*zb(p2,t5)
-     . * (mb/s34/s16**2/s25)
+     . * (mq/s34/s16**2/s25)
  
 
        return

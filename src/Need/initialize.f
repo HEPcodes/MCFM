@@ -7,7 +7,7 @@
 ! Constants
 !
       double precision  sw2
-      parameter        (sw2 = 0.2312d0)
+c      parameter        (sw2 = 0.2312d0)
 
 !   masses and widths of fermions
 
@@ -16,7 +16,8 @@
       double precision smass,      umass,     dmass
       parameter       (smass=0d0,  umass=0d0, dmass=0d0)
       double precision twidth,     bwidth,    cwidth
-      parameter       (twidth=1.5489847d0, bwidth=0d0,cwidth=0d0)
+      parameter       (twidth=0d0, bwidth=0d0,cwidth=0d0)
+c      parameter       (twidth=1.5525210d0, bwidth=0d0,cwidth=0d0)
       double precision swidth,     uwidth,    dwidth
       parameter       (swidth=0d0, uwidth=0d0,dwidth=0d0)
       double precision emass,      mumass,    taumass
@@ -29,7 +30,8 @@
       double precision wmass,         zmass
       parameter       (wmass=80.419d0,    zmass=91.188d0)
       double precision wwidth,        zwidth
-      parameter       (wwidth=2.06d0, zwidth=2.49d0)
+c      parameter       (wwidth=2.06d0, zwidth=2.49d0)
+      parameter       (wwidth=0d0, zwidth=0d0)
       double precision amass,         awidth
       parameter       (amass=0d0,     awidth=0d0)
       double precision hmass,         hwidth
@@ -69,6 +71,9 @@ c      write(6,*) 'cmass',cmass
 c      write(6,*) 'tmass',tmass
 c      write(6,*) 'emass',emass
 c      write(6,*) 'gw',gw
+
+      sw2=1d0-wmass**2/zmass**2
+
       fmass(1) = emass
       fmass(2) = 0d0
       fmass(3) = umass

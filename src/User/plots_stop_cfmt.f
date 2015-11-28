@@ -25,14 +25,14 @@ c--- of Campbell, Frederix, Maltoni and Tramontano
 c--- on the first call, initialize histograms
       if (first) then
         tag='book'
-	pttop=-1d0
-	etatop=1d3
-	ytop=1d3
-	ibbar=6
-	inotb=7
-	ilight1=6
-	ilight2=7
-	goto 99
+      pttop=-1d0
+      etatop=1d3
+      ytop=1d3
+      ibbar=6
+      inotb=7
+      ilight1=6
+      ilight2=7
+      goto 99
       else
         tag='plot'
       endif
@@ -41,36 +41,36 @@ c--- check that this routine is being used for one of the envisaged
 c--- processes and, if so, initialize variables accordingly      
       if     (case .eq. 'bq_tpq') then
         if (jets .gt. 0) then
-	  do i=1,jets
-	    jet(i)=5+i ! jets start with parton 6 when removebr=.true.
-	  enddo
-	  pttop=ptthree(3,4,5,p)
-	  etatop=etarapthree(3,4,5,p)
-	  ytop=yrapthree(3,4,5,p)
-	endif
-	
+        do i=1,jets
+          jet(i)=5+i ! jets start with parton 6 when removebr=.true.
+        enddo
+        pttop=ptthree(3,4,5,p)
+        etatop=etarapthree(3,4,5,p)
+        ytop=yrapthree(3,4,5,p)
+      endif
+      
       elseif (case .eq. 'qg_tbq') then
         if (jets .gt. 0) then
-	  do i=1,jets
-	    jet(i)=4+i ! jets start with parton 5
-	  enddo
-	  pttop=pt(3,p)
-	  etatop=etarap(3,p)
-	  ytop=yrap(3,p)
-	endif
+        do i=1,jets
+          jet(i)=4+i ! jets start with parton 5
+        enddo
+        pttop=pt(3,p)
+        etatop=etarap(3,p)
+        ytop=yrap(3,p)
+      endif
       else
         write(6,*) 'This plotting routine is not suitable for'
-	write(6,*) 'the process that you are calculating.'
-	stop
+      write(6,*) 'the process that you are calculating.'
+      stop
       endif
       
 c--- there are at most two jets; reorder them according to pt if two    
       if (jets .eq. 2) then
         if (pt(jet(2),p) .gt. pt(jet(1),p)) then
-	  jetswap=jet(1)
-	  jet(1)=jet(2)
-	  jet(2)=jetswap
-	endif
+        jetswap=jet(1)
+        jet(1)=jet(2)
+        jet(2)=jetswap
+      endif
       endif
 
 c--- initialize all variabels to zero
@@ -89,77 +89,77 @@ c---     There are 2 cases:
 c---     If no merging, then only if jetlabel(i)=='pp' is it the b~.
           do i=1,jets
             if     (jetlabel(jet(i)-5).eq.'pp') then
-	      ibbar=jet(i)
+            ibbar=jet(i)
             elseif (jetlabel(jet(i)-5).eq.'qj') then
-	      inotb=jet(i)
-            endif	  
+            inotb=jet(i)
+            endif        
           enddo
 c---      If merging occurred, then it matters whether the merged
 c---      jet was already a bq or not. 
           if (jetmerge) then
             ibbar=jet(1)   ! b~ was merged into jet(1)
           endif
-	endif
+      endif
 c--- 2) Assign weights for histogramming
 c---     there are three cases
         if     (jets .eq. 1) then
           if     (jetlabel(1) .eq. 'qj') then
 c---     1) only one jet, that is definitely not a b
 c---             jetlabel = (qj)
-	    ibbar=0
+          ibbar=0
 c           inotb already set above
-	    wtnotb=wt
-	    wtnotb2=wt2
-	  elseif (jetlabel(1) .eq. 'pp') then
+          wtnotb=wt
+          wtnotb2=wt2
+        elseif (jetlabel(1) .eq. 'pp') then
 c---     2) only one jet, that could be a b
 c---             jetlabel = (pp)
 c           ibbar already set above
-	    inotb=ibbar
-	    wtbbar=wt*bwgt
-	    wtnotb=wt*(1d0-bwgt)
-	    wtbbar2=wt2*bwgt**2
-	    wtnotb2=wt2*(1d0-bwgt)**2
-          endif	  
+          inotb=ibbar
+          wtbbar=wt*bwgt
+          wtnotb=wt*(1d0-bwgt)
+          wtbbar2=wt2*bwgt**2
+          wtnotb2=wt2*(1d0-bwgt)**2
+          endif        
 c---     3) two jets, one of which could be a b
 c---             jetlabel = (qj,pp) OR (pp,qj)
         elseif (jets .eq. 2) then
 c         ibbar already set above
 c         inotb already set above
           wtbbar=wt*bwgt
-	  wtnotb=wt*bwgt
-	  wtbbar2=wt2*bwgt**2
-	  wtnotb2=wt2*bwgt**2
+        wtnotb=wt*bwgt
+        wtbbar2=wt2*bwgt**2
+        wtnotb2=wt2*bwgt**2
           ilight1=jet(1) ! they are ordered according to pt
           ilight2=jet(2) ! they are ordered according to pt
-	  wtlight1=wt*(1d0-bwgt)
-	  wtlight2=wtlight1
-	  wtlight12=wt2*(1d0-bwgt)**2
-	  wtlight22=wtlight12
+        wtlight1=wt*(1d0-bwgt)
+        wtlight2=wtlight1
+        wtlight12=wt2*(1d0-bwgt)**2
+        wtlight22=wtlight12
         elseif (jets .eq. 0) then
 c---   nothing to set: all variables=0, only occurs when notag=1
           continue
         else
           write(6,*) 'Error: there should be 1 or 2 jets, instead ',jets
-	  stop
+        stop
         endif
       endif
 
 c--- Simpler manipulations for the 2->3 process
       if (case .eq. 'qg_tbq') then
         ibbar=4
-	wtbbar=wt
-	wtbbar2=wt2
-	if (jets .gt. 0) then
-	  ilight1=jet(1)
-	  wtlight1=wt
-	  wtlight12=wt2
-	endif
-	if (jets .gt. 1) then
-	  ilight2=jet(2)
-	  wtlight2=wt
-	  wtlight22=wt2
-	endif
-c--- inotb should remain equal to zero		  
+      wtbbar=wt
+      wtbbar2=wt2
+      if (jets .gt. 0) then
+        ilight1=jet(1)
+        wtlight1=wt
+        wtlight12=wt2
+      endif
+      if (jets .gt. 1) then
+        ilight2=jet(2)
+        wtlight2=wt
+        wtlight22=wt2
+      endif
+c--- inotb should remain equal to zero              
       endif
 
    99 continue
@@ -168,7 +168,7 @@ c--- inotb should remain equal to zero
 c--- fill plots
 c--- available veriables are
 c---   pttop,eta,ytop: pt, pseudo-rapidity and rapidity of the top quark
-	
+      
       call bookplot(n,tag,'pt(top) ',pttop,wt,wt2,0d0,200d0,5d0,'log')
       n=n+1   
       call bookplot(n,tag,'eta(top)',etatop,wt,wt2,-8d0,8d0,0.5d0,'lin')
@@ -275,12 +275,12 @@ c--- copied from nplotter.f
       if (n .gt. maxhisto) then
         write(6,*) 'WARNING - TOO MANY HISTOGRAMS!'
         write(6,*) n,' > ',maxhisto,', which is the built-in maximum.'
-	write(6,*) 'To use more histograms, change the value of the'
-	write(6,*) 'constant MAXHISTO in src/Inc/nplot.f then do:'
-	write(6,*)
-	write(6,*) ' make clean; make        to recompile from scratch.'    
+      write(6,*) 'To use more histograms, change the value of the'
+      write(6,*) 'constant MAXHISTO in src/Inc/nplot.f then do:'
+      write(6,*)
+      write(6,*) ' make clean; make        to recompile from scratch.'
         write(6,*)
-	stop
+      stop
       endif
 
 c--- set the maximum number of plots, on the first call

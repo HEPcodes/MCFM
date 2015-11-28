@@ -37,7 +37,7 @@ c--- find the two leptons and 1,2 or 3 jets
      .        .or. (plabel(j).eq.'pp')) then
               jc=jc+1
               if (jc .le. 2) ijet(jc)=j
-	  endif
+        endif
         enddo
 c--- error if there are not 2 leptons      
         if (ic .ne. 2) then
@@ -49,7 +49,7 @@ c--- error if there are not 1 or 2 jets
           write(6,*) 'Expected to find 1,2 or 3 jets - found',jc
           stop
         endif     
-	goto 99
+      goto 99
       endif
       
 ******************** CALCULATE QUANTITIES TO PLOT **********************
@@ -58,9 +58,9 @@ c--- form the combined lepton momentum and the missing et vector
       do j=1,4
         plept(j)=p(ilept(1),j)+p(ilept(2),j)
         if ((j.eq.1) .or. (j.eq.2)) then
-	  etvec(j)=etvec(j)-plept(j)-p(ijet(1),j)
-	  if (jc .eq. 2) etvec(j)=etvec(j)-p(ijet(2),j)
-	endif
+        etvec(j)=etvec(j)-plept(j)-p(ijet(1),j)
+        if (jc .eq. 2) etvec(j)=etvec(j)-p(ijet(2),j)
+      endif
       enddo
 
       missinget=dsqrt(etvec(1)**2+etvec(2)**2)
@@ -81,19 +81,19 @@ c--- rapidities and pts of leading (highest-pt) jet and sub-leading one
       ptjet2=-1d0
       if     (jets .eq. 1) then
         etajet=etarap(ijet(1),p)
-	ptjet=pt(ijet(1),p)
+        ptjet=pt(ijet(1),p)
       elseif (jets .eq. 2) then
         ptjet=pt(ijet(1),p)
-	ptjet2=pt(ijet(2),p)
+      ptjet2=pt(ijet(2),p)
         if (ptjet .gt. ptjet2) then
-	  etajet=etarap(ijet(1),p)
-	  etajet2=etarap(ijet(2),p)
-	else
-	  etajet=ptjet
-	  ptjet=ptjet2
-	  ptjet2=etajet
-	  etajet=etarap(ijet(2),p)
-	  etajet2=etarap(ijet(1),p)
+          etajet=etarap(ijet(1),p)
+          etajet2=etarap(ijet(2),p)
+        else
+        etajet=ptjet
+        ptjet=ptjet2
+        ptjet2=etajet
+        etajet=etarap(ijet(2),p)
+        etajet2=etarap(ijet(1),p)
         endif
       elseif (jets .eq. 3) then
 c--- sort for 3 jets 
@@ -132,8 +132,8 @@ c            i3=1
         endif
         ptjet=pt(ijet(i1),p)
         ptjet2=pt(ijet(i2),p)
-	etajet=etarap(ijet(i1),p)
-	etajet2=etarap(ijet(i2),p)
+        etajet=etarap(ijet(i1),p)
+        etajet2=etarap(ijet(i2),p)
       endif
       
 c--- NOT USED ANY MORE (SEE BELOW)

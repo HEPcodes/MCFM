@@ -19,9 +19,9 @@ c--- (unrenormalized) results in the EGZ paper
         H4prenorm=0d0
       else
         H4prenorm=(-4d0*b0/xn*epinv+11d0/xn)
-	if (scheme .eq. 'dred') then
-	  H4prenorm=H4prenorm+2d0/3d0
-	endif
+        if (scheme .eq. 'dred') then
+        H4prenorm=H4prenorm+2d0/3d0
+        endif
       endif  
       
       return

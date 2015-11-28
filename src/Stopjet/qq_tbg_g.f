@@ -66,10 +66,10 @@ c--- note: all averaging factors are already included in "inter"
 c      do j=-4,4
 c      do k=-4,4
 c        if     ((j .gt. 0) .and. (k .lt. 0)) then
-c	  msq(j,k)=msq_qqb_gg+dfloat(nflav)*msq_qqb_qq
+c          msq(j,k)=msq_qqb_gg+dfloat(nflav)*msq_qqb_qq
 c        elseif ((j .lt. 0) .and. (k .gt. 0)) then
-cc	  msq(j,k)=Vsq(j,k)*(msq_qbq_gg+dfloat(nflav)*msq_qbq_qq)
-c	endif
+cc          msq(j,k)=Vsq(j,k)*(msq_qbq_gg+dfloat(nflav)*msq_qbq_qq)
+c        endif
 c      enddo
 c      enddo
       

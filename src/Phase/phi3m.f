@@ -13,7 +13,6 @@ c     factor of (2*pi)^4 included in definition of phase space
       double precision wt0,wt
       double precision m1,m2,m1sq,m2sq,lambda,lambda2,smin
       integer j
-      common/smin/smin
       parameter(wt0=one/eight/pi)
       wt=0d0
 
@@ -44,8 +43,6 @@ c     factor of (2*pi)^4 included in definition of phase space
       endif
       lambda=dsqrt(lambda2)
 
-      wt=wt0*lambda/s
-
       p1cm(4)=roots/two*(s+m1sq-m2sq)/s
       p1cm(1)=roots/two*lambda/s*sinth*dsin(phi)
       p1cm(2)=roots/two*lambda/s*sinth*dcos(phi)
@@ -72,7 +69,11 @@ c      pause
       write(6,*) 'p1',p1(4),p1(4)**2-p1(1)**2-p1(2)**2-p1(3)**2,m1sq
       write(6,*) 'p2',p2(4),p2(4)**2-p2(1)**2-p2(2)**2-p2(3)**2,m2sq
       write(6,*) 'in phi3m'
+      return 1
       endif
+
+      wt=wt0*lambda/s
+
       return
       end
 

@@ -14,8 +14,8 @@ c--- special cases where there is no LO calculation
       if ((part .ne. 'real') .and. (order .eq. 'R')) then 
         write(6,*)
         write(6,*)'This process can only be calculated with part=real,'
-	write(6,*)'it is a subset of a NLO calculation only.'
-	stop
+        write(6,*)'it is a subset of a NLO calculation only.'
+      stop
       endif
       
 c--- if we're calculating LO only, there's no problem      
@@ -33,9 +33,9 @@ c--- process numbers can't be calculated beyond LO
 c--- check that fragmentation is not turned on for a non-fragmentation process
       if ((frag) .and. (order .ne. 'F')) then
         write(6,*)
-	write(6,*) 'This process does not include photon fragmentation.'
-	write(6,*) 'Please set frag=.false. in the input file.'
-	stop
+        write(6,*) 'This process does not include photon fragmentation.'
+        write(6,*) 'Please set frag=.false. in the input file.'
+        stop
       endif
        
       return

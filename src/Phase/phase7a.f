@@ -28,7 +28,7 @@ c--- written for real contribution to qq->H(->WW)+qq only
       else 
         write(6,*) 'Phase space routine not correct - needs updating.'
         write(6,*) 'case',case
-	stop
+        stop
       endif
 
       oldzerowidth=zerowidth

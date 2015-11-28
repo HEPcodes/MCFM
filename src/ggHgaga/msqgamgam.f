@@ -7,13 +7,12 @@
       include 'ewcharge.f'
       include 'couple.f'
       include 'part.f'
-      double complex Iw,Iq,Ftriangle,ctwo
+      double complex Iw,Iq,Ftriangle
       double precision prefac,mh
       double precision x_t,x_b,x_w,x,mt_eff,mb_eff,massfrun
       logical first
       data first/.true./
       save first,mt_eff
-      parameter(ctwo=(2d0,0d0))
 C---statement functions
       Iq(x)=dcmplx(4d0*x)*(ctwo+dcmplx(4d0*x-1d0)*Ftriangle(x))
       Iw(x)=-ctwo*(dcmplx(6d0*x+1d0)

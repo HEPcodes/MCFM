@@ -13,6 +13,7 @@ c--- including both top and bottom quark loops
       double precision p(mxpart,4),msq(fn:nf,fn:nf),msqgg,fac
       double precision mfsq,tau,tauinv,rt
       double complex Ahiggs(2,2),fachiggs,amphiggs,f,e3De4
+!      double complex num_c
 
       do j=-nf,nf
       do k=-nf,nf
@@ -27,6 +28,10 @@ c--- fill amplitudes with contributions of Higgs: top loop
       tau=s(1,2)/(4d0*mfsq)
       tauinv=1d0/tau
       fachiggs=cone/dcmplx(s(1,2)-hmass**2,hmass*hwidth)
+
+!====== SEYMOUR ISA APPROX 
+!      num_c=dcmplx(hmass**2/s(1,2)) 
+!      fachiggs=num_c/dcmplx(s(1,2)-hmass**2,s(1,2)*hwidth/hmass)
 
       if (tau .le. 1d0) then
          f=dcmplx(dasin(sqrt(tau))**2)

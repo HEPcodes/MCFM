@@ -30,10 +30,10 @@ c--- (small error induced if zerowidth false, of order (hwidth/hmass))
         s34=1d0/vs
         rtshat=dsqrt(s34)
         ymax=dlog(sqrts/rtshat)
-        yave=ymax*(two*r(10)-1d0)     	 
+        yave=ymax*(two*r(10)-1d0)
         xx(1)=rtshat/sqrts*exp(+yave)
         xx(2)=rtshat/sqrts*exp(-yave)
-	xjac=(vsqmax-vsqmin)*s34**2/sqrts**2*two*ymax
+        xjac=(vsqmax-vsqmin)*s34**2/sqrts**2*two*ymax
       else
 c--- generic process
         tau=dexp(dlog(taumin)*r(9))

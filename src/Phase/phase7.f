@@ -52,8 +52,8 @@ c     vectors returned p2 and p3 are in the same frame as p1 is supplied
 
       if (case .eq. 'qq_ttg') then
 c--- branchings are all of the form A->B+C with B^2=0 and C^2 a B.-W.
-	n2=0
-	n3=1
+      n2=0
+      n3=1
       endif
       
       if (iflip .eq. 0) then

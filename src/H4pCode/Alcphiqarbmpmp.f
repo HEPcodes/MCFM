@@ -11,7 +11,7 @@ c--- the function defined in this routine is in fact (-i*A_4),
 c---   i.e. complete LHS
       double precision s12,s13,s41,s23,s24,s34
       double precision s123,s234,s341,s412,mhsq
-      double complex Vlc,Lsm1,Lsm1DS,Lsm1_2me,L0,L1,lnrat,
+      double complex Vlc,Lsm1DS,Lsm1_2me,L0,L1,lnrat,
      & A0phiqarbmpmp,A0phidqarbmpmp
       integer j1,j2,j3,j4
 

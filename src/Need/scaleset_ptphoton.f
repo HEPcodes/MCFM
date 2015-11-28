@@ -14,7 +14,7 @@ c---  pt(photon)
       else
         write(6,*) 'dynamicscale pt(photon)'//
      &             ' not supported for this process.'
-	stop
+        stop
       endif
       
       return

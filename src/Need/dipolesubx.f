@@ -86,18 +86,18 @@ C---Modification so that only close to singular subtracted
         
         call transform(p,ptrans,x,ip,jp,kp)
         call storeptilde(nd,ptrans)
-	
+      
         vecsq=-sij*sjk/sik
         do nu=1,4
           vec(nu)=p(jp,nu)-vtilde*p(kp,nu)
         enddo
 
-c--- if using a dynamic scale, set that scale with dipole kinematics	
-	if (dynamicscale) then
-	  call scaleset(initscale,initfacscale,ptrans)
-	  dipscale(nd)=facscale
-	endif
-	
+c--- if using a dynamic scale, set that scale with dipole kinematics      
+      if (dynamicscale) then
+        call scaleset(initscale,initfacscale,ptrans)
+        dipscale(nd)=facscale
+      endif
+      
         call subr_born(ptrans,msq,mqq,msqx,mg)
         call subr_corr(ptrans,vec,ip,msqv,mvg,mvxg)
 
@@ -121,12 +121,12 @@ C---transform the momenta so that only the first npart+1 are filled
         call transform(p,ptrans,x,ip,jp,kp)
         call storeptilde(nd,ptrans)
 
-c--- if using a dynamic scale, set that scale with dipole kinematics	
-	if (dynamicscale) then
-	  call scaleset(initscale,initfacscale,ptrans)
-	  dipscale(nd)=facscale
-	endif
-	
+c--- if using a dynamic scale, set that scale with dipole kinematics      
+      if (dynamicscale) then
+        call scaleset(initscale,initfacscale,ptrans)
+        dipscale(nd)=facscale
+      endif
+      
 c--- Calculate the matrix element now because it might be needed
 c--- in the final-initial segment, regardless of whether or not the
 c--- alfa cut fails here
@@ -170,12 +170,12 @@ C---call msqv again because vec has changed
         enddo
         enddo
 
-c--- if using a dynamic scale, set that scale with dipole kinematics	
-	if (dynamicscale) then
-	  call scaleset(initscale,initfacscale,ptrans)
-	  dipscale(nd)=facscale
-	endif
-	
+c--- if using a dynamic scale, set that scale with dipole kinematics      
+      if (dynamicscale) then
+        call scaleset(initscale,initfacscale,ptrans)
+        dipscale(nd)=facscale
+      endif
+      
 c--- do something special if we're doing W+2,Z+2jet (jp .ne. 7)
         if (jp .ne.7) then
           if (ip .lt. 7) then
@@ -221,12 +221,12 @@ C---calculate the ptrans-momenta
          vec(nu)=z*p(ip,nu)-omz*p(jp,nu)
        enddo
 
-c--- if using a dynamic scale, set that scale with dipole kinematics	
-	if (dynamicscale) then
-	  call scaleset(initscale,initfacscale,ptrans)
-	  dipscale(nd)=facscale
-	endif
-	
+c--- if using a dynamic scale, set that scale with dipole kinematics      
+      if (dynamicscale) then
+        call scaleset(initscale,initfacscale,ptrans)
+        dipscale(nd)=facscale
+      endif
+      
        call subr_born(ptrans,msq,mqq,msqx,mg)
        if (ip .lt. kp) then
          call subr_corr(ptrans,vec,5,msqv,mvg,mvxg)

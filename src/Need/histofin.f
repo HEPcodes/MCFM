@@ -43,8 +43,8 @@ c--- call to POWHEG-style histofin if requested
       if (vanillafiles) then
         write(6,*) 'output file name normally  ',runname(1:nlength)
         runname='mcfm-output'
-	nlength=11
-	write(6,*)
+        nlength=11
+        write(6,*)
         write(6,*) '  but renamed to: ',runname
       else
         write(6,*) 'output files  ',runname(1:nlength)
@@ -214,19 +214,19 @@ c        else
 c           write(100,*) '# nev = ', itno*ncall2
 c        endif
 c      
-c         do j=1,nplotmax	   !-nempty
+c         do j=1,nplotmax           !-nempty
 cc            write(100,*) '# index ', index, trim(TITLE(j)) 
 cc            write(100,*) '# title ', trim(TITLE(j))
 c            write(100,*) '# ', trim(TITLE(j)),' index ',index
 c            do ibin = 1,nbin(j)!size(hist(j,:))
 c               if (xhis(j,ibin).ne.0d0 .or. hist(j,ibin).ne.0d0) then 
-c         	  if (itno .ne. 0) then 
-c         	     write(100,*) xhis(j,ibin),hist(j,ibin)/itno,
-c     &   		  hist(2*maxhisto+j,ibin)/itno
-c         	  else
-c         	     write(100,*) xhis(j,ibin),hist(j,ibin),
-c     &   		  hist(2*maxhisto+j,ibin)
-c         	  endif
+c                   if (itno .ne. 0) then 
+c                      write(100,*) xhis(j,ibin),hist(j,ibin)/itno,
+c     &                     hist(2*maxhisto+j,ibin)/itno
+c                   else
+c                      write(100,*) xhis(j,ibin),hist(j,ibin),
+c     &                     hist(2*maxhisto+j,ibin)
+c                   endif
 c               endif
 c            enddo
 c            write(100,*)

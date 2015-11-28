@@ -18,9 +18,9 @@ c--- catch trivial case
       do i1=imax-1,1,-1
       do i2=1,i1
         if (vals(sortorder(i2)) .lt. vals(sortorder(i2+1))) then
-	  iswap=sortorder(i2)
-	  sortorder(i2)=sortorder(i2+1)
-	  sortorder(i2+1)=iswap
+          iswap=sortorder(i2)
+          sortorder(i2)=sortorder(i2+1)
+          sortorder(i2+1)=iswap
         endif
       enddo
       enddo

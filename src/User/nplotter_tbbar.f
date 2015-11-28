@@ -16,19 +16,12 @@ c---                1  --> counterterm for real radiation
       include 'vegas_common.f'
       include 'constants.f'
       include 'histo.f'
-      include 'jetlabel.f'
-      include 'masses.f'
-      double precision p(mxpart,4),wt,wt2,yrap,pt,r,yraptwo,yrapthree
-      double precision m345,m678,y345,y678,m34,m78,y34,y78,ptb,yb,
-     & ptbb,ybb,ptj,yj,plep(4),ptop(4),pleprest(4),ptoprest(4),tiny
-      integer switch,n,nplotmax,nproc,nqcdjets,nqcdstart,j,notag
+      include 'outputflags.f'
+      double precision p(mxpart,4),wt,wt2,tiny
+      integer switch,n,nplotmax,j
       character*4 tag
-      logical first,creatent,dswhisto
-      common/outputflags/creatent,dswhisto
+      logical first
       common/nplotmax/nplotmax
-      common/nproc/nproc
-      common/nqcdjets/nqcdjets,nqcdstart
-      common/notag/notag
       parameter(tiny=1d-8)
       data first/.true./
       save first
@@ -70,7 +63,7 @@ c--- by # of iterations now that is handled at end for regular histograms
       endif
 
 c--- "n" will count the number of histograms
-      n=1              
+      n=nextnplot
 
 c--- Syntax of "bookplot" routine is:
 c
@@ -91,9 +84,9 @@ c--- single-particle plots
       do j=3,6
         if ((abs(p(j,4)) .gt. tiny) .or. (first)) then
           call genplot1(p,j,tag,wt,wt2,n)
-	else
-	  n=n+2
-	endif
+        else
+          n=n+2
+        endif
       enddo
 c--- two-particle plots
       call genplot2(p,3,4,tag,wt,wt2,n)
@@ -107,7 +100,7 @@ c--- three-particle plots
       if ((abs(p(5,4)) .gt. tiny) .or. (first)) then
         call genplot3(p,3,4,5,tag,wt,wt2,n)
       else
-	n=n+3
+        n=n+3
       endif
 
 c--- additional plots that may be present at NLO       

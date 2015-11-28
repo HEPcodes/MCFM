@@ -17,22 +17,19 @@ c---                1  --> counterterm for real radiation
       include 'constants.f'
       include 'histo.f'
       include 'jetlabel.f'
-      include 'frag.f'
       include 'masses.f'
+      include 'outputflags.f'
       double precision p(mxpart,4),wt,wt2
-      double precision etarap,pt,r
-      double precision y3,y4,y5,y6,pt3,pt4,pt5,pt6,re5,rea5,re6,rea6
-      double precision ylep, yjet, ptlep, ptjet,ptphot,yWgam,pt34,pttwo
+      double precision etarap,pt
+      double precision y4,y5,pt3,pt4,pt5,pt6
+      double precision pt34,pttwo
       double precision pt45,pt56,m45,mt45
-      double precision yraptwo,m345,mtrans,yellgam
-      double precision et_vec(4),etmiss,r2,delphi,met,m34,m56,m3456
-      integer switch,n,nplotmax,nproc,nqcdjets,nqcdstart,nd 
+      double precision et_vec(4),etmiss,r2,delphi,m34,m56,m3456
+      integer switch,n,nplotmax,nqcdjets,nqcdstart,nd 
       character*4 tag
-      integer j,i
-      logical first,creatent,dswhisto
-      common/outputflags/creatent,dswhisto
+      integer i
+      logical first
       common/nplotmax/nplotmax
-      common/nproc/nproc
       common/nqcdjets/nqcdjets,nqcdstart
       data first/.true./
       save first
@@ -48,7 +45,6 @@ c---                1  --> counterterm for real radiation
 c--- Initialize histograms, without computing any quantities; instead
 c--- set them to dummy values
         tag='book'
-	y3=1d3
         y4=1d3
         pt3=1d7
         pt4=1d7
@@ -62,21 +58,8 @@ c---Intiailise photon
         pt34=1d7
         pt56=1d7
 c----Initialise jet values will not pass cuts in there is an NLO jet
-        y6=1d3
         pt6=1d7
-c--- If re5 is not changed by the NLO value, it will be out of
-c--- the plotting range
-        re5=1d3
-        rea5=1d3
-        re6=1d3
-        rea6=1d3
-        jets=nqcdjets
-c--- (Upper) limits for the plots
-        ylep=5d0
-        yjet=5d0
-        ptlep=100d0
-        ptjet=200d0
-        ptphot=500d0
+         jets=nqcdjets
         goto 99
       else
 c--- Add event in histograms
@@ -103,7 +86,6 @@ c--- Add event in histograms
          pt45=pttwo(4,5,p)
          pt34=pttwo(3,4,p) 
          pt56=pttwo(5,6,p)
-         met=etmiss(p,et_vec) 
          r2= (p(4,1)*p(5,1)+p(4,2)*p(5,2))
      .        /dsqrt((p(4,1)**2+p(4,2)**2)*(p(5,1)**2+p(5,2)**2))
          if (r2 .gt. +0.9999999D0) r2=+1D0
@@ -162,7 +144,7 @@ c--- by # of iterations now that is handled at end for regular histograms
       endif
 
 c--- "n" will count the number of histograms
-      n=1              
+      n=nextnplot
 
 c--- Syntax of "bookplot" routine is:
 c

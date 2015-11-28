@@ -24,15 +24,15 @@ c      fsq=wmass**2+half*((pttwo(3,4,p))**2+z_frag**2*pt(5,p)**2)
 c---- Generate array D(j) corresponding to MCFM notation 0=gluon 1=down 2=up ....
       do i=0,5
          D(i)=0d0
-	 if     (fragset .eq. 'BFGset_I') then
+       if     (fragset .eq. 'BFGset_I') then
             call get_frag(z_frag,fsq,1,i,D(i))   
-	 elseif (fragset .eq. 'BFGsetII') then  
+       elseif (fragset .eq. 'BFGsetII') then  
             call get_frag(z_frag,fsq,2,i,D(i))   
          elseif (fragset .eq. 'GdRG__LO') then 
             call GGdR_frag(z_frag,i,D(i),0) 
          else
             write(6,*) 'Unrecognized fragmentation set name: ',fragset
-            stop	
+            stop
          endif
       enddo
 

@@ -8,19 +8,15 @@ c     q(-p1)+qbar(-p2) -->  W^-(e-(p3)+nubar(p4))+a(p5)+g(p6)
       include 'qqgg.f'
       include 'frag.f'
       include 'ewcharge.f'
+      include 'phot_dip.f'
       integer j,k,nd
       double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf)
       double precision msq16_2(-nf:nf,-nf:nf),msq26_1(-nf:nf,-nf:nf),
      . sub16_2(4),sub26_1(4),dummyv(-nf:nf,-nf:nf),dsubv
       double precision msq56_1(-nf:nf,-nf:nf),msq56_2(-nf:nf,-nf:nf)
       double precision sub56_1,sub56_2
-      logical phot_dip(mxpart) 
-
-      common/phot_dip/phot_dip
       external qqb_wgam,donothing_gvec
       external qqb_w_g
-
-      
 
 c--- this flag controls whether or not to include dipoles that
 c--- subtract the photon-quark divergence   
@@ -32,8 +28,7 @@ c--- subtract the photon-quark divergence
 
       do j=1,mxpart
          phot_dip(j)=.false.
-      enddo
-      
+      enddo      
 
 c---- calculate both initial-initial dipoles
 c---- note that we do not require the gg dipoles, so the v-type
@@ -95,7 +90,7 @@ c--- additional fragmentation dipole
              msq(4,j,k)=Q(1)**2*msq56_2(j,k)*sub56_2              
            endif
          endif
-	 
+
       endif      
  20   continue
       

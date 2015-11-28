@@ -21,7 +21,7 @@ c--- This routine also called for 'gmgmjt' -> always need second branch
      &  ((case .eq. 'gamgam') .or. (case .eq. 'Higaga')) ) then
 c---- LO, virtual and dipole pieces for gamgam and Higaga have no jets --> passed cut
          return
-	 
+ 
 c---  Real radiation (isub=0) and 'gmgmjt' should be checked
       elseif (isub .eq. 0) then 
          

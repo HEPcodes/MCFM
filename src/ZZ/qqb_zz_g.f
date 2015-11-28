@@ -270,7 +270,7 @@ c---case g-q
       elseif (ii.eq.2) then    
       if (h34.eq.h56) then
       msq(j,k)=msq(j,k)     
-     &    -fac1*2d0*ave*dble(dconjg(amp)*Uncrossed(j,k,hq,h34,h56,hg))      
+     &    -fac1*2d0*ave*dble(dconjg(amp)*Uncrossed(j,k,hq,h34,h56,hg))
       endif   
       endif      
    

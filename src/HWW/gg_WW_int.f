@@ -63,19 +63,19 @@ c--- omit massless loops for pt(W) < "ptWsafetycut_massless" (for num. stability
         write(6,*)'*                                                  *'
         write(6,*)'****************************************************'
         first=.false. 
-	if (includegen3) call qlinit
+        if (includegen3) call qlinit
       endif
 
 c--- if neither contribution is included print warning message and stop
       if ((includegens1and2 .eqv. .false.) .and.
      &    (includegen3      .eqv. .false.)) then
          write(6,*) 'Box loop is set to zero, please edit gg_WW_int.f'
-	 stop
+         stop
       endif
 c--- if noglue print warning message and stop
       if (noglue) then
          write(6,*) 'Please set noglue .false. in input file'
-	 stop
+         stop
       endif
 
 c--- logical variable "docheck"
@@ -109,7 +109,7 @@ c--- rescale
 c--- These lines set up the point for the numerical check
        if (docheck) then
          Higgsint=.false.
-	 includegen3=.true.
+         includegen3=.true.
          include 'kinpoint.f'
          mt=0.5d0
          hmass=5.6d0
@@ -181,7 +181,7 @@ c--- end of 3rd generation initialization
       
 c--- set up spinor products (including for flat vectors, for 3rd gen)
       if (docheck) then
-        call spinorz(12,p,za,zb)	! Use spinorz for numerical check
+        call spinorz(12,p,za,zb)        ! Use spinorz for numerical check
       else
         if (includegen3) then 
           call spinoru(12,p,za,zb)
@@ -214,10 +214,10 @@ c--- fill amplitudes used for generations 1 and 2
       Avec(1,1)=im*(fvs(pp,3,4,1,2,6,5,zb,za)+fvf(pp,3,4,1,2,6,5,zb,za))
       else
         do h1=1,2
-	do h2=1,2
-	Avec(h1,h2)=czip
-	enddo
-	enddo
+        do h2=1,2
+        Avec(h1,h2)=czip
+        enddo
+        enddo
       endif
       
 c      write(6,*) 'Avec(2,1)',Avec(1,1)
@@ -261,10 +261,10 @@ c--- This contribution is finite so we only retain "0" piece
         enddo
       else
         do h1=1,2
-	do h2=1,2
-	Agen3(h1,h2)=czip
-	enddo
-	enddo
+        do h2=1,2
+        Agen3(h1,h2)=czip
+        enddo
+        enddo
       endif
 
 c--- rescale back      
@@ -326,14 +326,14 @@ c--- numerical check includes top loops only
         Ahiggs(1,1)=Ahiggs(1,1)-fachiggs*amphiggs*za(1,2)/zb(2,1)
         Ahiggs(2,2)=Ahiggs(2,2)-fachiggs*amphiggs*zb(1,2)/za(2,1)
        do h1=1,2
-	do h2=1,2
+        do h2=1,2
         write(6,*) 'h1,h2, massless',h1,h2,faccont*Avec(h1,h2)
         write(6,*) 'h1,h2, massive ',h1,h2,Agen3(h1,h2)
         write(6,*) 'h1,h2, Higgs   ',h1,h2,Ahiggs(h1,h2)
         write(6,*) 'h1,h2, ---- SUM',h1,h2,
      &               faccont*Avec(h1,h2)+Agen3(h1,h2)+Ahiggs(h1,h2)
-	enddo
-	enddo
+        enddo
+        enddo
 c        pause
       endif
       

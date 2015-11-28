@@ -63,7 +63,7 @@ c--- right up to the jet cut boundaries and there is no need for pbreak
 c--- in case this routine is used for very small values of ptjetmin
         if ((ptjetmin .lt. 5d0) .and. (part .ne. 'real')) pbreak=5d0
 c--- for processes in which it is safe to jet ptmin to zero at NLO
-	if ((part .eq. 'real') .and. (pbreak .lt. 1d-8)) pbreak=5d0
+      if ((part .eq. 'real') .and. (pbreak .lt. 1d-8)) pbreak=5d0
       endif        
 
 
@@ -82,13 +82,13 @@ c--- total number of photons and jets generated outside of boson decay
       
       if     (nphotsjets .lt. 0) then
         write(6,*) 'nphotsjets < 0 in gen_phots_jets_dkrad2.f'
-	write(6,*) 'nphots = ',nphots
-	write(6,*) 'njets  = ',njets
+      write(6,*) 'nphots = ',nphots
+      write(6,*) 'njets  = ',njets
         stop
       elseif (nphotsjets .eq. 0) then
         goto 77 ! no loop to perform (nphots=2, njets=0)
       endif               
-		       
+                   
       do ijet=1,nphotsjets
 c--- generate the pt of jet number ijet
 c--- rapidity limited by E=pT*coshy
@@ -102,10 +102,10 @@ c        xmax=1d0/ptjetmin
           pbreak_part=0d0
           if (part .eq. 'real') then
 c--- cannot generate exactly to match, since dipoles transform photon
-	  ptmin_part=0d0
+          ptmin_part=0d0
           etamax_part=20d0
           pbreak_part=gammpt
-	  endif
+        endif
         else
           ptmin_part=ptjetmin
           etamax_part=etajetmax
@@ -170,8 +170,8 @@ c--- catch special case
         wt=wt*two*ymax/sqrts**2         
         xx(1)=rshat/sqrts*dexp(+yave)
         xx(2)=rshat/sqrts*dexp(-yave)
-	Q(4)=(xx(1)+xx(2))/2d0*sqrts
-	Q(3)=(xx(1)-xx(2))/2d0*sqrts
+        Q(4)=(xx(1)+xx(2))/2d0*sqrts
+        Q(3)=(xx(1)-xx(2))/2d0*sqrts
 c        etamax=8d0
 c        etamin=-8d0
         goto 89

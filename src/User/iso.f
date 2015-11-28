@@ -10,11 +10,9 @@
       integer isub,nd,imode
       logical phot_dip,photo_iso
       integer phot_id ! refers to which photon we are isolating
-      character*30 runstring
       character*2 str
       logical first 
       
-      common/runstring/runstring 
       data first/.true./
       save first
 
@@ -35,7 +33,7 @@ c---   imode=2 : fixed cut for all epsilon_h
         write(6,*)'*                                                  *'
         write(6,*)'****************************************************'
         first=.false.
-	endif
+      endif
         return
       endif
 
@@ -44,19 +42,19 @@ c---   imode=2 : fixed cut for all epsilon_h
 !      if    (runstring(1:3).eq.'cdf') then 
 !------ CDF isolation (to be written) 
 !        write(6,*) 'CDF isolation routine not yet implemented.'
-!	stop
+!      stop
 !      elseif(runstring(1:2).eq.'D0') then 
 !------ D0 isolation (to be written) 
 !        write(6,*) 'D0 isolation routine not yet implemented.'
-!	stop
+!      stop
 !      elseif(runstring(1:5).eq.'atlas') then 
 !------ Atlas isolation (to be written) 
 !        write(6,*) 'ATLAS isolation routine not yet implemented.'
-!	stop
+!      stop
 !      elseif(runstring(1:3).eq.'CMS') then 
 !------ CMS isolation (to be written) 
 !        write(6,*) 'CMS isolation routine not yet implemented.'
-!	stop
+!      stop
 !      else
 !------ standard isolation routine      
 !       if(runstring(1:2).eq.'Et') then 
@@ -77,10 +75,10 @@ c--- for imode=0, decide which cut to use depending on epsilon_h
 !--   epsilon_h > 1 : treat it as an E_t max in cone   i.e. pt(had) < epsilon_h 
        if (imode .eq. 0) then
          if (epsilon_h .lt. 0.9999d0) then
-	   imode=1
-	 else
-	   imode=2
-	 endif
+         imode=1
+         else
+         imode=2
+         endif
        endif
 
        iso=photo_iso(p,isub,phot_dip,phot_id,nd,imode)

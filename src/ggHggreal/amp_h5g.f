@@ -24,7 +24,7 @@ c
 C
 C ARGUMENTS 
 C  
-      INTEGER JHEL(5),J(5)	
+      INTEGER JHEL(5),J(5)      
 C  
 C LOCAL VARIABLES 
 C  
@@ -44,24 +44,24 @@ C BEGIN
 C-------
 
 c-- identify which helicity combination is needed
-	found=.false.
+      found=.false.
         k=1
-	do while (.not.found)
- 	  id=0
-	  do i=1,5
-c	    write (*,*) 'jhel(',i,')=',jhel(i),'  nhel(',i,',',k,')=',nhel(i,k)
-	   if(jhel(i).eq.nhel(i,k)) id=id+1          
+      do while (.not.found)
+         id=0
+        do i=1,5
+c          write (*,*) 'jhel(',i,')=',jhel(i),'  nhel(',i,',',k,')=',nhel(i,k)
+         if(jhel(i).eq.nhel(i,k)) id=id+1          
           enddo
           if(id.eq.5) then
-	   iconf=k
+         iconf=k
            found=.true.
           endif
-	  k=k+1
-	enddo
-	
+        k=k+1
+      enddo
+      
 c-- start the various helicity cases:
       
-	if(iconf.eq.1) then ! +++++
+      if(iconf.eq.1) then ! +++++
           amp_h5g=Appppp(J(1),J(2),J(3),J(4),J(5))  
 
 c---
@@ -125,10 +125,10 @@ c--
           amp_h5g=Ammppp(J(4),J(5),J(1),J(2),J(3))  
 
 
-	else
+      else
 
-	write(*,*) 'unknown helicity configuration'
-	endif
+      write(*,*) 'unknown helicity configuration'
+      endif
 
 ! Check with old results by Frizzo & Co. 
 !        if(iconf.eq. 7) then ! --+++

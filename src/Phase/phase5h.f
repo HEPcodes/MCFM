@@ -37,10 +37,10 @@ c---- with all 2 pi's (ie 1/(2*pi)^11)
 
       if (switch .eq. 2) then
         do j=1,4
-	tmp=p5(j)
-	p5(j)=p6(j)
-	p6(j)=tmp
-	enddo
+      tmp=p5(j)
+      p5(j)=p6(j)
+      p6(j)=tmp
+      enddo
       endif
       switch=3-switch
 

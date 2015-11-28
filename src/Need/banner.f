@@ -1,7 +1,7 @@
       block data codeversion_data
       implicit none
       include 'codeversion.f'
-      data codeversion/'6.4'/      
+      data codeversion/'6.6'/      
       data      prelim/.false./      ! if true, print warning message
       end
 
@@ -44,7 +44,7 @@ c--- warning message, if necessary
 
       write(6,*) '*                                                *'
       write(6,*) '* MCFM, v'//codeversion//
-     .                          '             December 19th, 2012  *'
+     .                          '                 April 1st, 2013  *'
       write(6,*) '*                                                *'
       write(6,*) '* Authors: John Campbell, Keith Ellis,           *'
       write(6,*) '*          Ciaran Williams                       *'
@@ -53,15 +53,17 @@ c--- warning message, if necessary
       write(6,*) '*                                                *'
       write(6,*) '* For details see:                               *'
       write(6,*) '*                                                *'
-      write(6,*) '*  arXiv:1208.0566 (Z+gamma+jet,Z+gamma+gamma)   *'
-      write(6,*) '*       (with H. Hartanto)                       *'
+      write(6,*) '*  arXiv:1302.3856 (tZ, tH -- with R. Rontsch)   *'
+      write(6,*) '*  arXiv:1211.6390 (DM, P. Fox and C. Williams)  *'
+      write(6,*) '*  JHEP 1211:162 (2012), arXiv:1208.0566         *'
+      write(6,*) '*  (Z+gam+jet,Z+gam+gam -- with H. Hartanto)     *'
       write(6,*) '*  arXiv:1204.1513 (top production+decay)        *'
-      write(6,*) '*  JHEP 1207:052(2012), arXiv:1204.5678 (ttW)    *'
-      write(6,*) '*  JHEP 1110:005(2011), arXiv:1107.5569          *'
+      write(6,*) '*  JHEP 1207:052 (2012), arXiv:1204.5678 (ttW)   *'
+      write(6,*) '*  JHEP 1110:005 (2011), arXiv:1107.5569         *'
       write(6,*) '*         (gg->WW,Higgs intference)              *'
-      write(6,*) '*  JHEP 1107:018(2011), arXiv:1105.0020          *'
+      write(6,*) '*  JHEP 1107:018 (2011), arXiv:1105.0020         *'
       write(6,*) '*         (diboson update)                       *'
-      write(6,*) '*  JHEP 1103:027(2011), arXiv:1011.6647          *'
+      write(6,*) '*  JHEP 1103:027 (2011), arXiv:1011.6647         *'
       write(6,*) '*         (Wbb for mb>0, with S. Badger)         *'
       write(6,*) '*  Phys.Rev.D81:074023, arXiv:1001.4495 (H+2jet) *'
       write(6,*) '*                                                *'

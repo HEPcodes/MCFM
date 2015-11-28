@@ -31,13 +31,18 @@ c--- invariant mass of particles 3 and 4
      &   (case .eq. 'Higaga') .or.
      &   (case .eq. 'Hgagaj') .or.
      &   (case .eq. 'qq_Hqq') .or.
+     &   (case .eq. 'dm_jet') .or.
+     &   (case .eq. 'dm_gam') .or.
+     &   (case .eq. 'dm2jet') .or.
+     &   (case .eq. 'dm_gaj') .or.
+     &   (case .eq. 'dmgamj') .or.
      &   (case .eq. 'qq_Hgg')) then
         mu0=(p(3,4)+p(4,4))**2-(p(3,1)+p(4,1))**2
      &     -(p(3,2)+p(4,2))**2-(p(3,3)+p(4,3))**2       
         mu0=dsqrt(dabs(mu0))
       else
         write(6,*) 'dynamicscale m(34) not supported for this process.'
-	stop
+        stop
       endif
       
       return

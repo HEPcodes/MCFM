@@ -54,11 +54,11 @@ C calculate betap
       if (betasq .ge. 0d0) then
         beta=dsqrt(betasq)
         bp=0.5d0*(1d0+beta)
-	bm=1d0-bp
+        bm=1d0-bp
       else
         write(6,*) 'betasq < 0 in dk1qqb_ttw_g.f, betasq=',betasq
-	call flush(6)
-	stop
+        call flush(6)
+        stop
       endif
      
 

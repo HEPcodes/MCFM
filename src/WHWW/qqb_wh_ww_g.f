@@ -19,7 +19,7 @@ c   for the moment --- radiation only from initial line
       include 'sprods_com.f'
       integer j,k
       double precision P(mxpart,4),msq(-nf:nf,-nf:nf)
-      double precision radi_ww
+      double precision radi_ww,hdecay
       double precision qqbWHg,qbqWHg,qgWHq,gqWHq,gqbWHqb,qbgWHqb
 
       do j=-nf,nf
@@ -29,14 +29,14 @@ c   for the moment --- radiation only from initial line
       enddo
 
       call dotem(9,p,s)
+      call hwwdecay(p,5,6,7,8,hdecay)
+      qqbWHg=aveqq*radi_ww(1,2,9,5,6,7,8,3,4)*hdecay
+      qbqWHg=aveqq*radi_ww(2,1,9,5,6,7,8,3,4)*hdecay
+      qgWHq=-radi_ww(1,9,2,5,6,7,8,3,4)*aveqg*hdecay
+      gqWHq=-radi_ww(2,9,1,5,6,7,8,3,4)*aveqg*hdecay
 
-      qqbWHg=aveqq*radi_ww(1,2,9,5,6,7,8,3,4)
-      qbqWHg=aveqq*radi_ww(2,1,9,5,6,7,8,3,4)
-      qgWHq=-radi_ww(1,9,2,5,6,7,8,3,4)*aveqg
-      gqWHq=-radi_ww(2,9,1,5,6,7,8,3,4)*aveqg
-
-      gqbWHqb=-radi_ww(9,2,1,5,6,7,8,3,4)*aveqg
-      qbgWHqb=-radi_ww(9,1,2,5,6,7,8,3,4)*aveqg
+      gqbWHqb=-radi_ww(9,2,1,5,6,7,8,3,4)*aveqg*hdecay
+      qbgWHqb=-radi_ww(9,1,2,5,6,7,8,3,4)*aveqg*hdecay
 
 c      write(6,*) 'qqbWHg',qqbWHg
 c      write(6,*) 'qbqWHg',qbqWHg
@@ -82,24 +82,20 @@ c      write(6,*) 'gqWHq',gqWHq
       include 'masses.f'
       include 'sprods_com.f'
       integer j1,j2,j3,j4,j5,j6,j7,j8,j9
-      double precision s4567,s12,s13,s23,s123,prop
-      double precision fac,hdecay
+      double precision s12,s13,s23,s123,s4567,prop
+      double precision fac
 
-      s4567=s(j4,j5)+s(j4,j6)+s(j4,j7)+s(j5,j6)+s(j5,j7)+s(j6,j7)
       s12=s(j1,j2)
       s13=s(j1,j3)
       s23=s(j2,j3)
       s123=s12+s13+s23
+      s4567=s(j4,j5)+s(j4,j6)+s(j4,j7)+s(j5,j6)+s(j5,j7)+s(j6,j7)
 c---calculate the 2 W propagators
       prop=       ((s123-wmass**2)**2+(wmass*wwidth)**2)
       prop=prop*((s(j8,j9)-wmass**2)**2+(wmass*wwidth)**2)
+      prop=prop*((s4567-hmass**2)**2+(hmass*hwidth)**2)
       
       fac=2d0*cf*xn*gsq*gwsq**3*wmass**2/prop
-      hdecay=gwsq**3*wmass**2*s(j4,j6)*s(j7,j5)
-      hdecay=hdecay/(((s4567-hmass**2)**2+(hmass*hwidth)**2)
-     .   *((s(j4,j5)-wmass**2)**2+(wmass*wwidth)**2)
-     .   *((s(j6,j7)-wmass**2)**2+(wmass*wwidth)**2))
-      fac=fac*hdecay
 
 C---old
 c      radi_ww=s12/s13/s23

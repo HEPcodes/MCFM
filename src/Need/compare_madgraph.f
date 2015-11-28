@@ -63,10 +63,10 @@ c      enddo
 c      pause
 
 
-c      do j=-nf,nf
-c      do k=-nf,nf
-      do j=-4,4
-      do k=-4,4
+      do j=-nf,nf
+      do k=-nf,nf
+c      do j=-4,4
+c      do k=-4,4
 c      if ((j.lt.0 .and. k.lt.0) .or. (j.gt.0 .and. k.gt.0)) then
 c      if (abs(msq(j,k)/msqc(j,k)-1d0) .gt.1d-6)
       if ((msq(j,k).gt.0d0) .or. (msqc(j,k).gt.0d0) ) then
@@ -78,7 +78,7 @@ c      if (abs(msq(j,k)/msqc(j,k)-1d0) .gt.1d-6)
 
 
    98 format(2i3,g17.6,g17.6)
-   99 format(2i3,2e17.9,f15.9)
+   99 format(2i3,2e17.9,f21.12)
 
       
       return

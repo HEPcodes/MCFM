@@ -47,7 +47,8 @@ c--- if both particles are produced on-shell, reject if m1 too small
 c--- top is on-shell for W+t processes, so reject if m1 too small
       if ( ((case .eq. 'W_twdk') .or. (case .eq. 'Wtdkay')
      .  .or.(case .eq. 'W_cwdk') .or. (case .eq. 'Wtbwdk')
-     .  .or.(case .eq. 'qq_tth') .or. (case .eq. 'qq_ttz')
+     .  .or.(case .eq. 'qq_tth') .or. (case .eq. 'tth_ww')
+     .  .or.(case .eq. 'qq_ttz') .or. (case .eq. 'qqtthz')
      . .or. (case .eq. 'qq_ttw') .or. (case .eq. 'ttwldk'))
      . .and. (m1 .lt. mass2) ) return 1
 c      s2min=bbsqmin
@@ -55,13 +56,16 @@ c      s2max=min(s1,bbsqmax)
       s2min=1d-15
       s2max=s1
       if (((case .eq. 'Wbbmas') .and. (flav .eq. 5))
-     ..or. (case .eq. 'Zbbmas')
+     ..or.((case .eq. 'Zbbmas') .and. (flav .eq. 5))
      ..or.(case .eq. 'Zccmas') .or. (case .eq. 'vlchkm')
      ..or.(case .eq. 'Wbbjet') .or. (case .eq. 'Wbbjem')
      ..or.(case .eq. 'W_bjet') ) then
         s2min=4d0*mb**2
       elseif ((case .eq. 'Wbbmas') .and. (flav .eq. 4)) then
         s2min=4d0*mc**2
+      elseif (((case .eq. 'Zbbmas') .and. (flav .eq. 6))
+     &    .or. (case .eq. 'qq_ttz') .or. (case .eq. 'qqtthz')) then
+        s2min=4d0*mt**2
       elseif (case .eq. 'W_cjet') then
         s2min=mc**2
       elseif (case .eq. 'W_tndk')  then
@@ -71,7 +75,7 @@ c      s2max=min(s1,bbsqmax)
       elseif ((case .eq. 'qq_tbg') .or. (case .eq. 'qqtbgg')) then
         s2min=mt**2
       elseif ((case .eq. 'tt_ldk') .or. (case .eq. 'tt_hdk')
-     &   .or. (case .eq. 'tthWdk')
+     &   .or. (case .eq. 'tt_udk') .or. (case .eq. 'tthWdk')
      &   .or. (case .eq. 'ttdkay') .or. (case .eq. 'tdecay')) then
         s2min=mb**2
       elseif ((case .eq. '4ftwdk') .or. (case .eq. '4ftjet')
@@ -79,8 +83,9 @@ c      s2max=min(s1,bbsqmax)
         s2min=(mt+mb)**2
       elseif ((case .eq. 'W_twdk') .or. (case .eq. 'Wtdkay')
      .   .or. (case .eq. 'W_cwdk') .or. (case .eq. 'Wtbwdk')
-     .   .or. (case .eq. 'qq_tth') .or. (case .eq. 'qq_ttz')
-     &   .or. (case .eq. 'qq_ttw')) then
+     .   .or. (case .eq. 'qq_tth') 
+     .   .or. (case .eq. 'qq_ttz') .or. (case .eq. 'qqtthz')
+     &   .or. (case .eq. 'qq_ttw') .or. (case .eq. 'tth_ww')) then
         oldzerowidth=zerowidth
         zerowidth=.true.
       endif
@@ -94,8 +99,9 @@ c      s2max=min(s1,bbsqmax)
 
       if ((case .eq. 'W_twdk') .or. (case .eq. 'Wtdkay')
      & .or.(case .eq. 'W_cwdk') .or. (case .eq. 'Wtbwdk')
-     & .or.(case .eq. 'qq_tth') .or. (case .eq. 'qq_ttz')
-     & .or. (case .eq. 'qq_ttw'))  then
+     & .or.(case .eq. 'qq_tth') 
+     & .or. (case .eq. 'qq_ttz') .or. (case .eq. 'qqtthz')
+     & .or. (case .eq. 'qq_ttw').or. (case .eq. 'tth_ww'))  then
         zerowidth=oldzerowidth
       endif
       
@@ -104,7 +110,9 @@ c      s2max=min(s1,bbsqmax)
       if ((case .eq. 'qq_tbg') .or. (case .eq. 'qqtbgg')) s3min=mb**2
       if ((case .eq. 'qq_tth')
      &  .or. (case .eq. 'qq_ttw') 
-     &  .or. (case .eq. 'qq_ttz')) s3min=4d0*mb**2
+     &  .or. (case .eq. 'tth_ww') 
+     &  .or. (case .eq. 'qq_ttz') .or. (case .eq. 'qqtthz')) 
+     &  s3min=4d0*mb**2
 c      s3min=mb**2 ! DEBUG: hack for s36 small
 c      s3min=mt**2 ! DEBUG: hack for s46 small
       s3max=(m2-m1)**2

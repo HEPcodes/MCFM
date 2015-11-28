@@ -168,7 +168,7 @@ c--- checked
       elseif ((j .ne. 0) .and. (k .eq. 0)) then
          if (masslessb) then
          msq(10,j,k)=2d0*tr*sub25_1(qg)*msq25_1(j,ib)
-	 endif
+         endif
       elseif ((j .eq. 0) .and. (k .eq. ib)) then
          msq(9,j,k)=2d0*tr*sub15_2(qg)*(msq15_2(+1,k)+msq15_2(+2,k)
      &   +msq15_2(+3,k)+msq15_2(+4,k)+msq15_2(+5,k))
@@ -177,7 +177,7 @@ c--- checked
       elseif ((j .eq. 0) .and. (k .ne. 0)) then
          if (masslessb) then
          msq(9,j,k)=2d0*tr*sub15_2(qg)*msq15_2(ib,k)
-	 endif
+         endif
       endif
       
  21   continue

@@ -9,7 +9,7 @@ c--- Note: implements Eq. (3.2) of CEZ paper
       logical passed
       integer j,maxparts,found,j1,j2
       double precision pt,etarap,p(mxpart,4),ptj,ptj1,ptj2,
-     . etaj1,etaj2,mj1j2
+     . etaj1,etaj2
       
       passed=.false.
       
@@ -56,8 +56,8 @@ c--- ensure a rapidity gap of at least 4.2 between the tagging jets
 c--- ensure the tagging jets lie in opposite hemispheres
       if (etaj1*etaj2 .ge. 0d0) goto 999      
 
-      mj1j2=dsqrt(max(0d0,(p(j1,4)+p(j2,4))**2
-     . -(p(j1,1)+p(j2,1))**2-(p(j1,2)+p(j2,2))**2-(p(j1,3)+p(j2,3))**2))
+c      mj1j2=dsqrt(max(0d0,(p(j1,4)+p(j2,4))**2
+c     . -(p(j1,1)+p(j2,1))**2-(p(j1,2)+p(j2,2))**2-(p(j1,3)+p(j2,3))**2))
 c--- ensure the tagging jets have an invariant mass larger than 600 GeV
 c--- NOT USED ANY LONGER
 c      if (mj1j2 .lt. 600d0) goto 999      

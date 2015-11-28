@@ -45,29 +45,29 @@ c          kmax=9
         kmax=1
         xtoler=1d3
 c        smin=min(-dot(p,1,5),-dot(p,2,5))
-c	if (smin. gt. 1d-3) return
+c        if (smin. gt. 1d-3) return
         endif
         xtoler=1d3
       elseif (npart .eq. 4) then
         jmax=5
         kmax=5
         xtoler=1d3
-	if ( (case .eq. 'qg_tbq') .or .(case .eq. 'qq_tbg')
+        if ( (case .eq. 'qg_tbq') .or .(case .eq. 'qq_tbg')
      .   .or.(case .eq. 'epem3j') ) then
-	  jmax=1
-	  kmax=1
-	endif
-	jmax=1
-	kmax=1
+          jmax=1
+          kmax=1
+        endif
+        jmax=1
+        kmax=1
       elseif (npart .eq. 5) then
         if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')) then
         jmax=5
         kmax=6
         xtoler=1d3
-	elseif (case .eq. 'W_bjet') then
-	  jmax=1
-	  kmax=1
-	  xtoler=1d3
+        elseif (case .eq. 'W_bjet') then
+          jmax=1
+          kmax=1
+          xtoler=1d3
         else
         jmax=1
         kmax=1
@@ -80,16 +80,16 @@ c	if (smin. gt. 1d-3) return
         smin=min(smin,+dot(p,5,6))
         smin=min(smin,+dot(p,5,7))
         smin=min(smin,+dot(p,6,7))
-	if (smin. gt. 1d-1) return
+c        if (smin. gt. 1d-1) return
         endif
       elseif (npart .eq. 7) then
         jmax=5
         kmax=5
         xtoler=1d3
-	if ((case .eq. 'tt_bbl') .or .(case .eq. 'tt_bbh')) then
-	  jmax=1
-	  kmax=1
-	endif
+        if ((case .eq. 'tt_bbl') .or .(case .eq. 'tt_bbh')) then
+          jmax=1
+          kmax=1
+        endif
       else
         write(6,*) 'No singularity check implemented yet'
         stop
@@ -114,7 +114,7 @@ c             call coll4c(p,k,j)
            elseif (case .eq. 'W_tndk') then
              if (k .eq. 3) goto 68
 c             call coll4t(p,k,j)
-	   elseif ( (case .eq. 'qg_tbq') .or. (case .eq. 'qq_tbg')
+           elseif ( (case .eq. 'qg_tbq') .or. (case .eq. 'qq_tbg')
      .         .or. (case .eq. 'epem3j') ) then
              write(6,*) 'p(5,4)=',p(5,4)
              write(6,*) 'p(6,4)=',p(6,4)
@@ -124,7 +124,7 @@ c             call coll4a(p,k,j)
          elseif (npart .eq. 5) then
            if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')) then
 c             call coll_stop(p,k,j)
-	   elseif (case .eq. 'W_bjet') then
+           elseif (case .eq. 'W_bjet') then
              write(6,*) 'p(5,4)=',p(5,4)
              write(6,*) 'p(6,4)=',p(6,4)
              write(6,*) 'p(7,4)=',p(7,4)
@@ -171,24 +171,24 @@ c           write(6,*) 'This point does not have enough jets'
          write(*,*) 'Point ',j,':'
          write(6,*) '2d0*p1.p4',s(1,4)
          write(6,*) '2d0*p2.p4',s(2,4)
-	 if (npart .gt. 2) then
+         if (npart .gt. 2) then
          write(6,*) '2d0*p1.p5',s(1,5)
          write(6,*) '2d0*p2.p5',s(2,5)
          write(6,*) '2d0*p3.p5',s(3,5)
          write(6,*) '2d0*p4.p5',s(4,5)
-	 endif
-	 if (npart .gt. 3) then
+         endif
+         if (npart .gt. 3) then
          write(6,*) '2d0*p1.p6',s(1,6)
          write(6,*) '2d0*p2.p6',s(2,6)
          write(6,*) '2d0*p5.p6',s(5,6)
-	 endif
-	 if (npart .gt. 4) then	 
+         endif
+         if (npart .gt. 4) then         
          write(6,*) '2d0*p1.p7',s(1,7)
          write(6,*) '2d0*p2.p7',s(2,7)
          write(6,*) '2d0*p5.p7',s(5,7)
          write(6,*) '2d0*p6.p7',s(6,7)
          endif
-	 
+         
 c         write(6,*) '0',jets,msq(2,0),(pjet(5,4)+pjet(6,4))**2
 c     .                      -(pjet(5,1)+pjet(6,1))**2
 c     .                      -(pjet(5,2)+pjet(6,2))**2
@@ -199,16 +199,16 @@ c     .                      -(pjet(5,3)+pjet(6,3))**2
                q(jj,kk)=ptilde(nd,jj,kk)
             enddo
             enddo
-	    if (incldip(nd) .eqv. .false.) goto 72
+            if (incldip(nd) .eqv. .false.) goto 72
 c            write(6,*) 'nd,pt34',nd,pttwo(3,4,q)
 c            if ((nd .eq. 1) .or. (nd .eq. 8)) then
 c            write(6,*) 'KINEMATICS FOR DIPOLE ',nd
-c	    call writeout(q)
-c	    endif
+c            call writeout(q)
+c            endif
             call dotem(9,q,s)
 c            call genclust2(q,rcut,pjet,1)
-c            if (jets .ge. nqcdjets) then	    
-	    if (includedipole(nd,q)) then
+c            if (jets .ge. nqcdjets) then            
+            if (includedipole(nd,q)) then
 c            write(6,*) nd,jets,msqc(nd,5,0)
                do jj=-nflav,nflav
                do kk=-nflav,nflav
@@ -244,11 +244,11 @@ c     .       debugsmall=debuglarge/xtoler
 
          do jj=-nflav,nflav
          do kk=-nflav,nflav
-	 
-c	 if ((gqonly) .and. (jj.ne.0) .and. (kk.ne.0)) goto 69
-c	 if ((jj .gt. 0) .or. (kk .gt. 0)) goto 69 ! DEBUG: QBG & GQB ONLY
-c	 if ((jj .le. 0) .or. (kk .le. 0)) goto 69 ! DEBUG: QQ only
-	 
+         
+c         if ((gqonly) .and. (jj.ne.0) .and. (kk.ne.0)) goto 69
+c         if ((jj .gt. 0) .or. (kk .gt. 0)) goto 69 ! DEBUG: QBG & GQB ONLY
+c         if ((jj .le. 0) .or. (kk .le. 0)) goto 69 ! DEBUG: QQ only
+         
          if (msq(jj,kk) .eq. 0d0) then
             if (msqs(jj,kk) .eq. 0d0) then
                goto 69
@@ -299,7 +299,7 @@ c---c--- the real matrix elements and subtractions
 c---      icount=icount+1
 c---      if (icount .eq. 1) then
 c---c--- save contents of arrays for reals and subtractions
-c---	do j=-nf,nf
+c---        do j=-nf,nf
 c---       do k=-nf,nf
 c---       premsq(j,k)=msq(j,k)
 c---       premsqs(j,k)=msqs(j,k)
@@ -307,7 +307,7 @@ c---       enddo
 c---       enddo
 c---      else
 c---c--- compare reals and subtractions with previous iteration
-c---	do j=-nf,nf
+c---        do j=-nf,nf
 c---        do k=-nf,nf
 c---c        if (j*k .gt. 0) goto 67 ! NO QQ OR QBQB (for Z+2jet 1<>2 symm)
 c---c        if (j*k .le. 0) goto 67 ! ONLY QQ/QBQB (for Z+2jet 1<>2,5<>6 symm)
@@ -319,11 +319,11 @@ c---c       if ((j*k .gt. 0).or.(abs(j).eq.5).or.(abs(k).eq.5)) goto 67 ! NO QQ 
 c---        if ((abs(msq(j,k)) .lt. 1d-15) .and. (abs(msqs(j,k)).lt.1d-15))
 c---     .                    goto 67 ! skip zero contributions
 c---        write(6,23) j,k,premsq(j,k),msq(k,j),premsqs(j,k),msqs(k,j),
-c---     .  		premsq(j,k)/msq(k,j),premsqs(j,k)/msqs(k,j)
-c---   67	continue     
+c---     .                  premsq(j,k)/msq(k,j),premsqs(j,k)/msqs(k,j)
+c---   67        continue     
 c---        enddo
 c---        enddo
-c---	icount=0
+c---        icount=0
 c---        pause
 c---      endif
 

@@ -35,7 +35,7 @@ C First index of m is the lepton polarization, second is the qqb       *
       include 'masses.f'
       include 'topzlabels.f'
       double complex mqqb(2,2),mqbq(2,2),propz
-      double precision denu,denb,denz1,denz2,wtqqb(1),wtqbq(2),s12,s12z
+      double precision denu,denb,denz1,denz2,wtqqb(2),wtqbq(2),s12,s12z
       integer h1,h2,j,j12
       s12=s(p1,p2)
       s12z=s(p1,p2)+s(p1,p9)+s(p1,p10)+s(p2,p9)+s(p2,p10)+s(p9,p10)

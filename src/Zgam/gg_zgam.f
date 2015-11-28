@@ -52,7 +52,7 @@
          do h2=1,2
             do h3=1,2
                do h4=1,2
-	       
+
                   msq=msq+cdabs(2d0*amp(h1,h2,h3,h4)*cu(h4)
      &                         +3d0*amp(h1,h2,h3,h4)*cd(h4))**2
                   

@@ -7,6 +7,9 @@ c----phase space for signal
       include 'process.f'
       include 'mxdim.f'
       include 'debug.f'
+      include 'breit.f'
+      include 'zerowidth.f'
+      include 'limits.f'
 c********* generate phase space for 2-->5 process
 c********* r(mxdim),p1(4),p2(4) are inputs 
 c--------- incoming p1 and p2 reversed in sign from physical values 
@@ -15,11 +18,14 @@ c---- with all 2 pi's (ie 1/(2*pi)^11)
 
       double precision r(mxdim)
       double precision p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4)
-      double precision p127(4),p12(4),p56(4),p34(4),smin
-      double precision wt,wt127,wt3456,wt34,wt56,wt0
-      integer j
+      double precision p127(4),p12(4),p56(4),p34(4),p3456(4),p345(4)
+      double precision wt,wt127,wt345,wt3456,wt34,wt56,wt0,smin,mtbsq
+      integer j,n2save,n3save
 
       parameter(wt0=1d0/twopi**3)
+
+      n2save=n2
+      n3save=n3
 
       do j=1,4
       p12(j)=-p1(j)-p2(j)
@@ -27,6 +33,57 @@ c---- with all 2 pi's (ie 1/(2*pi)^11)
 
 
       smin=mb**2
+
+      if ( (case .eq. 'Z_tjet') .or. (case .eq. 'Zt2jet') 
+     &.or. (case .eq. 'Z_tdkj') .or. (case .eq. 'Ztdk2j')) then
+c--- New-style PS generation
+        if (zerowidth) then
+        mtbsq=(mt+zmass)**2
+      else
+        mtbsq=(mt+dsqrt(wsqmin))**2
+      endif
+        call phi1_2m(0d0,r(1),r(2),r(3),mtbsq,p12,p7,p3456,wt3456,*99)
+        call phi1_2m(0d0,r(4),r(5),r(6),mtbsq,p3456,p6,p345,wt345,*99)
+        n2=0
+        n3=1
+        if (zerowidth) then
+        mtbsq=zmass**2
+      else
+        mtbsq=wsqmin
+      endif
+        call phi1_2m(mt,r(7),r(8),r(11),mtbsq,p345,p5,p34,wt56,*99)
+        n2=n2save
+        n3=n3save
+        call phi3m(r(12),r(13),p34,p3,p4,0d0,0d0,wt34,*99)
+        wt=wt0*wt3456*wt345*wt56*wt34
+        return
+      endif
+
+
+      if ( (case .eq. 'H_tjet') .or. (case .eq. 'Ht2jet') 
+     &.or. (case .eq. 'H_tdkj')) then
+c--- New-style PS generation
+        if (zerowidth) then
+        mtbsq=(mt+hmass)**2
+      else
+        mtbsq=(mt+dsqrt(wsqmin))**2
+      endif
+        call phi1_2m(0d0,r(1),r(2),r(3),mtbsq,p12,p7,p3456,wt3456,*99)
+        call phi1_2m(0d0,r(4),r(5),r(6),mtbsq,p3456,p6,p345,wt345,*99)
+        n2=0
+        n3=1
+        if (zerowidth) then
+        mtbsq=hmass**2
+      else
+        mtbsq=wsqmin
+      endif
+        call phi1_2m(mt,r(7),r(8),r(11),mtbsq,p345,p5,p34,wt56,*99)
+        n2=n2save
+        n3=n3save
+        call phi3m(r(12),r(13),p34,p3,p4,0d0,0d0,wt34,*99)
+        wt=wt0*wt3456*wt345*wt56*wt34
+        return
+      endif
 
 c--- In the case of HVV_4l, we should generate s127 according to
 c--- a Breit-Wigner at mH, otherwise just linearly      
@@ -74,6 +131,8 @@ c--- a Breit-Wigner at mH, otherwise just linearly
       return
  99   continue
       wt=0d0
+      n2=n2save
+      n3=n3save
       return
       end
 

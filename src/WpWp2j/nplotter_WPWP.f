@@ -10,13 +10,13 @@
       include 'histo.f'
       include 'jetlabel.f'
       include 'npart.f'
+      include 'outputflags.f'
       integer n,switch,i7,i8,i9,nu,nplotmax
       character tag*4
       double precision PT,WT,WT2,p(mxpart,4),fphi,etarap,etaraptwo
       double precision tmp7(4),tmp8(4),tmp9(4)
       integer eventpart,nqcdjets,nqcdstart
-      logical first,jetmerge,creatent,dswhisto
-      common/outputflags/creatent,dswhisto
+      logical first,jetmerge
       common/nplotmax/nplotmax
       common/nqcdjets/nqcdjets,nqcdstart
       common/jetmerge/jetmerge
@@ -35,7 +35,7 @@
 
         tag='book'
 
-	!TOM added
+      !TOM added
         tomphill=0d0
         tommtww=0d0
         tompt4=0d0
@@ -60,7 +60,7 @@
 
         jetmerge=.true.
         jets=nqcdjets
-	eventpart = 4+jets
+      eventpart = 4+jets
         goto 99
       else
         tag='plot'
@@ -295,12 +295,12 @@ c--- by # of iterations now that is handled at end for regular histograms
       if (n .gt. maxhisto) then
         write(6,*) 'WARNING - TOO MANY HISTOGRAMS!'
         write(6,*) n,' > ',maxhisto,', which is the built-in maximum.'
-	write(6,*) 'To use more histograms, change the value of the'
-	write(6,*) 'constant MAXHISTO in src/Inc/nplot.f then do:'
-	write(6,*)
-	write(6,*) ' make clean; make        to recompile from scratch.'    
+        write(6,*) 'To use more histograms, change the value of the'
+        write(6,*) 'constant MAXHISTO in src/Inc/nplot.f then do:'
         write(6,*)
-	stop
+        write(6,*) ' make clean; make        to recompile from scratch.'
+        write(6,*)
+        stop
       endif
 c--- set the maximum number of plots, on the first call
       if (first) then

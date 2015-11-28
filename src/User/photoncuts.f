@@ -24,8 +24,6 @@
       integer j,k
       integer countlept,leptindex(mxpart),countgamm,gammindex(mxpart)
       double precision pjet(mxpart,4),pt,etarap,R,pt1,pt2,pth,pts,s34
-      character*30 runstring
-      common/runstring/runstring
       data first/.true./
       
       photoncuts=.false.
@@ -155,14 +153,14 @@ c---  may be restored at a later date.
        
 c--- jet-photon separation (if there are 1 or more jets and photons)
 c      if ((njets .gt. 0) .and. (countgamm .gt. 0)) then
-c	do j=1,countgamm
-c	do k=1,njets
-c	  if (R(pjet,gammindex(j),jetindex(k)) .lt. Rjlmin) then
-c	    gencuts=.true.
-c	    return
-c	  endif
-c	enddo
-c	enddo
+c        do j=1,countgamm
+c        do k=1,njets
+c          if (R(pjet,gammindex(j),jetindex(k)) .lt. Rjlmin) then
+c            gencuts=.true.
+c            return
+c          endif
+c        enddo
+c        enddo
 c      endif
 
 c--- DEBUG: removed all isolation      
@@ -193,7 +191,7 @@ c              gencuts=.true.
 c              return
 c            endif
 c          endif
-	  
+          
 c--- this block was already removed
 c--- optional jet-veto
 c          if (   (pt(4+countgamm+1,pjet) .gt. 50d0)    

@@ -31,6 +31,8 @@ c--- routines for exact definitions of the scales.
         call scaleset_Msqpt5sq(p,mu0)
       elseif (dynstring .eq. 'sqrt(M^2+ptj1^2)') then
         call scaleset_Msqptj1sq(p,mu0)
+      elseif (dynstring .eq. 'sqrt(M^2+sumptj^2)') then
+        call scaleset_Msqsumptjsq(p,mu0)
       elseif (dynstring .eq. 'pt(photon)') then
         call scaleset_ptphoton(p,mu0)
       elseif (dynstring .eq. 'HT') then
@@ -39,15 +41,15 @@ c--- routines for exact definitions of the scales.
         call scaleset_ddis(p,mu0)
       else
         write(6,*) 'Dynamic scale choice not recognized'
-	write(6,*) '   dynamicscale = ',dynstring
-	stop
+        write(6,*) '   dynamicscale = ',dynstring
+        stop
       endif
       
       scale=rscalestart*mu0
       facscale=fscalestart*mu0
 c--- piggy-back renomalization scale for fragmentation scale 
       frag_scale=scale
-	    
+          
       if (first) then
         write(6,*)
         write(6,*)'************** Dynamic scale choice ****************'
@@ -57,11 +59,11 @@ c--- piggy-back renomalization scale for fragmentation scale
         write(6,*)'*                                                  *'
         write(6,*)'*                  FACTORIZATION                   *'
         write(6,45) ' mu_fac  =',fscalestart,dynstring
-	if (frag) then
+      if (frag) then
         write(6,*)'*                                                  *'
         write(6,*)'*                  FRAGMENTATION                   *'
         write(6,45) ' mu_frag =',rscalestart,dynstring
-	endif
+      endif
         write(6,*)'*                                                  *'
         write(6,*)'****************************************************'
         first=.false.      
@@ -77,7 +79,7 @@ c--- catch absurdly large and small scales
 
 c--- run alpha_s
       as=alphas(scale,amz,nlooprun)
-	
+      
       ason2pi=as/twopi
       ason4pi=as/fourpi
       gsq=fourpi*as

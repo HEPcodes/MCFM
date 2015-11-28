@@ -20,15 +20,15 @@ C-----Matrix element squared for the Higgs going to l^-(p3) l^+(p5) Gamma(p5)
       parameter(top=2)
       data first/.true./
       save first,mt_eff
-            	    
-      if (first) then	    
+                        
+      if (first) then            
 c--- run mt to appropriate scale
         if (part .eq. 'lord') then
           mt_eff=massfrun(mt_msbar,hmass,amz,1)
         else
           mt_eff=massfrun(mt_msbar,hmass,amz,2)
         endif  
-	first=.false.
+        first=.false.
       endif
       
       fac=esq**4/xw/(16d0*pisq*wmass)**2

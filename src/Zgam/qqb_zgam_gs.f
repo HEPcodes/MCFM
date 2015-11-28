@@ -7,16 +7,13 @@ c     q(-p1)+qbar(-p2) -->  e-(p3)+e+(p4))+a(p5)+g(p6)
       include 'qqgg.f'
       include 'frag.f'
       include 'ewcharge.f'
+      include 'phot_dip.f'
       integer j,k,nd
-
       double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf)
       double precision msq16_2(-nf:nf,-nf:nf),msq26_1(-nf:nf,-nf:nf),
      . sub16_2(4),sub26_1(4),dummyv(-nf:nf,-nf:nf),dsubv
       double precision sub56_1,sub56_2,msq56_1(-nf:nf,-nf:nf),
      . msq56_2(-nf:nf,-nf:nf)
-      logical phot_dip(mxpart) 
-
-      common/phot_dip/phot_dip
       external qqb_zgam,donothing_gvec
       external qqb_z1jet
 

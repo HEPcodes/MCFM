@@ -3,9 +3,9 @@ c--- Given the usual momentum array, try to reconstruct which
 c--- set of momenta reconstruct the top antitop quark;
 c--- given those assignments, the routine returns the following quantities:
 c---
-c---    costheta	the angle between the lepton and the light jet,
+c---    costheta      the angle between the lepton and the light jet,
 c---                    computed in the top rest frame
-c---    ylight		the rapidity of the light jet
+c---    ylight            the rapidity of the light jet
 c---
 c--- For real radiation events, the jet algorithm may result in 
 c--- events for which the invariant mass is not exactly equal to mt,
@@ -35,26 +35,26 @@ c--- (the default is notag=0) and inclusive=F, with the result that
 c--- only 2 jets are ever accepted in the event      
       if (p(5,4) .lt. tiny) then
 c        write(6,*) 'No b-quark present'
-	failed=.true.
-	return
+      failed=.true.
+      return
       endif
 
       if (p(7,4) .lt. tiny) then
 c        write(6,*) 'No light jet present'
-	failed=.true.
-	return
+      failed=.true.
+      return
       endif
 
 c--- this requires that two jets are b and light-jet
       do i=1,4
         ptop(i)=p(3,i)+p(4,i)+p(5,i)
         ptopalt(i)=p(3,i)+p(4,i)+p(5,i)+p(7,i)
-	plight(i)=p(7,i)
-	if (plabel(3) .eq. 'el') then
-	  plep(i)=p(3,i)
-	else
-	  plep(i)=p(4,i)
-	endif
+        plight(i)=p(7,i)
+      if (plabel(3) .eq. 'el') then
+        plep(i)=p(3,i)
+      else
+        plep(i)=p(4,i)
+      endif
       enddo
       mtcand=dsqrt(ptop(4)**2-ptop(1)**2-ptop(2)**2-ptop(3)**2)
       mtcandalt=dsqrt(ptopalt(4)**2-ptopalt(1)**2
@@ -65,8 +65,8 @@ c--- check to see if 345+7 is a better top candidate than 345:
 c--- if so, assume light get radiated in decay, so no angle to construct
       if (abs(mtcandalt-mt) .lt. abs(mtcand-mt)) then
 c        write(6,*) 'Radiation in decay: ',mtcandalt,' vs ',mtcand
-	failed=.true.
-	return
+      failed=.true.
+      return
       endif
       
       ptoprest(4)=mtcand

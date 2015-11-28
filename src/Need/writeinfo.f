@@ -5,6 +5,7 @@
       implicit none
       include 'PDFerrors.f'
       include 'process.f'
+      include 'outputflags.f'
       integer unitno,j,k,itno
       double precision xsec,xsec_err
       double precision lord_bypart(-1:1,-1:1),lordnorm,rescale
@@ -13,13 +14,12 @@
       
       character*2 commchars
       character*30 runstring
-      logical creatent,dswhisto,dryrun,makecuts
+      logical dryrun,makecuts
       integer nproc,ih1,ih2,itmx1,itmx2,ncall1,ncall2,origij
       integer NPTYPE,NGROUP,NSET
       double precision sqrts
       double precision Rcut
  
-      common/outputflags/creatent,dswhisto      
 
       common/nproc/nproc
       common/runstring/runstring
@@ -232,3 +232,13 @@ c--- 99 floating point format
       end
       
       
+      subroutine mcfmfwrite(unitno,string)
+************************************************************************                                                     
+*   Routine added by GPS, so that C++ codes can write information                                                            
+*   to a fortran unit                                                                                                        
+************************************************************************                                                     
+      implicit none
+      integer unitno
+      character*(*) string
+      write(unitno,'(a)') string
+      end

@@ -14,6 +14,7 @@
       include 'qqgg.f'
       include 'frag.f'
       include 'ewcharge.f'
+      include 'phot_dip.f'
       integer j,k,nd
       double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf)
       double precision msq15_2(-nf:nf,-nf:nf),msq25_1(-nf:nf,-nf:nf),
@@ -22,10 +23,6 @@
      & msq35_1(-nf:nf,-nf:nf),msq35_2(-nf:nf,-nf:nf),
      & msq45_1(-nf:nf,-nf:nf),msq45_2(-nf:nf,-nf:nf), 
      & sub35_1,sub35_2,sub45_1,sub45_2
-      
-      logical phot_dip(mxpart)
-      common/phot_dip/phot_dip 
-
       external qqb_gamgam,qqb_gamgam_gvec
       external qqb_dirgam,qqb_dirgam_swap 
       

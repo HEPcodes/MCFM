@@ -26,11 +26,8 @@ c---  %%CITATION = JHEPA,0405,064;%%
 
       double precision qq_qqg,aq_aqg,aa_aag,
      .                 gq_qqa,ga_aaq,qg_qqa,ag_aaq
-      double precision ra_rag,qa_qag
-
-      double precision dummy,ss,s3456
-       
-      double precision msq(-nf:nf,-nf:nf),hdecay,s34
+      double precision ra_rag,qa_qag,
+     & dummy,ss,s3456,msq(-nf:nf,-nf:nf),hdecay
       double precision f0q,f2q,f4q
       common/bitflags/f0q,f2q,f4q
       ss(j,k)=2d0

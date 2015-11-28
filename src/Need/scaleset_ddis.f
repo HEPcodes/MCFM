@@ -58,20 +58,20 @@ c--- AVAILABLE AT LEADING ORDER ONLY
      .         -(p(5,1)+p(2,1))**2
      .         -(p(5,2)+p(2,2))**2
      .         -(p(5,3)+p(2,3))**2)+mt**2
-	endif
-	q1scale=max(dsqrt(q1scale),1d0) ! min. of 1 GeV for safety
-	b2scale=max(dsqrt(b2scale),1d0)
-	q2scale=max(dsqrt(q2scale),1d0)
-	b1scale=max(dsqrt(b1scale),1d0)
-	mu0=q1scale   ! for safety
+      endif
+      q1scale=max(dsqrt(q1scale),1d0) ! min. of 1 GeV for safety
+      b2scale=max(dsqrt(b2scale),1d0)
+      q2scale=max(dsqrt(q2scale),1d0)
+      b1scale=max(dsqrt(b1scale),1d0)
+      mu0=q1scale   ! for safety
       else
         write(6,*) 'dynamicscale DDIS not supported for this process.'
-	stop
+        stop
       endif
       
       if (part .ne. 'lord') then
         write(6,*) 'dynamicscale DDIS only available at LO.'
-	stop      
+        stop      
       endif
       
       return

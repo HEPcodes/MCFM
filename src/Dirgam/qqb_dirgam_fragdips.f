@@ -80,7 +80,7 @@
             elseif((j.eq.0).and.(k.lt.0)) then 
                msq_out(j,k)=msq_qcd(j,k)*Q(abs(k))**2*virt_dips(2)
             elseif((j.gt.0).and.(k.eq.0)) then
-               msq_out(j,k)=msq_qcd(j,k)*Q(j)**2*virt_dips(1)              
+               msq_out(j,k)=msq_qcd(j,k)*Q(j)**2*virt_dips(1)
             elseif((j.lt.0).and.(k.eq.0)) then          
                msq_out(j,k)=msq_qcd(j,k)*Q(abs(j))**2*virt_dips(1)
             elseif((j.eq.0).and.(k.eq.0)) then 

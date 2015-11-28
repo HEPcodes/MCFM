@@ -20,7 +20,7 @@
       include 'alfacut.f'
       include 'plabel.f'
       include 'qqgg.f'
-      double precision msq(-nf:nf,-nf:nf),msqc(maxd,-nf:nf,-nf:nf),
+      double precision msqc(maxd,-nf:nf,-nf:nf),
      & p(mxpart,4)
       double precision 
      & msq79_8(-nf:nf,-nf:nf),msq89_7(-nf:nf,-nf:nf),

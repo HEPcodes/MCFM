@@ -4,6 +4,8 @@
       include 'mxdim.f'
       include 'gridinfo.f'
       include 'maxwt.f'
+      include 'TRtensorcontrol.f'
+      include 'tensorinfo.f'
       INTEGER init,itmx,ncall,ndim,nprn,NDMX
       DOUBLE PRECISION tgral,chi2a,sd,region(2*mxdim),fxn,ALPH,TINY
 c--- Note: NDMX increased to 100 (from 50) compared with versions 5.1 and
@@ -43,10 +45,10 @@ C     USES fxn,ran2,rebin
       if (init.le.2)then
         nd=NDMX
         ng=1
-c--- DEBUG	
-c	write(6,*) 'DEBUG: Setting mds to zero'
+c--- DEBUG
+c        write(6,*) 'DEBUG: Setting mds to zero'
 c        mds=0
-c--- DEBUG	
+c--- DEBUG
         if(mds.ne.0)then
           ng=(ncall/2d0+0.25d0)**(1d0/ndim)
           mds=1
@@ -123,6 +125,7 @@ c--- do not continue to adapt grid when using a small number of calls
 10      continue
           fb=0d0
           f2b=0d0
+!$OMP DO
           do 19 k=1,npg
             wgt=xjac
             do 17 j=1,ndim
@@ -147,6 +150,7 @@ c--- do not continue to adapt grid when using a small number of calls
               if(mds.ge.0) d(ia(j),j)=d(ia(j),j)+f2
 18          continue
 19        continue
+!$OMP ENDDO 
           f2b=dsqrt(f2b*npg)
           f2b=(f2b-fb)*(f2b+fb)
           if (f2b.le.0d0) f2b=TINY
@@ -173,6 +177,11 @@ c--- do not continue to adapt grid when using a small number of calls
         if(nprn.ge.0)then
 c          write(6,201) it,ti,tsi,tgral,sd,chi2a
           write(6,201) it,ti,tgral,tsi,sd,wtmax,chi2a
+          if (TRtensorcontrol .gt. 0) then
+          write(6,301) dfloat(ibadpoint)/dfloat(itotal),
+     &                 dfloat(ipolesfailed)/dfloat(itotal),
+     &                 dfloat(ibadpoint+ipolesfailed)/dfloat(itotal)
+          endif
           call flush(6)
          if(nprn.ne.0)then
             do 23 j=1,ndim
@@ -244,6 +253,8 @@ c     * g9.2)
      .   '*   max. wt. = ',g14.6,35x,'*'/,'*',63x,'*'/,
      .   '**************   chi**2/iteration = ',
      .   g10.4,'   ****************' /)     
+301     format('> TensorRed:   TensF',e9.2,
+     &    ' / PolF',e9.2,' / TotalF',e9.2,' <'/)
 202   FORMAT(/' data for axis ',I2/'    X       delta i       ',
      *'   x       delta i       ','    x       delta i       ',/(1x,
      *f7.5,1x,g11.4,5x,f7.5,1x,g11.4,5x,f7.5,1x,g11.4))

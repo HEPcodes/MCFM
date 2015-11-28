@@ -34,8 +34,8 @@ c----p(6,i) and p(7,i) are set equal to zero
 c--- for comparison with C. Oleari's e+e- --> QQbg calculation
 c      if (runstring(1:5) .eq. 'carlo') then
 c        xx(1)=1d0
-c	xx(2)=1d0
-c	xjac=1d0
+c      xx(2)=1d0
+c      xjac=1d0
 c      endif
 
 c---if x's out of normal range alternative return

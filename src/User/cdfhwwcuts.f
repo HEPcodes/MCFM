@@ -56,7 +56,7 @@ c--- identify the two leptons and neutrinos
 c--- print warning if there are not 2 leptons     
       if (ile .ne. 2) then
         write(6,*) 'WARNING: cdfhwwcuts.f must be upgraded, <2 leptons'
-	stop
+      stop
       endif     
       
       
@@ -74,7 +74,7 @@ c--- CUT on basic acceptance cuts for the leptons
         continue ! cut passed
       else
         passed=.false.
-	return
+      return
       endif
 
 c--- compute invariant mass of leptons
@@ -86,25 +86,25 @@ c--- compute invariant mass of leptons
 c--- CUT on dilepton invariant mass
       if (m_ll .lt. m_llcut) then
         passed=.false.
-	return
+      return
       endif
           
 c--- CUT on the isolation of the leptons
       do i=1,2
       do j=7,maxparts ! jets correspond to indices 7,...,maxparts
         if (R(p,ilept(i),j) .lt. Risol) then
-	  if (pt(j,p) .gt. pt(ilept(i),p)*threshisol) then
-	    passed=.false.
-	    return
-	  endif
-	endif
+        if (pt(j,p) .gt. pt(ilept(i),p)*threshisol) then
+          passed=.false.
+          return
+        endif
+      endif
       enddo
       enddo
       
 c--- print warning if there are not 2 neutrinos     
       if (inu .ne. 2) then
         write(6,*) 'WARNING: cdfhwwcuts.f must be upgraded, <2 neuts'
-	stop
+      stop
       endif     
       
 c--- form the missing et vector 
@@ -124,7 +124,7 @@ c--- azimuthal angle to missing Et vector
           if (phi .lt. -0.9999999D0) phi=-1D0
           phi=dacos(phi)
         endif
-	if (phi .lt. phimin) phimin=phi
+        if (phi .lt. phimin) phimin=phi
       enddo
 
 c--- convert missing Et into missing Et "star" (or "spec")
@@ -135,7 +135,7 @@ c--- convert missing Et into missing Et "star" (or "spec")
 c--- CUT on missing Et 
       if (missinget .lt. missingetcut) then
         passed=.false.
-	return
+      return
       endif
 
 ! OPTIONAL mt cut 

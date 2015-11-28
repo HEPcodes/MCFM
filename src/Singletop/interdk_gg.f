@@ -34,14 +34,14 @@ c set mass of quark and antiquark according to nwz
         mq=mt
         ma=mb
         i3=3
-	i4=4
+        i4=4
         t1=9
         b1=10
       else
         mq=mb
         ma=mt
         i3=4
-	i4=3
+        i4=3
         t1=10
         b1=9
       endif
@@ -139,9 +139,9 @@ c----------------------------------------
           do k=1,2
 c color diagonal terms:
              me12=me12+
-     &       	  cdabs(gs1dk(i,j,k))**2/wprop12**2*16d0
+     &            cdabs(gs1dk(i,j,k))**2/wprop12**2*16d0
              me21=me21+
-     &       	  cdabs(gs2dk(j,k,i))**2/wprop21**2*16d0
+     &            cdabs(gs2dk(j,k,i))**2/wprop21**2*16d0
 c off-diagonal terms (also interchange i <--> l):
              intf=intf+4d0*dreal(
      &            gs1dk(i,j,k)*dconjg(gs2dk(j,k,i)))/wprop12/wprop21

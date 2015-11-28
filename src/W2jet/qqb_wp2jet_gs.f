@@ -1343,11 +1343,11 @@ c------- Q-G
           endif
           msq(23,j,k)=msq(23,j,k)+sub27_1(qg)*(aveqg/aveqq)*(
      .     +(xn-xninv )*(m27_1(0,j,+1)+m27_1(0,j,+2)+m27_1(0,j,+3)
-     .          	+m27_1(0,j,+4)+m27_1(0,j,+5))
+     .                +m27_1(0,j,+4)+m27_1(0,j,+5))
      .     +(xn-xninv )*(m27_1(1,j,+1)+m27_1(1,j,+2)+m27_1(1,j,+3)
-     .   		+m27_1(1,j,+4)+m27_1(1,j,+5))
+     .               +m27_1(1,j,+4)+m27_1(1,j,+5))
      .     +(xn-xninv )*(m27_1(2,j,+1)+m27_1(2,j,+2)+m27_1(2,j,+3)
-     .   		+m27_1(2,j,+4)+m27_1(2,j,+5)))
+     .               +m27_1(2,j,+4)+m27_1(2,j,+5)))
           msq(24,j,k)=msq(24,j,k)+sub25_1(qg)*(aveqg/aveqq)*(
      .     +(xn-xninv )*(0.5d0*m25_1x(0,1,-1,1,-2)*Vckm
      .                        +m25_1x(0,1,-1,3,-4)*(2d0-Vckm))
@@ -1470,7 +1470,7 @@ C------- Qbar-G
           else
             Vckm=0d0
           endif
-	  msq(23,j,k)=msq(23,j,k)+
+        msq(23,j,k)=msq(23,j,k)+
      .      sub27_1(qg)*(aveqg/aveqq)*(xn-xninv )*(
      .     +m27_1x(0,-1,-1,-1,-2)*Vckm
      .     +m27_1x(0,-1,-4,-2,-4)*Vckm*dfloat(nf-2)
@@ -1687,7 +1687,7 @@ C------- G-Qbar
           else
             Vckm=0d0
           endif
-	  msq(20,j,k)=msq(20,j,k)+
+          msq(20,j,k)=msq(20,j,k)+
      .      sub17_2(qg)*(aveqg/aveqq)*(xn-xninv )*(
      .     +m17_2x(0,-1,-1,-2,-1)*Vckm
      .     +m17_2x(0,-4,-1,-4,-2)*Vckm*dfloat(nf-2)

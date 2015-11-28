@@ -17,7 +17,7 @@ C
 
 c      LOGICAL CHECKS
 c      DATA CHECKS/.false./ 
- 	      
+       
 c--   permutations
       INTEGER IP(NGLUONS,6)
 
@@ -61,7 +61,7 @@ C-----
          Z(I)=amp_h5g(PERM,IHELX) 
 
 c
-c	check on the properties of the amplitudes
+c    check on the properties of the amplitudes
 c
 c         if (checks) then
 c         call checker(z,i,perm,ihelx)
@@ -71,7 +71,7 @@ c=============================================================
          ENDDO !sum over permutations
 
 c
-c	sum over color
+c   sum over color
 c         
          DO J = 1, 6
             ZTEMP = (0.D0,0.D0)
@@ -83,10 +83,10 @@ c
 
 
 
-c	Overall normalization of CIJ
+c     Overall normalization of CIJ
          GG_GGG=GG_GGG*XN**3*(XN**2-1D0)/4d0 
          
-      RETURN	
+      RETURN
       END
 
 

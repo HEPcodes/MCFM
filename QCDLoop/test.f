@@ -1,7 +1,7 @@
       implicit none
       double complex qlI1,qlI2,qlI3,qlI4,Ival(-2:0)
       double precision p1sq,p2sq,p3sq,p4sq,s12,s23,
-     . m1sq,m2sq,m3sq,m4sq,musq 
+     .     m1sq,m2sq,m3sq,m4sq,musq 
       integer ep
       call qlinit
       musq=1.1d0
@@ -15,27 +15,28 @@
       p4sq=2.9d0
       s12=37d0
       s23=-15.7d0
+      write(6,*) m1sq,musq
       do ep=-2,0
-      Ival(ep)=qlI1(m1sq,musq,ep)
-      write(6,*) 'ep,qlI1(m1sq,musq,ep)',ep,Ival(ep)
+         Ival(ep)=qlI1(m1sq,musq,ep)
+         write(6,*) 'ep,qlI1(m1sq,musq,ep)',ep,Ival(ep)/m1sq
       enddo
       write(6,*)
       do ep=-2,0
-      Ival(ep)=qlI2(p1sq,m1sq,m2sq,musq,ep)
-      write(6,*) 'ep,qlI2(p1sq,m1sq,m2sq,musq,ep)',
-     .   ep,Ival(ep)
+         Ival(ep)=qlI2(p1sq,m1sq,m2sq,musq,ep)
+         write(6,*) 'ep,qlI2(p1sq,m1sq,m2sq,musq,ep)',
+     .        ep,Ival(ep)
       enddo
       write(6,*)
       do ep=-2,0
-      Ival(ep)=qlI3(p1sq,p2sq,p3sq,m1sq,m2sq,m3sq,musq,ep)      
-      write(6,*) 'ep,qlI3(p1sq,p2sq,p3sq,m1sq,m2sq,m3sq,musq,ep)',
-     . ep,Ival(ep)
+         Ival(ep)=qlI3(p1sq,p2sq,p3sq,m1sq,m2sq,m3sq,musq,ep)      
+         write(6,*) 'ep,qlI3(p1sq,p2sq,p3sq,m1sq,m2sq,m3sq,musq,ep)',
+     .        ep,Ival(ep)
       enddo
       write(6,*)
       do ep=-2,0
-      Ival(ep)=
-     . qlI4(p1sq,p2sq,p3sq,p4sq,s12,s23,m1sq,m2sq,m3sq,m4sq,musq,ep)
-      write(6,*) 
+         Ival(ep)=
+     .   qlI4(p1sq,p2sq,p3sq,p4sq,s12,s23,m1sq,m2sq,m3sq,m4sq,musq,ep)
+         write(6,*) 
      .'ep,qlI4(p1sq,p2sq,p3sq,p4sq,s12,s23,m1sq,m2sq,m3sq,m4sq,musq,ep)'
      . ,ep,Ival(ep)
       enddo
@@ -44,11 +45,11 @@
       write(6,*)
       write(6,*) 'test of divergent boxes'
       do ep=-2,0
-      Ival(ep)=
-     . qlI4(0d0,0d0,p3sq,p4sq,s12,s23,0d0,0d0,0d0,m4sq,musq,ep)
-      write(6,*) 
-     .'ep,qlI4(0d0,0d0,p3sq,p4sq,s12,s23,0d0,0d0,0d0,m4sq,musq,ep)'
-     . ,ep,Ival(ep)
+         Ival(ep)=
+     .   qlI4(0d0,0d0,p3sq,p4sq,s12,s23,0d0,0d0,0d0,m4sq,musq,ep)
+         write(6,*) 
+     .   'ep,qlI4(0d0,0d0,p3sq,p4sq,s12,s23,0d0,0d0,0d0,m4sq,musq,ep)'
+     .        ,ep,Ival(ep)
       enddo
 
       stop

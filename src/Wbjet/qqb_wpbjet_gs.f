@@ -501,7 +501,7 @@ c---                               by switching p1 and p2)
      .   +sub27_1(qq)
      .   *((xn-two/xn)*m27_1(1,j,k)-m27_1(0,j,k)/xn-m27_1(2,j,k)/xn)
         endif
-	
+
       elseif (j.eq.0) then
 c-- G-Q
        if     (k .gt. 0) then

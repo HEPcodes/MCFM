@@ -94,6 +94,18 @@ c--- if we're doing W+t, reduce # of momenta from 8 to 6
         enddo
       endif
       
+      if ((case .eq. 'Z_tdkj') .or. (case .eq. 'H_tdkj')) then
+c--- if we're doing Z+t or H+t, reduce # of momenta from 9 to 7 
+        do nu=1,4
+          p(3,nu)=pold(3,nu)
+          p(4,nu)=pold(4,nu)
+          p(5,nu)=pold(5,nu)+pold(6,nu)+pold(7,nu)
+          p(6,nu)=pold(8,nu)
+          p(7,nu)=pold(9,nu)
+          p(8,nu)=0d0
+        enddo
+      endif
+      
       if (case .eq. '4ftwdk') then
 c--- if we're doing (4F) t-channel single top with decay,
 c--- reduce # of momenta from 8 to 6 
@@ -155,11 +167,14 @@ C---Modification so that only close to singular subtracted
 
         if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')
      .  .or.(case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')
+     .  .or.(case .eq. 'Z_tdkj') .or. (case .eq. 'H_tdkj')
      .  .or.(case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')
      &  .or.(case .eq. 'tt_bbu') .or. (case .eq. '4ftwdk')
      &  .or.(case .eq. 'qq_ttw')) then
           if     ((case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')) then
             call extend_trans_wt(pold,p,ptrans,pext)
+          elseif ((case .eq. 'Z_tdkj') .or. (case .eq. 'H_tdkj')) then
+            call extend_trans_ztj(pold,p,ptrans,pext)
           elseif ((case .eq. 'tt_bbl') 
      &       .or. (case .eq. 'tt_bbh')
      &       .or. (case .eq. 'tt_bbu')) then
@@ -185,12 +200,12 @@ C---Modification so that only close to singular subtracted
         enddo
         vecsq=-pij*pjk/pik
 
-c--- if using a dynamic scale, set that scale with dipole kinematics	
-	if (dynamicscale) then
-	  call scaleset(initscale,initfacscale,ptrans)
-	  dipscale(nd)=facscale
-	endif
-	
+c--- if using a dynamic scale, set that scale with dipole kinematics      
+      if (dynamicscale) then
+        call scaleset(initscale,initfacscale,ptrans)
+        dipscale(nd)=facscale
+      endif
+      
         call subr_born(ptrans,msq)
         call subr_corr(ptrans,vec,ip,msqv)
 
@@ -224,11 +239,14 @@ C---transform the momenta so that only the first npart+1 are filled
 
         if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')
      .  .or.(case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')
+     .  .or.(case .eq. 'Z_tdkj') .or. (case .eq. 'H_tdkj')
      .  .or.(case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')
      &  .or.(case .eq. 'tt_bbu') .or. (case .eq. '4ftwdk')
      &  .or.(case .eq. 'qq_ttw')) then
           if     ((case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')) then
             call extend_trans_wt(pold,p,ptrans,pext)
+          elseif ((case .eq. 'Z_tdkj') .or. (case .eq. 'H_tdkj')) then
+            call extend_trans_ztj(pold,p,ptrans,pext)
           elseif ((case .eq. 'tt_bbl') 
      &       .or. (case .eq. 'tt_bbh')
      &       .or. (case .eq. 'tt_bbu')) then
@@ -249,12 +267,12 @@ C---transform the momenta so that only the first npart+1 are filled
 
         call storeptilde(nd,ptrans)
 
-c--- if using a dynamic scale, set that scale with dipole kinematics	
-	if (dynamicscale) then
-	  call scaleset(initscale,initfacscale,ptrans)
-	  dipscale(nd)=facscale
-	endif
-	
+c--- if using a dynamic scale, set that scale with dipole kinematics      
+      if (dynamicscale) then
+        call scaleset(initscale,initfacscale,ptrans)
+        dipscale(nd)=facscale
+      endif
+      
 c--- Calculate the matrix element now because it might be needed
 c--- in the final-initial segment, regardless of whether or not the
 c--- alfa cut fails here
@@ -279,7 +297,7 @@ C---Modification so that only close to singular subtracted
         sub(qg)=-gsq/x/pij*(one-two*x*omx)
         sub(gg)=-2d0*gsq/x/pij*(one/(omx+u)-one+x*omx)
         subv   =-4d0*gsq/x/pij*(omx/x*u*(one-u))
-	
+      
 ***********************************************************************
 *************************** FINAL-INITIAL *****************************
 ***********************************************************************
@@ -317,11 +335,14 @@ c--- the masses of i and j have been switched
 
         if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')
      .  .or.(case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')
+     .  .or.(case .eq. 'Z_tdkj') .or. (case .eq. 'H_tdkj')
      .  .or.(case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')
      &  .or.(case .eq. 'tt_bbu') .or. (case .eq. '4ftwdk')
      &  .or.(case .eq. 'qq_ttw')) then
           if     ((case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')) then
             call extend_trans_wt(pold,p,ptrans,pext)
+          elseif ((case .eq. 'Z_tdkj') .or. (case .eq. 'H_tdkj')) then
+            call extend_trans_ztj(pold,p,ptrans,pext)
           elseif ((case .eq. 'tt_bbl') 
      &       .or. (case .eq. 'tt_bbh')
      &       .or. (case .eq. 'tt_bbu')) then
@@ -351,11 +372,11 @@ c--- and 2pij_tilde.pa = (Qsq-mijsq)/x
         zm=(zp-root)/(2d0*(omx*(Qsq-mijsq)/x+mijsq))
         zp=(zp+root)/(2d0*(omx*(Qsq-mijsq)/x+mijsq))
 
-c--- if using a dynamic scale, set that scale with dipole kinematics	
-	if (dynamicscale) then
-	  call scaleset(initscale,initfacscale,ptrans)
-	  dipscale(nd)=facscale
-	endif	
+c--- if using a dynamic scale, set that scale with dipole kinematics      
+      if (dynamicscale) then
+        call scaleset(initscale,initfacscale,ptrans)
+        dipscale(nd)=facscale
+      endif      
 
         call subr_born(ptrans,msq)
 
@@ -436,7 +457,7 @@ C---determine mass of spectator
       mksq=max(p(kp,4)**2-p(kp,1)**2-p(kp,2)**2-p(kp,3)**2,0d0)
       if (mksq.gt.0d0) then
         muksq=mksq/Qsq
-	muk=dsqrt(muksq)
+      muk=dsqrt(muksq)
         yp=1d0-2d0*muk*(1d0-muk)/(1d0-muisq-mujsq-muksq)
       else
         muksq=0d0
@@ -481,11 +502,14 @@ C---calculate the ptrans-momenta
 
         if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')
      .  .or.(case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')
+     .  .or.(case .eq. 'Z_tdkj') .or. (case .eq. 'H_tdkj')
      .  .or.(case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')
      &  .or.(case .eq. 'tt_bbu') .or. (case .eq. '4ftwdk')
      &  .or.(case .eq. 'qq_ttw')) then
           if     ((case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')) then
             call extend_trans_wt(pold,p,ptrans,pext)
+          elseif ((case .eq. 'Z_tdkj') .or. (case .eq. 'H_tdkj')) then
+            call extend_trans_ztj(pold,p,ptrans,pext)
           elseif ((case .eq. 'tt_bbl') 
      &       .or. (case .eq. 'tt_bbh')
      &       .or. (case .eq. 'tt_bbu')) then
@@ -512,12 +536,12 @@ c       call writeout(ptrans)
        ztmi=z-0.5d0+0.5d0*vijk
        ztmj=omz-0.5d0+0.5d0*vijk
 
-c--- if using a dynamic scale, set that scale with dipole kinematics	
+c--- if using a dynamic scale, set that scale with dipole kinematics      
         if (dynamicscale) then
- 	  call scaleset(initscale,initfacscale,ptrans)
- 	  dipscale(nd)=facscale
+         call scaleset(initscale,initfacscale,ptrans)
+         dipscale(nd)=facscale
         endif
-	
+      
        call subr_born(ptrans,msq)
 
        do nu=1,4
@@ -526,7 +550,7 @@ c--- if using a dynamic scale, set that scale with dipole kinematics
 
        if (case .eq. 'qq_tbg') then
          ipt=5
-	 else
+       else
          if (ip .lt. kp) then
            ipt=5
          else
@@ -546,13 +570,13 @@ c--- if using a dynamic scale, set that scale with dipole kinematics
         sub(gq)=gsq/(qijsq-mijsq)/vijk*(
      .          one-two*kappa*(zp*zm-mqsq/qijsq))
         subv   =+4d0*gsq/(qijsq-mijsq)/qijsq/vijk
-	subv_gq=subv ! put in common block
+      subv_gq=subv ! put in common block
 
       elseif (jproc .eq. gg) then
         sub(gg)=two*gsq/(qijsq-mijsq)*(one/(one-z*omy)+one/(one-omz*omy)
      .    -(two-kappa*zp*zm)/vijk)
         subv   =+4d0*gsq/(qijsq-mijsq)/pij/vijk
-	subv_gg=subv ! put in common block
+      subv_gg=subv ! put in common block
       endif
 
  80   continue
