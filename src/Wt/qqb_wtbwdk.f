@@ -127,7 +127,7 @@ c--- contribution from non-resonant diagrams only
           q(9,k)=p(5,k)+p(6,k)+p(7,k)-p(4,k)*mt**2/twotDg
         enddo
         call spinoru(9,q,za,zb)
-        call wampd(4,5,6,7,9,ampld)
+        call wampd(mt,twidth,4,5,6,7,9,ampld)
         do ia=1,2
         do ig=1,2
         do ib=1,2

@@ -1,6 +1,6 @@
- ************** MCFM - version 5.0 ****************
+ ************** MCFM - version 5.2 ****************
  *                                                *
- * MCFM, v5.0                   April 12th, 2006  *
+ * MCFM, v5.2                    July 12th, 2007  *
  *                                                *
  * Authors: John Campbell, Keith Ellis            *
  * (J.Campbell@physics.gla.ac.uk, ellis@fnal.gov) *
@@ -15,4 +15,17 @@
  *  Phys.Rev.D60:113006, hep-ph/9905386 (diboson) *
  *                                                *
  * On the web:  http://mcfm.fnal.gov/             *
+ **************************************************
+ *                                                *
+ * To compile:           ./Install                *
+ *   and then:           make                     *
+ *                                                *
+ * To run:               cd Bin                   *
+ *                       ./mcfm                   *
+ *                                                *
+ * To change the process, collider, cuts, etc.    *
+ *  edit the file Bin/input.DAT                   *
+ *                                                *
+ * Further help is in the Doc/ directory.         *
+ *                                                *
  **************************************************

@@ -13,8 +13,7 @@ c--- if we're calculating LO only, there's no problem
       
 c--- otherwise, we must be performing a NLO calculation, and this list of
 c--- process numbers can't be calculated beyond LO 
-      if (  (nproc .eq.  13) .or. (nproc .eq.  18)
-     . .or. (nproc .eq.  14) .or. (nproc .eq.  19)
+      if (  (nproc .eq.  14) .or. (nproc .eq.  19)
      . .or. (nproc .eq.  20) .or. (nproc .eq.  25)
      . .or. (nproc .eq.  23) .or. (nproc .eq.  28)
      . .or. (nproc .eq.  24) .or. (nproc .eq.  29)

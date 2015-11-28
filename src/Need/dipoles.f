@@ -503,7 +503,7 @@ c  * ( - 2*b0 )
         if (scheme .eq. 'tH-V') then
         return
         elseif (scheme .eq. 'dred') then
-        fi_gg=fi_gg-dfloat(nflav)/xn/3d0
+        fi_gg=fi_gg-1d0/3d0
         return
         endif
       endif
@@ -656,7 +656,7 @@ c  * ( 2*al*b0 - 20/9*Tr*nflav - 2*[ln(al)]*b0 - 2*b0*L + 2*b0*epinv ) + 0.
         if (scheme .eq. 'tH-V') then
           return
         elseif (scheme .eq. 'dred') then
-          ff_gg=ff_gg-dfloat(nflav)/xn/3d0
+          ff_gg=ff_gg-1d0/3d0
           return
         endif
       endif

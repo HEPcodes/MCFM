@@ -5,8 +5,8 @@ CERNLIB     =
 # Replace this with the location of LHAPDF on your system (if desired)
 LHAPDFLIB   = 
 
-MCFMHOME        = /home/jcampbel/MCFM-5.0
-SOURCEDIR       = /home/jcampbel/MCFM-5.0/src
+MCFMHOME        = /home/ellis/MCFM5.2
+SOURCEDIR       = /home/ellis/MCFM5.2/src
 VPATH		= $(DIRS)
 BIN		= $(MCFMHOME)/Bin
 INCPATH  	= $(SOURCEDIR)/Inc
@@ -49,9 +49,17 @@ DIRS	=	$(MCFMHOME):\
                 $(SOURCEDIR)/qqH:$(SOURCEDIR)/ZQjet:\
                 $(SOURCEDIR)/ggH:$(SOURCEDIR)/ggHg:\
                 $(SOURCEDIR)/ggHggreal:
-		
+
 # -----------------------------------------------------------------------------
 # Specify the object files. 
+
+HWWJETFILES = \
+gg_hWWg.o \
+gg_hWWgg.o \
+gg_hWWg_gs.o \
+gg_hWWg_gvec.o \
+gg_hWWg_v.o \
+gg_hWWg_z.o
 
 BBHIGGSFILES = \
 bbaqh.o \
@@ -235,7 +243,8 @@ gen5a.o \
 gen5from4.o \
 gen6.o \
 gen6_rap.o \
-gen7.o \
+gen7m.o \
+phase7m_alt.o \
 gen7_rap.o \
 gen8.o \
 gen_njets.o \
@@ -383,11 +392,16 @@ qqb_wbjet.o
  
 WCJETFILES = \
 qqb_w_cjet.o \
+qqb_w_cjet_g.o \
+qqb_w_cjet_gs.o \
+qqb_w_cjet_gvec.o \
+qqb_w_cjet_v.o \
+qqb_w_cjet_z.o \
 qqb_w_cjet_massless.o \
 qqb_w_cjet_massless_g.o \
 wqq_sc.o \
 w2jetsq_mass.o \
-subqcdm.o 
+subqcdm.o
 
 W2JETFILES = \
 bit.o \
@@ -677,7 +691,7 @@ ifeq ($(NTUPLES),YES)
   endif
   USERFILES += dswhbook.o
   LIBDIR=$(CERNLIB)
-  LIBFLAGS = -lpacklib -lkernlib -lmathlib -lnsl
+  LIBFLAGS = -lmathlib -lpacklib -lkernlib
   NTUPMSG='   ----> MCFM compiled with optional n-tuple output <----'
  else
   ifeq ($(NTUPLES),NO)
@@ -705,7 +719,7 @@ ifeq ($(PDFROUTINES),LHAPDF)
    PARTONFILES += \
    fdist_lhapdf.o \
    pdfwrap_lhapdf.o
-   LIBFILES =
+#   LIBFILES =
    ifeq ($(NTUPLES),YES)
      LIBDIR += -L$(LHAPDFLIB)
    else
@@ -730,6 +744,8 @@ ifeq ($(PDFROUTINES),NATIVE)
    mrsg.o \
    mrst2001.o \
    mrst2002.o \
+   mrst2004f3.o \
+   mrst2004f4.o \
    mt.o \
    eks98r.o \
    fdist_linux.o \
@@ -759,7 +775,8 @@ OURCODE = $(LIBFILES) $(NEEDFILES) \
           $(BBHIGGSFILES) $(WBBFILES) $(ZBBFILES) $(WZBBMFILES) \
           $(QQHFILES) $(GGHFILES) $(GGHGFILES) \
           $(GGHGGrealFILES) \
-	  $(TOPFILES) $(ZQFILES) $(ZQJETFILES) $(WTFILES)
+	  $(TOPFILES) $(ZQFILES) $(ZQJETFILES) $(WTFILES) $(HWWJETFILES) \
+	  $(CHECKINGFILES)
           
 OTHER = $(INTEGRATEFILES) $(PARTONFILES) 
 ALLMCFM = $(OTHER) $(OURCODE)

@@ -30,8 +30,6 @@ c---set msq=0 to initialize
       decay=decay/((s(3,4)-zmass**2)**2+(zmass*zwidth)**2)
       decay=decay/((s(5,6)-zmass**2)**2+(zmass*zwidth)**2)
       decay=decay/((s12-hmass**2)**2+(hmass*hwidth)**2)
-c--- factor of one half to account for identical particles
-      decay=decay*half
       
       Asq=(as/(3d0*pi))**2/vevsq
       gg=0.5d0*V*Asq*s12**2

@@ -1,24 +1,26 @@
-      subroutine branch(brwen,brzee,brtau,brtop)
+      subroutine branch(brwen,brzee,brtau,brtop,brcharm)
       implicit none
 C     Returns the lowest order branching ratios for 
 C     1) W   --> e nu
 C     2) Z   --> e e
 C     3) tau --> e nu nubar
 C     4) t   --> b W
+C     5) c   --> s W (with Vcs omitted)
       include 'constants.f'
       include 'masses.f'
       include 'ewcouple.f'
       include 'zcouple.f'
       
-      double precision facz,facw,factau,factop,pwidth_e
+      double precision facz,facw,factau,factop,faccharm,pwidth_e
 c      double precision pwidth_u,pwidth_d,pwidth_n,width
-      double precision brwen,brzee,brtau,brtop,xsq
+      double precision brwen,brzee,brtau,brtop,brcharm,xsq
 
       facz=esq/4d0*zmass/(6d0*pi)
       facw=gwsq/8d0*wmass/(6d0*pi)
       factau=gwsq**2/32d0/wmass**4*mtau**5/192d0/pi**3
       xsq=(wmass/mt)**2
       factop=(gw/wmass)**2*mt**3/(64d0*pi)*(1d0-xsq)**2*(1d0+2d0*xsq)
+      faccharm=(gwsq/wmass**2)**2/32d0*mc**5/192d0/pi**3
 
       pwidth_e=facz*(le**2+re**2)
 c      pwidth_d=3*facz*(L(1)**2+R(1)**2)
@@ -29,6 +31,7 @@ c calculated zwidth=3*pwidth_d+2*pwidth_u+3*pwidth_e+3*pwidth_n
       brwen=facw/wwidth
       brtau=factau/tauwidth
       brtop=factop/twidth
-
+      brcharm=faccharm/1d-2  ! For checking
+      
       return
       end

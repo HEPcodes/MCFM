@@ -1,6 +1,6 @@
 ************************************************************************
 *     Author: R.K. Ellis                                               *
-*     July, 1998/July 2005                                             *
+*     July, 1998/July 2005/June 2007                                   *
 ************************************************************************
 
       double complex function L0(x,y)
@@ -43,7 +43,7 @@
      . /dcmplx(60d0)
       else
       L2=(Lnrat(x,y)-dcmplx(0.5d0*(r-1d0/r)))/dcmplx(denom)**3
-      endif
+      endif  
       return
       end
 
@@ -153,34 +153,76 @@
 
       double complex function Lsm1_2me(s,t,m1sq,m3sq)
       implicit none
+c---- formula taken from G.~Duplancic and B~Nizic [arXiv:hep-ph/0006249 v2]
+c---- Eq 71
+c---- Lsm1_2me notation follows from 
+c----  Z.~Bern, L.~J.~Dixon and D.~A.~Kosower,
+c----  %``Dimensionally regulated pentagon integrals,''
+c----  Nucl.\ Phys.\ B {\bf 412}, 751 (1994)
+c----  [arXiv:hep-ph/9306240].
+c----  %%CITATION = HEP-PH 9306240;%%
+c----  Eqs. (I.13)
+C---- analytic continuation has been checked by calculating numerically.
       include 'constants.f'
       integer j
-      double precision s,t,m1sq,m3sq,ddilog,arg(5),omarg(5)
-      double complex Lnrat,Li2(5),wlog(5)
-      arg(1)=m1sq/s
-      wlog(1)=Lnrat(-m1sq,-s)
+      double precision s,t,m1sq,m3sq,ddilog,arg(4),omarg(4),f2me,htheta
+      double complex Li2(4),wlog(4)
+C--- define Heaviside theta function (=1 for x>0) and (0 for x < 0)
+      htheta(s)=half+half*sign(one,s)
 
-      arg(2)=m1sq/t
-      wlog(2)=Lnrat(-m1sq,-t)
+      f2me=(s+t-m1sq-m3sq)/(s*t-m1sq*m3sq)
+     
+      arg(1)=f2me*s
+      arg(2)=f2me*t
+      arg(3)=f2me*m1sq
+      arg(4)=f2me*m3sq
 
-      arg(3)=m3sq/s
-      wlog(3)=Lnrat(-m3sq,-s)
-
-      arg(4)=m3sq/t
-      wlog(4)=Lnrat(-m3sq,-t)
-
-      arg(5)=arg(1)*arg(4)
-      wlog(5)=Lnrat(-m1sq,-s)+Lnrat(-m3sq,-t)
-
-      do j=1,5
+      do j=1,4
          omarg(j)=one-arg(j)
+         wlog(j)=log(abs(arg(j)))    
+     .     +impi*dcmplx(htheta(-arg(j))*sign(one,f2me))
          if (omarg(j) .gt. one) then 
-             Li2(j)=dcmplx(pisqo6-ddilog(arg(j)))-wlog(j)*log(omarg(j))
+             Li2(j)=dcmplx(pisqo6-ddilog(arg(j)))
+     .       -wlog(j)*dcmplx(log(omarg(j)))
           else
              Li2(j)=dcmplx(ddilog(omarg(j)))
          endif
       enddo
-      Lsm1_2me=Li2(5)-Li2(1)-Li2(2)-Li2(3)-Li2(4)-half*Lnrat(-s,-t)**2
+      Lsm1_2me=Li2(1)+Li2(2)-Li2(3)-Li2(4)
+
       return
       end
+
+c      double complex function Lsm1_2me(s,t,m1sq,m3sq)
+c      implicit none
+c      include 'constants.f'
+c      integer j
+c      double precision s,t,m1sq,m3sq,ddilog,arg(5),omarg(5)
+c      double complex Lnrat,Li2(5),wlog(5)
+c      arg(1)=m1sq/s
+c      wlog(1)=Lnrat(-m1sq,-s)
+
+c      arg(2)=m1sq/t
+c      wlog(2)=Lnrat(-m1sq,-t)
+
+c      arg(3)=m3sq/s
+c      wlog(3)=Lnrat(-m3sq,-s)
+
+c      arg(4)=m3sq/t
+c      wlog(4)=Lnrat(-m3sq,-t)
+
+c      arg(5)=arg(1)*arg(4)
+c      wlog(5)=Lnrat(-m1sq,-s)+Lnrat(-m3sq,-t)
+
+c      do j=1,5
+c         omarg(j)=one-arg(j)
+c         if (omarg(j) .gt. one) then 
+c             Li2(j)=dcmplx(pisqo6-ddilog(arg(j)))-wlog(j)*log(omarg(j))
+c          else
+c             Li2(j)=dcmplx(ddilog(omarg(j)))
+c         endif
+c      enddo
+c      Lsm1_2me=Li2(5)-Li2(1)-Li2(2)-Li2(3)-Li2(4)-half*Lnrat(-s,-t)**2
+c      return
+c      end
 

@@ -44,9 +44,6 @@ c--   calculate propagators
       fac=one/((s(5,6)-zmass**2)**2+(zmass*zwidth)**2)
       fac=fac/((s(3,4)-zmass**2)**2+(zmass*zwidth)**2)
       fac=fac/((sh-hmass**2)**2+(hmass*hwidth)**2)
-c--- factor of one half to account for identical particles
-      decay=decay*half
-
 
       gg=avegg*fac*gg*decay
       gq=aveqg*fac*gq*decay

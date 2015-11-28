@@ -29,7 +29,7 @@ c--- isub=2 means that p7 is another heavy quark
       include 'lc.f'
       integer j,k,jj(-nf:nf),kk(-nf:nf)
       double precision P(mxpart,4),msq(-nf:nf,-nf:nf)
-      double precision mmsq_gg(2,2),mmsq_qqb(2,2),mmsq_qbq(2,2),
+      double precision mmsq_gg(2,2),
      . mmsq_qg(2,2),mmsq_gq(2,2),mmsq_gqb(2,2),mmsq_qbg(2,2)
       double precision fac
       double precision msq_Hq(2,2),msq_qH(2,2),

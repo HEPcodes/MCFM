@@ -55,15 +55,36 @@ C---set to zero if x out of range
       if     ((pdlabel(1:3) .eq. 'mrs')
      .   .or. (pdlabel(2:4) .eq. 'mrs')) then
 
-             if     (pdlabel .eq. 'mrs02nl') then
+             if     (pdlabel .eq. 'mrs4nf3') then
+             mode=1
+             call mrst2004f3(x,xmu,mode,u_val,d_val,u_sea,d_sea,
+     &                          s_sea,c_sea,b_sea,gluon)
+
+             elseif (pdlabel .eq. 'mrs4lf3') then
+             mode=2
+             call mrst2004f3(x,xmu,mode,u_val,d_val,u_sea,d_sea,
+     &                          s_sea,c_sea,b_sea,gluon)
+
+             elseif (pdlabel .eq. 'mrs4nf4') then
+             mode=1
+             call mrst2004f4(x,xmu,mode,u_val,d_val,u_sea,d_sea,
+     &                          s_sea,c_sea,b_sea,gluon)
+
+             elseif (pdlabel .eq. 'mrs4lf4') then
+             mode=2
+             call mrst2004f4(x,xmu,mode,u_val,d_val,u_sea,d_sea,
+     &                          s_sea,c_sea,b_sea,gluon)
+
+
+             elseif (pdlabel .eq. 'mrs02nl') then
              mode=1
              call mrst2002(x,xmu,mode,u_val,d_val,u_sea,d_sea,
      &                          s_sea,c_sea,b_sea,gluon)
-             elseif     (pdlabel .eq. 'mrs02nn') then
+             elseif (pdlabel .eq. 'mrs02nn') then
              mode=2
              call mrst2002(x,xmu,mode,u_val,d_val,u_sea,d_sea,
      &                          s_sea,c_sea,b_sea,gluon)
-             elseif     (pdlabel .eq. 'mrs0119') then
+             elseif (pdlabel .eq. 'mrs0119') then
              mode=1
              call mrst2001(x,xmu,mode,u_val,d_val,u_sea,d_sea,
      &                          s_sea,c_sea,b_sea,gluon)
@@ -79,7 +100,7 @@ C---set to zero if x out of range
              mode=4
              call mrst2001(x,xmu,mode,u_val,d_val,u_sea,d_sea,
      &                          s_sea,c_sea,b_sea,gluon)
-             elseif     (pdlabel .eq. 'mrs99_1') then
+             elseif (pdlabel .eq. 'mrs99_1') then
              mode=1
              call mrs99(x,xmu,mode,u_val,d_val,u_sea,d_sea,
      &                          s_sea,c_sea,b_sea,gluon)

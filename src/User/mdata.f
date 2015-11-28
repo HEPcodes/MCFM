@@ -3,7 +3,7 @@
 *     Calculational scheme for EW couplings                            *
 ************************************************************************
 c
-c     ewscheme=-1  : MCFM default 
+c     ewscheme=-1  : Old MCFM default 
 c                    input values = Gf,alpha(m_Z),m_W,m_Z
 c                    output values = sin^2(theta_W),mtop
 c
@@ -11,7 +11,7 @@ c     ewscheme=0   : Old MadEvent default (= AlpGen with iewopt=2)
 c                    input values = sin^2(theta_W),alpha(m_Z),m_Z
 c                    output values = m_W,Gf.
 c
-c     ewscheme=1   : New Madevent default, "G_mu scheme"
+c     ewscheme=1   : New MCFM default, also Madevent default, "G_mu scheme"
 c                    = LUSIFER and AlpGen (iewopt=3) defaults
 c                    input values = G_F,m_Z,m_W
 c                    output values = sin^2(theta_W),alpha(m_Z).
@@ -24,7 +24,7 @@ c                    input here. You have to know what you're doing.
 c
       implicit none
       include 'ewinput.f'
-      data ewscheme  / -1                  /   ! Chooses EW scheme
+      data ewscheme  / +1                  /   ! Chooses EW scheme
       data Gf_inp    / 1.16639d-5          /   ! G_F
       data aemmz_inp / 7.7585538055706d-03 /   ! alpha_EM(m_Z)=1/128.89
       data xw_inp    / 0.2312d0            /   ! sin^2(theta_W)
@@ -51,7 +51,7 @@ c--- the rest of the matrix elements and phase space (and may be set
 c--- to zero in the program, depending on the process number) 
       data mtausq,mcsq,mbsq/3.157729d0,2.25d0,21.3444d0/
       data mtau/1.777d0/
-      data mc,mb,mt/1.5d0,4.62d0,172.5d0/
+      data mc,mb,mt/1.5d0,4.62d0,170.9d0/
 c--- Widths: note that the top width is calculated in the program
       data wwidth,zwidth/2.06d0,2.49d0/
       data tauwidth/2.269d-12/

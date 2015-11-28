@@ -6,7 +6,9 @@
       include 'maxwt.f'
       INTEGER init,itmx,ncall,ndim,nprn,NDMX
       DOUBLE PRECISION tgral,chi2a,sd,region(2*mxdim),fxn,ALPH,TINY
-      PARAMETER (ALPH=1.5d0,NDMX=50,TINY=1d-30)
+c--- Note: NDMX increased to 100 (from 50) compared with versions 5.1 and
+c---  earlier, to aid calculation of H+2 jets process
+      PARAMETER (ALPH=1.5d0,NDMX=100,TINY=1d-30)
       EXTERNAL fxn
 C     USES fxn,ran2,rebin
       INTEGER i,idum,it,j,k,jj,mds,nd,ndo,ng,npg,ia(MXDIM),kg(MXDIM)

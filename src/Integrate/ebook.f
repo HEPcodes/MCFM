@@ -78,7 +78,7 @@ c--- maximum number of PDF error sets is 40
         EHIST(NMATCH,J,I)=EHIST(NMATCH,J,I)
      .   +PDFwgt(J)/hdel(n)
       ENDDO
-c     we are renormalising the weights by the bin width
+c     we are normalising the weights by the bin width
       ENDIF
       
       return

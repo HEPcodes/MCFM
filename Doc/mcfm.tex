@@ -2,11 +2,23 @@
 
 \begin{document}
 \def\GeV{\mbox{GeV}}
+\def\cteqsix{\mbox{hep-ph/0201195}}
+\def\cteqfive{\mbox{hep-ph/9903282}}
+\def\cteqfour{\mbox{hep-ph/9606399}}
+\def\cteqthree{\mbox{MSU-HEP/41024}}
+\def\mrstff{\mbox{hep-ph/0603143}}
+\def\mrstohtwo{\mbox{hep-ph/0211080}}
+\def\mrstohone{\mbox{hep-ph/0110215}}
+\def\mrsninenine{\mbox{hep-ph/9907231}}
+\def\mrsnineeight{\mbox{hep-ph/9803445}}
+\def\mrsninesix{\mbox{PLB387 (1996) 419}}
+\def\mrsninefive{\mbox{PLB354 (1995) 155}}
+\def\hmrs{\mbox{Durham DTP-90-04}}
 
 \thispagestyle{empty}
 \vspace*{3cm}
 \begin{center}
-{\Huge MCFM v5.0} \\
+{\Huge MCFM v5.2} \\
 \vspace*{0.5cm}
 \Large{A Monte Carlo for FeMtobarn} \\
 \Large{processes at Hadron Colliders} \\
@@ -18,7 +30,7 @@
 J. M. Campbell ({\tt J.Campbell@physics.gla.ac.uk}) \\
 R. K. Ellis ({\tt ellis@fnal.gov}) \\
 \vspace*{2.5cm}
-{\it \small Updated: 12 April 2006}
+{\it \small Updated: 12 July 2007}
 \end{center}
 
 \newpage
@@ -71,6 +83,34 @@ are:
   decay,''} \\
   Nucl.\ Phys.\ B {\bf 726}, 109 (2005)
   [arXiv:hep-ph/0506289].
+\item J.~Campbell, R.K.~Ellis, F.~Maltoni and S.~Willenbrock, \\
+  {\it ``Production of a $Z$ boson and two jets with one heavy
+  quark tag,''} \\
+  Phys.\ Rev.\ D {\bf 73}, 054007 (2006)
+  [arXiv:hep-ph/0510362].
+\end{itemize}
+
+The following recent publications have also made use of calculations
+implemented in MCFM, but the corresponding code has not yet been made
+public. Versions of the code that contain these calculations will be
+released in the future.
+
+\begin{itemize}
+\item J.~M.~Campbell, R.~K.~Ellis and G.~Zanderighi, \\
+  {\it ``Next-to-leading order Higgs~$+~2$~jet production via
+  gluon fusion,''} \\
+  JHEP {\bf 0610}, 028 (2006)
+  [arXiv:hep-ph/0608194].
+\item J.~Campbell, R.K.~Ellis, F.~Maltoni and S.~Willenbrock, \\
+  {\it ``Production of a $W$ boson and two jets with one $b$-quark
+  tag,''} \\
+  Phys.\ Rev.\ D {\bf 75}, 054015 (2007)
+  [arXiv:hep-ph/0611348].
+\item J.~Campbell, F.~Maltoni and F.~Tramontano, \\
+  {\it ``QCD corrections to $J/\psi$ and $\Upsilon$ production
+  at hadron colliders,''} \\
+  Phys. Rev. Lett. {\bf 98}, 252002 (2007)
+  [arXiv:hep-ph/0703113].
 \end{itemize}
 
 \section{Installation}
@@ -127,7 +167,7 @@ $M_W$            & {\tt wmass}   & 80.419 GeV
  & input & calculated & input & calculated \\
 $M_Z$            & {\tt zmass}   & 91.188 GeV               
  & input & input & input & calculated \\
-$m_t$            & {\tt mt}      & 172.5 GeV                  
+$m_t$            & {\tt mt}      & 170.9 GeV                  
  & calculated & input & input & input \\
 \hline
 \end{tabular}
@@ -192,72 +232,77 @@ coupling was specified by $\Lambda$ this requires
 some calculation and/or guesswork.
 \begin{table}[h]
 \begin{center}
-\begin{tabular}{|c|c||c|c|}
+\begin{tabular}{|c|c|c||c|c|c|}
 \hline
-{\tt mrs02nl}  & 0.1197       &
-{\tt mrs02nn}  & 0.1154       \\
-{\tt mrs0119}  & 0.119        &
-{\tt mrs0117}  & 0.117        \\
-{\tt mrs0121}  & 0.121        &
-{\tt mrs01\_j} & 0.121        \\
-{\tt mrs99\_1} & 0.1175       &
-{\tt mrs99\_2} & 0.1175       \\
-{\tt mrs99\_3} & 0.1175       &
-{\tt mrs99\_4} & 0.1125       \\    
-{\tt mrs99\_5} & 0.1225       &
-{\tt mrs99\_6} & 0.1178       \\    
-{\tt mrs99\_7} & 0.1171       &
-{\tt mrs99\_8} & 0.1175       \\    
-{\tt mrs99\_9} & 0.1175       &
-{\tt mrs9910}  & 0.1175       \\    
-{\tt mrs9911}  & 0.1175       &
-{\tt mrs9912}  & 0.1175       \\    
-{\tt mrs98z1}  &  0.1175      &   
-{\tt mrs98z2}  &  0.1175      \\ 
-{\tt mrs98z3}  &  0.1175      &  
-{\tt mrs98z4}  &  0.1125      \\  
-{\tt mtungb1}  &  0.109       &
-{\tt mrs98z5}  &  0.1225      \\   
-{\tt mrs96r1}  &  0.113       &    
-{\tt mrs96r2}  &  0.120       \\  
-{\tt mrs96r3}  &  0.113       &   
-{\tt mrs96r4}  &  0.120       \\   
-{\tt mrs95ap}  &  0.1127      & 
-{\tt mrs95\_g} &  0.1148      \\
-{\tt hmrs90e}  &  0.09838     & 
-{\tt hmrs90b}  &  0.10796     \\
-{\tt cteq6\_m} &  0.118       &
-{\tt cteq6\_d} &  0.118       \\
-{\tt cteq6\_l} &  0.118       &
-{\tt cteq6l1}  &  0.130       \\
-{\tt cteq5hq}  &  0.118       &
-{\tt cteq5f3}  &  0.106       \\
-{\tt cteq5f4}  &  0.112       &
-{\tt cteq5\_m} &  0.118       \\
-{\tt cteq5\_d} &  0.118       & 
-{\tt cteq5\_l} &  0.127       \\ 
-{\tt cteq5l1}  &  0.127       & 
-{\tt cteq5hj}  &  0.118       \\
-{\tt cteq5m1}  &  0.118       &
-{\tt ctq5hq1}  &  0.118       \\
-{\tt cteq4a5}  &  0.122       &
-{\tt cteq4hj}  &  0.116       \\
-{\tt cteq4lq}  &  0.114       &
-{\tt cteq4\_m} &  0.116       \\
-{\tt cteq4\_d} &  0.116       &
-{\tt cteq4\_l} &  0.132       \\
-{\tt cteq4a1}  &  0.110       &
-{\tt cteq4a2}  &  0.113       \\
-{\tt cteq4a3}  &  0.116       &
-{\tt cteq4a4}  &  0.119       \\
-{\tt cteq3\_m} &  0.112       &
-{\tt cteq3\_l} &  0.112       \\
-{\tt cteq3\_d} &  0.112       & \\
+{\tt mrs02nl}  & 0.1197       & \mrstohtwo &
+{\tt mrs02nn}  & 0.1154       & \mrstohtwo \\
+{\tt mrs4nf3}  & 0.1066       & \mrstff &
+{\tt mrs4lf3}  & 0.1186       & \mrstff \\
+{\tt mrs4nf4}  & 0.1136       & \mrstff &
+{\tt mrs4lf4}  & 0.1251       & \mrstff \\
+{\tt mrs0119}  & 0.119        & \mrstohone &
+{\tt mrs0117}  & 0.117        & \mrstohone \\
+{\tt mrs0121}  & 0.121        & \mrstohone &
+{\tt mrs01\_j} & 0.121        & \mrstohone \\
+{\tt mrs99\_1} & 0.1175       & \mrsninenine &
+{\tt mrs99\_2} & 0.1175       & \mrsninenine \\
+{\tt mrs99\_3} & 0.1175       & \mrsninenine &
+{\tt mrs99\_4} & 0.1125       & \mrsninenine \\    
+{\tt mrs99\_5} & 0.1225       & \mrsninenine &
+{\tt mrs99\_6} & 0.1178       & \mrsninenine \\    
+{\tt mrs99\_7} & 0.1171       & \mrsninenine &
+{\tt mrs99\_8} & 0.1175       & \mrsninenine \\    
+{\tt mrs99\_9} & 0.1175       & \mrsninenine &
+{\tt mrs9910}  & 0.1175       & \mrsninenine \\    
+{\tt mrs9911}  & 0.1175       & \mrsninenine &
+{\tt mrs9912}  & 0.1175       & \mrsninenine \\    
+{\tt mrs98z1}  &  0.1175      & \mrsnineeight &   
+{\tt mrs98z2}  &  0.1175      & \mrsnineeight \\ 
+{\tt mrs98z3}  &  0.1175      & \mrsnineeight &  
+{\tt mrs98z4}  &  0.1125      & \mrsnineeight \\  
+{\tt mtungb1}  &  0.109       & \mrsnineeight &
+{\tt mrs98z5}  &  0.1225      & \mrsnineeight \\   
+{\tt mrs96r1}  &  0.113       & \mrsninesix &    
+{\tt mrs96r2}  &  0.120       & \mrsninesix \\  
+{\tt mrs96r3}  &  0.113       & \mrsninesix &   
+{\tt mrs96r4}  &  0.120       & \mrsninesix \\   
+{\tt mrs95ap}  &  0.1127      & \mrsninefive & 
+{\tt mrs95\_g} &  0.1148      & \mrsninefive \\
+{\tt hmrs90e}  &  0.09838     & \hmrs & 
+{\tt hmrs90b}  &  0.10796     & \hmrs \\
+{\tt cteq6\_m} &  0.118       & \cteqsix &
+{\tt cteq6\_d} &  0.118       & \cteqsix \\
+{\tt cteq6\_l} &  0.118       & \cteqsix &
+{\tt cteq6l1}  &  0.130       & \cteqsix \\
+{\tt cteq5hq}  &  0.118       & \cteqfive &
+{\tt cteq5f3}  &  0.106       & \cteqfive \\
+{\tt cteq5f4}  &  0.112       & \cteqfive &
+{\tt cteq5\_m} &  0.118       & \cteqfive \\
+{\tt cteq5\_d} &  0.118       & \cteqfive & 
+{\tt cteq5\_l} &  0.127       & \cteqfive \\ 
+{\tt cteq5l1}  &  0.127       & \cteqfive & 
+{\tt cteq5hj}  &  0.118       & \cteqfive \\
+{\tt cteq5m1}  &  0.118       & \cteqfive &
+{\tt ctq5hq1}  &  0.118       & \cteqfive \\
+{\tt cteq4a5}  &  0.122       & \cteqfour &
+{\tt cteq4hj}  &  0.116       & \cteqfour \\
+{\tt cteq4lq}  &  0.114       & \cteqfour &
+{\tt cteq4\_m} &  0.116       & \cteqfour \\
+{\tt cteq4\_d} &  0.116       & \cteqfour &
+{\tt cteq4\_l} &  0.132       & \cteqfour \\
+{\tt cteq4a1}  &  0.110       & \cteqfour &
+{\tt cteq4a2}  &  0.113       & \cteqfour \\
+{\tt cteq4a3}  &  0.116       & \cteqfour &
+{\tt cteq4a4}  &  0.119       & \cteqfour \\
+{\tt cteq3\_m} &  0.112       & \cteqthree &
+{\tt cteq3\_l} &  0.112       & \cteqthree \\
+{\tt cteq3\_d} &  0.112       & \cteqthree \\
 \hline
 \end{tabular}
 \end{center}
-\caption{Available pdf sets and their corresponding values of
-$\alpha_S(M_Z)$.}
+\caption{Available pdf sets, their corresponding values of
+$\alpha_S(M_Z)$ and a reference to the paper or preprint that
+describes their origin.}
 \label{pdlabel}
 \end{table}
 
@@ -369,11 +414,11 @@ $f(p_i)$ denotes a generic partonic jet.
 \hline 
 11& $ W^+(\to \nu(p_3)+e^+(p_4))+f(p_5) $ & NLO \\
 12& $ W^+(\to \nu(p_3)+e^+(p_4))+\gamma(p_5) $ & NLO \\
-13& $ W^+(\to \nu(p_3)+e^+(p_4))+\bar{c}(p_5) $ & LO \\
+13& $ W^+(\to \nu(p_3)+e^+(p_4))+\bar{c}(p_5) $ & NLO \\
 14& $ W^+(\to \nu(p_3)+e^+(p_4))+\bar{c}(p_5) ~[ \mbox{massless} ] $ & NLO \\
 16& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4))+f(p_5) $ & NLO \\
 17& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4))+\gamma(p_5) $ & NLO \\
-18& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4))+c(p_5) $ & LO \\
+18& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4))+c(p_5) $ & NLO \\
 19& $ W^-(\to e^-(p_3)+\bar{\nu}(p_4))+c(p_5) ~[ \mbox{massless} ] $ & NLO \\
 \hline 
 20& $ W^+(\to \nu(p_3)+e^+(p_4)) +b(p_5)+\bar{b}(p_6) ~[ \mbox{massive} ] $ & LO \\
@@ -511,6 +556,7 @@ $f(p_i)$ denotes a generic partonic jet.
 204& $ H(\to \tau^-(p_3)+\tau^+(p_4)) + f(p_5) $ & NLO \\
 206& $ A(\to b(p_3)+\bar{b}(p_4)) + f(p_5) ~[ \mbox{full mt dep.} ] $ & LO \\
 207& $ A(\to \tau^-(p_3)+\tau^+(p_4)) + f(p_5) ~[ \mbox{full mt dep.} ] $ & LO \\
+208& $ H(\to W^+(\to \nu(p_3)+e^+(p_4))+W^-(\to e^-(p_5)+\bar{\nu}(p_6)))+f(p_7)$ & NLO \\
 \hline 
 211& $ H(\to b(p_3)+\bar{b}(p_4))+f(p_5)+f(p_6) ~[ \mbox{WBF} ] $ & NLO \\
 212& $ H(\to \tau^-(p_3)+\tau^+(p_4))+f(p_5)+f(p_6) ~[ \mbox{WBF} ] $ & NLO \\
@@ -1057,11 +1103,13 @@ When {\tt removebr} is true, the $W$ boson does not decay.
 \subsection{$W+c$ production, processes 13,18}
 \label{subsec:wc}
 
-These processes represent the production of a $W$ boson which subsequently
-decays leptonically, in association with a charm quark. This is produced at LO
-by an initial state which contains a strange quark and a gluon. The effect of
-the charm quark mass is included throughout the calculation.  
-The calculation may be performed at LO only.
+These processes represent the production of a $W$ boson which
+subsequently decays leptonically, in association with a charm
+quark. This is produced at leading order by an initial state which
+contains a strange quark (or Cabibbo suppressed $d$ quark) and a
+gluon.  The effect of the charm quark mass is included throughout the
+calculation.  As of version 5.2, the calculation of this process may
+be performed at NLO.
 
 When {\tt removebr} is true, the $W$ boson does not decay.
 
@@ -1306,8 +1354,7 @@ The $Z$'s can either both decay leptonically ({\tt nproc=81},{\tt 86}),
 one can decay leptonically while the other decays into neutrinos
 ({\tt nproc=82},{\tt 87}) or bottom quarks ({\tt nproc=83},{\tt 88}), or
 one decays into neutrinos and the other into a bottom quark pair
-({\tt nproc=84},{\tt 89}).
-Note that, in processes
+({\tt nproc=84},{\tt 89}). Note that, in processes
 {\tt 83}--{\tt 84} and {\tt 88}--{\tt 89}, the NLO corrections do not include
 radiation from the bottom quarks that are produced by the $Z$ decay.
 
@@ -1411,6 +1458,7 @@ For the case of a $ZZ$ decay,
 the subsequent decays can either be into a pair of muons and a pair of electrons
 ({\tt nproc=114)}, a pair of electrons and neutrinos ({\tt nproc=115}) or
 a pair of muons and a pair of bottom quarks ({\tt nproc=116}).
+
 The calculation is performed in the
 limit of infinite top quark mass, so that at LO the relevant diagram
 is the coupling of two gluons to the Higgs via a top quark loop.
@@ -1593,13 +1641,14 @@ The calculations can be performed at LO only.
 
 When {\tt removebr} is true in process {\tt 196}, the $Z$ boson does not decay.
 
-\subsection{$H+$~jet production, processes 201--207}
+\subsection{$H+$~jet production, processes 201--208}
 \label{subsec:hjet}
 
 These processes represent the production of a Higgs boson in association
 with a single jet, with the subsequent decay of the Higgs to either
-a pair of bottom quarks (processes {\tt 201,203,206}) or to a pair of
-tau's ({\tt 202,204,207}).
+a pair of bottom quarks (processes {\tt 201,203,206}) 
+or to a pair of tau's ({\tt 202,204,207}).
+or to a pair of W's which decay lepronically ({\tt 208}).
 
 The Higgs boson couples to a pair of gluons via a loop of heavy fermions
 which, in the Standard Model, is accounted for almost entirely by including
@@ -1619,8 +1668,8 @@ and \cite{Glosser:2002gm}.
 Note that the effect of radiation from the bottom quarks in process {\tt 203}
 is not included.
 
-When {\tt removebr} is true in processes {\tt 201},{\tt 203} and {\tt 206},
-the Higgs boson does not decay.
+When {\tt removebr} is true in processes {\tt 201},{\tt 203},{\tt 206}
+and {\tt 208}, the Higgs boson does not decay.
 
 \subsection{Higgs production via WBF, processes 211--217}
 \label{subsec:wbf}

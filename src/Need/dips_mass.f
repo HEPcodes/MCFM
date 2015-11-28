@@ -62,7 +62,7 @@ c--- if we're doing single-top, reduce # of momenta from 7 to 5
         enddo
       endif
       
-      if ((case .eq. 'W_twdk')) then
+      if ((case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')) then
 c--- if we're doing W+t, reduce # of momenta from 8 to 6 
         do nu=1,4
           p(3,nu)=pold(3,nu)
@@ -109,8 +109,8 @@ C---Modification so that only close to singular subtracted
         call transform_mass(p,ptrans,x,ip,jp,kp,misq,mjsq,mksq,mijsq)
 
         if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')
-     .  .or.(case .eq. 'W_twdk')) then
-          if (case .eq. 'W_twdk') then
+     .  .or.(case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')) then
+          if ((case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')) then
             call extend_trans_wt(pold,p,ptrans,pext)
           else
             call extend_trans(pold,p,ptrans,pext)
@@ -163,8 +163,8 @@ C---transform the momenta so that only the first npart+1 are filled
         call transform_mass(p,ptrans,x,ip,jp,kp,misq,mjsq,mksq,mijsq)
 
         if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')
-     .  .or.(case .eq. 'W_twdk')) then
-          if (case .eq. 'W_twdk') then
+     .  .or.(case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')) then
+          if ((case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')) then
             call extend_trans_wt(pold,p,ptrans,pext)
           else
             call extend_trans(pold,p,ptrans,pext)
@@ -226,8 +226,8 @@ c---Modification so that only close to singular subtracted
         call transform_mass(p,ptrans,x,ip,jp,kp,misq,mjsq,mksq,mijsq)
 
         if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')
-     .  .or.(case .eq. 'W_twdk')) then
-          if (case .eq. 'W_twdk') then
+     .  .or.(case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')) then
+          if ((case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')) then
             call extend_trans_wt(pold,p,ptrans,pext)
           else
             call extend_trans(pold,p,ptrans,pext)
@@ -309,7 +309,7 @@ C---Modification so that only close to singular subtracted
          go to 99
        endif
 
-C---loop over the different possibilities which have different kineamtics
+C---loop over the different possibilities which have different kinematics
       do jproc=1,4
       if ((jproc.eq.qq) .and. (qqproc .eqv. .false.)) goto 80
       if ((jproc.eq.gq) .and. (gqproc .eqv. .false.)) goto 80
@@ -371,8 +371,8 @@ C---calculate the ptrans-momenta
        call transform_mass(p,ptrans,y,ip,jp,kp,misq,mjsq,mksq,mijsq)
 
         if ((case .eq. 't_bbar') .or. (case .eq. 'bq_tpq')
-     .  .or.(case .eq. 'W_twdk')) then
-          if (case .eq. 'W_twdk') then
+     .  .or.(case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')) then
+          if ((case .eq. 'W_twdk') .or. (case .eq. 'W_cwdk')) then
             call extend_trans_wt(pold,p,ptrans,pext)
           else
             call extend_trans(pold,p,ptrans,pext)

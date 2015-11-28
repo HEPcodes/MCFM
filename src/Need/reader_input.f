@@ -393,6 +393,27 @@ c--- reset values of the alpha parameters, for specific runstrings
         write(6,*)
       endif
 
+      if     (index(runstring,'noglue') .gt. 0) then
+        noglue=.true.
+      elseif (index(runstring,'ggonly') .gt. 0) then
+        ggonly=.true.
+      elseif (index(runstring,'gqonly') .gt. 0) then
+        gqonly=.true.
+      endif
+      
+      if (noglue) then
+        write(6,*) 'WARNING: no gluon contribution included in PDF'
+	write(6,*)
+      endif
+      if (ggonly) then
+        write(6,*) 'WARNING: only gluon-gluon flux included'
+	write(6,*)
+      endif
+      if (gqonly) then
+        write(6,*) 'WARNING: only gluon-quark flux included'
+	write(6,*)
+      endif
+      
 c-----initialize various quantities
 
 c--- set-up mass window cuts

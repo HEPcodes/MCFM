@@ -12,7 +12,7 @@ c----(p4,p5) are dummies
       include 'mxdim.f'
 
       integer j
-      double precision r(mxdim),r1,r2,r3,r6,r7
+      double precision r1,r2,r3,r6,r7
       double precision p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4)
       double precision p12(4),p34(4),smin
       double precision wt,wt125,wt34,wt0,m5

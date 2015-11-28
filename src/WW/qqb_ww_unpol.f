@@ -62,9 +62,9 @@ c--   s returned from sprod (common block) is 2*dot product
       stop
       endif
 
-      prop12=s(1,2)/(s(1,2)-zmass**2+im*zmass*zwidth)
-      prop34=s(3,4)/(s(3,4)-wmass**2+im*wmass*wwidth)
-      prop56=s(5,6)/(s(5,6)-wmass**2+im*wmass*wwidth)
+      prop12=s(1,2)/dcmplx(s(1,2)-zmass**2,zmass*zwidth)
+      prop34=s(3,4)/dcmplx(s(3,4)-wmass**2,wmass*wwidth)
+      prop56=s(5,6)/dcmplx(s(5,6)-wmass**2,wmass*wwidth)
       cprop=dcmplx(1d0)
 
       

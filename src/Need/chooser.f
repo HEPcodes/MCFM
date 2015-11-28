@@ -12,7 +12,6 @@ c---- total cross-section comes out correctly when the BR is removed
       include 'zerowidth.f'
       include 'removebr.f'
       include 'bbproc.f'
-      include 'lc.f'
       include 'nwz.f'
       include 'process.f'
       include 'flags.f'
@@ -21,8 +20,8 @@ c---- total cross-section comes out correctly when the BR is removed
       include 'nodecay.f'
       character*4 part
       common/part/part
-      double precision wwbr,zzbr,tautaubr
-      double precision br,BrnRat,brwen,brzee,brtau,brtop,Rcut,Rbbmin
+      double precision wwbr,zzbr,tautaubr,Rcut,Rbbmin
+      double precision br,BrnRat,brwen,brzee,brtau,brtop,brcharm
       double precision mass2,width2,mass3,width3
       common/breit/n2,n3,mass2,width2,mass3,width3
       integer nproc,mproc,j,n2,n3,nqcdjets,nqcdstart,isub,notag
@@ -125,7 +124,7 @@ c--    '  f(p1)+f(p2) --> W^- (for total Xsect)' (removebr=.true.)
 
 c--- total cross-section
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen
           plabel(3)='ig'
           plabel(4)='ig'
@@ -163,7 +162,7 @@ c--- total cross-section
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen
         endif
              
@@ -199,7 +198,7 @@ c--- total cross-section
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen
         endif
              
@@ -237,7 +236,7 @@ c--- total cross-section
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen
         endif
              
@@ -275,7 +274,7 @@ c--- total cross-section
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen
         endif
              
@@ -314,7 +313,7 @@ c--- total cross-section
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen
         endif
              
@@ -353,7 +352,7 @@ c--- total cross-section
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen
         endif
              
@@ -389,7 +388,7 @@ c--- total cross-section
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen
         endif
              
@@ -425,7 +424,7 @@ c--- total cross-section
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen
         endif
         
@@ -464,7 +463,7 @@ c--- total cross-section
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen
         endif
         
@@ -492,7 +491,7 @@ c--    '  f(p1)+f(p2) --> Z^0 (for total Xsect)' (removebr=.true.)
           if (removebr) then
             plabel(3)='ig'
             plabel(4)='ig'
-            call branch(brwen,brzee,brtau,brtop)
+            call branch(brwen,brzee,brtau,brtop,brcharm)
             BrnRat=brzee
           endif
         elseif (nproc .eq. 32) then
@@ -540,7 +539,7 @@ c--    '  f(p1)+f(p2) --> Z^0 (no BR) +f(p5)' (removebr=.true.)
           if (removebr) then
             plabel(3)='ig'
             plabel(4)='ig'
-            call branch(brwen,brzee,brtau,brtop)
+            call branch(brwen,brzee,brtau,brtop,brcharm)
             BrnRat=brzee
           endif
         elseif (nproc .eq. 42) then
@@ -586,7 +585,7 @@ c--- total cross-section
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brzee
         endif
 
@@ -615,7 +614,7 @@ c--- total cross-section
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brzee
         endif
 
@@ -645,7 +644,7 @@ c--    '  f(p1)+f(p2) --> Z^0 (no BR) +gamma(p5)' (removebr=.true.)
             if (removebr) then
               plabel(3)='ig'
               plabel(4)='ig'
-              call branch(brwen,brzee,brtau,brtop)
+              call branch(brwen,brzee,brtau,brtop,brcharm)
               BrnRat=brzee
             endif
           elseif (nproc .eq. 49) then
@@ -685,7 +684,7 @@ c--- total cross-section
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brzee
         endif
 
@@ -729,7 +728,7 @@ c--- total cross-section
           if (removebr) then
             plabel(3)='ig'
             plabel(4)='ig'
-            call branch(brwen,brzee,brtau,brtop)
+            call branch(brwen,brzee,brtau,brtop,brcharm)
             BrnRat=brzee
           endif
         elseif (nproc .eq. 52) then
@@ -773,7 +772,7 @@ c--- total cross-section
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brzee
         endif
 
@@ -812,7 +811,7 @@ c--- total cross-section
             plabel(4)='ig'
             plabel(5)='ig'
             plabel(6)='ig'
-            call branch(brwen,brzee,brtau,brtop)
+            call branch(brwen,brzee,brtau,brtop,brcharm)
             BrnRat=brwen**2
           endif
         elseif (nproc .eq. 62) then
@@ -872,7 +871,7 @@ c--- total cross-section
               plabel(4)='ig'
               plabel(5)='ig'
               plabel(6)='ig'
-              call branch(brwen,brzee,brtau,brtop)
+              call branch(brwen,brzee,brtau,brtop,brcharm)
               BrnRat=brwen*brzee
             endif
           elseif (nproc .eq. 72) then
@@ -921,7 +920,7 @@ c--- total cross-section
               plabel(4)='ig'
               plabel(5)='ig'
               plabel(6)='ig'
-              call branch(brwen,brzee,brtau,brtop)
+              call branch(brwen,brzee,brtau,brtop,brcharm)
               BrnRat=brwen*brzee
             endif
           elseif (nproc .eq. 77) then
@@ -989,12 +988,12 @@ c--     '  f(p1)+f(p2) --> Z^0 + Z^0 (for total Xsect) (NO GAMMA*)' (removebr=.t
             plabel(4)='ig'
             plabel(5)='ig'
             plabel(6)='ig'
-            call branch(brwen,brzee,brtau,brtop)
-            BrnRat=2d0*brzee**2
+            call branch(brwen,brzee,brtau,brtop,brcharm)
+            BrnRat=2d0*brzee**2  ! factor of 2 for identical particles
           endif
         elseif (nproc .eq. 82 .or. nproc .eq. 87) then
-c--  82 '  f(p1)+f(p2) --> Z^0(-->3*(nu(p3)+nu~(p4))) + Z^0(-->e^-(p5)+e^+(p6))'
-c--  87 '  f(p1)+f(p2) --> Z^0(-->e^-(p5)+e^+(p6))+Z^0(-->3*(nu(p3)+nu~(p4))) (NO GAMMA*)'
+c--  82 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4)) + Z^0(-->3*(nu(p5)+nu~(p6)))'
+c--  87 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4)) + Z^0(-->3*(nu(p5)+nu~(p6))) [no gamma^*]'
           plabel(3)='el'
           plabel(4)='ea'
           plabel(5)='nl'
@@ -1003,24 +1002,24 @@ c--  87 '  f(p1)+f(p2) --> Z^0(-->e^-(p5)+e^+(p6))+Z^0(-->3*(nu(p3)+nu~(p4))) (N
           l2=ln*dsqrt(3d0)
           r2=rn*dsqrt(3d0)
         elseif (nproc .eq. 83 .or. nproc .eq. 88) then
-c--  83 '  f(p1)+f(p2) --> Z^0(-->e^-(p5)+e^+(p6)) + Z^0(-->b(p3)+b~(p4))'
-c--  88 '  f(p1)+f(p2) --> Z^0(-->e^-(p5)+e^+(p6))+Z^0(-->b(p3)+b~(p4)) (NO GAMMA*)'
+c--  83 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4)) + Z^0(-->b(p5)+b~(p6))'
+c--  88 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4))+Z^0(-->b(p5)+b~(p6)) [no gamma^*]'
           plabel(3)='el'
           plabel(4)='ea'
-          plabel(5)='qb'
-          plabel(6)='ab'
+          plabel(5)='bq'
+          plabel(6)='ba'
           q2=Q(5)*dsqrt(xn)
           l2=l(5)*dsqrt(xn)
           r2=r(5)*dsqrt(xn)
         elseif ((nproc .eq. 84) .or. (nproc .eq. 89))  then
-c--  84 '  f(p1)+f(p2) --> Z^0(-->3*(nu(p3)+nu~(p4))) + Z^0(-->b(p5)+bb(p6))'
-c--  89 '  f(p1)+f(p2) --> Z^0(-->3*(nu(p3)+nu~(p4))) + Z^0(-->b(p5)+bb(p6))(NO GAMMA*)'
+c--  84 '  f(p1)+f(p2) --> Z^0(-->b(p3)+b~(p4)) + Z^0(-->3*(nu(p5)+nu~(p6)))'
+c--  89 '  f(p1)+f(p2) --> Z^0(-->b(p3)+b~(p4)) + Z^0(-->3*(nu(p5)+nu~(p6))) [no gamma^*]'
           bbproc=.true.
           nqcdjets=2
-          plabel(3)='nl'
-          plabel(4)='na'
-          plabel(5)='bq'
-          plabel(6)='ba'
+          plabel(3)='bq'
+          plabel(4)='ba'
+          plabel(5)='nl'
+          plabel(6)='na'
           q2=0d0
           l2=ln*dsqrt(3d0)
           r2=rn*dsqrt(3d0)
@@ -1068,7 +1067,7 @@ c--     '  f(p1)+f(p2) --> W+ + H (for total Xsect)' (removebr=.true.)
             plabel(4)='ig'
             plabel(5)='ig'
             plabel(6)='ig'               
-            call branch(brwen,brzee,brtau,brtop)
+            call branch(brwen,brzee,brtau,brtop,brcharm)
             BrnRat=brwen*br
             bbproc=.false.
             nqcdjets=0
@@ -1082,7 +1081,7 @@ c--     '  f(p1)+f(p2) --> W- + H (for total Xsect)' (removebr=.true.)
             plabel(4)='ig'
             plabel(5)='ig'
             plabel(6)='ig'               
-            call branch(brwen,brzee,brtau,brtop)
+            call branch(brwen,brzee,brtau,brtop,brcharm)
             BrnRat=brwen*br
             bbproc=.false.
             nqcdjets=0
@@ -1122,7 +1121,7 @@ c--      '  f(p1)+f(p2) --> H + Z0 (for total Xsect)' (removebr=.true.)
           l1=le
           r1=re
           if (removebr) then
-            call branch(brwen,brzee,brtau,brtop)
+            call branch(brwen,brzee,brtau,brtop,brcharm)
             BrnRat=brzee*br
             plabel(3)='ig'
             plabel(4)='ig'
@@ -1222,11 +1221,15 @@ c--- print warning if we're below threshold
           write(6,*)
           write(6,*) 'WARNING: Higgs decay H->WW is below threshold and'
           write(6,*) 'may not yield sensible results - check the number'
-          write(6,*) 'of integration points and the value of zerowidth'
-        endif
+          write(6,*) 'of integration points'
+          if (zerowidth) then
+          write(6,*) 'zerowidth=.true. and higgs decay below threshold'
+          stop
+          endif
+          endif
         
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen**2*wwbr
           plabel(3)='ig'
           plabel(4)='ig'
@@ -1252,7 +1255,11 @@ c--- print warning if we're below threshold
           write(6,*)
           write(6,*) 'WARNING: Higgs decay H->ZZ is below threshold and'
           write(6,*) 'may not yield sensible results - check the number'
-          write(6,*) 'of integration points and the value of zerowidth'
+          write(6,*) 'of integration points'
+          if (zerowidth) then
+          write(6,*) 'zerowidth=.true. and higgs decay below threshold'
+          stop
+          endif
         endif
         
         if     (nproc .eq. 114) then
@@ -1267,8 +1274,8 @@ c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)
           l2=le
           r2=re
           if (removebr) then
-            call branch(brwen,brzee,brtau,brtop)
-            BrnRat=brzee**2*zzbr
+            call branch(brwen,brzee,brtau,brtop,brcharm)
+            BrnRat=2d0*brzee**2*zzbr  ! factor of 2 for identical particles
             plabel(3)='ig'
             plabel(4)='ig'
             plabel(5)='ig'
@@ -1378,7 +1385,7 @@ c--      '  f(p1)+f(p2) --> t t~ (with BR for total Xsect)' (removebr=.true.)
           plabel(7)='el'
           plabel(8)='na'
           if (removebr) then
-            call branch(brwen,brzee,brtau,brtop)
+            call branch(brwen,brzee,brtau,brtop,brcharm)
             BrnRat=(brwen*brtop)**2
             plabel(3)='ig'
             plabel(4)='ig'
@@ -1427,7 +1434,7 @@ c--      '  f(p1)+f(p2)-->t(p345)+t~(p678)+g(p9)' (removebr=.true.)
 
 c--- total cross-section             
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=(brwen*brtop)**2
           plabel(3)='ig'
           plabel(4)='ig'
@@ -1486,13 +1493,13 @@ c--  159 '  f(p1)+f(p2) --> c c~ (for total Xsect)'
       endif
 c--  160 '  f(p1)+f(p2) --> t t~ +jet (for total Xsect)'
         case='tt_glu'
-        nqcdjets=3
+        nqcdjets=1
         ndim=7
         mass2=mt
         n2=0
         n3=0
-        plabel(3)='pp'
-        plabel(4)='pp'
+        plabel(3)='ig'
+        plabel(4)='ig'
         plabel(5)='pp'
 
 c-----------------------------------------------------------------------
@@ -1520,7 +1527,7 @@ c--- ndim is one less than usual, since the top is always on-shell
         width3=wwidth
 
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen*brtop
           plabel(3)='ig'
           plabel(4)='ig'
@@ -1556,7 +1563,7 @@ c--- ndim is one less than usual, since the top is always on-shell
         width3=wwidth
         
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen*brtop
           plabel(3)='ig'
           plabel(4)='ig'
@@ -1587,7 +1594,7 @@ c--- ndim is one less than usual, since the top is always on-shell
         width3=wwidth
 
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen*brtop
           plabel(3)='ig'
           plabel(4)='ig'
@@ -1623,7 +1630,7 @@ c--- ndim is one less than usual, since the top is always on-shell
         width3=wwidth
              
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen*brtop
           plabel(3)='ig'
           plabel(4)='ig'
@@ -1656,7 +1663,7 @@ c--- ndim is one less than usual, since the top is always on-shell
         width3=wwidth
         
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen*brtop
           plabel(3)='ig'
           plabel(4)='ig'
@@ -1692,7 +1699,7 @@ c--- ndim is one less than usual, since the top is always on-shell
         width3=wwidth
 
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen*brtop
           plabel(3)='ig'
           plabel(4)='ig'
@@ -1723,7 +1730,7 @@ c--- ndim is one less than usual, since the top is always on-shell
         width3=wwidth
         
          if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen*brtop
           plabel(3)='ig'
           plabel(4)='ig'
@@ -1759,7 +1766,7 @@ c--- ndim is one less than usual, since the top is always on-shell
         width3=wwidth
 
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen*brtop
           plabel(3)='ig'
           plabel(4)='ig'
@@ -1789,7 +1796,7 @@ c--  180 '  f(p1)+f(p2) --> W^-(-->e^-(p3)+nu~(p4))+t(p5)'
         width3=wwidth
         
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen
           plabel(3)='ig'
           plabel(4)='ig'
@@ -1818,7 +1825,7 @@ c--  181 '  f(p1)+f(p2) --> W^-(-->e^-(p3)+nu~(p4))+t(nu(p5)+e^+(p6)+b(p7))'
         width3=wwidth
              
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen*brtop
           plabel(5)='ig'
           plabel(6)='ig'
@@ -1857,7 +1864,7 @@ c--  182 '  f(p1)+f(p2) --> W^-(-->e^-(p3)+nu~(p4))+t(nu(p5)+e^+(p6)+b(p7)) [dec
         width3=wwidth
              
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen*brtop
           plabel(5)='ig'
           plabel(6)='ig'
@@ -1889,7 +1896,7 @@ c--- (this process can also be used for non-zero mb)
         width3=wwidth
              
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen*brtop
           plabel(5)='ig'
           plabel(6)='ig'
@@ -1916,7 +1923,7 @@ c--  184 '  f(p1)+f(p2) --> W^-(-->e^-(p3)+nu~(p4))+t(p5)+b(p6) [massive b]'
         width3=wwidth
         
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen
           plabel(3)='ig'
           plabel(4)='ig'
@@ -1942,7 +1949,7 @@ c--  185 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4))+tbar(p5)'
         width3=wwidth
              
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen
           plabel(3)='ig'
           plabel(4)='ig'
@@ -1971,7 +1978,7 @@ c--  186 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4))+t~(e^-(p5)+nu~(p6)+bbar(p7))'
         width3=wwidth
 
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen*brtop
           plabel(5)='ig'
           plabel(6)='ig'
@@ -2010,7 +2017,7 @@ c--  182 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4))+t~(e^-(p5)+nu~(p6)+bbar(p7)) 
         width3=wwidth
              
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen*brtop
           plabel(5)='ig'
           plabel(6)='ig'
@@ -2056,7 +2063,7 @@ c--      '  f(p1)+f(p2)-->t(p3+p4+p5)+t~(p6+p7+p8)+H(p9+p10)' (removebr=.true.)
         width3=twidth
 
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=(brtop*brwen)**2*br
           plabel(3)='ig'
           plabel(4)='ig'
@@ -2096,7 +2103,7 @@ c--  196 '  f(p1)+f(p2)-->t(-->nu(p3)+e^+(p4)+b(p5))+t~(-->nu~(p7)+e^-(p8)+b~(p6
           l1=le
           r1=re
           if (removebr) then
-            call branch(brwen,brzee,brtau,brtop)
+            call branch(brwen,brzee,brtau,brtop,brcharm)
             BrnRat=(brtop*brwen)**2*brzee
             plabel(3)='ig'
             plabel(4)='ig'
@@ -2207,6 +2214,44 @@ c--  207 '  f(p1)+f(p2)--> A (--> tau(p3) tau~(p4)) + f(p5) [full mt dep.]'
           Brnrat=br/tautaubr
         endif
 
+        if     (nproc .eq. 208) then
+c-- 208 '  f(p1)+f(p2) --> H(-->W^+(p3,p4)W^-(p5,p6)) + f(p7)'
+          case='HWWjet'
+          ndim=13
+          plabel(3)='nl'
+          plabel(4)='ea'
+          plabel(5)='el'
+          plabel(6)='na'
+          plabel(7)='pp'
+          plabel(8)='pp'
+          nqcdjets=1
+          n2=1
+          n3=1
+          mass2=wmass
+          width2=wwidth
+          mass3=wmass
+          width3=wwidth
+c--- print warning if we're below threshold
+          if (hmass .lt. 2d0*wmass) then
+          write(6,*)
+          write(6,*) 'WARNING: Higgs decay H->WW is below threshold and'
+          write(6,*) 'may not yield sensible results - check the number'
+          write(6,*) 'of integration points and the value of zerowidth'
+          if (zerowidth) then
+          write(6,*) 'zerowidth=.true. and higgs decay below threshold'
+          stop
+          endif
+          endif
+        
+          if (removebr) then
+          call branch(brwen,brzee,brtau,brtop,brcharm)
+          BrnRat=wwbr*brwen**2
+          plabel(3)='ig'
+          plabel(4)='ig'
+          plabel(5)='ig'
+          plabel(6)='ig'
+          endif
+        endif
 c-----------------------------------------------------------------------
 
       elseif ((nproc .eq. 211) .or. (nproc .eq. 212)) then
@@ -2317,7 +2362,7 @@ c--      '  f(p1)+f(p2)--> tau tau~ [for total Xsect]' (removebr=.true.)
         width3=tauwidth
 
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brtau**2
           plabel(3)='ig'
           plabel(4)='ig'
@@ -2357,7 +2402,7 @@ c--  266 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4))+b(p5)[+b~(p6)]'
         r1=re
 
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brzee
           plabel(3)='ig'
           plabel(4)='ig'
@@ -2391,7 +2436,7 @@ c--  267 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4))+c(p5)[+c~(p6)]'
         r1=re
         
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brzee
           plabel(3)='ig'
           plabel(4)='ig'
@@ -2419,7 +2464,7 @@ c--  263 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4))+b~(p5)+b(p6) (1 b-tag)'
         r1=re
         
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brzee
           plabel(3)='ig'
           plabel(4)='ig'
@@ -2448,7 +2493,7 @@ c--  264 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4))+c~(p5)+c(p6) (1 c-tag)'
         r1=re
 
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brzee
           plabel(3)='ig'
           plabel(4)='ig'
@@ -2594,7 +2639,7 @@ c--  316 '  f(p1)+b(p2) --> W^-(-->e^-(p3)+nu~(p4))+b(p5)+f(p6)'
         
         if (removebr) then
 c--      '  f(p1)+b(p2) --> W(no BR)+b(p5)+f(p6)' (removebr=.true.)
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen
           plabel(3)='ig'
           plabel(4)='ig'
@@ -2634,7 +2679,7 @@ c--  326 '  f(p1)+b(p2) --> W^-(-->e^-(p3)+nu~(p4))+c(p5)+f(p6)'
         
         if (removebr) then
 c--      '  f(p1)+b(p2) --> W(no BR)+c(p5)+f(p6)' (removebr=.true.)
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen
           plabel(3)='ig'
           plabel(4)='ig'
@@ -2672,7 +2717,7 @@ c--  336 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4))+c(p5)+f(p6) [c-s interaction]
         
         if (removebr) then
 c--      '  f(p1)+f(p2) --> W(no BR)+c(p5)+f(p6) [c-s interaction]' (removebr=.true.)
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brwen
           plabel(3)='ig'
           plabel(4)='ig'
@@ -2722,7 +2767,7 @@ c--  351 '  f(p1)+c(p2) --> Z^0(-->e^-(p3)+e^+(p4))+c(p5)+f(p6)'
         endif
         
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brzee
           plabel(3)='ig'
           plabel(4)='ig'
@@ -2774,7 +2819,7 @@ c--  356 '  f(p1)+c(p2) --> Z^0(-->e^-(p3)+e^+(p4))+c(p5)+f(p6)+f(p7)'
         endif
         
         if (removebr) then
-          call branch(brwen,brzee,brtau,brtop)
+          call branch(brwen,brzee,brtau,brtop,brcharm)
           BrnRat=brzee
           plabel(3)='ig'
           plabel(4)='ig'

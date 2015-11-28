@@ -36,8 +36,7 @@
      . mmsq_qbg(2,2),mmsq_qbg_vec(2,2),mmsq_qbg_ax(2,2),
      . mmsq_gqb(2,2),mmsq_gqb_vec(2,2),mmsq_gqb_ax(2,2),
      . p(mxpart,4),pswap(mxpart,4),fac
-      double complex atreez,a61z,a62z,a63z,prop,
-     . tamp,lamp,tampup,lampup,tampdo,lampdo,tamps,lamps,lampx,lampsx
+      double complex atreez,a61z,a63z,prop,tamp,lamp
       integer nu,j,k,cs,polq,polb,polz
       double precision subuv(0:2)
       double precision faclo,v2(2),vQ(nf,2)
@@ -73,7 +72,7 @@ c--- initialize the matrix element squared
       enddo
       enddo
 
-      prop=s(3,4)/(s(3,4)-zmass**2+im*zmass*zwidth)
+      prop=s(3,4)/dcmplx(s(3,4)-zmass**2,zmass*zwidth)
       
       v2(1)=l1
       v2(2)=r1

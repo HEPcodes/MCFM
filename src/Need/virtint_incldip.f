@@ -41,7 +41,7 @@
       integer ih1,ih2,j,k,m,n,cs,ics,csmax,nvec,is,iq,ia,ib,ic
       double precision p(mxpart,4),pjet(mxpart,4),r(mxdim),W,sqrts,xmsq,
      . val,val2,fx1(-nf:nf),fx2(-nf:nf),fx1z(-nf:nf),fx2z(-nf:nf),xmsqt
-      double precision pswt,xjac,rscalestart,fscalestart,
+      double precision pswt,xjac,rscalestart,fscalestart,m3,m4,m5,
      . wgt,msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),msqvdk(-nf:nf,-nf:nf),
      . msq_qq,msq_aa,msq_aq,msq_qa,msq_qg,msq_gq,epcorr
       double precision xx(2),z,x1onz,x2onz,flux,omz,
@@ -125,7 +125,9 @@ c--- processes that use "gen4h"
         call gen4h(r,p,pswt,*999)
           
 c--- processes that use "gen5" 
-      elseif ( (case .eq. 'W_twdk') .or. (case .eq. 'Wtdkay') ) then 
+      elseif ( (case .eq. 'W_twdk') 
+     . .or.    (case .eq. 'HWWjet') 
+     . .or.    (case .eq. 'Wtdkay') ) then 
         npart=5 
         call gen5(r,p,pswt,*999)
     
@@ -139,8 +141,11 @@ c--- processes that use "gen6"
 
 c--- processes that use "gen7"     
       elseif ( (case .eq. 'qq_ttg') ) then
+        m3=mt
+        m4=mt
+        m5=0d0
         npart=7
-        call gen7(r,p,pswt,*999)
+        call gen7m(r,p,m3,m4,m5,pswt,*999)
 
 c--- processes that use "gen8"     
       elseif ( (case .eq. 'qq_tth') 
@@ -335,10 +340,8 @@ c--- Calculate the required matrix elements
         call qqb_wgam_z(p,z)
       elseif (case .eq. 'W_cjet') then
         call qqb_w_cjet(p,msq)
-        write(6,*) 'Process not yet fully implemented'
-        stop
-c        call qqb_w_cjet_v(p,msqv)
-c        call qqb_w_cjet_z(p,z)
+        call qqb_w_cjet_v(p,msqv)
+        call qqb_w_cjet_z(p,z)
       elseif (case .eq. 'Wbbbar') then
         call qqb_wbb(p,msq)
         call qqb_wbb_v(p,msqv)
@@ -403,6 +406,10 @@ c        call qqb_w_cjet_z(p,z)
         call qqb_hg(p,msq)
         call qqb_hg_v(p,msqv)
         call qqb_hg_z(p,z)
+      elseif (case .eq. 'HWWjet') then
+        call gg_hWWg(p,msq)
+        call gg_hWWg_v(p,msqv)
+        call gg_hWWg_z(p,z)
       elseif ((case .eq. 'tt_tot')
      .   .or. (case .eq. 'bb_tot')
      .   .or. (case .eq. 'cc_tot')) then
@@ -560,7 +567,7 @@ c--- quark-quark or antiquark-antiquark
       if (  ((j .gt. 0).and.(k .gt. 0))
      . .or. ((j .lt. 0).and.(k .lt. 0))) then
 c      write(6,*) 'virtint: j,k,msqv=',j,k,fx1(j)*fx2(k)*msqv(j,k)
-      if (j. eq. k) then
+      if (j .eq. k) then
         m=+1
 	  n=+1
         csmax=6
@@ -590,7 +597,7 @@ c--- quark-antiquark or antiquark-quark
       elseif (  ((j .gt. 0).and.(k .lt. 0))
      .     .or. ((j .lt. 0).and.(k .gt. 0))) then
 c      write(6,*) 'virtint: j,k,msqv=',j,k,fx1(j)*fx2(k)*msqv(j,k)
-      if (j. eq. -k) then
+      if (j .eq. -k) then
         m=+1
 	  n=-1
         csmax=7

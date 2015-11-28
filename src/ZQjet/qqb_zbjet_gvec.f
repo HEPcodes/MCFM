@@ -21,10 +21,10 @@ c     q(-p1)+qbar(-p2)--> g(p5)+ g(p6)+Z(f(p3)+af(p4))
 
 C ip is the label of the emitter
 C in is the label of the contracted line
-      integer j,k,pq,pl,nquark,in,icol
+      integer j,k,pq,pl,in,icol
       double precision fac,n(4)
       double complex prop,zab(mxpart,mxpart),zba(mxpart,mxpart)
-      double precision msqv(-nf:nf,-nf:nf),p(mxpart,4),ggtemp(0:2),
+      double precision msqv(-nf:nf,-nf:nf),p(mxpart,4),
      . qgZqg_cs(0:2,2,2),
      . gqZqg_cs(0:2,2,2),qbgZqbg_cs(0:2,2,2),gqbZqbg_cs(0:2,2,2),
      . ggZqbq_cs(0:2,2,2),qgZqg(2,2),gqZqg(2,2),

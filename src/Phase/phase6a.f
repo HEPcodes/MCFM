@@ -4,6 +4,7 @@ c----phase space for signal
       include 'constants.f'
       include 'masses.f'
       include 'mxdim.f'
+      include 'process.f'
       include 'zerowidth.f'
 c********* generate phase space for 2-->6 process
 c********* r(mxdim),p1(4),p2(4) are inputs 
@@ -27,11 +28,17 @@ c---- with all 2 pi's (ie 1/(2*pi)^11)
       if (zerowidth) then
         s3min=(mt+wmass)**2
       endif
+c--- the parameters above are appropriate for W+t processes only
+      if (case .eq. 'W_cwdk') then
+        smin=zip
+	s3min=mc**2
+      endif
+
 
 c--- Hack to generate points with p8 soft
 c      r(1)=1d0-r(1)*1d-8
 c--- Hack to generate points with p1.p8 small
-c      r(2)=r(2)*1d-8
+c       r(2)=r(2)*1d-8
 c--- Hack to generate points with p2.p8 small
 c      r(2)=1d0-r(2)*1d-8
       

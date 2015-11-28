@@ -106,24 +106,24 @@ c--   s returned from sprod (common block) is 2*dot product
 c--   calculate propagators
 
       if     (zerowidth  .eqv. .true.) then
-      prop12=s(1,2)/(s(1,2)-wmass**2+im*wmass*wwidth)
-      prop34=s(3,4)/(s(3,4)-wmass**2+im*wmass*wwidth)
-      prop56=s(5,6)/(s(5,6)-zmass**2+im*zmass*zwidth)
+      prop12=s(1,2)/dcmplx(s(1,2)-wmass**2,wmass*wwidth)
+      prop34=s(3,4)/dcmplx(s(3,4)-wmass**2,wmass*wwidth)
+      prop56=s(5,6)/dcmplx(s(5,6)-zmass**2,zmass*zwidth)
       cprop=dcmplx(1d0)
       elseif (zerowidth .neqv. .true.) then
       prop12=dcmplx(s(1,2)/(s(1,2)-wmass**2))
       prop34=dcmplx(s(3,4)/(s(3,4)-wmass**2))
       prop56=dcmplx(s(5,6)/(s(5,6)-zmass**2))
-      props=(s(1,2)-wmass**2)/(s(1,2)-wmass**2+im*wmass*wwidth)
-      propw=(s(3,4)-wmass**2)/(s(3,4)-wmass**2+im*wmass*wwidth)
-      propz=(s(5,6)-zmass**2)/(s(5,6)-zmass**2+im*zmass*zwidth)
+      props=(s(1,2)-wmass**2)/dcmplx(s(1,2)-wmass**2,wmass*wwidth)
+      propw=(s(3,4)-wmass**2)/dcmplx(s(3,4)-wmass**2,wmass*wwidth)
+      propz=(s(5,6)-zmass**2)/dcmplx(s(5,6)-zmass**2,zmass*zwidth)
       cprop=props*propw*propz
       endif
 
 c--- DEBUG to compare with Madgraph
-c      prop12=s(1,2)/(s(1,2)-wmass**2+im*wmass*wwidth)
-c      prop34=s(3,4)/(s(3,4)-wmass**2+im*wmass*wwidth)
-c      prop56=s(5,6)/(s(5,6)-zmass**2+im*zmass*zwidth)
+c      prop12=s(1,2)/dcmplx(s(1,2)-wmass**2,wmass*wwidth)
+c      prop34=s(3,4)/dcmplx(s(3,4)-wmass**2,wmass*wwidth)
+c      prop56=s(5,6)/dcmplx(s(5,6)-zmass**2,zmass*zwidth)
 c      cprop=dcmplx(1d0)
 c--- DEBUG to compare with Madgraph
 

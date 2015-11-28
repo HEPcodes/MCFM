@@ -21,7 +21,8 @@ c---  where non-jet four vectors are set equal to the incoming q
       integer maxproto,protoc(20,0:mxpart),eti,shared,
      . sharedc(20),ni
       logical jetmerge,failed,first
-      parameter (Rsep=1.3d0)
+      parameter (Rsep=1.3d0)  ! Default value
+c      parameter (Rsep=2.0d0)  ! Usual (e.g. Snowmass) definition
       common/plabel/plabel
       common/jetmerge/jetmerge
       data first/.true./

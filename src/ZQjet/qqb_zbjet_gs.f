@@ -18,20 +18,18 @@ c--- isub=2 means that p7 is another heavy quark
       include 'constants.f'
       include 'ptilde.f'
       include 'qqgg.f'
-      include 'flags.f'
-      include 'lc.f'
       include 'nflav.f'
       include 'heavyflav.f'
 
 c--- np6,np12,... = n+6,n+12,...
 c -- nd counts the dipoles
       integer i
-      double precision ran,c15,c15v,c25,c25v,c16,c16v,c26,c26v,
-     . c57,c57v,c67,c67v,
-     . c175,c571,c175v,c571v,
-     . c176,c671,c176v,c671v,
-     . c275,c572,c275v,c572v,
-     . c276,c672,c276v,c672v
+c      double precision ran,c15,c15v,c25,c25v,c16,c16v,c26,c26v,
+c     . c57,c57v,c67,c67v,
+c     . c175,c571,c175v,c571v,
+c     . c176,c671,c176v,c671v,
+c     . c275,c572,c275v,c572v,
+c     . c276,c672,c276v,c672v
       integer j,k,n,np6,np12,np18,np21,nd
       integer a(6),b(6),c(6),pntr(5:7,5:7)
 c--- slightly obtuse notation, fn=-nf, to simplify declaration lines      
@@ -40,40 +38,29 @@ c--- slightly obtuse notation, fn=-nf, to simplify declaration lines
      & msq17_2(fn:nf,fn:nf),msq27_1(fn:nf,fn:nf),
      & msq15_2(fn:nf,fn:nf),msq25_1(fn:nf,fn:nf),
      & msq16_2(fn:nf,fn:nf),msq26_1(fn:nf,fn:nf),
-     & msq17_5(fn:nf,fn:nf),msq17_6(fn:nf,fn:nf),
-     & msq15_6(fn:nf,fn:nf),
-     & msq27_5(fn:nf,fn:nf),msq27_6(fn:nf,fn:nf),
-     & msq57_6(fn:nf,fn:nf),msq67_5(fn:nf,fn:nf),
-     & msq57_6v(fn:nf,fn:nf),msq26_1v(fn:nf,fn:nf),
+     & msq17_6(fn:nf,fn:nf),
+     & msq26_1v(fn:nf,fn:nf),
      & msq15_2v(fn:nf,fn:nf),msq16_2v(fn:nf,fn:nf),
-     & msq17_2v(fn:nf,fn:nf),msq25_6(fn:nf,fn:nf),
-     & msq27_1v(fn:nf,fn:nf),msq27_5v(fn:nf,fn:nf),
-     & msq27_6v(fn:nf,fn:nf),msq17_6v(fn:nf,fn:nf),
-     & msq17_5v(fn:nf,fn:nf),msq67_5v(fn:nf,fn:nf),
+     & msq25_6(fn:nf,fn:nf),
      & msq57_1v(fn:nf,fn:nf),msq67_1v(fn:nf,fn:nf),
      & msq57_2v(fn:nf,fn:nf),msq67_2v(fn:nf,fn:nf),
      & msq25_1v(fn:nf,fn:nf),
      & dummy(fn:nf,fn:nf),dummyv(fn:nf,fn:nf),
      & sub17_2(4),sub27_1(4),sub15_2(4),sub25_1(4),
-     & sub16_2(4),sub26_1(4),sub25_6(4),
+     & sub16_2(4),sub26_1(4),
      & sub17_5(4),sub57_1(4),sub27_5(4),sub57_2(4),
      & sub17_6(4),sub67_1(4),sub27_6(4),sub67_2(4),
-     & sub15_6(4),sub65_1(4),sub65_2(4),
      & sub57_6(4),sub67_5(4),dsubv,dsub(4),
-     & sub57_6v,sub57_1v,sub57_2v,sub67_1v,sub67_2v,sub17_2v,
-     & sub26_1v,sub25_1v,sub27_1v,sub15_2v,sub16_2v,sub65_1v,sub65_2v,
+     & sub57_6v,sub57_1v,sub57_2v,sub67_1v,sub67_2v,
+     & sub26_1v,sub25_1v,sub15_2v,sub16_2v,
      & sub27_5v,sub27_6v,sub17_6v,sub17_5v,sub67_5v
       double precision
      & m17_2(0:2,fn:nf,fn:nf),m27_1(0:2,fn:nf,fn:nf),
-     & m16_2(0:2,fn:nf,fn:nf),m26_1(0:2,fn:nf,fn:nf),
-     & m15_2(0:2,fn:nf,fn:nf),m25_1(0:2,fn:nf,fn:nf),
      & m57_6(0:2,fn:nf,fn:nf),m67_5(0:2,fn:nf,fn:nf),
      & m17_5(0:2,fn:nf,fn:nf),
      & m17_6(0:2,fn:nf,fn:nf),
      & m27_5(0:2,fn:nf,fn:nf),
      & m27_6(0:2,fn:nf,fn:nf),
-     & m15_6(0:2,fn:nf,fn:nf),
-     & m25_6(0:2,fn:nf,fn:nf),
      & m17_2v(0:2,fn:nf,fn:nf),m27_1v(0:2,fn:nf,fn:nf),
      & m16_2v(0:2,fn:nf,fn:nf),m26_1v(0:2,fn:nf,fn:nf),
      & m15_2v(0:2,fn:nf,fn:nf),m25_1v(0:2,fn:nf,fn:nf),
@@ -100,49 +87,16 @@ c--- slightly obtuse notation, fn=-nf, to simplify declaration lines
      . sub1b_2(6,4),sub2b_1(6,4),
      . msq1b_2v(6,0:2,fn:nf,fn:nf),msq2b_1v(6,0:2,fn:nf,fn:nf),
      . sub1b_2v(6),sub2b_1v(6)
-      integer jj(-nf:nf),kk(-nf:nf)
-      double precision 
-     . m57_1g(0:2,fn:nf,fn:nf),m57_1vg(0:2,fn:nf,fn:nf),
-     . m57_1vx(fn:nf,fn:nf,fn:nf,fn:nf),
-     . m26_1g(0:2,fn:nf,fn:nf),m26_1vg(0:2,fn:nf,fn:nf),
-     . m26_1vx(fn:nf,fn:nf,fn:nf,fn:nf),
-     . m25_1g(0:2,fn:nf,fn:nf),m25_1vg(0:2,fn:nf,fn:nf),
-     . m25_1vx(fn:nf,fn:nf,fn:nf,fn:nf),
-     . m27_1g(0:2,fn:nf,fn:nf),m27_1vg(0:2,fn:nf,fn:nf),
-     . m27_1vx(fn:nf,fn:nf,fn:nf,fn:nf),
-     . m67_1g(0:2,fn:nf,fn:nf),m67_1vg(0:2,fn:nf,fn:nf),
-     . m67_1vx(fn:nf,fn:nf,fn:nf,fn:nf),
-     . m67_2g(0:2,fn:nf,fn:nf),m67_2vg(0:2,fn:nf,fn:nf),
-     . m67_2vx(fn:nf,fn:nf,fn:nf,fn:nf),
-     . m57_2g(0:2,fn:nf,fn:nf),m57_2vg(0:2,fn:nf,fn:nf),
-     . m57_2vx(fn:nf,fn:nf,fn:nf,fn:nf),
-     . m15_2g(0:2,fn:nf,fn:nf),m15_2vg(0:2,fn:nf,fn:nf),
-     . m15_2vx(fn:nf,fn:nf,fn:nf,fn:nf),
-     . m16_2g(0:2,fn:nf,fn:nf),m16_2vg(0:2,fn:nf,fn:nf),
-     . m17_2g(0:2,fn:nf,fn:nf),m17_2vg(0:2,fn:nf,fn:nf),
-     . m16_2vx(fn:nf,fn:nf,fn:nf,fn:nf),
-     . m17_2vx(fn:nf,fn:nf,fn:nf,fn:nf),
-     . m65_1g(0:2,fn:nf,fn:nf),m65_1vg(0:2,fn:nf,fn:nf),
-     . m65_1vx(fn:nf,fn:nf,fn:nf,fn:nf),
-     . m65_2g(0:2,fn:nf,fn:nf),m65_2vg(0:2,fn:nf,fn:nf),
-     . m65_2vx(fn:nf,fn:nf,fn:nf,fn:nf),
-     . m15_6g(0:2,fn:nf,fn:nf),m25_6g(0:2,fn:nf,fn:nf)
       
-      double precision mqq(0:2,fn:nf,fn:nf),
-     . msqx(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf),mg(0:2,-nf:nf,-nf:nf),
-     . mvg(0:2,-nf:nf,-nf:nf),mvxg(-nf:nf,-nf:nf,-nf:nf,-nf:nf)
-
       integer isub
       common/isub/isub
     
-      external qqb_zbjet,qqb_zbjet_gvec,donothing_gvec
+      external qqb_zbjet,qqb_zbjet_gvec
 
       data a/5,5,7,6,6,7/
       data b/6,7,5,7,5,6/
       data c/7,6,6,5,7,5/
       data pntr/0,2,2,1,0,2,1,1,0/
-      data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
-      data kk/-1,-2,-1,-2,-1,0,1,2,1,2,1/
 
       ndmax=24
 
@@ -1348,7 +1302,7 @@ c--- each parton configuration
       include 'constants.f'
       include 'msq_cs.f'
       include 'msqv_cs.f'
-      integer i,j,k,n
+      integer i,j,k
       double precision msq_dip(0:2,-nf:nf,-nf:nf),
      .                 msq_dipv(0:2,-nf:nf,-nf:nf)
 

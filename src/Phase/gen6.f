@@ -9,9 +9,7 @@
       double precision r(mxdim)
       double precision wt6,q(mxpart,4)
       double precision p1(4),p2(4),p3(4),p4(4),p5(4),p6(4),p7(4),p8(4)
-      double precision sqrts,y,pswt,xjac
-      double precision xx(2),tau,x1mx2,surd
-      double precision lntaum
+      double precision sqrts,y,pswt,xjac,xx(2),tau
       common/energy/sqrts
       common/x1x2/xx
       data p3/0d0,0d0,0d0,0d0/
@@ -49,7 +47,7 @@ c---if x's out of normal range alternative return
       p2(3)=+xx(2)*sqrts*half
 
       if     ((case .eq. 'W_twdk') .or. (case .eq. 'Wtbwdk')
-     .   .or. (case .eq. 'vlchwh')) then
+     .   .or. (case .eq. 'W_cwdk') .or. (case .eq. 'vlchwh')) then
 c--- W+t process, radiation in production
         call phase6a(r,p1,p2,p3,p4,p5,p6,p7,p8,pswt,*999)
       elseif ((case .eq. 'Wtdkay') .or. (case .eq. 'vlchwg')) then

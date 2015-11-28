@@ -50,7 +50,8 @@ c---fill matrices of spinor products
 
       if     (nwz .eq. -1) then
 c---- basic process is g+b -> W- + t 
-        call tree(1,2,3,4,6,amp0)
+c--- Note: call to tree now passes top mass as a parameter
+        call tree(mt,1,2,3,4,6,amp0)
         spp=virt_pp(mt,1,2,3,4,5,q)/dsqrt(wprop)
         spm=virt_pm(mt,1,2,3,4,5,q)/dsqrt(wprop)
         smm=virt_mm(mt,1,2,3,4,5,q)/dsqrt(wprop)
@@ -62,7 +63,7 @@ c---- basic process is g+b -> W- + t
 c        virtgq=virtsqwcg(2,1,3,4,5,p)/wprop   ! (with mc=mt)
       elseif (nwz .eq. +1) then
 c---- basic process is g+b~ -> W+ + t~ 
-        call tree(1,2,4,3,6,amp0)
+        call tree(mt,1,2,4,3,6,amp0)
         spp=virt_pp(mt,1,2,4,3,5,q)/dsqrt(wprop)
         spm=virt_pm(mt,1,2,4,3,5,q)/dsqrt(wprop)
         smm=virt_mm(mt,1,2,4,3,5,q)/dsqrt(wprop)
@@ -91,7 +92,7 @@ c---fill matrices of spinor products
 
       if     (nwz .eq. -1) then
 c---- basic process is b+g -> W- + t 
-        call tree(2,1,3,4,6,amp0)
+        call tree(mt,2,1,3,4,6,amp0)
         spp=virt_pp(mt,2,1,3,4,5,q)/dsqrt(wprop)
         spm=virt_pm(mt,2,1,3,4,5,q)/dsqrt(wprop)
         smm=virt_mm(mt,2,1,3,4,5,q)/dsqrt(wprop)
@@ -103,7 +104,7 @@ c---- basic process is b+g -> W- + t
 c        virtqg=virtsqwcg(1,2,3,4,5,p)/wprop   ! (with mc=mt)
       elseif (nwz .eq. +1) then
 c---- basic process is b~+g -> W+ + t~ 
-        call tree(2,1,4,3,6,amp0)
+        call tree(mt,2,1,4,3,6,amp0)
         spp=virt_pp(mt,2,1,4,3,5,q)/dsqrt(wprop)
         spm=virt_pm(mt,2,1,4,3,5,q)/dsqrt(wprop)
         smm=virt_mm(mt,2,1,4,3,5,q)/dsqrt(wprop)

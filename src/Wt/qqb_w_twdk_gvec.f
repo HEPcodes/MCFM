@@ -25,26 +25,40 @@ c---ip emitter
 c---kp spectator
 c---in label of gluon which is contracted with n
       include 'constants.f'
-      integer j,k,in
+      include 'masses.f'
+      include 'nwz.f'
+      integer j,k,in,i3,i4,i5,i6,iq
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),n(4),
      . p1p2(-1:1,-1:1),wtgvecn
      
+c--- set up lepton variables depending on whether it's t or tbar
+      if     (nwz .eq. -1) then
+        i3=3
+	i4=4
+	i5=5
+	i6=6
+	iq=+1 ! quark initial state	
+      elseif (nwz .eq. +1) then
+        i3=4
+	i4=3
+	i5=6
+	i6=5
+	iq=-1 ! antiquark initial state
+      else
+        write(6,*) 'Error in qqb_w_twdk_gvec, nwz is not +1 or -1 :',nwz
+	stop
+      endif
+      
       do j=-1,+1
       do k=-1,+1
       p1p2(j,k)=0d0
       enddo
       enddo
 
-C---- Need to check the overall factors here
       if (in .eq. 1) then
-c      p1p2(0,-1)=-aveqg*fac*wtgvecn(1,2,3,4,6,5,7,p,n)
-      p1p2(0,+1)=aveqg*wtgvecn(1,2,3,4,5,6,7,p,n)
-c      write(6,*) 'pg ',p(1,4),p(1,1),p(1,2),p(1,3)
-c      write(6,*) 'vec',n(4),n(1),n(2),n(3)
-c      write(6,*) 'wtgvecn(1,2,3,4,6,5,7,p,n)',wtgvecn(1,2,3,4,6,5,7,p,n)
+      p1p2(0,iq)=aveqg*wtgvecn(mt,twidth,1,2,i3,i4,i5,i6,7,p,n)
       elseif (in .eq. 2) then
-      p1p2(+1,0)=aveqg*wtgvecn(2,1,3,4,5,6,7,p,n)
-c      p1p2(-1,0)=-aveqg*fac*wtgvecn(5,1,2,p,n)
+      p1p2(iq,0)=aveqg*wtgvecn(mt,twidth,2,1,i3,i4,i5,i6,7,p,n)
       endif
 
       do j=-nf,nf
@@ -71,7 +85,8 @@ c      p1p2(-1,0)=-aveqg*fac*wtgvecn(5,1,2,p,n)
       return
       end
  
-      double precision function wtgvecn(ig,is,ie,in,jn,je,jb,p,vec)
+      double precision function wtgvecn(mq,qwidth,
+     .                           ig,is,ie,in,jn,je,jb,p,vec)
       implicit none
       include 'constants.f'
       include 'qcdcouple.f'
@@ -79,7 +94,7 @@ c      p1p2(-1,0)=-aveqg*fac*wtgvecn(5,1,2,p,n)
       include 'masses.f'
       include 'zprods_com.f'
       integer ig,is,ie,in,je,jn,jb
-      double precision p(mxpart,4),vec(4),prop,nDpg,fac
+      double precision p(mxpart,4),vec(4),prop,nDpg,fac,mq,qwidth
       double complex amp
       double complex zab(mxpart,mxpart),zba(mxpart,mxpart)
       common/zabprods/zab,zba
@@ -98,14 +113,14 @@ c--- so of order(1) for the Tevatron
 
       call spinoru(7,p,za,zb)
       call spinork(7,p,zab,zba,vec)
-      call ampsn(p,ig,is,ie,in,jn,je,jb,amp)
+      call ampsn(mq,p,ig,is,ie,in,jn,je,jb,amp)
 
       prop=(dble(za(ie,in)*zb(in,ie))-wmass**2)**2+(wmass*wwidth)**2
       prop=prop*((dble(za(jn,je)*zb(je,jn))-wmass**2)**2
      . +(wmass*wwidth)**2)
       prop=prop*(
      .(dble(za(jn,je)*zb(je,jn)+za(jn,jb)*zb(jb,jn)+za(je,jb)*zb(jb,je))
-     . -mt**2)**2+(mt*twidth)**2)
+     . -mq**2)**2+(mq*qwidth)**2)
 
       fac=xn*cf*gsq*gw**8
       
@@ -115,14 +130,12 @@ c--- so of order(1) for the Tevatron
       end
 
 
-      subroutine ampsn(p,ig,is,ie,in,jn,je,jb,amp)
+      subroutine ampsn(mq,p,ig,is,ie,in,jn,je,jb,amp)
       implicit none
       include 'constants.f'
-      include 'masses.f'
       include 'zprods_com.f'
       double complex amp
-      double precision p(mxpart,4)
-      double precision dot,taugt,taugs
+      double precision p(mxpart,4),dot,taugt,taugs,mq
       integer ig,is,ie,in,je,jn,jb
       double complex zab(mxpart,mxpart),zba(mxpart,mxpart)
       common/zabprods/zab,zba
@@ -141,7 +154,7 @@ c--- so of order(1) for the Tevatron
      & jn)*zab(jn,jb)*taugt**(-1) + za(ie,jb)*za(jn,jb)*zb(is,in)*zb(je
      & ,jb)*zab(is,is)*taugs**(-1) - za(ie,jb)*za(jn,jb)*zb(is,in)*zb(
      & je,jb)*zab(jb,jb)*taugt**(-1) + za(jn,jb)*zb(is,in)*zab(ie,je)*
-     & mt**2*taugt**(-1)
+     & mq**2*taugt**(-1)
 
       return
       end

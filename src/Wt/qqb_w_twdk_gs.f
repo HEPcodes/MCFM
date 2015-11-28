@@ -13,7 +13,8 @@ c                            -->l(p3)+a(p4)
       include 'ptilde.f'
       include 'qqgg.f'
       include 'nores.f'
-      integer j,k,nd
+      include 'nwz.f'
+      integer j,k,nd,iq
       double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf)
       double precision 
      & msq16_2(-nf:nf,-nf:nf),msq26_1(-nf:nf,-nf:nf),
@@ -30,6 +31,16 @@ c                            -->l(p3)+a(p4)
 c--- Note that the subtractions here are very similar to the ones
 c--- for W+1 jet, except that the top mass means that we must
 c--- separate the initial-final and final-initial dipoles
+
+c--- set up lepton variables depending on whether it's t or tbar
+      if     (nwz .eq. -1) then
+	iq=+1 ! quark initial state
+      elseif (nwz .eq. +1) then
+	iq=-1 ! antiquark initial state
+      else
+        write(6,*) 'Error in qqb_w_twdk_gs, nwz is not +1 or -1 :  ',nwz
+	stop
+      endif
 
       ndmax=6
 
@@ -98,13 +109,13 @@ c--- g-q and g-qb cases
 
       do j=1,4
 c--- subtraction terms for 4-quark matrix elements
-      msq(3,j,+5)=2d0*cf*(
-     .            msq16_2(0,+5)*sub16_2(gq)+msq16_2v(0,+5)*sub16_2v)
-      msq(4,+5,j)=2d0*cf*(
-     .            msq26_1(+5,0)*sub26_1(gq)+msq26_1v(+5,0)*sub26_1v)
+      msq(3,j,+5*iq)=2d0*cf*(
+     .          msq16_2(0,+5*iq)*sub16_2(gq)+msq16_2v(0,+5*iq)*sub16_2v)
+      msq(4,+5*iq,j)=2d0*cf*(
+     .          msq26_1(+5*iq,0)*sub26_1(gq)+msq26_1v(+5*iq,0)*sub26_1v)
       
-      msq(3,-j,+5)=msq(3,+j,+5)
-      msq(4,+5,-j)=msq(4,+5,+j)
+      msq(3,-j,+5*iq)=msq(3,+j,+5*iq)
+      msq(4,+5*iq,-j)=msq(4,+5*iq,+j)
       enddo
 
       return

@@ -4,13 +4,9 @@ c--- performs some generic WBF cuts (a la Del Duca et al.)
 c---  a point that fails the cuts returns passed=.false.
       implicit none
       include 'constants.f'
-      include 'jetlabel.f'
-      include 'masses.f'
-      include 'process.f'
-      include 'jetcuts.f'
-      logical passed,foundb
+      logical passed
       integer j,maxparts,found,j1,j2
-      double precision pt,etarap,p(mxpart,4),plept(4),ptj,ptj1,ptj2,
+      double precision pt,etarap,p(mxpart,4),ptj,ptj1,ptj2,
      . etaj1,etaj2,mj1j2
       character*2 plabel(mxpart)
       common/plabel/plabel

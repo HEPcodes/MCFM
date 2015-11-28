@@ -24,7 +24,8 @@
       include 'zprods_com.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
-      integer j,k
+      include 'nwz.f'
+      integer j,k,i3,i4,i5,i6,iq
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),
      . q(mxpart,4),msq_gq,msq_qg,fac,r(mxpart,4),wprop
       double complex ampl0(2),amplv(2),amplp(2,2),ampld(2)
@@ -41,6 +42,24 @@ c---initialize
       msq(j,k)=0d0
       enddo
       enddo
+
+c--- set up lepton variables depending on whether it's t or tbar
+      if     (nwz .eq. -1) then
+        i3=3
+	i4=4
+	i5=5
+	i6=6
+	iq=1 ! top quark
+      elseif (nwz .eq. +1) then
+        i3=4
+	i4=3
+	i5=6
+	i6=5
+	iq=-1 ! antitop quark
+      else
+        write(6,*) 'Error in qqb_w_twdk_v, nwz is not +1 or -1 :   ',nwz
+	stop
+      endif
 
 c--- overall factor contained in diag.prc
       fac=ason2pi*aveqg*(V/2d0)*2d0*gsq*gwsq**4
@@ -64,13 +83,14 @@ c-- calculate auxiliary momentum array - gq case
 c---fill matrices of spinor products  
       call spinoru(8,q,za,zb)
 
-      call tree(1,2,3,4,8,amplp)
-      call wampd(1,5,6,7,8,ampld)
+c--- Note: call to tree now passes top mass as a parameter
+      call tree(mt,1,2,i3,i4,8,amplp)
+      call wampd(mt,twidth,1,i5,i6,7,8,ampld)
 
-      spp_ft=virt_pp(mt,1,2,3,4,5,r)
-      spm_ft=virt_pm(mt,1,2,3,4,5,r)
-      smm_ft=virt_mm(mt,1,2,3,4,5,r)
-      smp_ft=virt_mp(mt,1,2,3,4,5,r)
+      spp_ft=virt_pp(mt,1,2,i3,i4,5,r)
+      spm_ft=virt_pm(mt,1,2,i3,i4,5,r)
+      smm_ft=virt_mm(mt,1,2,i3,i4,5,r)
+      smp_ft=virt_mp(mt,1,2,i3,i4,5,r)
            
       wprop=dsqrt((s(3,4)-wmass**2)**2+(wmass*wwidth)**2)
 
@@ -125,13 +145,13 @@ c      enddo
 c---fill matrices of spinor products  
       call spinoru(8,q,za,zb)
 
-      call tree(2,1,3,4,8,amplp)
-      call wampd(2,5,6,7,8,ampld)
+      call tree(mt,2,1,i3,i4,8,amplp)
+      call wampd(mt,twidth,2,i5,i6,7,8,ampld)
 
-      spp_ft=virt_pp(mt,2,1,3,4,5,r)
-      spm_ft=virt_pm(mt,2,1,3,4,5,r)
-      smm_ft=virt_mm(mt,2,1,3,4,5,r)
-      smp_ft=virt_mp(mt,2,1,3,4,5,r)
+      spp_ft=virt_pp(mt,2,1,i3,i4,5,r)
+      spm_ft=virt_pm(mt,2,1,i3,i4,5,r)
+      smm_ft=virt_mm(mt,2,1,i3,i4,5,r)
+      smp_ft=virt_mp(mt,2,1,i3,i4,5,r)
      
       wprop=dsqrt((s(3,4)-wmass**2)**2+(wmass*wwidth)**2)
 
@@ -170,9 +190,9 @@ c--- virtual amplitudes
       do j=-nf,nf,nf
       do k=-nf,nf,nf
       msq(j,k)=0d0
-      if     ((j .eq. +5) .and. (k .eq. 0)) then
+      if     ((j .eq. +5*iq) .and. (k .eq. 0)) then
           msq(j,k)=fac*msq_qg
-      elseif ((j .eq. 0) .and. (k .eq. +5)) then
+      elseif ((j .eq. 0) .and. (k .eq. +5*iq)) then
           msq(j,k)=fac*msq_gq
       endif
       enddo

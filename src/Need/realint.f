@@ -50,11 +50,12 @@ cz //
      . qqb_w_g,qqb_w_gs,qqb_z1jet,qqb_z_gs,qqb_ww_g,qqb_ww_gs,
      . qqb_wz_g,qqb_wz_gs,qqb_zz_g,qqb_zz_gs,qqb_wgam_g,qqb_wgam_gs,
      . qqb_QQb_g,qqb_QQb_gs,
-     . VV_Hqq_g,VV_Hqq_gs,gg_Hg,gg_H_gs,gg_Hgg,gg_Hg_gs,
+     . VV_Hqq_g,VV_Hqq_gs,
+     . gg_Hg,gg_H_gs,gg_HWWgg,gg_HWWg_gs,gg_Hgg,gg_Hg_gs,
      . gQ_zQ_g,gQ_zQ_gs,qqb_tbb_g,qqb_tbb_gs,
      . qqb_w_tndk_g,qqb_w_tndk_gs,
      . qqb_w_twdk_g,qqb_w_twdk_gs,qqb_w_twdk_gdk,qqb_w_twdk_gsdk,
-     . qqb_zbjet_g,qqb_zbjet_gs
+     . qqb_zbjet_g,qqb_zbjet_gs,qqb_w_cjet_g,qqb_w_cjet_gs
       common/density/ih1,ih2
       common/energy/sqrts
       common/bin/bin
@@ -125,7 +126,11 @@ c--- processes that use "gen4"
         call gen4(vector,p,pswt,*999)
                   
 c--- processes that use "gen6"     
-      elseif ( (case .eq. 'W_twdk') .or. (case .eq. 'Wtdkay') ) then
+      elseif ( 
+     .      (case .eq. 'W_twdk') 
+     . .or. (case .eq. 'Wtdkay')
+     . .or. (case .eq. 'HWWjet')
+     . ) then
         npart=6
         call gen6(vector,p,pswt,*999)
                   
@@ -241,6 +246,10 @@ c        call singcheck(qqb_w2jet,qqb_w1jet_gs,p)   ! Checked 11/16/01
 c        call singcheck(qqb_wgam_g,qqb_wgam_gs,p)   ! Checked 08/27/02
         if (includereal) call qqb_wgam_g(p,msq)      
         call qqb_wgam_gs(p,msqc)  
+      elseif (case .eq. 'W_cjet') then
+c        call singcheck(qqb_w_cjet_g,qqb_w_cjet_gs,p) ! Checked 15/05/07
+        if (includereal) call qqb_w_cjet_g(p,msq)      
+        call qqb_w_cjet_gs(p,msqc)  
       elseif (case .eq. 'Zgamma') then
 c        call singcheck(qqb_zgam_g,qqb_zgam_gs,p)
         if (includereal) call qqb_zgam_g(p,msq)      
@@ -338,6 +347,10 @@ c        call singcheck(qqb_w_twdk_gdk,qqb_w_twdk_gsdk,p)	! Checked 2/2/05
 c        call singcheck(gg_hgg,gg_hg_gs,p)
         if (includereal) call gg_hgg(p,msq)
         call gg_hg_gs(p,msqc)
+      elseif (case .eq. 'HWWjet') then
+c        call singcheck(gg_hWWgg,gg_hWWg_gs,p)
+        if (includereal) call gg_hWWgg(p,msq)
+        call gg_hWWg_gs(p,msqc)
       elseif (case .eq. 'qq_Hqq') then
 c        call singcheck(VV_Hqq_g,VV_Hqq_gs,p)
         if (includereal) call VV_Hqq_g(p,msq)

@@ -46,7 +46,7 @@ c---if x's out of normal range alternative return
       if     ((case .eq. 't_bbar') .or. (case .eq. 'qg_tbb')) then
         call phase51(r,p1,p2,p3,p4,p5,p6,p7,pswt)
       elseif ((case .eq. 'W_twdk') .or. (case .eq. 'Wtdkay')
-     .    .or.(case .eq. 'vlchwt'))  then  
+     .    .or.(case .eq. 'W_cwdk') .or. (case .eq. 'vlchwt'))  then  
         call phase5a(r,p1,p2,p3,p4,p5,p6,p7,pswt)
       elseif (case .eq. 'vlchk5')  then  
         call phase5(r,p1,p2,p3,p4,p5,p6,p7,pswt)

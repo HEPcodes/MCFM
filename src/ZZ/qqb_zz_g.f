@@ -56,14 +56,14 @@ c--   s returned from sprodx (common block) is 2*dot product
 
 c--   calculate propagators
       if     (zerowidth  .eqv. .true.) then
-      prop34=s(3,4)/(s(3,4)-zmass**2+im*zmass*zwidth)
-      prop56=s(5,6)/(s(5,6)-zmass**2+im*zmass*zwidth)
+      prop34=s(3,4)/dcmplx(s(3,4)-zmass**2,zmass*zwidth)
+      prop56=s(5,6)/dcmplx(s(5,6)-zmass**2,zmass*zwidth)
       cprop=dcmplx(1d0)
       elseif (zerowidth .neqv. .true.) then
       prop34=dcmplx(s(3,4)/(s(3,4)-zmass**2))
       prop56=dcmplx(s(5,6)/(s(5,6)-zmass**2))
-      propz1=(s(3,4)-zmass**2)/(s(3,4)-zmass**2+im*zmass*zwidth)
-      propz2=(s(5,6)-zmass**2)/(s(5,6)-zmass**2+im*zmass*zwidth)
+      propz1=(s(3,4)-zmass**2)/dcmplx(s(3,4)-zmass**2,zmass*zwidth)
+      propz2=(s(5,6)-zmass**2)/dcmplx(s(5,6)-zmass**2,zmass*zwidth)
       cprop=propz1*propz2
       endif
 

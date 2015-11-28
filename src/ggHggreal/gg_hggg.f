@@ -204,8 +204,6 @@ c--- gg
         msq(0,0)=avegg*fac*(Hggggg/6d0+dfloat(nf)*Hggqag)
       endif
       
-   55 continue   
-      
       enddo
       enddo
 

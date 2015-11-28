@@ -30,7 +30,10 @@ c---- with all 2 pi's (ie 1/(2*pi)^11)
 
 c--- In the case of HVV_4l, we should generate s127 according to
 c--- a Breit-Wigner at mH, otherwise just linearly      
-      if ((case .eq. 'HWW_4l') .or. (case .eq. 'HZZ_4l')) then
+      if (  (case .eq. 'HWW_4l') 
+     . .or. (case .eq. 'HZZ_4l')
+     . .or. (case .eq. 'HWWjet')
+     . ) then
         call phi1_2m_bw(zip,r(13),r(12),r(11),smin,p12,p7,p127,
      .   hmass,hwidth,wt127,*99)
       else

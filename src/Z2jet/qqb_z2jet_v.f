@@ -136,7 +136,7 @@ c     . .or. (s(1,6)*s(2,6)/s(1,2) .lt. hscalesq) ) return
       enddo
       enddo
 
-      prop=s(3,4)/(s(3,4)-zmass**2+im*zmass*zwidth)
+      prop=s(3,4)/dcmplx(s(3,4)-zmass**2,zmass*zwidth)
       
       v2(1)=l1
       v2(2)=r1

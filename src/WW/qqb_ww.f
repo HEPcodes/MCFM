@@ -59,17 +59,17 @@ c   DKS have--- ubar(q1)+u(q2)-->mu^-(q3)+nubar(q4)+e^+(q5)+nu(q6)
 c--   s returned from sprod (common block) is 2*dot product
       
       if     (zerowidth  .eqv. .true.) then
-      prop12=s(1,2)/(s(1,2)-zmass**2+im*zmass*zwidth)
-      prop34=s(3,4)/(s(3,4)-wmass**2+im*wmass*wwidth)
-      prop56=s(5,6)/(s(5,6)-wmass**2+im*wmass*wwidth)
+      prop12=s(1,2)/dcmplx(s(1,2)-zmass**2,zmass*zwidth)
+      prop34=s(3,4)/dcmplx(s(3,4)-wmass**2,wmass*wwidth)
+      prop56=s(5,6)/dcmplx(s(5,6)-wmass**2,wmass*wwidth)
       cprop=dcmplx(1d0)
       elseif (zerowidth .neqv. .true.) then
       prop12=dcmplx(s(1,2)/(s(1,2)-zmass**2))
       prop34=dcmplx(s(3,4)/(s(3,4)-wmass**2))
       prop56=dcmplx(s(5,6)/(s(5,6)-wmass**2))
       propwm=(s(3,4)-wmass**2)/dcmplx(s(3,4)-wmass**2,wmass*wwidth)
-      propwp=(s(5,6)-wmass**2)/(s(5,6)-wmass**2+im*wmass*wwidth)
-      propzg=(s(1,2)-zmass**2)/(s(1,2)-zmass**2+im*zmass*zwidth)
+      propwp=(s(5,6)-wmass**2)/dcmplx(s(5,6)-wmass**2,wmass*wwidth)
+      propzg=(s(1,2)-zmass**2)/dcmplx(s(1,2)-zmass**2,zmass*zwidth)
       cprop=propwp*propwm*propzg
       endif
       

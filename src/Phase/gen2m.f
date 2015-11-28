@@ -19,18 +19,20 @@ C---p1+p2 --> p3+p4
       do nu=1,4     
       p(j,nu)=0d0
       enddo     
-      enddo     
+      enddo   
+      
+      wt2=0d0
+        
       vsqmax=1d0/(4d0*mass2**2)
       vsqmin=1d0/sqrts**2
       xmin=vsqmin/vsqmax
-      wt2=0d0
       vs=(vsqmax-vsqmin)*r(3)+vsqmin
       s34=1/vs
       w3=(vsqmax-vsqmin)*s34**2
+
       rtshat=dsqrt(s34)
       ymax=dlog(sqrts/rtshat)
-      yave=ymax*(two*r(1)-1d0)
-      
+      yave=ymax*(two*r(1)-1d0)      
 c----udif=tanh(ydif)
       beta=dsqrt(1d0-4d0*mass2**2/s34)
       udif=beta*(two*r(2)-1d0)
@@ -51,8 +53,8 @@ c----udif=tanh(ydif)
      & .or. (xx(2) .gt. 1d0)
      & .or. (xx(1) .lt. xmin)
      & .or. (xx(2) .lt. xmin)) then
-      write(6,*) 'problems with xx(1),xx(2) in gen2',xx(1),xx(2)  
-      return 1 
+        write(6,*) 'problems with xx(1),xx(2) in gen2',xx(1),xx(2)  
+        return 1 
       endif
 
       pt=dsqrt(trmass**2-mass2**2)

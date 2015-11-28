@@ -2,8 +2,9 @@
       implicit none
       include 'nlooprun.f'
       include 'pdlabel.f'
-      double precision amz
+      double precision amz,cmass,bmass
       common/couple/amz
+      COMMON/QMASS/CMASS,BMASS
 
 C MRS99
 C  1     COR01  central gluon, a_s    300      0.1175   0.00537  C
@@ -19,7 +20,25 @@ C  10    C0R10  charm up              300      0.1175   0.00525  C
 C  11    COR11  charm down            300      0.1175   0.00524  C
 C  12    COR12  larger d/u            300      0.1175   0.00515  C
 
-      if     (pdlabel .eq. 'mrs02nl') then
+      if         (pdlabel .eq. 'mrs4nf3') then
+      amz=0.106574973d0
+      nlooprun=2
+      cmass=1000d0
+      bmass=1001d0
+      elseif     (pdlabel .eq. 'mrs4lf3') then
+      amz=0.118586857d0
+      nlooprun=1
+      cmass=1000d0
+      bmass=1001d0
+      elseif     (pdlabel .eq. 'mrs4nf4') then
+      amz=0.11369191d0
+      nlooprun=2
+      bmass=1000d0
+      elseif     (pdlabel .eq. 'mrs4lf4') then
+      amz=0.125103791d0
+      nlooprun=1
+      bmass=1000d0
+      elseif     (pdlabel .eq. 'mrs02nl') then
       amz=0.1197d0 
       nlooprun=2
       elseif     (pdlabel .eq. 'mrs02nn') then
@@ -253,6 +272,7 @@ c--- need a value here: Lambda = 200 MeV
       else
           write(6,*) 'Unimplemented distribution= ',pdlabel
           write(6,*) 'Implemented are: ',
+     .'mrs4nf3,','mrs4lf3,','mrs4nf4,','mrs4lf4,',
      .'mrs02nl,','mrs02nn,',
      .'mrs0119,','mrs0117,','mrs0121,','mrs01_j,',
      .'mrs99_1,','mrs99_2,','mrs99_3,','mrs99_4,','mrs99_5,','mrs99_6,',

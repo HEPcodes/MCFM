@@ -10,13 +10,13 @@
       common/outputflags/creatent,dswhisto
       common/mypart/mypart
 
-      if (tag.eq.'book') then
+      if     (tag .eq. 'book') then
         if (dswhisto .eqv. .false.) then
 c--- Traditional MCFM histograms
           call mbook(n,titlex,dx,xmin,xmax)
-c--- also book the errors now (in 50+n,100+n)
-          call mbook(50+n,titlex,dx,xmin,xmax)
-          call mbook(100+n,titlex,dx,xmin,xmax)
+c--- also book the errors now (in maxhisto+n,2*maxhisto+n)
+          call mbook(maxhisto+n,titlex,dx,xmin,xmax)
+          call mbook(2*maxhisto+n,titlex,dx,xmin,xmax)
         else
 c--- DSW histograms - call hbook booking routine
           call dswhbook(n,titlex,dx,xmin,xmax)
@@ -25,9 +25,9 @@ c--- DSW histograms - call hbook booking routine
         if (dswhisto .eqv. .false.) then
 c--- Traditional MCFM histograms
           call mfill(n,var,wt)
-c--- also book the errors now (in 50+n) - lord and virt only
+c--- also book the errors now (in maxhisto+n) - lord and virt only
           if ((mypart .eq. 'lord') .or. (mypart .eq. 'virt')) then
-	    call mfill(50+n,var,wt2)
+	    call mfill(maxhisto+n,var,wt2)
 	  endif
         else
 c--- DSW histograms - call hbook filling routine
@@ -72,6 +72,7 @@ c--- Traditional MCFM histograms
       include 'clustering.f'
       include 'constants.f'
       include 'cutoff.f'
+      include 'histo.f'
       include 'jetlabel.f'
       include 'npart.f'
       include 'mxdim.f'
@@ -142,11 +143,12 @@ cz          use with bwgt
 cz //
 
       double precision m34,etmiss,misset,
-     . p(mxpart,4),fphi,HT
+     . p(mxpart,4),fphi,HT,etcharm
       double precision eta3,eta4,eta5,eta6,eta7,eta8,eta34,eta56,y34
       double precision r34,r35,r45,r36,r46,r56,m345,m348,m567,m678
       double precision pt3,pt4,pt5,pt6,pt7,pt8,pt34,pt56
       double precision bclustmass,etvec(4),tmp5(4),tmp6(4),tmp7(4)
+      double precision langle,plep(4),plep_wrest(4),pw(4),pw_wrest(4)
       integer nproc,eventpart,ib1,ib2,nqcdjets,nqcdstart
       logical first,jetmerge
       logical creatent,dswhisto
@@ -238,7 +240,8 @@ c---  are handled with reference to nproc
         eventpart=4+jets
       elseif ((case .eq. 'WWqqbr') .or. (case .eq. 'WWnpol')
      .    .or.(case .eq. 'WZbbar') .or. (case .eq. 'ZZlept')
-     .    .or.(case .eq. 'HWW_4l') .or. (case .eq. 'HZZ_4l')) then
+     .    .or.(case .eq. 'HWW_4l') .or. (case .eq. 'HZZ_4l')
+     .    .or.(case .eq. 'HWWjet')) then
         eventpart=6+jets
       elseif ((case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')) then
         eventpart=8
@@ -643,6 +646,89 @@ c      write(6,*) switch,dphi_ll,wt,wt2
       call bookplot(n,tag,'scut2',scut2,wt,wt2,0.5d0,1.5d0,1d0,'lin')
       n=n+1
       endif
+
+c--- calculate lepton 3 angle in W rest frame
+      do nu=1,4
+      pw(nu)=p(3,nu)+p(4,nu)
+      plep(nu)=p(3,nu)
+      pw_wrest(nu)=0d0
+      enddo
+      pw_wrest(4)=dsqrt(pw(4)**2-pw(1)**2-pw(2)**2-pw(3)**2)
+      call boostx(plep,pw,pw_wrest,plep_wrest)
+      langle=plep_wrest(3)/
+     . dsqrt(plep_wrest(1)**2+plep_wrest(2)**2+plep_wrest(3)**2)
+c      langle=dacos(langle)
+      call bookplot(n,tag,'lepton 3',langle,wt,wt2,
+     . -1d0,1.01d0,0.1d0,'lin')
+      n=n+1
+            
+c--- calculate lepton 4 angle in W rest frame
+      do nu=1,4
+      pw(nu)=p(3,nu)+p(4,nu)
+      plep(nu)=p(4,nu)
+      pw_wrest(nu)=0d0
+      enddo
+      pw_wrest(4)=dsqrt(pw(4)**2-pw(1)**2-pw(2)**2-pw(3)**2)
+      call boostx(plep,pw,pw_wrest,plep_wrest)
+      langle=plep_wrest(3)/
+     . dsqrt(plep_wrest(1)**2+plep_wrest(2)**2+plep_wrest(3)**2)
+c      langle=dacos(langle)
+      call bookplot(n,tag,'lepton 4',langle,wt,wt2,
+     . -1d0,1.01d0,0.1d0,'lin')
+      n=n+1
+
+c--- special plots for W+c
+      if (case .eq. 'W_cjet') then
+        etcharm=-1d0
+        if     (jets .eq. 1) then
+	  if ((jetlabel(1) .eq. 'bq') .or. (jetlabel(1) .eq. 'ba')) then
+	    etcharm=dsqrt(p(5,1)**2+p(5,2)**2)
+     .                  *p(5,4)/dsqrt(p(5,1)**2+p(5,2)**2+p(5,3)**2)
+          endif
+	elseif (jets .eq. 2) then
+	  if ((jetlabel(1) .eq. 'bq') .or. (jetlabel(1) .eq. 'ba')) then
+	    etcharm=dsqrt(p(5,1)**2+p(5,2)**2)
+     .                  *p(5,4)/dsqrt(p(5,1)**2+p(5,2)**2+p(5,3)**2)
+          endif
+	  if ((jetlabel(2) .eq. 'bq') .or. (jetlabel(2) .eq. 'ba')) then
+	    etcharm=dsqrt(p(6,1)**2+p(6,2)**2)
+     .                  *p(6,4)/dsqrt(p(6,1)**2+p(6,2)**2+p(6,3)**2)
+          endif
+	endif
+	if ((etcharm .lt. 0d0) .and. (tag .eq. 'plot')) then
+	  write(6,*) 'Error in nplotter: no charm jet for Et plotting'
+	  stop
+	endif
+        call bookplot(n,tag,'Et_c',etcharm,wt,wt2,0d0,100d0,10d0,'log')
+        n=n+1
+      endif
+            
+c--- special plots for W+cc~ (sign of quark works for W+ only)
+      if (case .eq. 'Wbbmas') then
+        etcharm=-1d0
+        if     (jets .eq. 1) then
+	  if (jetlabel(1) .eq. 'ba') then
+	    etcharm=dsqrt(p(5,1)**2+p(5,2)**2)
+     .                  *p(5,4)/dsqrt(p(5,1)**2+p(5,2)**2+p(5,3)**2)
+          endif
+	elseif (jets .eq. 2) then
+	  if (jetlabel(1) .eq. 'ba') then
+	    etcharm=dsqrt(p(5,1)**2+p(5,2)**2)
+     .                  *p(5,4)/dsqrt(p(5,1)**2+p(5,2)**2+p(5,3)**2)
+          endif
+	  if (jetlabel(2) .eq. 'ba') then
+	    etcharm=dsqrt(p(6,1)**2+p(6,2)**2)
+     .                  *p(6,4)/dsqrt(p(6,1)**2+p(6,2)**2+p(6,3)**2)
+          endif
+	endif
+c--- Not an error here: only plot the quark correlated with the W
+c	if ((etcharm .lt. 0d0) .and. (tag .eq. 'plot')) then
+c	  write(6,*) 'Error in nplotter: no charm jet for Et plotting'
+c	  stop
+c	endif
+        call bookplot(n,tag,'Et_c',etcharm,wt,wt2,0d0,100d0,10d0,'log')
+        n=n+1
+      endif
             
       call bookplot(n,tag,'HT',HT,wt,wt2,0d0,500d0,20d0,'lin')
       n=n+1
@@ -668,10 +754,10 @@ c --- Histograms to monitor exclusive/inclusive cross-sections:
       n=n+1
       call bookplot(n,tag,'y34',y34,wt,wt2,-4d0,4d0,0.4d0,'lin')
       n=n+1
-      call bookplot(n,tag,'pt34',pt34,wt,wt2,0d0,150d0,5d0,'log')
-c      call ebookplot(n,tag,pt34,wt)
+      call bookplot(n,tag,'pt34',pt34,wt,wt2,0d0,100d0,2d0,'log')
+      call ebookplot(n,tag,pt34,wt)
       n=n+1
-      call bookplot(n,tag,'m34',m34,wt,wt2,10d0,200d0,5d0,'lin')
+      call bookplot(n,tag,'m34',m34,wt,wt2,0d0,200d0,5d0,'lin')
       n=n+1
       endif
       call bookplot(n,tag,'misset',misset,wt,wt2,0d0,100d0,2d0,'lin')
@@ -683,6 +769,8 @@ c      call ebookplot(n,tag,pt34,wt)
       call bookplot(n,tag,'eta5',eta5,wt,wt2,-10d0,10d0,0.5d0,'lin')
       n=n+1
       call bookplot(n,tag,'pt5',pt5,wt,wt2,0d0,500d0,5d0,'log')
+      n=n+1
+      call bookplot(n,tag,'pt5',pt5,wt,wt2,0d0,10d0,0.2d0,'log')
       n=n+1
       call bookplot(n,tag,'m345',m345,wt,wt2,108d0,308d0,2d0,'log')
       n=n+1
@@ -812,10 +900,15 @@ c--- Non b-jet Et, 5 GeV bins from 15 to 200
 
       n=n-1
 
-      if (n .gt. 50) then
+      if (n .gt. maxhisto) then
         write(6,*) 'WARNING - TOO MANY HISTOGRAMS!'
-        write(6,*) n,' > 50, which is the built-in maximum'
-        stop
+        write(6,*) n,' > ',maxhisto,', which is the built-in maximum.'
+	write(6,*) 'To use more histograms, change the value of the'
+	write(6,*) 'constant MAXHISTO in src/Inc/nplot.f then do:'
+	write(6,*)
+	write(6,*) ' make clean; make        to recompile from scratch.'    
+        write(6,*)
+	stop
       endif
 
 c--- set the maximum number of plots, on the first call

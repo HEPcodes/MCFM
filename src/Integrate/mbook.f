@@ -85,22 +85,22 @@ c Empty histograms are not put out by MTOP.
 C--------------------------------------------------------------------------
       BLOCK DATA HISTOSET
       include 'histo.f'
-      data book/
-     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
-     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO'/
+      data book/nplot*'NO'/
+c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
+c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
+c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
+c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
+c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
+c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
+c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
+c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
+c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
+c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
+c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
+c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
+c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
+c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO',
+c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO'/
       END
 
       SUBROUTINE MBOOK(N,TIT,DEL,XMIN,XMAX)
@@ -305,7 +305,7 @@ c    7 FORMAT(4X,'HIST = ',I3,'   19',I2,'-',I2,'-',I2,1X,A5/)
 c--- added these variables to scale plots at intermediate steps
       logical scaleplots                  
       double precision scalefac
-      common/scaleplots/scaleplots,scalefac
+      common/scaleplots/scalefac,scaleplots
 c      DATA INI/0/
 c      IF(INI.EQ.0) THEN
 c      CALL IDATE(IMON,IDAY,IYEAR)

@@ -53,10 +53,12 @@ C  Other branching ratios could be added.
       zzbr=brzz(nlo)+(htemp-nlo)*(brzz(nlo+1)-brzz(nlo))
       hwidth=width(nlo)+(htemp-nlo)*(width(nlo+1)-width(nlo))
       return
+
  44   continue
       write(6,*) 'Error opening br1.sm1'
       stop
       return
+
  45   continue
       write(6,*) 'Error opening br2.sm2'
       stop

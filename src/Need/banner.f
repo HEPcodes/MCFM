@@ -1,7 +1,7 @@
       block data codeversion_data
       implicit none
       include 'codeversion.f'
-      data codeversion/'5.1'/      
+      data codeversion/'5.2'/      
       end
 
       subroutine banner
@@ -22,7 +22,7 @@
       write(6,*) line
       write(6,*) '*                                                *'
       write(6,*) '* MCFM, v'//codeversion//
-     . '                June 1st, 2006  *'
+     . '                 July 12th, 2007  *'
       write(6,*) '*                                                *'
       write(6,*) '* Authors: John Campbell, Keith Ellis            *'
       write(6,*) '* (J.Campbell@physics.gla.ac.uk, ellis@fnal.gov) *'

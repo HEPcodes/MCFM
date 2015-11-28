@@ -9,8 +9,6 @@
       include 'scale.f'
       include 'agq.f'
       include 'PR_cs_new.f'
-      include 'lc.f'
-      include 'flags.f'
       double precision z,p(mxpart,4),dot
       double precision xl12,xl15,xl16,xl25,xl26,xl56
       double precision 

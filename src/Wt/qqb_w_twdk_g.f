@@ -24,8 +24,9 @@
       include 'qcdcouple.f'
       include 'ewcouple.f'
       include 'nores.f'
+      include 'nwz.f'
       include 'jetcuts.f'
-      integer ia,ig,j,k
+      integer ia,ig,j,k,i3,i4,i5,i6,iq
       double precision p(mxpart,4),msq(-nf:nf,-nf:nf),fac,dot,prop,
      . msq_gq,msq_qg,msq_gg,msq_qb,msq_bq,msq_ab,msq_ba
       double complex ampgq_ga(2,2),ampgq_ag(2,2),
@@ -38,6 +39,24 @@
       enddo
       enddo
 
+c--- set up lepton variables depending on whether it's t or tbar
+      if     (nwz .eq. -1) then
+        i3=3
+	i4=4
+	i5=5
+	i6=6
+	iq=+1 ! quark initial state
+      elseif (nwz .eq. +1) then
+        i3=4
+	i4=3
+	i5=6
+	i6=5
+	iq=-1 ! antiquark initial state
+      else
+        write(6,*) 'Error in qqb_w_twdk_g, nwz is not +1 or -1 :   ',nwz
+	stop
+      endif
+
       fac=gsq**2*gwsq**4
 
       prop=(two*dot(p,3,4)-wmass**2)**2+(wmass*wwidth)**2
@@ -46,19 +65,19 @@
      .         +(mt*twidth)**2)
 
 c--- calculate amplitudes for g+q in initial state
-      call gs_wt_prog(p,1,2,3,4,5,6,7,8,ampgq_ag)
-      call gs_wt_prog(p,8,2,3,4,5,6,7,1,ampgq_ga)
+      call gs_wt_prog(mt,twidth,p,1,2,i3,i4,i5,i6,7,8,ampgq_ag)
+      call gs_wt_prog(mt,twidth,p,8,2,i3,i4,i5,i6,7,1,ampgq_ga)
 c--- calculate amplitudes for q+g in initial state
-      call gs_wt_prog(p,2,1,3,4,5,6,7,8,ampqg_ag)
-      call gs_wt_prog(p,8,1,3,4,5,6,7,2,ampqg_ga)
+      call gs_wt_prog(mt,twidth,p,2,1,i3,i4,i5,i6,7,8,ampqg_ag)
+      call gs_wt_prog(mt,twidth,p,8,1,i3,i4,i5,i6,7,2,ampqg_ga)
 c--- calculate amplitudes for g+g in initial state
 c      call gs_wt_prog(p,1,8,3,4,5,6,7,2,ampgg_ag)
 c      call gs_wt_prog(p,2,8,3,4,5,6,7,1,ampgg_ga)
 c--- The two lines commented out below calculate the contribution
 c--- from non-resonant diagrams only (gauge-dependent)
       if (nores .eqv. .false.) then
-      call gs_wt_prog_nores(p,1,8,3,4,5,6,7,2,ampgg_ag)
-      call gs_wt_prog_nores(p,2,8,3,4,5,6,7,1,ampgg_ga)
+      call gs_wt_prog_nores(p,1,8,i3,i4,i5,i6,7,2,ampgg_ag)
+      call gs_wt_prog_nores(p,2,8,i3,i4,i5,i6,7,1,ampgg_ga)
       endif
       
       msq_gq=0d0
@@ -91,10 +110,10 @@ c-- veto b-jet contribution if doing subtraction and pt(b)>ptbjetmin GeV
       msq_gg=msq_gg/prop
 
 c--- calculate matrix elements for q+b initial state
-      call qb_wtq(p,1,2,3,4,5,6,7,8,msq_qb)
-      call qb_wtq(p,2,1,3,4,5,6,7,8,msq_bq)
-      call qb_wtq(p,8,2,3,4,5,6,7,1,msq_ab)
-      call qb_wtq(p,8,1,3,4,5,6,7,2,msq_ba)
+      call qb_wtq(mt,twidth,p,1,2,i3,i4,i5,i6,7,8,msq_qb)
+      call qb_wtq(mt,twidth,p,2,1,i3,i4,i5,i6,7,8,msq_bq)
+      call qb_wtq(mt,twidth,p,8,2,i3,i4,i5,i6,7,1,msq_ab)
+      call qb_wtq(mt,twidth,p,8,1,i3,i4,i5,i6,7,2,msq_ba)
 c--- calculate matrix elements for q+q~ initial state
 c      if (nores .eqv. .false.) then
 c      call qb_wtq(p,1,8,3,4,5,6,7,2,msq_qqb)
@@ -127,9 +146,9 @@ c      endif
       do j=-nf,nf,nf
       do k=-nf,nf,nf
       msq(j,k)=0d0
-      if     ((j .eq. +5) .and. (k .eq. 0)) then
+      if     ((j .eq. +5*iq) .and. (k .eq. 0)) then
           msq(j,k)=aveqg*fac*msq_qg
-      elseif ((j .eq. 0) .and. (k .eq. +5)) then
+      elseif ((j .eq. 0) .and. (k .eq. +5*iq)) then
           msq(j,k)=aveqg*fac*msq_gq
       elseif ((j .eq. 0) .and. (k .eq. 0)) then
           if (nores .eqv. .false.) msq(j,k)=avegg*fac*msq_gg
@@ -138,10 +157,10 @@ c      endif
       enddo
 
       do j=1,4
-          msq(+j,+5)=msq_qb
-          msq(-j,+5)=msq_ab
-          msq(+5,+j)=msq_bq
-          msq(+5,-j)=msq_ba
+          msq(+j,+5*iq)=msq_qb
+          msq(-j,+5*iq)=msq_ab
+          msq(+5*iq,+j)=msq_bq
+          msq(+5*iq,-j)=msq_ba
 
 c          if (nores .eqv. .false.) msq(j,-j)=msq_qqb
 c          if (nores .eqv. .false.) msq(-j,j)=msq_qqb

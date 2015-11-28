@@ -1,4 +1,4 @@
-      subroutine gs_wt_prog(p,ig,is,ie,in,jn,je,jb,ia,gs)
+      subroutine gs_wt_prog(mq,qwidth,p,ig,is,ie,in,jn,je,jb,ia,gs)
 c---- Amplitudes for the proces
 c     g(ig)+s(is)-->W^-{e^-(ie)+nbar(in)}+t{W^+[n(jn)+e^+(je)]+b(jb)}+a(ia)
 c---- helicities: gs(ha,hg)
@@ -9,10 +9,10 @@ c---   1 = negative helicity, 2 = positive helicity
       include 'masses.f'
       include 'zprods_decl.f'
       integer is,ig,ie,in,ia,je,jn,jb
-      double precision p(mxpart,4),tsq
+      double precision p(mxpart,4),tsq,mq,qwidth
       double precision dot,msq,aDt,aDg,aDs,tDg,gDs,sga2,tga2
       double complex gs(2,2)
-      msq=mt**2
+      msq=mq**2
       aDt=dot(p,ia,jn)+dot(p,ia,je)+dot(p,ia,jb)
       tDg=dot(p,ig,jn)+dot(p,ig,je)+dot(p,ig,jb)
       aDg=dot(p,ia,ig)
@@ -413,8 +413,8 @@ c      endif
      &    ie,jb)*za(ia,jn)*zb(jb,ia)*zb(is,in)*zb(jn,je) )
 
 c--- Use the "overall scheme" to include the top width when necessary
-      if (tga2+mt**2 .gt. 0d0) then
-        tga2=dsqrt(tga2**2+(mt*twidth)**2)
+      if (tga2+mq**2 .gt. 0d0) then
+        tga2=dsqrt(tga2**2+(mq*qwidth)**2)
 c      if (dble(tga2+mt**2) .gt. 0d0) then
 c        tga2=tga2+dcmplx(0d0,mt*twidth)
       endif

@@ -130,10 +130,12 @@ c--- processes that use "gen4h"
         call gen4h(r,p,pswt,*999)
           
 c--- processes that use "gen5" 
-      elseif ( (case .eq. 'W_twdk') .or. (case .eq. 'vlchwt') ) then 
+      elseif ( (case .eq. 'W_twdk') 
+     . .or.    (case .eq. 'HWWjet') 
+     . .or.    (case .eq. 'vlchwt') 
+     . ) then 
         npart=5 
         call gen5(r,p,pswt,*999)
-    
 c--- processes that use "gen6"     
       elseif ( (case .eq. 'tt_bbl')
      .    .or. (case .eq. 'tt_bbh')
@@ -147,8 +149,15 @@ c--- processes that use "gen6"
         
 c--- processes that use "gen7"     
       elseif ( (case .eq. 'qq_ttg') ) then
+        m3=mt
+        m4=mt
+        m5=0d0
         npart=7
-        call gen7(r,p,pswt,*999)
+        call gen7m(r,p,m3,m4,m5,pswt,*999)
+c        npart=7
+c        call gen7_rap(r,p,pswt,*999)
+c	call writeout(p)
+c	pause
 
 c--- processes that use "gen8"     
       elseif ( (case .eq. 'qq_tth') 
@@ -333,6 +342,8 @@ c--- Calculate the required matrix elements
         call qqb_higgs(p,msq)
       elseif (case .eq. 'ggfus1') then
         call gg_hg(p,msq)
+      elseif (case .eq. 'HWWjet') then
+        call gg_hWWg(p,msq)
       elseif (case .eq. 'attjet') then
         call qqb_higgs_odd(p,msq)
       elseif (case .eq. 'qq_Hqq') then

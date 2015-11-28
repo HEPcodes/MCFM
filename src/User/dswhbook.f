@@ -194,6 +194,10 @@ c        1         2         3         4         5         6         7
 c--- Included for the extra code below
       include 'npart.f'
       include 'mxdim.f'
+      include 'scale.f'
+      include 'facscale.f'
+
+      double precision scale_store,facscale_store
 
       integer NWPAWC
       parameter(NWPAWC=10000000)
@@ -267,8 +271,14 @@ c--- is called for the first time, achieved via a dummy call to lowint
         do ifill=1,mxdim
           r(ifill)=0.5d0
         enddo
+c--- Be careful that dynamic scale choices aren't ruined
+c--- (in versions 5.1 and before, this occured when calling lowint)
+        scale_store=scale
+	facscale_store=facscale
         dummy=lowint(r,wgt)
-      
+        scale=scale_store
+	facscale=scale_store
+	
         imaxmom=npart
         if ((part.eq.'real').or.(part.eq.'tota').or.(part.eq.'todk'))
      .    imaxmom=imaxmom+1

@@ -45,7 +45,7 @@ c      integer nu
 c      double precision sumjetpt(2)
       double precision ht,qeta,mlbnu,merecon,reconcorr
       double precision dphi_ll,m_ll,mtrans,scut1,scut2
-      double precision pt34,pttwo
+c      double precision pt34,pttwo
       character*30 runstring
       common/runstring/runstring
       common/stopvars/ht,qeta,mlbnu,merecon,reconcorr
@@ -62,6 +62,22 @@ c      double precision sumjetpt(2)
       data first/.true./
 
       gencuts=.false.
+
+c--- extra transverse mass cut in W+jets for CDF
+      if (runstring(1:7) .eq. 'cdfjoey') then
+        mtrans=
+     .   (pjet(3,1)*pjet(4,1)+pjet(3,2)*pjet(4,2))
+     .   /dsqrt((pjet(3,1)**2+pjet(3,2)**2)
+     .         *(pjet(4,1)**2+pjet(4,2)**2))
+c---    transverse mass calculation
+        mtrans=2d0*dsqrt(pjet(3,1)**2+pjet(3,2)**2)
+     .   *dsqrt(pjet(4,1)**2+pjet(4,2)**2)*(1d0-mtrans)
+        mtrans=dsqrt(max(mtrans,0d0))
+        if (mtrans .lt. 20d0) then
+	  gencuts=.true.
+	  return
+	endif       
+      endif
       
       if (runstring(1:4) .eq. 'stop') then
 c--- do single-top search cuts instead
@@ -436,8 +452,8 @@ C--- if there are jet-like particles (see above), do more cuts
 
    99 format(1x,a29,f6.2,a17)
       
-  999 write(6,*) 'Error reading gencuts.DAT'
-      call flush(6)
+c  999 write(6,*) 'Error reading gencuts.DAT'
+c      call flush(6)
       stop      
 
       end

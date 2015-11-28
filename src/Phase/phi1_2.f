@@ -46,7 +46,7 @@ c--- if both particles are produced on-shell, reject if m1 too small
 
 c--- top is on-shell for W+t processes, so reject if m1 too small
       if ( ((case .eq. 'W_twdk') .or. (case .eq. 'Wtdkay')
-     .  .or.(case .eq. 'Wtbwdk'))
+     .  .or.(case .eq. 'W_cwdk') .or. (case .eq. 'Wtbwdk'))
      . .and. (m1 .lt. mass2) ) return 1
 c      s2min=bbsqmin
 c      s2max=min(s1,bbsqmax)
@@ -66,7 +66,7 @@ c      s2max=min(s1,bbsqmax)
       elseif (case .eq. 'Wtbndk')  then
         s2min=(mt+mb)**2
       elseif ((case .eq. 'W_twdk') .or. (case .eq. 'Wtdkay')
-     .   .or. (case .eq. 'Wtbwdk'))  then
+     .   .or. (case .eq. 'W_cwdk') .or. (case .eq. 'Wtbwdk'))  then
         oldzerowidth=zerowidth
         zerowidth=.true.
       endif
@@ -79,7 +79,7 @@ c      s2max=min(s1,bbsqmax)
       endif
 
       if ((case .eq. 'W_twdk') .or. (case .eq. 'Wtdkay')
-     ..or.(case .eq. 'Wtbwdk'))  then
+     ..or.(case .eq. 'W_cwdk') .or. (case .eq. 'Wtbwdk'))  then
         zerowidth=oldzerowidth
       endif
       

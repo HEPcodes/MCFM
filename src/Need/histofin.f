@@ -1,14 +1,13 @@
       block data linlog_data
       implicit none
       include 'nplot.f'
-      data linlog/150*'lin'/
+      data linlog/nplot*'lin'/
       end
 
       subroutine histofin(xsec,xsec_err,itno,itmx)
 c--- This outputs the final histograms for itno=0
 c--- For itno>0, this is an intermediate result only
       implicit none
-      include 'nplot.f'
       include 'verbose.f'
       include 'PDFerrors.f'
       include 'histo.f'
@@ -23,7 +22,7 @@ c--- For itno>0, this is an intermediate result only
       common/nlength/nlength
       common/nplotmax/nplotmax
       COMMON/EHISTO/EHIST,IHISTOMATCH,ICOUNTHISTO
-      common/scaleplots/scaleplots,scalefac
+      common/scaleplots/scalefac,scaleplots
       
       
       if (itno .eq. 0) then
@@ -55,13 +54,13 @@ c--- write out run info to top of files
       call writeinfo(98,xsec,xsec_err,itno)      
       call writeinfo(99,xsec,xsec_err,itno)      
 
-c--- calculate the errors in each plot (and store in 100+j)    
+c--- calculate the errors in each plot (and store in 2*maxhisto+j)    
       do j=1,nplotmax
       if (verbose) then
 c        write(6,*) 'Finalizing plot ',j
         call flush(6)
       endif
-      call mopera(j,'V',50+j,100+j,1d0,1d0)
+      call mopera(j,'V',maxhisto+j,2*maxhisto+j,1d0,1d0)
       enddo
 
       do j=1,nplotmax
@@ -92,9 +91,9 @@ c---generate topdrawer file
 c        write(6,*) 'Writing .top for plot ',j
         call flush(6)
       endif
-      call mtop(j,100+j,'x','y',linlog(j))
+      call mtop(j,2*maxhisto+j,'x','y',linlog(j))
       if ((PDFerrors) .and. (IHISTOMATCH(j) .ne. 0)) then
-        call emtop(j,100,'x','y',linlog(j))
+        call emtop(j,2*maxhisto,'x','y',linlog(j))
       endif
       enddo
       close (unit=99)
@@ -107,7 +106,7 @@ c---generate error file
 c              write(6,*) 'Writing .top for plot ',j
               call flush(6)
             endif
-            call etop(j,100,'x','y',linlog(j))
+            call etop(j,2*maxhisto,'x','y',linlog(j))
           endif
         enddo
         close (unit=97)

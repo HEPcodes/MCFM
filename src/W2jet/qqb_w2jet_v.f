@@ -95,7 +95,7 @@ c--- common block twopij with s_{ij}
       enddo
       enddo
 
-      prop=s(3,4)/(s(3,4)-wmass**2+im*wmass*wwidth)
+      prop=s(3,4)/dcmplx(s(3,4)-wmass**2,wmass*wwidth)
       
 ************************************************************************
 *     Contributions from QQGG matrix elements                          *

@@ -7,7 +7,7 @@
       implicit none
       include 'efficiency.f'
       include 'PDFerrors.f'
-      integer j,k,itno,itmx
+      integer j,k,itmx
       double precision xinteg,xinteg_err,minPDFxsec,maxPDFxsec
       double precision PDFerror,PDFperror,PDFnerror
       double precision lord_bypart(-1:1,-1:1),lordnorm

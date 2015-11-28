@@ -126,11 +126,11 @@ C     [Erratum-ibid.\ D {\bf 58}, 119901 (1998)]
 C     [arXiv:hep-ph/9610541].
 C     %%CITATION = HEP-PH 9610541;%%
       include 'constants.f'
-      include 'masses.f'
       include 'zprods_decl.f'
       include 'sprods_com.f'
       integer j,p1,p2,p3,p4,i1(4),i2(4),i3(4),i4(4)
-      double complex apppp(3),hm2
+      double complex apppp(3)
+      double precision hm2
 
 C if Higgs has non-zero width hm**2 must be recalculated 
       hm2 = s(p1,p2)+s(p1,p3)+s(p1,p4)+s(p2,p3)+ s(p2,p4)+s(p3,p4)
@@ -151,7 +151,7 @@ c            i3(j)=p2
 c            i4(j)=p3
             endif
 C---PRD55 Eq(21)
-      apppp(j)=-hm2**2/(za(i1(j),i2(j))*za(i2(j),i3(j))
+      apppp(j)=-dcmplx(hm2**2)/(za(i1(j),i2(j))*za(i2(j),i3(j))
      .  *za(i3(j),i4(j))*za(i4(j),i1(j)))
       enddo
 C---determine apppp(3) using sub-cyclic identity

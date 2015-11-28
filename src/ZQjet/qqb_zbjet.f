@@ -18,17 +18,15 @@ c--- Extended to include charm quark production via the variable "flav"
       include 'sprods_com.f'
       include 'zprods_com.f'
       include 'msq_cs.f'
-      include 'flags.f'
       include 'nflav.f'
-      integer i,j,k,pq,pl,nquark,swap(2),swap1(0:2),nup,ndo,
+      integer i,j,k,pq,pl,swap(2),swap1(0:2),
      . j1,j2,j3,icol
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),fac,faclo,
      .   qgZqg2(2,2),gqZqg2(2,2),
      .   qgZqg2_cs(0:2,2,2),gqZqg2_cs(0:2,2,2),
      .   qbgZqbg2_cs(0:2,2,2),gqbZqbg2_cs(0:2,2,2)
-      double precision tup,tdo
       double complex a111,a112,a121,a211,a122,a212,a221,a222
-      double complex b111,b112,b121,b211,b122,b212,b221,b222
+c      double complex b111,b112,b121,b211,b122,b212,b221,b222
       double complex qRb_a(2,2,2),qRb_b(2,2,2)
       double complex qqb_a(2,2,2),qqb_b(2,2,2),prop
       double complex qbq_a(2,2,2),qbq_b(2,2,2)

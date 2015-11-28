@@ -71,17 +71,17 @@ c--   s returned from sprod (common block) is 2*dot product
 
 c--   calculate propagators
       if     (dronly  .eqv. .true.) then
-      prop12=s(1,2)/(s(1,2)-zmass**2+im*zmass*zwidth)
-      prop34=s(3,4)/(s(3,4)-zmass**2+im*zmass*zwidth)
-      prop56=s(5,6)/(s(5,6)-zmass**2+im*zmass*zwidth)
+      prop12=s(1,2)/dcmplx(s(1,2)-zmass**2,zmass*zwidth)
+      prop34=s(3,4)/dcmplx(s(3,4)-zmass**2,zmass*zwidth)
+      prop56=s(5,6)/dcmplx(s(5,6)-zmass**2,zmass*zwidth)
       cprop=dcmplx(1d0)
       elseif (dronly .neqv. .true.) then
       prop12=dcmplx(s(1,2)/(s(1,2)-zmass**2))
       prop34=dcmplx(s(3,4)/(s(3,4)-zmass**2))
       prop56=dcmplx(s(5,6)/(s(5,6)-zmass**2))
-      propz1=(s(3,4)-zmass**2)/(s(3,4)-zmass**2+im*zmass*zwidth)
-      propz2=(s(5,6)-zmass**2)/(s(5,6)-zmass**2+im*zmass*zwidth)
-      props=(s(1,2)-zmass**2)/(s(1,2)-zmass**2+im*zmass*zwidth)
+      propz1=(s(3,4)-zmass**2)/dcmplx(s(3,4)-zmass**2,zmass*zwidth)
+      propz2=(s(5,6)-zmass**2)/dcmplx(s(5,6)-zmass**2,zmass*zwidth)
+      props=(s(1,2)-zmass**2)/dcmplx(s(1,2)-zmass**2,zmass*zwidth)
       cprop=propz1*propz2*props
       endif
             

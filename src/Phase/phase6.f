@@ -14,8 +14,8 @@ c---- with all 2 pi's (ie 1/(2*pi)^14)
       double precision r(mxdim)
       double precision p1(4),p2(4),p5(4),p6(4),p3(4),p4(4),p7(4),p8(4)
       double precision p12(4),p345(4),p678(4),p78(4),p34(4),smin,
-     . p348(4),p567(4),p56(4)
-      double precision wt,wt0,wt12,wt678,wt345,wt34,wt78
+     . p348(4),p567(4),p56(4),p3456(4)
+      double precision wt,wt0,wt12,wt678,wt345,wt34,wt78,wt3456,wt56
       double precision mass2,width2,mass3,width3
       common/breit/n2,n3,mass2,width2,mass3,width3 
       integer j
@@ -57,6 +57,27 @@ c---- calculate momenta of top and bbbar
         zerowidth=.true.
         call phi1_2(r(1),r(2),r(3),r(4),p12,p345,p678,wt12,*99)
         zerowidth=oldzerowidth
+
+      elseif (case .eq. 'HWWjet') then
+c--- In the case of HWWjet, we should generate s3456 according to
+c--- a Breit-Wigner at mH
+        n2=1
+        mass2=hmass
+        width2=hwidth
+        n3=0
+        call phi1_2(r(1),r(2),r(3),r(4),p12,p3456,p78,wt12,*99)
+        n2=1
+        mass2=wmass
+        width2=wwidth
+        n3=1
+        mass3=wmass
+        width3=wwidth
+        call phi1_2(r(5),r(6),r(7),r(8),p3456,p56,p34,wt3456,*99)
+        call phi3m0(r(13),r(14),p34,p3,p4,wt34,*99)
+        call phi3m0(r(11),r(12),p56,p5,p6,wt56,*99)
+        call phi3m0(r(15),r(16),p78,p7,p8,wt78,*99)
+        wt=wt0*wt12*wt3456*wt34*wt56*wt78
+        return
       else
         write(*,*) 'Case not supported in phase6.f'
         stop
@@ -92,7 +113,9 @@ c      write(6,*) '34',(p34(4)**2-p34(3)**2-p34(2)**2-p34(1)**2)
 c      write(6,*) '78',(p78(4)**2-p78(3)**2-p78(2)**2-p78(1)**2)
 
       call phi3m0(r(13),r(14),p34,p3,p4,wt34,*99)
-      if ((case .eq. 'Wtbwdk') .or. (case .eq. 'W_twdk')) then
+      if   ((case .eq. 'Wtbwdk') 
+     . .or. (case .eq. 'W_twdk')
+     . ) then
       call phi3m0(r(15),r(16),p56,p5,p6,wt78,*99)
       else
       call phi3m0(r(15),r(16),p78,p7,p8,wt78,*99)

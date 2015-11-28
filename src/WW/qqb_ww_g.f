@@ -59,7 +59,7 @@ c--   s returned from sprodx (common block) is 2*dot product
 c--   calculate propagators
       s127=s(1,2)+s(1,7)+s(2,7)
       if     (zerowidth  .eqv. .true.) then
-      prop12=s127/(s127-zmass**2+im*zmass*zwidth)  
+      prop12=s127/dcmplx(s127-zmass**2,zmass*zwidth)  
       cprop=1d0    
       elseif (zerowidth .neqv. .true.) then
       prop12=dcmplx(s127/(s127-zmass**2))

@@ -106,7 +106,8 @@ C---Modification so that only close to singular subtracted
 C---Do not set incldip because initial-final can fail 
 C---but final initial needs still to be tested
 
-        if ((case .eq. 'H_1jet') .and. (ip.eq.1) .and. (jp.eq.6)) then
+        if (((case .eq. 'H_1jet') .and. (ip.eq.1) .and. (jp.eq.6)) 
+     .  .or.((case .eq. 'HWWjet') .and. (ip.eq.1) .and. (jp.eq.8))) then
 c--- do nothing
         else
           if (u .gt. aif) return
@@ -151,7 +152,7 @@ C---call msqv again because vec has changed
         enddo
 
 c--- do something special if we're doing W+2,Z+2jet (jp .ne. 7)
-        if (jp .ne.7) then
+        if ((jp .ne. 7) .and. (case .ne. 'HWWjet')) then
           if (ip .lt. 7) then
 C ie for cases 56_i,65_i
             ipt=5

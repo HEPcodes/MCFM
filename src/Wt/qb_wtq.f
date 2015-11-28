@@ -1,4 +1,4 @@
-      subroutine qb_wtq(p,ix,is,ie,in,jn,je,jb,iy,msq)
+      subroutine qb_wtq(mq,qwidth,p,ix,is,ie,in,jn,je,jb,iy,msq)
 ************************************************************************
 *     Author: Francesco Tramontano                                     *
 *     February, 2005.                                                  *
@@ -25,27 +25,27 @@ c---- helicities: 1=minus 2=plus
       include 'ewcouple.f'
       include 'masses.f'
       integer ix,is,ie,in,jn,je,jb,iy
-      double precision p(mxpart,4),fac,prop,dot,msq
+      double precision p(mxpart,4),fac,prop,dot,msq,mq,qwidth
       double complex amp(2)
       fac=aveqq*gsq**2*gw**8*xn*cf*half
       prop=(two*dot(p,3,4)-wmass**2)**2+(wmass*wwidth)**2
-      prop=prop*((two*dot(p,3,4)-wmass**2)**2+(wmass*wwidth)**2)
-      prop=prop*((two*(dot(p,5,6)+dot(p,5,7)+dot(p,6,7))-mt**2)**2
-     . +(mt*twidth)**2)
-      call amps_4quark(p,ix,is,ie,in,jn,je,jb,iy,amp)
+      prop=prop*((two*dot(p,5,6)-wmass**2)**2+(wmass*wwidth)**2)
+      prop=prop*((two*(dot(p,5,6)+dot(p,5,7)+dot(p,6,7))-mq**2)**2
+     . +(mq*qwidth)**2)
+      call amps_4quark(mq,qwidth,p,ix,is,ie,in,jn,je,jb,iy,amp)
       msq=abs(amp(1))**2+abs(amp(2))**2
       msq=fac*msq/prop
       return
       end
  
  
-      subroutine amps_4quark(p,ix,is,ie,in,jn,je,jb,iy,amp)
+      subroutine amps_4quark(mq,qwidth,p,ix,is,ie,in,jn,je,jb,iy,amp)
       implicit none
       include 'constants.f'
-      include 'masses.f'
       include 'zprods_decl.f'
       integer j,ix,is,ie,in,jn,je,jb,iy
-      double precision p(mxpart,4),dot,xDy,txy2,sxy2,t(4),q(mxpart,4)
+      double precision p(mxpart,4),dot,xDy,txy2,sxy2,t(4),q(mxpart,4),
+     . mq,qwidth
       double complex amp(2),zab(mxpart,mxpart),zba(mxpart,mxpart)
       do j=1,4
       t(j)=p(jn,j)+p(je,j)+p(jb,j)
@@ -77,8 +77,8 @@ c---- helicities: 1=minus 2=plus
      &    za(jb,jn)*zb(in,is) )
 
 c--- Use the "overall scheme" to include the top width when necessary
-      if (txy2+mt**2 .gt. 0d0) then
-        txy2=dsqrt(txy2**2+(mt*twidth)**2)
+      if (txy2+mq**2 .gt. 0d0) then
+        txy2=dsqrt(txy2**2+(mq*qwidth)**2)
       endif
       amp(1)=amp(1)/txy2
       amp(2)=amp(2)/txy2

@@ -49,7 +49,8 @@ c--- calculate the amplitudes for a g+q initial state
       enddo
 
       call spinoru(9,q,za,zb)
-      call tree(1,2,3,4,9,ampp)
+c--- Note: call to tree now passes top mass as a parameter
+      call tree(mt,1,2,3,4,9,ampp)
       call gs_wc_dg(q,1,2,3,4,5,6,7,8,9,ampd)
 
 c--- Construct factored form of amplitudes by adding the helicities of
@@ -71,7 +72,7 @@ c--- calculate the amplitudes for a q+g initial state
 c--- Construct factored form of amplitudes by adding the helicities of
 c--- the heavy quark. Perform sum over the squares of gluon helicities
       call spinoru(9,q,za,zb)
-      call tree(2,1,3,4,9,ampp)
+      call tree(mt,2,1,3,4,9,ampp)
       call gs_wc_dg(q,2,1,3,4,5,6,7,8,9,ampd)
 
       msq_qg=0d0
