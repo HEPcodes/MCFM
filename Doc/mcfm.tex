@@ -1,0 +1,365 @@
+\documentclass[12pt]{article}
+
+\begin{document}
+\def\GeV{\mbox{GeV}}
+\title{MCFM}
+\section{Input parameters}
+The default input parameters are given in the table above.
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|c|c|c|} \hline
+Parameter & Fortran name & Default value & Location where set                 \cr 
+\hline
+$m_t$            & {\tt mt}      & 175 GeV             &{\tt /User/mdata.f}   \cr
+$m_\tau$         & {\tt mtau}      & 1.777 GeV           &{\tt /User/mdata.f}   \cr
+$m^2_\tau(Q=100\GeV)$& {\tt mtausq}  & 3.1602 GeV$^2$      &{\tt /User/mdata.f}   \cr
+$m^2_c(Q=100\GeV)$   & {\tt mcsq}    & 0.4  GeV$^2$        &{\tt /User/mdata.f}   \cr
+$m^2_b(Q=100\GeV)$   & {\tt mbsq}    & 10.7 GeV$^2$        &{\tt /User/mdata.f}   \cr
+$\Gamma_\tau$    & {\tt tauwidth}& 2.269$\times$10$^{-12}$~GeV
+                                                       &{\tt /User/mdata.f}   \cr
+$M_Z$            & {\tt zmass}   & 91.187 GeV          &{\tt /User/mdata.f}   \cr
+$\Gamma_Z$       & {\tt zwidth}  & 2.49 GeV            &{\tt /User/mdata.f}   \cr
+$M_W$            & {\tt wmass}   & 81.41 GeV           &{\tt /User/mdata.f}   \cr
+$\Gamma_W$       & {\tt wwidth}  & 2.06 GeV            &{\tt /User/mdata.f}   \cr
+$\alpha(M_Z)$    & {\tt aemmz}   & 1/128.89            &{\tt /User/mdata.f}   \cr
+$G_F$            & {\tt gf}      & 1.16639$\times$10$^{-5}$
+                                                       &{\tt /Inc/constants.f}\cr
+$\sin^2 \theta_w$& {\tt xw}      & Calculated          & See text             \cr
+$g^2_w$          & {\tt gwsq}    & Calculated          & See text             \cr
+$V_{ud}$         & {\tt Vud}     & 0.975               &{\tt /User/mdata.f}   \cr
+$V_{us}$         & {\tt Vus}     & 0.22220486          &{\tt /User/mdata.f}   \cr
+$V_{ub}$         & {\tt Vub}     & 0.                  &{\tt /User/mdata.f}   \cr
+$V_{cd}$         & {\tt Vcd}     & 0.22220486          &{\tt /User/mdata.f}   \cr
+$V_{cs}$         & {\tt Vcs}     & 0.975               &{\tt /User/mdata.f}   \cr
+$V_{cb}$         & {\tt Vcb}     & 0.                  &{\tt /User/mdata.f}   \cr
+\hline
+\end{tabular}
+\label{default} 
+\end{center}
+\end{table}
+We use the effective field theory approach, which is good for all
+except couplings to $b$-quarks (this may be added later). This is
+valid for scales below the top mass.
+      $$e^2 =  4 \pi \alpha(M_Z)$$
+      $$g_w^2 =  8 M^2_W  \frac{G_F}{\sqrt{2}} $$
+      $$\sin \theta_w =  \frac{e^2}{g_w^2}$$
+For further details, see Georgi, {\it Nucl. Phys.} {\bf B363} (1991)
+301. 
+
+\subsection{Parton distributions}
+The value of $\alpha_S(M_Z)$ is not adjustable; it is hardwired with the
+parton distribution. A collection of modern parton  distribution functions
+are included. 
+The distributions, together with their associated $\alpha_S(M_Z)$ values, 
+are given in the table below. For the older distributions, where the coupling 
+was specified by $\Lambda$ this requires some calculation/guesswork.
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c||c|c|}
+\hline
+{\tt mrs99\_1}  & 0.1175    & {\tt mrs99\_2}  & 0.1175      \cr
+{\tt mrs99\_3}  & 0.1175    & {\tt mrs99\_4}  & 0.1125      \cr    
+{\tt mrs99\_5}  & 0.1225    & {\tt mrs99\_6}  & 0.1178      \cr    
+{\tt mrs99\_7}  & 0.1171    & {\tt mrs99\_8}  & 0.1175      \cr    
+{\tt mrs99\_9}  & 0.1175    & {\tt mrs9910}  & 0.1175      \cr    
+{\tt mrs9911}  & 0.1175    & {\tt mrs9912}  & 0.1175      \cr    
+{\tt mrs98z1}  &  0.1175      & {\tt cteq5hq}  &  0.118  \cr
+{\tt mrs98z2}  &  0.1175      & {\tt cteq5f3}  &  0.106  \cr
+{\tt mrs98z3}  &  0.1175      & {\tt cteq5f4}  &  0.112  \cr
+{\tt mrs98z4}  &  0.1125      & {\tt mtungb1}  &  0.109  \cr
+{\tt mrs98z5}  &  0.1225      & {\tt cteq4\_m} &  0.116  \cr
+{\tt mrs96r1}  &  0.113       & {\tt cteq4\_d} &  0.116  \cr
+{\tt mrs96r2}  &  0.120       & {\tt cteq4\_l} &  0.132  \cr
+{\tt mrs96r3}  &  0.113       & {\tt cteq4a1}  &  0.110  \cr
+{\tt mrs96r4}  &  0.120       & {\tt cteq4a2}  &  0.113  \cr
+{\tt hmrs90e}  &  0.098382675 & {\tt cteq4a3}  &  0.116  \cr
+{\tt hmrs90b}  &  0.107961191 & {\tt cteq4a4}  &  0.119  \cr
+{\tt cteq5\_m} &  0.118       & {\tt cteq4a5}  &  0.122  \cr
+{\tt cteq5\_d} &  0.118       & {\tt cteq4hj}  &  0.116  \cr
+{\tt cteq5\_l} &  0.127       & {\tt cteq4lq}  &  0.114  \cr
+{\tt cteq5hj}  &  0.118       &   &    \cr
+\hline
+\end{tabular}
+\end{center}
+\label{pdlabel}
+\end{table}
+
+Alternatively it would be simple to write a link to PDFLIB.  
+
+\section{Runtime options}
+Run time options are chosen by modifying the file 
+{\tt /bin/options.DAT}. Each line of this file is of the form
+\begin{displaymath}
+{\tt value} \hspace{3cm} [{\tt parameter}]
+\end{displaymath}
+and we will give a description of all the parameters below, together with
+valid and/or sensible inputs for ${\tt value}$.
+
+\begin{itemize}
+\item {\tt nproc}.
+The process to be studied is given by
+choosing a process number, according to the following table.
+$f(p_i)$ denotes a generic partonic jet.
+\begin{table}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+{\tt nproc} & $f(p_1)+f(p_2) \to \ldots $ \cr
+\hline
+0   & $ W^+ ~\mbox{for total cross-section--No $W$-BR} $ \cr 
+1   & $ W^+(\to \nu(p_3)+e^+(p_4)) $ \cr 
+5   & $ W^- ~\mbox{for total cross-section--No $W$-BR} $ \cr 
+6   & $ W^-(\to e^-(p_3)+\bar{\nu}(p_4)) $ \cr 
+\hline
+11  & $ f(p_5)+W^+(\to \nu(p_3)+e^+(p_4)) $ \cr 
+16  & $ f(p_5)+W^-(\to e^-(p_3)+\bar{\nu}(p_4)) $ \cr 
+\hline
+21  & $ b(p_5)+\bar{b}(p_6) +W^+(\to \nu(p_3)+e^+(p_4)) $ \cr 
+22  & $ f(p_5)+f(p_6) +W^+(\to \nu(p_3)+e^+(p_4)) $ \cr 
+26  & $ b(p_5)+\bar{b}(p_6) +W^-(\to e^-(p_3)+\bar{\nu}(p_4)) $ \cr 
+27  & $ f(p_5)+f(p_6) +W^-(\to e^-(p_3)+\bar{\nu}(p_4)) $ \cr 
+\hline
+30  & $ Z^0 ~\mbox{for total cross-section--No $Z$-BR} $ \cr 
+31  & $ Z^0(\to e^-(p_3)+e^+(p_4)) $ \cr 
+32  & $ Z_0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) $ \cr 
+33  & $ Z^0(\to b(p_3)+\bar{b}(p_4)) $ \cr 
+\hline
+41  & $ f(p_5)+Z^0(\to e^-(p_3)+e^+(p_4)) $ \cr 
+42  & $ f(p_5)+Z_0(\to 3*(\nu(p_3)+\bar{\nu}(p_4)))-(\mbox{sum over 3} \nu) $ \cr 
+43  & $ f(p_5)+Z^0(\to b(p_3)+\bar{b}(p_4)) $ \cr 
+44  & $ f(p_5)+f(p_6)+Z^0(\to e^-(p_3)+e^+(p_4)) $ \cr 
+\hline
+51  & $ b(p_5)+\bar{b}(p_6)+Z^0(\to e^-(p_3)+e^+(p_4)) $ \cr 
+52  & $ b(p_5)+\bar{b}(p_6)+Z_0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) $ \cr 
+53  & $ b(p_5)+\bar{b}(p_6)+Z^0(\to b(p_3)+\bar{b}(p_4)) $ \cr 
+\hline
+60  & $ W^+ + W^- ~\mbox{for total cross-section--No $W$-BRs} $ \cr 
+61  & $ W^+(\to \nu(p_3)+e^+(p_4)) +W^-(\to e^-(p_5)+\bar{\nu}(p_6)) $ \cr 
+62  & $ W^+(\to \nu(p_3)+e^+(p_4)) +W^-(\to q(p_5)+{\bar q}(p_6)) $ \cr 
+63  & $ W^+(\to q(p_3)+{\bar q}(p_4)) +W^-(\to e^-(p_5)+\bar{\nu}(p_6)) $ \cr 
+\hline
+70  & $ Z^0 + W^+ ~\mbox{for total cross-section--No $W$or $Z$-BRs} $ \cr 
+71  & $ Z^0(\to e^-(p_5)+e^+(p_6))+W^+(\to \nu(p_3)+\mu^+(p_4)) $ \cr 
+72  & $ Z^0(\to 3*(\nu(p_5)+\bar{\nu}(p_6)))+W^+(\to \nu(p_3)+e^+(p_4)) $ \cr 
+73  & $ Z^0(\to b(p_5)+\bar{b}(p_6))+W^+(\to \nu(p_3)+e^+(p_4)) $ \cr 
+\hline
+75  & $ Z^0 + W^- ~\mbox{for total cross-section--No $W$or $Z$-BRs} $ \cr 
+76  & $ Z^0(\to e^-(p_5)+e^+(p_6))+W^-(\to \mu^-(p_3)+\bar{\nu}(p_4)) $ \cr 
+77  & $ Z^0(\to \nu(p_5)+\bar{\nu}(p_6))+W^-(\to e^-(p_3)+\bar{\nu}(p_4)) $ \cr 
+78  & $ Z^0(\to b(p_5)+\bar{b}(p_6))+W^-(\to e^-(p_3)+\bar{\nu}(p_4)) $ \cr 
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+{\tt nproc} & $f(p_1)+f(p_2) \to \ldots $ \cr
+\hline
+80  & $ Z^0 + Z^0 ~\mbox{for total cross-section--No $Z$-BRs} $ \cr 
+81  & $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to \mu^-(p_3)+\mu^+(p_4)) $ \cr 
+82  & $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) $ \cr 
+83  & $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to b(p_3)+\bar{b}(p_4)) $ \cr 
+84  & $ Z^0(\to b(p_5)+\bar{b}(p_6))+Z^0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) $ \cr 
+\hline
+85  & $ Z^0 + Z^0 ~\mbox{for total cross-section} ~(\mathrm{no}~\gamma^*) $ \cr 
+86  & $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to \mu^-(p_3)+\mu^+(p_4)) ~(\mathrm{no}~\gamma^*) $ \cr 
+87  & $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) ~(\mathrm{no}~\gamma^*) $ \cr 
+88  & $ Z^0(\to e^-(p_5)+e^+(p_6))+Z^0(\to b(p_3)+\bar{b}(p_4)) ~(\mathrm{no}~\gamma^*) $ \cr 
+89  & $ Z^0(\to
+b(p_5)+\bar{b}(p_6))+Z^0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) ~(\mathrm{no}~\gamma^*) $ \cr 
+\hline
+90  & $ H + W^+ ~\mbox{for total cross-section--No $W$or $H$-BRs} $ \cr 
+91  & $ H(\to b(p_5)+\bar{b}(p_6)) + W^+(\to \nu(p_3)+e^+(p_4)) $ \cr 
+96  & $ H(\to b(p_5)+\bar{b}(p_6)) + W^-(\to e^-(p_3)+\bar{\nu}(p_4)) $ \cr 
+\hline
+100 & $ H + Z^0 ~\mbox{for total cross-section--No $Z$or $H$-BRs} $ \cr 
+101 & $ H(\to b(p_5)+\bar{b}(p_6)) + Z^0(\to e^-(p_3)+e^+(p_4)) $ \cr 
+102 & $ H(\to b(p_5)+\bar{b}(p_6)) + Z^0(\to 3*(\nu(p_3)+\bar{\nu}(p_4))) $ \cr 
+103 & $ H(\to b(p_5)+\bar{b}(p_6)) + Z^0(\to b(p_3)+\bar{b}(p_4)) $ \cr 
+\hline
+110 & $ H(\to W^- W^+) ~\mbox{for total cross-section--No $H$or $W$-BRs} $ \cr 
+111 & $ H(\to W^-(e^-(p_5)+\bar{\nu}(p_6))+W^+(\nu(p_3)+e^+(p_4))) $ \cr 
+\hline
+121 & $ H(\to Z^0(e^-(p_5)+e^+(p_6))+Z^0(\mu^-(p_3)+\mu^+(p_4)) $ \cr 
+122 & $ H(\to Z^0(e^-(p_5)+e^+(p_6))+Z^0(3*(\nu(p_3)+\bar{\nu}(p_4))) $ \cr 
+\hline
+150 & $ t \bar{t} ~\mbox{for total cross-section} $ \cr 
+151 & $ t(\to\nu(p_3)+e^+(p_4)+b(p_5))+\bar{b}(p_6))+W^-(\to e^-(p_7)+\bar{\nu}(p_8))~(\mathrm{missing}) $ \cr 
+152 & $ t(\to\nu(p_3)+e^+(p_4)+b(p_5))+\bar{b}(p_6))+W^-(\to q(p_7)+{\bar q}(p_8))~(\mathrm{missing}) $ \cr 
+\hline
+161 & $ t(\to\nu(p_3)+e^+(p_4)+b(p_5))+\bar{b}(p_6))+q(p_7)~(\mathrm{missing}) $ \cr 
+\hline
+171 & $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{b}(p_6)) $ \cr 
+\hline
+180 & $ \tau^- \tau^+ ~\mbox{for total cross-section-Drell-Yan} $ \cr 
+181 & $ \tau^-(\to \nu(p_3)+e^+(p_4)+\nu(p_5))+\tau^+(\to \bar{\nu}(p_6)+e^-(p_8)+\bar{\nu}(p_9)) $ \cr  
+\hline
+190 & $ t(p_3) + {\bar t}(p_4) + H(p_5) $ \cr 
+191 & $ t(p_3+p_4+p_5) + {\bar t}(p_6+p_7+p_8) + H(p_9+p_{10}) $ \cr 
+192 & $ t(\to \nu(p_3)+e^+(p_4)+b(p_5)) +
+{\bar t}(\to {\bar b}(p_6)+{\bar \nu}(p_7)+e^-(p_8)) + H(p_9+p_{10}) $ \cr 
+\hline
+200 & $ H(p_3+p_4) + f(p_5) ~\mbox{for total cross-section-No $H$ BR} $ \cr 
+201 & $ H(\to \tau(p_3)+{\bar \tau}(p_4)) + f(p_5)$ \cr 
+202 & $ H(\to \tau^- (\to \nu_\tau(p_3)+e^-(p_4)+{\bar \nu_e}(p_5))
++\tau^+(\to {\bar \nu_\tau}(p_6)+\nu_e(p_7)+e^+(p_8)) + f(p_9)$ \cr 
+\hline
+30$n$ &  Check of volume of $n$-particle phase space \cr
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\item {\tt part}.
+This parameter has 4 possible values, described below:
+\begin{itemize}
+\item {\tt lord}.
+The calculation is performed at leading order only.
+\item {\tt virt}.
+Virtual (loop) contributions to the next-to-leading order result are
+calculated, (+counterterms to make them finite).
+\item {\tt real}.
+In addition to the loop diagrams calculated by {\tt virt}, the full
+next-to-leading order results must include contributions from diagrams
+involving real gluon emission (-counterterms to make them finite).
+\item {\tt tota}.
+For simplicity, the {\tt tota} option simply runs the {\tt virt} and
+{\tt real} real pieces in series before performing a sum to obtain
+the full next-to-leading order result. In practise, it may be more
+efficient to do this by hand as described below.
+\end{itemize}
+
+\item {\tt runstring}.
+When {\tt MCFM} is run, it will write output to several files. The
+label {\tt runstring} (up to 9 characters long) will be appended
+to the names of these files.
+
+\item {\tt verbose}.
+Setting this flag to {\tt .false.} will disable certain output in
+the initialization stage of the program. It is recommended that
+this be left at the default value {\tt .true.}.
+
+\item {\tt sqrts}. This is the centre-of-mass energy, $\sqrt{S}$ of
+the colliding particles, measured in GeV.
+
+\item {\tt ih1}, {\tt ih2}. The identities of the incoming hadrons
+may be set with these parameters, allowing simulations for both
+$p{\bar p}$ (such as the Tevatron) and $pp$ (such as the LHC)
+simulations. Setting {\tt ih1} equal to ${\tt +1}$ corresponds to
+a proton, whilst ${\tt -1}$ corresponds to an anti-proton.
+
+\item {\tt pdlabel}. The choice of parton distribution is made by
+inserting the appropriate 7-character code from Table~{\ref{pdlabel}}
+here. As mentioned above, this also sets the value of $\alpha_S(M_Z)$.
+
+\item {\tt hmass}. For processes involving the Higgs boson, this
+parameter should be set equal to the putative value of $M_H$.
+
+\item {\tt scale}. This parameter may be used to adjust the value
+of the renormalization and factorization scale. This is the scale
+at which $\alpha_S$ is evaluated and will typically be set to either
+a mass scale appropriate to the process ($M_W$, $M_Z$, $M_t$ for
+instance).
+
+\item {\tt m34min}, {\tt m34max}, {\tt m56min}, {\tt m56max}.
+These parameters represent a basic set of cuts that may be applied
+to the calculated cross-section. The only events that contribute to
+the cross-section will have, for example,
+{\tt m34min} $<$ {\tt m34} $<$ {\tt m34max} where {\tt m34} is the
+invariant mass of particles 3 and 4 that are specified by {\tt nproc}.
+
+\item {\tt rtsmin}. This provides a cut-off on the lowest generated
+$\hat{s}$ for the partonic event. This cut-off is required for
+numerical accuracy and should not be altered.
+
+\item {\tt zerowidth}. When set to {\tt .true.} then all vector
+bosons are produced on-shell. This is appropriate for calculations
+of {\it total} cross-sections such as {\tt nproc} $=$ {\tt 60},
+{\tt 70} and {\tt 80}. When interested in decay products of the
+bosons (such as {\tt nproc} $=$ {\tt 61}), this should be set
+to {\tt .false.}.
+
+\item {\tt makecuts}. If this parameter is set to {\tt .false.} then
+no additional cuts are applied to the events. Otherwise, events will
+be rejected according to a set of cuts that is specified by routines
+in {\tt /src/User/} and which varies according to the process
+specified in {\tt nproc}. 
+
+\item {\tt Rcut}. If the final state of the chosen process contains
+either quarks or gluons then for each event an attempt will be made
+to form them into jets. For this it is necessary to define the
+jet separation $\Delta R=\sqrt{{\Delta \eta}^2 + {\Delta \phi}^2}$
+so that after jet combination, all jet pairs are separated by
+$\Delta R >$~{\tt Rcut}. All jets will also satisfy the hard-coded
+cuts $E_T^{\rm jet} > 15$~GeV, $|\eta^{\rm jet}| < 2.5$.
+
+\item {\tt itmx1}, {\tt itmx2}. The program will perform two runs of
+{\tt VEGAS} - once for prec-conditioning and then the final run to
+collect the total cross-section and fill histograms. The number of
+sweeps for each run is given by {\tt itmx1} (pre-conditioning)
+and {\tt itmx2} (final). The recommended values are the default,
+{\tt 10}.
+
+\item {\tt ncall1}, {\tt ncall2}. For every sweep of {\tt VEGAS},
+the number of events generated will be {\tt ncall1} in the
+pre-conditioning stage and {\tt ncall2} in the final run. The number
+of events required depends upon a number of factors. The error
+estimate on a total cross-section will often be reasonable for a
+fairly small number of events, whereas accurate histograms will
+require a longer run. As the number of particles in the final state
+increases, so should the number of calls per sweep. Typically one
+might make trial runs with {\tt part} set to {\tt lord} to determine
+reasonable values for {\tt ncall1} and {\tt ncall2}. Such values
+should also be appropriate for the {\tt virt} piece of
+next-to-leading order and should probably be increased by a factor of
+$\sim 5$ for the {\tt real} calculation.
+
+\item {\tt ij}. This is the seed for the {\tt VEGAS} integration
+and can be altered to give different results for otherwise identical
+runs.
+
+\item {\tt realwt}. This is a technical parameter and its value
+should be left unchanged ({\tt .true.}).
+
+\item {\tt cutoff}. This is a technical parameter and its value
+should be left unchanged ({\tt 10}).
+
+\item {\tt dryrun}. The default value of this parameter is
+{\tt .false.}. When set to {\tt .true.} the pre-conditioning sweeps
+in the {\tt VEGAS} integration are skipped, with the reported
+results coming from a single run.
+
+\item {\tt debug}. This is useful as a debugging measure and as
+such it should be left unchanged ({\tt .false.}).
+
+\end{itemize}
+
+\section{Output}
+ 
+In addition to the direct output of the program to {\tt stdout}, after
+the final sweep of {\tt VEGAS} the program will output two additional files.
+
+The standard output will detail the iteration-by-iteration best estimate
+of the total cross-section, together with the accompanying error estimate.
+After all sweeps have been completed, a final summary line will be printed.
+In the {\tt npart}~$=$~{\tt tota} case, this last line will actually be the
+sum of the two separate real and virtual integrations.
+
+The two other files that are output will be {\tt outputname.dat} and
+{\tt outputname.top}, which contain data for various histograms associated
+with the calculated process. The first of these is in a raw format 
+which may be read in by a plotting package of the user's choosing. The
+other file contains the histograms as a {\tt TOPDRAWER} file. The structure
+of {\tt outputname} is as follows:
+\begin{displaymath}
+{\tt procname\_part\_pdlabel\_scale\_runstring}
+\end{displaymath}
+where {\tt procname} is a label assigned by the program corresponding to
+the calculated process; the remaining labels are as input by the user
+in the file {\tt options.DAT}.
+ 
+\end{document}
+

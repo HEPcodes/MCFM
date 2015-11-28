@@ -1,0 +1,17 @@
+0d0		[ptbbmin]
+0.7d0		[rebmin]
+0.7d0		[rbbmin]
+0.8d0		[costh_max]
+1d0		[cos1max]
+2d0		[ybmax]
+15d0		[ptbmin]
+2.5d0		[yemax]
+20d0		[ptemin]
+20d0		[ptnmin]
+20d0		[ptjetmin]
+2d0		[yjetmax]
+165d9		[mtopright]
+500d9		[mtopwrong]
+zbbar	        [scuts]
+
+

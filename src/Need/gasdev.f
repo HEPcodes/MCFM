@@ -1,0 +1,21 @@
+      DOUBLE PRECISION FUNCTION GASDEV(IDUM)
+      IMPLICIT NONE
+      INTEGER IDUM,ISET
+      DOUBLE PRECISION V1,V2,FAC,GSET,RSQ,RN
+      SAVE ISET,GSET
+      DATA ISET/0/
+      IF (ISET.EQ.0) THEN
+1       V1=2*RN(IDUM)-1
+        V2=2*RN(IDUM)-1
+        RSQ=V1**2+V2**2
+        IF((RSQ.GE.1.D0).OR.(RSQ.EQ.0))GO TO 1
+        FAC=SQRT(-2*LOG(RSQ)/RSQ)
+        GSET=V1*FAC
+        GASDEV=V2*FAC
+        ISET=1
+      ELSE
+        GASDEV=GSET
+        ISET=0
+      ENDIF
+      RETURN
+      END

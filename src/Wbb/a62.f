@@ -1,0 +1,33 @@
+      double complex function a62(st,j1,j2,j3,j4,j5,j6,za,zb) 
+      implicit none
+************************************************************************
+*     Author: R.K. Ellis                                               *
+*     July, 1998.                                                      *
+************************************************************************
+*     implementation of Eqs. (2.7) and (2.8) of BDKW hep-ph/9610370
+*     with ns=0
+*     character string st can take the value pp or pm
+      include 'constants.f'
+      include 'sprodx.f'
+      integer j1,j2,j3,j4,j5,j6
+      character*2 st
+      double complex a6,aa6sf,aa6uv
+
+c----ultraviolet subtraction aa6uv not implemented.
+c----but since a62 is never neeeded I will not bother.
+      call a6routine(st,j1,j2,j3,j4,j5,j6,za,zb,aa6sf,aa6uv) 
+      a62=a6(st,j1,j2,j3,j4,j5,j6,za,zb)/xnsq+aa6sf*dble(nf)/xn
+
+      if (st .eq. 'pp') then
+      a62=a62+a6('pm',j1,j3,j2,j4,j5,j6,za,zb)*(one+one/xnsq)
+     &       -a6('sl',j2,j3,j1,j4,j5,j6,za,zb)/xnsq
+      elseif (st .eq. 'pm') then
+      a62=a62+a6('pp',j1,j3,j2,j4,j5,j6,za,zb)*(one+one/xnsq)
+     &       +a6('sl',j3,j2,j1,j4,j5,j6,za,zb)/xnsq
+      else
+      write(6,*) 'Unimplemented st in a62',st 
+      stop
+      endif
+      return
+      end
+

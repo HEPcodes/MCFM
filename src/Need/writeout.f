@@ -1,0 +1,56 @@
+      subroutine writeout(p)
+      implicit none
+      include 'constants.f'
+      integer j,n
+      double precision p(mxpart,4),dot,sum(4)
+      write(6,*) 'In writeout'
+      write(6,41) p(1,1),p(1,2),p(1,3),p(1,4)
+      write(6,41) p(2,1),p(2,2),p(2,3),p(2,4)
+      write(6,41) p(3,1),p(3,2),p(3,3),p(3,4)
+      write(6,41) p(4,1),p(4,2),p(4,3),p(4,4)
+      write(6,41) p(5,1),p(5,2),p(5,3),p(5,4)
+      write(6,41) p(6,1),p(6,2),p(6,3),p(6,4)
+      write(6,41) p(7,1),p(7,2),p(7,3),p(7,4)
+      write(6,41) p(8,1),p(8,2),p(8,3),p(8,4)
+      write(6,41) p(9,1),p(9,2),p(9,3),p(9,4)
+      write(6,41) p(10,1),p(10,2),p(10,3),p(10,4)
+ 41   format('     .',2(D24.15,','),/,'     .',2(D24.15,','))
+      pause
+      do j=1,4
+      sum(j)=p(1,j)+p(2,j)
+      enddo
+      do n=3,mxpart
+      do j=1,4
+      sum(j)=sum(j)+p(n,j)
+      enddo
+      enddo
+
+      write(6,*) '     psum1',sum(1)
+      write(6,*) '     psum2',sum(2)
+      write(6,*) '     psum3',sum(3)
+      write(6,*) '     psum4',sum(4)
+      do j=1,4
+      sum(j)=-p(1,j)-p(2,j)
+      enddo
+      do n=3,mxpart
+      do j=1,4
+      sum(j)=sum(j)+p(n,j)
+      enddo
+      enddo
+
+      write(6,*) '     msum1',sum(1)
+      write(6,*) '     msum2',sum(2)
+      write(6,*) '     msum3',sum(3)
+      write(6,*) '     msum4',sum(4)
+      write(6,*) 'p3Dp3',dot(p,3,3)
+      write(6,*) 'p4Dp4',dot(p,4,4)
+      write(6,*) 'p5Dp5',dot(p,5,5)
+      write(6,*) 'p6Dp6',dot(p,6,6)
+      write(6,*) 'p7Dp7',dot(p,7,7)
+      write(6,*) 'p8Dp8',dot(p,8,8)
+      write(6,*) 'p9Dp9',dot(p,9,9)
+      write(6,*) 'p10Dp10',dot(p,10,10)
+      write(6,*)
+
+      return
+      end

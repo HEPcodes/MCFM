@@ -1,0 +1,161 @@
+      subroutine pdfwrap(pdlabel)
+      implicit none
+      character*7 pdlabel
+      double precision amz
+      common/couple/amz
+
+C MRS99
+C  1     COR01  central gluon, a_s    300      0.1175   0.00537  C
+C  2     COR02  higher gluon          300      0.1175   0.00497  C
+C  3     COR03  lower gluon           300      0.1175   0.00398  C
+C  4     COR04  lower a_s             229      0.1125   0.00585  C
+C  5     COR05  higher a_s            383      0.1225   0.00384  C
+C  6     COR06  quarks up             303.3    0.1178   0.00497  C
+C  7     COR07  quarks down           290.3    0.1171   0.00593  C
+C  8     COR08  strange up            300      0.1175   0.00524  C
+C  9     COR09  strange down          300      0.1175   0.00524  C
+C  10    C0R10  charm up              300      0.1175   0.00525  C
+C  11    COR11  charm down            300      0.1175   0.00524  C
+C  12    COR12  larger d/u            300      0.1175   0.00515  C
+
+      if     (pdlabel .eq. 'mrs99_1') then
+      amz=0.1175d0
+      elseif (pdlabel .eq. 'mrs99_2') then
+      amz=0.1175d0
+      elseif (pdlabel .eq. 'mrs99_3') then
+      amz=0.1175d0
+      elseif (pdlabel .eq. 'mrs99_4') then
+      amz=0.1125d0
+      elseif (pdlabel .eq. 'mrs99_5') then
+      amz=0.1225d0
+      elseif (pdlabel .eq. 'mrs99_6') then
+      amz=0.1178d0
+      elseif (pdlabel .eq. 'mrs99_7') then
+      amz=0.1171d0
+      elseif (pdlabel .eq. 'mrs99_8') then
+      amz=0.1175d0
+      elseif (pdlabel .eq. 'mrs99_9') then
+      amz=0.1175d0
+      elseif (pdlabel .eq. 'mrs9910') then
+      amz=0.1175d0
+      elseif (pdlabel .eq. 'mrs9911') then
+      amz=0.1175d0
+      elseif (pdlabel .eq. 'mrs9912') then
+      amz=0.1175d0
+      elseif (pdlabel .eq. 'mrs98z1') then
+      amz=0.1175d0
+      elseif (pdlabel .eq. 'mrs98z2') then
+      amz=0.1175d0
+      elseif (pdlabel .eq. 'mrs98z3') then
+      amz=0.1175d0
+      elseif (pdlabel .eq. 'mrs98z4') then
+      amz=0.1125d0
+      elseif (pdlabel .eq. 'mrs98z5') then
+      amz=0.1225d0
+      elseif (pdlabel .eq. 'mrs96r1') then
+      amz=0.113d0
+      elseif (pdlabel .eq. 'mrs96r2') then
+      amz=0.120d0
+      elseif (pdlabel .eq. 'mrs96r3') then
+      amz=0.113d0
+      elseif (pdlabel .eq. 'mrs96r4') then
+      amz=0.120d0
+      elseif (pdlabel .eq. 'hmrs90e') then
+      amz=0.098382675d0
+      elseif (pdlabel .eq. 'hmrs90b') then
+      amz=0.107961191d0
+      elseif (pdlabel .eq. 'mrs95ap') then
+      amz=0.112683043d0
+      elseif (pdlabel .eq. 'mrs95_g') then
+      amz=0.114476658d0
+
+C   1      CTEQ4M   Standard MSbar scheme   0.116        1.6      cteq4m.tbl
+C   2      CTEQ4D   Standard DIS scheme     0.116        1.6      cteq4d.tbl
+C   3      CTEQ4L   Leading Order           0.116        1.6      cteq4l.tbl
+C   4      CTEQ4A1  Alpha_s series          0.110        1.6      cteq4a1.tbl
+C   5      CTEQ4A2  Alpha_s series          0.113        1.6      cteq4a2.tbl
+C   6      CTEQ4A3  same as CTEQ4M          0.116        1.6      cteq4m.tbl
+C   7      CTEQ4A4  Alpha_s series          0.119        1.6      cteq4a4.tbl
+C   8      CTEQ4A5  Alpha_s series          0.122        1.6      cteq4a5.tbl
+C   9      CTEQ4HJ  High Jet                0.116        1.6      cteq4hj.tbl
+C   10     CTEQ4LQ  Low Q0                  0.114        0.7      cteq4lq.tbl
+      elseif (pdlabel .eq. 'cteq4_m') then
+      amz=0.116d0
+      elseif (pdlabel .eq. 'cteq4_d') then
+      amz=0.116d0
+      elseif (pdlabel .eq. 'cteq4_l') then 
+c---debug
+      amz=0.132d0
+      elseif (pdlabel .eq. 'cteq4a1') then
+      amz=0.110d0
+      elseif (pdlabel .eq. 'cteq4a2') then
+      amz=0.113d0
+      elseif (pdlabel .eq. 'cteq4a3') then
+      amz=0.116d0
+      elseif (pdlabel .eq. 'cteq4a4') then
+      amz=0.119d0
+      elseif (pdlabel .eq. 'cteq4a5') then
+      amz=0.122d0
+      elseif (pdlabel .eq. 'cteq4hj') then
+      amz=0.116d0
+      elseif (pdlabel .eq. 'cteq4lq') then
+      amz=0.114d0
+      elseif (pdlabel .eq. 'cteq5_m') then
+      Call SetCtq5(1)
+      amz=0.118d0
+      elseif (pdlabel .eq. 'cteq5_d') then
+      Call SetCtq5(2)
+      amz=0.118d0
+      elseif (pdlabel .eq. 'cteq5_l') then
+      Call SetCtq5(3)
+      amz=0.127d0
+      elseif (pdlabel .eq. 'cteq5hj') then
+      Call SetCtq5(4)
+      amz=0.118d0
+      elseif (pdlabel .eq. 'cteq5hq') then
+      Call SetCtq5(5)
+      amz=0.118d0
+      elseif (pdlabel .eq. 'cteq5f3') then
+      Call SetCtq5(6)
+      amz=0.106d0
+      elseif (pdlabel .eq. 'cteq5f4') then
+      Call SetCtq5(7)
+      amz=0.112d0
+c--- NEW ATTEMPT
+      elseif (pdlabel .eq. 'mtungb1') then
+c--- need a value here: Lambda = 200 MeV
+      amz=0.109d0
+      else
+          write(6,*) 'Unimplemented distribution= ',pdlabel
+          write(6,*) 'Implemented are: ',
+     .'mrs99_1,','mrs99_2,','mrs99_3,','mrs99_4,','mrs99_5,','mrs99_6,',
+     .'mrs99_7,','mrs99_8,','mrs99_9,','mrs9910,','mrs9911,','mrs9912,',
+     . 'mrs98z1,',
+     . 'mrs98z2,',
+     . 'mrs98z3,',
+     . 'mrs98z4,',
+     . 'mrs98z5,',
+     . 'mrs96r1,',
+     . 'mrs96r2,',
+     . 'mrs96r3,',
+     . 'mrs96r4,',
+     . 'hmrs90e,',
+     . 'hmrs90b,',
+     . 'mrs95ap,',
+     . 'mrs95_g,',
+     . 'cteq4_m,',
+     . 'cteq5_m,',
+     . 'cteq5_d,',
+     . 'cteq5_l,',
+     . 'cteq5hj,',
+     . 'cteq5hq,',
+     . 'cteq5f3,',
+     . 'cteq5f4,',
+     . 'mtungb1'
+
+          stop
+      endif      
+      return
+      end
+ 
+
