@@ -13,7 +13,8 @@ c---  ('none') to perform no clustering at all
       include 'jetlabel.f'
       include 'bbproc.f'
       include 'process.f'
-      double precision q(mxpart,4),qfinal(mxpart,4),R,Rbbmin
+      double precision q(mxpart,4),qfinal(mxpart,4),
+     & qreorder(mxpart,4),R,Rbbmin
       integer nqcdjets,nqcdstart,isub,i,nu
       logical first
       character*4 part
@@ -96,6 +97,19 @@ c---  ('none') to perform no clustering at all
         write(6,*) 'Invalid choice of jet algorithm, must be'
         write(6,*) '   ktal, ankt, cone, hqrk, none'
         stop
+      endif
+
+c--- reorder jets for some special cases, to preserve identities of
+c--- particles for use in the plotting routines
+      if (    (case .eq. 'qq_ttg')
+     &   .or. (case .eq. 'tt_bbl') 
+     &   .or. (case .eq. 'tt_bbh')) then
+	call jetreorder(qfinal,qreorder,isub)
+	do i=1,mxpart
+	  do nu=1,4
+	    qfinal(i,nu)=qreorder(i,nu)
+	  enddo
+	enddo
       endif
 
       return

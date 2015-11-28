@@ -512,8 +512,16 @@ c--- save initial scale choices (that may be changed later)
       initfacscale=facscale
 
 c--- assign squared masses for b- and c-quarks
-      mbsq=mb**2
-      mcsq=mc**2
+      if (abs(mb) .gt. 1d-8) then
+        mbsq=mb**2
+      else
+        mbsq=4.75d0**2
+      endif
+      if (abs(mc) .gt. 1d-8) then
+        mcsq=mc**2
+      else
+        mcsq=1.5d0**2
+      endif
       
 c--- set-up mass window cuts
       bbsqmin=mbbmin**2
@@ -567,10 +575,15 @@ c--- set up the default choices of static scale, if required
         else
 	  factor=1d0
 	endif	  
-        if (n2+n3 .ne. 0) then
+        if ((n2+n3 .ne. 0) .or. (case .eq. 'tt_tot')) then
         scale=factor*(dfloat(n2)*mass2+dfloat(n3)*mass3)/dfloat(n2+n3)
 c--- special cases where Higgs mass is neither mass2 nor mass3
-        if (case(1:1) .eq. 'H') scale=factor*hmass	
+        if ((case(1:1) .eq. 'H') .or. (case .eq. 'WHbbar')
+     . .or. (case .eq. 'ZHbbar') .or. (case .eq. 'qq_Hqq')) then
+          scale=factor*hmass
+	endif
+c--- special case for t-tbar production
+        if (case .eq. 'tt_tot') scale=factor*mt	
         as=alphas(scale,amz,nlooprun)
         ason2pi=as/twopi
         ason4pi=as/fourpi
@@ -608,11 +621,16 @@ c--- special cases where Higgs mass is neither mass2 nor mass3
         else
 	  factor=1d0
 	endif	  
-        if (n2+n3 .ne. 0) then
+        if ((n2+n3 .ne. 0) .or. (case .eq. 'tt_tot')) then
         facscale=factor*
      .           (dfloat(n2)*mass2+dfloat(n3)*mass3)/dfloat(n2+n3)
 c--- special cases where Higgs mass is neither mass2 nor mass3
-        if (case(1:1) .eq. 'H') facscale=factor*hmass	
+        if ((case(1:1) .eq. 'H') .or. (case .eq. 'WHbbar')
+     . .or. (case .eq. 'ZHbbar') .or. (case .eq. 'qq_Hqq')) then
+          facscale=factor*hmass
+	endif
+c--- special case for t-tbar production
+        if (case .eq. 'tt_tot') facscale=factor*mt	
         write(6,*)
         write(6,*)'****************************************************'
         write(6,77) facscale

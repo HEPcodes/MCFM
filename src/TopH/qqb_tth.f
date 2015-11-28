@@ -13,17 +13,19 @@ C
 ************************************************************************
       include 'constants.f'
       include 'ewcouple.f'
+      include 'zprods_com.f'
       include 'qcdcouple.f'
       include 'masses.f'
       
       integer j,k,nu
       double precision msq(-nf:nf,-nf:nf),pin(mxpart,4),p(mxpart,4)
-      double precision pw1(4),pw2(4),p12(4),q(4),a(4),r(4),b(4),h(4)
+      double precision pw1(4),pw2(4),p12(4),q(4),a(4),r(4),b(4),h(4),
+     & q1(4),q2(4),a1(4),a2(4)
       double precision shat,sh,sw1,sw2,qDq,aDa,rDr,bDb,densq,
-     . p3Dp5,p6Dp8
+     . p3Dp5,p6Dp8,q1Dq1,q2Dq2,a1Da1,a2Da2
       double precision wtqqb,wtgg,hdecay
       double precision gamr1,gamr2,gamb1,gamb2,gamq4,gama7,dot
-      double precision fac,denr,denb
+      double precision fac,facgg,denr,denb,denq1,denq2,dena1,dena2
       double precision p1Dr,p2Dr,p1Db,p2Db,p4Dq,p7Da
 
 
@@ -34,6 +36,7 @@ C
       do j=1,mxpart
       p(j,nu)=pin(j,nu)
       enddo      
+
       h(nu)=p(9,nu)+p(10,nu)
       p12(nu)=p(1,nu)+p(2,nu)
       pw1(nu)=p(3,nu)+p(4,nu)
@@ -41,11 +44,13 @@ C
 
       q(nu)=+p(3,nu)+p(4,nu)+p(5,nu)
       r(nu)=q(nu)+h(nu)
-c      x(nu)=q(nu)+p(1,nu)
+      q1(nu)=q(nu)+p(1,nu)
+      q2(nu)=q(nu)+p(2,nu)
 
       a(nu)=-p(6,nu)-p(7,nu)-p(8,nu)
       b(nu)=a(nu)-h(nu)
-c      y(nu)=a(nu)-p(2,nu)
+      a1(nu)=a(nu)-p(1,nu)
+      a2(nu)=a(nu)-p(2,nu)
       enddo      
 
 
@@ -54,28 +59,39 @@ c      y(nu)=a(nu)-p(2,nu)
       sw1=(pw1(4)**2-pw1(1)**2-pw1(2)**2-pw1(3)**2)
       sw2=(pw2(4)**2-pw2(1)**2-pw2(2)**2-pw2(3)**2)
       qDq=(q(4)**2-q(1)**2-q(2)**2-q(3)**2)
+      q1Dq1=(q1(4)**2-q1(1)**2-q1(2)**2-q1(3)**2)
+      q2Dq2=(q2(4)**2-q2(1)**2-q2(2)**2-q2(3)**2)
       aDa=(a(4)**2-a(1)**2-a(2)**2-a(3)**2)
+      a1Da1=(a1(4)**2-a1(1)**2-a1(2)**2-a1(3)**2)
+      a2Da2=(a2(4)**2-a2(1)**2-a2(2)**2-a2(3)**2)
       rDr=(r(4)**2-r(1)**2-r(2)**2-r(3)**2)
       bDb=(b(4)**2-b(1)**2-b(2)**2-b(3)**2)
-
-
 
       p3Dp5=dot(p,3,5)
       p6Dp8=dot(p,6,8)
 
-      densq=shat**2*((sw1-wmass**2)**2+wmass**2*wwidth**2)
+      densq=      ((sw1-wmass**2)**2+wmass**2*wwidth**2)
       densq=densq*((sw2-wmass**2)**2+wmass**2*wwidth**2)
       densq=densq*((sh-hmass**2)**2+hmass**2*hwidth**2)
       densq=densq*((qDq-mt**2)**2+mt**2*twidth**2)
       densq=densq*((aDa-mt**2)**2+mt**2*twidth**2)
 
-      denr=sqrt((rDr-mt**2)**2+mt**2*twidth**2)
-      denb=sqrt((bDb-mt**2)**2+mt**2*twidth**2)
+      denr=rDr-mt**2
+      denb=bDb-mt**2
+      denq1=q1Dq1-mt**2
+      denq2=q2Dq2-mt**2
+      dena1=a1Da1-mt**2
+      dena2=a2Da2-mt**2
 
       hdecay=2d0*(sh-4d0*mb**2)*xn 
-      fac=V/4d0/densq*p3Dp5*p6Dp8
-     . *gwsq**6*gsq**2*mt**2*mbsq/wmass**4*hdecay
-C (gw/rt2)^4*(gw/2)^2*16 from amplitude
+      fac=V/4d0/densq/shat**2*2d0*p3Dp5*2d0*p6Dp8
+     . *gwsq**6*gsq**2/4d0*mt**2*mbsq/wmass**4*hdecay
+C (gw/rt2)^4*(gw/2)^2*4 from amplitude
+
+      facgg=V*xn/4d0
+      facgg=facgg/densq*2d0*p3Dp5*2d0*p6Dp8
+     . *gwsq**6*gsq**2/4d0*mt**2*mbsq/wmass**4*hdecay
+C (gw/rt2)^4*(gw/2)^2*4 from amplitude
 
       p4Dq=p(4,4)*q(4)-p(4,1)*q(1)-p(4,2)*q(2)-p(4,3)*q(3)
       p7Da=p(7,4)*a(4)-p(7,1)*a(1)-p(7,2)*a(2)-p(7,3)*a(3)
@@ -105,8 +121,10 @@ C     so set
       p(b2,nu)=b(nu)-gamb2*p(2,nu)
       enddo      
 
-      call qqbtth(p,denr,denb,wtqqb)
-      wtgg=0d0
+      call spinoru(10,p,za,zb)
+      call qqbtth(denr,denb,wtqqb)
+      call ggtth(denr,denb,denq1,denq2,dena1,dena2,wtgg)
+c      write(6,*) 'wtqqb,wtgg',wtqqb/shat**2,wtgg
 C----set all elements to zero
       do j=-nf,nf
       do k=-nf,nf
@@ -119,10 +137,11 @@ C---fill qb-q, gg and q-qb elements
       if (j .lt. 0) then
           msq(j,-j)=aveqq*fac*wtqqb
       elseif (j .eq. 0) then
-          msq(j,j)=avegg*fac*wtgg
+          msq(j,j)=avegg*facgg*wtgg
       elseif (j .gt. 0) then
           msq(j,-j)=aveqq*fac*wtqqb
       endif
       enddo
+            
       return
       end

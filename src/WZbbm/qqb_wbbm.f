@@ -1,4 +1,5 @@
       subroutine qqb_wbbm(p,msq)
+c--- Note: optimization in the "sumsq" function by RKE, April 2009.
 c---  Matrix elements squared 
 c     q(-p1)+qb(-p2) --> nu(p3)+e^+(p4)+b(p5)+bb(p6)
 c---  averaged(summed) over initial(final) colours and spins
@@ -64,158 +65,44 @@ C---Fill dot-products
       s56=s134+s234+s(p1,p2)-s(p3,p4)
 c---overall factor of 4 removed
       prop=s56**2*((s(p3,p4)-wmass**2)**2+(wmass*wwidth)**2)
-      sumsq = 
-     . +2d0*s(p1,p2)*s(p1,p2)*s(p3,p4)*mQsq/(s134*s234)
- 
-     . +2d0*s(p1,p2)*s(p1,p3)*s(p1,p4)*mQsq/s134**2
- 
-     . -2d0*s(p1,p2)*s(p1,p3)*s(p2,p4)*mQsq/(s134*s234)
- 
-     . +2d0*s(p1,p2)*s(p1,p3)*s(p3,p4)*mQsq/(s134*s234)
- 
-     . -2d0*s(p1,p2)*s(p1,p4)*s(p2,p3)*mQsq/(s134*s234)
- 
-     . +2d0*s(p1,p2)*s(p1,p4)*s(p3,p4)*mQsq/s134**2
- 
-     . +s(p1,p2)*s(p1,p5)*s(p2,p6)*s(p3,p4)/(s134*s234)
- 
-     . +s(p1,p2)*s(p1,p5)*s(p3,p4)*s(p3,p6)/(s134*s234)
- 
-     . +s(p1,p2)*s(p1,p6)*s(p2,p5)*s(p3,p4)/(s134*s234)
- 
-     . +s(p1,p2)*s(p1,p6)*s(p3,p4)*s(p3,p5)/(s134*s234)
- 
-     . +2d0*s(p1,p2)*s(p2,p3)*s(p2,p4)*mQsq/s234**2
- 
-     . +2d0*s(p1,p2)*s(p2,p3)*s(p3,p4)*mQsq/s234**2
- 
-     . +2d0*s(p1,p2)*s(p2,p4)*s(p3,p4)*mQsq/(s134*s234)
- 
-     . +s(p1,p2)*s(p2,p5)*s(p3,p4)*s(p4,p6)/(s134*s234)
- 
-     . +s(p1,p2)*s(p2,p6)*s(p3,p4)*s(p4,p5)/(s134*s234)
- 
-     . +2d0*s(p1,p2)*s(p3,p4)*s(p3,p4)*mQsq/(s134*s234)
- 
-     . +s(p1,p2)*s(p3,p4)*s(p3,p5)*s(p4,p6)/(s134*s234)
- 
-     . +s(p1,p2)*s(p3,p4)*s(p3,p6)*s(p4,p5)/(s134*s234)
- 
-     . -2d0*s(p1,p3)*s(p1,p3)*s(p2,p4)*mQsq/(s134*s234)
- 
-     . +s(p1,p3)*s(p1,p4)*s(p1,p5)*s(p2,p6)/s134**2
- 
-     . +s(p1,p3)*s(p1,p4)*s(p1,p6)*s(p2,p5)/s134**2
- 
-     . +2d0*s(p1,p3)*s(p1,p4)*s(p2,p3)*mQsq/(s134*s234)
- 
-     . +2d0*s(p1,p3)*s(p1,p4)*s(p2,p4)*mQsq/s134**2
- 
-     . +s(p1,p3)*s(p1,p4)*s(p2,p5)*s(p4,p6)/s134**2
- 
-     . +s(p1,p3)*s(p1,p4)*s(p2,p6)*s(p4,p5)/s134**2
- 
-     . +s(p1,p3)*s(p1,p5)*s(p2,p3)*s(p4,p6)/(s134*s234)
- 
-     . -s(p1,p3)*s(p1,p5)*s(p2,p4)*s(p2,p6)/(s134*s234)
- 
-     . -s(p1,p3)*s(p1,p5)*s(p2,p4)*s(p3,p6)/(s134*s234)
- 
-     . +s(p1,p3)*s(p1,p6)*s(p2,p3)*s(p4,p5)/(s134*s234)
- 
-     . -s(p1,p3)*s(p1,p6)*s(p2,p4)*s(p2,p5)/(s134*s234)
- 
-     . -s(p1,p3)*s(p1,p6)*s(p2,p4)*s(p3,p5)/(s134*s234)
- 
-     . +2d0*s(p1,p3)*s(p2,p3)*s(p2,p4)*mQsq/s234**2
- 
-     . +2d0*s(p1,p3)*s(p2,p3)*s(p3,p4)*mQsq/s234**2
- 
-     . +2d0*s(p1,p3)*s(p2,p3)*s(p4,p5)*s(p4,p6)/(s134*s234)
- 
-     . -2d0*s(p1,p3)*s(p2,p4)*s(p2,p4)*mQsq/(s134*s234)
- 
-     . -s(p1,p3)*s(p2,p4)*s(p2,p5)*s(p4,p6)/(s134*s234)
- 
-     . -s(p1,p3)*s(p2,p4)*s(p2,p6)*s(p4,p5)/(s134*s234)
- 
-     . -2d0*s(p1,p3)*s(p2,p4)*s(p3,p4)*mQsq/(s134*s234)
- 
-     . -s(p1,p3)*s(p2,p4)*s(p3,p5)*s(p4,p6)/(s134*s234)
- 
-     . -s(p1,p3)*s(p2,p4)*s(p3,p6)*s(p4,p5)/(s134*s234)
- 
-     . -2d0*s(p1,p4)*s(p1,p4)*s(p2,p3)*mQsq/s134**2
- 
-     . -s(p1,p4)*s(p1,p4)*s(p2,p5)*s(p3,p6)/s134**2
- 
-     . -s(p1,p4)*s(p1,p4)*s(p2,p6)*s(p3,p5)/s134**2
- 
-     . -s(p1,p4)*s(p1,p5)*s(p2,p3)*s(p2,p6)/(s134*s234)
- 
-     . +s(p1,p4)*s(p1,p5)*s(p2,p6)*s(p3,p4)/s134**2
- 
-     . -s(p1,p4)*s(p1,p6)*s(p2,p3)*s(p2,p5)/(s134*s234)
- 
-     . +s(p1,p4)*s(p1,p6)*s(p2,p5)*s(p3,p4)/s134**2
- 
-     . -2d0*s(p1,p4)*s(p2,p3)*s(p2,p3)*mQsq/s234**2
- 
-     . +2d0*s(p1,p4)*s(p2,p3)*s(p2,p4)*mQsq/(s134*s234)
- 
-     . +2d0*s(p1,p4)*s(p2,p3)*s(p3,p4)*mQsq/(s134*s234)
- 
-     . +2d0*s(p1,p4)*s(p2,p3)*s(p3,p4)*s(p5,p6)/(s134*s234)
- 
-     . -s(p1,p4)*s(p2,p3)*s(p3,p5)*s(p4,p6)/(s134*s234)
- 
-     . -s(p1,p4)*s(p2,p3)*s(p3,p6)*s(p4,p5)/(s134*s234)
- 
-     . +s(p1,p4)*s(p2,p4)*s(p2,p5)*s(p3,p6)/(s134*s234)
- 
-     . +s(p1,p4)*s(p2,p4)*s(p2,p6)*s(p3,p5)/(s134*s234)
- 
-     . +2d0*s(p1,p4)*s(p2,p4)*s(p3,p4)*mQsq/s134**2
- 
-     . +2d0*s(p1,p4)*s(p2,p4)*s(p3,p5)*s(p3,p6)/(s134*s234)
- 
-     . -2d0*s(p1,p4)*s(p2,p5)*s(p2,p6)*s(p3,p4)/(s134*s234)
- 
-     . -s(p1,p4)*s(p2,p5)*s(p3,p4)*s(p3,p6)/(s134*s234)
- 
-     . +s(p1,p4)*s(p2,p5)*s(p3,p4)*s(p4,p6)/s134**2
- 
-     . -s(p1,p4)*s(p2,p6)*s(p3,p4)*s(p3,p5)/(s134*s234)
- 
-     . +s(p1,p4)*s(p2,p6)*s(p3,p4)*s(p4,p5)/s134**2
- 
-     . -2d0*s(p1,p5)*s(p1,p6)*s(p2,p3)*s(p3,p4)/(s134*s234)
- 
-     . -s(p1,p5)*s(p2,p3)*s(p2,p3)*s(p4,p6)/s234**2
- 
-     . +s(p1,p5)*s(p2,p3)*s(p2,p4)*s(p2,p6)/s234**2
- 
-     . +s(p1,p5)*s(p2,p3)*s(p2,p4)*s(p3,p6)/s234**2
- 
-     . +s(p1,p5)*s(p2,p3)*s(p2,p6)*s(p3,p4)/s234**2
- 
-     . +s(p1,p5)*s(p2,p3)*s(p3,p4)*s(p3,p6)/s234**2
- 
-     . -s(p1,p5)*s(p2,p3)*s(p3,p4)*s(p4,p6)/(s134*s234)
- 
-     . -s(p1,p6)*s(p2,p3)*s(p2,p3)*s(p4,p5)/s234**2
- 
-     . +s(p1,p6)*s(p2,p3)*s(p2,p4)*s(p2,p5)/s234**2
- 
-     . +s(p1,p6)*s(p2,p3)*s(p2,p4)*s(p3,p5)/s234**2
- 
-     . +s(p1,p6)*s(p2,p3)*s(p2,p5)*s(p3,p4)/s234**2
- 
-     . +s(p1,p6)*s(p2,p3)*s(p3,p4)*s(p3,p5)/s234**2
- 
-     . -s(p1,p6)*s(p2,p3)*s(p3,p4)*s(p4,p5)/(s134*s234) 
 
-c      write(6,*) 'sumsq',sumsq
+      sumsq=1d0/(s134*s234)
+     & *(+s(p1,p4)*s(p2,p4)
+     & *(s(p2,p6)*s(p3,p5)+s(p2,p5)*s(p3,p6)+2d0*s(p3,p5)*s(p3,p6))
+     & +s(p1,p3)*s(p2,p3)
+     & *(s(p1,p6)*s(p4,p5)+s(p1,p5)*s(p4,p6)+2d0*s(p4,p5)*s(p4,p6))
+     & -s(p2,p3)*s(p3,p4)
+     & *(s(p1,p6)*s(p4,p5)+s(p1,p5)*s(p4,p6)+2d0*s(p1,p5)*s(p1,p6))
+     & -s(p1,p4)*s(p3,p4)
+     & *(s(p2,p6)*s(p3,p5)+s(p2,p5)*s(p3,p6)+2d0*s(p2,p5)*s(p2,p6)))
+
+      sumsq=sumsq+((s(p1,p2)*s(p3,p4)-s(p1,p3)*s(p2,p4))
+     &   *(s(p3,p6)*s(p4,p5)+s(p3,p5)*s(p4,p6)
+     &    +s(p2,p6)*s(p4,p5)+s(p2,p5)*s(p4,p6)
+     &    +s(p1,p6)*s(p3,p5)+s(p1,p6)*s(p2,p5)
+     &    +s(p1,p5)*s(p3,p6)+s(p1,p5)*s(p2,p6))
+     &  -s(p1,p4)*s(p2,p3)*(+s(p3,p6)*s(p4,p5)+s(p3,p5)*s(p4,p6)
+     &  +s(p1,p6)*s(p2,p5)+s(p1,p5)*s(p2,p6)-2d0*s(p3,p4)*s(p5,p6))
+     & )/(s134*s234)
+
+      sumsq = sumsq + 2d0*s134**(-1)*s234**(-1)*mQsq * (
+     &     +(s(p1,p2)*s(p3,p4)-s(p1,p3)*s(p2,p4))
+     *     *(s(p1,p2)+s(p3,p4)+s(p1,p3)+s(p2,p4))
+     &     +s(p1,p4)*s(p2,p3)*(s(p1,p3)-s(p1,p2)+s(p2,p4)+s(p3,p4)))
+
+      sumsq = sumsq+s(p1,p4)/s134**2 * (
+     &     +(s(p1,p3)+s(p3,p4))
+     &     *(s(p2,p5)*(s(p1,p6)+s(p4,p6))+s(p2,p6)*(s(p1,p5)+s(p4,p5)))
+     &     - s(p1,p4)*(s(p2,p5)*s(p3,p6)+s(p2,p6)*s(p3,p5))
+     &     +2d0*mQsq*(
+     &     (s(p1,p2)+s(p2,p4))*(s(p1,p3)+s(p3,p4))-s(p1,p4)*s(p2,p3)))
+      sumsq = sumsq + s(p2,p3)/s234**2 * (
+     &     +(s(p2,p4)+s(p3,p4))
+     &     *(s(p1,p5)*(s(p2,p6)+s(p3,p6))+s(p1,p6)*(s(p2,p5)+s(p3,p5)))
+     &     -s(p2,p3)*(s(p1,p5)*s(p4,p6)+s(p1,p6)*s(p4,p5))
+     &     +2d0*mQsq*(
+     &     (s(p1,p2)+s(p1,p3))*(s(p2,p4)+s(p3,p4))-s(p1,p4)*s(p2,p3)))
+
       sumsq=sumsq/prop
       return
       end

@@ -247,10 +247,14 @@ c--- if using a dynamic scale, set that scale with dipole kinematics
         endif
 	
         call subr_born(ptrans,msq)
-        if (ip .lt. kp) then
+        if (case .eq. 'epem3j') then
           ipt=5
-        else
-          ipt=6
+ 	  else
+          if (ip .lt. kp) then
+            ipt=5
+          else
+            ipt=6
+          endif
         endif
                
 c--- do something special for HWW/HZZ+2 jets

@@ -1672,6 +1672,8 @@ c-----------------------------------------------------------------------
         mass3=mt
         width3=twidth
         bbproc=.true.
+        zerowidth=.true.
+        Write(6,*) 'Set zerowidth to true, obligatory for nproc=151,152' 
         
         if (nproc .eq. 151) then
 c--  151 '  f(p1)+f(p2) --> t(-->nu(p3)+e^+(p4)+b(p5))+b~(p6))+e^-(p7)+nu~(p8)'
@@ -1684,6 +1686,7 @@ c--      '  f(p1)+f(p2) --> t t~ (with BR for total Xsect)' (removebr=.true.)
           plabel(6)='ba'
           plabel(7)='el'
           plabel(8)='na'
+          plabel(9)='pp'
           if (removebr) then
             call branch(brwen,brzee,brznn,brtau,brtop,brcharm)
             BrnRat=(brwen*brtop)**2
@@ -1705,6 +1708,7 @@ c--  152 '  f(p1)+f(p2) --> t(-->nu(p3)+e^+(p4)+b(p5))+b~(p6))+q(p7)+q~(p8)'
           plabel(6)='ba'
           plabel(7)='pp'
           plabel(8)='pp'
+          plabel(9)='pp'
           nqcdjets=4
           if (runstring(1:4) .eq. 'stop') then
 c--- For single top study, we only want to see 2 of the jets
@@ -1722,7 +1726,6 @@ c--      '  f(p1)+f(p2)-->t(p345)+t~(p678)+g(p9)' (removebr=.true.)
         Write(6,*) 'Setting zerowidth to true, obligatory for nproc=156' 
         nwz=1
         ndim=19
-        mb=0
         nqcdjets=3
         plabel(3)='nl'
         plabel(4)='ea'
@@ -2436,6 +2439,7 @@ c--  196 '  f(p1)+f(p2)-->t(-->nu(p3)+e^+(p4)+b(p5))+t~(-->nu~(p7)+e^-(p8)+b~(p6
             plabel(9)='ig'
             plabel(10)='ig'
           endif
+	  mb=0d0
         elseif (nproc .eq. 197) then 
 c--  197 '  f(p1)+f(p2)-->t(-->nu(p3)+e^+(p4)+b(p5))+t~(-->nu~(p7)+e^-(p8)+b~(p6))+Z(b(p9),b~(p10))'
           plabel(9)='bq'
@@ -2443,6 +2447,7 @@ c--  197 '  f(p1)+f(p2)-->t(-->nu(p3)+e^+(p4)+b(p5))+t~(-->nu~(p7)+e^-(p8)+b~(p6
           q1=Q(5)*dsqrt(xn)
           l1=l(5)*dsqrt(xn)
           r1=r(5)*dsqrt(xn)
+	  mb=0d0
         endif
 
 c-----------------------------------------------------------------------
@@ -3771,7 +3776,7 @@ c--- set flags to true unless we're doing W+2 jet or Z+2 jet
      . ' mcfm halted'
       stop
  
- 98   format(' *              Brn.Rat. removed = ',  f8.4, '         *')
+ 98   format(' *             Brn.Rat. removed = ',  f9.5, '         *')
      
       end
 

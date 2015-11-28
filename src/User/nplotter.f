@@ -156,14 +156,18 @@ cz          use with bwgt
 cz //
 
       double precision wtbbar,wtnotb,wtlight1,wtlight2
-      double precision m34,etmiss,misset,
+      double precision m34,etmiss,misset,m345678,
      . p(mxpart,4),fphi,HT,etcharm,deltaeta,cosdeltaphi
-      double precision eta3,eta4,eta5,eta6,eta7,eta8,eta34,eta56,y34
+      double precision eta3,eta4,eta5,eta6,eta7,eta8,eta9,eta10,
+     . eta34,eta56,y34
       double precision r34,r35,r45,r36,r46,r56,m345,m348,m567,m678
-      double precision pt3,pt4,pt5,pt6,pt7,pt8,pt34,pt56,oldpt(5:7)
+      double precision pt3,pt4,pt5,pt6,pt7,pt8,pt9,pt10,
+     . pt34,pt56,oldpt(5:7)
       double precision pt345,eta345,y345,y3,y4
       double precision bclustmass,etvec(4),tmp5(4),tmp6(4),tmp7(4)
       double precision langle,plep(4),plep_wrest(4),pw(4),pw_wrest(4)
+      integer ssi(4),tmpi,j,k
+      double precision ssd(4),tmpd
       integer nproc,eventpart,ib1,ib2,nqcdjets,nqcdstart
       logical first,jetmerge
       logical creatent,dswhisto,jetevent
@@ -214,6 +218,10 @@ c--- ensure we initialize all possible histograms
         pt7=0d0
         eta8=1d3
         pt8=0d0
+        eta9=1d3
+        pt9=0d0
+        eta10=1d3
+        pt10=0d0
         eta34=1d3
         y34=1d3
         pt34=0d0
@@ -248,6 +256,7 @@ c--- ensure we initialize all possible histograms
         m348=0d0
         m567=0d0
         m678=0d0
+        m345678=0d0
         HT=0d0
 	deltaeta=99d0
 	cosdeltaphi=99d0
@@ -284,7 +293,9 @@ c---  are handled with reference to nproc
      .    .or.(case .eq. 'HWW2jt') .or. (case .eq. 'HZZ2jt')) then
         eventpart=6+jets
       elseif ((case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')) then
-        eventpart=8
+        eventpart=min(8+jets,9)
+      elseif (case .eq. 'qq_ttg') then
+        eventpart=9
       elseif ((case .eq. 'W_twdk') .or. (case .eq. 'Wtdkay')
      .    .or.(case .eq. 'Wtbwdk')) then
         eventpart=6+jets
@@ -443,9 +454,25 @@ c--- returns zero cluster mass if two b's are in one jet
      .          -(p(3,2)+p(4,2)+p(8,2))**2-(p(3,3)+p(4,3)+p(8,3))**2)
       m678=dsqrt((p(6,4)+p(7,4)+p(8,4))**2-(p(6,1)+p(7,1)+p(8,1))**2
      .          -(p(6,2)+p(7,2)+p(8,2))**2-(p(6,3)+p(7,3)+p(8,3))**2)
+      m345678=dsqrt((p(3,4)+p(4,4)+p(5,4)+p(6,4)+p(7,4)+p(8,4))**2
+     .             -(p(3,1)+p(4,1)+p(5,1)+p(6,1)+p(7,1)+p(8,1))**2
+     .             -(p(3,2)+p(4,2)+p(5,2)+p(6,2)+p(7,2)+p(8,2))**2
+     .             -(p(3,3)+p(4,3)+p(5,3)+p(6,3)+p(7,3)+p(8,3))**2)
       HT=HT+pt8
+      endif	
+	     
+      if (eventpart .gt. 8) then        
+      eta9=etarap(9,p)
+      pt9=pt(9,p)
+      HT=HT+pt9
       endif
              
+      if (eventpart .gt. 9) then        
+      eta10=etarap(10,p)
+      pt10=pt(10,p)
+      HT=HT+pt10
+      endif
+          
       misset=etmiss(p,etvec)
 
 c--- set-up variables to catch b's
@@ -541,6 +568,40 @@ c--- this process, these should be set up properly
           detabb=dabs(etab1-etab2)
           dphibb=dsqrt(dabs(rbb**2-detabb**2))
         endif
+
+c--- special variables for ordering of b-quarks in ttH production
+      if (case .eq. 'qq_tth') then
+        eventpart=10 ! ensure all histograms are filled
+c--- index into pt-ordered list of b-quarks using ssi(n), where n=1,..,4
+c--- ordered list is obtained by shuffle-sort
+        ssi(1)=5
+	ssi(2)=6
+	ssi(3)=9
+	ssi(4)=10
+	do j=1,4
+	  ssd(j)=pt(ssi(j),p)
+	enddo
+	do j=4,1,-1
+	do k=j-1,1,-1
+	  if(ssd(j) .gt. ssd(k)) then
+	    tmpd=ssd(k)
+	    tmpi=ssi(k)
+	    ssd(k)=ssd(j)
+	    ssi(k)=ssi(j)
+	    ssd(j)=tmpd
+	    ssi(j)=tmpi
+	  endif
+	enddo
+	enddo
+c--- example: invariant mass of two highest-pt jets
+        mbb=dsqrt(max(0d0,
+     .   (p(ssi(1),4)+p(ssi(2),4))**2-(p(ssi(1),1)+p(ssi(2),1))**2
+     .  -(p(ssi(1),2)+p(ssi(2),2))**2-(p(ssi(1),3)+p(ssi(2),3))**2))
+c	do j=1,4
+c	write(6,*) j,ssd(j),ssi(j)
+c	enddo
+c	pause
+      endif
 
       if     (case .eq. 'gQ__ZQ') then
 c--- for the Z+b process, catch the highest pt heavy quark
@@ -1040,6 +1101,8 @@ c --- Histograms to monitor exclusive/inclusive cross-sections:
       n=n+1
       call bookplot(n,tag,ptet//'4',pt4,wt,wt2,0d0,150d0,5d0,'log')
       n=n+1
+      call bookplot(n,tag,ptet//'4',pt4,wt,wt2,0d0,600d0,20d0,'log')
+      n=n+1
       call bookplot(n,tag,'eta34',eta34,wt,wt2,-4d0,4d0,0.4d0,'lin')
       n=n+1
       call bookplot(n,tag,'y34',y34,wt,wt2,-4d0,4d0,0.4d0,'lin')
@@ -1060,10 +1123,10 @@ c --- Histograms to monitor exclusive/inclusive cross-sections:
       n=n+1
       call bookplot(n,tag,'eta5',eta5,wt,wt2,-10d0,10d0,0.5d0,'lin')
       n=n+1
-      call bookplot(n,tag,ptet//'5',pt5,wt,wt2,0d0,500d0,5d0,'log')
+      call bookplot(n,tag,ptet//'5',pt5,wt,wt2,0d0,500d0,10d0,'log')
       n=n+1
-      call bookplot(n,tag,ptet//'5',pt5,wt,wt2,0d0,100d0,2d0,'log')
-      n=n+1
+c      call bookplot(n,tag,ptet//'5',pt5,wt,wt2,0d0,100d0,2d0,'log')
+c      n=n+1
       call bookplot(n,tag,'pt345',pt345,wt,wt2,0d0,200d0,5d0,'log')
       n=n+1
       call bookplot(n,tag,'eta345',eta345,wt,wt2,-4d0,4d0,0.2d0,'lin')
@@ -1100,10 +1163,10 @@ c     . wt,wt2,-5d0,5d0,0.4d0,'lin')
 c      n=n+1
       call bookplot(n,tag,'eta6',eta6,wt,wt2,-4d0,4d0,0.2d0,'lin')
       n=n+1
-      call bookplot(n,tag,ptet//'6',pt6,wt,wt2,0d0,500d0,5d0,'log')
+      call bookplot(n,tag,ptet//'6',pt6,wt,wt2,0d0,500d0,10d0,'log')
       n=n+1
-      call bookplot(n,tag,ptet//'6',pt6,wt,wt2,0d0,200d0,2d0,'log')
-      n=n+1
+c      call bookplot(n,tag,ptet//'6',pt6,wt,wt2,0d0,200d0,2d0,'log')
+c      n=n+1
       call bookplot(n,tag,'eta56',eta56,wt,wt2,-4d0,4d0,0.2d0,'lin')
       n=n+1
       call bookplot(n,tag,ptet//'56',pt56,wt,wt2,10d0,150d0,10d0,'log')
@@ -1119,6 +1182,128 @@ c      n=n+1
       call bookplot(n,tag,'eta5-eta6',eta5-eta6,
      . wt,wt2,-6d0,6d0,0.2d0,'lin')
       n=n+1
+      endif
+
+c      if (bbproc) then
+cc--- Leading b Et, 5 GeV bins from 15 to 200
+c      call bookplot(n,tag,'bjet1 Et',ptb1,wt,wt2,15d0,200d0,5d0,'log')
+c      n=n+1
+cc--- Second b Et, 5 GeV bins from 15 to 200
+c      call bookplot(n,tag,'bjet2 Et',ptb2,wt,wt2,15d0,200d0,5d0,'log')
+c      n=n+1
+cc--- Dijet invariant mass, 2 b-jets, 10 GeV bins from 0 to 250
+c      call bookplot(n,tag,'bb mass',mbb,wt,wt2,0d0,350d0,10d0,'log')
+c      n=n+1
+cc--- Delta_R(b,b), 2 b-jets, bins of 0.2 from 0.35 to 4.95
+c      call bookplot(n,tag,'deltaRbb',rbb,
+c     . wt,wt2,0.35d0,4.95d0,0.2d0,'lin')
+c      n=n+1
+c      call bookplot(n,tag,'etab1',etab1,wt,wt2,-4d0,4d0,0.2d0,'lin')
+c      n=n+1
+c      call bookplot(n,tag,ptet//'b1',ptb1,wt,wt2,0d0,200d0,5d0,'log')
+c      n=n+1
+c      call bookplot(n,tag,'etab2',etab2,wt,wt2,-4d0,4d0,0.2d0,'lin')
+c      n=n+1
+c      call bookplot(n,tag,ptet//'b2',ptb2,wt,wt2,0d0,200d0,5d0,'log')
+c      n=n+1
+c      call bookplot(n,tag,'mbb',mbb,wt,wt2,0d0,200d0,10d0,'log')
+c      n=n+1
+c      call bookplot(n,tag,'mbb',mbb,wt,wt2,0d0,200d0,5d0,'log')
+c      n=n+1
+c      call bookplot(n,tag,'rbb',rbb,wt,wt2,0d0,4d0,0.1d0,'lin')
+c      n=n+1
+c      call bookplot(n,tag,'detabb',detabb,wt,wt2,0d0,4d0,0.1d0,'lin')
+c      n=n+1
+c      call bookplot(n,tag,'dphibb',dphibb,wt,wt2,0d0,4d0,0.1d0,'lin')
+c      n=n+1
+c      endif
+
+      if (eventpart .gt. 6) then
+
+c      if (bbproc) then
+cc--- Non b-jet Et, 5 GeV bins from 15 to 200
+c      call bookplot(n,tag,'non-b Et',ptnob,wt,wt2,15d0,200d0,5d0,'log')
+c      n=n+1
+c      call bookplot(n,tag,'etanob',etanob,wt,wt2,-4d0,4d0,0.2d0,'lin')
+c      n=n+1
+c      call bookplot(n,tag,ptet//'nob',ptnob,wt,wt2,0d0,200d0,5d0,'log')
+c      n=n+1
+c      endif
+
+      call bookplot(n,tag,'eta7',eta7,wt,wt2,-4d0,4d0,0.2d0,'lin')
+      n=n+1
+      call bookplot(n,tag,ptet//'7',pt7,wt,wt2,0d0,100d0,5d0,'lin')
+      n=n+1
+      call bookplot(n,tag,ptet//'7',pt7,wt,wt2,0d0,600d0,20d0,'log')
+      n=n+1
+      call bookplot(n,tag,'r57',r57,wt,wt2,0d0,4d0,0.1d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'r67',r67,wt,wt2,0d0,4d0,0.1d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'m567',m567,wt,wt2,108d0,308d0,2d0,'log')
+      n=n+1
+      call bookplot(n,tag,'eta diff',eta7-(eta5+eta6)/2d0,
+     . wt,wt2,-6d0,6d0,0.2d0,'lin')
+      n=n+1
+      endif      
+
+      if (eventpart .gt. 7) then
+      call bookplot(n,tag,'eta8',eta8,wt,wt2,-4d0,4d0,0.2d0,'lin')
+      n=n+1
+      call bookplot(n,tag,ptet//'8',pt8,wt,wt2,0d0,100d0,5d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'m348',m348,wt,wt2,108d0,308d0,2d0,'log')
+      n=n+1
+      call bookplot(n,tag,'m678',m678,wt,wt2,108d0,308d0,2d0,'log')
+      n=n+1
+      call bookplot(n,tag,'m345678',m345678,wt,wt2,0d0,600d0,10d0,'lin')
+      n=n+1
+      endif      
+
+      if (eventpart .gt. 8) then
+      call bookplot(n,tag,'eta9',eta9,wt,wt2,-4d0,4d0,0.2d0,'lin')
+      n=n+1
+      call bookplot(n,tag,ptet//'9',pt9,wt,wt2,0d0,100d0,5d0,'lin')
+      n=n+1
+      endif      
+
+      if (eventpart .gt. 9) then
+      call bookplot(n,tag,'eta10',eta10,wt,wt2,-4d0,4d0,0.2d0,'lin')
+      n=n+1
+      call bookplot(n,tag,ptet//'10',pt10,wt,wt2,0d0,100d0,5d0,'lin')
+      n=n+1
+      endif      
+
+c--- special plots for the ttH process
+      if (case .eq. 'qq_tth') then
+      call bookplot(n,tag,'mb1b2',mbb,wt,wt2,0d0,200d0,5d0,'log')
+      n=n+1
+      call bookplot(n,tag,'ptb1',pt(ssi(1),p),
+     .              wt,wt2,0d0,100d0,5d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'ptb2',pt(ssi(2),p),
+     .              wt,wt2,0d0,100d0,5d0,'lin')
+      n=n+1
+      endif
+
+c--- additional plot for WW process      
+      if (nproc .eq. 61) then
+      call bookplot(n,tag,'etbin',etbin,wt,wt2,0.5d0,25.5d0,1d0,'lin')
+      n=n+1
+      endif
+      
+c--- special plots for Z+b jet processes      
+      if (case .eq. 'Z_bjet') then
+      call bookplot(n,tag,ptet//' b leading',ptleadingb,
+     .               wt,wt2,0d0,500d0,20d0,'log')
+      n=n+1
+      call bookplot(n,tag,ptet//' non-b leading',ptleadingnonb,
+     .               wt,wt2,0d0,500d0,20d0,'log')
+      n=n+1
+      endif
+      
+c--- plots useful for processes with 2 or more jets only
+      if (nqcdjets .ge. 2) then
       if ((jets .eq. 2) .or. (tag .eq. 'book')) then
       call bookplot(n,tag,'delta(eta) - 2 jets',deltaeta,
      . wt,wt2,0d0,10d0,0.5d0,'lin')
@@ -1148,97 +1333,11 @@ c      n=n+1
       call bookplot(n,tag,'cos delta(phi) - 3 jets',cosdeltaphi,
      . wt,wt2,0d0,1d0,0.05d0,'lin')
       endif
-      n=n+1      
-      endif
-
-      if (bbproc) then
-c--- Leading b Et, 5 GeV bins from 15 to 200
-      call bookplot(n,tag,'bjet1 Et',ptb1,wt,wt2,15d0,200d0,5d0,'log')
-      n=n+1
-c--- Second b Et, 5 GeV bins from 15 to 200
-      call bookplot(n,tag,'bjet2 Et',ptb2,wt,wt2,15d0,200d0,5d0,'log')
-      n=n+1
-c--- Dijet invariant mass, 2 b-jets, 10 GeV bins from 0 to 250
-      call bookplot(n,tag,'bb mass',mbb,wt,wt2,0d0,350d0,10d0,'log')
-      n=n+1
-c--- Delta_R(b,b), 2 b-jets, bins of 0.2 from 0.35 to 4.95
-      call bookplot(n,tag,'deltaRbb',rbb,
-     . wt,wt2,0.35d0,4.95d0,0.2d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'etab1',etab1,wt,wt2,-4d0,4d0,0.2d0,'lin')
-      n=n+1
-      call bookplot(n,tag,ptet//'b1',ptb1,wt,wt2,0d0,200d0,5d0,'log')
-      n=n+1
-      call bookplot(n,tag,'etab2',etab2,wt,wt2,-4d0,4d0,0.2d0,'lin')
-      n=n+1
-      call bookplot(n,tag,ptet//'b2',ptb2,wt,wt2,0d0,200d0,5d0,'log')
-      n=n+1
-      call bookplot(n,tag,'mbb',mbb,wt,wt2,0d0,200d0,10d0,'log')
-      n=n+1
-      call bookplot(n,tag,'mbb',mbb,wt,wt2,0d0,200d0,5d0,'log')
-      n=n+1
-      call bookplot(n,tag,'rbb',rbb,wt,wt2,0d0,4d0,0.1d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'detabb',detabb,wt,wt2,0d0,4d0,0.1d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'dphibb',dphibb,wt,wt2,0d0,4d0,0.1d0,'lin')
       n=n+1
       endif
-
-      if (nproc .eq. 61) then
-      call bookplot(n,tag,'etbin',etbin,wt,wt2,0.5d0,25.5d0,1d0,'lin')
-      n=n+1
-      endif
-      
-      if (case .eq. 'Z_bjet') then
-      call bookplot(n,tag,ptet//' b leading',ptleadingb,
-     .               wt,wt2,0d0,500d0,20d0,'log')
-      n=n+1
-      call bookplot(n,tag,ptet//' non-b leading',ptleadingnonb,
-     .               wt,wt2,0d0,500d0,20d0,'log')
-      n=n+1
-      endif
-      
-      if (eventpart .gt. 6) then
-
-      if (bbproc) then
-c--- Non b-jet Et, 5 GeV bins from 15 to 200
-      call bookplot(n,tag,'non-b Et',ptnob,wt,wt2,15d0,200d0,5d0,'log')
-      n=n+1
-      call bookplot(n,tag,'etanob',etanob,wt,wt2,-4d0,4d0,0.2d0,'lin')
-      n=n+1
-      call bookplot(n,tag,ptet//'nob',ptnob,wt,wt2,0d0,200d0,5d0,'log')
-      n=n+1
-      endif
-
-      call bookplot(n,tag,'eta7',eta7,wt,wt2,-4d0,4d0,0.2d0,'lin')
-      n=n+1
-      call bookplot(n,tag,ptet//'7',pt7,wt,wt2,0d0,100d0,5d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'r57',r57,wt,wt2,0d0,4d0,0.1d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'r67',r67,wt,wt2,0d0,4d0,0.1d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'m567',m567,wt,wt2,108d0,308d0,2d0,'log')
-      n=n+1
-      call bookplot(n,tag,'eta diff',eta7-(eta5+eta6)/2d0,
-     . wt,wt2,-6d0,6d0,0.2d0,'lin')
-      n=n+1
-      endif      
-
-      if (eventpart .gt. 7) then
-      call bookplot(n,tag,'eta8',eta8,wt,wt2,-4d0,4d0,0.2d0,'lin')
-      n=n+1
-      call bookplot(n,tag,ptet//'8',pt8,wt,wt2,0d0,100d0,5d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'m348',m348,wt,wt2,108d0,308d0,2d0,'log')
-      n=n+1
-      call bookplot(n,tag,'m678',m678,wt,wt2,108d0,308d0,2d0,'log')
-      n=n+1
-      endif      
-
+            
       n=n-1
-
+      
       if (n .gt. maxhisto) then
         write(6,*) 'WARNING - TOO MANY HISTOGRAMS!'
         write(6,*) n,' > ',maxhisto,', which is the built-in maximum.'

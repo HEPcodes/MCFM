@@ -1,4 +1,4 @@
-      subroutine qqbtth(p,denr,denb,wtqqb)
+      subroutine qqbtth(denr,denb,wtqqb)
       implicit none
 C***********************************************************************
 C     Author: R.K. Ellis                                               *
@@ -25,12 +25,11 @@ C b2(mu)=b(mu)-bsq/2/p2Db*p2(mu)-->p(10,mu)
 ************************************************************************
       include 'constants.f'
       include 'masses.f'
-      include 'zprods_decl.f'
+      include 'zprods_com.f'
       integer q4,a7,r1,r2,b1,b2
       parameter(q4=3,a7=5,r1=6,r2=8,b1=9,b2=10)
-      double precision wtqqb,p(mxpart,4),denr,denb
+      double precision wtqqb,denr,denb
       double complex ampp,ampm
-      call spinoru(10,p,za,zb)
 C--diagram 1-Polarity plus
       ampp=mt/denr*((zb(4,q4)*za(q4,r2)*zb(r2,2)+mt**2*zb(4,2))*za(1,7)
      . +(zb(4,q4)*za(q4,1)+zb(4,r1)*za(r1,1))*zb(2,a7)*za(a7,7))

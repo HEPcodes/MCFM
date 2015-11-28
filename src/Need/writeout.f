@@ -20,6 +20,8 @@
       write(6,*) 'sqrt(s34)',dsqrt(2d0*dot(p,3,4))
       write(6,*) 'sqrt(s56)',dsqrt(2d0*dot(p,5,6))
       write(6,*) 'sqrt(s67)',dsqrt(2d0*dot(p,6,7))
+      write(6,*) 'sqrt(s78)',dsqrt(2d0*dot(p,7,8))
+      write(6,*) 'sqrt(s9,10)',dsqrt(2d0*dot(p,9,10))
       write(6,*) 'sqrt(s345)', 
      .   dsqrt(2d0*dot(p,3,4)+2d0*dot(p,3,5)+2d0*dot(p,4,5))
       write(6,*) 'sqrt(s567)', 

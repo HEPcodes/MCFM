@@ -17,7 +17,7 @@ c--- For itno>0, this is an intermediate result only
       character*3 oldbook
       character mop
       double precision xsec,xsec_err,scalefac,itscale
-      double precision EHIST(4,40,100)   
+      double precision EHIST(4,1000,100)   
       integer IHISTOMATCH(100),ICOUNTHISTO  
       logical scaleplots                  
       common/runname/runname

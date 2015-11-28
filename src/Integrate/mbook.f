@@ -114,8 +114,8 @@ c     & ' NO','NO',' NO','NO',' NO','NO',' NO','NO',' NO','NO'/
       BOOK(N)='YES'
       HDEL(N)=DEL
       HMIN(N)=XMIN
-      HMAX(N)=XMAX
-      NNBIN=INT((XMAX-XMIN)/DEL)
+      HMAX(N)=XMAX+1d-8
+      NNBIN=INT((XMAX+1d-8-XMIN)/DEL)
       IF (NNBIN .GT. 100) THEN
       WRITE(6,*) XMAX,XMIN,DEL,NNBIN,' BIN SIZE TOO LARGE'
       DEL=(XMAX-XMIN)/99.d0

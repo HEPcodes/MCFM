@@ -1,4 +1,4 @@
-      subroutine qqb_ttb_g(p,msq)
+      subroutine qqb_QQbdk_g(p,msq)
       implicit none
 C***********************************************************************
 *     Author: R.K. Ellis                                               *
@@ -7,7 +7,7 @@ C***********************************************************************
 *     for the process                                                  *
 *----My notation                                                       *
 *     q(-p1) +qbar(-p2)=t(nu(p3)+e^+(p4)+b(p5))                        *
-*                       +t~(b~(p6)+e^-(p7)+nu~(p8))+g(p9)              *
+*                      +t~(b~(p6)+e^-(p7)+nu~(p8))+g(p9)               *
 *                                                                      * 
 *     Only five diagrams included, leading to 2 on-shell top quarks    *
 ************************************************************************
@@ -15,9 +15,8 @@ C***********************************************************************
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'masses.f'
-      include 'sprods_com.f'
       include 'zprods_com.f'
-      integer b,j,k,h1,h2,h3,nu,j1,j2,j3
+      integer j,k,h1,h2,h3,nu
       double precision t(4),r(4),
      . msq(-nf:nf,-nf:nf),p(mxpart,4),ps(mxpart,4)
       double precision ttbqqbg_sq,fac,
@@ -30,13 +29,13 @@ C***********************************************************************
      . a6sum,a3sum1a,a3sum1b,a3sum2a,a3sum2b,a3sum9a,a3sum9b
       double precision p3Dp5,p6Dp8,rDp7,tDp4,s34,s78
 c--- these definitions are used for gauge check only
-      double complex a,
-     . ttbgggppp_full,ttbgggmpp_full,ttbgggpmp_full,ttbgggppm_full,
-     . ttbgggmmm_full,ttbgggpmm_full,ttbgggmpm_full,ttbgggmmp_full,      
-     . ttbqqbsqpp_full,ttbqqbsqpm_full,ttbqqbsqmp_full,ttbqqbsqmm_full,
-     . ttbqqbtqpp_full,ttbqqbtqpm_full,ttbqqbtqmp_full,ttbqqbtqmm_full,
-     . ttbqqbqqpp_full,ttbqqbqqpm_full,ttbqqbqqmp_full,ttbqqbqqmm_full,
-     . ttbqqbrqpp_full,ttbqqbrqpm_full,ttbqqbrqmp_full,ttbqqbrqmm_full
+c      double complex a,
+c     . ttbgggppp_full,ttbgggmpp_full,ttbgggpmp_full,ttbgggppm_full,
+c     . ttbgggmmm_full,ttbgggpmm_full,ttbgggmpm_full,ttbgggmmp_full,      
+c     . ttbqqbsqpp_full,ttbqqbsqpm_full,ttbqqbsqmp_full,ttbqqbsqmm_full,
+c     . ttbqqbtqpp_full,ttbqqbtqpm_full,ttbqqbtqmp_full,ttbqqbtqmm_full,
+c     . ttbqqbqqpp_full,ttbqqbqqpm_full,ttbqqbqqmp_full,ttbqqbqqmm_full,
+c     . ttbqqbrqpp_full,ttbqqbrqpm_full,ttbqqbrqmp_full,ttbqqbrqmm_full
 
 C----set all elements to zero
       do j=-nf,nf

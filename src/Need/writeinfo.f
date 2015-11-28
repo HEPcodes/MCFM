@@ -21,9 +21,10 @@
       include 'dynamicscale.f'
       include 'PDFerrors.f'
       include 'stopscales.f'
+      include 'process.f'
       integer unitno,j,k,itno
       double precision xsec,xsec_err
-      double precision lord_bypart(-1:1,-1:1),lordnorm
+      double precision lord_bypart(-1:1,-1:1),lordnorm,rescale
       double precision ggpart,gqpart,qgpart,qqpart,qqbpart,
      . gqbpart,qbgpart,qbqbpart,qbqpart
       
@@ -85,6 +86,16 @@ c--- variables in finalpart (normally done in mcfm_exit)
       write(unitno,55) '( Cross-section is: ',xsec,' +/-',xsec_err,')'
       write(unitno,*)
 
+c--- for gg->H+X processes, also write out the cross section
+c---  normalized by sigma(gg->H, finite mt)/sigma(gg->H, mt-> infinity)
+      if ( (case(1:5) .eq. 'ggfus') .or. (case(1:3) .eq. 'HWW')
+     . .or.(case(1:3) .eq. 'HZZ')) then
+        call finitemtcorr(rescale)
+        write(unitno,55)'( Rescaled x-sec is: ',xsec*rescale,' +/-',
+     .                                          xsec_err*rescale,')'
+        write(unitno,*)
+      endif
+     
       write(unitno,*) '( Contribution from parton sub-processes:'
       write(unitno,95) '   GG    ',ggpart*xsec,ggpart*100d0
       write(unitno,95) '   GQ    ',gqpart*xsec,gqpart*100d0

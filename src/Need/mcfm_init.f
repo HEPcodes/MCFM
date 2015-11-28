@@ -58,8 +58,8 @@ C -- GZ
       call setrunname(scale,facscale)
 
 * Initialize all histograms
-* npart=6 is a dummy value, to ensure that all histograms are included
-      npart=6
+* npart=9 is a dummy value, to ensure that all histograms are included
+      npart=9
       val=1d-15   
       call nplotter(p,val,val**2,1)
        

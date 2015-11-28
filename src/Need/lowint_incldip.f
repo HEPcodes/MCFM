@@ -342,9 +342,9 @@ c--- Calculate the required matrix elements
       elseif (case .eq. 'H_1jet') then
         call qqb_hg(p,msq)
       elseif ((case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')) then
-        call qqb_ttb(p,msq)
+        call qqb_QQbdk(p,msq)
       elseif (case .eq. 'qq_ttg') then
-        call qqb_ttb_g(p,msq)
+        call qqb_QQbdk_g(p,msq)
       elseif (case .eq. 'tt_tot') then
         call qqb_QQb(p,msq)
       elseif (case .eq. 'bb_tot') then

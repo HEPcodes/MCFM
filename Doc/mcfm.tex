@@ -21,7 +21,7 @@
 \thispagestyle{empty}
 \vspace*{3cm}
 \begin{center}
-{\Huge MCFM v5.7} \\
+{\Huge MCFM v5.8} \\
 \vspace*{0.5cm}
 \Large{A Monte Carlo for FeMtobarn} \\
 \Large{processes at Hadron Colliders} \\
@@ -33,7 +33,7 @@
 J. M. Campbell ({\tt johnmc@fnal.gov}) \\
 R. K. Ellis ({\tt ellis@fnal.gov}) \\
 \vspace*{2.5cm}
-{\it \small Updated: 22nd January 2010}
+{\it \small Updated: 8th April 2010}
 \end{center}
 
 \newpage
@@ -100,6 +100,10 @@ are:
   gluon fusion,''} \\
   JHEP {\bf 0610}, 028 (2006)
   [arXiv:hep-ph/0608194].
+\item J.~M.~Campbell, R.~K.~Ellis and C.~Williams, \\
+  {\it ``Hadronic production of a Higgs boson and two jets at next-to-leading
+  order,''} \\
+  arXiv:1001.4495 [hep-ph].
 \end{itemize}
 
 The following recent publications have also made use of calculations
@@ -571,8 +575,8 @@ $f(p_i)$ denotes a generic partonic jet.
 142& $ H(\to b(p_3)+\bar{b}(p_4)) + \bar{b}(p_5) (+b(p_6)) $ & NLO \\
 143& $ H(\to b(p_3)+\bar{b}(p_4)) + b(p_5) + \bar{b}(p_6) ~[ \mbox{both observed} ] $ & NLO \\
 \hline 
-151& $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{t}(\to \bar{b}(p_6)+e^-(p_7)+\bar{\nu}(p_8)) $ & LO \\
-152& $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{t}(\to \bar{b}(p_6)+q(p_7)+\bar{q}(p_8)) $ & LO \\
+151& $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{t}(\to \bar{b}(p_6)+e^-(p_7)+\bar{\nu}(p_8)) $ & NLO \\
+152& $ t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{t}(\to \bar{b}(p_6)+q(p_7)+\bar{q}(p_8)) $ & NLO \\
 \hline 
 156& $t(\to \nu(p_3)+e^+(p_4)+b(p_5))+\bar{t}(\to \bar{b}(p_6) +e^-(p_7)+\bar{\nu}(p_8))+g(p_9) $ & LO \\
 \hline 
@@ -1422,7 +1426,8 @@ When {\tt removebr} is true, the $W$ boson does not decay.
 \end{center}
 This process represents the production of a $W$ boson and $2$ jets,
 where the $W$ boson decays leptonically. The calculation may be
-performed up to NLO, as detailed below.
+performed up to NLO, as detailed below. Virtual amplitudes are
+taken from ref.~\cite{Bern:1997sc}.
 
 For these processes (and also for $Z+2$~jet production, {\tt nproc=44,46})
 the next-to-leading order matrix elements are
@@ -1506,7 +1511,8 @@ including also the effect of a virtual photon ({\tt nproc=44} only). The $Z/\gam
 to an $e^+ e^-$ pair ({\tt nproc=44}) or into three species of neutrino ({\tt nproc=46}).
 The calculation may be performed up to NLO -
 please see the earlier Section~\ref{subsec:w2jets} for more details,
-especially the discussion {\tt Qflag} and {\tt Gflag}.
+especially the discussion {\tt Qflag} and {\tt Gflag}. Virtual amplitudes are
+taken from ref.~\cite{Bern:1997sc}.
 
 When {\tt removebr} is true, the $Z$ boson does not decay.
 
@@ -1598,7 +1604,7 @@ where $V_1$ and $V_2$ may be either a $W$ or $Z/\gamma^*$.
 All the processes in this section may be calculated at NLO, with the exception
 of {\tt nproc=64}. There are various
 possibilities for the subsequent decay of the bosons, as specified in the
-sections below.
+sections below. Amplitudes are taken from ref.~\cite{Dixon:1998py}.
 
 \subsubsection{$WW$ production, processes 61-64}
 
@@ -1764,6 +1770,15 @@ is the coupling of two gluons to the Higgs via a top quark loop.
 The calculation may be performed at NLO, although radiation from the
 bottom quarks in the decay of processes {\tt 111} and {\tt 116} is not included.
 
+At the end of the output the program will also display the cross section rescaled
+by the constant factor,
+\begin{equation}
+\frac{\sigma_{\rm LO}(gg \to H, \mbox{finite}~m_t)}{\sigma_{\rm LO}(gg \to H, m_t \to \infty)} \;.
+\label{eqn:hrescale}
+\end{equation}
+For the LO calculation this gives the exact result when retaining a finite value for $m_t$,
+but this is only an approximation at NLO. The output histograms are not rescaled in this way.
+
 When {\tt removebr} is true in processes {\tt 111}--{\tt 114},
 the Higgs boson does not decay.
 
@@ -1798,10 +1813,11 @@ When {\tt removebr} is true, the Higgs boson does not decay.
 
 \subsection{$t\bar{t}$ production with decay, processes 151 and 152}
 
-These processes describe lowest order $t \bar{t}$ production 
+These processes describe $t \bar{t}$ production 
 including two leptonic decays $t \to b l \nu$ (process {\tt 151}) and 
 one leptonic and one hadronic decay ({\tt 152}).
-We use the matrix elements of ref.~\cite{Kleiss:1988xr}.
+The computation may be performed at NLO, using the virtual amplitudes
+presented in ref.~\cite{Korner:2002hy}.
 
 %In the case of process 152, there is no radiation off the decay products
 %of the $W$ which decays hadronically.
@@ -1934,7 +1950,11 @@ These processes represent the production of a Higgs boson in association
 with a pair of top quarks. The calculation can be performed at LO only.
 
 For process {\tt 190}, neither the top quarks nor the Higgs boson
-decays. In process {\tt 191}, both the top quarks decay leptonically
+decays. In process {\tt 191}, the top quarks are always
+produced on-shell, which is a necessity for a gauge invariant result.
+Switching {\tt zerowidth} from {\tt .true.} to {\tt .false.} only affects
+the Higgs and the $W$ bosons from the top quark decay.
+In process {\tt 191} both the top quarks decay leptonically
 and the Higgs boson decays into a pair of bottom quarks. 
 Consistency with
 the simpler process ({\tt 190}) can be demonstrated by running process
@@ -1945,8 +1965,12 @@ the simpler process ({\tt 190}) can be demonstrated by running process
 
 These processes represent the production of a $Z$ boson in association
 with a pair of top quarks which both decay leptonically.
+The top quarks are always
+produced on-shell, which is a necessity for a gauge invariant result.
+Switching {\tt zerowidth} from {\tt .true.} to {\tt .false.} only affects
+the $Z$ and the $W$ bosons from the top quark decay.
 In process {\tt 196} the $Z$ boson decays into an electron pair, whilst
-in {\tt 197} the decay is into a bottom quark pair.
+in {\tt 197} the decay is into a massless bottom quark pair.
 The calculations can be performed at LO only.
 
 When {\tt removebr} is true in process {\tt 196}, the $Z$ boson does not decay.
@@ -2224,12 +2248,31 @@ Stefan Dittmaier and Markus Roth,\\
   [arXiv:0808.1231 [hep-ph]].
   %%CITATION = NUPHA,B809,1;%%
 
-%\cite{Kleiss:1988xr}
-\bibitem{Kleiss:1988xr}
-R.~Kleiss and W.~J.~Stirling,
-%``Top Quark Production At Hadron Colliders: Some Useful Formulae,''
-Z.\ Phys.\ C {\bf 40}, 419 (1988).
-%%CITATION = ZEPYA,C40,419;%%
+%\cite{Bern:1997sc}
+\bibitem{Bern:1997sc}
+  Z.~Bern, L.~J.~Dixon and D.~A.~Kosower,
+  %``One-loop amplitudes for e+ e- to four partons,''
+  Nucl.\ Phys.\  B {\bf 513}, 3 (1998)
+  [arXiv:hep-ph/9708239].
+  %%CITATION = NUPHA,B513,3;%%
+
+%\cite{Dixon:1998py}
+\bibitem{Dixon:1998py}
+  L.~J.~Dixon, Z.~Kunszt and A.~Signer,
+  %``Helicity amplitudes for O(alpha-s) production of $W^{+} W^{-}$, $W^\pm Z$,
+  %$Z Z$, $W^\pm \gamma$, or $Z \gamma$ pairs at hadron colliders,''
+  Nucl.\ Phys.\  B {\bf 531}, 3 (1998)
+  [arXiv:hep-ph/9803250].
+  %%CITATION = NUPHA,B531,3;%%
+
+%\cite{Korner:2002hy}
+\bibitem{Korner:2002hy}
+  J.~G.~Korner and Z.~Merebashvili,
+  %``One-loop corrections to four-point functions with two external massive
+  %fermions and two external massless partons,''
+  Phys.\ Rev.\  D {\bf 66}, 054023 (2002)
+  [arXiv:hep-ph/0207054].
+  %%CITATION = PHRVA,D66,054023;%%
 
 %\cite{Nason:1987xz}
 \bibitem{Nason:1987xz}
@@ -2269,6 +2312,13 @@ C.~J.~Glosser and C.~R.~Schmidt,
 JHEP {\bf 0212}, 016 (2002)
 [arXiv:hep-ph/0209248].
 %%CITATION = HEP-PH 0209248;%%
+
+%\cite{Kleiss:1988xr}
+\bibitem{Kleiss:1988xr}
+R.~Kleiss and W.~J.~Stirling,
+%``Top Quark Production At Hadron Colliders: Some Useful Formulae,''
+Z.\ Phys.\ C {\bf 40}, 419 (1988).
+%%CITATION = ZEPYA,C40,419;%%
 
 \end{thebibliography}
 

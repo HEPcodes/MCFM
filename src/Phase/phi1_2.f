@@ -46,7 +46,8 @@ c--- if both particles are produced on-shell, reject if m1 too small
 
 c--- top is on-shell for W+t processes, so reject if m1 too small
       if ( ((case .eq. 'W_twdk') .or. (case .eq. 'Wtdkay')
-     .  .or.(case .eq. 'W_cwdk') .or. (case .eq. 'Wtbwdk'))
+     .  .or.(case .eq. 'W_cwdk') .or. (case .eq. 'Wtbwdk')
+     .  .or.(case .eq. 'qq_tth') .or. (case .eq. 'qq_ttz'))
      . .and. (m1 .lt. mass2) ) return 1
 c      s2min=bbsqmin
 c      s2max=min(s1,bbsqmax)
@@ -68,7 +69,8 @@ c      s2max=min(s1,bbsqmax)
       elseif ((case .eq. 'qq_tbg') .or. (case .eq. 'qqtbgg')) then
         s2min=mt**2
       elseif ((case .eq. 'W_twdk') .or. (case .eq. 'Wtdkay')
-     .   .or. (case .eq. 'W_cwdk') .or. (case .eq. 'Wtbwdk')) then
+     .   .or. (case .eq. 'W_cwdk') .or. (case .eq. 'Wtbwdk')
+     .   .or. (case .eq. 'qq_tth') .or. (case .eq. 'qq_ttz')) then
         oldzerowidth=zerowidth
         zerowidth=.true.
       endif
@@ -81,13 +83,15 @@ c      s2max=min(s1,bbsqmax)
       endif
 
       if ((case .eq. 'W_twdk') .or. (case .eq. 'Wtdkay')
-     ..or.(case .eq. 'W_cwdk') .or. (case .eq. 'Wtbwdk'))  then
+     ..or.(case .eq. 'W_cwdk') .or. (case .eq. 'Wtbwdk')
+     ..or.(case .eq. 'qq_tth') .or. (case .eq. 'qq_ttz'))  then
         zerowidth=oldzerowidth
       endif
       
       m2=dsqrt(s2)
       s3min=1d-15
       if ((case .eq. 'qq_tbg') .or. (case .eq. 'qqtbgg')) s3min=mb**2
+      if ((case .eq. 'qq_tth') .or. (case .eq. 'qq_ttz'))s3min=4d0*mb**2
 c      s3min=mb**2 ! DEBUG: hack for s36 small
 c      s3min=mt**2 ! DEBUG: hack for s46 small
       s3max=(m2-m1)**2

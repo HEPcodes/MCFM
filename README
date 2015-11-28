@@ -1,11 +1,13 @@
- ************** MCFM - version 5.7 ****************
+ ************** MCFM - version 5.8 ****************
  *                                                *
- * MCFM, v5.7                 January 22nd, 2010  *
+ * MCFM, v5.8                    April 8th, 2010  *
  *                                                *
  * Authors: John Campbell, Keith Ellis            *
  *         (johnmc@fnal.gov, ellis@fnal.gov)      *
  *                                                *
  * For details see:                               *
+ *  arXiv:1001.4495 [hep-ph] (H+2 jets via QCD)   *
+ *    (JC, RKE, C.Williams)                       *
  *  P.R.L. 102:142001, arXiv:0903.0005 [hep-ph]   *
  *    (t-channel single top + explicit b,         *
  *      JC, R.Frederix, F.Maltoni, F.Tramontano)  *

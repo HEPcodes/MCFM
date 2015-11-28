@@ -69,6 +69,10 @@ c      endif
       costh=two*rtxth-one      
       phi=twopi*xphi
       sinth=dsqrt(one-costh**2)
+c--- DEBUG - check small p2.p9 for tt_bbl
+c      sinth=xth/1d2 
+c      costh=dsqrt(1d0-sinth**2)    
+c--- DEBUG - end of check of small p2.p9 for tt_bbl
       cphi=dcos(phi)
       sphi=dsin(phi)
       lambda=((s1-s2-s3)**2-4d0*s2*s3)

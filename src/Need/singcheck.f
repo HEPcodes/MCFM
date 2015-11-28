@@ -78,6 +78,14 @@
         smin=min(smin,+dot(p,6,7))
 	if (smin. gt. 1d-1) return
         endif
+      elseif (npart .eq. 7) then
+        jmax=5
+        kmax=5
+        xtoler=1d3
+	if ((case .eq. 'tt_bbl') .or .(case .eq. 'tt_bbh')) then
+	  jmax=1
+	  kmax=1
+	endif
       else
         write(6,*) 'No singularity check implemented yet'
         stop
@@ -119,6 +127,12 @@ c             call coll_stop(p,k,j)
            else
 c             call coll5(p,k,j)
            endif
+         elseif (npart .eq. 7) then
+           if ((case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')) then
+             write(6,*) 'p(9,4)=',p(9,4)
+           else
+c             call coll5(p,k,j)
+           endif
          endif
          call real_g(p,msq)  
          call sub_gs(p,msqc) 
@@ -127,7 +141,7 @@ c             call coll5(p,k,j)
             msqs(jj,kk)=0d0
          enddo
          enddo
-         call dotem(7,p,s)
+         call dotem(9,p,s)
          call genclust2(p,rcut,pjet,0)
 c         write(6,*) 'rl,pt34',0,pttwo(3,4,p)
 c         write(6,*) 'nd,jets, msq(0,-1)',0,nd,jets,msq(0,-1)
@@ -177,7 +191,7 @@ c            if ((nd .eq. 1) .or. (nd .eq. 8)) then
 c            write(6,*) 'KINEMATICS FOR DIPOLE ',nd
 c	    call writeout(q)
 c	    endif
-            call dotem(7,q,s)
+            call dotem(9,q,s)
 c            call genclust2(q,rcut,pjet,1)
 c            if (jets .ge. nqcdjets) then	    
 	    if (includedipole(nd,q)) then

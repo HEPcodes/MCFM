@@ -37,9 +37,6 @@ c      r(1)=1d0-r(1)/1d3
 c--- END DEBUG      
       call phi1_2m(m5,r(1),r(2),r(3),smin,p12,p9,p345678,wt12,*99)
 
-c      write(6,*) 'p9  ',p9
-c      write(6,*) 'ptt ',p345678
-
       n2=1
       n3=1
       mass2=mt
@@ -49,9 +46,6 @@ c      write(6,*) 'ptt ',p345678
 
 c---decay 345678-system
       call phi1_2(r(4),r(5),r(6),r(7),p345678,p345,p678,wt345678,*99)
-
-c      write(6,*) 'p345',p345
-c      write(6,*) 'p678',p678
 
       n2=0
       n3=1
@@ -64,9 +58,6 @@ c--decay of p345 into p5 and p34
 c--decay of p678 into p6 and p78
       call phi1_2m(mb,r(11),r(12),r(13),smin,p678,p6,p78,wt678,*99)
 
-c      write(6,*) 'p34 ',p34
-c      write(6,*) 'p78 ',p78
-
       if ((p5(4).le.0d0).or.(p6(4).le.0d0)) goto 99
       call phi3m0(r(14),r(15),p34,p3,p4,wt34,*99)
       if ((p3(4).le.0d0).or.(p4(4).le.0d0)) goto 99
@@ -74,7 +65,6 @@ c      write(6,*) 'p78 ',p78
       if ((p7(4).le.0d0).or.(p8(4).le.0d0)) goto 99
 
       wt=wt0*wt12*wt345678*wt345*wt678*wt34*wt78
-c      write(6,*) wt0,wt12,wt345678,wt34,wt78
       
       return
       

@@ -15,12 +15,12 @@ c      COMMON/HISTOI/NBIN,IHIS,IUSCORE,IOSCORE,IENT,NHIST
 c--- This is the EBOOK common block - note that most entries are not
 c--- present here, to save on storage space. The maximum number of
 c--- histograms that may be calculated with errors is 4 and the
-c--- maximum number of PDF error sets is 40
-c      COMMON/EHISTO/HIST(4,40,100),HISTOMATCH(100),COUNTHISTO
+c--- maximum number of PDF error sets is 1000
+c      COMMON/EHISTO/HIST(4,1000,100),HISTOMATCH(100),COUNTHISTO
 
       block data einitialize
       COMMON/EHISTO/EHIST,IHISTOMATCH,ICOUNTHISTO 
-      double precision EHIST(4,40,100)   
+      double precision EHIST(4,1000,100)   
       integer IHISTOMATCH(100),ICOUNTHISTO                    
       data IHISTOMATCH/100*0/,ICOUNTHISTO/0/
       end
@@ -29,14 +29,14 @@ c--- sets up the histogram
       subroutine ebook(N)
       IMPLICIT REAL*8 (A-H,O-Z)
       IMPLICIT INTEGER (I-N)
-      double precision EHIST(4,40,100)   
+      double precision EHIST(4,1000,100)   
       integer IHISTOMATCH(100),ICOUNTHISTO                    
 c--- This is the MBOOK common block
       include 'histo.f'
 c--- This is the EBOOK common block - note that most entries are not
 c--- present here, to save on storage space. The maximum number of
 c--- histograms that may be calculated with errors is 4 and the
-c--- maximum number of PDF error sets is 40
+c--- maximum number of PDF error sets is 1000
       COMMON/EHISTO/EHIST,IHISTOMATCH,ICOUNTHISTO
       
       ICOUNTHISTO=ICOUNTHISTO+1
@@ -49,7 +49,7 @@ c--- maximum number of PDF error sets is 40
       IHISTOMATCH(N)=ICOUNTHISTO
       
       DO I=1,NBIN(N)
-        DO J=1,40
+        DO J=1,1000
       EHIST(ICOUNTHISTO,J,I)=0d0
         ENDDO
       ENDDO
@@ -61,14 +61,14 @@ c--- maximum number of PDF error sets is 40
       IMPLICIT REAL*8 (A-H,O-Z)
       IMPLICIT INTEGER (I-N)
       include 'PDFerrors.f'
-      double precision EHIST(4,40,100)   
+      double precision EHIST(4,1000,100)   
       integer IHISTOMATCH(100),ICOUNTHISTO                    
 c--- This is the MBOOK common block
       include 'histo.f'
 c--- This is the EBOOK common block - note that most entries are not
 c--- present here, to save on storage space. The maximum number of
 c--- histograms that may be calculated with errors is 4 and the
-c--- maximum number of PDF error sets is 40
+c--- maximum number of PDF error sets is 1000
       COMMON/EHISTO/EHIST,IHISTOMATCH,ICOUNTHISTO
       I=INT((X-HMIN(N))/HDEL(N)+1D0)
       IF(I.GT.0.AND.I.LE.NBIN(N))  THEN
@@ -89,7 +89,7 @@ c     we are normalising the weights by the bin width
       IMPLICIT REAL*8 (A-H,O-Z)
       IMPLICIT INTEGER (I-N)
       include 'PDFerrors.f'
-      double precision EHIST(4,40,100)   
+      double precision EHIST(4,1000,100)   
       integer IHISTOMATCH(100),ICOUNTHISTO                    
       CHARACTER*(*) LTIT,BTIT,SCALE
 c--- This is the MBOOK common block
@@ -97,7 +97,7 @@ c--- This is the MBOOK common block
 c--- This is the EBOOK common block - note that most entries are not
 c--- present here, to save on storage space. The maximum number of
 c--- histograms that may be calculated with errors is 4 and the
-c--- maximum number of PDF error sets is 40
+c--- maximum number of PDF error sets is 1000
       COMMON/EHISTO/EHIST,IHISTOMATCH,ICOUNTHISTO
 
       IF(BOOK(N).NE.'YES') RETURN
@@ -138,7 +138,7 @@ c--- loop over all PDF sets
       IMPLICIT REAL*8 (A-H,O-Z)
       IMPLICIT INTEGER (I-N)
       include 'PDFerrors.f'
-      double precision EHIST(4,40,100),maxhist(100),minhist(100),
+      double precision EHIST(4,1000,100),maxhist(100),minhist(100),
      . PDFperror,PDFnerror
       integer IHISTOMATCH(100),ICOUNTHISTO                    
       CHARACTER*(*) LTIT,BTIT,SCALE
@@ -147,7 +147,7 @@ c--- This is the MBOOK common block
 c--- This is the EBOOK common block - note that most entries are not
 c--- present here, to save on storage space. The maximum number of
 c--- histograms that may be calculated with errors is 4 and the
-c--- maximum number of PDF error sets is 40
+c--- maximum number of PDF error sets is 1000
       COMMON/EHISTO/EHIST,IHISTOMATCH,ICOUNTHISTO
 
       IF(BOOK(N).NE.'YES') RETURN

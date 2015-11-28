@@ -25,7 +25,7 @@ PDFROUTINES = NATIVE
 #            exists; output uses the FROOT package of P. Nadolsky.
 NTUPLES = NO
 
-FC = g77
+FC = gfortran
 FFLAGS 	= -fno-automatic -fno-f2c -O0 -g -I$(INCPATH)
 
 # If using FROOT package for ROOT ntuples, first specify C++ compiler:
@@ -161,6 +161,7 @@ qqb_Hg_v.o \
 qqb_Hg_z.o
 
 GGHFILES = \
+finitemtcorr.o \
 gg_h.o \
 gg_hg.o \
 gg_h_gs.o \
@@ -508,7 +509,9 @@ bq_tpq_vdk.o
 
 TAUTAUFILES = \
 qqb_tautau.o \
-tautauww.o
+tautauww.o \
+dotks.o \
+std.o
 
 TOPFILES = \
 qqb_QQb.o \
@@ -516,10 +519,68 @@ qqb_QQb_g.o \
 qqb_QQb_gs.o \
 qqb_QQb_gvec.o \
 qqb_QQb_v.o \
-qqb_QQb_z.o \
-qqb_ttb.o
+qqb_QQb_z.o
 
 TOPDKFILES = \
+ggttww1.o \
+qqb_QQbdk.o \
+qqb_QQbdk_g.o \
+qqb_QQbdk_gs.o \
+qqb_QQbdk_gvec.o \
+qqb_QQbdk_v.o \
+qqb_QQbdk_z.o \
+KMampsqggQQb.o \
+KMampsqqqbQQb.o \
+KMampsqggQQbdk.o \
+KMampsqqqbQQbdk.o \
+KMampsqggQQbdkn.o \
+KMgg3h.o \
+KMgg2b.o \
+KMgg2c1.o \
+KMgg2c2.o \
+KMgg2c3.o \
+KMgg2c4.o \
+KMgg2d1.o \
+KMgg3f1.o \
+KMgg3f2.o \
+KMgg2a.o \
+KMggtrig.o \
+KMggtriq.o \
+KMggtriHQ.o \
+KMqqb5ab.o \
+KMqqb5c.o \
+KMqqb5d.o \
+KMqqb5e.o \
+KMqqb5f.o \
+KMqqb5g.o \
+KMqqb5h.o \
+KMqqb5i.o \
+coeffboxa1.o \
+coeffboxa2.o \
+coeffboxa4.o \
+coeffboxa.o \
+coeffboxb.o \
+Bqq.o \
+Bs.o \
+Bt.o \
+Bu.o \
+cdot.o \
+pol_mless.o \
+psp.o \
+spb.o \
+bsp.o \
+u0spinor.o \
+ubar0spinor.o \
+ubarspinor.o \
+v0spinor.o \
+vbar0spinor.o \
+vspinor.o \
+string.o \
+string_KM.o \
+ubarWspinor.o \
+uWspinor.o \
+extend_trans_ttb.o \
+polarization.o \
 ttbgggppp.o \
 ttbgggppm.o \
 ttbgggpmm.o \
@@ -543,14 +604,10 @@ ttbqqbqqmm.o \
 ttbqqbrqpp.o \
 ttbqqbrqpm.o \
 ttbqqbrqmp.o \
-ttbqqbrqmm.o \
-qqb_ttb_g.o \
-ttbbww.o \
-ggttww.o \
-dotks.o \
-std.o
+ttbqqbrqmm.o
 
 TOPHFILES = \
+ggtth.o \
 qqbtth.o \
 qqb_tth.o \
 qqb_tottth.o
@@ -574,6 +631,7 @@ getet.o \
 hwwcuts.o \
 hwwjetplots.o \
 jetlabel_to_stdhep.o \
+jetreorder.o \
 mdata.o \
 miscclust.o \
 nplotter.o \

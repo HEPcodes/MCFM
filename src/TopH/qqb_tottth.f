@@ -17,7 +17,7 @@ C
       integer j,k
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4)
       double precision wtqqb,wtgg
-      double precision dot,DHQQ,DHGG,fac,X12,X13,X14,X23,X24
+      double precision dot,DHQQ,DHGG,facqq,facgg,X12,X13,X14,X23,X24
 
       x12=+2d0*dot(p,1,2)
       x13=+2d0*dot(p,1,3)
@@ -27,7 +27,8 @@ C
 
       wtqqb=DHQQ(X12,X13,X14,X23,X24)
       wtgg=DHGG(X12,X13,X14,X23,X24)
-      fac=V/4d0*gsq**2*gwsq*mt**2/wmass**2/4d0
+      facqq=V/4d0*gsq**2*gwsq*mt**2/wmass**2/4d0
+      facgg=facqq*4d0/3d0
 C----set all elements to zero
       do j=-nf,nf
       do k=-nf,nf
@@ -38,11 +39,11 @@ C----set all elements to zero
 C---fill qb-q, gg and q-qb elements
       do j=-nf,nf
       if (j .lt. 0) then
-          msq(j,-j)=aveqq*fac*wtqqb
+          msq(j,-j)=aveqq*facqq*wtqqb
       elseif (j .eq. 0) then
-          msq(j,j)=avegg*fac*wtgg
+          msq(j,j)=avegg*facgg*wtgg
       elseif (j .gt. 0) then
-          msq(j,-j)=aveqq*fac*wtqqb
+          msq(j,-j)=aveqq*facqq*wtqqb
       endif
       enddo
       return

@@ -1,7 +1,7 @@
       block data codeversion_data
       implicit none
       include 'codeversion.f'
-      data codeversion/'5.7'/      
+      data codeversion/'5.8'/      
       data      prelim/.false./      ! if true, print warning message
       end
 
@@ -44,12 +44,14 @@ c--- warning message, if necessary
 
       write(6,*) '*                                                *'
       write(6,*) '* MCFM, v'//codeversion//
-     . '              January 22nd, 2010  *'
+     . '                 April 8th, 2010  *'
       write(6,*) '*                                                *'
       write(6,*) '* Authors: John Campbell, Keith Ellis            *'
       write(6,*) '*         (johnmc@fnal.gov, ellis@fnal.gov)      *'
       write(6,*) '*                                                *'
       write(6,*) '* For details see:                               *'
+      write(6,*) '*  arXiv:1001.4495 [hep-ph] (H+2 jets via QCD)   *'
+      write(6,*) '*    (JC, RKE, C.Williams)                       *'
       write(6,*) '*  P.R.L. 102:142001, arXiv:0903.0005 [hep-ph]   *'
       write(6,*) '*    (t-channel single top + explicit b,         *'
       write(6,*) '*      JC, R.Frederix, F.Maltoni, F.Tramontano)  *'

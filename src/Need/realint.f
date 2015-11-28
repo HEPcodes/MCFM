@@ -18,6 +18,7 @@
       include 'maxwt.f'
       include 'process.f'
       include 'PDFerrors.f'
+      include 'masses.f'
       include 'wts_bypart.f'
       include 'dipolescale.f'
       include 'stopscales.f'
@@ -68,7 +69,8 @@ cz //
      . qqb_w_twdk_g,qqb_w_twdk_gs,qqb_w_twdk_gdk,qqb_w_twdk_gsdk,
      . qqb_zbjet_g,qqb_zbjet_gs,qqb_w_cjet_g,qqb_w_cjet_gs,
      . gg_hggg,gg_hgg_gs,
-     . qg_tbq_g,qg_tbq_gs,qq_tbg_g,qq_tbg_gs,epem3j_g,epem3j_gs
+     . qg_tbq_g,qg_tbq_gs,qq_tbg_g,qq_tbg_gs,epem3j_g,epem3j_gs,
+     . qqb_QQbdk_g,qqb_QQbdk_gs
       common/density/ih1,ih2
       common/energy/sqrts
       common/bin/bin
@@ -168,6 +170,16 @@ c--- processes that use "gen7"
         npart=7
         call gen7(vector,p,pswt,*999)
                   
+c--- processes that use "gen7m"     
+      elseif ( (case .eq. 'tt_bbl') 
+     .    .or. (case .eq. 'tt_bbh')
+     . ) then
+        m3=mt
+        m4=mt
+        m5=0d0
+        npart=7
+	call gen7m(vector,p,m3,m4,m5,pswt,*999)
+
 c--- processes that use "gen_njets" with an argument of "2"     
       elseif ( (case .eq. 'W_1jet')
      .    .or. (case .eq. 'Wcjet0')
@@ -361,6 +373,10 @@ c        call singcheck(qqb_hzz_g,qqb_hzz_gs,p)
 c        call singcheck(qqb_Hg_g,qqb_Hg_gs,p)       ! Checked 19/02/02
         if (includereal) call qqb_Hg_g(p,msq)  
         call qqb_Hg_gs(p,msqc) 
+      elseif ((case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')) then
+c         call singcheck(qqb_QQbdk_g,qqb_QQbdk_gs,p) ! Checked 15/8/08
+        if (includereal) call qqb_QQbdk_g(p,msq)  
+        call qqb_QQbdk_gs(p,msqc) 
       elseif ((case .eq. 'tt_tot') .or. (case .eq. 'cc_tot')
      .   .or. (case .eq. 'bb_tot')) then
 c        call singcheck(qqb_QQb_g,qqb_QQb_gs,p)

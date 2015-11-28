@@ -48,12 +48,12 @@ c      endif
       endif
       
       write(6,*)
-      write(6,*) '**********************************'
-      write(6,*) '*     MCFM is calling LHAPDF     *'
-      write(6,*) '*                                *'
-      write(6,98) 'PDFname',PDFname(1:20)
+      write(6,*) '*******************************************'
+      write(6,*) '*     MCFM is calling LHAPDF              *'
+      write(6,*) '*                                         *'
+      write(6,98) 'PDFname',PDFname(1:29)
       write(6,99) 'PDFmember',PDFmember
-      write(6,*) '**********************************'
+      write(6,*) '*******************************************'
       write(6,*)
 
 c      write(6,*) '+ Name = ','PDFsets/'//PDFname
@@ -90,8 +90,8 @@ c--- rename pdlabel to get sensible output name
       return
  
    97 format(' *        ',i4,' sets of error PDFs       *')
-   98 format(' *   ',a7,' ',a20,' *')
-   99 format(' *  ',a10,i3,'                 *')
+   98 format(' *   ',a7,' ',a29,' *')
+   99 format(' *  ',a10,i3,'                          *')
 
   999 write(6,*) 'Error reading lhapdf.DAT'
       call flush(6)

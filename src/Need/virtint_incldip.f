@@ -475,6 +475,10 @@ c--- Calculate the required matrix elements
         call gg_hZZg(p,msq)
         call gg_hZZg_v(p,msqv)
         call gg_hZZg_z(p,z)
+      elseif ((case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')) then
+        call qqb_QQbdk(p,msq)
+        call qqb_QQbdk_v(p,msqv)
+        call qqb_QQbdk_z(p,z)
       elseif ((case .eq. 'tt_tot')
      .   .or. (case .eq. 'bb_tot')
      .   .or. (case .eq. 'cc_tot')) then
@@ -961,6 +965,7 @@ c     &     +S2(g,g,g,gf_gf,cs,3)+S2(g,g,g,gf_gf,cs,2))*fx1(g)*fx2z(g)/z
 
       elseif ((case .eq. 'W_2jet') .or. (case .eq. 'Z_2jet')
      .   .or. (case .eq. 'W_bjet') .or. (case .eq. 'Z_bjet')
+     .   .or. (case .eq. 'tt_bbl') .or. (case .eq. 'tt_bbh')
      .   .or. (case .eq. 'tt_tot') .or. (case .eq. 'bb_tot')
      .   .or. (case .eq. 'cc_tot')) then
 c--- SUM BY COLOUR STRUCTURES: W/Z + 2 jet only

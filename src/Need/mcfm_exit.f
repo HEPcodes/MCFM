@@ -6,11 +6,12 @@
 ************************************************************************
       implicit none
       include 'efficiency.f'
+      include 'process.f'
       include 'PDFerrors.f'
       integer j,k,itmx
       double precision xinteg,xinteg_err,minPDFxsec,maxPDFxsec
       double precision PDFerror,PDFperror,PDFnerror
-      double precision lord_bypart(-1:1,-1:1),lordnorm
+      double precision lord_bypart(-1:1,-1:1),lordnorm,rescale
       double precision ggpart,gqpart,qgpart,qqpart,qqbpart,
      . gqbpart,qbgpart,qbqbpart,qbqpart
       character*4 part
@@ -31,6 +32,22 @@ c--- Print-out the value of the integral and its error
         write(6,53)'Value of final ',part,' integral is',
      .   xinteg/1d6,' +/-',xinteg_err/1d6, ' nb'
         write(6,*) '(WARNING: result in nanobarns)'
+      endif
+
+c--- for gg->H+X processes, also write out the cross section
+c---  normalized by sigma(gg->H, finite mt)/sigma(gg->H, mt-> infinity)
+      if ( (case(1:5) .eq. 'ggfus') .or. (case(1:3) .eq. 'HWW')
+     . .or.(case(1:3) .eq. 'HZZ')) then
+        call finitemtcorr(rescale)
+        write(6,*)
+	write(6,*) 'Cross section normalized by the ratio'
+	write(6,*) 'sigma(gg->H, finite mt)/sigma(gg->H, mt-> infinity)'
+	write(6,*) '(i.e. exact for gg->H process, but '//
+     .               'approx. for gg->H+n jets, n=1,2,3)'
+        write(6,*)
+        write(6,53)' Rescaled ',part,' integral is',
+     .   xinteg*rescale,' +/-',xinteg_err*rescale, ' fb'   
+        write(6,'(a25,f7.3,a2)') '   (Rescaling factor is ',rescale,')'  
       endif
      
    53 format(a15,a4,a12,f13.3,a4,f10.3,a3)
@@ -194,7 +211,8 @@ c---  (see Appendix B of arXiv:0808.1231 [hep-ph])
       endif
       close(91)
       
-   56 format('* PDF error set ',i3,'  --->',f13.3,' fb  *')
+
+   56 format('* PDF error set ',i3,' -->',f15.3,' fb  *')
    57 format('*   ',a16,f14.3,' fb      *')
    58 format(a44)
    59 format('*   ',a16,f14.3,'         *')
