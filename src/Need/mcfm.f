@@ -29,6 +29,8 @@
 * in initial phases, we don't want any unweighting to take place.
 * this will be set true in the first call to getevent.
       unweight = .false.
+* if we're reading in a grid, there's no need to do any warming-up
+      if (readin) dryrun=.true.
 
 * This is the mcfm_vegas(warmup) call
 * The Vegas parameters are those read from options.DAT for

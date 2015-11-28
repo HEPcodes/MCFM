@@ -46,9 +46,9 @@ c--- throughout the program to calculate couplings that depend on the
 c--- mass, while "mtau","mc" and "mb" are the masses that appear in
 c--- the rest of the matrix elements and phase space (and may be set
 c--- to zero in the program, depending on the process number) 
-      data mtausq,mcsq,mbsq/3.157729d0,2.25d0,17.64d0/
+      data mtausq,mcsq,mbsq/3.157729d0,2.25d0,21.3444d0/
       data mtau/1.777d0/
-      data mc,mb,mt/1.5d0,4.2d0,178d0/
+      data mc,mb,mt/1.5d0,4.62d0,178d0/
 c--- Widths: note that the top width is calculated in the program
       data wwidth,zwidth/2.06d0,2.49d0/
       data tauwidth/2.269d-12/
@@ -78,12 +78,17 @@ c--- Masses below here are currently unused
 
 
 ************************************************************************
-*     Relevant for the H+b process only : the deviation of the Higgs   *
-*      coupling from the Standard Model value (S.M. = 1d0)             *
+*     Relevant for the H+b process only :                              *
+*       mb_msbar: the value of the running b-mass, evaluated at the    * 
+*                 pole mass. For negative values, calculated from mb   *
+*       susycoup: the deviation of the Higgs coupling from the         *
+*                 Standard Model value (S.M. = 1d0)                    *
 ************************************************************************
       block data block_bH
       implicit none
+      include 'mb_msbar.f'
       include 'susycoup.f'
+      data mb_msbar/4.25d0/
       data susycoup/1d0/
       end
 ************************************************************************

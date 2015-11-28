@@ -153,30 +153,30 @@ c-- skip non-diagonal quark flavors except gluon
       do polq=1,2
 c---sum is over diagram type t,s(Z),e,n,s(photon)
       do jtype=1,5
-	  if    (j .lt. 0 .and. tau(jk) .eq. -1d0 .and. k .ne. 0) then
-	    amp(jtype)=db_d(jtype,polg,polq)
-	  elseif(j .lt. 0 .and. tau(jk) .eq.  1d0 .and. k .ne. 0) then
-	    amp(jtype)=ub_u(jtype,polg,polq)
-	  elseif(j .gt. 0 .and. tau(jk) .eq. -1d0 .and. k .ne. 0) then
-	    amp(jtype)=d_db(jtype,polg,polq)
-	  elseif(j .gt. 0 .and. tau(jk) .eq.  1d0 .and. k .ne. 0) then
-	    amp(jtype)=u_ub(jtype,polg,polq)
-	  elseif(j .eq. 0 .and. tau(jk) .eq.  1d0 .and. jk .gt. 0) then
-	    amp(jtype)=g_u(jtype,polg,polq)
-	  elseif(j .eq. 0 .and. tau(jk) .eq. -1d0 .and. jk .gt. 0) then
-	    amp(jtype)=g_d(jtype,polg,polq)
-	  elseif(j .eq. 0 .and. tau(jk) .eq. -1d0 .and. jk .lt. 0) then
-	    amp(jtype)=g_ub(jtype,polg,polq)
-	  elseif(j .eq. 0 .and. tau(jk) .eq.  1d0 .and. jk .lt. 0) then
-	    amp(jtype)=g_db(jtype,polg,polq)
-	  elseif(k .eq. 0 .and. tau(jk) .eq.  1d0 .and. jk .gt. 0) then
-	    amp(jtype)=u_g(jtype,polg,polq)
-	  elseif(k .eq. 0 .and. tau(jk) .eq. -1d0 .and. jk .gt. 0) then
-	    amp(jtype)=d_g(jtype,polg,polq)
-	  elseif(k .eq. 0 .and. tau(jk) .eq. -1d0 .and. jk .lt. 0) then
-	    amp(jtype)=ub_g(jtype,polg,polq)
-	  elseif(k .eq. 0 .and. tau(jk) .eq.  1d0 .and. jk .lt. 0) then	
-	    amp(jtype)=db_g(jtype,polg,polq)
+          if    (j .lt. 0 .and. tau(jk) .eq. -1d0 .and. k .ne. 0) then
+            amp(jtype)=db_d(jtype,polg,polq)
+          elseif(j .lt. 0 .and. tau(jk) .eq.  1d0 .and. k .ne. 0) then
+            amp(jtype)=ub_u(jtype,polg,polq)
+          elseif(j .gt. 0 .and. tau(jk) .eq. -1d0 .and. k .ne. 0) then
+            amp(jtype)=d_db(jtype,polg,polq)
+          elseif(j .gt. 0 .and. tau(jk) .eq.  1d0 .and. k .ne. 0) then
+            amp(jtype)=u_ub(jtype,polg,polq)
+          elseif(j .eq. 0 .and. tau(jk) .eq.  1d0 .and. jk .gt. 0) then
+            amp(jtype)=g_u(jtype,polg,polq)
+          elseif(j .eq. 0 .and. tau(jk) .eq. -1d0 .and. jk .gt. 0) then
+            amp(jtype)=g_d(jtype,polg,polq)
+          elseif(j .eq. 0 .and. tau(jk) .eq. -1d0 .and. jk .lt. 0) then
+            amp(jtype)=g_ub(jtype,polg,polq)
+          elseif(j .eq. 0 .and. tau(jk) .eq.  1d0 .and. jk .lt. 0) then
+            amp(jtype)=g_db(jtype,polg,polq)
+          elseif(k .eq. 0 .and. tau(jk) .eq.  1d0 .and. jk .gt. 0) then
+            amp(jtype)=u_g(jtype,polg,polq)
+          elseif(k .eq. 0 .and. tau(jk) .eq. -1d0 .and. jk .gt. 0) then
+            amp(jtype)=d_g(jtype,polg,polq)
+          elseif(k .eq. 0 .and. tau(jk) .eq. -1d0 .and. jk .lt. 0) then
+            amp(jtype)=ub_g(jtype,polg,polq)
+          elseif(k .eq. 0 .and. tau(jk) .eq.  1d0 .and. jk .lt. 0) then 
+            amp(jtype)=db_g(jtype,polg,polq)
         endif
       enddo
 
@@ -187,7 +187,7 @@ c-- include coupling in l1 to account for non-leptonic W decays
       A(polg,polq)=l1*dcmplx(fac)*cprop
      . *(ct(polq,tjk)*amp(1)+cs_z(polq,tjk)*amp(2)+cs_g(polq,tjk)*amp(5)
      .  +cz(polq,tjk)*amp(3)+cgamz(polq,tjk)*amp(4))
-	  
+          
       enddo
       enddo
 
@@ -195,7 +195,7 @@ c-- include coupling in l1 to account for non-leptonic W decays
      . (cdabs(A(mplus,minus))**2+cdabs(A(minus,minus))**2
      . +cdabs(A(mplus,mplus))**2+cdabs(A(minus,mplus))**2)
 
-	
+        
    19 continue
       enddo
       enddo

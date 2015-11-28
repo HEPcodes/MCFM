@@ -9,7 +9,7 @@ c---  DKS Eq. 3.15
      .       +a6loopa(j1,j2,j6,j5,j4,j3,za,zb)
       return
       end
-	
+        
       double complex function a6loopa(j1,j2,j3,j4,j5,j6,za,zb)
       implicit none
 c---  DKS Eq. 2.10 for alpha = a
@@ -35,13 +35,13 @@ c      include 'sprods_com.f'
 c      include 'zprods_decl.f'
 c      integer j1,j2,j3,j4,j5,j6
 c      double complex tree,Vpole,a6treeb
-	
-c      tree=a6treeb(j1,j2,j3,j4,j5,j6,za,zb)	
+        
+c      tree=a6treeb(j1,j2,j3,j4,j5,j6,za,zb)    
 c      a6loopb=tree*Vpole(s(j1,j2))
 c
 c      return 
 c      end
 
-	      
+              
 
-	
+        

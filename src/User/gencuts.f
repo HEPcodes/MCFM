@@ -87,25 +87,6 @@ c--- write-out the cuts we are using
       if (first) then
       first=.false.
       
-c      if (newinput .eqv. .false.) then
-c--- read-in cuts from file gencuts.DAT
-c        open(unit=21,file='gencuts.DAT',status='old',err=999)
-c        call checkversion(21,'gencuts.DAT')
-c        read(21,*) leptpt
-c        read(21,*) leptrap
-c        read(21,*) misspt
-c        read(21,*) leptpt2
-c        read(21,*) leptrap2
-c        read(21,*) Rjlmin
-c        read(21,*) Rllmin
-c        read(21,*) delyjjmin
-c        read(21,*) gammpt
-c        read(21,*) gammrap
-c        read(21,*) gammcone
-c        read(21,*) gammcut
-c        close(21)
-c      endif
-      
       write(6,*)
       write(6,*)  '****************** Generic cuts ********************'
       write(6,*)  '*                                                  *'
@@ -389,23 +370,13 @@ c--- Cut to require lepton to be between jets
               gencuts=.true.
               return
             endif
-c--- DEBUG
-c--- hack for our WBF selection
+
+c--- these lines impose an alternative WBF selection
 c             if ( ((etaj .gt. 1.6d0) .and. (etaj .lt. 4.4d0))
 c     .        .or.((etak .gt. 1.6d0) .and. (etak .lt. 4.4d0)) ) then
 c             else
-c             gencuts=.true.
+c               gencuts=.true.
 c             endif             
-c--- hack for invariant mass cut
-c            MJJ=(pjet(jetindex(j),4)+pjet(jetindex(k),4))**2
-c     .         -(pjet(jetindex(j),1)+pjet(jetindex(k),1))**2
-c     .         -(pjet(jetindex(j),2)+pjet(jetindex(k),2))**2
-c     .         -(pjet(jetindex(j),3)+pjet(jetindex(k),3))**2
-c            MJJ=dsqrt(MJJ)
-c            if (MJJ .lt. 800d0) then
-c              gencuts=.true.
-c              return
-c            endif
           enddo
           
           

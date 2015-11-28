@@ -196,7 +196,7 @@ c--assign values
            BWWM=(La216543+cl_z(1)*Lb216543_z
      .                   +cl_g(1)*Lb216543_g)*prop56*prop34
            BWWP=(cr_z(1)*Lb126543_z+cr_g(1)*Lb126543_g)*prop56*prop34
-	 endif
+         endif
       elseif (j .lt. 0) then
          if (tau(jk) .eq. +1d0) then
 C---remember that this is the basic process, M refers to the helicity
@@ -281,6 +281,6 @@ c-- also include coupling in l1 to account for non-leptonic W decays
 
  20   continue
       enddo
-	
+        
       return
       end

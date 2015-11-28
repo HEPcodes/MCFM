@@ -77,18 +77,18 @@ C===========================================================================
       save Warn
 
       If (X .lt. 0D0 .or. X .gt. 1D0) Then
-	Print *, 'X out of range in Ctq5Pdf: ', X
-	Stop
+        Print *, 'X out of range in Ctq5Pdf: ', X
+        Stop
       Endif
       If (Q .lt. Alambda) Then
-	Print *, 'Q out of range in Ctq5Pdf: ', Q
-	Stop
+        Print *, 'Q out of range in Ctq5Pdf: ', Q
+        Stop
       Endif
       If ((Iparton .lt. -NfMx .or. Iparton .gt. NfMx)) Then
          If (Warn) Then
 C        put a warning for calling extra flavor.
-	     Warn = .false.
-	     Print *, 'Warning: Iparton out of range in Ctq5Pdf: '
+             Warn = .false.
+             Print *, 'Warning: Iparton out of range in Ctq5Pdf: '
      >              , Iparton
          Endif
          Ctq5Pdf = 0D0
@@ -211,7 +211,7 @@ C                        ****************************
 
 C             If data file not initialized, do so.
       If(Iset.ne.Isetold) then
-	 IU= NextUn()
+         IU= NextUn()
          If (Iset .eq. Isettest) then
             Print* ,'Opening ', Tablefile
  21         Open(IU, File=Tablefile, Status='OLD', Err=101)
@@ -222,15 +222,15 @@ C             If data file not initialized, do so.
             Goto 21
  22         Continue
          ElseIf (Iset.lt.Isetmin .or. Iset.gt.Isetmax) Then
-	    Print *, 'Invalid Iset number in SetCtq5 :', Iset
-	    Stop
+            Print *, 'Invalid Iset number in SetCtq5 :', Iset
+            Stop
          Else
             Tablefile=Flnm(Iset)
             Open(IU, File='Pdfdata/'//Tablefile, Status='OLD', Err=100)
-	 Endif
+         Endif
          Call ReadTbl (IU)
          Close (IU)
-	 Isetold=Iset
+         Isetold=Iset
       Endif
       Return
 

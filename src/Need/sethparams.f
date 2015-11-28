@@ -30,12 +30,20 @@ c--- the H->bb BR since the tau mass is not included in the phase space
       x_w=4d0*wmass**2/hmass**2
       x_z=4d0*zmass**2/hmass**2
 c--- branching ratio H-> WW
-      wwbr=gwsq/64d0/pi*hmass**3/wmass**2
-     . *dsqrt(1d0-x_w)*(1d0-x_w+0.75d0*x_w**2)/hwidth
+      if (x_w .lt. 1d0) then
+        wwbr=gwsq/64d0/pi*hmass**3/wmass**2
+     .   *dsqrt(1d0-x_w)*(1d0-x_w+0.75d0*x_w**2)/hwidth
+      else
+        wwbr=0d0
+      endif
 c--- branching ratio H-> ZZ
-      zzbr=gwsq/128d0/pi*hmass**3/wmass**2
-     . *dsqrt(1d0-x_z)*(1d0-x_z+0.75d0*x_z**2)/hwidth
-		
+      if (x_z .lt. 1d0) then
+        zzbr=gwsq/128d0/pi*hmass**3/wmass**2
+     .   *dsqrt(1d0-x_z)*(1d0-x_z+0.75d0*x_z**2)/hwidth
+      else
+        zzbr=0d0
+      endif
+                
       write(6,99) hmass,hwidth,br,tautaubr,wwbr,zzbr
       
       return

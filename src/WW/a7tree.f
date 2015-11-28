@@ -8,10 +8,10 @@ c---  DKS Eq. 3.15
      
       a7trees=a7treea(j1,j2,j3,j4,j5,j6,j7,za,zb)
      .       +a7treea(j1,j2,j6,j5,j4,j3,j7,za,zb)
-	
+        
       return
       end
-	
+        
       double complex function A7treea(j1,j2,j3,j4,j5,j6,j7,za,zb)
 C---This function taken from Eq. 2.22 of DKS
 c---Multiplied by a factor of (-i)

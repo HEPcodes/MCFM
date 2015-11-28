@@ -87,6 +87,9 @@ c--- Traditional MCFM histograms
      & ,PTB2
      & ,PTNOB
      & ,PTQ1
+     & ,ETAQ1
+     & ,PTOTHER
+     & ,ETAOTHER
      & ,PTTWO
      & ,QETA
      & ,R
@@ -157,6 +160,9 @@ c--- ensure we initialize all possible histograms
         ptb1=0d0
         ptb2=0d0
         ptQ1=0d0
+        etaQ1=0d0
+        ptother=0d0
+        etaother=0d0
         ptnob=0d0
         rbb=0d0
         detabb=0d0
@@ -266,14 +272,14 @@ c--- returns zero cluster mass if two b's are in one jet
       eta3=etarap(3,p)
       pt3=pt(3,p)
       eta4=etarap(4,p)
-      pt4=pt(4,p)	 
+      pt4=pt(4,p)        
       eta34=etaraptwo(3,4,p)
       y34=yraptwo(3,4,p)
       pt34=pttwo(3,4,p)
       r34=R(p,3,4)
       HT=pt3+pt4
               
-      if (eventpart .gt. 4) then	
+      if (eventpart .gt. 4) then        
       eta5=etarap(5,p)
       pt5=pt(5,p)
       r35=R(p,3,5)
@@ -283,7 +289,7 @@ c--- returns zero cluster mass if two b's are in one jet
 
       endif
       
-      if (eventpart .gt. 5) then	
+      if (eventpart .gt. 5) then        
       eta6=etarap(6,p)
       pt6=pt(6,p)
       eta56=etaraptwo(5,6,p)
@@ -295,7 +301,7 @@ c--- returns zero cluster mass if two b's are in one jet
       HT=HT+pt6
       endif
 
-      if (eventpart .gt. 6) then	
+      if (eventpart .gt. 6) then        
       eta7=etarap(7,p)
       pt7=pt(7,p)
       r57=R(p,5,7)
@@ -303,7 +309,7 @@ c--- returns zero cluster mass if two b's are in one jet
       HT=HT+pt7
       endif
 
-      if (eventpart .gt. 7) then	
+      if (eventpart .gt. 7) then        
       eta8=etarap(8,p)
       pt8=pt(8,p)
       HT=HT+pt8
@@ -405,11 +411,24 @@ c--- this process, these should be set up properly
           dphibb=dsqrt(dabs(rbb**2-detabb**2))
         endif
 
-c--- for relevant processes, catch the highest pt heavy quark
-      if (case .eq. 'gQ__ZQ') then
-        call getptQ1(pt5,pt6,ptQ1)
+      if     (case .eq. 'gQ__ZQ') then
+c--- for the Z+b process, catch the highest pt heavy quark
+        call getptQ1(pt5,pt6,eta5,eta6,ptQ1,etaQ1,1)
+      elseif (case .eq. 'H_1jet') then
+c--- for the H+b process, catch the most central heavy quark
+        call getptQ1(pt5,pt6,eta5,eta6,ptQ1,etaQ1,2)
+        if (jets .gt. 1) then
+          ptother=pt5+pt6-ptQ1
+          etaother=eta5+eta6-etaQ1
+        else
+          ptother=-1d0
+          etaother=99d0
+        endif
       else
         ptQ1=-1d0
+        etaQ1=99d0
+        ptother=-1d0
+        etaother=99d0
       endif
 
       if (nproc .eq. 61) then
@@ -436,8 +455,8 @@ c these variables should already be in the common-block
           ht_stop=-1d0
           qeta=99d0
           mlbnu=-1d0
-  	  merecon=-1d0
-  	  reconcorr=-99d0
+          merecon=-1d0
+          reconcorr=-99d0
         endif
       call bookplot(n,tag,'    HT',HT_stop,wt,100d0,500d0,10d0,'lin')
       n=n+1
@@ -498,8 +517,15 @@ c --- Histograms to monitor exclusive/inclusive cross-sections:
       call bookplot(n,tag,'     r45',r45,wt,0d0,4d0,0.1d0,'lin')
       n=n+1
 
-c--- Highest pt heavy quark jet
-      call bookplot(n,tag,'    ptQ1',ptQ1,wt,0d0,200d0,10d0,'log')
+c--- The selected heavy quark jet for Z+b and H+b
+      call bookplot(n,tag,' ptQ_central',ptQ1,wt,0d0,200d0,5d0,'log')
+      n=n+1
+      call bookplot(n,tag,'etaQ_central',etaQ1,wt,-5d0,5d0,0.4d0,'lin')
+      n=n+1
+c--- The other jet for H+b (which is a heavy quark for process 143)
+      call bookplot(n,tag,' pt other',ptother,wt,0d0,200d0,5d0,'log')
+      n=n+1
+      call bookplot(n,tag,'eta other',etaother,wt,-5d0,5d0,0.4d0,'lin')
       n=n+1
 
       endif

@@ -36,10 +36,10 @@ c----udif=tanh(ydif)
       udif=beta*(two*r(2)-1d0)
       ydif=half*dlog((1d0+udif)/(1d0-udif))
       xjac=four*ymax*beta
-	  
+          
       y3=yave+ydif
       y4=yave-ydif
-	  
+          
       xjac=xjac*w3
       phi=2d0*pi*r(4)
 
@@ -56,7 +56,7 @@ c----udif=tanh(ydif)
       endif
 
       pt=dsqrt(trmass**2-mass2**2)
-	  
+          
       p(1,4)=-0.5d0*xx(1)*sqrts
       p(1,1)=0d0
       p(1,2)=0d0

@@ -10,6 +10,7 @@ c--- returns logical 'failed'
       include 'jetlabel.f'
       include 'limits.f'
       include 'process.f'
+      include 'removebr.f'
       double precision qfinal(mxpart,4),m56,m57,m67
       logical failed
       integer nproc,countb,jetsfound,nbq,nba,isub
@@ -17,12 +18,13 @@ c--- returns logical 'failed'
       
       failed=.false.
 
-c--- check that particle 5 is a b for H+b, W+c, t-channel single top
-c--- Z+Q and W+b+jet processes      
+c--- check that particle 5 is a b for H+b, W+c, Z+Q and W+b+jet processes
+c--- also check for t-channel single top when the BR is not removed
       if ( (case .eq. 'H_1jet')
      . .or.(case .eq. 'W_cjet') .or. (case .eq. 'Wcjet0')
-     . .or.(case .eq. 'bq_tpq') .or. (case .eq. 'ttdkay')
-     . .or.(case .eq. 'gQ__ZQ') .or. (case .eq. 'W_bjet') ) then
+     . .or.(case .eq. 'ttdkay')
+     . .or.(case .eq. 'gQ__ZQ') .or. (case .eq. 'W_bjet')
+     . .or.((case.eq. 'bq_tpq') .and. (removebr .eqv. .false.)) ) then
         countb=0
         if ((jetsfound .ge. 1) .and. ((jetlabel(1) .eq. 'bq')
      .    .or. (jetlabel(1) .eq. 'ba'))) countb=1

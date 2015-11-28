@@ -18,12 +18,13 @@
       include 'gridinfo.f'
       include 'realwt.f'
       include 'scale.f'
+      include 'facscale.f'
       include 'vegas_common.f'
       include 'PDFerrors.f'
       integer myitmx,myncall,myinit,i,j,k,nproc
       logical mybin,bin
       double precision sig,sd,chi,sigr,sdr,sigdk,sddk,chidk,
-     . xreal,xreal2,xinteg,xerr,adjust,myscale
+     . xreal,xreal2,xinteg,xerr,adjust,myscale,myfacscale
       character*4 part,mypart
       common/nproc/nproc
       common/part/part
@@ -84,6 +85,7 @@ c--- also store value of scale in myscale, which will be retained;
 c--- part and scale can be changed to make sure that the tota option works.
       mypart=part
       myscale=scale
+      myfacscale=facscale
       
 c--- If we're doing the tota integration, then set up the grid info
       if ((mypart .eq. 'tota') .or. (mypart .eq. 'todk')) then        
@@ -166,6 +168,7 @@ c---   unsubtracted real emission weight)
       endif
       if ((mypart .eq. 'tota') .or. (mypart .eq. 'todk')) then
         scale=myscale
+        facscale=myfacscale
         part='real'
         reset=.true.
         if (realwt) then

@@ -1,6 +1,6 @@
        SUBROUTINE MRSEB(X,SCALE,MODE,UPV,DNV,USEA,DSEA,STR,CHM,BOT,GLU)
 C***************************************************************C
-C								C
+C                                                               C
 C     This is a package for the new MRS(A',G) parton            C
 C     distributions. The minimum Q^2  value is 5 GeV^2 and the  C
 C     x range is, as before 10^-5 < x < 1. MSbar factorization  C
@@ -9,10 +9,10 @@ C     files (A'=for020.dat/ftn20, G=for021.dat/ftn21).          C
 C     Note that x times the parton distribution is returned,    C
 C     Q is the scale in GeV,                                    C
 C     and Lambda(MSbar,nf=4) = 231/255 MeV for A'/G.            C
-C								C
-C	MODE=20 for MRS(A')                                      C
-C	MODE=21 for MRS(G)                                       C
-C								C
+C                                                               C
+C       MODE=20 for MRS(A')                                      C
+C       MODE=21 for MRS(G)                                       C
+C                                                               C
 C         The reference is :                                    C
 C         A.D. Martin, R.G. Roberts and W.J. Stirling,          C
 C         Phys. Lett. B354 (1995) 155-162                       C
@@ -23,7 +23,7 @@ C             >>>>>>>>  CROSS CHECK  <<<<<<<<                   C
 C                                                               C
 C         THE FIRST NUMBER IN THE 20 GRID IS 0.00341            C
 C         THE FIRST NUMBER IN THE 21 GRID IS 0.00269            C
-C								C
+C                                                               C
 C***************************************************************C
       IMPLICIT REAL*8(A-H,O-Z)
       Q2=SCALE**2

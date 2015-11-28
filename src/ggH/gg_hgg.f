@@ -19,7 +19,9 @@ c     g(-p1)+g(-p2) -->  H(p3)+g(p_iglue1=5)+g(p_iglue2=6)
      . Hqarb,Hqaqa,Hqbqb,
      . Haqbr,Haqaq,Hbqbq
       double precision msq(-nf:nf,-nf:nf),hdecay,s34
+
       parameter(iglue1=5,iglue2=6)
+
 
 C---fill spinor products upto maximum number
       call spinoru(iglue2,p,za,zb)  
@@ -29,33 +31,48 @@ C   Deal with Higgs decay to b-bbar
       hdecay=xn*gwsq*mbsq/(4d0*wmass**2)*2d0*(s34-4d0*mb**2) 
       hdecay=hdecay/((s34-hmass**2)**2+(hmass*hwidth)**2)
       Asq=(as/(3d0*pi))**2/vevsq
-
+      fac=gsq**2*Asq*hdecay
 C--four gluon terms
       call h4g(1,2,iglue1,iglue2,Hgggg)
 
 C--two quark two gluon terms
       call hqqgg(1,2,iglue1,iglue2,Hqagg)
-      call hqqgg(2,1,iglue1,iglue2,Haqgg)
+c      call hqqgg(2,1,iglue1,iglue2,Haqgg)
+C====symmetric in first two arguments
+      Haqgg=Hqagg
+
       call hqqgg(1,iglue1,2,iglue2,Hqgqg)
-      call hqqgg(iglue1,1,2,iglue2,Hagag)
+c      call hqqgg(iglue1,1,2,iglue2,Hagag)
+C====symmetric in first two arguments
+      Hagag=Hqgqg
+
       call hqqgg(2,iglue1,1,iglue2,Hgqgq)
-      call hqqgg(iglue1,2,1,iglue2,Hgaga)
+c      call hqqgg(iglue1,2,1,iglue2,Hgaga)
+C====symmetric in first two arguments
+      Hgaga=Hgqgq
+
       call hqqgg(iglue2,iglue1,1,2,Hggqa)
 
 C---four quark terms
-      call H4q(1,2,iglue1,iglue2,Hqrqr,Hqqqq)
+      call H4qn(1,2,iglue1,iglue2,Hqrqr)
+      call H4qi(1,2,iglue1,iglue2,Hqqqq)
 C---four anti-quark terms
-      call H4q(iglue1,iglue2,1,2,Habab,Haaaa)
+c      call H4qn(iglue1,iglue2,1,2,Habab)
+c      call H4qi(iglue1,iglue2,1,2,Haaaa)
+      Habab=Hqrqr
+      Haaaa=Hqqqq
 
 C-qqb
-      call H4q(1,iglue2,2,iglue1,Hqarb,Hqaqa)
-      call H4q(1,iglue2,iglue1,2,Hqbqb,Hqaqa)
+      call H4qn(1,iglue2,2,iglue1,Hqarb)
+      call H4qi(1,iglue2,2,iglue1,Hqaqa)
+
+      call H4qn(1,iglue2,iglue1,2,Hqbqb)
+
 
 C-qbq
-      call H4q(2,iglue2,1,iglue1,Haqbr,Haqaq)
-      call H4q(2,iglue2,iglue1,1,Hbqbq,Haqaq)
-
-      fac=gsq**2*Asq*hdecay
+      Haqbr=Hqarb
+      call H4qi(2,iglue2,1,iglue1,Haqaq)
+      call H4qn(2,iglue2,iglue1,1,Hbqbq)
 
       do j=fn,nf
       do k=fn,nf

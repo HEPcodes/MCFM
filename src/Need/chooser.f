@@ -107,8 +107,8 @@ c--    '  f(p1)+f(p2) --> W^- (for total Xsect)' (removebr=.true.)
           plabel(4)='na'
           plabel(5)='pp'
           nwz=-1
-	else
-	  call nprocinvalid()
+        else
+          call nprocinvalid()
         endif
 
 c--- total cross-section
@@ -139,22 +139,22 @@ c--    '  f(p1)+f(p2) --> W^+ (no BR) + f(p5)' (removebr=.true.)
           nwz=1
           plabel(3)='nl'
           plabel(4)='ea'
-	elseif (nproc .eq. 16) then
+        elseif (nproc .eq. 16) then
 c-- 16 '  f(p1)+f(p2) --> W^-(-->e^-(p3)+nu~(p4))+f(p5)'
 c--    '  f(p1)+f(p2) --> W^- (no BR) + f(p5)' (removebr=.true.)
           nwz=-1
           plabel(3)='el'
           plabel(4)='na'
-	endif
+        endif
 
-c--- total cross-section	     
+c--- total cross-section             
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
           call branch(brwen,brzee,brtau,brtop)
           BrnRat=brwen
         endif
-	     
+             
 c-----------------------------------------------------------------------
 
       elseif ((nproc .eq. 12) .or. (nproc .eq. 17)) then
@@ -183,14 +183,14 @@ c--    '  f(p1)+f(p2) --> W^- (no BR) + gamma(p5)' (removebr=.true.)
           plabel(4)='na'
         endif
       
-c--- total cross-section	     
+c--- total cross-section             
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
           call branch(brwen,brzee,brtau,brtop)
           BrnRat=brwen
         endif
-	     
+             
 c-----------------------------------------------------------------------
 
       elseif ((nproc .eq. 13) .or. (nproc .eq. 18)) then
@@ -202,8 +202,8 @@ c-----------------------------------------------------------------------
         n3=1
         mass3=wmass
         width3=wwidth
-	mass2=mc
-	nflav=3
+        mass2=mc
+        nflav=3
         plabel(5)='bq'
         plabel(6)='pp'
 
@@ -221,14 +221,14 @@ c--    '  f(p1)+f(p2) --> W^- (no BR) + c(p5)' (removebr=.true.)
           plabel(4)='na'
         endif
 
-c--- total cross-section	     
+c--- total cross-section             
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
           call branch(brwen,brzee,brtau,brtop)
           BrnRat=brwen
         endif
-	     
+             
 c-----------------------------------------------------------------------
 
       elseif ((nproc .eq. 14) .or. (nproc .eq. 19)) then
@@ -240,8 +240,8 @@ c-----------------------------------------------------------------------
         n3=1
         mass3=wmass
         width3=wwidth
-	mass2=0d0
-	nflav=3
+        mass2=0d0
+        nflav=3
         plabel(5)='bq'
         plabel(6)='pp'
 
@@ -259,20 +259,20 @@ c--    '  f(p1)+f(p2) --> W^- (no BR) + c(p5) [massless]' (removebr=.true.)
           plabel(4)='na'
         endif
 
-c--- total cross-section	     
+c--- total cross-section             
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
           call branch(brwen,brzee,brtau,brtop)
           BrnRat=brwen
         endif
-	     
+             
 c-----------------------------------------------------------------------
 
       elseif ((nproc .eq. 20) .or. (nproc .eq. 25)) then
         case='Wbbmas'
         write(6,*) 'mb=',mb
-	nqcdjets=2
+        nqcdjets=2
         flav=5
         bbproc=.true.
         plabel(5)='bq'
@@ -298,20 +298,20 @@ c--    '  f(p1)+f(p2) --> W^- (no BR) +b(p5)+b~(p6) [massive]' (removebr=.true.)
           plabel(4)='na'
         endif
  
-c--- total cross-section	     
+c--- total cross-section             
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
           call branch(brwen,brzee,brtau,brtop)
           BrnRat=brwen
         endif
-	     
+             
 c-----------------------------------------------------------------------
 
       elseif ((nproc .eq. 21) .or. (nproc .eq. 26)) then
         case='Wbbbar'
         write(6,*) 'mb=',mb
-	nqcdjets=2
+        nqcdjets=2
         bbproc=.true.
         plabel(5)='bq'
         plabel(6)='ba'
@@ -336,20 +336,20 @@ c--    '  f(p1)+f(p2) --> W^- (no BR) +b(p5)+b~(p6)' (removebr=.true.)
           plabel(3)='el'
           plabel(4)='na'
         endif
-	     
-c--- total cross-section	     
+             
+c--- total cross-section             
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
           call branch(brwen,brzee,brtau,brtop)
           BrnRat=brwen
         endif
-	     
+             
 c-----------------------------------------------------------------------
 
       elseif ((nproc .eq. 22) .or. (nproc .eq. 27)) then
         case='W_2jet'
-	nqcdjets=2
+        nqcdjets=2
         plabel(5)='pp'
         plabel(6)='pp'
         plabel(7)='pp'
@@ -365,27 +365,27 @@ c--    '  f(p1)+f(p2) --> W^+ (no BR) +f(p5)+f(p6)' (removebr=.true.)
           nwz=1
           plabel(3)='nl'
           plabel(4)='ea'
-	elseif (nproc .eq. 27) then
+        elseif (nproc .eq. 27) then
 c-- 27 '  f(p1)+f(p2) --> W^-(-->e^-(p3)+nu~(p4)) + f(p5)+f(p6)'
 c--    '  f(p1)+f(p2) --> W^- (no BR) +f(p5)+f(p6)' (removebr=.true.)
           nwz=-1
           plabel(3)='el'
           plabel(4)='na'
-	endif
+        endif
 
-c--- total cross-section	     
+c--- total cross-section             
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
           call branch(brwen,brzee,brtau,brtop)
           BrnRat=brwen
         endif
-	     
+             
 c-----------------------------------------------------------------------
 
       elseif ((nproc .eq. 23) .or. (nproc .eq. 28)) then
         case='W_3jet'
-	nqcdjets=3
+        nqcdjets=3
         plabel(5)='pp'
         plabel(6)='pp'
         plabel(7)='pp'
@@ -401,33 +401,33 @@ c--    '  f(p1)+f(p2) --> W^+ (no BR) +f(p5)+f(p6)+f(p7)' (removebr=.true.)
           nwz=1
           plabel(3)='nl'
           plabel(4)='ea'
-	elseif (nproc .eq. 28) then
+        elseif (nproc .eq. 28) then
 c-- 28 '  f(p1)+f(p2) --> W^-(-->e^-(p3)+nu~(p4)) + f(p5)+f(p6)+f(p7)'
 c--    '  f(p1)+f(p2) --> W^- (no BR) +f(p5)+f(p6)+f(p7)' (removebr=.true.)
           nwz=-1
           plabel(3)='el'
           plabel(4)='na'
-	endif
+        endif
 
-c--- total cross-section	     
+c--- total cross-section             
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
           call branch(brwen,brzee,brtau,brtop)
           BrnRat=brwen
         endif
-	
+        
 c-----------------------------------------------------------------------
 
       elseif ((nproc .eq. 24) .or. (nproc .eq. 29)) then
         case='Wbbjet'
         write(6,*) 'mb=',mb
-	nqcdjets=3
+        nqcdjets=3
         bbproc=.true.
         plabel(5)='bq'
         plabel(6)='ba'
         plabel(7)='pp'
-	mb=0d0
+        mb=0d0
         ndim=13
         n2=0
         n3=1
@@ -440,22 +440,22 @@ c--    '  f(p1)+f(p2) --> W^+ (no BR) +b(p5)+b~(p6)+f(p7)' (removebr=.true.)
           nwz=1
           plabel(3)='nl'
           plabel(4)='ea'
-	elseif (nproc .eq. 29) then
+        elseif (nproc .eq. 29) then
 c-- 29 '  f(p1)+f(p2) --> W^-(-->e^-(p3)+nu~(p4)) + b(p5)+b~(p6)+f(p7)'
 c--    '  f(p1)+f(p2) --> W^- (no BR) +b(p5)+b~(p6)+f(p7)' (removebr=.true.)
           nwz=-1
           plabel(3)='el'
           plabel(4)='na'
-	endif
+        endif
 
-c--- total cross-section	     
+c--- total cross-section             
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
           call branch(brwen,brzee,brtau,brtop)
           BrnRat=brwen
         endif
-	
+        
 c-----------------------------------------------------------------------
 
       elseif (nproc/10 .eq. 3) then
@@ -497,8 +497,8 @@ c-- 33 '  f(p1)+f(p2) --> Z^0(-->b(p3)+b~(p4))'
           q1=Q(5)*dsqrt(xn)
           l1=l(5)*dsqrt(xn)
           r1=r(5)*dsqrt(xn)
-	else
-	  call nprocinvalid()
+        else
+          call nprocinvalid()
         endif 
 
 c-----------------------------------------------------------------------
@@ -564,11 +564,11 @@ c--    '  f(p1)+f(p2) --> Z^0 (no BR) +f(p5)+f(p6)' (removebr=.true.)
         q1=-1d0
         l1=le
         r1=re
-	nwz=0	
-	mass3=zmass
-	width3=zwidth
+        nwz=0   
+        mass3=zmass
+        width3=zwidth
        
-c--- total cross-section	     
+c--- total cross-section             
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
@@ -591,11 +591,11 @@ c--    '  f(p1)+f(p2) --> Z^0 (no BR) +f(p5)+f(p6)+f(p7)' (removebr=.true.)
         q1=-1d0
         l1=le
         r1=re
-	nwz=0	
-	mass3=zmass
-	width3=zwidth
+        nwz=0   
+        mass3=zmass
+        width3=zwidth
        
-c--- total cross-section	     
+c--- total cross-section             
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
@@ -609,7 +609,7 @@ c-----------------------------------------------------------------------
           case='Zgamma'
           call checkminzmass(1)
           nqcdjets=0
-	  ndim=7
+          ndim=7
           n2=0
           n3=1
           mass3=zmass
@@ -617,7 +617,7 @@ c-----------------------------------------------------------------------
           nwz=0
           plabel(5)='ga'
           plabel(6)='pp'
-	  
+          
           if     (nproc .eq. 48) then
 c-- 48 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4))+gamma(p5)'
 c--    '  f(p1)+f(p2) --> Z^0 (no BR) +gamma(p5)' (removebr=.true.)
@@ -642,7 +642,7 @@ c-- 49 '  f(p1)+f(p2) --> Z^0(-->3*(nu(p3)+nu~(p4)))-(sum over 3 nu)+gamma(p5)'
           endif
 
 c-----------------------------------------------------------------------
-	  
+          
       elseif (nproc .eq. 50) then
 c-- 50 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4))+b~(p5)+b(p6) (massive)'
 c--    '  f(p1)+f(p2) --> Z^0 (no BR) +b~(p5)+b(p6) (massive)' (removebr=.true.)
@@ -665,7 +665,7 @@ c--    '  f(p1)+f(p2) --> Z^0 (no BR) +b~(p5)+b(p6) (massive)' (removebr=.true.)
         mass3=zmass
         width3=zwidth
 
-c--- total cross-section	     
+c--- total cross-section             
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
@@ -699,7 +699,7 @@ c--    '  f(p1)+f(p2) --> Z^0 (no BR) +b(p5)+b~(p6)' (removebr=.true.)
           q1=-1d0
           l1=le
           r1=re
-c--- total cross-section	     
+c--- total cross-section             
           if (removebr) then
             plabel(3)='ig'
             plabel(4)='ig'
@@ -721,7 +721,7 @@ c-- 53 '  f(p1)+f(p2) --> Z^0(-->b(p3)+b~(p4))+b(p5)+b~(p6)'
           l1=l(5)*dsqrt(xn)
           r1=r(5)*dsqrt(xn)
         endif
-	
+        
       elseif (nproc .eq. 56) then
 c-- 56 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4))+b(p5)+b~(p6)+f(p7)'
 c--    '  f(p1)+f(p2) --> Z^0 (no BR) +b(p5)+b~(p6)+f(p7)' (removebr=.true.)
@@ -741,7 +741,7 @@ c--    '  f(p1)+f(p2) --> Z^0 (no BR) +b(p5)+b~(p6)+f(p7)' (removebr=.true.)
         mass3=zmass
         width3=zwidth
 
-c--- total cross-section	     
+c--- total cross-section             
         if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
@@ -750,7 +750,7 @@ c--- total cross-section
         endif
 
 c-----------------------------------------------------------------------
-	  
+          
       elseif (nproc/10 .eq. 6) then
         case='WWqqbr'
         call readcoup
@@ -772,13 +772,13 @@ c--     '  f(p1)+f(p2) --> W^+ + W^- (for total Xsect)' (removebr=.true.)
           if (nproc .eq. 64) then
 c--  64 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4)) +W^-(-->e^-(p5)+nu~(p6)) [no pol]'
             case='WWnpol'
-	  endif
+          endif
           plabel(3)='nl'
           plabel(4)='ea'
           plabel(5)='el'
           plabel(6)='na'
           l1=1d0
-c--- total cross-section	     
+c--- total cross-section             
           if (removebr) then
             plabel(3)='ig'
             plabel(4)='ig'
@@ -828,7 +828,7 @@ c-----------------------------------------------------------------------
 c-- W^+Z
           nwz=+1
 
-          if     (nproc .eq. 71) then		  
+          if     (nproc .eq. 71) then             
 c--  71 '  f(p1)+f(p2) --> W^+(-->nu(p3)+mu^+(p4))+Z^0(-->e^-(p5)+e^+(p6))'
 c--     '  f(p1)+f(p2) --> W^+ (for total Xsect) + Z^0 ' (removebr=.true.)
             plabel(3)='nl'
@@ -838,7 +838,7 @@ c--     '  f(p1)+f(p2) --> W^+ (for total Xsect) + Z^0 ' (removebr=.true.)
             q1=-1d0
             l1=le
             r1=re
-c--- total cross-section	     
+c--- total cross-section             
             if (removebr) then
               plabel(3)='ig'
               plabel(4)='ig'
@@ -869,8 +869,8 @@ c--  73 '  f(p1)+f(p2) --> W^+(-->nu(p3)+mu^+(p4))+Z^0(-->b(p5)+b~(p6))'
             q1=Q(5)*dsqrt(xn)
             l1=l(5)*dsqrt(xn)
             r1=r(5)*dsqrt(xn)
-	  else
-	    call nprocinvalid()
+          else
+            call nprocinvalid()
           endif 
 
         elseif (nproc .ge. 75) then
@@ -887,7 +887,7 @@ c--     '  f(p1)+f(p2) --> W^- + Z^0 (for total Xsect)' (removebr=.true.)
             q1=-1d0
             l1=le
             r1=re
-c--- total cross-section	     
+c--- total cross-section             
             if (removebr) then
               plabel(3)='ig'
               plabel(4)='ig'
@@ -916,8 +916,8 @@ c--  78 '  f(p1)+f(p2) --> W^-(-->e^-(p3)+nu~(p4))+Z^0(-->b(p5)+b~(p6))'
             q1=Q(5)*dsqrt(xn)
             l1=l(5)*dsqrt(xn)
             r1=r(5)*dsqrt(xn)
-	  else
-	    call nprocinvalid()
+          else
+            call nprocinvalid()
           endif 
 
         endif
@@ -943,7 +943,7 @@ c-----------------------------------------------------------------------
         q1=-1d0
         l1=le
         r1=re
-	
+        
         if (nproc .eq. 81 .or. nproc .eq. 86) then
 c--  81 '  f(p1)+f(p2) --> Z^0(-->mu^-(p3)+mu^+(p4)) + Z^0(-->e^-(p5)+e^+(p6))'
 c--     '  f(p1)+f(p2) --> Z^0 + Z^0 (for total Xsect)' (removebr=.true.)
@@ -988,7 +988,7 @@ c--  88 '  f(p1)+f(p2) --> Z^0(-->e^-(p5)+e^+(p6))+Z^0(-->b(p3)+b~(p4)) (NO GAMM
 c--  84 '  f(p1)+f(p2) --> Z^0(-->3*(nu(p3)+nu~(p4))) + Z^0(-->b(p5)+bb(p6))'
 c--  89 '  f(p1)+f(p2) --> Z^0(-->3*(nu(p3)+nu~(p4))) + Z^0(-->b(p5)+bb(p6))(NO GAMMA*)'
           bbproc=.true.
-	  nqcdjets=2
+          nqcdjets=2
           plabel(3)='nl'
           plabel(4)='na'
           plabel(5)='bq'
@@ -999,8 +999,8 @@ c--  89 '  f(p1)+f(p2) --> Z^0(-->3*(nu(p3)+nu~(p4))) + Z^0(-->b(p5)+bb(p6))(NO 
           q1=Q(5)*dsqrt(xn)
           l1=l(5)*dsqrt(xn)
           r1=r(5)*dsqrt(xn)
-	else
-	  call nprocinvalid()
+        else
+          call nprocinvalid()
         endif 
 
 c-- remove gamma^* if necessary
@@ -1008,7 +1008,7 @@ c-- remove gamma^* if necessary
           q1=0d0
           q2=0d0
         endif
-	
+        
 c-----------------------------------------------------------------------
 
       elseif (nproc/10 .eq. 9) then
@@ -1016,13 +1016,13 @@ c-----------------------------------------------------------------------
         mb=0
         call sethparams(br,wwbr,zzbr,tautaubr)
         nqcdjets=2
-	bbproc=.true.
+        bbproc=.true.
         plabel(3)='nl'
         plabel(4)='ea'
         plabel(5)='bq'
         plabel(6)='ba'
         plabel(7)='pp'
-	
+        
         ndim=10
         n2=1
         n3=1
@@ -1039,11 +1039,11 @@ c--     '  f(p1)+f(p2) --> W+ + H (for total Xsect)' (removebr=.true.)
             plabel(3)='ig'
             plabel(4)='ig'
             plabel(5)='ig'
-            plabel(6)='ig'		 
+            plabel(6)='ig'               
             call branch(brwen,brzee,brtau,brtop)
             BrnRat=brwen*br
-	    bbproc=.false.
-	    nqcdjets=0
+            bbproc=.false.
+            nqcdjets=0
           endif
         elseif (nproc .eq. 96) then
 c--  96 '  f(p1)+f(p2) --> W^-(-->e^-(p3)+nu~(p4))+ H(-->b(p5)+b~(p6))' 
@@ -1053,15 +1053,15 @@ c--     '  f(p1)+f(p2) --> W- + H (for total Xsect)' (removebr=.true.)
             plabel(3)='ig'
             plabel(4)='ig'
             plabel(5)='ig'
-            plabel(6)='ig'		 
+            plabel(6)='ig'               
             call branch(brwen,brzee,brtau,brtop)
             BrnRat=brwen*br
-	    bbproc=.false.
-	    nqcdjets=0
+            bbproc=.false.
+            nqcdjets=0
           endif
-	else
-	    call nprocinvalid()
-	endif
+        else
+            call nprocinvalid()
+        endif
 
 c-----------------------------------------------------------------------
 
@@ -1100,8 +1100,8 @@ c--      '  f(p1)+f(p2) --> H + Z0 (for total Xsect)' (removebr=.true.)
             plabel(4)='ig'
             plabel(5)='ig'
             plabel(6)='ig'    
-	    bbproc=.false.
-	    nqcdjets=0  	 
+            bbproc=.false.
+            nqcdjets=0           
           endif
         elseif (nproc .eq. 102) then
 c--  102 '  f(p1)+f(p2) --> Z^0(-->3*(nu(p3)+nu~(p4))) + H(-->b(p5)+b~(p6))'
@@ -1119,8 +1119,8 @@ c--  103 '  f(p1)+f(p2) --> Z^0(-->b(p3)+b~(p4)) + H(-->b(p5)+b~(p6))'
           l1=l(5)*dsqrt(xn)
           r1=r(5)*dsqrt(xn)
         else
-	  call nprocinvalid()
-	endif 
+          call nprocinvalid()
+        endif 
 
 c-----------------------------------------------------------------------
 
@@ -1136,44 +1136,44 @@ c-----------------------------------------------------------------------
         mass3=hmass
         width3=hwidth
 
-	if     (nproc .eq. 111) then
+        if     (nproc .eq. 111) then
 c--  111 '  f(p1)+f(p2) --> H(-->b(p3)+bbar(p4))'
 c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)       
           plabel(3)='bq'
           plabel(4)='ba'
-	  nqcdjets=2
-	  if (removebr) then
+          nqcdjets=2
+          if (removebr) then
             plabel(3)='ig'
             plabel(4)='ig'
-	    nqcdjets=0
+            nqcdjets=0
             BrnRat=br
-	  endif
-	  
+          endif
+          
         elseif (nproc .eq. 112) then
 c--  112 '  f(p1)+f(p2) --> H(-->tau^-(p3)+tau^+(p4))'
 c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)       
           plabel(3)='tl'
           plabel(4)='ta'
           nqcdjets=0
-	  Brnrat=br/tautaubr
-	  if (removebr) then
+          Brnrat=br/tautaubr
+          if (removebr) then
             plabel(3)='ig'
             plabel(4)='ig'
             BrnRat=br
-	  endif
-	endif
+          endif
+        endif
 
-	if (removebr) then
+        if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
-	  nqcdjets=0
+          nqcdjets=0
           BrnRat=br
-	endif
+        endif
 
       elseif (nproc .eq. 113) then
 c--  113 '  f(p1)+f(p2) --> H (--> W^+(nu(p3)+e^+(p4)) + W^-(e^-(p5)+nu~(p6)))'
 c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)
-        case='HWW_4l'		  
+        case='HWW_4l'             
         call sethparams(br,wwbr,zzbr,tautaubr)
         plabel(3)='nl'
         plabel(4)='ea'
@@ -1191,21 +1191,21 @@ c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)
 
 c--- print warning if we're below threshold
         if (hmass .lt. 2d0*wmass) then
-	  write(6,*)
-	  write(6,*) 'WARNING: Higgs decay H->WW is below threshold and'
-	  write(6,*) 'may not yield sensible results - check the number'
-	  write(6,*) 'of integration points and the value of zerowidth'
+          write(6,*)
+          write(6,*) 'WARNING: Higgs decay H->WW is below threshold and'
+          write(6,*) 'may not yield sensible results - check the number'
+          write(6,*) 'of integration points and the value of zerowidth'
         endif
-	
+        
         if (removebr) then
           call branch(brwen,brzee,brtau,brtop)
           BrnRat=brwen**2*wwbr
           plabel(3)='ig'
           plabel(4)='ig'
           plabel(5)='ig'
-          plabel(6)='ig'	       
+          plabel(6)='ig'               
         endif
-	
+        
       elseif ((nproc .ge. 114) .and. (nproc .le. 116)) then
         case='HZZ_4l'
         call sethparams(br,wwbr,zzbr,tautaubr)
@@ -1221,12 +1221,12 @@ c--- print warning if we're below threshold
 
 c--- print warning if we're below threshold
         if (hmass .lt. 2d0*zmass) then
-	  write(6,*)
-	  write(6,*) 'WARNING: Higgs decay H->ZZ is below threshold and'
-	  write(6,*) 'may not yield sensible results - check the number'
-	  write(6,*) 'of integration points and the value of zerowidth'
+          write(6,*)
+          write(6,*) 'WARNING: Higgs decay H->ZZ is below threshold and'
+          write(6,*) 'may not yield sensible results - check the number'
+          write(6,*) 'of integration points and the value of zerowidth'
         endif
-	
+        
         if     (nproc .eq. 114) then
 c--  114 '  f(p1)+f(p2) --> H(-->Z^0(mu^-(p3)+mu^+(p4)) + Z^0(e^-(p5)+e^+(p6))'
 c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)
@@ -1244,7 +1244,7 @@ c--      '  f(p1)+f(p2) --> H (for total Xsect)' (removebr=.true.)
             plabel(3)='ig'
             plabel(4)='ig'
             plabel(5)='ig'
-            plabel(6)='ig'	       
+            plabel(6)='ig'             
           endif
         elseif (nproc .eq. 115) then
 c--  115 '  f(p1)+f(p2) --> H(-->Z^0(3*(nu(p3)+nu~(p4)))+ Z^0(e^-(p5)+e^+(p6))'
@@ -1255,7 +1255,7 @@ c--  115 '  f(p1)+f(p2) --> H(-->Z^0(3*(nu(p3)+nu~(p4)))+ Z^0(e^-(p5)+e^+(p6))'
           l1=le
           r1=re
           l2=ln*dsqrt(3d0)
-          r2=rn*dsqrt(3d0)	
+          r2=rn*dsqrt(3d0)      
         elseif (nproc .eq. 116) then
 c--  116 '  f(p1)+f(p2) --> H(-->Z^0(mu^-(p3)+mu^+(p4)) + Z^0(b(p5)+b~(p6))'
           nqcdjets=2
@@ -1267,8 +1267,8 @@ c--  116 '  f(p1)+f(p2) --> H(-->Z^0(mu^-(p3)+mu^+(p4)) + Z^0(b(p5)+b~(p6))'
           r1=re
           l2=l(5)*dsqrt(xn)
           r2=r(5)*dsqrt(xn)
-	else
-	  call nprocinvalid()
+        else
+          call nprocinvalid()
         endif
 
 c-----------------------------------------------------------------------
@@ -1276,6 +1276,7 @@ c-----------------------------------------------------------------------
       elseif ((nproc .ge. 141) .and. (nproc .le. 143)) then
         case='H_1jet'
         call sethparams(br,wwbr,zzbr,tautaubr)
+        call setmb_msbar
         ndim=7
         plabel(3)='bq'
         plabel(4)='ba'
@@ -1317,13 +1318,13 @@ c--  143 '  f(p1)+f(p2) --> H (no BR) + b(p5) + b~(p6) [both observed]'
           nqcdjets=4
         endif
         
-	if (removebr) then
+        if (removebr) then
           plabel(3)='ig'
           plabel(4)='ig'
           BrnRat=br
-	  nqcdjets=nqcdjets-2
-	endif
-	     
+          nqcdjets=nqcdjets-2
+        endif
+             
 c-----------------------------------------------------------------------
 
       elseif ((nproc .eq. 151) .or. (nproc .eq. 152)) then
@@ -1336,7 +1337,7 @@ c-----------------------------------------------------------------------
         mass3=mt
         width3=twidth
         bbproc=.true.
-	
+        
         if (nproc .eq. 151) then
 c--  151 '  f(p1)+f(p2) --> t(-->nu(p3)+e^+(p4)+b(p5))+b~(p6))+e^-(p7)+nu~(p8)'
 c--      '  f(p1)+f(p2) --> t t~ (with BR for total Xsect)' (removebr=.true.)
@@ -1348,18 +1349,18 @@ c--      '  f(p1)+f(p2) --> t t~ (with BR for total Xsect)' (removebr=.true.)
           plabel(6)='ba'
           plabel(7)='el'
           plabel(8)='na'
-	  if (removebr) then
+          if (removebr) then
             call branch(brwen,brzee,brtau,brtop)
             BrnRat=(brwen*brtop)**2
             plabel(3)='ig'
             plabel(4)='ig'
             plabel(5)='ig'
-            plabel(6)='ig'		 
+            plabel(6)='ig'               
             plabel(7)='ig'
             plabel(8)='ig'
             nqcdjets=0
             bbproc=.false.
-	  endif
+          endif
         elseif (nproc .eq. 152) then
 c--  152 '  f(p1)+f(p2) --> t(-->nu(p3)+e^+(p4)+b(p5))+b~(p6))+q(p7)+q~(p8)'
           case='tt_bbh'
@@ -1370,10 +1371,10 @@ c--  152 '  f(p1)+f(p2) --> t(-->nu(p3)+e^+(p4)+b(p5))+b~(p6))+q(p7)+q~(p8)'
           plabel(7)='pp'
           plabel(8)='pp'
           nqcdjets=4
-	  if (runstring(1:4) .eq. 'stop') then
+          if (runstring(1:4) .eq. 'stop') then
 c--- For single top study, we only want to see 2 of the jets
             notag=2   
-	  endif             
+          endif             
         endif 
 
 c-----------------------------------------------------------------------
@@ -1396,18 +1397,18 @@ c--      '  f(p1)+f(p2)-->t(p345)+t~(p678)+g(p9)' (removebr=.true.)
         plabel(8)='na'
         plabel(9)='pp'
 
-c--- total cross-section	     
-	if (removebr) then
+c--- total cross-section             
+        if (removebr) then
           call branch(brwen,brzee,brtau,brtop)
           BrnRat=(brwen*brtop)**2
           plabel(3)='ig'
           plabel(4)='ig'
           plabel(5)='ig'
-          plabel(6)='ig'	       
+          plabel(6)='ig'               
           plabel(7)='ig'
           plabel(8)='ig'
           nqcdjets=1
-	endif
+        endif
 
 c-----------------------------------------------------------------------
 
@@ -1451,7 +1452,7 @@ c-----------------------------------------------------------------------
 c--  161 '  f(p1)+f(p2) --> t(-->nu(p3)+e^+(p4)+b(p5))+q(p6) [t-channel]'
 c--      '  f(p1)+f(p2) --> t(no BR) + q(p6)' (removebr=.true.)
         case='bq_tpq'
-	isub=1
+        isub=1
         nqcdjets=2
         plabel(3)='nl'
         plabel(4)='ea'
@@ -1474,7 +1475,8 @@ c--- ndim is one less than usual, since the top is always on-shell
           BrnRat=brwen*brtop
           plabel(3)='ig'
           plabel(4)='ig'
-	  nqcdjets=0	       
+          plabel(5)='ig'
+          nqcdjets=1           
         endif
 
       elseif (nproc .eq. 162) then
@@ -1494,7 +1496,7 @@ c--  162 '  f(p1)+f(p2) --> t(-->nu(p3)+e^+(p4)+b(p5))+q(p6)(decay)'
           write(6,*) '161 (lord) or process 162 (virt+real).'
           stop
         endif
-	
+        
 c--- ndim is one less than usual, since the top is always on-shell 
         ndim=9
         mb=0
@@ -1508,7 +1510,7 @@ c--- ndim is one less than usual, since the top is always on-shell
 c--  166 '  f(p1)+f(p2) --> t~(-->e^-(p3)+nu~(p4)+b~(p5))+q(p6) [t-channel]''
 c--      '  f(p1)+f(p2) --> t~(no BR) + q(p6)' (removebr=.true.)
         case='bq_tpq'
-	isub=1
+        isub=1
         nqcdjets=2
         plabel(3)='el'
         plabel(4)='na'
@@ -1531,7 +1533,8 @@ c--- ndim is one less than usual, since the top is always on-shell
           BrnRat=brwen*brtop
           plabel(3)='ig'
           plabel(4)='ig'
-	  nqcdjets=0	       
+          plabel(5)='ig'
+          nqcdjets=1           
         endif
         
       elseif (nproc .eq. 167) then
@@ -1551,7 +1554,7 @@ c--  167 '  f(p1)+f(p2) --> t~(-->e^-(p3)+nu~(p4)+b~(p5))+q(p6)(decay)'
           write(6,*) '166 (lord) or process 167 (virt+real).'
           stop
         endif
-	
+        
 c--- ndim is one less than usual, since the top is always on-shell 
         ndim=9
         mb=0
@@ -1575,7 +1578,7 @@ c--      '  f(p1)+f(p2) --> t(no BR) + b~(p6)' (removebr=.true.)
         plabel(6)='ba'
         plabel(7)='pp'
         nwz=1
-	
+        
 c--- ndim is one less than usual, since the top is always on-shell 
         ndim=9
         mb=0
@@ -1584,13 +1587,14 @@ c--- ndim is one less than usual, since the top is always on-shell
         width2=twidth
         mass3=wmass
         width3=wwidth
-	
+        
         if (removebr) then
           call branch(brwen,brzee,brtau,brtop)
           BrnRat=brwen*brtop
           plabel(3)='ig'
           plabel(4)='ig'
-	  nqcdjets=0	       
+          plabel(5)='ig'
+          nqcdjets=1           
         endif
         
       elseif (nproc .eq. 172) then
@@ -1603,14 +1607,14 @@ c--  172 '  f(p1)+f(p2) --> t(-->nu(p3)+e^+(p4)+b(p5))+b~(p6))(decay)'
         plabel(6)='ba'
         plabel(7)='pp'
         nwz=1
-	
+        
         if (part .eq. 'lord') then
           write(6,*) 'This process number can not be used for a'
           write(6,*) 'LO calculation. Please run either process'
           write(6,*) '171 (lord) or process 172 (virt+real).'
           stop
         endif
-	
+        
 c--- ndim is one less than usual, since the top is always on-shell 
         ndim=9
         mb=0
@@ -1632,7 +1636,7 @@ c--      '  f(p1)+f(p2) --> t~(no BR) + b(p6)' (removebr=.true.)
         plabel(6)='bq'
         plabel(7)='pp'
         nwz=-1
-	
+        
 c--- ndim is one less than usual, since the top is always on-shell 
         ndim=9
         mb=0
@@ -1641,13 +1645,13 @@ c--- ndim is one less than usual, since the top is always on-shell
         width2=twidth
         mass3=wmass
         width3=wwidth
-	
+        
          if (removebr) then
           call branch(brwen,brzee,brtau,brtop)
           BrnRat=brwen*brtop
           plabel(3)='ig'
           plabel(4)='ig'
-	  nqcdjets=0	       
+          nqcdjets=0           
         endif
              
       elseif (nproc .eq. 177) then
@@ -1660,14 +1664,14 @@ c--  177 '  f(p1)+f(p2) --> t~(-->e^-(p3)+nu~(p4)+b~(p5))+b(p6))(decay)'
         plabel(6)='bq'
         plabel(7)='pp'
         nwz=-1
-	
+        
         if (part .eq. 'lord') then
           write(6,*) 'This process number can not be used for a'
           write(6,*) 'LO calculation. Please run either process'
           write(6,*) '176 (lord) or process 177 (virt+real).'
           stop
         endif
-	
+        
 c--- ndim is one less than usual, since the top is always on-shell 
         ndim=9
         mb=0
@@ -1696,6 +1700,13 @@ c--  180 '  f(p1)+f(p2) --> W^-(-->e^-(p3)+nu~(p4))+t(p5)'
         n3=1
         mass3=wmass
         width3=wwidth
+        
+        if (removebr) then
+          call branch(brwen,brzee,brtau,brtop)
+          BrnRat=brwen
+          plabel(3)='ig'
+          plabel(4)='ig'
+        endif
              
       elseif (nproc .eq. 181) then
 c--  181 '  f(p1)+f(p2) --> W^-(-->e^-(p3)+nu~(p4))+t(nu(p5)+e^+(p6)+b(p7))'
@@ -1724,7 +1735,7 @@ c--  181 '  f(p1)+f(p2) --> W^-(-->e^-(p3)+nu~(p4))+t(nu(p5)+e^+(p6)+b(p7))'
           plabel(5)='ig'
           plabel(6)='ig'
           plabel(7)='ig'
-	  nqcdjets=0	       
+          nqcdjets=0           
         endif
              
       elseif (nproc .eq. 185) then
@@ -1735,9 +1746,9 @@ c--  185 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4))+tbar(p5)'
         plabel(4)='ea'
         plabel(5)='ba'
         mass2=mt
-	nflav=5
+        nflav=5
         nwz=+1
-	
+        
         ndim=7
         mb=0
         n2=0
@@ -1745,6 +1756,13 @@ c--  185 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4))+tbar(p5)'
         mass3=wmass
         width3=wwidth
              
+        if (removebr) then
+          call branch(brwen,brzee,brtau,brtop)
+          BrnRat=brwen
+          plabel(3)='ig'
+          plabel(4)='ig'
+        endif
+        
       elseif (nproc .eq. 186) then
 c--  186 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4))+t~(e^-(p5)+nu~(p6)+bbar(p7)'
         case='W_twdk'
@@ -1754,9 +1772,9 @@ c--  186 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4))+t~(e^-(p5)+nu~(p6)+bbar(p7)'
         plabel(5)='el'
         plabel(6)='na'
         plabel(7)='ba'
-	nflav=5
+        nflav=5
         nwz=+1
-	
+        
         ndim=13
         mb=0
         n2=1
@@ -1772,7 +1790,7 @@ c--  186 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4))+t~(e^-(p5)+nu~(p6)+bbar(p7)'
           plabel(5)='ig'
           plabel(6)='ig'
           plabel(7)='ig'
-	  nqcdjets=0	       
+          nqcdjets=0           
         endif
              
 c-----------------------------------------------------------------------
@@ -1787,7 +1805,7 @@ c--  190 '  f(p1)+f(p2)-->t(p3)+t~(p4)+H(p5)'
         n2=0
         n3=0
         ndim=7
-	
+        
       elseif (nproc .eq. 191) then
 c--  191 '  f(p1)+f(p2)-->t(-->nu(p3)+e^+(p4)+b(p5))
 c--         +t~(-->nu~(p7)+e^-(p8)+b~(p6))+H(p9+p10)'
@@ -1892,19 +1910,19 @@ c-----------------------------------------------------------------------
         
         mass3=hmass
         width3=hwidth
-	
+        
         if     (nproc .eq. 201) then
 c--  201 '  f(p1)+f(p2)--> H(-->b(p3)+b~(p4)) + f(p5) [full mt dep.]'
 c--      '  f(p1)+f(p2)--> H(p3+p4) + f(p5) (for total Xsect)' (removebr=.true.)
-	  plabel(3)='bq'
+          plabel(3)='bq'
           plabel(4)='ba'  
-	  nqcdjets=3
-	  if (removebr) then        
+          nqcdjets=3
+          if (removebr) then        
             BrnRat=br
             plabel(3)='ig'
             plabel(4)='ig'
-	    nqcdjets=1
-	  endif
+            nqcdjets=1
+          endif
 
         elseif (nproc .eq. 202) then
 c--  202 '  f(p1)+f(p2)--> H (-> tau(p3) tau~(p4)) + f(p5) [full mt dep.]'
@@ -1926,35 +1944,35 @@ c--  202 '  f(p1)+f(p2)--> H (-> tau(p3) tau~(p4)) + f(p5) [full mt dep.]'
           if     (nproc .eq. 203) then
 c--  203 '  f(p1)+f(p2) -->H(-->b(p3)+b~(p4)) + f(p5)'
 c--      '  f(p1)+f(p2)--> H(p3+p4) + f(p5) (for total Xsect)' (removebr=.true.)
-	    plabel(3)='bq'
+            plabel(3)='bq'
             plabel(4)='ba'  
-	    nqcdjets=3
-	    if (removebr) then        
+            nqcdjets=3
+            if (removebr) then        
               BrnRat=br
               plabel(3)='ig'
               plabel(4)='ig'
-	      nqcdjets=1
-	    endif
-	  elseif (nproc .eq. 204) then
+              nqcdjets=1
+            endif
+          elseif (nproc .eq. 204) then
 c--  204 '  f(p1)+f(p2) -->H(-->tau^-(p3)+tau^+(p4)) + f(p5)'
             plabel(3)='tl'
             plabel(4)='ta'
             Brnrat=br/tautaubr
-	  endif
-	
+          endif
+        
         elseif (nproc .eq. 206) then
 c--  206 '  f(p1)+f(p2)--> A(-->b(p3)+b~(p4)) + f(p5) [full mt dep.]'
 c--      '  f(p1)+f(p2)--> A(p3+p4) + f(p5) (for total Xsect)' (removebr=.true.)
           case='attjet'
-	  plabel(3)='bq'
+          plabel(3)='bq'
           plabel(4)='ba'  
-	  nqcdjets=3
-	  if (removebr) then        
+          nqcdjets=3
+          if (removebr) then        
             BrnRat=br
             plabel(3)='ig'
             plabel(4)='ig'
-	    nqcdjets=1
-	  endif
+            nqcdjets=1
+          endif
 
         elseif (nproc .eq. 207) then
 c--  207 '  f(p1)+f(p2)--> A (--> tau(p3) tau~(p4)) + f(p5) [full mt dep.]'
@@ -1986,28 +2004,28 @@ c--  211 '  f(p1)+f(p2)--> H(-->b(p3)+b~(p4))+f(p5)+f(p6) [WBF]'
 c--      '  f(p1)+f(p2)--> H(p3+p4)+f(p5)+f(p6) [WBF]' (removebr=.true.)
           plabel(3)='bq'
           plabel(4)='ba'
-	  nqcdjets=4
+          nqcdjets=4
           if (removebr) then
             plabel(3)='ig'
             plabel(4)='ig'
-	    nqcdjets=2
+            nqcdjets=2
             BrnRat=br
-	  endif
+          endif
         elseif (nproc .eq. 212) then
 c--  212 '  f(p1)+f(p2)--> H(-->tau-(p3)+tau+(p4))+f(p5)+f(p6) [WBF]'
 c--      '  f(p1)+f(p2)--> H(p3+p4)+f(p5)+f(p6) [WBF]' (removebr=.true.)
           plabel(3)='tl'
           plabel(4)='ta'
-	  nqcdjets=2
+          nqcdjets=2
           Brnrat=br/tautaubr
           if (removebr) then
             plabel(3)='ig'
             plabel(4)='ig'
-	    nqcdjets=0
+            nqcdjets=0
             BrnRat=br
-	  endif
- 	endif
-	  
+          endif
+        endif
+          
       elseif ((nproc .eq. 216) .or. (nproc .eq. 217)) then
         case='qqHqqg'
         mb=0d0
@@ -2030,26 +2048,26 @@ c-- 216 '  f(p1)+f(p2)--> H(-->b(p3)+b~(p4))+f(p5)+f(p6)+f(p7) [WBF+jet]'
 c--     '  f(p1)+f(p2)--> H(p3+p4)+f(p5)+f(p6)+f(p7) [WBF+jet]' (removebr=.true.)
           plabel(3)='bq'
           plabel(4)='ba'
-	  nqcdjets=5
+          nqcdjets=5
           if (removebr) then
             plabel(3)='ig'
             plabel(4)='ig'
-	    nqcdjets=3
+            nqcdjets=3
             BrnRat=br
-	  endif
-	elseif (nproc .eq. 217) then
+          endif
+        elseif (nproc .eq. 217) then
 c-- 217 '  f(p1)+f(p2)--> H(-->tau-(p3)+tau+(p4))+f(p5)+f(p6)+f(p7) [WBF+jet]'
           plabel(3)='tl'
           plabel(4)='ta'
-	  nqcdjets=3
+          nqcdjets=3
           Brnrat=br/tautaubr
           if (removebr) then
             plabel(3)='ig'
             plabel(4)='ig'
-	    nqcdjets=1
-	    BrnRat=br
-	  endif
-	endif
+            nqcdjets=1
+            BrnRat=br
+          endif
+        endif
 
 c-----------------------------------------------------------------------
 
@@ -2119,7 +2137,7 @@ c--  266 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4))+b(p5)[+b~(p6)]'
           plabel(3)='ig'
           plabel(4)='ig'
         endif
-	
+        
       elseif ((nproc .eq. 262) .or. (nproc .eq. 267)) then
 c--  262 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4))+c(p5)'
 c--  267 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4))+c(p5)[+c~(p6)]'
@@ -2133,7 +2151,7 @@ c--  267 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4))+c(p5)[+c~(p6)]'
         n3=1
         mass3=zmass
         width3=zwidth
-	
+        
         plabel(3)='el'
         plabel(4)='ea'
         plabel(5)='bq'
@@ -2146,14 +2164,14 @@ c--  267 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4))+c(p5)[+c~(p6)]'
         q1=-1d0
         l1=le
         r1=re
-	
+        
         if (removebr) then
           call branch(brwen,brzee,brtau,brtop)
           BrnRat=brzee
           plabel(3)='ig'
           plabel(4)='ig'
         endif
-	
+        
       elseif (nproc .eq. 263) then
 c--  263 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4))+b~(p5)+b(p6) (1 b-tag)'
         case='Zbbmas'
@@ -2174,26 +2192,26 @@ c--  263 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4))+b~(p5)+b(p6) (1 b-tag)'
         q1=-1d0
         l1=le
         r1=re
-	
+        
         if (removebr) then
           call branch(brwen,brzee,brtau,brtop)
           BrnRat=brzee
           plabel(3)='ig'
           plabel(4)='ig'
         endif
-	
+        
       elseif (nproc .eq. 264) then
 c--  264 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4))+c~(p5)+c(p6) (1 c-tag)'
         case='Zccmas'
         nqcdjets=2
         notag=1
-	
+        
         ndim=10
         n2=0
         n3=1
         mass3=zmass
         width3=zwidth
-	
+        
         mb=mc
         write(6,*) 'mc=',mb
         plabel(3)='el'
@@ -2209,10 +2227,10 @@ c--  264 '  f(p1)+f(p2) --> Z^0(-->e^-(p3)+e^+(p4))+c~(p5)+c(p6) (1 c-tag)'
           BrnRat=brzee
           plabel(3)='ig'
           plabel(4)='ig'
-        endif	   
-	   
+        endif      
+           
 c-----------------------------------------------------------------------
-	  
+          
       elseif ((nproc .eq. 271) .or. (nproc .eq. 272)) then
         case='ggfus2'
         mb=0
@@ -2229,20 +2247,20 @@ c-----------------------------------------------------------------------
 
         mass3=hmass
         width3=hwidth
-	
-	if     (nproc .eq. 271) then
+        
+        if     (nproc .eq. 271) then
 c-- 271 '  f(p1)+f(p2) --> H(b(p3)+b~(p4))+f(p5)+f(p6)[in heavy top limit]'
 c--     '  f(p1)+f(p2) --> H(no BR)+f(p5)+f(p6)[in heavy top limit]' (removebr=.true.)
           plabel(3)='bq'
           plabel(4)='ba'
-	  nqcdjets=4
-	  if (removebr) then
+          nqcdjets=4
+          if (removebr) then
             plabel(3)='ig'
             plabel(4)='ig'
-	    nqcdjets=2
+            nqcdjets=2
             BrnRat=br
-	  endif
-	  
+          endif
+          
         elseif (nproc .eq. 272) then
 c-- 272 '  f(p1)+f(p2) --> H(tau-(p3)+tau+(p4))+f(p5)+f(p6)[in heavy top limit]'
 c--     '  f(p1)+f(p2) --> H(no BR)+f(p5)+f(p6)[in heavy top limit]' (removebr=.true.)
@@ -2250,13 +2268,13 @@ c--     '  f(p1)+f(p2) --> H(no BR)+f(p5)+f(p6)[in heavy top limit]' (removebr=.
           plabel(4)='ta'
           nqcdjets=2
           Brnrat=br/tautaubr
-	  if (removebr) then
+          if (removebr) then
             plabel(3)='ig'
             plabel(4)='ig'
             BrnRat=br
-	  endif
-	endif
-		
+          endif
+        endif
+                
 c-----------------------------------------------------------------------
 
       elseif ((nproc .eq. 311) .or. (nproc .eq. 316)) then
@@ -2264,31 +2282,31 @@ c-----------------------------------------------------------------------
         nqcdjets=2
         flav=5
         isub=1
-	
+        
         nflav=5
         mb=0d0
         plabel(5)='bq'
         plabel(6)='pp'
         plabel(7)='pp'
-	
+        
         ndim=10
         n2=0
         n3=1
         mass3=wmass
         width3=wwidth
 
-	if     (nproc .eq. 311) then
+        if     (nproc .eq. 311) then
 c--  311 '  f(p1)+b(p2) --> W^+(-->nu(p3)+e^+(p4))+b(p5)+f(p6)'
           nwz=+1
           plabel(3)='nl'
           plabel(4)='ea'
-	elseif (nproc .eq. 316) then
+        elseif (nproc .eq. 316) then
 c--  316 '  f(p1)+b(p2) --> W^-(-->e^-(p3)+nu~(p4))+b(p5)+f(p6)'
           nwz=-1
           plabel(3)='el'
           plabel(4)='na'
-	endif
-	
+        endif
+        
         if (removebr) then
 c--      '  f(p1)+b(p2) --> W(no BR)+b(p5)+f(p6)' (removebr=.true.)
           call branch(brwen,brzee,brtau,brtop)
@@ -2296,7 +2314,7 @@ c--      '  f(p1)+b(p2) --> W(no BR)+b(p5)+f(p6)' (removebr=.true.)
           plabel(3)='ig'
           plabel(4)='ig'
         endif
-	
+        
 c-----------------------------------------------------------------------
 
       elseif ((nproc .eq. 321) .or. (nproc .eq. 326)) then
@@ -2304,31 +2322,31 @@ c-----------------------------------------------------------------------
         nqcdjets=2
         flav=4
         isub=1
-	
+        
         nflav=4
         mb=0d0
         plabel(5)='bq'
         plabel(6)='pp'
         plabel(7)='pp'
-	
+        
         ndim=10
         n2=0
         n3=1
         mass3=wmass
         width3=wwidth
 
-	if     (nproc .eq. 321) then
+        if     (nproc .eq. 321) then
 c--  321 '  f(p1)+b(p2) --> W^+(-->nu(p3)+e^+(p4))+c(p5)+f(p6)'
           nwz=+1
           plabel(3)='nl'
           plabel(4)='ea'
-	elseif (nproc .eq. 326) then
+        elseif (nproc .eq. 326) then
 c--  326 '  f(p1)+b(p2) --> W^-(-->e^-(p3)+nu~(p4))+c(p5)+f(p6)'
           nwz=-1
           plabel(3)='el'
           plabel(4)='na'
-	endif
-	
+        endif
+        
         if (removebr) then
 c--      '  f(p1)+b(p2) --> W(no BR)+c(p5)+f(p6)' (removebr=.true.)
           call branch(brwen,brzee,brtau,brtop)
@@ -2336,14 +2354,14 @@ c--      '  f(p1)+b(p2) --> W(no BR)+c(p5)+f(p6)' (removebr=.true.)
           plabel(3)='ig'
           plabel(4)='ig'
         endif
-	
+        
 c-----------------------------------------------------------------------
 
       elseif ((nproc .eq. 331) .or. (nproc .eq. 336)) then
         case='Wcjetg'
         nqcdjets=2
         nflav=3
-	
+        
         plabel(5)='bq'
         plabel(6)='pp'
 
@@ -2354,19 +2372,19 @@ c-----------------------------------------------------------------------
         mass2=0d0
         mass3=wmass
         width3=wwidth
-	
-	if     (nproc .eq. 331) then
+        
+        if     (nproc .eq. 331) then
 c--  331 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4))+c(p5)+f(p6) [c-s interaction]'
           nwz=+1
           plabel(3)='nl'
           plabel(4)='ea'
-	elseif (nproc .eq. 336) then
+        elseif (nproc .eq. 336) then
 c--  336 '  f(p1)+f(p2) --> W^+(-->nu(p3)+e^+(p4))+c(p5)+f(p6) [c-s interaction]'
           nwz=-1
           plabel(3)='el'
           plabel(4)='na'
-	endif
-	
+        endif
+        
         if (removebr) then
 c--      '  f(p1)+f(p2) --> W(no BR)+c(p5)+f(p6) [c-s interaction]' (removebr=.true.)
           call branch(brwen,brzee,brtau,brtop)
@@ -2374,7 +2392,7 @@ c--      '  f(p1)+f(p2) --> W(no BR)+c(p5)+f(p6) [c-s interaction]' (removebr=.t
           plabel(3)='ig'
           plabel(4)='ig'
         endif
-	
+        
 c-----------------------------------------------------------------------
 
       elseif (nproc/10 .ge. 90) then

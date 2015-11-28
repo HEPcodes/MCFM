@@ -65,27 +65,27 @@ C===========================================================================
 C             If data file not initialized, do so.
       If(Iset.ne.Isetold) then
          If (Iset.lt.Isetmin .or. Iset.gt.Isetmax) Then
-	    Print *, 'Invalid Iset number in Ctq4Fn :', Iset
-	    Stop
-	 Endif
-	 IU= NextUt()
+            Print *, 'Invalid Iset number in Ctq4Fn :', Iset
+            Stop
+         Endif
+         IU= NextUt()
          Open(IU, File='Pdfdata/'//Flnm(Iset), Status='OLD', Err=100)
          Call ReadTbl (IU)
          Close (IU)
-	 Isetold=Iset
+         Isetold=Iset
       Endif
 
       If (X .lt. 0D0 .or. X .gt. 1D0) Then
-	Print *, 'X out of range in Ctq4Fn: ', X
-	Stop
+        Print *, 'X out of range in Ctq4Fn: ', X
+        Stop
       Endif
       If (Q .lt. Alambda) Then
-	Print *, 'Q out of range in Ctq4Fn: ', Q
-	Stop
+        Print *, 'Q out of range in Ctq4Fn: ', Q
+        Stop
       Endif
       If (Iparton .lt. -NfMx .or. Iparton .gt. NfMx) Then
-	Print *, 'Iparton out of range in Ctq4Fn: ', Iparton
-	Stop
+        Print *, 'Iparton out of range in Ctq4Fn: ', Iparton
+        Stop
       Endif
 
       Ctq4Fn = PartonX (Iparton, X, Q)

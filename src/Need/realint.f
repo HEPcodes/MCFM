@@ -18,6 +18,7 @@
       include 'maxwt.f'
       include 'process.f'
       include 'PDFerrors.f'
+      include 'wts_bypart.f'
       integer ih1,ih2,j,k,nd,nmax,nmin,nvec
       double precision vector(mxdim),W,val,xint
       double precision sqrts,fx1(-nf:nf),fx2(-nf:nf)
@@ -36,6 +37,7 @@
       common/xreal/xreal,xreal2
       logical bin,first,failed
       logical incldip(0:maxd),includedipole,includereal
+      logical creatent,dswhisto
       external qqb_w2jet_g,qqb_w2jet_gs,qqb_z2jet_g,qqb_z2jet_gs,
      . qqb_w2jet,qqb_w1jet_gs,qqb_z2jet,qqb_z1jet_gs,qqb_Hg_g,qqb_Hg_gs,
      . qqb_hww_g,qqb_hww_gs,qqb_zbb_g,qqb_zbb_gs,
@@ -43,7 +45,7 @@
      . qqb_w_g,qqb_w_gs,qqb_z1jet,qqb_z_gs,qqb_ww_g,qqb_ww_gs,
      . qqb_wz_g,qqb_wz_gs,qqb_zz_g,qqb_zz_gs,qqb_wgam_g,qqb_wgam_gs,
      . qqb_QQb_g,qqb_QQb_gs,
-     . qq_Hqq_g,qq_Hqq_gs,gg_Hg,gg_H_gs,gg_Hgg,gg_Hg_gs,
+     . VV_Hqq_g,VV_Hqq_gs,gg_Hg,gg_H_gs,gg_Hgg,gg_Hg_gs,
      . gQ_zQ_g,gQ_zQ_gs,qqb_tbb_g,qqb_tbb_gs
       common/density/ih1,ih2
       common/energy/sqrts
@@ -54,6 +56,7 @@
       common/nmin/nmin
       common/bypart/lord_bypart
       common/incldip/incldip
+      common/outputflags/creatent,dswhisto
       data p/48*0d0/
       data first/.true./
       save first,rscalestart,fscalestart
@@ -95,7 +98,7 @@ c--- processes that use "gen3m"
         m5=0d0
         npart=3
         call gen3m(vector,p,m3,m4,m5,pswt,*999)
-	  
+          
 c--- processes that use "gen4"     
       elseif ( (case .eq. 'W_cjet') 
      .   .or.  (case .eq. 'Wgamma')
@@ -103,8 +106,8 @@ c--- processes that use "gen4"
      .   .or.  (case .eq. '')) then
         npart=4
         call gen4(vector,p,pswt,*999)
-	  	  
-c--- processes that use "gen_njets" with an argument of "2"	
+                  
+c--- processes that use "gen_njets" with an argument of "2"     
       elseif ( (case .eq. 'W_1jet')
      .    .or. (case .eq. 'Wcjet0')
      .    .or. (case .eq. 'Z_1jet')
@@ -116,8 +119,8 @@ c--- processes that use "gen_njets" with an argument of "2"
           call gen4a(vector,p,pswt,*999)      
         else
           call gen_njets(vector,2,p,pswt,*999)
-	endif 
-	
+        endif 
+        
 c--- processes that use "gen_njets" with an argument of "3"
       elseif ( (case .eq. 'Wbbbar')
      .    .or. (case .eq. 'W_2jet')
@@ -125,8 +128,8 @@ c--- processes that use "gen_njets" with an argument of "3"
      .    .or. (case .eq. 'Zbbbar')
      .    .or. (case .eq. 'W_bjet') ) then
         npart=5
-        call gen_njets(vector,3,p,pswt,*999) 	
- 	 
+        call gen_njets(vector,3,p,pswt,*999)    
+         
 c--- processes that use "gen_stop" with an argument of "1"
       elseif ( (case .eq. 'ttdkay')
      .    .or. (case .eq. 'tdecay') ) then
@@ -138,14 +141,14 @@ c--- processes that use "gen_stop" with an argument of "2"
      .    .or. (case .eq. 't_bbar') ) then
         npart=5
         call gen_stop(vector,2,p,pswt,*999)
-	
+        
 c--- DEFAULT: processes that use "gen5"
       else
         npart=5
         if (new_pspace) then
           call gen5a(vector,p,pswt,*999)
         else
-          call gen5(vector,p,pswt,*999)	   
+          call gen5(vector,p,pswt,*999)    
         endif
       endif
       
@@ -208,7 +211,7 @@ c        call singcheck(qqb_zgam_g,qqb_zgam_gs,p)
 c        call singcheck(qqb_wbb_g,qqb_wbb_gs,p)     ! Checked 11/30/01
         if (includereal) call qqb_wbb_g(p,msq)      
         call qqb_wbb_gs(p,msqc)      
-      elseif (case .eq. 'W_2jet') then
+      elseif (case .eq. 'W_2jet') then      
 c        call singcheck(qqb_w2jet_g,qqb_w2jet_gs,p) ! Checked 11/16/01
         if (includereal) call qqb_w2jet_g(p,msq)  
         call qqb_w2jet_gs(p,msqc)
@@ -280,15 +283,15 @@ c        call singcheck(qqb_tbb_g_new,qqb_tbb_gs,p)
       elseif (case .eq. 'tdecay') then
 c        call singcheck(qqb_tbb_g_new,qqb_tbb_gs,p)
        if (includereal)  call qqb_tbb_gdk(p,msq)
-        call qqb_tbb_gsdk(p,msqc)	
+        call qqb_tbb_gsdk(p,msqc)       
        elseif (case .eq. 'ggfus1') then
 c         call singcheck(gg_hgg,gg_hg_gs,p)
          if (includereal) call gg_hgg(p,msq)
          call gg_hg_gs(p,msqc)
       elseif (case .eq. 'qq_Hqq') then
-c        call singcheck(qq_Hqq_g,qq_Hqq_gs,p)
-        if (includereal) call qq_Hqq_g(p,msq)
-        call qq_Hqq_gs(p,msqc)
+c        call singcheck(VV_Hqq_g,VV_Hqq_gs,p)
+        if (includereal) call VV_Hqq_g(p,msq)
+        call VV_Hqq_gs(p,msqc)
       elseif (case .eq. 'gQ__ZQ') then
 c        call singcheck(gQ_zQ_g,gQ_zQ_gs,p)
         if (includereal) call gQ_zQ_g(p,msq)
@@ -403,9 +406,18 @@ c---first set up all dipole contributions
 c---this is the value of integral including subtractions
       do nd=0,ndmax
         xmsq(nd)=xmsq(nd)*flux*pswt/BrnRat
+        if (creatent) then
+          wt_gg=xmsq_bypart(nd,0,0)*wgt*flux*pswt/BrnRat/dfloat(itmx)
+          wt_gq=(xmsq_bypart(nd,+1,0)+xmsq_bypart(nd,-1,0)
+     .          +xmsq_bypart(nd,0,+1)+xmsq_bypart(nd,0,-1)
+     .          )*wgt*flux*pswt/BrnRat/dfloat(itmx)
+          wt_qq=(xmsq_bypart(nd,+1,+1)+xmsq_bypart(nd,-1,-1)
+     .          )*wgt*flux*pswt/BrnRat/dfloat(itmx)
+          wt_qqb=(xmsq_bypart(nd,+1,-1)+xmsq_bypart(nd,-1,+1)
+     .          )*wgt*flux*pswt/BrnRat/dfloat(itmx)
+        endif
+        failed=.false.
         
-	failed=.false.
-	
 c--- if this dipole has no contribution, go to end of loop
 c        if (xmsq(nd) .eq. 0d0) goto 997         
          
@@ -416,13 +428,15 @@ c---if there's no real contribution, record the event as failing to pass cuts
              goto 996
           endif
         else
+c--- if this dipole has no contribution, go to end of loop
+          if (xmsq(nd) .eq. 0d0) goto 997         
 c---check whether each counter-event passes the cuts
           do j=1,mxpart
           do k=1,4
           q(j,k)=ptilde(nd,j,k)
           enddo
           enddo
-	  incldip(nd)=includedipole(nd,q)
+          incldip(nd)=includedipole(nd,q)
           if (incldip(nd) .eqv. .false.) failed=.true.
         endif
 
@@ -463,8 +477,8 @@ c--- update the maximum weight so far, if necessary
 
 c---if we're binning, add to histo too
         if (bin) then
-	  call getptildejet(nd,pjet)
-	  call dotem(nvec,pjet,s)
+          call getptildejet(nd,pjet)
+          call dotem(nvec,pjet,s)
           val=val/dfloat(itmx)
           if (nd .eq. 0) then
             call nplotter(pjet,val,0)

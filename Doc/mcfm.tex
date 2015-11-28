@@ -6,7 +6,7 @@
 \thispagestyle{empty}
 \vspace*{3cm}
 \begin{center}
-{\Huge MCFM v4.0} \\
+{\Huge MCFM v4.1} \\
 \vspace*{0.5cm}
 \Large{A Monte Carlo for FeMtobarn} \\
 \Large{processes at Hadron Colliders} \\
@@ -18,7 +18,7 @@
 J. M. Campbell ({\tt John.Campbell@cern.ch}) \\
 R. K. Ellis ({\tt ellis@fnal.gov}) \\
 \vspace*{2.5cm}
-{\it \small Updated: 15 October 2004}
+{\it \small Updated: 7 January 2005}
 \end{center}
 
 \newpage
@@ -204,9 +204,9 @@ some calculation and/or guesswork.
 {\tt cteq4a2}  &  0.113       \\
 {\tt cteq4a3}  &  0.116       &
 {\tt cteq4a4}  &  0.119       \\
-{\tt cteq3\_m}  &  0.112       &
-{\tt cteq3\_l}  &  0.112       \\
-{\tt cteq3\_d}  &  0.112       & \\
+{\tt cteq3\_m} &  0.112       &
+{\tt cteq3\_l} &  0.112       \\
+{\tt cteq3\_d} &  0.112       & \\
 \hline
 \end{tabular}
 \end{center}
@@ -294,8 +294,8 @@ that is printed when {\tt mcfm} is executed.
 \item {\tt evtgen}. The default for this, and the following three
 parameters, is {\tt .false.} and this corresponds to the usual mode
 of operation. It is possible to generate n-tuples instead of histograms,
-as well as unweighted events, for some processes. Please contact the
-authors for further information.
+as well as unweighted events, for some processes. Please refer to
+Section~\ref{subsec:otheroutput} for further details.
 \item {\tt creatent}. {\it See above.}
 \item {\tt skipnt}. {\it See above.}
 \item {\tt dswhisto}. {\it See above.}
@@ -652,7 +652,9 @@ distribution functions to be used when using the LHAPDF package --
 the group is specified by a character string and the set by an integer.
 Please see {\tt http://durpdg.dur.ac.uk/lhapdf/} for further details.
 For appropriate PDF sets choosing a value of -1 for the set number ({\tt  LHAPDF set}) 
-will perform the calculation of the PDF uncertainties.
+will perform the calculation of the PDF uncertainties (see also
+Section~\ref{sec:histos}, especially the caveat regarding using
+non-grid PDF sets).
 
 \begin{center}
 \{blank line\} \\
@@ -817,7 +819,100 @@ necessarily the  order specified in process.DAT.  However in the case that we ha
 $b$-quark or antiquark they are labelled by {\tt bq} and {\tt ba} respectively
 in the array jetlabel. {\tt wt} is the weight of the event.  
 
+\subsection{Histograms}
+\label{sec:histos}
 
+Extra histograms may be added to the file {\tt src/User/nplotter.f} in
+a fairly straightforward manner. Each histogram is filled by making
+a call to the routine {\tt bookplot} and updating the histogram
+counter {\tt n} by 1. For example:
+
+\begin{verbatim}
+   call bookplot(n,tag,'    eta3',eta3,wt,-5d0,5d0,0.5d0,'lin')
+   n=n+1
+\end{verbatim}
+The first two arguments of the call should not be changed. The third
+argument is a string describing the plot which will be used for the
+title in {\tt TOPDRAWER}. The fourth argument carries the variable to
+be plotted, which has been previously calculated. The argument {\tt
+wt} contains the phase-space weight and should not be changed. The
+last arguments tell the histogramming routine to use bins of size {\tt
+0.5} which run from {\tt -5} to {\tt 5}, and use a linear scale for
+the plot. A logarithmic scale may be used by changing the final
+argument to {\tt 'log'}.
+
+If the {\tt LHAPDF} package is being used and the value of
+{\tt LHAPDF set} is equal to {\tt -1},  to indicate a calculation using
+PDF uncertainties, then errors on distributions may also be accumulated.
+Note that, due to limitations within the LHAPDF distribution, calculations
+using error PDF sets are impractical unless the grid versions of the sets
+are used. The grid versions are available in LHAPDF v.3 and may be identified
+by the {\tt .LHgrid} extension in the {\tt PDFsets} directory. To use the
+grid version, simply pass the PDF set name, including this extension, as
+the value of {\tt LHAPDF group} in the input file.
+ 
+To accumulate errors in distributions, add an extra
+line to {\tt nplotter.f} after the
+call to {\tt bookplot} but before the counter is incremented. For
+example, to calculate the PDF uncertainties on the distribution
+of {\tt eta3} one would simply add:
+\begin{verbatim}
+   call ebookplot(n,tag,eta3,wt)
+\end{verbatim}
+The third argument contains the variable to plot and the other entries
+should not be changed. The other parameters for the plot are exactly
+those specified on the previous line, in the call to {\tt bookplot}.
+Since each PDF error distribution takes up quite a lot of memory
+during execution, there is a limit of 4 on the number of distributions
+with errors that can be calculated at one time. When calculating
+PDF uncertainties on distributions, the program will produce an
+additional file which contains the results for each PDF error set
+individually. In addition the main file will include the uncertainty
+limits on the distribution, which is obtained by choosing the extremal
+values of the weights in all PDF sets, on a bin-by-bin basis. Thus
+the resulting error limits are not simply described by a single PDF
+set.
+
+\subsection{Other output modes}
+\label{subsec:otheroutput}
+As noted in the description of the input file, there are a number of other
+output modes which may be useful in certain situations. In particular, the
+ability to output n-tuples can be used to generate a large event record that 
+can be subsequently analyzed according to the users needs. Much of the code
+for generating these outputs can be found in {\tt src/User/dswhbook.f}; some
+additional work may be required, depending on the process under study.
+
+The simplest alternative output mode is obtained by changing the flag
+{\tt dswhisto} to {\tt .true.} . In this way, the {\tt TOPDRAWER} output file is
+replaced by the file {\tt mcfm.rz} which contains the histograms in {\tt HBOOK}
+format.
+
+To obtain the simplest n-tuple output, the flag {\tt creatent} should be set
+to {\tt .true.} . In this case, each event that would normally enter a histogram
+will instead be recorded as an n-tuple in the file {\tt mcfm.rz}. Each event
+is a simple row-wise n-tuple consisting of the 4-momenta of each of the final
+state particles ($p_x$, $p_y$, $p_z$ and $E$, in that order) followed by 5 numbers
+representing the event weight. The first number represents the total event weight
+and the others, the contribution from gluon-gluon, quark-gluon (and antiquark-gluon),
+quark-quark (and antiquark-antiquark) and quark-antiquark initial states. 
+Single precision is used, for economy. A simple way to analyze 
+these n-tuples is to use the {\tt h2root} command and then perform
+manipulations with the ROOT package. Note that these n-tuples contain
+no information about either the flavour or the colour of the initial or final
+state particles. Summation and averaging over these variables has already been
+performed. Furthermore, the `events' are {\it weighted} - so are not events
+in the traditional event generator sense.
+
+In order to obtain {\it unweighted} events, one must change the flag
+{\tt evtgen} to {\tt .true.} . This option is only available at lowest order
+at present. In this mode, the program will first perofrm a run to obtain the
+maximum weight and then perform a simple unweighting procedure against this
+number. In this mode the program will also assign identities to the
+particles in the initial state, according to the relative parton-parton
+luminosities. The routines that handle most of the processing can be found
+in {\tt src/User/eventhandler.f}. Much of this code was tailored to diboson
+production in Run II of the Tevatron, so further work by the user is almost
+certainly required.
 
 \section{Notes on specific processes}
 \label{sec:specific}

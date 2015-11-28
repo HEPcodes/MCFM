@@ -6,7 +6,7 @@ c---  DKS Eq. 2.12
       include 'scale.f'
       double precision sij
       double complex Lnrat,xl12
-	
+        
       xl12=Lnrat(-sij,musq)
 
       Vpole=-epinv*epinv2+epinv*(-1.5d0+xl12)

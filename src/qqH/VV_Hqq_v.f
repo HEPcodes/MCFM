@@ -1,9 +1,10 @@
-      subroutine qq_Hqq_v(p,msqv)
+      subroutine VV_Hqq_v(p,msqv)
       implicit none
 ************************************************************************
 *     Author: J. M. Campbell                                           *
 *     June, 2002.                                                      *
 *                                                                      *
+*     Weak Boson Fusion : sums up WW and ZZ contributions              *
 *     This routine calculates the virtual matrix element squared       *
 *     for the process:                                                 *
 *     q(-p1) + q(-p2) --> H(p34) + q(p5) + q(p6)                       *
@@ -29,16 +30,10 @@
 c--- this result is in the MS-bar scheme
       scheme='dred'
       
-c      do j=-nf,nf
-c      do k=-nf,nf
-c        msqv(j,k)=0d0
-c      enddo
-c      enddo
-
 * Virtual matrix elements are simply lowest order multiplied by factor
 * Need to check this for pisq (cf. qqb_w_v.f) and I think there should
 * be an additional +ason2pi*cf*(1+1) from DRED compared to MSBAR
-      call qq_Hqq(p,msq0)
+      call VV_Hqq(p,msq0)
       xl15=dlog(-2d0*dot(p,1,5)/musq)
       xl26=dlog(-2d0*dot(p,2,6)/musq)
       facv=ason2pi*cf*(

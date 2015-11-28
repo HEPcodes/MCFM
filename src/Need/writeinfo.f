@@ -5,6 +5,7 @@
       implicit none
       include 'maxwt.f'
       include 'masses.f'
+      include 'facscale.f'
       include 'scale.f'
       include 'zerowidth.f'
       include 'flags.f'
@@ -73,6 +74,7 @@
       write(unitno,97) ih2,'ih2'
       write(unitno,99) hmass,'hmass'
       write(unitno,99) scale,'scale'
+      write(unitno,99) facscale,'facscale'
       write(unitno,98) zerowidth,'zerowidth'
       write(unitno,97) itmx1,'itmx1'
       write(unitno,97) ncall1,'ncall1'

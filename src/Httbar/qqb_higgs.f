@@ -6,7 +6,12 @@ c                         |
 c                         --> b(p3)+bbar(p4)
 c                            
 c--all momenta incoming
-
+c
+c--- Matrix elements are taken from:
+c--- R.~K.~Ellis, I.~Hinchliffe, M.~Soldate and J.~J.~van der Bij,
+c--- %``Higgs Decay To Tau+ Tau-: A Possible Signature Of Intermediate
+c--- % Mass Higgs Bosons At The SSC,''
+c--- Nucl.\ Phys.\ B {\bf 297}, 221 (1988).
       include 'constants.f'
       include 'masses.f'
       include 'ewcouple.f'
@@ -20,7 +25,7 @@ c--- matrix element for H -> bbbar
      .     ((s(3,4)-hmass**2)**2+(hmass*hwidth)**2)
 
       origmbsq=mbsq
-      mbsq=175d0**2
+      mbsq=mt**2
       gg=+avegg*ehsvm3(s(1,2),s(1,5),s(2,5))*hbb
       qq=+aveqq*ehsvm4(s(1,2),s(1,5),s(2,5))*hbb
       qg=-aveqg*ehsvm4(s(1,5),s(1,2),s(2,5))*hbb

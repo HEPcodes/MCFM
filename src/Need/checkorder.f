@@ -37,9 +37,9 @@ c--- process numbers can't be calculated beyond LO
      . .or. (nproc .eq. 336)
      .   ) then
         write(6,*)
-	write(6,*)'This process cannot be calculated beyond LO - please'
-	write(6,*)'check the values of nproc and part then try again'
-	stop
+        write(6,*)'This process cannot be calculated beyond LO - please'
+        write(6,*)'check the values of nproc and part then try again'
+        stop
       endif
       
       return

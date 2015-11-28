@@ -109,19 +109,19 @@ c      write(6,*) 'the inherent 0.1170 to a new value of 0.1175'
       amz=0.130d0
       nlooprun=1
 C     TEMPORARY NAMING SCHEME:                                   C
-C						                 C
+C                                                                C
 C  mode  set    comment             L(4)/MeV  a_s(M_Z)  grid#1   C
 C  ----  ---    -------             --------  -------   ------   C
-C								 C
+C                                                                C
 C  1     LO05A  central gluon, a_s    174      0.1250   0.01518  C
 C  2     LO09A  higher gluon          174      0.1250   0.01616  C
 C  3     LO10A  lower gluon           174      0.1250   0.01533  C
 C  4     LO01A  lower a_s             136      0.1200   0.01652  C
 C  5     LO07A  higher a_s            216      0.1300   0.01522  C
-C						                 C
-C						                 C
+C                                                                C
+C                                                                C
 C      The corresponding grid files are called lt05a.dat etc.    C
-C							  	 C
+C                                                                C
       elseif (pdlabel .eq. 'mrs96r1') then
       amz=0.113d0
       elseif (pdlabel .eq. 'mrs96r2') then

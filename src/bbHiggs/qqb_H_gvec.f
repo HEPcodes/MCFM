@@ -10,6 +10,7 @@ C***********************************************************************
       implicit none
       include 'constants.f'
       include 'masses.f'
+      include 'mb_msbar.f'
       include 'qcdcouple.f'
       include 'ewcouple.f'
       include 'sprods_com.f'
@@ -20,8 +21,10 @@ C--in is the label of the parton dotted with n
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4)
       double precision h1jetn,fac,n(4),propsq,hdecay,coupsq,ghbb
       double precision coupsq_eff,ghbb_eff
-      double precision amz,mb_eff,mb_msbar,massfrun
+      double precision amz,mb_eff,massfrun
+      character*4 part
       common/couple/amz
+      common/part/part
 
       do j=-nf,nf
       do k=-nf,nf
@@ -33,15 +36,13 @@ C--in is the label of the parton dotted with n
 
       if (s(3,4) .lt. 4d0*mbsq) return
 
-c--- calculate MS-bar mass from pole mass
-c      mb_msbar=mb/(1d0+cf*alphas(mb,amz,2)/pi)
-c--- mb(mb)=4.20 is our choice for the H+b paper
-      mb_msbar=4.20d0
-c--- mb(mb)=4.25 is to agree with Spira for Les Houches write-up
-c      mb_msbar=4.25d0
 c--- run mb to appropriate scale
-      mb_eff=massfrun(mb_msbar,scale,amz,2)
-c      mb_eff=mb_msbar
+      if (part .eq. 'lord') then
+        mb_eff=massfrun(mb_msbar,scale,amz,1)
+      else
+        mb_eff=massfrun(mb_msbar,scale,amz,2)
+      endif
+c       mb_eff=mb_msbar
       
 c--- our definition
 c      ghbb=sqrt(esq*mbsq/(xw*(1d0-xw)))/2d0/zmass

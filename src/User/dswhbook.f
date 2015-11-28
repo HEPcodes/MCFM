@@ -183,6 +183,9 @@ c
 c     ------------------------------------------------------------------
 c        1         2         3         4         5         6         7
       implicit none
+c--- Included for the extra code below
+      include 'npart.f'
+      include 'mxdim.f'
 
       integer NWPAWC
       parameter(NWPAWC=10000000)
@@ -191,19 +194,66 @@ c        1         2         3         4         5         6         7
       integer IQUEST
       common/QUEST/IQUEST(100)
 
-      character*3 CHTAGS(17)
-      data CHTAGS/
-     +     'px3','py3','pz3','E3',
-     +     'px4','py4','pz4','E4',
-     +     'px5','py5','pz5','E5',
-     +     'px6','py6','pz6','E6',
-     +     'wt' /
+c--- Added to keep track of number of momenta entries to be filled
+      character*4 part
+      common/part/part
+c--- Extra definitions to facilitate dummy call to lowint
+      double precision dummy,wgt,r(mxdim),lowint
+      integer ifill
+      integer imaxmom
+      common/imaxmom/imaxmom
+            
+      character*3 CHTAGS4(13)
+      character*3 CHTAGS5(17)
+      character*3 CHTAGS6(21)
+      character*3 CHTAGS7(25)
+      character*3 CHTAGS8(29)
+      data CHTAGS4/
+     +     'px3','py3','pz3','E3 ',
+     +     'px4','py4','pz4','E4 ',
+     +     'wt ','gg ','gq ','qq ','qqb'/
+      data CHTAGS5/
+     +     'px3','py3','pz3','E3 ',
+     +     'px4','py4','pz4','E4 ',
+     +     'px5','py5','pz5','E5 ',
+     +     'wt ','gg ','gq ','qq ','qqb'/
+      data CHTAGS6/
+     +     'px3','py3','pz3','E3 ',
+     +     'px4','py4','pz4','E4 ',
+     +     'px5','py5','pz5','E5 ',
+     +     'px6','py6','pz6','E6 ',
+     +     'wt ','gg ','gq ','qq ','qqb'/
+      data CHTAGS7/
+     +     'px3','py3','pz3','E3 ',
+     +     'px4','py4','pz4','E4 ',
+     +     'px5','py5','pz5','E5 ',
+     +     'px6','py6','pz6','E6 ',
+     +     'px7','py7','pz7','E7 ',
+     +     'wt ','gg ','gq ','qq ','qqb'/
+      data CHTAGS8/
+     +     'px3','py3','pz3','E3 ',
+     +     'px4','py4','pz4','E4 ',
+     +     'px5','py5','pz5','E5 ',
+     +     'px6','py6','pz6','E6 ',
+     +     'px7','py7','pz7','E7 ',
+     +     'px8','py8','pz8','E8 ',
+     +     'wt ','gg ','gq ','qq ','qqb'/
 
       integer ISTAT
       character*100 outfile
 
 c     ------------------------------------------------------------------
 
+c--- Dummy call to lowint to ascertain the correct size for momenta n-tuples
+      do ifill=1,22
+        r(ifill)=0.5d0
+      enddo
+      dummy=lowint(r,wgt)
+      
+      imaxmom=npart
+      if ((part.eq.'real') .or. (part.eq.'tota') .or. (part.eq.'todk'))
+     .  imaxmom=imaxmom+1
+      
 c --- Create the output file :
       outfile='mcfm.rz'
       call hlimit(NWPAWC)
@@ -220,8 +270,22 @@ c --- Book an extremely simple row-wise ntuple. Make it explicitly
 c --- a disk resident ntuple by specifying the top directory name
 c --- of the previously opened RZ file in the 4th argument 
 c --- (see HBOOK manual, p.19) :
-      call hbookn(300,'MCFM',17,'//HISTOS',4096,CHTAGS)
-
+      if     (imaxmom .eq. 2) then
+        call hbookn(300,'MCFM',13,'//HISTOS',4096,CHTAGS4)
+      elseif (imaxmom .eq. 3) then
+        call hbookn(300,'MCFM',17,'//HISTOS',4096,CHTAGS5)
+      elseif (imaxmom .eq. 4) then
+        call hbookn(300,'MCFM',21,'//HISTOS',4096,CHTAGS6)
+      elseif (imaxmom .eq. 5) then
+        call hbookn(300,'MCFM',25,'//HISTOS',4096,CHTAGS7)
+      elseif (imaxmom .eq. 6) then
+        call hbookn(300,'MCFM',29,'//HISTOS',4096,CHTAGS8)
+      else
+        write(6,*) 'Problem in dswntuplebook - value npart=',npart
+        write(6,*) 'not anticipated. Program halted.'
+        stop
+      endif
+      
       return
       end
 
@@ -231,7 +295,8 @@ c     ------------------------------------------------------------------
 c        1         2         3         4         5         6         7
       implicit none
       include 'constants.f'
-
+      include 'wts_bypart.f'
+      
       double precision p(mxpart,4)
       double precision wt 
 
@@ -240,24 +305,37 @@ c        1         2         3         4         5         6         7
       real         HMEMOR(NWPAWC)
       common/PAWC/ HMEMOR
 
+c--- Extra common block to carry the information about maximum momenta entries
+      integer imaxmom
+      common/imaxmom/imaxmom
+
       integer i
-      real pfill(17)
+      real pfill(imaxmom*4+5)
+
+c--- if the weight is zero, don't bother to add the n-tuple
+      if (wt .eq. 0d0) then
+        return
+      endif
 
 c     ------------------------------------------------------------------
 
 c --- Fill the ntuple :
-      do i=1,4
+      do i=1,imaxmom
         pfill(4*(i-1)+1)=sngl(p(i+2,1))
         pfill(4*(i-1)+2)=sngl(p(i+2,2))
         pfill(4*(i-1)+3)=sngl(p(i+2,3))
         pfill(4*(i-1)+4)=sngl(p(i+2,4))
       enddo
-      pfill(17)=sngl(wt)
-
+      pfill(imaxmom*4+1)=sngl(wt)
+      pfill(imaxmom*4+2)=sngl(wt_gg)
+      pfill(imaxmom*4+3)=sngl(wt_gq)
+      pfill(imaxmom*4+4)=sngl(wt_qq)
+      pfill(imaxmom*4+5)=sngl(wt_qqb)
+            
 c     write(6,*) 'Filling ntuple with weight',wt
 
       call hfn(300,pfill)
-
+      
       return
       end
 

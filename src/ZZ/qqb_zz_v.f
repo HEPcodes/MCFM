@@ -30,7 +30,7 @@ c----No statistical factor of 1/2 included.
       double complex propz1,propz2,props,a6trees,a6loops,cprop
       double complex aqqb,aqbq,bqqb,bqbq,Vpole,Vpole12,suppl
       double complex prop12,prop34,prop56
-	
+        
 
       integer j,k,polq,pol1,pol2
       parameter(ave=0.25d0/xn)

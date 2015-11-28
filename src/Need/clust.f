@@ -11,7 +11,7 @@
       if(init.eq.0) then
         init=1
         write(*,*)' jet clustering as of 12/8/95 '
-      endif	
+      endif     
 *
 * pjet(5,j) = ET
 * pjet(6,j) = pseudorapidity
@@ -272,8 +272,8 @@ c----Added by RKE
          do j=i+1,npar
            j1=jp(i)
            j2=jp(j)
-	   if(pjet(4,j1).lt.0d0)pjet(5,j1)=0d0
-	   if(pjet(4,j2).lt.0d0)pjet(5,j2)=0d0
+           if(pjet(4,j1).lt.0d0)pjet(5,j1)=0d0
+           if(pjet(4,j2).lt.0d0)pjet(5,j2)=0d0
            if (pjet(5,j1).lt.pjet(5,j2)) then
                jt   =jp(i)
                jp(i)=jp(j)

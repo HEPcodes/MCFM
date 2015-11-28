@@ -38,10 +38,10 @@ c----udif==tanh(ydif)
       udif=(two*r(2)-1d0)
       ydif=half*dlog((1d0+udif)/(1d0-udif))
       xjac=four*ymax
-	  
+          
       y3=yave+ydif
       y4=yave-ydif
-	  
+          
       xjac=xjac*w3
       phi=2d0*pi*r(4)
 
@@ -56,7 +56,7 @@ c----udif==tanh(ydif)
         write(6,*) 'problems with xx(1),xx(2) in gen2',xx(1),xx(2)  
       return 1 
       endif
-	  
+          
       p(1,4)=-0.5d0*xx(1)*sqrts
       p(1,1)=0d0
       p(1,2)=0d0

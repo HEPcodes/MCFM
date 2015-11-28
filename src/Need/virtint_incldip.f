@@ -28,6 +28,7 @@
       include 'nflav.f'
       include 'b0.f'
       include 'PDFerrors.f'
+      include 'wts_bypart.f'
       double precision mqq(0:2,fn:nf,fn:nf)
       double precision msqx(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf)
       double precision msqx_cs(0:2,-nf:nf,-nf:nf)
@@ -44,6 +45,7 @@
       double precision xmsq_bypart(-1:1,-1:1),lord_bypart(-1:1,-1:1)
       integer nshot,rvcolourchoice,sgnj,sgnk
       logical bin,first,includedipole
+      logical creatent,dswhisto
       character*4 mypart
       common/density/ih1,ih2
       common/energy/sqrts
@@ -53,6 +55,7 @@
       common/rvcolourchoice/rvcolourchoice
       common/bypart/lord_bypart
       common/mypart/mypart
+      common/outputflags/creatent,dswhisto
       data p/48*0d0/
       data nshot/1/
       data first/.true./
@@ -90,7 +93,7 @@ c--- processes that use "gen2m"
      .    .or. (case .eq. 'cc_tot') ) then
         npart=2
         call gen2m(r,p,pswt,*999)
-	  
+          
 c--- processes that use "gen3"     
       elseif ( (case .eq. 'W_cjet') 
      .   .or.  (case .eq. 'W_tndk') ) then
@@ -113,7 +116,7 @@ c--- processes that use "gen4h"
      .    .or. (case .eq. 'HZZ_4l') ) then
         npart=4
         call gen4h(r,p,pswt,*999)
-	  
+          
 c--- processes that use "gen5" 
       elseif ( (case .eq. 'W_twdk') ) then 
         npart=5 
@@ -138,8 +141,8 @@ c--- processes that use "gen8"
      .    .or. (case .eq. 'vlchk8') ) then
         npart=8
         call gen8(r,p,pswt,*999)
-	  
-c--- processes that use "gen_njets" with an argument of "1"	
+          
+c--- processes that use "gen_njets" with an argument of "1"     
       elseif ( (case .eq. 'W_1jet')
      .    .or. (case .eq. 'Wcjet0')
      .    .or. (case .eq. 'Z_1jet')
@@ -150,7 +153,7 @@ c--- processes that use "gen_njets" with an argument of "1"
      .    .or. (case .eq. 'gQ__ZQ') ) then
         npart=3
         call gen_njets(r,1,p,pswt,*999)
-	 
+         
 c--- processes that use "gen_njets" with an argument of "2"
       elseif ( (case .eq. 'Wbbbar')
      .    .or. (case .eq. 'W_2jet')
@@ -161,8 +164,8 @@ c--- processes that use "gen_njets" with an argument of "2"
      .    .or. (case .eq. 'W_bjet')
      .    .or. (case .eq. 'Wcjetg') ) then
         npart=4
-        call gen_njets(r,2,p,pswt,*999) 	
- 	
+        call gen_njets(r,2,p,pswt,*999)         
+        
 c--- processes that use "gen_njets" with an argument of "3"
       elseif ( (case .eq. 'W_3jet') 
      .    .or. (case .eq. 'Wbbjet') 
@@ -410,15 +413,15 @@ c--- Calculate the required matrix elements
           msq(j,k)=0d0
         enddo
         enddo
-        call qqb_tbb_vdk(p,msqv)	
+        call qqb_tbb_vdk(p,msqv)        
       elseif (case .eq. 'ggfus1') then
         call gg_hg(p,msq)
         call gg_hg_v(p,msqv)
         call gg_hg_z(p,z)
       elseif (case .eq. 'qq_Hqq') then
-        call qq_hqq(p,msq)
-        call qq_hqq_v(p,msqv)
-        call qq_hqq_z(p,z)
+        call VV_hqq(p,msq)
+        call VV_hqq_v(p,msqv)
+        call VV_hqq_z(p,z)
       elseif (case .eq. 'gQ__ZQ') then
         call gQ_zQ(p,msq)
         call gQ_zQ_v(p,msqv)
@@ -949,6 +952,17 @@ c        epinv2=1d0
         endif
       endif
       
+      if (creatent) then
+        wt_gg=xmsq_bypart(0,0)*wgt*flux*xjac*pswt/BrnRat/dfloat(itmx)
+        wt_gq=(xmsq_bypart(+1,0)+xmsq_bypart(-1,0)
+     .        +xmsq_bypart(0,+1)+xmsq_bypart(0,-1)
+     .        )*wgt*flux*xjac*pswt/BrnRat/dfloat(itmx)
+        wt_qq=(xmsq_bypart(+1,+1)+xmsq_bypart(-1,-1)
+     .        )*wgt*flux*xjac*pswt/BrnRat/dfloat(itmx)
+        wt_qqb=(xmsq_bypart(+1,-1)+xmsq_bypart(-1,+1)
+     .        )*wgt*flux*xjac*pswt/BrnRat/dfloat(itmx)
+      endif
+
       call getptildejet(0,pjet)
       
       call dotem(nvec,pjet,s)

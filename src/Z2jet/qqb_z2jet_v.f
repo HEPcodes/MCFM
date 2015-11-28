@@ -529,7 +529,7 @@ c--- a63z
       do k=-nf,nf
 
 c---Desired formula =(Att*(A61+A61o+(A63-A63s/n+A62s+A62os)/n) 
-c	              +Atts*(A61s+A61os+(A63s-A63/n +A62+A62o)/n))
+c                     +Atts*(A61s+A61os+(A63s-A63/n +A62+A62o)/n))
 c                   =tamp*(lamp+lampx)
 c                   +tamps*(lamps+lampsx)
 c   where lamp,lampsx are the pieces without the "s" (5<->6 swap)

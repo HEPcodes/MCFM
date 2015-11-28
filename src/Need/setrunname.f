@@ -1,4 +1,4 @@
-      subroutine setrunname(scalestart) 
+      subroutine setrunname(scalestart,fscalestart) 
       implicit none
       include 'flags.f'
       include 'masses.f'
@@ -6,7 +6,7 @@
       include 'jetcuts.f'
       include 'workdir.f'
       include 'pdlabel.f'
-      double precision scalestart
+      double precision scalestart,fscalestart
       integer nlength,lenocc
       character*30 runstring
       character*4 part
@@ -16,7 +16,15 @@
       common/runstring/runstring
       common/runname/runname
       common/nlength/nlength
-      strscale=getstr(int(scalestart))
+
+      if (abs(scalestart-fscalestart) .lt. 1d0) then
+c--- if the scales are the same, use this scale as the label
+        strscale=getstr(int(scalestart))
+       else
+c--- .... otherwise, use the percentage of (muR/muF)
+        strscale=getstr(int(scalestart/fscalestart*100d0))
+      endif
+
       if (  (case .eq. 'WHbbar')
      . .or. (case .eq. 'ZHbbar')
      . .or. (case .eq. 'qq_tth')

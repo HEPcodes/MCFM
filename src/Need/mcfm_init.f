@@ -13,6 +13,7 @@
       include 'npart.f'
       include 'mxdim.f'
       include 'phasemin.f'
+      include 'facscale.f'
       include 'scale.f'
       include 'verbose.f'
       include 'workdir.f'
@@ -72,7 +73,7 @@
       enddo 
 
 * Set-up run name
-      call setrunname(scale)
+      call setrunname(scale,facscale)
            
       return
       end

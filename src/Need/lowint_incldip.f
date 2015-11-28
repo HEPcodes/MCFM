@@ -17,6 +17,7 @@
       include 'maxwt.f'
       include 'phasemin.f'
       include 'PDFerrors.f'
+      include 'wts_bypart.f'
 c --- DSW. To store flavour information :
       include 'nflav.f'
 c      include 'b0.f'
@@ -33,6 +34,7 @@ c      double precision msqa(-nf:nf,-nf:nf),n(4)
       double precision xx(2),flux,vol,vol_mass,vol3_mass,BrnRat
       double precision xmsq_bypart(-1:1,-1:1),lord_bypart(-1:1,-1:1)
       logical bin,first,includedipole
+      logical creatent,dswhisto
 c      double precision gx1(-nf:nf),gx2(-nf:nf)
 c      integer idum
 c      COMMON/ranno/idum
@@ -42,6 +44,7 @@ c      COMMON/ranno/idum
       common/x1x2/xx
       common/BrnRat/BrnRat
       common/bypart/lord_bypart
+      common/outputflags/creatent,dswhisto
       data p/48*0d0/
       data first/.true./
       save first,rscalestart,fscalestart
@@ -79,7 +82,7 @@ c--- processes that use "gen2m"
      .    .or. (case .eq. 'cc_tot') ) then
         npart=2
         call gen2m(r,p,pswt,*999)
-	  
+          
 c--- processes that use "gen3"     
       elseif ( (case .eq. 'W_cjet') 
      .   .or.  (case .eq. 'W_tndk') ) then
@@ -104,7 +107,7 @@ c--- processes that use "gen3m"
         m5=hmass
         npart=3
         call gen3m(r,p,m3,m4,m5,pswt,*999)
-	  
+          
 c--- processes that use "gen3m_rap"     
       elseif ( (case .eq. 'vlchm3') ) then
         taumin=(2d0*mt/sqrts)**2
@@ -112,13 +115,13 @@ c--- processes that use "gen3m_rap"
         m4=mt
         npart=3
         call gen3m_rap(r,p,m3,m4,pswt,*999)
-	  
+          
 c--- processes that use "gen4h"     
       elseif ( (case .eq. 'HWW_4l')
      .    .or. (case .eq. 'HZZ_4l') ) then
         npart=4
         call gen4h(r,p,pswt,*999)
-	  
+          
 c--- processes that use "gen5" 
       elseif ( (case .eq. 'W_twdk') ) then 
         npart=5 
@@ -143,8 +146,8 @@ c--- processes that use "gen8"
      .    .or. (case .eq. 'vlchk8') ) then
         npart=8
         call gen8(r,p,pswt,*999)
-	  
-c--- processes that use "gen_njets" with an argument of "1"	
+          
+c--- processes that use "gen_njets" with an argument of "1"     
       elseif ( (case .eq. 'W_1jet')
      .    .or. (case .eq. 'Wcjet0')
      .    .or. (case .eq. 'Z_1jet')
@@ -155,7 +158,7 @@ c--- processes that use "gen_njets" with an argument of "1"
      .    .or. (case .eq. 'gQ__ZQ') ) then
         npart=3
         call gen_njets(r,1,p,pswt,*999)
-	 
+         
 c--- processes that use "gen_njets" with an argument of "2"
       elseif ( (case .eq. 'Wbbbar')
      .    .or. (case .eq. 'W_2jet')
@@ -166,8 +169,8 @@ c--- processes that use "gen_njets" with an argument of "2"
      .    .or. (case .eq. 'W_bjet')
      .    .or. (case .eq. 'Wcjetg') ) then
         npart=4
-        call gen_njets(r,2,p,pswt,*999) 	
- 	
+        call gen_njets(r,2,p,pswt,*999)         
+        
 c--- processes that use "gen_njets" with an argument of "3"
       elseif ( (case .eq. 'W_3jet') 
      .    .or. (case .eq. 'Wbbjet') 
@@ -291,12 +294,12 @@ c--- Calculate the required matrix elements
         call bq_tpq(p,msq)
       elseif (case .eq. 'ttdkay') then
         write(6,*) 'This process is not a leading order contribution'
-	stop
+        stop
       elseif (case .eq. 't_bbar') then
         call qqb_tbb(p,msq)
       elseif (case .eq. 'tdecay') then
         write(6,*) 'This process is not a leading order contribution'
-	stop
+        stop
       elseif (case .eq. 'W_tndk') then
         call qqb_w_tndk(p,msq)
       elseif (case .eq. 'W_twdk') then
@@ -314,7 +317,7 @@ c--- Calculate the required matrix elements
       elseif (case .eq. 'attjet') then
         call qqb_higgs_odd(p,msq)
       elseif (case .eq. 'qq_Hqq') then
-        call qq_hqq(p,msq)
+        call VV_hqq(p,msq)
       elseif (case .eq. 'qqHqqg') then
         call qq_hqq_g(p,msq)
       elseif (case .eq. 'tautau') then
@@ -415,7 +418,7 @@ c--- Calculate the required matrix elements
         fx2(-1)=2d0
       else
         write(6,*) 'Unimplemented process in lowint : case=',case
-	stop 
+        stop 
       endif
       
       
@@ -496,6 +499,17 @@ c--- loop over all PDF error sets, if necessary
         currentPDF=currentPDF+1
         if (currentPDF .le. maxPDFsets) goto 777
       endif    
+
+      if (creatent) then
+        wt_gg=xmsq_bypart(0,0)*wgt*flux*pswt/BrnRat/dfloat(itmx)
+        wt_gq=(xmsq_bypart(+1,0)+xmsq_bypart(-1,0)
+     .        +xmsq_bypart(0,+1)+xmsq_bypart(0,-1)
+     .        )*wgt*flux*pswt/BrnRat/dfloat(itmx)
+        wt_qq=(xmsq_bypart(+1,+1)+xmsq_bypart(-1,-1)
+     .        )*wgt*flux*pswt/BrnRat/dfloat(itmx)
+        wt_qqb=(xmsq_bypart(+1,-1)+xmsq_bypart(-1,+1)
+     .        )*wgt*flux*pswt/BrnRat/dfloat(itmx)
+      endif
 
       call getptildejet(0,pjet)
       

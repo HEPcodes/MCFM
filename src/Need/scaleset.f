@@ -28,7 +28,7 @@ c--- convert double precision starting values of the renormalization
 c--- and factorization scales to integers
       irscale=int(rscalestart+0.5d0)
       ifscale=int(fscalestart+0.5d0)
-      
+            
 c--- if the dynamic scales are the same for renormalization and
 c--- factorization, then we only need to do the calculation once
       if (irscale .eq. ifscale) then
@@ -72,19 +72,19 @@ c--- HT
         setscale=setscale+getEt(ptildejet(0,j,4),ptildejet(0,j,1),
      .                    ptildejet(0,j,2),ptildejet(0,j,3))
         enddo
-	facscale=scale
-	if (first) msg='*      Dynamic scale = scalar Et sum (HT)'//
+        if (first) msg='*      Dynamic scale = scalar Et sum (HT)'//
      . '          *'
       elseif ((iset .lt. 1) .or. (iset .gt. 4)) then
 c--- catch invalid inputs
         write(6,*) 'Invalid dynamic scale!'
-	stop
+        stop
       endif
       
-      if      (iscale .eq. 1) then
+      if (iscale .eq. 1) then
         scale=setscale
-	rmsg=msg
-      elseif ((iscale .eq. 2) .or. (iscalemax .eq. 1)) then
+        rmsg=msg
+      endif
+      if ((iscale .eq. 2) .or. (iscalemax .eq. 1)) then
         facscale=setscale
         fmsg=msg
       endif
@@ -104,7 +104,6 @@ c--- catch invalid inputs
         first=.false.      
       endif
       
-
 c--- catch absurdly large scales      
       if  (scale .gt. 3000d0) scale=3000d0
 

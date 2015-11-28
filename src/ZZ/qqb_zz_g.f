@@ -81,20 +81,20 @@ c---case g-qbar
       call zzamps(2,7,3,4,5,6,1,za,zb,gqb)
 
       do j=-nf,nf
-	do k=-nf,nf
+        do k=-nf,nf
       if( j .ne. 0 .and. k .ne. 0 .and. j .ne. -k) goto 19
       jk=max(j,k)
-	ave=xn*aveqq
-	if (j .eq. 0 .or. k .eq. 0) then
-	  jk=j+k
+        ave=xn*aveqq
+        if (j .eq. 0 .or. k .eq. 0) then
+          jk=j+k
         ave=xn*aveqg
-	endif
+        endif
 
 c      if (abs(j) .le. 2 .and. j .ne. 0.and. k .ne. 0)
 c     .write(*,*) 'MCFM, j=',j
 
-	if (jk .eq. 0) goto 19
-	
+        if (jk .eq. 0) goto 19
+        
       do polq=1,2
       do pol1=1,2
       do pol2=1,2
@@ -174,10 +174,10 @@ c      if ((msq(j,k).ne.0d0).and.(abs(s(1,7)).lt.10d0)
 c     . .and.(abs(s(2,7)).lt.10d0)) then 
 c      write(*,*) ' g(',j,',',k,') :',msq(j,k)
 c      endif
-	
+        
    19 continue
       enddo
-	enddo
+        enddo
 
       return
       end

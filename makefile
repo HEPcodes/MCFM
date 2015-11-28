@@ -1,12 +1,12 @@
 # Makefile routine.
 
 # Replace this with the location of Cernlib on your system (if desired)
-CERNLIB     = 
+CERNLIB     =
 # Replace this with the location of LHAPDF on your system (if desired)
-LHAPDFLIB   = 
+LHAPDFLIB   =
 
-MCFMHOME        = /home/ellis/Res/MCFM-4.0
-SOURCEDIR       = /home/ellis/Res/MCFM-4.0/src
+MCFMHOME        = /afs/cern.ch/user/j/johnmc/MCFM-4.1
+SOURCEDIR       = /afs/cern.ch/user/j/johnmc/MCFM-4.1/src
 VPATH		= $(DIRS)
 BIN		= $(MCFMHOME)/Bin
 INCPATH  	= $(SOURCEDIR)/Inc
@@ -22,6 +22,9 @@ PDFROUTINES = NATIVE
 #   NO  -- no n-tuple output or unweighting is possible
 #   YES -- n-tuples, unweighting available - but only if CERNLIB exists
 NTUPLES = NO
+
+FC = g77
+FFLAGS 	= -fno-automatic -fno-f2c -O0 -I$(INCPATH)
 
 DIRS	=	$(MCFMHOME):\
 		$(MCFMHOME)/obj:\
@@ -45,21 +48,6 @@ DIRS	=	$(MCFMHOME):\
 		$(SOURCEDIR)/bbHiggs:\
                 $(SOURCEDIR)/qqH:$(SOURCEDIR)/ggH
 
-# Extra directories for debugging
-DIRS +=     $(SOURCEDIR)/Top/Mad:\
-            $(SOURCEDIR)/WZbbm/Mad:\
-            $(SOURCEDIR)/Wgam/Mad:$(SOURCEDIR)/Zgam/Mad:\
-            $(SOURCEDIR)/Wcjet/Mad:\
-            $(SOURCEDIR)/W2jet/Mad:$(SOURCEDIR)/Z2jet/Mad:\
-            $(SOURCEDIR)/bbHiggs/Mad:$(SOURCEDIR)/Jets/Mad:\
-            $(SOURCEDIR)/madtest/w2jet:$(SOURCEDIR)/Wbjet/Mad:\
-            $(SOURCEDIR)/Singletop/Mad:\
-            $(SOURCEDIR)/Dirgam/Mad:\
-            $(SOURCEDIR)/qqH/Mad
-
-FC = g77
-FFLAGS 	= -fno-automatic -fno-f2c -O0 -I$(INCPATH)
-
 # -----------------------------------------------------------------------------
 # Specify the object files. 
 
@@ -68,7 +56,6 @@ bbaqh.o \
 bbbbh.o \
 bbggh.o \
 bbghvirt.o \
-gq_qqqb.o \
 qqb_H_gvec.o \
 qqb_Hg.o \
 qqb_Hg_g.o \
@@ -78,8 +65,6 @@ qqb_Hg_z.o
 
 GGHFILES = \
 hjetfill.o \
-qqb_hgaga.o \
-qqb_hgaga_g.o \
 gg_h.o \
 gg_h_v.o \
 gg_h_gvec.o \
@@ -91,7 +76,9 @@ gg_hg_z.o \
 gg_hg_gvec.o \
 gg_hg_gs.o \
 gg_hgg.o \
-h4g.o 
+hqqgg.o \
+h4g.o \
+h4q.o
 
 HWWFILES = \
 qqb_hww.o \
@@ -176,6 +163,7 @@ reader_input.o \
 realint.o \
 scaleset.o \
 sethparams.o \
+setmb_msbar.o \
 setrunname.o \
 smalls.o \
 spinork.o \
@@ -255,13 +243,18 @@ wt4gen.o \
 wtgen.o
 
 QQHFILES = \
-qq_Hqq.o \
 qq_Hqq_g.o \
-qq_Hqq_gs.o \
-qq_Hqq_v.o \
-qq_Hqq_z.o \
-hqqgg.o \
-h4q.o
+VV_Hqq.o \
+VV_Hqq_g.o \
+VV_Hqq_gs.o \
+VV_Hqq_v.o \
+VV_Hqq_z.o \
+WW_Hqq.o \
+WW_Hqq_g.o \
+WW_Hqq_gs.o \
+ZZ_Hqq.o \
+ZZ_Hqq_g.o \
+ZZ_Hqq_gs.o
 
 SINGLETOPFILES = \
 topwidth.o \
@@ -386,7 +379,6 @@ subqcd.o \
 subqcdn.o \
 w2jetnx.o \
 w2jetsq.o \
-xmqqgg.o \
 xwqqgg_v.o \
 xwqqggg.o 
 
@@ -570,7 +562,6 @@ qqb_zz_z.o \
 zzamps.o
 
 ZBBFILES = \
-amp_qqgg.o \
 amp_qqggg.o \
 ampqqb_qqb.o \
 aqqb_zbb.o \
@@ -604,7 +595,7 @@ ifeq ($(NTUPLES),YES)
   endif
   USERFILES += dswhbook.o
   LIBDIR=$(CERNLIB)
-  LIBFLAGS = -lpacklib -lkernlib -lmathlib -lnsl
+  LIBFLAGS = -lpacklib -lkernlib -lmathlib -lnsl -lshift
   NTUPMSG='   ----> MCFM compiled with optional n-tuple output <----'
  else
   ifeq ($(NTUPLES),NO)

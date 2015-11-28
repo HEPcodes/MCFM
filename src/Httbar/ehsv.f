@@ -65,14 +65,14 @@ C     ehsv:EqnA.19
       include 'masses.f'
       double precision rat,s,temp,acosh,asinh
       rat=4d0*mbsq/s
-      temp=sqrt(dabs(1d0/rat))
+      temp=dsqrt(dabs(1d0/rat))
       if (rat .lt. 0d0) then
-          w1=2d0*sqrt(1d0-rat)*asinh(temp)
+          w1=2d0*dsqrt(1d0-rat)*asinh(temp)
       elseif (rat .gt. 1d0) then
-          w1=2d0*sqrt(rat-1d0)*asin(temp)
+          w1=2d0*dsqrt(rat-1d0)*asin(temp)
       else 
           temp=2d0*acosh(temp)
-          w1=sqrt(1d0-rat)*dcmplx(temp,-pi)
+          w1=dsqrt(1d0-rat)*dcmplx(temp,-pi)
        endif
       return
       end
@@ -84,7 +84,7 @@ C     ehsv:EqnA.20
       include 'masses.f'
       double precision rat,s,tempr,tempi,acosh,asinh
       rat=s/(4d0*mbsq)
-      tempr=sqrt(dabs(rat))
+      tempr=dsqrt(dabs(rat))
       if (rat .lt. 0d0) then
           tempr=asinh(tempr)
           w2=4d0*tempr**2
@@ -120,21 +120,21 @@ C     ehsv:EqnA.21
       double complex li2,zth,zph
       rat=4d0*mbsq/varg
       if (rat .lt. 0d0) then
-           be=0.5d0*(1d0+sqrt(1d0+4d0*t*mbsq/(u*s)))
-           ga=0.5d0*(1d0+sqrt(1d0-rat))
+           be=0.5d0*(1d0+dsqrt(1d0+4d0*t*mbsq/(u*s)))
+           ga=0.5d0*(1d0+dsqrt(1d0-rat))
            arg1=ga/(ga+be-1d0)
            arg2=(ga-1d0)/(ga+be-1d0)
            arg3=(be-ga)/be
            arg4=(be-ga)/(be-1d0)
            i3=2d0/(2d0*be-1d0)
      .     *(-ddilog(arg1)+ddilog(arg2)+ddilog(arg3)-ddilog(arg4)
-     .     +0.5d0*(log(be)**2-log(be-1d0)**2)
-     .     +log(ga)*log((ga+be-1d0)/be)
-     .     +log(ga-1d0)*log((be-1d0)/(ga+be-1d0)))
+     .     +0.5d0*(dlog(be)**2-dlog(be-1d0)**2)
+     .     +dlog(ga)*dlog((ga+be-1d0)/be)
+     .     +dlog(ga-1d0)*dlog((be-1d0)/(ga+be-1d0)))
       elseif (rat .gt. 1d0) then
-           be=0.5d0*(1d0+sqrt(1d0+4d0*t*mbsq/(u*s)))
-           al=sqrt(rat-1d0)
-           r=sqrt((al**2+1d0)/(al**2+(2d0*be-1d0)**2))
+           be=0.5d0*(1d0+dsqrt(1d0+4d0*t*mbsq/(u*s)))
+           al=dsqrt(rat-1d0)
+           r=dsqrt((al**2+1d0)/(al**2+(2d0*be-1d0)**2))
            phi=acos(r*(al**2+2d0*be-1d0)/(1d0+al**2))
            theta=acos(r*(al**2-2d0*be+1d0)/(1d0+al**2))
            zth=r*dcmplx(cos(theta),sin(theta))
@@ -143,8 +143,8 @@ C     ehsv:EqnA.21
      .     *(2d0*dble(li2(zth))-2d0*dble(li2(zph))
      .     +(phi-theta)*(phi+theta-pi))
       else
-           be=0.5d0*(1d0+sqrt(1d0+4d0*t*mbsq/(u*s)))
-           ga=0.5d0*(1d0+sqrt(1d0-rat))
+           be=0.5d0*(1d0+dsqrt(1d0+4d0*t*mbsq/(u*s)))
+           ga=0.5d0*(1d0+dsqrt(1d0-rat))
            arg1=ga/(ga+be-1d0)
            arg2=(ga-1d0)/(ga+be-1d0)
            arg3=ga/(ga-be)
@@ -152,8 +152,8 @@ C     ehsv:EqnA.21
       
            i3=2d0/(2d0*be-1d0)
      .     *(-ddilog(arg1)+ddilog(arg2)+ddilog(arg3)-ddilog(arg4)
-     .     +log(ga/(1d0-ga))*log((ga+be-1d0)/(be-ga))
-     .     -im*pi*log((ga+be-1d0)/(be-ga)))
+     .     +dlog(ga/(1d0-ga))*dlog((ga+be-1d0)/(be-ga))
+     .     -im*pi*dlog((ga+be-1d0)/(be-ga)))
       endif
 
       return
@@ -162,14 +162,14 @@ C     ehsv:EqnA.21
       double precision function acosh(y)
       implicit none
       double precision y      
-      acosh=log(y+sqrt(y**2-1d0))
+      acosh=dlog(y+dsqrt(y**2-1d0))
       return
       end
 
       double precision function asinh(y)
       implicit none
       double precision y      
-      asinh=log(y+sqrt(y**2+1d0))
+      asinh=dlog(y+dsqrt(y**2+1d0))
       return
       end
 

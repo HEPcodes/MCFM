@@ -388,7 +388,7 @@ c--- this is an allowed combination
 c--- set up the default choices of static scale, if required
       if (scale .eq. -1d0) then
         if (n2+n3 .ne. 0) then
-	scale=(dfloat(n2)*mass2+dfloat(n3)*mass3)/dfloat(n2+n3)
+        scale=(dfloat(n2)*mass2+dfloat(n3)*mass3)/dfloat(n2+n3)
         as=alphas(scale,amz,nlooprun)
         ason2pi=as/twopi
         ason4pi=as/fourpi
@@ -396,31 +396,31 @@ c--- set up the default choices of static scale, if required
         musq=scale**2
         write(6,*)
         write(6,*)'************* Strong coupling, alpha_s  ************'
-        write(6,*)'*					              *'
+        write(6,*)'*                                                  *'
         write(6,49)'alpha_s (scale)',gsq/fourpi
         write(6,49)'alpha_s (zmass)',amz
         write(6,50)' (using ',nlooprun,'-loop running of alpha_s)'  
         write(6,*)'****************************************************'
-	write(6,*)
-	write(6,*)'****************************************************'
-	write(6,76) scale
-	write(6,*)'****************************************************'
+        write(6,*)
+        write(6,*)'****************************************************'
+        write(6,76) scale
+        write(6,*)'****************************************************'
         else
-	write(6,*) 'Invalid choice of renormalization scale!'
-	stop
-	endif
+        write(6,*) 'Invalid choice of renormalization scale!'
+        stop
+        endif
       endif
       if (facscale .eq. -1d0) then
         if (n2+n3 .ne. 0) then
-	facscale=(dfloat(n2)*mass2+dfloat(n3)*mass3)/dfloat(n2+n3)
-	write(6,*)
-	write(6,*)'****************************************************'
-	write(6,77) facscale
- 	write(6,*)'****************************************************'
+        facscale=(dfloat(n2)*mass2+dfloat(n3)*mass3)/dfloat(n2+n3)
+        write(6,*)
+        write(6,*)'****************************************************'
+        write(6,77) facscale
+        write(6,*)'****************************************************'
        else
-	write(6,*) 'Invalid choice of factorization scale!'
-	stop
-	endif
+        write(6,*) 'Invalid choice of factorization scale!'
+        stop
+        endif
       endif
       
       return

@@ -77,7 +77,7 @@ c--- find the leading b-jet and the spectator jet
         if (ibjet .eq. -1) then
           ibjet=2
           ispect=1
-        else	
+        else    
 c--- this is an arbitrary condition (leading jet?) for the case of 2 b's
 c          if (pt(jetindex(1),p) .gt.  pt(jetindex(2),p)) then
           if (ran2() .lt. 0.5d0) then
@@ -130,8 +130,8 @@ c      write(6,*) mlbnu
 c--- Perform the cut on this invariant mass     
       if ((mlbnu .lt. 140d0) .or. (mlbnu .gt. 210d0)) then
         mlbnu=-1d0
-	merecon=-1d0
-	reconcorr=-99d0
+        merecon=-1d0
+        reconcorr=-99d0
         goto 999
       endif
       
@@ -144,11 +144,11 @@ c--- leading jet condition, only applied to qeta for t-channel search
           qeta=-1d0
 c--- include e+ only for W^+
           mlbnu=-1d0
-  	  merecon=-1d0
- 	  reconcorr=-99d0
-	  ht=-1d0
-	  qeta=-99d0
-	  goto 999
+          merecon=-1d0
+          reconcorr=-99d0
+          ht=-1d0
+          qeta=-99d0
+          goto 999
         else
           qeta=+1d0
         endif

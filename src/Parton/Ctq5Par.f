@@ -178,7 +178,7 @@ c actually parametrized, return a value of 0, and set the error code IRT=1.
 c The user can remove the following IF statement to receive instead an 
 c extrapolated value, which may be wildly unphysical.
       if((x .lt. 1.e-6). or. (x .gt. 1.) 
-     &	 .or. (q .lt. .99) .or. (q .gt. 10000.)) then
+     &   .or. (q .lt. .99) .or. (q .gt. 10000.)) then
          ctq5pd = 0.d0
          irt = 1
          return
@@ -191,7 +191,7 @@ c extrapolated value, which may be wildly unphysical.
          ctq5pd = ctq5Mi(iparton,x,q)
       else
          print *,'iset=',iset,' has not been parametrized.' 
-	   print '(/A)', 'Use the interpolation-table version instead.'
+           print '(/A)', 'Use the interpolation-table version instead.'
          stop
       endif
 
@@ -230,38 +230,38 @@ C ********************************************************
       END
 
 c --------------------------------------------------------------------------
-	double precision function ctq5MI(ifl,x,q)
+        double precision function ctq5MI(ifl,x,q)
 c Parametrization of cteq5MI parton distribution functions (J. Pumplin 9/99).
 c ifl: 1=u,2=d,3=s,4=c,5=b;0=gluon;-1=ubar,-2=dbar,-3=sbar,-4=cbar,-5=bbar.
 c --------------------------------------------------------------------------
-	implicit double precision (a-h,o-z)
-	integer ifl
+        implicit double precision (a-h,o-z)
+        integer ifl
 
-	ii = ifl
-	if(ii .gt. 2) then
-	   ii = -ii
-	endif
+        ii = ifl
+        if(ii .gt. 2) then
+           ii = -ii
+        endif
 
-	if(ii .eq. -1) then
-	   sum = faux5MI(-1,x,q)
-	   ratio = faux5MI(-2,x,q)
-	   ctq5MI = sum/(1.d0 + ratio)
+        if(ii .eq. -1) then
+           sum = faux5MI(-1,x,q)
+           ratio = faux5MI(-2,x,q)
+           ctq5MI = sum/(1.d0 + ratio)
 
-	elseif(ii .eq. -2) then
-	   sum = faux5MI(-1,x,q)
-	   ratio = faux5MI(-2,x,q)
-	   ctq5MI = sum*ratio/(1.d0 + ratio)
+        elseif(ii .eq. -2) then
+           sum = faux5MI(-1,x,q)
+           ratio = faux5MI(-2,x,q)
+           ctq5MI = sum*ratio/(1.d0 + ratio)
 
-	elseif(ii .ge. -5) then
-	   ctq5MI = faux5MI(ii,x,q)
+        elseif(ii .ge. -5) then
+           ctq5MI = faux5MI(ii,x,q)
 
-	else
-	   ctq5MI = 0.d0 
+        else
+           ctq5MI = 0.d0 
 
-	endif
+        endif
 
-	return
-	end
+        return
+        end
 
 c ---------------------------------------------------------------------
       double precision function faux5MI(ifl,x,q)
@@ -503,7 +503,7 @@ c ---------------------------------------------------------------------
       part2 = af(0)*(1.d0 - x) + af(3)*x 
       part3 = x*(1.d0-x)*(af(5)+af(6)*(1.d0-x)+af(7)*x*(1.d0-x))
       part4 = ut1vec(ifl)*log(1.d0-x) + 
-     &	      AF(2)*log(1.d0+exp(ut2vec(ifl))-x)
+     &        AF(2)*log(1.d0+exp(ut2vec(ifl))-x)
 
       faux5MI = exp(log(x) + part1 + part2 + part3 + part4)
 
@@ -513,38 +513,38 @@ c include threshold factor...
       return
       end
 c --------------------------------------------------------------------------
-	double precision function ctq5L(ifl,x,q)
+        double precision function ctq5L(ifl,x,q)
 c Parametrization of cteq5L parton distribution functions (J. Pumplin 9/99).
 c ifl: 1=u,2=d,3=s,4=c,5=b;0=gluon;-1=ubar,-2=dbar,-3=sbar,-4=cbar,-5=bbar.
 c --------------------------------------------------------------------------
-	implicit double precision (a-h,o-z)
-	integer ifl
+        implicit double precision (a-h,o-z)
+        integer ifl
 
-	ii = ifl
-	if(ii .gt. 2) then
-	   ii = -ii
-	endif
+        ii = ifl
+        if(ii .gt. 2) then
+           ii = -ii
+        endif
 
-	if(ii .eq. -1) then
-	   sum = faux5L(-1,x,q)
-	   ratio = faux5L(-2,x,q)
-	   ctq5L = sum/(1.d0 + ratio)
+        if(ii .eq. -1) then
+           sum = faux5L(-1,x,q)
+           ratio = faux5L(-2,x,q)
+           ctq5L = sum/(1.d0 + ratio)
 
-	elseif(ii .eq. -2) then
-	   sum = faux5L(-1,x,q)
-	   ratio = faux5L(-2,x,q)
-	   ctq5L = sum*ratio/(1.d0 + ratio)
+        elseif(ii .eq. -2) then
+           sum = faux5L(-1,x,q)
+           ratio = faux5L(-2,x,q)
+           ctq5L = sum*ratio/(1.d0 + ratio)
 
-	elseif(ii .ge. -5) then
-	   ctq5L = faux5L(ii,x,q)
+        elseif(ii .ge. -5) then
+           ctq5L = faux5L(ii,x,q)
 
-	else
-	   ctq5L = 0.d0 
+        else
+           ctq5L = 0.d0 
 
-	endif
+        endif
 
-	return
-	end
+        return
+        end
 
 c ---------------------------------------------------------------------
       double precision function faux5L(ifl,x,q)
@@ -786,7 +786,7 @@ c ---------------------------------------------------------------------
       part2 = af(0)*(1.d0 - x) + af(3)*x 
       part3 = x*(1.d0-x)*(af(5)+af(6)*(1.d0-x)+af(7)*x*(1.d0-x))
       part4 = ut1vec(ifl)*log(1.d0-x) + 
-     &	      AF(2)*log(1.d0+exp(ut2vec(ifl))-x)
+     &        AF(2)*log(1.d0+exp(ut2vec(ifl))-x)
 
       faux5L = exp(log(x) + part1 + part2 + part3 + part4)
 

@@ -65,7 +65,7 @@ c      xtsq=xtsqmin+xjac*r(3)
       
       y3=yave+ydif
       y4=yave-ydif
-	  
+          
       phi=2d0*pi*r(4)
 
       xx(1)=0.5d0*xt*(exp(+y3)+exp(+y4))
@@ -84,7 +84,7 @@ c      xtsq=xtsqmin+xjac*r(3)
 c      write(6,*) 'problems with xx(1),xx(2) in gen2',xx(1),xx(2)  
       return 1 
       endif
-	  
+          
       p(1,4)=-0.5d0*xx(1)*sqrts
       p(1,1)=0d0
       p(1,2)=0d0

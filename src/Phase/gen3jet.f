@@ -28,7 +28,7 @@ C---p1+p2 --> p3+p4+p5
       xjac=sqrts**2
       ymax=5d0
       ymin=-5d0
-      Deltay=ymax-ymin	  
+      Deltay=ymax-ymin    
       y3=ymin+Deltay*r(3)
       y4=ymin+Deltay*r(4)
       y5=ymin+Deltay*r(5)
@@ -64,7 +64,7 @@ C---p1+p2 --> p3+p4+p5
 c      write(6,*) 'problems with xx(1),xx(2) in gen3',xx(1),xx(2)  
       return 1 
       endif
-	  
+          
       p(1,4)=-0.5d0*xx(1)*sqrts
       p(1,1)=0d0
       p(1,2)=0d0
