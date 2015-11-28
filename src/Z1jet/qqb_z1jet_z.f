@@ -8,13 +8,41 @@
       include 'qcdcouple.f'
       include 'scale.f'
       include 'PR.f'
+      include 'flags.f'
       double precision z,xl12,xl15,xl25,p(mxpart,4),dot
-      double precision ii_qg,ii_gq,ii_gg,if_qg,if_gg,fi_qg,fi_gg
+      double precision ii_qg,ii_gq,ii_gg,if_qg,if_gg,fi_qg,fi_gg,fi_gq
 
       xl12=log( two*dot(p,1,2)/musq)
       xl15=log(-two*dot(p,1,5)/musq)
       xl25=log(-two*dot(p,2,5)/musq)
 
+      Rqq_qb=0d0
+      Rq_qbqb=0d0
+      Rqbqb_q=0d0
+      Rqb_qq=0d0
+      Rgg_q=0d0
+      Rg_qq=0d0
+      Rgq_q=0d0
+      Rq_gg=0d0
+      Rqq_g=0d0
+      Rq_gq=0d0
+      Rgq_g=0d0
+      Rg_gq=0d0
+
+      Pqq_qb=0d0
+      Pq_qbqb=0d0
+      Pqbqb_q=0d0
+      Pqb_qq=0d0
+      Pgg_q=0d0
+      Pg_qq=0d0
+      Pgq_q=0d0
+      Pq_gg=0d0
+      Pqq_g=0d0
+      Pq_gq=0d0
+      Pgq_g=0d0
+      Pg_gq=0d0
+
+      if (Gflag) then
 c--- Regular terms
 
 c--- (q,qb) terms
@@ -88,6 +116,16 @@ c--- (g,g)
 
       Pgq_g=Pgq_g*ason2pi
       Pg_gq=Pg_gq*ason2pi
-
+      endif
+      
+      if (Qflag) then
+      Rq_qbqb=Rq_qbqb+ason2pi*tr*dfloat(nf)*fi_gq(z,xl25,2)
+      Rq_gg=Rq_gg+ason2pi*0.5d0*(xn-1d0/xn)*
+     .      (ii_gq(z,xl12,2)+ii_gq(z,xl25,2))
+      Rgg_q=Rgg_q+ason2pi*0.5d0*(xn-1d0/xn)*
+     .      (ii_gq(z,xl12,2)+ii_gq(z,xl15,2))
+      Rqb_qq=Rqb_qq+ason2pi*tr*dfloat(nf)*fi_gq(z,xl25,2)
+      endif
+      
       return
       end

@@ -32,8 +32,7 @@ c--set msq=0 to initialize
 
 c--   calculate propagators
       fac=aveqq*fac/s34**2
-c      prop=s34/sqrt((s34-zmass**2)**2+(zmass*zwidth)**2)
-      prop=s34/(s34-zmass**2+im*zmass*zwidth)
+      prop=s34/Dcmplx((s34-zmass**2),zmass*zwidth)
 
       call spinoru(4,p,za,zb)
 

@@ -12,7 +12,7 @@ C     the second for helicity of lepton line.
       include 'qcdcouple.f'
       integer k,nu,iperm
       integer i1(2),i2(2),i3(2),i4(2),i5(2),i6(2),j,lh,h2,h3,hq,h(2:3)
-      double precision p(mxpart,4),msq(-nf:nf,-nf:nf),msqzbb,mmsq(2,2),
+      double precision p(mxpart,4),msq(-nf:nf,-nf:nf),mmsq(2,2),
      . prop,qqb,qbq,pswap(mxpart,4)
       double precision mqqb(2,2),mqqb_vec(2,2),mqqb_ax(2,2),m1,m0,x,fac
       double complex tempm0,m(2),ml1(2),ml2(2),ml3,ml4(2),tamp
@@ -66,7 +66,7 @@ c--- set iperm=1 for same-helicity quarks and leptons, 2 otherwise
      .     i1(1),i2(j),i3(j),i4(1),i6(lh),i5(lh),zb,za)
         ml2(j)=a61g1slc(st2(3-h(i2(j)),3-h(i3(j))),
      .     i1(1),i2(j),i3(j),i4(1),i6(lh),i5(lh),zb,za)
-        ml4(j)=a61g1nf(st2(3-h(i2(j)),3-h(i3(j))),
+        ml4(j)=a61g1nf(st1(3-h(i2(j)),3-h(i3(j))),
      .     i1(1),i2(j),i3(j),i4(1),i6(lh),i5(lh),zb,za)
         ml_vec(j)=a64v(st2(3-h(i2(j)),3-h(i3(j))),
      .     i1(1),i4(1),i2(j),i3(j),i6(lh),i5(lh),zb,za)
@@ -81,7 +81,7 @@ c--- set iperm=1 for same-helicity quarks and leptons, 2 otherwise
      .     i1(1),i2(j),i3(j),i4(1),i5(lh),i6(lh),za,zb)
         ml2(j)=a61g1slc(st2(h(i2(j)),h(i3(j))),
      .     i1(1),i2(j),i3(j),i4(1),i5(lh),i6(lh),za,zb)
-        ml4(j)=a61g1nf(st2(h(i2(j)),h(i3(j))),
+        ml4(j)=a61g1nf(st1(h(i2(j)),h(i3(j))),
      .     i1(1),i2(j),i3(j),i4(1),i5(lh),i6(lh),za,zb)
         ml_vec(j)=a64v(st2(h(i2(j)),h(i3(j))),
      .     i1(1),i4(1),i2(j),i3(j),i5(lh),i6(lh),za,zb)

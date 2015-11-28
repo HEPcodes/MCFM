@@ -23,8 +23,8 @@ c   in the final state.
 C ip is the label of the emitter
 C in is the label of the contracted line
       integer j,k,pq,pl,nquark,in,ics
-      double precision fac,prop,n(4)
-      double complex zab(mxpart,mxpart),zba(mxpart,mxpart)
+      double precision fac,n(4)
+      double complex zab(mxpart,mxpart),zba(mxpart,mxpart),prop
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4),
      . qqbgg(2,2),qbqgg(2,2),qgqg(2,2),gqqg(2,2),
      . qbgqbg(2,2),gqbqbg(2,2),ggqbq(2,2)
@@ -89,7 +89,7 @@ C                       (4) outgoing gluon line contracted with n
           call zbbsqn(5,2,1,6,p,n,za,zb,zab,zba,gqbqbg)
       endif
 
-      prop=s(3,4)/sqrt((s(3,4)-zmass**2)**2+(zmass*zwidth)**2)
+      prop=s(3,4)/dcmplx((s(3,4)-zmass**2),zmass*zwidth)
       fac=v*xn/four*(esq*gsq)**2*two
 c--- DEBUG
 c--- fac needs to be factor of 2 higher cf. xzqqgg_alt.f
@@ -117,47 +117,47 @@ c--- This becomes a total modification of 2/(4**2)=1/8
       if     ((j .eq. 0) .and. (k .eq. 0)) then
 c--- changed from zbb
            msq(j,k)=
-     .             +(Q(1)*q1+L(1)*l1*prop)**2*ggqbq(1,1)
-     .             +(Q(1)*q1+R(1)*r1*prop)**2*ggqbq(2,2)
-     .             +(Q(1)*q1+L(1)*r1*prop)**2*ggqbq(1,2)
-     .             +(Q(1)*q1+R(1)*l1*prop)**2*ggqbq(2,1)
+     .             +cdabs(Q(1)*q1+L(1)*l1*prop)**2*ggqbq(1,1)
+     .             +cdabs(Q(1)*q1+R(1)*r1*prop)**2*ggqbq(2,2)
+     .             +cdabs(Q(1)*q1+L(1)*r1*prop)**2*ggqbq(1,2)
+     .             +cdabs(Q(1)*q1+R(1)*l1*prop)**2*ggqbq(2,1)
            do ics=0,2
            msqv_cs(ics,j,k)=
-     .            +(Q(1)*q1+L(1)*l1*prop)**2*avegg*fac*mmsqv_cs(ics,1,1)
-     .            +(Q(1)*q1+R(1)*l1*prop)**2*avegg*fac*mmsqv_cs(ics,2,1)
-     .            +(Q(1)*q1+L(1)*r1*prop)**2*avegg*fac*mmsqv_cs(ics,1,2)
-     .            +(Q(1)*q1+R(1)*r1*prop)**2*avegg*fac*mmsqv_cs(ics,2,2)
+     .       +cdabs(Q(1)*q1+L(1)*l1*prop)**2*avegg*fac*mmsqv_cs(ics,1,1)
+     .       +cdabs(Q(1)*q1+R(1)*l1*prop)**2*avegg*fac*mmsqv_cs(ics,2,1)
+     .       +cdabs(Q(1)*q1+L(1)*r1*prop)**2*avegg*fac*mmsqv_cs(ics,1,2)
+     .       +cdabs(Q(1)*q1+R(1)*r1*prop)**2*avegg*fac*mmsqv_cs(ics,2,2)
            enddo
       elseif ((j .gt. 0) .and. (k .lt. 0)) then
-          msq(j,k)=+(Q(j)*q1+L(j)*l1*prop)**2*qqbgg(1,1)
-     .             +(Q(j)*q1+R(j)*r1*prop)**2*qqbgg(2,2)
-     .             +(Q(j)*q1+L(j)*r1*prop)**2*qqbgg(1,2)
-     .             +(Q(j)*q1+R(j)*l1*prop)**2*qqbgg(2,1)
+          msq(j,k)=+cdabs(Q(j)*q1+L(j)*l1*prop)**2*qqbgg(1,1)
+     .             +cdabs(Q(j)*q1+R(j)*r1*prop)**2*qqbgg(2,2)
+     .             +cdabs(Q(j)*q1+L(j)*r1*prop)**2*qqbgg(1,2)
+     .             +cdabs(Q(j)*q1+R(j)*l1*prop)**2*qqbgg(2,1)
       elseif ((j .lt. 0) .and. (k .gt. 0)) then
-          msq(j,k)=+(Q(k)*q1+L(k)*l1*prop)**2*qbqgg(1,1)
-     .             +(Q(k)*q1+R(k)*r1*prop)**2*qbqgg(2,2)
-     .             +(Q(k)*q1+L(k)*r1*prop)**2*qbqgg(1,2)
-     .             +(Q(k)*q1+R(k)*l1*prop)**2*qbqgg(2,1)
+          msq(j,k)=+cdabs(Q(k)*q1+L(k)*l1*prop)**2*qbqgg(1,1)
+     .             +cdabs(Q(k)*q1+R(k)*r1*prop)**2*qbqgg(2,2)
+     .             +cdabs(Q(k)*q1+L(k)*r1*prop)**2*qbqgg(1,2)
+     .             +cdabs(Q(k)*q1+R(k)*l1*prop)**2*qbqgg(2,1)
       elseif ((j .gt. 0) .and. (k .eq. 0)) then
-          msq(j,k)=+(Q(j)*q1+L(j)*l1*prop)**2*qgqg(1,1)
-     .             +(Q(j)*q1+R(j)*r1*prop)**2*qgqg(2,2)
-     .             +(Q(j)*q1+L(j)*r1*prop)**2*qgqg(1,2)
-     .             +(Q(j)*q1+R(j)*l1*prop)**2*qgqg(2,1)
+          msq(j,k)=+cdabs(Q(j)*q1+L(j)*l1*prop)**2*qgqg(1,1)
+     .             +cdabs(Q(j)*q1+R(j)*r1*prop)**2*qgqg(2,2)
+     .             +cdabs(Q(j)*q1+L(j)*r1*prop)**2*qgqg(1,2)
+     .             +cdabs(Q(j)*q1+R(j)*l1*prop)**2*qgqg(2,1)
       elseif ((j .lt. 0) .and. (k .eq. 0)) then
-          msq(j,k)=+(Q(-j)*q1+L(-j)*l1*prop)**2*qbgqbg(1,1)
-     .             +(Q(-j)*q1+R(-j)*r1*prop)**2*qbgqbg(2,2)
-     .             +(Q(-j)*q1+L(-j)*r1*prop)**2*qbgqbg(1,2)
-     .             +(Q(-j)*q1+R(-j)*l1*prop)**2*qbgqbg(2,1)
+          msq(j,k)=+cdabs(Q(-j)*q1+L(-j)*l1*prop)**2*qbgqbg(1,1)
+     .             +cdabs(Q(-j)*q1+R(-j)*r1*prop)**2*qbgqbg(2,2)
+     .             +cdabs(Q(-j)*q1+L(-j)*r1*prop)**2*qbgqbg(1,2)
+     .             +cdabs(Q(-j)*q1+R(-j)*l1*prop)**2*qbgqbg(2,1)
       elseif ((j .eq. 0) .and. (k .gt. 0)) then
-          msq(j,k)=+(Q(k)*q1+L(k)*l1*prop)**2*gqqg(1,1)
-     .             +(Q(k)*q1+R(k)*r1*prop)**2*gqqg(2,2)
-     .             +(Q(k)*q1+L(k)*r1*prop)**2*gqqg(1,2)
-     .             +(Q(k)*q1+R(k)*l1*prop)**2*gqqg(2,1)
+          msq(j,k)=+cdabs(Q(k)*q1+L(k)*l1*prop)**2*gqqg(1,1)
+     .             +cdabs(Q(k)*q1+R(k)*r1*prop)**2*gqqg(2,2)
+     .             +cdabs(Q(k)*q1+L(k)*r1*prop)**2*gqqg(1,2)
+     .             +cdabs(Q(k)*q1+R(k)*l1*prop)**2*gqqg(2,1)
       elseif ((j .eq. 0) .and. (k .lt. 0)) then
-          msq(j,k)=+(Q(-k)*q1+L(-k)*l1*prop)**2*gqbqbg(1,1)
-     .             +(Q(-k)*q1+R(-k)*r1*prop)**2*gqbqbg(2,2)
-     .             +(Q(-k)*q1+L(-k)*r1*prop)**2*gqbqbg(1,2)
-     .             +(Q(-k)*q1+R(-k)*l1*prop)**2*gqbqbg(2,1)
+          msq(j,k)=+cdabs(Q(-k)*q1+L(-k)*l1*prop)**2*gqbqbg(1,1)
+     .             +cdabs(Q(-k)*q1+R(-k)*r1*prop)**2*gqbqbg(2,2)
+     .             +cdabs(Q(-k)*q1+L(-k)*r1*prop)**2*gqbqbg(1,2)
+     .             +cdabs(Q(-k)*q1+R(-k)*l1*prop)**2*gqbqbg(2,1)
       endif
 
    19 continue

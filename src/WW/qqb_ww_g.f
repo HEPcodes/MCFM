@@ -81,8 +81,8 @@ c-- couplings with or without photon pole
       if (zerowidth .neqv. .true.) then
       cz(minus,j)=two*xw*ln*L(j)*prop12
       cz(mplus,j)=two*xw*ln*R(j)*prop12
-      cgamz(minus,j)=two*xw*(Q(j)*q1+le*L(j)*prop12)
-      cgamz(mplus,j)=two*xw*(Q(j)*q1+le*R(j)*prop12)
+      cgamz(minus,j)=two*xw*(-Q(j)+le*L(j)*prop12)
+      cgamz(mplus,j)=two*xw*(-Q(j)+le*R(j)*prop12)
       endif
       enddo
 c-- 

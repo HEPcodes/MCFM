@@ -25,8 +25,8 @@ c     delta(p2^2-s2) delta(p3^2-s3)
       save first
       if (verbose) then
       if(first) then
-      if (n2 .eq. 1) write(6,*) 'generating phase space with bw,n2=',n2
-      if (n3 .eq. 1) write(6,*) 'generating phase space with bw,n3=',n3
+c      if (n2 .eq. 1) write(6,*) 'generating phase space with bw,n2=',n2
+c      if (n3 .eq. 1) write(6,*) 'generating phase space with bw,n3=',n3
       first=.false.
       endif
       endif

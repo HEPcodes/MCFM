@@ -53,7 +53,7 @@ C---Initialize the dipoles to zero
         call subr_corr(ptrans,vec,ip,msqv)
 
         sub(qq)=-gsq/x/sij*(two/omx-one-x)
-        sub(gq)=-gsq/x/sij*(one+omx**2)/x
+        sub(gq)=-gsq/sij
         sub(qg)=-gsq/x/sij*(one-two*x*omx)
         sub(gg)=-2d0*gsq/x/sij*(x/omx+x*omx)
         subv   =+4d0*gsq/x/sij*omx/x/vecsq
@@ -74,8 +74,9 @@ C---transform the momenta so that only the first npart+1 are filled
            vec(nu)=p(jp,nu)/u-p(kp,nu)/omu
         enddo
         call subr_born(ptrans,msq)
-        call subr_corr(ptrans,vec,ip,msqv)
+        call subr_corr(ptrans,vec,ip,msqv)        
         sub(qq)=-gsq/x/sij*(two/(omx+u)-one-x)
+        sub(gq)=-gsq/sij
         sub(qg)=-gsq/x/sij*(one-two*x*omx)
         sub(gg)=-2d0*gsq/x/sij*(one/(omx+u)-one+x*omx)
         subv   =-4d0*gsq/x/sij*(omx/x*u*(one-u)/sjk)
@@ -98,9 +99,22 @@ C---call again because vec has changed
           ptrans(j,k)=ptilde(nd,j,k)
         enddo
         enddo
-        call subr_corr(ptrans,vec,ip,msqv)
-
+c--- do something special if we're doing W+2,Z+2jet (jp .ne. 7)
+        if (jp .ne.7) then
+          if (ip .lt. 7) then
+C ie for cases 56_i,65_i
+          call subr_corr(ptrans,vec,5,msqv)
+          else
+C ie for cases 76_i,75_i
+          call subr_corr(ptrans,vec,6,msqv)
+          endif
+        else
+C ie for cases 57_i,67_i
+          call subr_corr(ptrans,vec,ip,msqv)
+        endif
+                
         sub(qq)=+gsq/x/sij*(two/(omz+omx)-one-z)
+        sub(gq)=+gsq/x/sij
         sub(gg)=+2d0*gsq/x/sij*(one/(omz+omx)+one/(z+omx)-two) 
         subv   =+4d0*gsq/x/sij/sij
 
@@ -122,10 +136,16 @@ C---calculate the ptrans-momenta
          vec(nu)=z*p(ip,nu)-omz*p(jp,nu)
        enddo
        call subr_born(ptrans,msq)
-       call subr_corr(ptrans,vec,ip,msqv)
-
+       if (ip .lt. kp) then
+         call subr_corr(ptrans,vec,5,msqv)
+       else
+         call subr_corr(ptrans,vec,6,msqv)
+       endif
+              
        sub(qq)=gsq/sij*(two/(one-z*omy)-one-z)
+       sub(gq)=gsq/sij
        sub(gg)=gsq/sij*(two/(one-z*omy)+two/(one-omz*omy)-four)
+       subv   =+4d0*gsq/sij/sij
 
       endif
       

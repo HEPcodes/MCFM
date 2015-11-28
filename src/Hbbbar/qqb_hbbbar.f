@@ -29,5 +29,6 @@ C   for gg-->H production
 c---calculate propagator
       prop=one/((s12-hmass**2)**2+(hmass*hwidth)**2)
       msq(0,0)=avegg*prop*gg*hdecay
+
       return
       end

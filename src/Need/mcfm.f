@@ -5,6 +5,7 @@
       include 'npart.f'
       include 'vegas_common.f'
       include 'realwt.f'
+      include 'efficiency.f'
 
       double precision sig,sd,chi,sigr,sdr,chir
       double precision sqrts,xerr
@@ -34,10 +35,19 @@ c      common/pchoice/jp,kp
       call banner
       call reader
       
-      if (verbose) write(6,*) '****************************************'
-      if (verbose) write(6,*) '*  NB cross section in femtobarns      *'
-      if (verbose) write(6,*) '*  NB cross section in femtobarns      *'
-      if (verbose) write(6,*) '****************************************'
+      njetzero=0
+      ncutzero=0
+      ntotzero=0
+      ntotshot=0
+      
+      if (verbose) then
+      write(6,*)
+      write(6,*) '****************************************'
+      write(6,*) '*     Cross section in femtobarns      *'
+      write(6,*) '****************************************'
+      write(6,*)
+      endif
+           
       taumin=(rtsmin/sqrts)**2
 
       p1ext(4)=-half*sqrts
@@ -149,9 +159,29 @@ C-----
 
       xerr=sqrt(sdr**2+sd**2)
       write(6,*) 
-      write(6,*) 
       write(6,*)'Value of final ',part,' integral is',
      & sig+xreal,'+/-',xerr
+     
+      write(6,*) 
+      write(6,*) 'Total number of shots       : ',ntotshot
+      write(6,*) 'Total no. failing cuts      : ',ntotzero
+      write(6,*) 'Number failing jet cuts     : ',njetzero
+      write(6,*) 'Number failing process cuts : ',ncutzero
+      write(6,*) 
+
+c--- Calculate the actual number of shots that were passed
+c--- through the jet and cut routines
+      ntotshot=ntotshot-(ntotzero-njetzero-ncutzero)
+      write(6,54) 'Jet efficiency : ',
+     .  100d0-100d0*dfloat(njetzero)/dfloat(ntotshot)
+      write(6,54) 'Cut efficiency : ',
+     .  100d0-100d0*dfloat(ncutzero)/dfloat((ntotshot-njetzero))
+      write(6,54) 'Total efficiency : ',
+     .  100d0-100d0*dfloat((njetzero+ncutzero))/dfloat(ntotshot)
+      write(6,*) 
+      
+   54 format(a20,f6.2,'%')
+    
       stop
       end
 

@@ -4,13 +4,11 @@
       include 'qcdcouple.f'
       include 'scale.f'
       include 'PR.f'
+      include 'PR_cs.f'
       double precision z,p(mxpart,4),dot
       double precision xl12,xl15,xl16,xl25,xl26,xl56
       double precision ii_qg,ii_gq,if_qg,fi_qg,if_gq,
      .                 ff_qg,ii_gg,if_gg,fi_gg
-      double precision Rgg_g_cs(0:2),Rg_gg_cs(0:2),
-     .                 Pgg_g_cs(0:2),Pg_gg_cs(0:2)
-      common/RP_cols/Rgg_g_cs,Rg_gg_cs,Pgg_g_cs,Pg_gg_cs
 
       xl12=log(two*dot(p,1,2)/musq)
       xl15=log(-two*dot(p,1,5)/musq)

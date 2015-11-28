@@ -139,14 +139,15 @@ c----now look at qb-q case, swap the momenta
       do j=-nf,nf
       do k=-nf,nf
       if (Vsq(j,k) .eq. 0d0) goto 20
-      if     ((j .gt. 0) .and. (k .lt. 0)) then
+            if     ((j .gt. 0) .and. (k .lt. 0)) then
                msqv(j,k)=subqqb*msq(j,k)+Vsq(j,k)*qqb
-      elseif ((j .lt. 0) .and. (k .gt. 0)) then
+            elseif ((j .lt. 0) .and. (k .gt. 0)) then
                msqv(j,k)=subqbq*msq(j,k)+Vsq(j,k)*qbq
-      else
-      msqv(j,k)=0d0
-      endif
-   20 enddo
+            else
+               msqv(j,k)=0d0
+            endif
+ 20   continue
+      enddo
       enddo
 
       return

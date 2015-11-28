@@ -13,7 +13,7 @@
       return
       end
 
-      subroutine nplotter(r,s,p,wt,switch)
+      subroutine nplotter(vector,s,p,wt,switch)
       implicit none
       include 'constants.f'
       include 'masses.f'
@@ -23,18 +23,18 @@
       integer idum,n,switch,jets
       character tag*4,jetlabel(mxpart)*2
       double precision m56,m56_5,m56_10,m56_11,m56_12,m56_13,m56_15,
-     . sigma,m34,m345,m346,m678,m47,etmiss,misset,
+     . sigma,m34,m345,m346,m3456,m678,m47,etmiss,misset,
      . s(mxpart,mxpart),p(mxpart,4),eta,root,wt1
       double precision y3,y4,y5,y6,y7,y8,y34,y56
       double precision pt3,pt4,pt5,pt6,pt7,pt8,pt34,pt56,pt34a,pt34b
       double precision ptbbsq,ptbbpair,m56smw,gasdev,
-     . pt,yrap,chi,cosphi,phi,var,r(mxdim),wt,
+     . pt,yrap,chi,cosphi,phi,var,vector(mxdim),wt,r,
      . kt12,kt14,kt15,kt24,kt25,kt56,costh,cosnew1,cosnew2,cosnew3
-      double precision tcm,dot,pttwo,sdot30m,mttbar
+      double precision transm,transcm,dot,pttwo,yraptwo,sdot30m,mttbar
       double precision phill,thetall,fphi,ftheta,mtsqlet,mt1,mt2,mll
-      double precision c4,cosnchi,nchi,m56psm20,m56psm40,smearp
+      double precision c4,cosnchi,nchi,m56psm20,m56psm40,smearp,swap
       double precision clustermass,m56clust,costhdd,cosllet,coslpairet
-      double precision pjet(mxpart,4),bclustmass,rn,etvec(4)
+      double precision pjet(mxpart,4),bclustmass,rn,etvec(4),r56,r35,r36
       common/parts/jets,jetlabel
       double precision dsigdy,dsigdytmp
       double precision es17,es27,es56,es57,es67
@@ -88,6 +88,8 @@ c--- for real counter-events switch=1 and eventpart=npart+1
       m345=dsqrt(2d0*(dot(p,3,4)+dot(p,3,5)+dot(p,4,5)))
       m678=dsqrt(2d0*(dot(p,6,4)+dot(p,6,8)+dot(p,7,8)))
       m346=dsqrt(2d0*(dot(p,3,4)+dot(p,3,6)+dot(p,4,6)))
+      m3456=dsqrt(2d0*(dot(p,3,4)+dot(p,3,5)+dot(p,3,6)
+     .                +dot(p,4,5)+dot(p,4,6)+dot(p,5,6)))
       mttbar=2d0*(
      . +dot(p,3,4)+dot(p,3,5)+dot(p,3,6)+dot(p,3,7)+dot(p,3,8)
      .            +dot(p,4,5)+dot(p,4,6)+dot(p,4,7)+dot(p,4,8)
@@ -119,6 +121,9 @@ c--- returns zero cluster mass if two b's are in one jet
         else
           m56clust=dsqrt(2d0*dot(p,5,6))
         endif  
+        r56=r(p,5,6)
+        r35=r(p,3,5)
+        r36=r(p,3,6)
 c--generate a gaussian kick only for event
         if (switch .eq. 0) eta=gasdev(idum)
         sigma=5d0
@@ -138,8 +143,7 @@ c--generate a gaussian kick only for event
         pt3=pt(3,p)
         y4=yrap(4,p)
         pt4=pt(4,p)        
-        y34=0.5d0*log((p(3,4)+p(4,4)+p(3,3)+p(4,3))
-     .  /(p(3,4)+p(4,4)-p(3,3)-p(4,3)))
+        y34=yraptwo(3,4,p)
         pt34=pttwo(3,4,p)
         if ((y34 .lt. -0.5d0) .or. (y34 .gt. 0.5d0)) then
           pt34a=-1d0
@@ -160,8 +164,10 @@ c--generate a gaussian kick only for event
         if (eventpart .gt. 5) then        
         y6=yrap(6,p)
         pt6=pt(6,p)
-        y56=0.5d0*log((p(5,4)+p(6,4)+p(5,3)+p(6,3))
-     .  /(p(5,4)+p(6,4)-p(5,3)-p(6,3)))
+        y56=yraptwo(5,6,p)
+        pt56=pttwo(5,6,p)
+        transm=2d0*dsqrt(pttwo(4,5,p)**2+2d0*dot(p,4,5))
+        transcm=dsqrt(pttwo(4,5,p)**2+2d0*dot(p,4,5))+pttwo(3,6,p)
         endif
 
         if (eventpart .gt. 6) then        
@@ -176,89 +182,60 @@ c--generate a gaussian kick only for event
           
          misset=etmiss(p,etvec)
 
-c        call wconstruct(p,costh,cosnew1,cosnew2,cosnew3,cosphi)              
-c        chi=0.75d0*(5d0*cosnew2**2+2d0*cosnew2-1d0)
-      
-c--- transverse cluster mass
-c        tcm=dsqrt(
-c     .   (dsqrt(pttwo(4,7,p)**2+2d0*dot(p,4,7))+abs(pt(5,p)+pt(6,p)))**2
-c     .   -pt(3,p)**2)
-c--- cos(lepton 4 wrt. Z)
-c        c4=sdot30m(4,4,5,p)
-c--- angle between decay planes of leptons
-c        nchi=dacos(cosnchi(4,5,6,7,p))
-c--- mass with momenta of 4,5 smeared
-c        m56psm20=smearp(5,6,p,10d0)
-c        m56psm40=smearp(5,6,p,20d0)
-c        pt34=((s(1,3)+s(1,4))*(s(2,3)+s(2,4))-s(3,4)*s(1,2))/s(1,2)
-c        if (pt34. lt. 0) then
-c           pt34=0d0
-c        else
-c           pt34=dsqrt(pt34)
-c        endif
+c--- if we're doing W/Z+2 jets then make
+c--- JET 5 = highest Et
+c--- JET 6 = lowest Et
+      if ((nproc .eq. 22) .or. (nproc .eq. 44)) then
+        if (pt6 .gt. pt5) then
+          swap=pt5
+          pt5=pt6
+          pt6=swap
+          swap=y5
+          y5=y6
+          y6=swap
+        endif
+      endif
 
       endif
 
       n=1                  
       call bookplot(n,tag,'      y3',y3,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
-      call bookplot(n,tag,'     pt3',pt3,wt,0d0,100d0,5d0,'lin')
+      call bookplot(n,tag,'     pt3',pt3,wt,0d0,150d0,5d0,'log')
       n=n+1
       call bookplot(n,tag,'      y4',y4,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
-      call bookplot(n,tag,'     pt4',pt4,wt,0d0,100d0,5d0,'lin')
+      call bookplot(n,tag,'     pt4',pt4,wt,0d0,150d0,5d0,'log')
       n=n+1
       call bookplot(n,tag,'     y34',y34,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
-      call bookplot(n,tag,'    pt34',pt34,wt,10d0,150d0,10d0,'log')
+      call bookplot(n,tag,'    pt34',pt34,wt,0d0,200d0,5d0,'log')
+      n=n+1
+      call bookplot(n,tag,'d/pt34^2',pt34,wt/2d0/pt34*pt34**4,
+     .     20d0,200d0,10d0,'log')
       n=n+1
       call bookplot(n,tag,'pt34,y=0',pt34a,wt,10d0,150d0,10d0,'log')
       n=n+1
-      call bookplot(n,tag,'pt34,y=0',pt34b,wt,10d0,150d0,10d0,'log')
+      call bookplot(n,tag,'pt34,y=0',pt34a,wt,20d0,480d0,40d0,'log')
       n=n+1
       call bookplot(n,tag,'     m34',m34,wt,20d0,140d0,5d0,'lin')
       n=n+1
-
-      call bookplot(n,tag,'     s17',-es17,wt,0d0,400d0,10d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'     s27',-es27,wt,0d0,400d0,10d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'     s56',es56,wt,0d0,400d0,10d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'     s57',es57,wt,0d0,400d0,10d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'     s67',es67,wt,0d0,400d0,10d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'true s17',
-     .-2d0*dot(p,1,7),wt,0d0,400d0,10d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'true s27',
-     .-2d0*dot(p,2,7),wt,0d0,400d0,10d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'true s56',
-     .2d0*dot(p,5,6),wt,0d0,400d0,10d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'true s57',
-     .2d0*dot(p,5,7),wt,0d0,400d0,10d0,'lin')
-      n=n+1
-      call bookplot(n,tag,'true s67',
-     .2d0*dot(p,6,7),wt,0d0,400d0,10d0,'lin')
-      n=n+1
-
       if (eventpart .gt. 4) then
       call bookplot(n,tag,'      y5',y5,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
-      call bookplot(n,tag,'     pt5',pt5,wt,0d0,100d0,5d0,'lin')
+      call bookplot(n,tag,'     pt5',pt5,wt,0d0,200d0,5d0,'log')
       n=n+1
       endif
       if (eventpart .gt. 5) then
       call bookplot(n,tag,'      y6',y6,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
-      call bookplot(n,tag,'     pt6',pt6,wt,0d0,100d0,5d0,'lin')
+      call bookplot(n,tag,'     pt6',pt6,wt,0d0,200d0,4d0,'log')
       n=n+1
       call bookplot(n,tag,'     y56',y56,wt,-5d0,5d0,0.5d0,'lin')
       n=n+1
-      call bookplot(n,tag,'     m56',m56clust,wt,10d0,160d0,5d0,'lin')
+      call bookplot(n,tag,'    pt56',pt56,wt,10d0,150d0,10d0,'log')
+      n=n+1
+      call bookplot(n,tag,'     m56',m56clust,wt,20d0,200d0,4d0,'log')
       n=n+1
       call bookplot(n,tag,'     m56',m56clust,wt,84d0,117d0,3d0,'lin')
       n=n+1
@@ -280,10 +257,22 @@ c        endif
       n=n+1
       call bookplot(n,tag,'    m346',m346,wt,50d0,250d0,10d0,'lin')
       n=n+1
-      call bookplot(n,tag,'    misset',misset,wt,0d0,100d0,10d0,'lin')
+      call bookplot(n,tag,'   m3456',m3456,wt,50d0,250d0,10d0,'lin')
       n=n+1
-      call bookplot(n,tag,'    mttbar',mttbar,wt,300d0,1d3,20d0,'lin')
+      call bookplot(n,tag,'  misset',misset,wt,0d0,100d0,10d0,'lin')
       n=n+1
+      call bookplot(n,tag,'     r56',r56,wt,0d0,4d0,.1d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'     r35',r35,wt,0d0,4d0,.1d0,'lin')
+      n=n+1
+      call bookplot(n,tag,'     r36',r36,wt,0d0,4d0,.1d0,'lin')
+      n=n+1
+c      call bookplot(n,tag,'  mttbar',mttbar,wt,300d0,1d3,20d0,'lin')
+c      n=n+1
+c      call bookplot(n,tag,'  transm',transm,wt,20d0,200d0,20d0,'lin')
+c      n=n+1
+c      call bookplot(n,tag,' transcm',transcm,wt,20d0,200d0,20d0,'lin')
+c      n=n+1
       endif
 
       if (eventpart .gt. 6) then
@@ -409,7 +398,7 @@ c      n=n+1c
 
 c      call mfill(n,pt5+pt6,weight)
 c      n=n+1
-c      call mfill(n,tcm,weight)
+c      call mfill(n,transcm,weight)
 c      n=n+1
 c      call mfill(n,nchi,weight)
 c      n=n+1
@@ -460,6 +449,23 @@ c      n=n+1
       integer j,k
       double precision p(mxpart,4)
       pttwo=dsqrt((p(j,1)+p(k,1))**2+(p(j,2)+p(k,2))**2)
+      return
+      end
+
+      double precision function yraptwo(j,k,p)
+      implicit none
+      include 'constants.f'
+      integer j,k
+      double precision p(mxpart,4)
+      yraptwo=(p(j,4)+p(k,4)+p(j,3)+p(k,3))
+     .       /(p(j,4)+p(k,4)-p(j,3)-p(k,3))
+      if (yraptwo .lt. 1d-13) then
+C-- set to 100 if this is very close to or less than zero
+c-- rapidities of 100 will be rejected by any sensible cuts
+      yraptwo=100d0
+      else 
+      yraptwo=0.5d0*dlog(yraptwo)
+      endif
       return
       end
 
@@ -639,12 +645,15 @@ c--- rest frame before doing this
       double precision function deltar(i,j,p)
       implicit none
       include 'constants.f'
-      double precision p(mxpart,4),phi1,phi2,yrap,atan2
+      double precision p(mxpart,4),phi1,phi2,yrap,dphi
       integer i,j
       
       phi1=atan2(p(i,1),p(i,2))
       phi2=atan2(p(j,1),p(j,2))
-      deltar=(yrap(i,p)-yrap(j,p))**2+(phi1-phi2)**2
+      dphi=phi1-phi2
+      if (dphi .gt. pi) dphi=twopi-dphi
+      if (dphi .lt. -pi) dphi=twopi+dphi
+      deltar=(yrap(i,p)-yrap(j,p))**2+dphi**2
       deltar=dsqrt(deltar)
       
       return
@@ -653,12 +662,15 @@ c--- rest frame before doing this
       double precision function deltarpjet(i,j,p,pjet)
       implicit none
       include 'constants.f'
-      double precision p(mxpart,4),pjet(mxpart,4),phi1,phi2,yrap,atan2
+      double precision p(mxpart,4),pjet(mxpart,4),phi1,phi2,yrap,dphi
       integer i,j
       
       phi1=atan2(p(i,1),p(i,2))
       phi2=atan2(pjet(j,1),pjet(j,2))
-      deltarpjet=(yrap(i,p)-yrap(j,pjet))**2+(phi1-phi2)**2
+      dphi=phi1-phi2
+      if (dphi .gt. pi) dphi=twopi-dphi
+      if (dphi .lt. -pi) dphi=twopi+dphi
+      deltarpjet=(yrap(i,p)-yrap(j,p))**2+dphi**2
       deltarpjet=dsqrt(deltarpjet)
       
       return

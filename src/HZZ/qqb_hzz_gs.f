@@ -39,8 +39,8 @@ c---- entries are left as dummies
       elseif ((j .eq. 0) .and. (k .ne. 0)) then
          msq(2,j,k)=two*cf*msq27_1(0,0)*sub27_1(gq)
       elseif ((j .eq. 0) .and. (k .eq. 0)) then
-         write(6,*) 'msq17_2(0,0)',msq17_2(0,0)
-         write(6,*) 'sub17_2(gg)',sub17_2(gg)
+c         write(6,*) 'msq17_2(0,0)',msq17_2(0,0)
+c         write(6,*) 'sub17_2(gg)',sub17_2(gg)
          msq(1,j,k)=two*xn
      .   *(msq17_2(j,k)*sub17_2(gg)+msq17_2v(j,k)*sub17_2v)
          msq(2,j,k)=two*xn

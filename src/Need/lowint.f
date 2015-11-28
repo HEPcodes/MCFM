@@ -14,6 +14,7 @@
       include 'process.f'
       include 'qcdcouple.f'
       include 'ewcouple.f'
+      include 'efficiency.f'
       integer ih1,ih2,j,k,jets,nproc,nvec
       double precision r(mxdim),W,sqrts,xmsq,val
       double precision fx1(-nf:nf),fx2(-nf:nf)
@@ -40,6 +41,8 @@
       REAL*8 P1(0:3),P2(0:3),P3(0:3),P4(0:3),P5(0:3),P6(0:3),P7(0:3)                     
      . ,SUUB_VEVEBBB,SDDB_VEVEBBB,SUUB_EMEPBBB,SDDB_EMEPBBB
      . ,SUUB_VEVE,SDDB_VEVE,SUUB_EMEP,SDDB_EMEP
+
+      ntotshot=ntotshot+1
       lowint=0d0
 
       W=sqrts**2
@@ -71,6 +74,7 @@
 c          call gen5a(r,p,pswt,*999)
       elseif ((case .eq. 'vlchk3') 
      .   .or. (case .eq. 'httjet')
+     .   .or. (case .eq. 'attjet')
      .   .or. (case .eq. 'Z_1jet')
      .   .or. (case .eq. 'W_1jet')) then
           npart=3
@@ -94,6 +98,7 @@ c          call gen5a(r,p,pswt,*999)
       elseif (
      .        (case .eq. 'W_only')
      .   .or. (case .eq. 'Z_only')
+     .   .or. (case .eq. 'Hbbbar')
      .   .or. (case .eq. 'vlchk2')
      .        ) then
 c          wsqmin=0d0
@@ -122,6 +127,7 @@ c      if (scale .gt. 1000d0) scale=1000d0
 c--debug
 
       if   ((case .eq. 'httjet')
+     . .or. (case .eq. 'attjet')
      . .or. (case .eq. 'hlljet')) then
 c--- scale for processes 200 and 201 only
         scale=dsqrt(hmass**2+pttwo(3,4,p)**2)
@@ -138,8 +144,7 @@ c--- scale for processes 200 and 201 only
 
       call fdist(pdlabel,ih1,xx(1),scale,fx1)
       call fdist(pdlabel,ih2,xx(2),scale,fx2)
-
- 
+      
       flux=fbGeV2/(2d0*xx(1)*xx(2)*W)
 
 c--- set bbproc to TRUE if the process involves two b-jets
@@ -270,7 +275,13 @@ c      pause
       elseif (case .eq. 'Z_1jet') then
       call qqb_z_g(p,msq)
       elseif (case .eq. 'W_2jet') then
+c      call compare(p)
+c      stop
+c      call qqb_w2jet(p,msq)
+c      write(*,*) 'old ',msq(2,-2)
       call qqb_w2jet(p,msq)
+c      write(*,*) 'new ',msq(2,-2)
+c      pause
       elseif (case .eq. 'Z_2jet') then
       call qqb_z2jet(p,msq)
       elseif (case .eq. 'W_only') then
@@ -293,6 +304,8 @@ c      pause
       call qqb_HWW(p,msq)
       elseif (case .eq. 'HZZ_4l') then
       call qqb_HZZ(p,msq)
+      elseif (case .eq. 'Hbbbar') then
+      call qqb_Hbbbar(p,msq)
       elseif (case .eq. 'qg_tbb') then
       call qg_tbb(p,msq)
       elseif ((case .eq. 'tt_bbh') .or. (case .eq. 'tt_bbl')) then
@@ -309,6 +322,8 @@ c      pause
       call qqb_ttz(p,msq)
       elseif (case .eq. 'httjet') then
       call qqb_higgs(p,msq)
+      elseif (case .eq. 'attjet') then
+      call qqb_higgs_odd(p,msq)
       elseif (case .eq. 'hlljet') then
       call Htautau(p,msq)
       elseif (case .eq. 'qqttbb') then
@@ -386,7 +401,7 @@ c      call qqb_ttbgg(p,msq)
       
       xmsq=0d0
       do j=-nf,nf
-      do k=-nf,nf
+      do k=-nf,nf      
       
       if (ggonly) then
       if ((j.ne.0) .or. (k.ne.0)) goto 20
@@ -401,7 +416,7 @@ c      call qqb_ttbgg(p,msq)
       endif
 
       xmsq=xmsq+fx1(j)*fx2(k)*msq(j,k)
-    
+      
  20   continue
       enddo
       enddo
@@ -414,13 +429,18 @@ c--- if nqcdjets=0, no clustering is performed and pjet=p
           pjet(j,k)=p(j,k)
         enddo
         enddo
+        jets=nqcdjets
       else
         call genclust2(p,rcut,jets,pjet,jetlabel)
         if((nproc .eq. 152) .or. (nproc .eq. 161))then
-          if (jets .ne. 2) goto 999
+          if (jets .ne. 2) then
+            njetzero=njetzero+1
+            goto 999
+          endif
         else
           if ((jets .ne. nqcdjets) .and. (nqcdjets .gt. 0)
      .        .and. (clustering)) then
+            njetzero=njetzero+1
             goto 999
           endif
         endif       
@@ -431,9 +451,15 @@ c--- if nqcdjets=0, no clustering is performed and pjet=p
 c--- make some cuts ....
       if (makecuts) then
         if (bbproc) then
-          if (cuts(pjet)) goto 999
+          if (cuts(pjet)) then
+            ncutzero=ncutzero+1
+            goto 999
+          endif
         else
-          if (madejetcuts(p,pjet,jets) .eqv. .false.) goto 999
+          if (madejetcuts(p,pjet,jets) .eqv. .false.) then
+            ncutzero=ncutzero+1
+            goto 999
+          endif
         endif
       endif
       
@@ -444,7 +470,10 @@ c--- make some cuts ....
       call nplotter(r,s,pjet,val,0)
       endif
 
+      return
+
  999  continue
+      ntotzero=ntotzero+1
       
       return
       end

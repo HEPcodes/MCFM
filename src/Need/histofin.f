@@ -38,7 +38,10 @@ c      character*(*) graph
         nlength=28
       endif
       outlabel2=outlabel2(1:nlength)
-      write(6,*) 'output files  ',outlabel2
+      write(6,*)
+      write(6,*) '****************************************************'
+      write(6,*) 'output file  ',outlabel2
+      write(6,*) '****************************************************'
       if     (nlength .eq. 28) then
         outfile28=outlabel2        
         open(unit=98,file=outfile28//'.dat',status='unknown')

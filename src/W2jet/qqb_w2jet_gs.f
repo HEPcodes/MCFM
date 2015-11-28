@@ -1,124 +1,169 @@
       subroutine qqb_w2jet_gs(p,msq)
 ************************************************************************
-*     Author: J.M. Campbell                                            *
-*     August, 1999.                                                    *
+*     Authors: J.M. Campbell and R.K. Ellis                            *
+*     March, 2001.                                                     *
 ************************************************************************
 c---Matrix element SUBTRACTION squared averaged over initial colors and spins
-c     q(-p1)+qbar(-p2) -->  W + parton(p5) + parton(p6) + parton(p7)
+c     q(-p1)+qbar(-p2) -->  W + f(p5) + f(p6) + g(p7)
 c                           |
-c                            --> l(p3)+a(p4)
-c   positively charged W only
-
+c                           --> nu(p3) + e^+(p4)
+c     where the fermions are either q(p5) and qbar(p6) [Qflag = .true.]
+c                                or g(p5) and g(p6)    [Gflag = .true.]
+c--- all momenta are incoming
+c
+c--- The value of COLOURCHOICE determines which colour structures
+c--- are included in the subtraction terms for the QQGG piece
       implicit none 
       include 'constants.f'
       include 'qcdcouple.f'
+      include 'ckm.f'
       include 'masses.f'
       include 'ptilde.f'
       include 'qqgg.f'
-      integer j,k,mj,mk
+      include 'flags.f'
+      include 'isq.f'
+      include 'lc.f'
+     
+      integer j,k,n,ii,np6,np12,np18,np21
+      integer a(6),b(6),c(6),pntr(5:7,5:7)
 c --- remember: nd will count the dipoles
-      integer nd,nu,fn
-      parameter (fn=-nf)
+      integer nd
 c--- slightly obtuse notation, to simplify declaration lines      
-      double precision p(mxpart,4),ptrans(mxpart,4),
-     & msq(maxd,-nf:nf,-nf:nf),x,omx,y,u,z,gamqq,gamqg,
-     & facq,facg,color
-      double precision Q(mxpart,4),s(mxpart,mxpart)
+      double precision p(mxpart,4),msq(maxd,fn:nf,fn:nf)
+      double precision msumsq(fn:nf,fn:nf),
+     & msq17_2(fn:nf,fn:nf),msq27_1(fn:nf,fn:nf),
+     & msq15_2(fn:nf,fn:nf),msq25_1(fn:nf,fn:nf),
+     & msq16_2(fn:nf,fn:nf),msq26_1(fn:nf,fn:nf),
+     & msq17_5(fn:nf,fn:nf),msq17_6(fn:nf,fn:nf),
+     & msq15_6(fn:nf,fn:nf),msq15_7(fn:nf,fn:nf),
+     & msq27_5(fn:nf,fn:nf),msq27_6(fn:nf,fn:nf),
+     & msq57_6(fn:nf,fn:nf),msq67_5(fn:nf,fn:nf),
+     & msq57_6v(fn:nf,fn:nf),msq26_1v(fn:nf,fn:nf),
+     & msq15_2v(fn:nf,fn:nf),msq16_2v(fn:nf,fn:nf),
+     & dummy(fn:nf,fn:nf),dummyv(fn:nf,fn:nf),
+     & sub17_2(4),sub27_1(4),sub15_2(4),sub25_1(4),
+     & sub16_2(4),sub26_1(4),
+     & sub17_5(4),sub57_1(4),sub27_5(4),sub57_2(4),
+     & sub17_6(4),sub67_1(4),sub27_6(4),sub67_2(4),
+     & sub15_6(4),sub65_1(4),sub15_7(4),
+     & sub57_6(4),sub67_5(4),dsubv,dsub(4),
+     & sub57_6v,sub57_1v,sub67_1v,
+     & sub26_1v,sub25_1v,sub15_2v,sub16_2v,sub65_1v
       double precision
-     & sub15_2(4),sub15_2v,msq15_2(fn:nf,fn:nf),msq15_2v(fn:nf,fn:nf),
-     & sub25_1(4),sub25_1v,msq25_1(fn:nf,fn:nf),msq25_1v(fn:nf,fn:nf),
-     & sub16_2(4),sub16_2v,msq16_2(fn:nf,fn:nf),msq16_2v(fn:nf,fn:nf),
-     & sub26_1(4),sub26_1v,msq26_1(fn:nf,fn:nf),msq26_1v(fn:nf,fn:nf),
-     & sub17_2(4),sub17_2v,msq17_2(fn:nf,fn:nf),msq17_2v(fn:nf,fn:nf),
-     & sub27_1(4),sub27_1v,msq27_1(fn:nf,fn:nf),msq27_1v(fn:nf,fn:nf),
-     & sub15_6(4),sub15_6v,msq15_6(fn:nf,fn:nf),msq15_6v(fn:nf,fn:nf),
-     & sub15_7(4),sub15_7v,msq15_7(fn:nf,fn:nf),msq15_7v(fn:nf,fn:nf),
-     & sub16_7(4),sub16_7v,msq16_7(fn:nf,fn:nf),msq16_7v(fn:nf,fn:nf),
-     & sub25_6(4),sub25_6v,msq25_6(fn:nf,fn:nf),msq25_6v(fn:nf,fn:nf),
-     & sub25_7(4),sub25_7v,msq25_7(fn:nf,fn:nf),msq25_7v(fn:nf,fn:nf),
-     & sub26_7(4),sub26_7v,msq26_7(fn:nf,fn:nf),msq26_7v(fn:nf,fn:nf),
-     & sub16_5(4),sub16_5v,sub17_5(4),sub17_5v,sub17_6(4),sub17_6v,
-     & sub26_5(4),sub26_5v,sub27_5(4),sub27_5v,sub27_6(4),sub27_6v,
-     & sub56_1(4),sub56_1v,sub57_1(4),sub57_1v,sub67_1(4),sub67_1v,
-     & msq56_1v(fn:nf,fn:nf),msq56_2v(fn:nf,fn:nf),
-     & msq57_1v(fn:nf,fn:nf),msq57_2v(fn:nf,fn:nf),
-     & msq67_1v(fn:nf,fn:nf),msq67_2v(fn:nf,fn:nf),
-     & sub56_2(4),sub56_2v,sub57_2(4),sub57_2v,sub67_2(4),sub67_2v,
-     & sub56_7(4),sub56_7v,msq56_7(fn:nf,fn:nf),msq56_7v(fn:nf,fn:nf),
-     & sub57_6(4),sub57_6v,msq57_6(fn:nf,fn:nf),msq57_6v(fn:nf,fn:nf),
-     & sub67_5(4),sub67_5v,msq67_5(fn:nf,fn:nf),msq67_5v(fn:nf,fn:nf),
-     & dsub,dsubv,dummy(fn:nf,fn:nf),dummyv(fn:nf,fn:nf)
-      external qqb_w2jet,qqb_w2jet_gvec
+     & m17_2(0:2,fn:nf,fn:nf),m27_1(0:2,fn:nf,fn:nf),
+     & m16_2(0:2,fn:nf,fn:nf),m26_1(0:2,fn:nf,fn:nf),
+     & m15_2(0:2,fn:nf,fn:nf),m25_1(0:2,fn:nf,fn:nf),
+     & m57_6(0:2,fn:nf,fn:nf),m67_5(0:2,fn:nf,fn:nf),
+     & m17_5(0:2,fn:nf,fn:nf),
+     & m17_6(0:2,fn:nf,fn:nf),
+     & m27_5(0:2,fn:nf,fn:nf),
+     & m27_6(0:2,fn:nf,fn:nf),
+     & m15_6(0:2,fn:nf,fn:nf),
+     & m65_1(0:2,fn:nf,fn:nf),
+     & m15_7(0:2,fn:nf,fn:nf),
+     & m17_2x(0:2,fn:nf,fn:nf,fn:nf,fn:nf),
+     & m27_1x(0:2,fn:nf,fn:nf,fn:nf,fn:nf),
+     & m15_2x(0:2,fn:nf,fn:nf,fn:nf,fn:nf),
+     & m16_2x(0:2,fn:nf,fn:nf,fn:nf,fn:nf),
+     & m25_1x(0:2,fn:nf,fn:nf,fn:nf,fn:nf),
+     & m26_1x(0:2,fn:nf,fn:nf,fn:nf,fn:nf),
+     & m57_6x(0:2,fn:nf,fn:nf,fn:nf,fn:nf),
+     & m67_5x(0:2,fn:nf,fn:nf,fn:nf,fn:nf),
+     & m17_5x(0:2,fn:nf,fn:nf,fn:nf,fn:nf),
+     & m17_6x(0:2,fn:nf,fn:nf,fn:nf,fn:nf),
+     & m27_5x(0:2,fn:nf,fn:nf,fn:nf,fn:nf),
+     & m27_6x(0:2,fn:nf,fn:nf,fn:nf,fn:nf),
+     & m15_6x(0:2,fn:nf,fn:nf,fn:nf,fn:nf),
+     & m65_1x(0:2,fn:nf,fn:nf,fn:nf,fn:nf),
+     & m15_7x(0:2,fn:nf,fn:nf,fn:nf,fn:nf)
+      
+      double precision 
+     . msq1a_b(6,0:2,fn:nf,fn:nf),msqba_1(6,0:2,fn:nf,fn:nf),
+     . msqab_c(6,0:2,fn:nf,fn:nf),
+     . msqbc_2(6,0:2,fn:nf,fn:nf),msq2c_b(6,0:2,fn:nf,fn:nf),
+     . sub1a_b(6,4),subba_1(6,4),subab_c(6,4),
+     . subbc_2(6,4),sub2c_b(6,4),
+     . msq1a_bv(6,0:2,fn:nf,fn:nf),msqba_1v(6,0:2,fn:nf,fn:nf),
+     . msqab_cv(6,0:2,fn:nf,fn:nf),
+     . msqbc_2v(6,0:2,fn:nf,fn:nf),msq2c_bv(6,0:2,fn:nf,fn:nf),
+     . sub1a_bv(6),subba_1v(6),subab_cv(6),
+     . subbc_2v(6),sub2c_bv(6),
+     . msq1b_2(6,0:2,fn:nf,fn:nf),msq2b_1(6,0:2,fn:nf,fn:nf),
+     . sub1b_2(6,4),sub2b_1(6,4),
+     . msq1b_2v(6,0:2,fn:nf,fn:nf),msq2b_1v(6,0:2,fn:nf,fn:nf),
+     . sub1b_2v(6),sub2b_1v(6)
+      integer jj(-nf:nf),kk(-nf:nf)
+      double precision m57_1g(0:2,fn:nf,fn:nf),m57_1vg(0:2,fn:nf,fn:nf),
+     .                 m57_1vx(fn:nf,fn:nf,fn:nf,fn:nf),
+     .                 m26_1g(0:2,fn:nf,fn:nf),m26_1vg(0:2,fn:nf,fn:nf),
+     .                 m26_1vx(fn:nf,fn:nf,fn:nf,fn:nf),
+     .                 m25_1g(0:2,fn:nf,fn:nf),m25_1vg(0:2,fn:nf,fn:nf),
+     .                 m25_1vx(fn:nf,fn:nf,fn:nf,fn:nf),
+     .                 m67_1g(0:2,fn:nf,fn:nf),m67_1vg(0:2,fn:nf,fn:nf),
+     .                 m67_1vx(fn:nf,fn:nf,fn:nf,fn:nf),
+     .                 m15_2g(0:2,fn:nf,fn:nf),m15_2vg(0:2,fn:nf,fn:nf),
+     .                 m15_2vx(fn:nf,fn:nf,fn:nf,fn:nf),
+     .                 m16_2g(0:2,fn:nf,fn:nf),m16_2vg(0:2,fn:nf,fn:nf),
+     .                 m16_2vx(fn:nf,fn:nf,fn:nf,fn:nf),
+     .                 m65_1g(0:2,fn:nf,fn:nf),m65_1vg(0:2,fn:nf,fn:nf),
+     .                 m65_1vx(fn:nf,fn:nf,fn:nf,fn:nf),
+     .                 m15_6g(0:2,fn:nf,fn:nf)
+      double precision mqq(0:2,fn:nf,fn:nf),
+     . msqx(0:2,-nf:nf,-nf:nf,-nf:nf,-nf:nf),mg(0:2,-nf:nf,-nf:nf),
+     . mvg(0:2,-nf:nf,-nf:nf),mvxg(-nf:nf,-nf:nf,-nf:nf,-nf:nf)
+    
+      external qqb_w2jet,qqb_w2jet_gvec,donothing_gvec,
+     .         qqb_w2jetx,qqb_w2jet_gvecx,donothing_gvecx
 
-      ndmax=15
+      data a/5,5,7,6,6,7/
+      data b/6,7,5,7,5,6/
+      data c/7,6,6,5,7,5/
+      data pntr/0,2,2,1,0,2,1,1,0/
+      data jj/-1,-2,-1,-2,-1,0,1,2,1,2,1/
+      data kk/-1,-2,-1,-2,-1,0,1,2,1,2,1/
+      common/msumsq/msumsq
 
-c--- calculate all the initial-initial dipoles
-      call dips(1,p,1,5,2,sub15_2,sub15_2v,msq15_2,msq15_2v,
-     . qqb_w2jet,qqb_w2jet_gvec)
-      call dips(2,p,2,5,1,sub25_1,dsubv,msq25_1,dummyv,
-     . qqb_w2jet,qqb_w2jet_gvec)
-      call dips(3,p,1,6,2,sub16_2,sub16_2v,msq16_2,msq16_2v,
-     . qqb_w2jet,qqb_w2jet_gvec)
-      call dips(4,p,2,6,1,sub26_1,dsubv,msq26_1,dummyv,
-     . qqb_w2jet,qqb_w2jet_gvec)
-      call dips(5,p,1,7,2,sub17_2,sub17_2v,msq17_2,msq17_2v,
-     . qqb_w2jet,qqb_w2jet_gvec)
-      call dips(6,p,2,7,1,sub27_1,dsubv,msq27_1,dummyv,
-     . qqb_w2jet,qqb_w2jet_gvec)
-c--- now the initial final and final initial ones
-      call dips(7,p,1,5,6,sub15_6,sub15_6v,msq15_6,msq15_6v,
-     . qqb_w2jet,qqb_w2jet_gvec)
-      call dips(7,p,5,6,1,sub56_1,sub56_1v,dummy,msq56_1v,
-     . qqb_w2jet,qqb_w2jet_gvec)
-      call dips(7,p,1,6,5,sub16_5,sub16_5v,dummy,dummyv,
-     . qqb_w2jet,qqb_w2jet_gvec)
+      ndmax=24
 
-      call dips(8,p,1,5,7,sub15_7,sub15_7v,msq15_7,msq15_7v,
+      if (Gflag) then
+c--- final-final
+      do n=1,6
+      call dips(n,p,a(n),b(n),c(n),dsub,dsubv,dummy,dummyv,
      . qqb_w2jet,qqb_w2jet_gvec)
-      call dips(8,p,5,7,1,sub57_1,sub57_1v,dummy,msq57_1v,
-     . qqb_w2jet,qqb_w2jet_gvec)
-      call dips(8,p,1,7,5,sub17_5,sub17_5v,dummy,dummyv,
-     . qqb_w2jet,qqb_w2jet_gvec)
+      call storedip(msqab_c,msqab_cv,dsub,dsubv,subab_c,subab_cv,n)
+      enddo
 
+c--- initial-final/final-initial
+      do n=1,6
+      np6=n+6
+      np12=n+12
+      call dips(np6,p,1,a(n),b(n),dsub,dsubv,dummy,dummyv,
+     . qqb_w2jet,qqb_w2jet_gvec)
+      call storedip(msq1a_b,msq1a_bv,dsub,dsubv,sub1a_b,sub1a_bv,n)
+      call dips(np6,p,b(n),a(n),1,dsub,dsubv,dummy,dummyv,
+     . qqb_w2jet,qqb_w2jet_gvec)
+      call storedip(msqba_1,msqba_1v,dsub,dsubv,subba_1,subba_1v,n)
+      call dips(np12,p,2,c(n),b(n),dsub,dsubv,dummy,dummyv,
+     . qqb_w2jet,qqb_w2jet_gvec)
+      call storedip(msq2c_b,msq2c_bv,dsub,dsubv,sub2c_b,sub2c_bv,n)
+      call dips(np12,p,b(n),c(n),2,dsub,dsubv,dummy,dummyv,
+     . qqb_w2jet,qqb_w2jet_gvec)
+      call storedip(msqbc_2,msqbc_2v,dsub,dsubv,subbc_2,subbc_2v,n)
+      enddo
 
-      call dips(9,p,1,6,7,sub16_7,sub16_7v,msq16_7,msq16_7v,
+c--- initial-initial
+      do n=1,3
+      np18=n+18
+      np21=n+21
+      call dips(np18,p,1,b(n),2,dsub,dsubv,dummy,dummyv,
      . qqb_w2jet,qqb_w2jet_gvec)
-      call dips(9,p,6,7,1,sub67_1,sub67_1v,dummy,msq67_1v,
+      call storedip(msq1b_2,msq1b_2v,dsub,dsubv,sub1b_2,sub1b_2v,n)
+      call dips(np21,p,2,b(n),1,dsub,dsubv,dummy,dummyv,
      . qqb_w2jet,qqb_w2jet_gvec)
-      call dips(9,p,1,7,6,sub17_6,sub17_6v,dummy,dummyv,
-     . qqb_w2jet,qqb_w2jet_gvec)
+      call storedip(msq2b_1,msq2b_1v,dsub,dsubv,sub2b_1,sub2b_1v,n)
+      enddo
 
-      call dips(10,p,2,5,6,sub25_6,sub25_6v,msq25_6,msq25_6v,
-     . qqb_w2jet,qqb_w2jet_gvec)
-      call dips(10,p,5,6,2,sub56_2,sub56_2v,dummy,msq56_2v,
-     . qqb_w2jet,qqb_w2jet_gvec)
-      call dips(10,p,2,6,5,sub26_5,sub26_5v,dummy,dummyv,
-     . qqb_w2jet,qqb_w2jet_gvec)
-
-      call dips(11,p,2,5,7,sub25_7,sub25_7v,msq25_7,msq25_7v,
-     . qqb_w2jet,qqb_w2jet_gvec)
-      call dips(11,p,2,7,5,sub27_5,sub27_5v,dummy,dummyv,
-     . qqb_w2jet,qqb_w2jet_gvec)
-      call dips(11,p,5,7,2,sub57_2,sub57_2v,dummy,msq57_2v,
-     . qqb_w2jet,qqb_w2jet_gvec)
-
-      call dips(12,p,2,7,6,sub27_6,sub27_6v,dummy,dummyv,
-     . qqb_w2jet,qqb_w2jet_gvec)
-      call dips(12,p,6,7,2,sub67_2,sub67_2v,dummy,msq67_2v,
-     . qqb_w2jet,qqb_w2jet_gvec)
-      call dips(12,p,2,6,7,sub26_7,sub26_7v,msq26_7,msq26_7v,
-     . qqb_w2jet,qqb_w2jet_gvec)
-
-
-
-c--- final-final dipoles
-      call dips(13,p,5,6,7,sub56_7,sub56_7v,msq56_7,msq56_7v,
-     . qqb_w2jet,qqb_w2jet_gvec)
-      call dips(14,p,5,7,6,sub57_6,sub57_6v,msq57_6,msq57_6v,
-     . qqb_w2jet,qqb_w2jet_gvec)
-      call dips(15,p,6,7,5,sub67_5,sub67_5v,msq67_5,msq67_5v,
-     . qqb_w2jet,qqb_w2jet_gvec)
-           
+c-- fill the matrix elements
       do j=-nf,nf
       do k=-nf,nf
       
@@ -126,47 +171,1417 @@ c--- final-final dipoles
         msq(nd,j,k)=0d0
       enddo
 
-c--- do only q-qb and qb-q cases      
-      if (  ((j .gt. 0).and.(k .lt. 0))
-     . .or. ((j .lt. 0).and.(k .gt. 0))) then
-      msq(1,j,k)=msq15_2(j,k)*sub15_2(qq)/xn**4
-      msq(2,j,k)=msq25_1(j,k)*sub25_1(qq)/xn**4
-      msq(3,j,k)=msq16_2(j,k)*sub16_2(qq)/xn**4
-      msq(4,j,k)=msq26_1(j,k)*sub26_1(qq)/xn**4
-      msq(5,j,k)=msq17_2(j,k)*sub17_2(qq)/xn**4
-      msq(6,j,k)=msq27_1(j,k)*sub27_1(qq)/xn**4
-      msq(7,j,k)=(one-ninth)*
-     & (msq15_6(j,k)*(sub15_6(qq)+sub56_1(gg))+msq56_1v(j,k)*sub56_1v
-     & +msq15_6(j,k)*(sub16_5(qq)+sub56_1(gg))+msq56_1v(j,k)*sub56_1v)
-      msq(8,j,k)=(one-ninth)*
-     & (msq15_7(j,k)*(sub15_7(qq)+sub57_1(gg))+msq57_1v(j,k)*sub57_1v
-     & +msq15_7(j,k)*(sub17_5(qq)+sub57_1(gg))+msq57_1v(j,k)*sub57_1v)
-      msq(9,j,k)=(one-ninth)*
-     & (msq16_7(j,k)*(sub16_7(qq)+sub67_1(gg))+msq67_1v(j,k)*sub67_1v
-     & +msq16_7(j,k)*(sub17_6(qq)+sub67_1(gg))+msq67_1v(j,k)*sub67_1v)
-      msq(10,j,k)=(one-ninth)*
-     & (msq25_6(j,k)*(sub25_6(qq)+sub56_2(gg))+msq56_2v(j,k)*sub56_2v
-     & +msq25_6(j,k)*(sub26_5(qq)+sub56_2(gg))+msq56_2v(j,k)*sub56_2v)
-      msq(11,j,k)=(one-ninth)*
-     & (msq25_7(j,k)*(sub25_7(qq)+sub57_2(gg))+msq57_2v(j,k)*sub57_2v
-     & +msq25_7(j,k)*(sub27_5(qq)+sub57_2(gg))+msq57_2v(j,k)*sub57_2v)
-      msq(12,j,k)=(one-ninth)*
-     & (msq26_7(j,k)*(sub26_7(qq)+sub67_2(gg))+msq67_2v(j,k)*sub67_2v
-     & +msq26_7(j,k)*(sub27_6(qq)+sub67_2(gg))+msq67_2v(j,k)*sub67_2v)
-      msq(13,j,k)=msq56_7(j,k)*sub56_7(gg)+msq56_7v(j,k)*sub56_7v
-      msq(14,j,k)=msq57_6(j,k)*sub57_6(gg)+msq57_6v(j,k)*sub57_6v
-      msq(15,j,k)=msq67_5(j,k)*sub67_5(gg)+msq67_5v(j,k)*sub67_5v
-      elseif ((k .eq. 0).and.((j.gt.0) .or. (j.lt.0))) then
-c--- q-g and qb-g cases
-      elseif ((j .eq. 0).and.((k.gt.0) .or. (k.lt.0))) then
-c--- g-q and g-qb cases
-      elseif ((j .eq. 0).and.(k .eq. 0)) then
-c--- g-g case
+c--- QUARK-ANTIQUARK contributions
+      if    ((j.gt.0).and.(k.lt.0)) then
+c------ leading colour
+          if ((colourchoice .eq. 1) .or. (colourchoice .eq. 0)) then
+          do n=1,6   
+          msq(n,j,k)   =subab_c(n,gg)/2d0
+     .                  *(msqab_c(n,pntr(a(n),c(n)),j,k)
+     .                   +msqab_c(n,pntr(c(n),a(n)),j,k))*xn/3d0
+     .                 +subab_cv(n)/2d0
+     .                  *(msqab_cv(n,pntr(a(n),c(n)),j,k)
+     .                   +msqab_cv(n,pntr(c(n),a(n)),j,k))*xn/3d0
+          msq(6+n,j,k) =(sub1a_b(n,qq)+subba_1(n,gg)/2d0)
+     .                  *msq1a_b(n,pntr(b(n),c(n)),j,k)*xn/3d0
+     .                 +subba_1v(n)/2d0
+     .                  *msqba_1v(n,pntr(b(n),c(n)),j,k)*xn/3d0
+          msq(12+n,j,k)=(subbc_2(n,gg)/2d0+sub2c_b(n,qq))
+     .                  *msq2c_b(n,pntr(a(n),b(n)),j,k)*xn/3d0
+     .                 +subbc_2v(n)/2d0
+     .                  *msqbc_2v(n,pntr(a(n),b(n)),j,k)*xn/3d0
+          enddo
+          endif
+c------ sub-leading colour
+          if ((colourchoice .eq. 2) .or. (colourchoice .eq. 0)) then
+          do n=1,6 
+          msq(6+n,j,k)=msq(6+n,j,k)
+     .                 +(sub1a_b(n,qq)+subba_1(n,gg)/2d0)
+     .                  *msq1a_b(n,0,j,k)*xn/3d0
+     .                 +subba_1v(n)/2d0
+     .                  *msqba_1v(n,0,j,k)*xn/3d0  
+          msq(12+n,j,k)=msq(12+n,j,k)
+     .                 +(subbc_2(n,gg)/2d0+sub2c_b(n,qq))
+     .                  *msq2c_b(n,0,j,k)*xn/3d0
+     .                 +subbc_2v(n)/2d0
+     .                  *msqbc_2v(n,0,j,k)*xn/3d0
+          enddo
+          do n=1,3
+          msq(18+n,j,k)=msq(18+n,j,k)
+     .                   -sub1b_2(n,qq)
+     .                  *(msq1b_2(n,1,j,k)+msq1b_2(n,2,j,k))/xn/3d0
+          msq(21+n,j,k)=msq(21+n,j,k)
+     .                   -sub2b_1(n,qq)
+     .                  *(msq2b_1(n,1,j,k)+msq2b_1(n,2,j,k))/xn/3d0
+         enddo
+         endif
+c------ sub-sub-leading colour
+         if ((colourchoice .eq. 3) .or. (colourchoice .eq. 0)) then
+          do n=1,3
+          msq(18+n,j,k)=msq(18+n,j,k)
+     .                  -sub1b_2(n,qq)
+     .                  *msq1b_2(n,0,j,k)*(xn+1d0/xn)/3d0
+          msq(21+n,j,k)=msq(21+n,j,k)
+     .                  -sub2b_1(n,qq)
+     .                  *msq2b_1(n,0,j,k)*(xn+1d0/xn)/3d0
+         enddo         
+         endif
+c--- ANTIQUARK-QUARK contributions
+      elseif((j.lt.0).and.(k.gt.0)) then
+c------ leading colour
+          if ((colourchoice .eq. 1) .or. (colourchoice .eq. 0)) then
+          do n=1,6   
+          msq(n,j,k)   =subab_c(n,gg)/2d0
+     .                  *(msqab_c(n,pntr(a(n),c(n)),j,k)
+     .                   +msqab_c(n,pntr(c(n),a(n)),j,k))*xn/3d0
+     .                 +subab_cv(n)/2d0
+     .                  *(msqab_cv(n,pntr(a(n),c(n)),j,k)
+     .                   +msqab_cv(n,pntr(c(n),a(n)),j,k))*xn/3d0
+          msq(6+n,j,k) =(sub1a_b(n,qq)+subba_1(n,gg)/2d0)
+     .                  *msq1a_b(n,pntr(c(n),b(n)),j,k)*xn/3d0
+     .                 +subba_1v(n)/2d0
+     .                  *msqba_1v(n,pntr(c(n),b(n)),j,k)*xn/3d0
+          msq(12+n,j,k)=(subbc_2(n,gg)/2d0+sub2c_b(n,qq))
+     .                  *msq2c_b(n,pntr(b(n),a(n)),j,k)*xn/3d0
+     .                 +subbc_2v(n)/2d0
+     .                  *msqbc_2v(n,pntr(b(n),a(n)),j,k)*xn/3d0
+          enddo
+          endif
+c------ sub-leading colour
+          if ((colourchoice .eq. 2) .or. (colourchoice .eq. 0)) then
+          do n=1,6 
+          msq(6+n,j,k)=msq(6+n,j,k)
+     .                 +(sub1a_b(n,qq)+subba_1(n,gg)/2d0)
+     .                  *msq1a_b(n,0,j,k)*xn/3d0
+     .                 +subba_1v(n)/2d0
+     .                  *msqba_1v(n,0,j,k)*xn/3d0  
+          msq(12+n,j,k)=msq(12+n,j,k)
+     .                 +(subbc_2(n,gg)/2d0+sub2c_b(n,qq))
+     .                  *msq2c_b(n,0,j,k)*xn/3d0
+     .                 +subbc_2v(n)/2d0
+     .                  *msqbc_2v(n,0,j,k)*xn/3d0
+          enddo
+          do n=1,3
+          msq(18+n,j,k)=msq(18+n,j,k)
+     .                   -sub1b_2(n,qq)
+     .                  *(msq1b_2(n,1,j,k)+msq1b_2(n,2,j,k))/xn/3d0
+          msq(21+n,j,k)=msq(21+n,j,k)
+     .                   -sub2b_1(n,qq)
+     .                  *(msq2b_1(n,1,j,k)+msq2b_1(n,2,j,k))/xn/3d0
+         enddo
+         endif
+c------ sub-sub-leading colour
+         if ((colourchoice .eq. 3) .or. (colourchoice .eq. 0)) then
+          do n=1,3
+          msq(18+n,j,k)=msq(18+n,j,k)
+     .                  -sub1b_2(n,qq)
+     .                  *msq1b_2(n,0,j,k)*(xn+1d0/xn)/3d0
+          msq(21+n,j,k)=msq(21+n,j,k)
+     .                  -sub2b_1(n,qq)
+     .                  *msq2b_1(n,0,j,k)*(xn+1d0/xn)/3d0
+         enddo         
+         endif
+c--- GLUON-GLUON contributions
+      elseif ((j.eq.0) .and. (k.eq.0)) then
+c------ leading colour
+          if ((colourchoice .eq. 1) .or. (colourchoice .eq. 0)) then
+c--- choose n=2 which is (5,7,6)
+          do n=2,2
+          msq(18+n,j,k)=sub1b_2(n,gg)
+     .                  *(msq1b_2(n,1,j,k)+msq1b_2(n,2,j,k))*xn
+     .                 +sub1b_2v(n)
+     .                  *(msq1b_2v(n,1,j,k)+msq1b_2v(n,2,j,k))*xn
+          msq(21+n,j,k)=sub2b_1(n,gg)
+     .                  *(msq2b_1(n,1,j,k)+msq2b_1(n,2,j,k))*xn
+     .                 +sub2b_1v(n)
+     .                  *(msq2b_1v(n,1,j,k)+msq2b_1v(n,2,j,k))*xn
+          enddo
+c--- choose n=3,6 which is (7,5,6) and (7,6,5)
+          do n=3,6,3
+          msq(6+n,j,k)=(sub1a_b(n,gg)+subba_1(n,qq))
+     .                  *msq1a_b(n,pntr(b(n),c(n)),j,k)*xn
+     .                 +sub1a_bv(n)
+     .                  *msq1a_bv(n,pntr(b(n),c(n)),j,k)*xn
+          enddo
+c--- choose n=1,5 which is (5,6,7) and (6,5,7)
+          do n=1,5,4
+          msq(12+n,j,k)=(sub2c_b(n,gg)+subbc_2(n,qq))
+     .                   *msq2c_b(n,pntr(a(n),b(n)),j,k)*xn
+     .                  +sub2c_bv(n)
+     .                   *msq2c_bv(n,pntr(a(n),b(n)),j,k)*xn
+         enddo
+c--- additional (qg) collinear contributions
+c--- choose n=3 which is (7,5,6)
+          do n=3,3
+          msq(18+n,j,k)=msq(18+n,j,k)+sub1b_2(n,qg)*
+     .      (msq1b_2(n,1,+1,k)+msq1b_2(n,1,+2,k)+msq1b_2(n,1,+3,k)
+     .      +msq1b_2(n,1,+4,k)+msq1b_2(n,1,+5,k)
+     .      +msq1b_2(n,2,+1,k)+msq1b_2(n,2,+2,k)+msq1b_2(n,2,+3,k)
+     .      +msq1b_2(n,2,+4,k)+msq1b_2(n,2,+5,k))*xn*(avegg/aveqg)
+          msq(21+n,j,k)=msq(21+n,j,k)+sub2b_1(n,qg)*
+     .      (msq2b_1(n,1,j,+1)+msq2b_1(n,1,j,+2)+msq2b_1(n,1,j,+3)
+     .      +msq2b_1(n,1,j,+4)+msq2b_1(n,1,j,+5)
+     .      +msq2b_1(n,2,j,+1)+msq2b_1(n,2,j,+2)+msq2b_1(n,2,j,+3)
+     .      +msq2b_1(n,2,j,+4)+msq2b_1(n,2,j,+5))*xn*(avegg/aveqg)
+          enddo
+c--- choose n=1 which is (5,6,7)
+          do n=1,1
+          msq(18+n,j,k)=msq(18+n,j,k)+sub1b_2(n,qg)*
+     .      (msq1b_2(n,1,-1,k)+msq1b_2(n,1,-2,k)+msq1b_2(n,1,-3,k)
+     .      +msq1b_2(n,1,-4,k)+msq1b_2(n,1,-5,k)
+     .      +msq1b_2(n,2,-1,k)+msq1b_2(n,2,-2,k)+msq1b_2(n,2,-3,k)
+     .      +msq1b_2(n,2,-4,k)+msq1b_2(n,2,-5,k))*xn*(avegg/aveqg)
+          msq(21+n,j,k)=msq(21+n,j,k)+sub2b_1(n,qg)*
+     .      (msq2b_1(n,1,j,-1)+msq2b_1(n,1,j,-2)+msq2b_1(n,1,j,-3)
+     .      +msq2b_1(n,1,j,-4)+msq2b_1(n,1,j,-5)
+     .      +msq2b_1(n,2,j,-1)+msq2b_1(n,2,j,-2)+msq2b_1(n,2,j,-3)
+     .      +msq2b_1(n,2,j,-4)+msq2b_1(n,2,j,-5))*xn*(avegg/aveqg)
+          enddo
+          endif
+c------ sub-leading colour
+          if ((colourchoice .eq. 2) .or. (colourchoice .eq. 0)) then
+          do n=2,4,2
+c-- (a,b,c) = (5,7,6) and (6,7,5)
+          msq(n,j,k)   =msq(n,j,k)
+     .                   -subab_c(n,qq)
+     .                  *(msqab_c(n,1,j,k)+msqab_c(n,2,j,k))/xn
+          enddo
+          do n=3,6,3
+c-- (a,b,c) = (7,5,6) and (7,6,5)
+          msq(6+n,j,k)=msq(6+n,j,k)
+     .                 +(sub1a_b(n,gg)+subba_1(n,qq))
+     .                  *msq1a_b(n,0,j,k)*xn
+     .                 +sub1a_bv(n)
+     .                  *msq1a_bv(n,0,j,k)*xn
+          enddo
+c--- choose n=1,5 which is (5,6,7) and (6,5,7)
+          do n=1,5,4
+          msq(12+n,j,k)=msq(12+n,j,k)
+     .                  +(sub2c_b(n,gg)+subbc_2(n,qq))
+     .                   *msq2c_b(n,0,j,k)*xn
+     .                  +sub2c_bv(n)
+     .                   *msq2c_bv(n,0,j,k)*xn
+         enddo
+c--- additional (qg) collinear contributions
+c--- choose n=3 which is (7,5,6)
+          do n=3,3
+          msq(18+n,j,k)=msq(18+n,j,k)+sub1b_2(n,qg)*(avegg/aveqg)*
+     .    (-(msq1b_2(n,1,+1,k)+msq1b_2(n,1,+2,k)+msq1b_2(n,1,+3,k)
+     .      +msq1b_2(n,1,+4,k)+msq1b_2(n,1,+5,k)
+     .      +msq1b_2(n,2,+1,k)+msq1b_2(n,2,+2,k)+msq1b_2(n,2,+3,k)
+     .      +msq1b_2(n,2,+4,k)+msq1b_2(n,2,+5,k))/xn
+     .     +(msq1b_2(n,0,+1,k)+msq1b_2(n,0,+2,k)+msq1b_2(n,0,+3,k)
+     .      +msq1b_2(n,0,+4,k)+msq1b_2(n,0,+5,k))*2d0*xn)
+          msq(21+n,j,k)=msq(21+n,j,k)+sub2b_1(n,qg)*(avegg/aveqg)*
+     .    (-(msq2b_1(n,1,j,+1)+msq2b_1(n,1,j,+2)+msq2b_1(n,1,j,+3)
+     .      +msq2b_1(n,1,j,+4)+msq2b_1(n,1,j,+5)
+     .      +msq2b_1(n,2,j,+1)+msq2b_1(n,2,j,+2)+msq2b_1(n,2,j,+3)
+     .      +msq2b_1(n,2,j,+4)+msq2b_1(n,2,j,+5))/xn
+     .     +(msq2b_1(n,0,j,+1)+msq2b_1(n,0,j,+2)+msq2b_1(n,0,j,+3)
+     .      +msq2b_1(n,0,j,+4)+msq2b_1(n,0,j,+5))*2d0*xn)
+          enddo
+c--- choose n=1 which is (5,6,7)
+          do n=1,1
+          msq(18+n,j,k)=msq(18+n,j,k)+sub1b_2(n,qg)*(avegg/aveqg)*
+     .    (-(msq1b_2(n,1,-1,k)+msq1b_2(n,1,-2,k)+msq1b_2(n,1,-3,k)
+     .      +msq1b_2(n,1,-4,k)+msq1b_2(n,1,-5,k)
+     .      +msq1b_2(n,2,-1,k)+msq1b_2(n,2,-2,k)+msq1b_2(n,2,-3,k)
+     .      +msq1b_2(n,2,-4,k)+msq1b_2(n,2,-5,k))/xn
+     .     +(msq1b_2(n,0,-1,k)+msq1b_2(n,0,-2,k)+msq1b_2(n,0,-3,k)
+     .      +msq1b_2(n,0,-4,k)+msq1b_2(n,0,-5,k))*2d0*xn)
+          msq(21+n,j,k)=msq(21+n,j,k)+sub2b_1(n,qg)*(avegg/aveqg)*
+     .    (-(msq2b_1(n,1,j,-1)+msq2b_1(n,1,j,-2)+msq2b_1(n,1,j,-3)
+     .      +msq2b_1(n,1,j,-4)+msq2b_1(n,1,j,-5)
+     .      +msq2b_1(n,2,j,-1)+msq2b_1(n,2,j,-2)+msq2b_1(n,2,j,-3)
+     .      +msq2b_1(n,2,j,-4)+msq2b_1(n,2,j,-5))/xn
+     .     +(msq2b_1(n,0,j,-1)+msq2b_1(n,0,j,-2)+msq2b_1(n,0,j,-3)
+     .      +msq2b_1(n,0,j,-4)+msq2b_1(n,0,j,-5))*2d0*xn)
+          enddo
+          endif
+c------ sub-sub-leading colour
+          if ((colourchoice .eq. 3) .or. (colourchoice .eq. 0)) then
+          do n=2,4,2
+c-- (a,b,c) = (5,7,6) and (6,7,5)
+          msq(n,j,k)   =msq(n,j,k)
+     .                  -subab_c(n,qq)
+     .                  *msqab_c(n,0,j,k)*(xn+1d0/xn)
+          enddo
+c--- additional (qg) collinear contributions
+c--- choose n=3 which is (7,5,6)
+          do n=3,3
+          msq(18+n,j,k)=msq(18+n,j,k)+sub1b_2(n,qg)*(avegg/aveqg)*
+     .      (msq1b_2(n,0,+1,k)+msq1b_2(n,0,+2,k)+msq1b_2(n,0,+3,k)
+     .      +msq1b_2(n,0,+4,k)+msq1b_2(n,0,+5,k))*(-xn-1d0/xn)
+          msq(21+n,j,k)=msq(21+n,j,k)+sub2b_1(n,qg)*(avegg/aveqg)*
+     .      (msq2b_1(n,0,j,+1)+msq2b_1(n,0,j,+2)+msq2b_1(n,0,j,+3)
+     .      +msq2b_1(n,0,j,+4)+msq2b_1(n,0,j,+5))*(-xn-1d0/xn)
+          enddo
+c--- choose n=1 which is (5,6,7)
+          do n=1,1
+          msq(18+n,j,k)=msq(18+n,j,k)+sub1b_2(n,qg)*(avegg/aveqg)*
+     .      (msq1b_2(n,0,-1,k)+msq1b_2(n,0,-2,k)+msq1b_2(n,0,-3,k)
+     .      +msq1b_2(n,0,-4,k)+msq1b_2(n,0,-5,k))*(-xn-1d0/xn)
+          msq(21+n,j,k)=msq(21+n,j,k)+sub2b_1(n,qg)*(avegg/aveqg)*
+     .      (msq2b_1(n,0,j,-1)+msq2b_1(n,0,j,-2)+msq2b_1(n,0,j,-3)
+     .      +msq2b_1(n,0,j,-4)+msq2b_1(n,0,j,-5))*(-xn-1d0/xn)
+          enddo
+          endif
+c--- QUARK-GLUON contributions
+      elseif ((j.gt.0) .and. (k.eq.0)) then
+c------ leading colour
+          if ((colourchoice .eq. 1) .or. (colourchoice .eq. 0)) then
+          do n=1,2  
+c-- (a,b,c) = (5,6,7) and (5,7,6)
+          msq(n,j,k)   =subab_c(n,qq)
+     .                  *msqab_c(n,pntr(a(n),c(n)),j,k)*xn/2d0
+          msq(12+n,j,k)=(subbc_2(n,gg)/2d0+sub2c_b(n,gg))
+     .                  *(msq2c_b(n,pntr(a(n),b(n)),j,k)
+     .                   +msq2c_b(n,pntr(b(n),a(n)),j,k))*xn/2d0
+     .                 +subbc_2v(n)/2d0
+     .                  *(msqbc_2v(n,pntr(a(n),b(n)),j,k)
+     .                   +msqbc_2v(n,pntr(b(n),a(n)),j,k))*xn/2d0
+     .                 +sub2c_bv(n)
+     .                  *(msq2c_bv(n,pntr(a(n),b(n)),j,k)
+     .                   +msq2c_bv(n,pntr(b(n),a(n)),j,k))*xn/2d0
+          msq(18+n,j,k)=sub1b_2(n,qq)
+     .                  *msq1b_2(n,pntr(a(n),c(n)),j,k)*xn/2d0
+          msq(21+n,j,k)=sub2b_1(n,gg)
+     .                  *msq2b_1(n,pntr(a(n),c(n)),j,k)*xn/2d0
+     .                 +sub2b_1v(n)
+     .                  *msq2b_1v(n,pntr(a(n),c(n)),j,k)*xn/2d0
+          enddo
+          do n=4,6,2
+c-- (a,b,c) = (6,7,5) and (7,6,5)
+          msq(n,j,k)   =subab_c(n,gg)/2d0
+     .                  *msqab_c(n,pntr(c(n),a(n)),j,k)*xn/2d0
+     .                 +subab_cv(n)/2d0
+     .                  *msqab_cv(n,pntr(c(n),a(n)),j,k)*xn/2d0
+          msq(6+n,j,k) =(sub1a_b(n,qq)+subba_1(n,gg)/2d0)
+     .                  *msq1a_b(n,pntr(b(n),c(n)),j,k)*xn/2d0
+     .                 +subba_1v(n)/2d0
+     .                  *msqba_1v(n,pntr(b(n),c(n)),j,k)*xn/2d0
+          enddo
+          do n=3,5,2
+c-- (a,b,c) = (7,5,6) and (6,5,7)
+          msq(12+n,j,k)=(subbc_2(n,qq)+sub2c_b(n,gg))
+     .                  *msq2c_b(n,pntr(a(n),b(n)),j,k)*xn/2d0
+     .                 +sub2c_bv(n)
+     .                  *msq2c_bv(n,pntr(a(n),b(n)),j,k)*xn/2d0
+          enddo      
+c--- additional (qg) collinear contributions
+c--- choose n=3 which is (7,5,6)
+          do n=3,3
+          msq(21+n,j,k)=msq(21+n,j,k)+sub2b_1(n,qg)*
+     .      (msq2b_1(n,1,j,-1)+msq2b_1(n,1,j,-2)+msq2b_1(n,1,j,-3)
+     .      +msq2b_1(n,1,j,-4)+msq2b_1(n,1,j,-5)
+     .      +msq2b_1(n,2,j,-1)+msq2b_1(n,2,j,-2)+msq2b_1(n,2,j,-3)
+     .      +msq2b_1(n,2,j,-4)+msq2b_1(n,2,j,-5))*xn*(aveqg/aveqq)
+          enddo
+          endif
+c------ sub-leading colour
+          if ((colourchoice .eq. 2) .or. (colourchoice .eq. 0)) then
+          do n=4,6,2
+c-- (a,b,c) = (6,7,5) and (7,6,5)
+          msq(6+n,j,k) =msq(6+n,j,k)
+     .                 +(sub1a_b(n,qq)+subba_1(n,gg)/2d0)
+     .                  *msq1a_b(n,0,j,k)*xn/2d0
+     .                 +subba_1v(n)/2d0
+     .                  *msqba_1v(n,0,j,k)*xn/2d0
+          enddo
+          do n=3,5,2
+c-- (a,b,c) = (7,5,6) and (6,5,7)
+          msq(6+n,j,k)=msq(6+n,j,k)
+     .                 -(subba_1(n,qq)+sub1a_b(n,qq))
+     .                  *(msq1a_b(n,1,j,k)+msq1a_b(n,2,j,k))/xn/2d0
+          msq(12+n,j,k)=msq(12+n,j,k)
+     .                 +(subbc_2(n,qq)+sub2c_b(n,gg))
+     .                  *msq2c_b(n,0,j,k)*xn/2d0
+     .                 +sub2c_bv(n)
+     .                  *msq2c_bv(n,0,j,k)*xn/2d0
+          enddo      
+          do n=1,2  
+c-- (a,b,c) = (5,6,7) and (5,7,6)
+          msq(n,j,k)   =msq(n,j,k)
+     .                 +subab_c(n,qq)
+     .                  *msqab_c(n,0,j,k)*xn/2d0
+          msq(18+n,j,k)=msq(18+n,j,k)
+     .                 +sub1b_2(n,qq)
+     .                  *msq1b_2(n,0,j,k)*xn/2d0
+          msq(21+n,j,k)=msq(21+n,j,k)
+     .                 +sub2b_1(n,gg)
+     .                  *msq2b_1(n,0,j,k)*xn/2d0
+     .                 +sub2b_1v(n)
+     .                  *msq2b_1v(n,0,j,k)*xn/2d0
+          enddo    
+c-- [n=4] (a,b,c) = (6,7,5)
+          msq(4,j,k)  =msq(4,j,k)
+     .                 +subab_c(4,gg)
+     .                  *msqab_c(4,0,j,k)*xn/2d0                
+     .                 +subab_cv(4)
+     .                  *msqab_cv(4,0,j,k)*xn/2d0                
+c--- additional (qg) collinear contributions
+c--- choose n=3 which is (7,5,6)
+          do n=3,3
+          msq(21+n,j,k)=msq(21+n,j,k)+sub2b_1(n,qg)*(aveqg/aveqq)*
+     .    (-(msq2b_1(n,1,j,-1)+msq2b_1(n,1,j,-2)+msq2b_1(n,1,j,-3)
+     .      +msq2b_1(n,1,j,-4)+msq2b_1(n,1,j,-5)
+     .      +msq2b_1(n,2,j,-1)+msq2b_1(n,2,j,-2)+msq2b_1(n,2,j,-3)
+     .      +msq2b_1(n,2,j,-4)+msq2b_1(n,2,j,-5))/xn
+     .     +(msq2b_1(n,0,j,-1)+msq2b_1(n,0,j,-2)+msq2b_1(n,0,j,-3)
+     .      +msq2b_1(n,0,j,-4)+msq2b_1(n,0,j,-5))*2d0*xn)
+          enddo          
+          endif
+c------ sub-sub-leading colour
+          if ((colourchoice .eq. 3) .or. (colourchoice .eq. 0)) then
+          do n=3,5,2
+c-- (a,b,c) = (7,5,6) and (6,5,7)
+          msq(6+n,j,k)=msq(6+n,j,k)
+     .                 -(subba_1(n,qq)+sub1a_b(n,qq))
+     .                  *msq1a_b(n,0,j,k)*(xn+1d0/xn)/2d0
+          enddo
+c--- additional (qg) collinear contributions
+c--- choose n=3 which is (7,5,6)
+          do n=3,3
+          msq(21+n,j,k)=msq(21+n,j,k)+sub2b_1(n,qg)*(aveqg/aveqq)*
+     .      (msq2b_1(n,0,j,-1)+msq2b_1(n,0,j,-2)+msq2b_1(n,0,j,-3)
+     .      +msq2b_1(n,0,j,-4)+msq2b_1(n,0,j,-5))*(-xn-1d0/xn)
+          enddo          
+          endif
+c--- GLUON-QUARK contributions
+      elseif ((j.eq.0) .and. (k.gt.0)) then
+c------ leading colour
+          if ((colourchoice .eq. 1) .or. (colourchoice .eq. 0)) then
+          do n=1,2  
+c-- (a,b,c) = (5,6,7) and (5,7,6)
+          msq(n,j,k)   =subab_c(n,qq)
+     .                  *msqab_c(n,pntr(a(n),c(n)),j,k)*xn/2d0
+          msq(12+n,j,k) =(sub2c_b(n,qq)+subbc_2(n,gg)/2d0)
+     .                    *msq2c_b(n,pntr(c(n),a(n)),j,k)*xn/2d0
+     .                   +subbc_2v(n)/2d0
+     .                    *msqbc_2v(n,pntr(c(n),a(n)),j,k)*xn/2d0
+          msq(18+n,j,k)=sub1b_2(n,gg)
+     .                  *msq1b_2(n,pntr(a(n),c(n)),j,k)*xn/2d0
+     .                 +sub1b_2v(n)
+     .                  *msq1b_2v(n,pntr(a(n),c(n)),j,k)*xn/2d0
+          msq(21+n,j,k)=sub2b_1(n,qq)
+     .                  *msq2b_1(n,pntr(a(n),c(n)),j,k)*xn/2d0
+          enddo
+          do n=4,6,2
+c-- (a,b,c) = (6,7,5) and (7,6,5)
+          msq(n,j,k)   =subab_c(n,gg)/2d0
+     .                  *msqab_c(n,pntr(c(n),a(n)),j,k)*xn/2d0
+     .                 +subab_cv(n)/2d0
+     .                  *msqab_cv(n,pntr(c(n),a(n)),j,k)*xn/2d0
+          msq(6+n,j,k)=(subba_1(n,gg)/2d0+sub1a_b(n,gg))
+     .                 *(msq1a_b(n,pntr(c(n),b(n)),j,k)
+     .                  +msq1a_b(n,pntr(b(n),c(n)),j,k))*xn/2d0
+     .                +subba_1v(n)/2d0
+     .                 *(msqba_1v(n,pntr(c(n),b(n)),j,k)
+     .                  +msqba_1v(n,pntr(b(n),c(n)),j,k))*xn/2d0
+     .                +sub1a_bv(n)
+     .                 *(msq1a_bv(n,pntr(c(n),b(n)),j,k)
+     .                  +msq1a_bv(n,pntr(b(n),c(n)),j,k))*xn/2d0
+          enddo
+          do n=3,5,2
+c-- (a,b,c) = (6,5,7) and (7,5,6)
+          msq(6+n,j,k)=(subba_1(n,qq)+sub1a_b(n,gg))
+     .                  *msq1a_b(n,pntr(c(n),b(n)),j,k)*xn/2d0
+     .                 +sub1a_bv(n)
+     .                  *msq1a_bv(n,pntr(c(n),b(n)),j,k)*xn/2d0
+          enddo              
+c--- additional (qg) collinear contributions
+c--- choose n=3 which is (7,5,6)
+          do n=3,3
+          msq(18+n,j,k)=msq(18+n,j,k)+sub1b_2(n,qg)*
+     .      (msq1b_2(n,1,-1,k)+msq1b_2(n,1,-2,k)+msq1b_2(n,1,-3,k)
+     .      +msq1b_2(n,1,-4,k)+msq1b_2(n,1,-5,k)
+     .      +msq1b_2(n,2,-1,k)+msq1b_2(n,2,-2,k)+msq1b_2(n,2,-3,k)
+     .      +msq1b_2(n,2,-4,k)+msq1b_2(n,2,-5,k))*xn*(aveqg/aveqq)
+          enddo
+          endif
+c------ sub-leading colour
+          if ((colourchoice .eq. 2) .or. (colourchoice .eq. 0)) then
+          do n=1,2
+c-- (a,b,c) = (5,7,6) and (5,6,7)
+          msq(12+n,j,k) =msq(12+n,j,k)
+     .                  +(sub2c_b(n,qq)+subbc_2(n,gg)/2d0)
+     .                   *msq2c_b(n,0,j,k)*xn/2d0
+     .                  +subbc_2v(n)/2d0
+     .                   *msqbc_2v(n,0,j,k)*xn/2d0
+          enddo
+          do n=3,5,2
+c-- (a,b,c) = (7,5,6) and (6,5,7)
+          msq(12+n,j,k)=msq(12+n,j,k)
+     .                 -(subbc_2(n,qq)+sub2c_b(n,qq))
+     .                  *(msq2c_b(n,1,j,k)+msq2c_b(n,2,j,k))/xn/2d0
+          msq(6+n,j,k) =msq(6+n,j,k)
+     .                 +(subba_1(n,qq)+sub1a_b(n,gg))
+     .                  *msq1a_b(n,0,j,k)*xn/2d0
+     .                 +sub1a_bv(n)
+     .                  *msq1a_bv(n,0,j,k)*xn/2d0
+          enddo      
+          do n=1,2  
+c-- (a,b,c) = (5,6,7) and (5,7,6)
+          msq(n,j,k)   =msq(n,j,k)
+     .                 +subab_c(n,qq)
+     .                  *msqab_c(n,0,j,k)*xn/2d0
+          msq(18+n,j,k)=msq(18+n,j,k)
+     .                 +sub1b_2(n,gg)
+     .                  *msq1b_2(n,0,j,k)*xn/2d0
+     .                 +sub1b_2v(n)
+     .                  *msq1b_2v(n,0,j,k)*xn/2d0
+          msq(21+n,j,k)=msq(21+n,j,k)
+     .                 +sub2b_1(n,qq)
+     .                  *msq2b_1(n,0,j,k)*xn/2d0
+          enddo    
+c-- [n=4] (a,b,c) = (6,7,5)
+          msq(4,j,k)  =msq(4,j,k)
+     .                 +subab_c(4,gg)
+     .                  *msqab_c(4,0,j,k)*xn/2d0                
+     .                 +subab_cv(4)
+     .                  *msqab_cv(4,0,j,k)*xn/2d0                
+c--- choose n=3 which is (7,5,6)
+          do n=3,3
+          msq(18+n,j,k)=msq(18+n,j,k)+sub1b_2(n,qg)*(aveqg/aveqq)*
+     .    (-(msq1b_2(n,1,-1,k)+msq1b_2(n,1,-2,k)+msq1b_2(n,1,-3,k)
+     .      +msq1b_2(n,1,-4,k)+msq1b_2(n,1,-5,k)
+     .      +msq1b_2(n,2,-1,k)+msq1b_2(n,2,-2,k)+msq1b_2(n,2,-3,k)
+     .      +msq1b_2(n,2,-4,k)+msq1b_2(n,2,-5,k))/xn
+     .     +(msq1b_2(n,0,-1,k)+msq1b_2(n,0,-2,k)+msq1b_2(n,0,-3,k)
+     .      +msq1b_2(n,0,-4,k)+msq1b_2(n,0,-5,k))*2d0*xn)
+          enddo
+          endif
+c------ sub-sub-leading colour
+          if ((colourchoice .eq. 3) .or. (colourchoice .eq. 0)) then
+          do n=3,5,2
+c-- (a,b,c) = (7,5,6) and (6,5,7)
+          msq(12+n,j,k)=msq(12+n,j,k)
+     .                 -(subbc_2(n,qq)+sub2c_b(n,qq))
+     .                  *msq2c_b(n,0,j,k)*(xn+1d0/xn)/2d0
+          enddo
+c--- choose n=3 which is (7,5,6)
+          do n=3,3
+          msq(18+n,j,k)=msq(18+n,j,k)+sub1b_2(n,qg)*(aveqg/aveqq)*
+     .      (msq1b_2(n,0,-1,k)+msq1b_2(n,0,-2,k)+msq1b_2(n,0,-3,k)
+     .      +msq1b_2(n,0,-4,k)+msq1b_2(n,0,-5,k))*(-xn-1d0/xn)
+          enddo
+          endif
+c--- GLUON-ANTIQUARK contributions
+      elseif ((j.eq.0) .and. (k.lt.0)) then
+c------ leading colour
+          if ((colourchoice .eq. 1) .or. (colourchoice .eq. 0)) then
+          do n=1,2  
+c-- (a,b,c) = (5,6,7) and (5,7,6)
+          msq(n,j,k)   =subab_c(n,qq)
+     .                  *msqab_c(n,pntr(c(n),a(n)),j,k)*xn/2d0
+          msq(12+n,j,k) =(sub2c_b(n,qq)+subbc_2(n,gg)/2d0)
+     .                    *msq2c_b(n,pntr(a(n),c(n)),j,k)*xn/2d0
+     .                   +subbc_2v(n)/2d0
+     .                    *msqbc_2v(n,pntr(a(n),c(n)),j,k)*xn/2d0
+          msq(18+n,j,k)=sub1b_2(n,gg)
+     .                  *msq1b_2(n,pntr(c(n),a(n)),j,k)*xn/2d0
+     .                 +sub1b_2v(n)
+     .                  *msq1b_2v(n,pntr(c(n),a(n)),j,k)*xn/2d0
+          msq(21+n,j,k)=sub2b_1(n,qq)
+     .                  *msq2b_1(n,pntr(c(n),a(n)),j,k)*xn/2d0
+          enddo
+          do n=4,6,2
+c-- (a,b,c) = (6,7,5) and (7,6,5)
+          msq(n,j,k)   =subab_c(n,gg)/2d0
+     .                  *msqab_c(n,pntr(a(n),c(n)),j,k)*xn/2d0
+     .                 +subab_cv(n)/2d0
+     .                  *msqab_cv(n,pntr(a(n),c(n)),j,k)*xn/2d0
+          msq(6+n,j,k)=(subba_1(n,gg)/2d0+sub1a_b(n,gg))
+     .                 *(msq1a_b(n,pntr(b(n),c(n)),j,k)
+     .                  +msq1a_b(n,pntr(c(n),b(n)),j,k))*xn/2d0
+     .                +subba_1v(n)/2d0
+     .                 *(msqba_1v(n,pntr(b(n),c(n)),j,k)
+     .                  +msqba_1v(n,pntr(c(n),b(n)),j,k))*xn/2d0
+     .                +sub1a_bv(n)
+     .                 *(msq1a_bv(n,pntr(b(n),c(n)),j,k)
+     .                  +msq1a_bv(n,pntr(c(n),b(n)),j,k))*xn/2d0
+          enddo
+          do n=3,5,2
+c-- (a,b,c) = (6,5,7) and (7,5,6)
+          msq(6+n,j,k)=(subba_1(n,qq)+sub1a_b(n,gg))
+     .                  *msq1a_b(n,pntr(b(n),c(n)),j,k)*xn/2d0
+     .                 +sub1a_bv(n)
+     .                  *msq1a_bv(n,pntr(b(n),c(n)),j,k)*xn/2d0
+          enddo              
+c--- choose n=1 which is (7,5,6)
+          do n=3,3
+          msq(18+n,j,k)=msq(18+n,j,k)+sub1b_2(n,qg)*
+     .      (msq1b_2(n,1,+1,k)+msq1b_2(n,1,+2,k)+msq1b_2(n,1,+3,k)
+     .      +msq1b_2(n,1,+4,k)+msq1b_2(n,1,+5,k)
+     .      +msq1b_2(n,2,+1,k)+msq1b_2(n,2,+2,k)+msq1b_2(n,2,+3,k)
+     .      +msq1b_2(n,2,+4,k)+msq1b_2(n,2,+5,k))*xn*(aveqg/aveqq)
+          enddo
+          endif
+c------ sub-leading colour
+          if ((colourchoice .eq. 2) .or. (colourchoice .eq. 0)) then
+          do n=1,2
+c-- (a,b,c) = (5,7,6) and (5,6,7)
+          msq(12+n,j,k) =msq(12+n,j,k)
+     .                  +(sub2c_b(n,qq)+subbc_2(n,gg)/2d0)
+     .                   *msq2c_b(n,0,j,k)*xn/2d0
+     .                  +subbc_2v(n)/2d0
+     .                   *msqbc_2v(n,0,j,k)*xn/2d0
+          enddo
+          do n=3,5,2
+c-- (a,b,c) = (7,5,6) and (6,5,7)
+          msq(12+n,j,k)=msq(12+n,j,k)
+     .                 -(subbc_2(n,qq)+sub2c_b(n,qq))
+     .                  *(msq2c_b(n,1,j,k)+msq2c_b(n,2,j,k))/xn/2d0
+          msq(6+n,j,k) =msq(6+n,j,k)
+     .                 +(subba_1(n,qq)+sub1a_b(n,gg))
+     .                  *msq1a_b(n,0,j,k)*xn/2d0
+     .                 +sub1a_bv(n)
+     .                  *msq1a_bv(n,0,j,k)*xn/2d0
+          enddo      
+          do n=1,2  
+c-- (a,b,c) = (5,6,7) and (5,7,6)
+          msq(n,j,k)   =msq(n,j,k)
+     .                 +subab_c(n,qq)
+     .                  *msqab_c(n,0,j,k)*xn/2d0
+          msq(18+n,j,k)=msq(18+n,j,k)
+     .                 +sub1b_2(n,gg)
+     .                  *msq1b_2(n,0,j,k)*xn/2d0
+     .                 +sub1b_2v(n)
+     .                  *msq1b_2v(n,0,j,k)*xn/2d0
+          msq(21+n,j,k)=msq(21+n,j,k)
+     .                 +sub2b_1(n,qq)
+     .                  *msq2b_1(n,0,j,k)*xn/2d0
+          enddo    
+c-- [n=4] (a,b,c) = (6,7,5)
+          msq(4,j,k)  =msq(4,j,k)
+     .                 +subab_c(4,gg)
+     .                  *msqab_c(4,0,j,k)*xn/2d0                
+     .                 +subab_cv(4)
+     .                  *msqab_cv(4,0,j,k)*xn/2d0                
+c--- choose n=1 which is (7,5,6)
+          do n=3,3
+          msq(18+n,j,k)=msq(18+n,j,k)+sub1b_2(n,qg)*(aveqg/aveqq)*
+     .    (-(msq1b_2(n,1,+1,k)+msq1b_2(n,1,+2,k)+msq1b_2(n,1,+3,k)
+     .      +msq1b_2(n,1,+4,k)+msq1b_2(n,1,+5,k)
+     .      +msq1b_2(n,2,+1,k)+msq1b_2(n,2,+2,k)+msq1b_2(n,2,+3,k)
+     .      +msq1b_2(n,2,+4,k)+msq1b_2(n,2,+5,k))/xn
+     .     +(msq1b_2(n,0,+1,k)+msq1b_2(n,0,+2,k)+msq1b_2(n,0,+3,k)
+     .      +msq1b_2(n,0,+4,k)+msq1b_2(n,0,+5,k))*2d0*xn)
+          enddo
+          endif
+c------ sub-sub-leading colour
+          if ((colourchoice .eq. 3) .or. (colourchoice .eq. 0)) then
+          do n=3,5,2
+c-- (a,b,c) = (7,5,6) and (6,5,7)
+          msq(12+n,j,k)=msq(12+n,j,k)
+     .                 -(subbc_2(n,qq)+sub2c_b(n,qq))
+     .                  *msq2c_b(n,0,j,k)*(xn+1d0/xn)/2d0
+          enddo
+c--- choose n=3 which is (7,5,6)
+          do n=3,3
+          msq(18+n,j,k)=msq(18+n,j,k)+sub1b_2(n,qg)*(aveqg/aveqq)*
+     .      (msq1b_2(n,0,+1,k)+msq1b_2(n,0,+2,k)+msq1b_2(n,0,+3,k)
+     .      +msq1b_2(n,0,+4,k)+msq1b_2(n,0,+5,k))*(-xn-1d0/xn)
+          enddo
+          endif
+c--- ANTIQUARK-GLUON contributions
+      elseif ((j.lt.0) .and. (k.eq.0)) then
+c------ leading colour
+          if ((colourchoice .eq. 1) .or. (colourchoice .eq. 0)) then
+          do n=1,2  
+c-- (a,b,c) = (5,6,7) and (5,7,6)
+          msq(n,j,k)   =subab_c(n,qq)
+     .                  *msqab_c(n,pntr(c(n),a(n)),j,k)*xn/2d0
+          msq(12+n,j,k)=(subbc_2(n,gg)/2d0+sub2c_b(n,gg))
+     .                  *(msq2c_b(n,pntr(b(n),a(n)),j,k)
+     .                   +msq2c_b(n,pntr(a(n),b(n)),j,k))*xn/2d0
+     .                 +subbc_2v(n)/2d0
+     .                  *(msqbc_2v(n,pntr(b(n),a(n)),j,k)
+     .                   +msqbc_2v(n,pntr(a(n),b(n)),j,k))*xn/2d0
+     .                 +sub2c_bv(n)
+     .                  *(msq2c_bv(n,pntr(b(n),a(n)),j,k)
+     .                   +msq2c_bv(n,pntr(a(n),b(n)),j,k))*xn/2d0
+          msq(18+n,j,k)=sub1b_2(n,qq)
+     .                  *msq1b_2(n,pntr(c(n),a(n)),j,k)*xn/2d0
+          msq(21+n,j,k)=sub2b_1(n,gg)
+     .                  *msq2b_1(n,pntr(c(n),a(n)),j,k)*xn/2d0
+     .                 +sub2b_1v(n)
+     .                  *msq2b_1v(n,pntr(c(n),a(n)),j,k)*xn/2d0
+          enddo
+          do n=4,6,2
+c-- (a,b,c) = (6,7,5) and (7,6,5)
+          msq(n,j,k)   =subab_c(n,gg)/2d0
+     .                  *msqab_c(n,pntr(a(n),c(n)),j,k)*xn/2d0
+     .                 +subab_cv(n)/2d0
+     .                  *msqab_cv(n,pntr(a(n),c(n)),j,k)*xn/2d0
+          msq(6+n,j,k) =(sub1a_b(n,qq)+subba_1(n,gg)/2d0)
+     .                  *msq1a_b(n,pntr(c(n),b(n)),j,k)*xn/2d0
+     .                 +subba_1v(n)/2d0
+     .                  *msqba_1v(n,pntr(c(n),b(n)),j,k)*xn/2d0
+          enddo
+          do n=3,5,2
+c-- (a,b,c) = (7,5,6) and (6,5,7)
+          msq(12+n,j,k)=(subbc_2(n,qq)+sub2c_b(n,gg))
+     .                  *msq2c_b(n,pntr(b(n),a(n)),j,k)*xn/2d0
+     .                 +sub2c_bv(n)
+     .                  *msq2c_bv(n,pntr(b(n),a(n)),j,k)*xn/2d0
+          enddo      
+c--- additional (qg) collinear contributions
+c--- choose n=1 which is (7,5,6)
+          do n=3,3
+          msq(21+n,j,k)=msq(21+n,j,k)+sub2b_1(n,qg)*
+     .      (msq2b_1(n,1,j,+1)+msq2b_1(n,1,j,+2)+msq2b_1(n,1,j,+3)
+     .      +msq2b_1(n,1,j,+4)+msq2b_1(n,1,j,+5)
+     .      +msq2b_1(n,2,j,+1)+msq2b_1(n,2,j,+2)+msq2b_1(n,2,j,+3)
+     .      +msq2b_1(n,2,j,+4)+msq2b_1(n,2,j,+5))*xn*(aveqg/aveqq)
+          enddo
+          endif
+c------ sub-leading colour
+          if ((colourchoice .eq. 2) .or. (colourchoice .eq. 0)) then
+          do n=4,6,2
+c-- (a,b,c) = (6,7,5) and (7,6,5)
+          msq(6+n,j,k) =msq(6+n,j,k)
+     .                 +(sub1a_b(n,qq)+subba_1(n,gg)/2d0)
+     .                  *msq1a_b(n,0,j,k)*xn/2d0
+     .                 +subba_1v(n)/2d0
+     .                  *msqba_1v(n,0,j,k)*xn/2d0
+          enddo
+          do n=3,5,2
+c-- (a,b,c) = (7,5,6) and (6,5,7)
+          msq(6+n,j,k)=msq(6+n,j,k)
+     .                 -(subba_1(n,qq)+sub1a_b(n,qq))
+     .                  *(msq1a_b(n,1,j,k)+msq1a_b(n,2,j,k))/xn/2d0
+          msq(12+n,j,k)=msq(12+n,j,k)
+     .                 +(subbc_2(n,qq)+sub2c_b(n,gg))
+     .                  *msq2c_b(n,0,j,k)*xn/2d0
+     .                 +sub2c_bv(n)
+     .                  *msq2c_bv(n,0,j,k)*xn/2d0
+          enddo      
+          do n=1,2  
+c-- (a,b,c) = (5,6,7) and (5,7,6)
+          msq(n,j,k)   =msq(n,j,k)
+     .                 +subab_c(n,qq)
+     .                  *msqab_c(n,0,j,k)*xn/2d0
+          msq(18+n,j,k)=msq(18+n,j,k)
+     .                 +sub1b_2(n,qq)
+     .                  *msq1b_2(n,0,j,k)*xn/2d0
+          msq(21+n,j,k)=msq(21+n,j,k)
+     .                 +sub2b_1(n,gg)
+     .                  *msq2b_1(n,0,j,k)*xn/2d0
+     .                 +sub2b_1v(n)
+     .                  *msq2b_1v(n,0,j,k)*xn/2d0
+          enddo    
+c-- [n=4] (a,b,c) = (6,7,5)
+          msq(4,j,k)  =msq(4,j,k)
+     .                 +subab_c(4,gg)
+     .                  *msqab_c(4,0,j,k)*xn/2d0                
+     .                 +subab_cv(4)
+     .                  *msqab_cv(4,0,j,k)*xn/2d0                
+c--- choose n=1 which is (7,5,6)
+          do n=3,3
+          msq(21+n,j,k)=msq(21+n,j,k)+sub2b_1(n,qg)*(aveqg/aveqq)*
+     .    (-(msq2b_1(n,1,j,+1)+msq2b_1(n,1,j,+2)+msq2b_1(n,1,j,+3)
+     .      +msq2b_1(n,1,j,+4)+msq2b_1(n,1,j,+5)
+     .      +msq2b_1(n,2,j,+1)+msq2b_1(n,2,j,+2)+msq2b_1(n,2,j,+3)
+     .      +msq2b_1(n,2,j,+4)+msq2b_1(n,2,j,+5))/xn
+     .     +(msq2b_1(n,0,j,+1)+msq2b_1(n,0,j,+2)+msq2b_1(n,0,j,+3)
+     .      +msq2b_1(n,0,j,+4)+msq2b_1(n,0,j,+5))*2d0*xn)
+          enddo
+          endif
+c------ sub-sub-leading colour
+          if ((colourchoice .eq. 3) .or. (colourchoice .eq. 0)) then
+          do n=3,5,2
+c-- (a,b,c) = (7,5,6) and (6,5,7)
+          msq(6+n,j,k)=msq(6+n,j,k)
+     .                 -(subba_1(n,qq)+sub1a_b(n,qq))
+     .                  *msq1a_b(n,0,j,k)*(xn+1d0/xn)/2d0
+          enddo
+c--- additional (qg) collinear contributions
+c--- choose n=3 which is (7,5,6)
+          do n=3,3
+          msq(21+n,j,k)=msq(21+n,j,k)+sub2b_1(n,qg)*(aveqg/aveqq)*
+     .      (msq2b_1(n,0,j,+1)+msq2b_1(n,0,j,+2)+msq2b_1(n,0,j,+3)
+     .      +msq2b_1(n,0,j,+4)+msq2b_1(n,0,j,+5))*(-xn-1d0/xn)
+          enddo          
+          endif
+      endif
+
+      enddo
+      enddo
+
       endif
       
+      if (Qflag) then
+c---rename terms required for q-dipoles
+            do ii=1,4
+              sub57_6(ii)=subab_c(2,ii)
+              sub67_5(ii)=subab_c(4,ii)
+
+              sub17_5(ii)=sub1a_b(3,ii)
+              sub17_6(ii)=sub1a_b(6,ii)
+              sub57_1(ii)=subba_1(3,ii)
+              sub67_1(ii)=subba_1(6,ii)
+              sub27_6(ii)=sub2c_b(1,ii)
+              sub27_5(ii)=sub2c_b(5,ii)
+              sub67_2(ii)=subbc_2(1,ii)
+              sub57_2(ii)=subbc_2(5,ii)
+              sub17_2(ii)=sub1b_2(2,ii)
+              sub15_2(ii)=sub1b_2(3,ii)
+              sub27_1(ii)=sub2b_1(2,ii)
+            enddo
+      endif
+
+      if (Qflag) then
+      if (.not. Gflag) then
+      do nd=1,ndmax
+      do j=-nf,nf
+      do k=-nf,nf
+        msq(nd,j,k)=0d0
       enddo
       enddo
+      enddo
+
+C --if we have not called dips before we need to do it now
+c--- final-final
+      call dipsx(2,p,5,7,6,sub57_6,sub57_6v,msq57_6,msq57_6v,
+     . qqb_w2jetx,qqb_w2jet_gvec,m57_6,m57_6x,mg,mvg,mvxg)
+      call dipsx(4,p,6,7,5,sub67_5,dsubv,msq67_5,dummyv,
+     . qqb_w2jetx,donothing_gvecx,m67_5,m67_5x,mg,mvg,mvxg)
+c--- now the basic initial final and final initial
+c--- second call for dipole 9,12 etc  only supplies new values for
+c--- sub..
+      call dipsx(9,p,1,7,5,sub17_5,dsubv,msq17_5,dummyv,
+     . qqb_w2jetx,donothing_gvecx,m17_5,m17_5x,mg,mvg,mvxg)
+      call dipsx(9,p,5,7,1,sub57_1,sub57_1v,dummy,dummyv,
+     . qqb_w2jetx,qqb_w2jet_gvecx,mqq,msqx,m57_1g,m57_1vg,m57_1vx)
+
+      call dipsx(12,p,1,7,6,sub17_6,dsubv,msq17_6,dummyv,
+     . qqb_w2jetx,donothing_gvecx,m17_6,m17_6x,mg,mvg,mvxg)
+      call dipsx(12,p,6,7,1,sub67_1,sub67_1v,dummy,dummyv,
+     . qqb_w2jetx,qqb_w2jet_gvecx,mqq,msqx,m67_1g,m67_1vg,m67_1vx)
+
+      call dipsx(13,p,2,7,6,sub27_6,dsubv,msq27_6,dummyv,
+     . qqb_w2jetx,donothing_gvecx,m27_6,m27_6x,mg,mvg,mvxg)
+      call dipsx(13,p,6,7,2,sub67_2,dsubv,dummy,dummyv,
+     . qqb_w2jetx,donothing_gvecx,mqq,msqx,mg,mvg,mvxg)
+
+      call dipsx(17,p,2,7,5,sub27_5,dsubv,msq27_5,dummyv,
+     . qqb_w2jetx,donothing_gvecx,m27_5,m27_5x,mg,mvg,mvxg)
+      call dipsx(17,p,5,7,2,sub57_2,dsubv,dummy,dummyv,
+     . qqb_w2jetx,donothing_gvecx,mqq,msqx,mg,mvg,mvxg)
+c--- calculate all the initial-initial dipoles
+      call dipsx(20,p,1,7,2,sub17_2,dsubv,msq17_2,dummyv,
+     . qqb_w2jetx,donothing_gvecx,m17_2,m17_2x,mg,mvg,mvxg)
+      call dipsx(21,p,1,5,2,sub15_2,sub15_2v,msq15_2,msq15_2v,
+     . qqb_w2jetx,qqb_w2jet_gvecx,m15_2,m15_2x,m15_2g,m15_2vg,m15_2vx)
+      call dipsx(23,p,2,7,1,sub27_1,dsubv,msq27_1,dummyv,
+     . qqb_w2jetx,donothing_gvecx,m27_1,m27_1x,mg,mvg,mvxg)
+      call dipsx(24,p,2,5,1,sub25_1,sub25_1v,msq25_1,dummyv,
+     . qqb_w2jetx,qqb_w2jet_gvecx,m25_1,m25_1x,m25_1g,m25_1vg,m25_1vx)
+      endif
+
+c--- calculate some extra ones that we need for the GQ pieces
+c--- I'll put these back higher up once I know they're good
+      call dipsx(19,p,1,6,2,sub16_2,sub16_2v,msq16_2,msq16_2v,
+     . qqb_w2jetx,qqb_w2jet_gvecx,m16_2,m16_2x,m16_2g,m16_2vg,m16_2vx)
+      call dipsx(7,p,1,5,6,sub15_6,dsubv,msq15_6,dummyv,
+     . qqb_w2jetx,donothing_gvecx,m15_6,m15_6x,m15_6g,mvg,mvxg)
+      call dipsx(8,p,1,5,7,sub15_7,dsubv,msq15_7,dummyv,
+     . qqb_w2jetx,donothing_gvecx,m15_7,m15_7x,mg,mvg,mvxg)
+      call dipsx(22,p,2,6,1,sub26_1,sub26_1v,msq26_1,msq26_1v,
+     . qqb_w2jetx,qqb_w2jet_gvecx,m26_1,m26_1x,m26_1g,m26_1vg,m26_1vx)
+      call dipsx(7,p,6,5,1,sub65_1,sub65_1v,dummy,dummyv,
+     . qqb_w2jetx,qqb_w2jet_gvecx,m65_1,m65_1x,m65_1g,m65_1vg,m65_1vx)
+      
+      do j=-nf,nf
+      do k=-nf,nf
+      
+      if ((j .gt. 0) .and. (k.gt.0)) then
+c---QQ
+      msq(2,j,k)=msq(2,j,k)
+     . +sub57_6(qq)
+     . *((xn+1d0/xn)*m57_6(0,j,k)+two*(m57_6(1,j,k)+m57_6(2,j,k))/xn)
+      msq(4,j,k)=msq(4,j,k)
+     . +sub67_5(qq)
+     . *((xn+1d0/xn)*m67_5(0,j,k)+two*(m67_5(1,j,k)+m67_5(2,j,k))/xn)
+      msq(9,j,k)=msq(9,j,k)
+     . +sub17_5(qq)
+     . *((xn-two/xn)*m17_5(2,j,k)-m17_5(0,j,k)/xn-m17_5(1,j,k)/xn)
+     . +sub57_1(qq)
+     . *((xn-two/xn)*m17_5(2,j,k)-m17_5(0,j,k)/xn-m17_5(1,j,k)/xn)
+      msq(12,j,k)=msq(12,j,k)
+     . +sub17_6(qq)
+     . *((xn-two/xn)*m17_6(1,j,k)-m17_6(0,j,k)/xn-m17_6(2,j,k)/xn)
+     . +sub67_1(qq)
+     . *((xn-two/xn)*m17_6(1,j,k)-m17_6(0,j,k)/xn-m17_6(2,j,k)/xn)
+      msq(13,j,k)=msq(13,j,k)
+     . +sub27_6(qq)
+     . *((xn-two/xn)*m27_6(2,j,k)-m27_6(0,j,k)/xn-m27_6(1,j,k)/xn)
+     . +sub67_2(qq)
+     . *((xn-two/xn)*m27_6(2,j,k)-m27_6(0,j,k)/xn-m27_6(1,j,k)/xn)
+      msq(17,j,k)=msq(17,j,k)
+     . +sub27_5(qq)
+     . *((xn-two/xn)*m27_5(1,j,k)-m27_5(0,j,k)/xn-m27_5(2,j,k)/xn)
+     . +sub57_2(qq)
+     . *((xn-two/xn)*m27_5(1,j,k)-m27_5(0,j,k)/xn-m27_5(2,j,k)/xn)
+      msq(20,j,k)=msq(20,j,k)
+     . +sub17_2(qq)
+     . *((xn+1d0/xn)*m17_2(0,j,k)+two*(m17_2(1,j,k)+m17_2(2,j,k))/xn)
+      msq(23,j,k)=msq(23,j,k)
+     . +sub27_1(qq)
+     . *((xn+1d0/xn)*m27_1(0,j,k)+two*(m27_1(1,j,k)+m27_1(2,j,k))/xn)
+       if ((jj(j) .eq. 2) .and. (kk(k) .eq. 1)) then
+       msq(22,j,k)=msq(22,j,k)+sub26_1(gq)*(aveqq/aveqg)*
+     .     (Vsum(j)-0.5d0*Vsq(j,-k))*(
+     .      m26_1x(0,2,0,1,0)+m26_1x(1,2,0,1,0)+m26_1x(2,2,0,1,0))
+     .                        +sub26_1v*(aveqq/aveqg)*
+     .     (Vsum(j)-0.5d0*Vsq(j,-k))*m26_1vx(2,0,1,0)
+       msq(24,j,k)=msq(24,j,k)+
+     .     0.5d0*sub25_1(gq)*(aveqq/aveqg)*Vsq(j,-k)*(
+     .      m25_1x(0,2,0,1,0)+m25_1x(1,2,0,1,0)+m25_1x(2,2,0,1,0))
+     .    +0.5d0*sub25_1v*(aveqq/aveqg)*Vsq(j,-k)*(
+     .     +m25_1vx(2,0,1,0))
+       elseif ((jj(j) .eq. 1) .and. (kk(k) .eq. 2)) then
+       msq(21,j,k)=msq(21,j,k)+sub15_2(gq)*(aveqq/aveqg)*
+     .     (Vsum(k)-0.5d0*Vsq(k,-j))*(
+     .      m15_2x(0,0,2,1,0)+m15_2x(1,0,2,1,0)+m15_2x(2,0,2,1,0))
+     .                        +sub15_2v*(aveqq/aveqg)*
+     .     (Vsum(k)-0.5d0*Vsq(k,-j))*m15_2vx(0,2,1,0)
+       msq(19,j,k)=msq(19,j,k)
+     .                      +0.5d0*sub16_2(gq)*(aveqq/aveqg)*Vsq(k,-j)*(
+     .      m16_2x(0,0,2,1,0)+m16_2x(1,0,2,1,0)+m16_2x(2,0,2,1,0))
+     .                      +0.5d0*sub16_2v*(aveqq/aveqg)*Vsq(k,-j)*(
+     .     +m16_2vx(0,2,1,0))
+       elseif ((jj(j) .eq. 2) .and. (kk(k) .eq. 2)) then
+       if (j .eq. k) then
+       msq(22,j,k)=msq(22,j,k)+sub26_1(gq)*(aveqq/aveqg)*Vsum(j)*(
+     .    +m26_1x(0,2,0,1,0)+m26_1x(1,2,0,1,0)+m26_1x(2,2,0,1,0))
+     .                        +sub26_1v*(aveqq/aveqg)*Vsum(j)*(
+     .    +m26_1vx(2,0,1,0))
+       msq(19,j,k)=msq(19,j,k)+sub16_2(gq)*(aveqq/aveqg)*Vsum(j)*(
+     .      m16_2x(0,0,2,1,0)+m16_2x(1,0,2,1,0)+m16_2x(2,0,2,1,0))
+     .                        +sub16_2v*(aveqq/aveqg)*Vsum(k)*(
+     .     +m16_2vx(0,2,1,0))
+       elseif (j .ne. k) then
+       msq(22,j,k)=msq(22,j,k)+sub26_1(gq)*(aveqq/aveqg)*Vsum(j)*(
+     .    +m26_1x(0,2,0,1,0)+m26_1x(1,2,0,1,0)+m26_1x(2,2,0,1,0))
+     .                        +sub26_1v*(aveqq/aveqg)*Vsum(j)*(
+     .    +m26_1vx(2,0,1,0))
+       msq(21,j,k)=msq(21,j,k)+sub15_2(gq)*(aveqq/aveqg)*Vsum(k)*(
+     .      m15_2x(0,0,4,3,0)+m15_2x(1,0,4,3,0)+m15_2x(2,0,4,3,0))
+     .                        +sub15_2v*(aveqq/aveqg)*Vsum(k)*(
+     .     +m15_2vx(0,4,3,0))
+       endif
+       endif
+      elseif ((j .lt. 0) .and. (k.lt.0)) then
+c---QbarQbar
+      msq(2,j,k)=msq(2,j,k)
+     . +sub57_6(qq)
+     . *((xn+1d0/xn)*m57_6(0,j,k)+two*(m57_6(1,j,k)+m57_6(2,j,k))/xn)
+      msq(4,j,k)=msq(4,j,k)
+     . +sub67_5(qq)
+     . *((xn+1d0/xn)*m67_5(0,j,k)+two*(m67_5(1,j,k)+m67_5(2,j,k))/xn)
+      msq(9,j,k)=msq(9,j,k)
+     . +sub17_5(qq)
+     . *((xn-two/xn)*m17_5(2,j,k)-m17_5(0,j,k)/xn-m17_5(1,j,k)/xn)
+     . +sub57_1(qq)
+     . *((xn-two/xn)*m17_5(2,j,k)-m17_5(0,j,k)/xn-m17_5(1,j,k)/xn)
+      msq(12,j,k)=msq(12,j,k)
+     . +sub17_6(qq)
+     . *((xn-two/xn)*m17_6(1,j,k)-m17_6(0,j,k)/xn-m17_6(2,j,k)/xn)
+     . +sub67_1(qq)
+     . *((xn-two/xn)*m17_6(1,j,k)-m17_6(0,j,k)/xn-m17_6(2,j,k)/xn)
+      msq(13,j,k)=msq(13,j,k)
+     . +sub27_6(qq)
+     . *((xn-two/xn)*m27_6(2,j,k)-m27_6(0,j,k)/xn-m27_6(1,j,k)/xn)
+     . +sub67_2(qq)
+     . *((xn-two/xn)*m27_6(2,j,k)-m27_6(0,j,k)/xn-m27_6(1,j,k)/xn)
+      msq(17,j,k)=msq(17,j,k)
+     . +sub27_5(qq)
+     . *((xn-two/xn)*m27_5(1,j,k)-m27_5(0,j,k)/xn-m27_5(2,j,k)/xn)
+     . +sub57_2(qq)
+     . *((xn-two/xn)*m27_5(1,j,k)-m27_5(0,j,k)/xn-m27_5(2,j,k)/xn)
+      msq(20,j,k)=msq(20,j,k)
+     . +sub17_2(qq)
+     . *((xn+1d0/xn)*m17_2(0,j,k)+two*(m17_2(1,j,k)+m17_2(2,j,k))/xn)
+      msq(23,j,k)=msq(23,j,k)
+     . +sub27_1(qq)
+     . *((xn+1d0/xn)*m27_1(0,j,k)+two*(m27_1(1,j,k)+m27_1(2,j,k))/xn)
+        if ((jj(j) .eq. -2) .and. (kk(k) .eq. -1)) then
+       msq(21,j,k)=msq(21,j,k)+sub15_2(gq)*(aveqq/aveqg)*
+     .     (Vsum(k)-0.5d0*Vsq(k,-j))*(
+     .      m15_2x(0,0,-1,-2,0)+m15_2x(1,0,-1,-2,0)+m15_2x(2,0,-1,-2,0))
+     .                        +sub15_2v*(aveqq/aveqg)*
+     .     (Vsum(k)-0.5d0*Vsq(k,-j))*m15_2vx(0,-1,-2,0)
+       msq(19,j,k)=msq(19,j,k)
+     .                      +0.5d0*sub16_2(gq)*(aveqq/aveqg)*Vsq(k,-j)*(
+     .      m16_2x(0,0,-1,-2,0)+m16_2x(1,0,-1,-2,0)+m16_2x(2,0,-1,-2,0))
+     .                      +0.5d0*sub16_2v*(aveqq/aveqg)*Vsq(k,-j)*(
+     .     +m16_2vx(0,-1,-2,0))
+        elseif ((jj(j) .eq. -1) .and. (kk(k) .eq. -2)) then
+       msq(22,j,k)=msq(22,j,k)+sub26_1(gq)*(aveqq/aveqg)*
+     .     (Vsum(j)-0.5d0*Vsq(j,-k))*(
+     .      m26_1x(0,-1,0,-2,0)+m26_1x(1,-1,0,-2,0)+m26_1x(2,-1,0,-2,0))
+     .                        +sub26_1v*(aveqq/aveqg)*
+     .     (Vsum(j)-0.5d0*Vsq(j,-k))*m26_1vx(-1,0,-2,0)
+       msq(24,j,k)=msq(24,j,k)+
+     .     0.5d0*sub25_1(gq)*(aveqq/aveqg)*Vsq(j,-k)*(
+     .      m25_1x(0,-1,0,-2,0)+m25_1x(1,-1,0,-2,0)+m25_1x(2,-1,0,-2,0))
+     .    +0.5d0*sub25_1v*(aveqq/aveqg)*Vsq(j,-k)*(
+     .     +m25_1vx(-1,0,-2,0))
+        elseif ((jj(j) .eq. -1) .and. (kk(k) .eq. -1)) then
+        if (j.eq.k) then
+       msq(22,j,k)=msq(22,j,k)+sub26_1(gq)*(aveqq/aveqg)*Vsum(j)*(
+     .    +m26_1x(0,-1,0,-2,0)+m26_1x(1,-1,0,-2,0)+m26_1x(2,-1,0,-2,0))
+     .                        +sub26_1v*(aveqq/aveqg)*Vsum(j)*(
+     .    +m26_1vx(-1,0,-2,0))
+       msq(19,j,k)=msq(19,j,k)+sub16_2(gq)*(aveqq/aveqg)*Vsum(k)*(
+     .      m16_2x(0,0,-1,-2,0)+m16_2x(1,0,-1,-2,0)+m16_2x(2,0,-1,-2,0))
+     .                        +sub16_2v*(aveqq/aveqg)*Vsum(k)*(
+     .     +m16_2vx(0,-1,-2,0))
+       elseif (j.ne.k) then
+       msq(22,j,k)=msq(22,j,k)+sub26_1(gq)*(aveqq/aveqg)*Vsum(j)*(
+     .    +m26_1x(0,-1,0,-2,0)+m26_1x(1,-1,0,-2,0)+m26_1x(2,-1,0,-2,0))
+     .                        +sub26_1v*(aveqq/aveqg)*Vsum(j)*(
+     .    +m26_1vx(-1,0,-2,0))
+       msq(21,j,k)=msq(21,j,k)+sub15_2(gq)*(aveqq/aveqg)*Vsum(k)*(
+     .      m15_2x(0,0,-3,-4,0)+m15_2x(1,0,-3,-4,0)+m15_2x(2,0,-3,-4,0))
+     .                        +sub15_2v*(aveqq/aveqg)*Vsum(k)*(
+     .     +m15_2vx(0,-3,-4,0))
+        endif
+        endif
+      elseif ((j .gt. 0) .and. (k.lt.0)) then
+c---QQbar
+      msq(2,j,k)=msq(2,j,k)
+     . +sub57_6(qq)
+     . *((xn-two/xn)*m57_6(2,j,k)-m57_6(0,j,k)/xn-m57_6(1,j,k)/xn)
+      msq(4,j,k)=msq(4,j,k)
+     . +sub67_5(qq)
+     . *((xn-two/xn)*m67_5(2,j,k)-m67_5(0,j,k)/xn-m67_5(1,j,k)/xn)
+      msq(9,j,k)=msq(9,j,k)
+     . +sub17_5(qq)
+     . *((xn-two/xn)*m17_5(1,j,k)-m17_5(0,j,k)/xn-m17_5(2,j,k)/xn)
+     . +sub57_1(qq)
+     . *((xn-two/xn)*m17_5(1,j,k)-m17_5(0,j,k)/xn-m17_5(2,j,k)/xn)
+      msq(12,j,k)=msq(12,j,k)
+     . +sub17_6(qq)
+     . *((xn+1d0/xn)*m17_6(0,j,k)+two*(m17_6(1,j,k)+m17_6(2,j,k))/xn)
+     . +sub67_1(qq)
+     . *((xn+1d0/xn)*m17_6(0,j,k)+two*(m17_6(1,j,k)+m17_6(2,j,k))/xn)
+      msq(13,j,k)=msq(13,j,k)
+     . +sub27_6(qq)
+     . *((xn-two/xn)*m27_6(1,j,k)-m27_6(0,j,k)/xn-m27_6(2,j,k)/xn)
+     . +sub67_2(qq)
+     . *((xn-two/xn)*m27_6(1,j,k)-m27_6(0,j,k)/xn-m27_6(2,j,k)/xn)
+      msq(17,j,k)=msq(17,j,k)
+     . +sub27_5(qq)
+     . *((xn+1d0/xn)*m27_5(0,j,k)+two*(m27_5(1,j,k)+m27_5(2,j,k))/xn)
+     . +sub57_2(qq)
+     . *((xn+1d0/xn)*m27_5(0,j,k)+two*(m27_5(1,j,k)+m27_5(2,j,k))/xn)
+      msq(20,j,k)=msq(20,j,k)
+     . +sub17_2(qq)
+     . *((xn-two/xn)*m17_2(2,j,k)-m17_2(0,j,k)/xn-m17_2(1,j,k)/xn)
+      msq(23,j,k)=msq(23,j,k)
+     . +sub27_1(qq)
+     . *((xn-two/xn)*m27_1(2,j,k)-m27_1(0,j,k)/xn-m27_1(1,j,k)/xn)
+        if ((jj(j).eq.2) .and. (kk(k).eq.-1)) then
+       msq(21,j,k)=msq(21,j,k)+sub15_2(gq)*(aveqq/aveqg)*Vsum(k)*(
+     .      m15_2x(0,0,-1,-2,0)+m15_2x(1,0,-1,-2,0)+m15_2x(2,0,-1,-2,0))
+     .                        +sub15_2v*(aveqq/aveqg)*Vsum(k)*
+     .      m15_2vx(0,-1,-2,0)
+       msq(22,j,k)=msq(22,j,k)+sub26_1(gq)*(aveqq/aveqg)*Vsum(j)*(
+     .      m26_1x(0,2,0,1,0)+m26_1x(1,2,0,1,0)+m26_1x(2,2,0,1,0))
+     .                        +sub26_1v*(aveqq/aveqg)*Vsum(j)*
+     .      m26_1vx(2,0,1,0)
+         if (Vsq(j,k) .ne. 0d0) then
+         msq( 7,j,k)=msq( 7,j,k)+2d0*dfloat(nf)*sub65_1(gq)*(
+     .        m15_6g(0,2,-1)+m15_6g(1,2,-1)+m15_6g(2,2,-1))
+     .                          -2d0*dfloat(nf)*sub65_1v*(
+     .        m65_1vg(0,2,-1)+m65_1vg(1,2,-1)+m65_1vg(2,2,-1))
+         endif
+        elseif ((jj(j).eq.2) .and. (kk(k).eq.-2)) then
+       msq(22,j,k)=msq(22,j,k)+sub26_1(gq)*(aveqq/aveqg)*Vsum(j)*(
+     .      m26_1x(0,2,0,1,0)+m26_1x(1,2,0,1,0)+m26_1x(2,2,0,1,0))
+     .                        +sub26_1v*(aveqq/aveqg)*Vsum(j)*
+     .      m26_1vx(2,0,1,0)
+        elseif ((jj(j).eq.1) .and. (kk(k).eq.-1)) then
+       msq(21,j,k)=msq(21,j,k)+sub15_2(gq)*(aveqq/aveqg)*Vsum(k)*(
+     .      m15_2x(0,0,-1,-2,0)+m15_2x(1,0,-1,-2,0)+m15_2x(2,0,-1,-2,0))
+     .                        +sub15_2v*(aveqq/aveqg)*Vsum(k)*
+     .      m15_2vx(0,-1,-2,0)
+        endif
+      elseif ((j .lt. 0) .and. (k.gt.0)) then
+c---QbarQ
+      msq(2,j,k)=msq(2,j,k)
+     . +sub57_6(qq)
+     . *((xn-two/xn)*m57_6(2,j,k)-m57_6(0,j,k)/xn-m57_6(1,j,k)/xn)
+      msq(4,j,k)=msq(4,j,k)
+     . +sub67_5(qq)
+     . *((xn-two/xn)*m67_5(2,j,k)-m67_5(0,j,k)/xn-m67_5(1,j,k)/xn)
+      msq(9,j,k)=msq(9,j,k)
+     . +sub17_5(qq)
+     . *((xn+1d0/xn)*m17_5(0,j,k)+two*(m17_5(1,j,k)+m17_5(2,j,k))/xn)
+     . +sub57_1(qq)
+     . *((xn+1d0/xn)*m17_5(0,j,k)+two*(m17_5(1,j,k)+m17_5(2,j,k))/xn)
+      msq(12,j,k)=msq(12,j,k)
+     . +sub17_6(qq)
+     . *((xn-two/xn)*m17_6(1,j,k)-m17_6(0,j,k)/xn-m17_6(2,j,k)/xn)
+     . +sub67_1(qq)
+     . *((xn-two/xn)*m17_6(1,j,k)-m17_6(0,j,k)/xn-m17_6(2,j,k)/xn)
+      msq(13,j,k)=msq(13,j,k)
+     . +sub27_6(qq)
+     . *((xn+1d0/xn)*m27_6(0,j,k)+two*(m27_6(1,j,k)+m27_6(2,j,k))/xn)
+     . +sub67_2(qq)
+     . *((xn+1d0/xn)*m27_6(0,j,k)+two*(m27_6(1,j,k)+m27_6(2,j,k))/xn)
+      msq(17,j,k)=msq(17,j,k)
+     . +sub27_5(qq)
+     . *((xn-two/xn)*m27_5(1,j,k)-m27_5(0,j,k)/xn-m27_5(2,j,k)/xn)
+     . +sub57_2(qq)
+     . *((xn-two/xn)*m27_5(1,j,k)-m27_5(0,j,k)/xn-m27_5(2,j,k)/xn)
+      msq(20,j,k)=msq(20,j,k)
+     . +sub17_2(qq)
+     . *((xn-two/xn)*m17_2(2,j,k)-m17_2(0,j,k)/xn-m17_2(1,j,k)/xn)
+      msq(23,j,k)=msq(23,j,k)
+     . +sub27_1(qq)
+     . *((xn-two/xn)*m27_1(2,j,k)-m27_1(0,j,k)/xn-m27_1(1,j,k)/xn)
+        if ((jj(j).eq.-1) .and. (kk(k).eq.2)) then
+       msq(24,j,k)=msq(24,j,k)+sub25_1(gq)*(aveqq/aveqg)*Vsum(j)*(
+     .      m25_1x(0,-1,0,-2,0)+m25_1x(1,-1,0,-2,0)+m25_1x(2,-1,0,-2,0))
+     .                        +sub25_1v*(aveqq/aveqg)*Vsum(j)*
+     .      m25_1vx(-1,0,-2,0)
+       msq(19,j,k)=msq(19,j,k)+sub16_2(gq)*(aveqq/aveqg)*Vsum(k)*(
+     .      m16_2x(0,0,2,1,0)+m16_2x(1,0,2,1,0)+m16_2x(2,0,2,1,0))
+     .                        +sub16_2v*(aveqq/aveqg)*Vsum(k)*
+     .      m16_2vx(0,2,1,0)
+         if (Vsq(j,k) .ne. 0d0) then
+         msq( 7,j,k)=msq( 7,j,k)+2d0*dfloat(nf)*sub65_1(gq)*(
+     .        m15_6g(0,-1,2)+m15_6g(1,-1,2)+m15_6g(2,-1,2))
+     .                          -2d0*dfloat(nf)*sub65_1v*(
+     .        m65_1vg(0,-1,2)+m65_1vg(1,-1,2)+m65_1vg(2,-1,2))
+         endif
+        elseif ((jj(j).eq.-2) .and. (kk(k).eq.2)) then
+       msq(19,j,k)=msq(19,j,k)+sub16_2(gq)*(aveqq/aveqg)*Vsum(k)*(
+     .      m16_2x(0,0,2,1,0)+m16_2x(1,0,2,1,0)+m16_2x(2,0,2,1,0))
+     .                        +sub16_2v*(aveqq/aveqg)*Vsum(k)*
+     .      m16_2vx(0,2,1,0)
+        elseif ((jj(j).eq.-1) .and. (kk(k).eq.1)) then
+       msq(24,j,k)=msq(24,j,k)+sub25_1(gq)*(aveqq/aveqg)*Vsum(j)*(
+     .      m25_1x(0,-1,0,-2,0)+m25_1x(1,-1,0,-2,0)+m25_1x(2,-1,0,-2,0))
+     .                        +sub25_1v*(aveqq/aveqg)*Vsum(j)*
+     .      m25_1vx(-1,0,-2,0)
+        endif
+
+      elseif (j.eq.0) then
+c---------G-Q and G-Qbar
+       if     (k .gt. 0) then
+       msq(20,j,k)=msq(20,j,k)+sub17_2(qg)*(aveqg/aveqq)*(
+     .   +(xn-one/xn)*(m17_2(0,+1,k)+m17_2(0,+2,k)+m17_2(0,+3,k)
+     .                +m17_2(0,+4,k)+m17_2(0,+5,k))
+     .   +(xn-one/xn)*(m17_2(1,+1,k)+m17_2(1,+2,k)+m17_2(1,+3,k)
+     .                +m17_2(1,+4,k)+m17_2(1,+5,k))
+     .   +(xn-one/xn)*(m17_2(2,+1,k)+m17_2(2,+2,k)+m17_2(2,+3,k)
+     .                +m17_2(2,+4,k)+m17_2(2,+5,k)))
+         if (kk(k) .eq. 1) then
+         msq(21,j,k)=msq(21,j,k)+sub15_2(qg)*(aveqg/aveqq)*(xn-one/xn)*(
+     .    +(0.5d0*m15_2x(0,-1,1,1,-2)*Vsq(-k,k+1)
+     .           +m15_2x(0,-3,1,1,-4)*(2d0-Vsq(-k,k+1)))
+     .    +(0.5d0*m15_2x(1,-1,1,1,-2)*Vsq(-k,k+1)
+     .           +m15_2x(1,-3,1,1,-4)*(2d0-Vsq(-k,k+1)))
+     .    +(0.5d0*m15_2x(2,-1,1,1,-2)*Vsq(-k,k+1)
+     .           +m15_2x(2,-3,1,1,-4)*(2d0-Vsq(-k,k+1))))
+         msq(19,j,k)=msq(19,j,k)+sub16_2(qg)*(aveqg/aveqq)*(xn-one/xn)*(
+     .    +(0.5d0*m16_2x(0,-1,1,1,-2)*Vsq(-k,k+1)
+     .           +m16_2x(0,-1,1,3,-4)*(2d0-Vsq(-k,k+1)))
+     .    +(0.5d0*m16_2x(1,-1,1,1,-2)*Vsq(-k,k+1)
+     .           +m16_2x(1,-1,1,3,-4)*(2d0-Vsq(-k,k+1)))
+     .    +(0.5d0*m16_2x(2,-1,1,1,-2)*Vsq(-k,k+1)
+     .           +m16_2x(2,-1,1,3,-4)*(2d0-Vsq(-k,k+1))))
+         msq(22,j,k)=msq(22,j,k)+sub26_1(gq)*(aveqg/avegg)*(
+     .    +m26_1x(0,0,0,1,-2)*Vsq(-k,k+1)*0.5d0
+     .    +m26_1x(0,0,0,3,-4)*(2d0-Vsq(-k,k+1))
+     .    +m26_1x(1,0,0,1,-2)*Vsq(-k,k+1)*0.5d0
+     .    +m26_1x(1,0,0,3,-4)*(2d0-Vsq(-k,k+1))
+     .    +m26_1x(2,0,0,1,-2)*Vsq(-k,k+1)*0.5d0
+     .    +m26_1x(2,0,0,3,-4)*(2d0-Vsq(-k,k+1)))
+     .                          +sub26_1v*(aveqg/avegg)*(
+     .    +m26_1vx(0,0,1,-2)*Vsq(-k,k+1)*0.5d0
+     .    +m26_1vx(0,0,3,-4)*(2d0-Vsq(-k,k+1)))
+         msq(24,j,k)=msq(24,j,k)+
+     .    0.5d0*sub25_1(gq)*(aveqg/avegg)*Vsq(-k,k+1)*(
+     .    +m25_1x(0,0,0,1,-2)+m25_1x(1,0,0,1,-2)+m25_1x(2,0,0,1,-2))
+     .    +0.5d0*sub25_1v*(aveqg/avegg)*Vsq(-k,k+1)*(
+     .    +m25_1vx(0,0,1,-2))
+         endif
+         if (kk(k) .eq. 2) then
+         msq(21,j,k)=msq(21,j,k)+sub15_2(qg)*(aveqg/aveqq)*Vsum(k)*(
+     .    +(xn-one/xn)*(0.5d0*m15_2x(0,-1,2,1,-1)+m15_2x(0,-1,2,2,-2)
+     .                 +m15_2x(0,-4,2,1,-4)+m15_2x(0,-3,2,1,-3)*2d0
+     .                 +m15_2x(0,-3,2,2,-4))
+     .    +(xn-one/xn)*(0.5d0*m15_2x(1,-1,2,1,-1)+m15_2x(1,-1,2,2,-2)
+     .                 +m15_2x(1,-4,2,1,-4)+m15_2x(1,-3,2,1,-3)*2d0
+     .                 +m15_2x(1,-3,2,2,-4))
+     .    +(xn-one/xn)*(0.5d0*m15_2x(2,-1,2,1,-1)+m15_2x(2,-1,2,2,-2)
+     .                 +m15_2x(2,-4,2,1,-4)+m15_2x(2,-3,2,1,-3)*2d0
+     .                 +m15_2x(2,-3,2,2,-4)))
+         msq(19,j,k)=msq(19,j,k)+sub16_2(qg)*(aveqg/aveqq)*Vsum(k)*(
+     .    +(xn-one/xn)*(0.5d0*m16_2x(0,-1,2,1,-1)+m16_2x(0,-2,2,1,-2)
+     .                 +m16_2x(0,-1,2,4,-4)+m16_2x(0,-1,2,3,-3)*2d0
+     .                 +m16_2x(0,-2,2,3,-4))
+     .    +(xn-one/xn)*(0.5d0*m16_2x(1,-1,2,1,-1)+m16_2x(1,-2,2,1,-2)
+     .                 +m16_2x(1,-1,2,4,-4)+m16_2x(1,-1,2,3,-3)*2d0
+     .                 +m16_2x(1,-2,2,3,-4))
+     .    +(xn-one/xn)*(0.5d0*m16_2x(2,-1,2,1,-1)+m16_2x(2,-2,2,1,-2)
+     .                 +m16_2x(2,-1,2,4,-4)+m16_2x(2,-1,2,3,-3)*2d0
+     .                 +m16_2x(2,-2,2,3,-4)))
+         msq(22,j,k)=msq(22,j,k)+sub26_1(gq)*(aveqg/avegg)*(
+     .    +m26_1x(0,0,0,1,-2)+m26_1x(0,0,0,3,-4)
+     .    +m26_1x(1,0,0,1,-2)+m26_1x(1,0,0,3,-4)
+     .    +m26_1x(2,0,0,1,-2)+m26_1x(2,0,0,3,-4))
+     .                          +sub26_1v*(aveqg/avegg)*(
+     .    +m26_1vx(0,0,1,-2)+m26_1vx(0,0,3,-4))
+         msq( 9,j,k)=msq( 9,j,k)+3.5d0*sub57_1(gq)*(
+     .    +m17_5x(0,0,2,0,1)+m17_5x(1,0,2,0,1)+m17_5x(2,0,2,0,1))
+     .                          -3.5d0*sub57_1v*m57_1vx(0,2,0,1)
+         msq(12,j,k)=msq(12,j,k)+1.5d0*sub67_1(gq)*(
+     .    +m17_6x(0,0,2,1,0)+m17_6x(1,0,2,1,0)+m17_6x(2,0,2,1,0))
+     .                          -1.5d0*sub67_1v*m67_1vx(0,2,1,0)
+         endif
+        elseif (k .lt. 0) then
+        msq(20,j,k)=msq(20,j,k)+sub17_2(qg)*(aveqg/aveqq)*(
+     .    +(xn-one/xn)*(m17_2(0,-1,k)+m17_2(0,-2,k)+m17_2(0,-3,k)
+     .                 +m17_2(0,-4,k)+m17_2(0,-5,k))
+     .    +(xn-one/xn)*(m17_2(1,-1,k)+m17_2(1,-2,k)+m17_2(1,-3,k)
+     .                 +m17_2(1,-4,k)+m17_2(1,-5,k))
+     .    +(xn-one/xn)*(m17_2(2,-1,k)+m17_2(2,-2,k)+m17_2(2,-3,k)
+     .                 +m17_2(2,-4,k)+m17_2(2,-5,k)))
+          if (kk(k) .eq. -2) then
+          msq(21,j,k)=msq(21,j,k)+sub15_2(qg)*(aveqg/aveqq)*(
+     .     +(xn-one/xn)*(0.5d0*m15_2x(0,2,-2,-2,1)+m15_2x(0,4,-2,-2,3))
+     .     +(xn-one/xn)*(0.5d0*m15_2x(1,2,-2,-2,1)+m15_2x(1,4,-2,-2,3))
+     .     +(xn-one/xn)*(0.5d0*m15_2x(2,2,-2,-2,1)+m15_2x(2,4,-2,-2,3)))
+          msq(19,j,k)=msq(19,j,k)+sub16_2(qg)*(aveqg/aveqq)*(
+     .     +(xn-one/xn)*(0.5d0*m16_2x(0,2,-2,-2,1)+m16_2x(0,2,-2,-4,3))
+     .     +(xn-one/xn)*(0.5d0*m16_2x(1,2,-2,-2,1)+m16_2x(1,2,-2,-4,3))
+     .     +(xn-one/xn)*(0.5d0*m16_2x(2,2,-2,-2,1)+m16_2x(2,2,-2,-4,3)))
+          msq(22,j,k)=msq(22,j,k)+sub26_1(gq)*(aveqg/avegg)*(
+     .     +m26_1x(0,0,0,-2,1)*0.5d0+m26_1x(0,0,0,-4,3)
+     .     +m26_1x(1,0,0,-2,1)*0.5d0+m26_1x(1,0,0,-4,3)
+     .     +m26_1x(2,0,0,-2,1)*0.5d0+m26_1x(2,0,0,-4,3))
+     .                           +sub26_1v*(aveqg/avegg)*(
+     .     +m26_1vx(0,0,-2,1)*0.5d0+m26_1vx(0,0,-4,3))
+          msq(24,j,k)=msq(24,j,k)+0.5d0*sub25_1(gq)*(aveqg/avegg)*(
+     .     +m25_1x(0,0,0,-2,1)+m25_1x(1,0,0,-2,1)+m25_1x(2,0,0,-2,1))
+     .                           +0.5d0*sub25_1v*(aveqg/avegg)*(
+     .     +m25_1vx(0,0,-2,1))
+          endif
+          if (kk(k) .eq. -1) then
+          msq(21,j,k)=msq(21,j,k)+
+     .     sub15_2(qg)*(aveqg/aveqq)*Vsq(k,-k+1)*(
+     .     +(xn-one/xn)*(0.5d0*m15_2x(0,2,-1,-2,2)+m15_2x(0,2,-1,-1,1)
+     .                  +m15_2x(0,4,-1,-2,4)+m15_2x(0,3,-1,-2,3)*2d0)
+     .     +(xn-one/xn)*(0.5d0*m15_2x(1,2,-1,-2,2)+m15_2x(1,2,-1,-1,1)
+     .                  +m15_2x(1,4,-1,-2,4)+m15_2x(1,3,-1,-2,3)*2d0)
+     .     +(xn-one/xn)*(0.5d0*m15_2x(2,2,-1,-2,2)+m15_2x(2,2,-1,-1,1)
+     .                  +m15_2x(2,4,-1,-2,4)+m15_2x(2,3,-1,-2,3)*2d0))
+     .    +sub15_2(qg)*(aveqg/aveqq)*(2d0-Vsq(k,-k+1))*(xn-one/xn)*(
+     .                  +m15_2x(0,4,-1,-1,3)
+     .                  +m15_2x(1,4,-1,-1,3)
+     .                  +m15_2x(2,4,-1,-1,3))
+          msq(19,j,k)=msq(19,j,k)+
+     .     sub16_2(qg)*(aveqg/aveqq)*Vsq(k,-k+1)*(
+     .     +(xn-one/xn)*(0.5d0*m16_2x(0,2,-1,-2,2)+m16_2x(0,1,-1,-2,1)
+     .                  +m16_2x(0,2,-1,-4,4)+m16_2x(0,2,-1,-3,3)*2d0)
+     .     +(xn-one/xn)*(0.5d0*m16_2x(1,2,-1,-2,2)+m16_2x(1,1,-1,-2,1)
+     .                  +m16_2x(1,2,-1,-4,4)+m16_2x(1,2,-1,-3,3)*2d0)
+     .     +(xn-one/xn)*(0.5d0*m16_2x(2,2,-1,-2,2)+m16_2x(2,1,-1,-2,1)
+     .                  +m16_2x(2,2,-1,-4,4)+m16_2x(2,2,-1,-3,3)*2d0))
+     .    +sub16_2(qg)*(aveqg/aveqq)*(2d0-Vsq(k,-k+1))*(xn-one/xn)*(
+     .                  +m16_2x(0,1,-1,-4,3)
+     .                  +m16_2x(1,1,-1,-4,3)
+     .                  +m16_2x(2,1,-1,-4,3))
+          msq(22,j,k)=msq(22,j,k)+sub26_1(gq)*(aveqg/avegg)*(
+     .     +m26_1x(0,0,0,-2,1)*Vsq(k,-k+1)
+     .     +m26_1x(0,0,0,-4,3)*(2d0-Vsq(k,-k+1))
+     .     +m26_1x(1,0,0,-2,1)*Vsq(k,-k+1)
+     .     +m26_1x(1,0,0,-4,3)*(2d0-Vsq(k,-k+1))
+     .     +m26_1x(2,0,0,-2,1)*Vsq(k,-k+1)
+     .     +m26_1x(2,0,0,-4,3)*(2d0-Vsq(k,-k+1)))
+     .                           +sub26_1v*(aveqg/avegg)*(
+     .     +m26_1vx(0,0,-2,1)*Vsq(k,-k+1)
+     .     +m26_1vx(0,0,-4,3)*(2d0-Vsq(k,-k+1)))
+          msq( 9,j,k)=msq( 9,j,k)+3.5d0*sub57_1(gq)*Vsq(k,-k+1)*(
+     .     +m17_5x(0,0,-1,0,-2)+m17_5x(1,0,-1,0,-2)+m17_5x(2,0,-1,0,-2))
+     .                           -3.5d0*sub57_1v*Vsq(k,-k+1)*
+     .      m57_1vx(0,-1,0,-2)
+          msq(12,j,k)=msq(12,j,k)+1.5d0*sub67_1(gq)*Vsq(k,-k+1)*(
+     .     +m17_6x(0,0,-1,-2,0)+m17_6x(1,0,-1,-2,0)+m17_6x(2,0,-1,-2,0))
+     .                           -1.5d0*sub67_1v*Vsq(k,-k+1)*
+     .      m67_1vx(0,-1,-2,0)
+          endif
+        endif
+      elseif (k.eq.0) then
+c---------Q-G and Qbar-G
+        if     (j .gt. 0) then
+        msq(23,j,k)=msq(23,j,k)+sub27_1(qg)*(aveqg/aveqq)*(
+     .    +(xn-one/xn)*(m27_1(0,j,+1)+m27_1(0,j,+2)+m27_1(0,j,+3)
+     .                 +m27_1(0,j,+4)+m27_1(0,j,+5))
+     .    +(xn-one/xn)*(m27_1(1,j,+1)+m27_1(1,j,+2)+m27_1(1,j,+3)
+     .                 +m27_1(1,j,+4)+m27_1(1,j,+5))
+     .    +(xn-one/xn)*(m27_1(2,j,+1)+m27_1(2,j,+2)+m27_1(2,j,+3)
+     .                 +m27_1(2,j,+4)+m27_1(2,j,+5)))
+          if (jj(j) .eq. 1) then
+          msq(24,j,k)=msq(24,j,k)+sub25_1(qg)*(aveqg/aveqq)*(
+     .     +(xn-one/xn)*(0.5d0*m25_1x(0,1,-1,1,-2)*Vsq(-j,j+1)
+     .                        +m25_1x(0,1,-1,3,-4)*(2d0-Vsq(-j,j+1)))
+     .     +(xn-one/xn)*(0.5d0*m25_1x(1,1,-1,1,-2)*Vsq(-j,j+1)
+     .                        +m25_1x(1,1,-1,3,-4)*(2d0-Vsq(-j,j+1)))
+     .     +(xn-one/xn)*(0.5d0*m25_1x(2,1,-1,1,-2)*Vsq(-j,j+1)
+     .                        +m25_1x(2,1,-1,3,-4)*(2d0-Vsq(-j,j+1))))
+          msq(22,j,k)=msq(22,j,k)+sub26_1(qg)*(aveqg/aveqq)*(
+     .     +(xn-one/xn)*(0.5d0*m26_1x(0,1,-1,1,-2)*Vsq(-j,j+1)
+     .                        +m26_1x(0,1,-3,1,-4)*(2d0-Vsq(-j,j+1)))
+     .     +(xn-one/xn)*(0.5d0*m26_1x(1,1,-1,1,-2)*Vsq(-j,j+1)
+     .                        +m26_1x(1,1,-3,1,-4)*(2d0-Vsq(-j,j+1)))
+     .     +(xn-one/xn)*(0.5d0*m26_1x(2,1,-1,1,-2)*Vsq(-j,j+1)
+     .                        +m26_1x(2,1,-3,1,-4)*(2d0-Vsq(-j,j+1))))
+          msq(19,j,k)=msq(19,j,k)+0.5d0*sub16_2(gq)*(aveqg/avegg)*(
+     .     +m16_2x(0,0,0,1,-2)+m16_2x(1,0,0,1,-2)+m16_2x(2,0,0,1,-2))
+     .                           +0.5d0*sub16_2v*(aveqg/avegg)*(
+     .     +m16_2vx(0,0,1,-2))
+          msq(21,j,k)=msq(21,j,k)+
+     .     sub15_2(gq)*(aveqg/avegg)*(2d0-0.5d0*Vsq(-j,j+1))*(
+     .     +m15_2x(0,0,0,1,-2)+m15_2x(1,0,0,1,-2)+m15_2x(2,0,0,1,-2))
+     .    +sub15_2v*(aveqg/avegg)*(2d0-0.5d0*Vsq(-j,j+1))*(
+     .     +m15_2vx(0,0,1,-2))
+           endif
+          if (jj(j) .eq. 2) then
+          msq(24,j,k)=msq(24,j,k)+sub25_1(qg)*(aveqg/aveqq)*Vsum(j)*(
+     .     +(xn-one/xn)*(m25_1x(0,2,-1,2,-2)+0.5d0*m25_1x(0,2,-1,1,-1)
+     .                  +m25_1x(0,2,-1,4,-4)+m25_1x(0,2,-1,3,-3)*2d0
+     .                  +m25_1x(0,2,-2,3,-4))
+     .     +(xn-one/xn)*(m25_1x(1,2,-1,2,-2)+0.5d0*m25_1x(1,2,-1,1,-1)
+     .                  +m25_1x(1,2,-1,4,-4)+m25_1x(1,2,-1,3,-3)*2d0
+     .                  +m25_1x(1,2,-2,3,-4))
+     .     +(xn-one/xn)*(m25_1x(2,2,-1,2,-2)+0.5d0*m25_1x(2,2,-1,1,-1)
+     .                  +m25_1x(2,2,-1,4,-4)+m25_1x(2,2,-1,3,-3)*2d0
+     .                  +m25_1x(2,2,-2,3,-4)))
+          msq(22,j,k)=msq(22,j,k)+sub26_1(qg)*(aveqg/aveqq)*Vsum(j)*(
+     .     +(xn-one/xn)*(m26_1x(0,2,-2,1,-2)+0.5d0*m26_1x(0,2,-1,1,-1)
+     .                  +m26_1x(0,2,-4,1,-4)+m26_1x(0,2,-3,1,-3)*2d0
+     .                  +m26_1x(0,2,-3,2,-4))
+     .     +(xn-one/xn)*(m26_1x(1,2,-2,1,-2)+0.5d0*m26_1x(1,2,-1,1,-1)
+     .                  +m26_1x(1,2,-4,1,-4)+m26_1x(1,2,-3,1,-3)*2d0
+     .                  +m26_1x(1,2,-3,2,-4))
+     .     +(xn-one/xn)*(m26_1x(2,2,-2,1,-2)+0.5d0*m26_1x(2,2,-1,1,-1)
+     .                  +m26_1x(2,2,-4,1,-4)+m26_1x(2,2,-3,1,-3)*2d0
+     .                  +m26_1x(2,2,-3,2,-4)))
+          msq( 9,j,k)=msq( 9,j,k)+0.5d0*sub57_1(gq)*(
+     .     +m17_5x(0,2,0,0,1)+m17_5x(1,2,0,0,1)+m17_5x(2,2,0,0,1))
+     .                           -0.5d0*sub57_1v*m57_1vx(2,0,0,1)
+          msq(12,j,k)=msq(12,j,k)+4.5d0*sub67_1(gq)*(
+     .     +m17_6x(0,2,0,1,0)+m17_6x(1,2,0,1,0)+m17_6x(2,2,0,1,0))
+     .                           -4.5d0*sub67_1v*m67_1vx(2,0,1,0)
+          msq(19,j,k)=msq(19,j,k)+sub16_2(gq)*(aveqg/avegg)*(
+     .     +m16_2x(0,0,0,1,-2)+m16_2x(1,0,0,1,-2)+m16_2x(2,0,0,1,-2))
+     .                           +sub16_2v*(aveqg/avegg)*(
+     .     +m16_2vx(0,0,1,-2))
+          msq(21,j,k)=msq(21,j,k)+sub15_2(gq)*(aveqg/avegg)*(
+     .     +m15_2x(0,0,0,3,-4)+m15_2x(1,0,0,3,-4)+m15_2x(2,0,0,3,-4))
+     .                           +sub15_2v*(aveqg/avegg)*(
+     .     +m15_2vx(0,0,3,-4))
+          endif
+        elseif (j .lt. 0) then
+        msq(23,j,k)=msq(23,j,k)+sub27_1(qg)*(aveqg/aveqq)*(
+     .    +(xn-one/xn)*(m27_1(0,j,-1)+m27_1(0,j,-2)+m27_1(0,j,-3)
+     .                 +m27_1(0,j,-4)+m27_1(0,j,-5))
+     .    +(xn-one/xn)*(m27_1(1,j,-1)+m27_1(1,j,-2)+m27_1(1,j,-3)
+     .                 +m27_1(1,j,-4)+m27_1(1,j,-5))
+     .    +(xn-one/xn)*(m27_1(2,j,-1)+m27_1(2,j,-2)+m27_1(2,j,-3)
+     .                 +m27_1(2,j,-4)+m27_1(2,j,-5)))
+          if (jj(j) .eq. -2) then
+          msq(24,j,k)=msq(24,j,k)+sub25_1(qg)*(aveqg/aveqq)*(
+     .     +(xn-one/xn)*(0.5d0*m25_1x(0,-2,2,-2,1)+m25_1x(0,-2,2,-4,3))
+     .     +(xn-one/xn)*(0.5d0*m25_1x(1,-2,2,-2,1)+m25_1x(1,-2,2,-4,3))
+     .     +(xn-one/xn)*(0.5d0*m25_1x(2,-2,2,-2,1)+m25_1x(2,-2,2,-4,3)))
+          msq(22,j,k)=msq(22,j,k)+sub26_1(qg)*(aveqg/aveqq)*(
+     .     +(xn-one/xn)*(0.5d0*m26_1x(0,-2,2,-2,1)+m26_1x(0,-2,4,-2,3))
+     .     +(xn-one/xn)*(0.5d0*m26_1x(1,-2,2,-2,1)+m26_1x(1,-2,4,-2,3))
+     .     +(xn-one/xn)*(0.5d0*m26_1x(2,-2,2,-2,1)+m26_1x(2,-2,4,-2,3)))
+          msq(19,j,k)=msq(19,j,k)+0.5d0*sub16_2(gq)*(aveqg/avegg)*(
+     .     +m16_2x(0,0,0,-2,1)+m16_2x(1,0,0,-2,1)+m16_2x(2,0,0,-2,1))
+     .                           +0.5d0*sub16_2v*(aveqg/avegg)*(
+     .     +m16_2vx(0,0,-2,1))
+          msq(21,j,k)=msq(21,j,k)+1.5d0*sub15_2(gq)*(aveqg/avegg)*(
+     .     +m15_2x(0,0,0,-2,1)+m15_2x(1,0,0,-2,1)+m15_2x(2,0,0,-2,1))
+     .                           +1.5d0*sub15_2v*(aveqg/avegg)*(
+     .     +m15_2vx(0,0,-2,1))
+          endif
+          if (jj(j) .eq. -1) then
+          msq(24,j,k)=msq(24,j,k)+
+     .     sub25_1(qg)*(aveqg/aveqq)*Vsq(j,-j+1)*(xn-one/xn)*(
+     .     +(0.5d0*m25_1x(0,-1,2,-2,2)+m25_1x(0,-1,2,-1,1)
+     .      +m25_1x(0,-1,2,-4,4)+m25_1x(0,-1,2,-3,3)*2d0)
+     .     +(0.5d0*m25_1x(1,-1,2,-2,2)+m25_1x(1,-1,2,-1,1)
+     .      +m25_1x(1,-1,2,-4,4)+m25_1x(1,-1,2,-3,3)*2d0)
+     .     +(0.5d0*m25_1x(2,-1,2,-2,2)+m25_1x(2,-1,2,-1,1)
+     .      +m25_1x(2,-1,2,-4,4)+m25_1x(2,-1,2,-3,3)*2d0))
+     .    +sub25_1(qg)*(aveqg/aveqq)*(2d0-Vsq(j,-j+1))*(xn-one/xn)*(
+     .      +m25_1x(0,-1,1,-4,3)
+     .      +m25_1x(1,-1,1,-4,3)
+     .      +m25_1x(2,-1,1,-4,3))
+          msq(22,j,k)=msq(22,j,k)+
+     .     sub26_1(qg)*(aveqg/aveqq)*Vsq(j,-j+1)*(xn-one/xn)*(
+     .     +(0.5d0*m26_1x(0,-1,2,-2,2)+m26_1x(0,-1,1,-2,1)
+     .      +m26_1x(0,-1,4,-2,4)+m26_1x(0,-1,3,-2,3)*2d0)
+     .     +(0.5d0*m26_1x(1,-1,2,-2,2)+m26_1x(1,-1,1,-2,1)
+     .      +m26_1x(1,-1,4,-2,4)+m26_1x(1,-1,3,-2,3)*2d0)
+     .     +(0.5d0*m26_1x(2,-1,2,-2,2)+m26_1x(2,-1,1,-2,1)
+     .      +m26_1x(2,-1,4,-2,4)+m26_1x(2,-1,3,-2,3)*2d0))
+     .    +sub26_1(qg)*(aveqg/aveqq)*(2d0-Vsq(j,-j+1))*(xn-one/xn)*(
+     .      +m26_1x(0,-1,4,-1,3)
+     .      +m26_1x(1,-1,4,-1,3)
+     .      +m26_1x(2,-1,4,-1,3))
+          msq( 9,j,k)=msq( 9,j,k)+0.5d0*sub57_1(gq)*(
+     .     +m17_5x(0,-1,0,0,-2)+m17_5x(1,-1,0,0,-2)+m17_5x(2,-1,0,0,-2))
+     .                           -0.5d0*sub57_1v*m57_1vx(-1,0,0,-2)
+          msq(12,j,k)=msq(12,j,k)+4.5d0*sub67_1(gq)*(
+     .     +m17_6x(0,-1,0,-2,0)+m17_6x(1,-1,0,-2,0)+m17_6x(2,-1,0,-2,0))
+     .                           -4.5d0*sub67_1v*m67_1vx(-1,0,-2,0)
+          msq(19,j,k)=msq(19,j,k)+sub16_2(gq)*(aveqg/avegg)*(
+     .     +m16_2x(0,0,0,-2,1)+m16_2x(1,0,0,-2,1)+m16_2x(2,0,0,-2,1))
+     .                           +sub16_2v*(aveqg/avegg)*(
+     .     +m16_2vx(0,0,-2,1))
+          msq(21,j,k)=msq(21,j,k)+
+     .     sub15_2(gq)*(aveqg/avegg)*(2d0-Vsq(j,-j+1))*(
+     .     +m15_2x(0,0,0,-4,3)+m15_2x(1,0,0,-4,3)+m15_2x(2,0,0,-4,3))
+     .    +sub15_2v*(aveqg/avegg)*(2d0-Vsq(j,-j+1))*(
+     .     +m15_2vx(0,0,-4,3))
+           endif
+        endif
+      endif
+
+
+      enddo
+      enddo
+      
+      endif 
 
       return
       end
       
+      
+      subroutine donothing_gvecx(p,n,in,msq,mvg,mvxg)
+      implicit none
+      include 'constants.f'
+      integer j,k,in
+      double precision msq(-nf:nf,-nf:nf),p(mxpart,4),n(4)
+      double precision mvg(0:2,-nf:nf,-nf:nf)                                        
+      double precision mvxg(-nf:nf,-nf:nf,-nf:nf,-nf:nf)                        
+      do j=-nf,nf
+         do k=-nf,nf
+            msq(j,k)=0d0
+         enddo
+      enddo
+      return
+      end                                                                       
+

@@ -24,10 +24,22 @@ c--- statement function
       end
 
       double complex function aqqb_zbb_new(i1,i2,i3,i4,i5,i6)
-c--- Note that this is the amplitude for particle labels
-c--- q1, Qb2, Q3, qb4, lb5, l6
 c--- This corresponds to A++(1,2,3,4) of eq. (12.3) in BDK
-c--- 5 is a left-handed anti-particle, 6 a right-handed particle
+c    The notation of BDK calculates the following amplitude
+c
+c     q3(L)----<----------q2            q3(L)------<--------q2          
+c                 0                             0
+c                 0                             0
+c                 0                             0
+c     q1(R)------<--------q4            q1(R)------<--------q4
+c             )                                         )
+c            (                                         (
+c             )                                         )
+c     l5(L)-------<-------l6            l5(L)-------<-------l6
+c
+c     Note that this function has the property
+c     Conjg(aqqb_zbb_new(i1,i2,i3,i4,i5,i6))=
+C          -aqqb_zbb_new(i4,i3,i2,i1,i6,i5)
       implicit none
       include 'constants.f'
       include 'masses.f'

@@ -15,23 +15,27 @@
       include 'clustering.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
-      integer ih1,ih2,j,k,nd,nmax,nmin,jets,nproc,nvec     
+      include 'flags.f'
+      include 'efficiency.f'
+      integer ih1,ih2,j,k,nd,nmax,nmin,jets,nproc,nvec,jj,kk     
       double precision vector(mxdim),W,val,xint
       double precision sqrts,fx1(-nf:nf),fx2(-nf:nf)
       double precision p(mxpart,4),pjet(mxpart,4),p1ext(4),p2ext(4)
-      double precision pswt,wbb,bit,sum,pt,ayrap,msqs(-nf:nf,-nf:nf)
+      double precision pswt,msqs(-nf:nf,-nf:nf)
       double precision s(mxpart,mxpart),wgt,msq(-nf:nf,-nf:nf)
       double precision msqc(maxd,-nf:nf,-nf:nf),xmsq(0:maxd)
       double precision flux,BrnRat,xreal,xreal2
-      double precision xx1,xx2,q(mxpart,4),ptjet,bclustmass,rcut
+      double precision xx1,xx2,q(mxpart,4),rcut
+      double precision debugsmall
+      character*32 debugmsg
       character*6 case
-      integer nqcdjets,nqcdstart
+      integer nqcdjets,nqcdstart,i,kx
       character pdlabel*7,jetlabel(mxpart)*2
       common/nqcdjets/nqcdjets,nqcdstart
       common/parts/jets,jetlabel
       common/process/case
       common/xreal/xreal,xreal2
-      logical bin,makecuts,first,madejetcuts,failed,cuts,bbproc
+      logical bin,makecuts,first,madejetcuts,failed,cuts,bbproc,test1
       common/density/ih1,ih2
       common/energy/sqrts
       common/pdlabel/pdlabel
@@ -43,26 +47,20 @@
       common/nmin/nmin
       common/nproc/nproc
       common/rcut/rcut
-      REAL*8 P1(0:3),P2(0:3),P3(0:3),P4(0:3),P5(0:3),P6(0:3),P7(0:3)                     
-     . ,SUUB_VEVEBBBG,SDDB_VEVEBBBG,SUUB_EMEPBBBG,SDDB_EMEPBBBG
-     . ,SUG_VEVEBBBU,SUBG_VEVEBBBUB,SGU_VEVEBBBU,SGUB_VEVEBBBUB
-     . ,SUUB_VEVEG,SDDB_VEVEG,SUUB_EMEPG
-     . ,SUG_VEVEU,SUBG_VEVEUB,SGU_VEVEU,SGUB_VEVEUB
       data first/.true./
       
+      ntotshot=ntotshot+1
       pswt=0d0
-      realint=0d0
-      
+      realint=0d0      
 
       W=sqrts**2
       
       if (first) then
-      write(6,*)
-      write(6,*) 'nmin=',nmin,',nmax=',nmax
-      write(6,*)
-      first=.false.
+         write(6,*)
+         write(6,*) 'nmin=',nmin,',nmax=',nmax
+         write(6,*)
+         first=.false.
       endif
- 30   continue
       if     (
      .       (case .eq. 'W_only')
      .  .or. (case .eq. 'Z_only')
@@ -90,14 +88,41 @@
           endif
       endif
       nvec=npart+2
+      
+c--- DEBUG to test limit where p5 is soft
+c      do j=1,4
+c        p(8,j)=p(5,j)
+c        p(5,j)=p(7,j)
+c        p(7,j)=p(8,j)
+c        p(8,j)=0d0
+c      enddo     
+c--- DEBUG      
+      
       call dotem(nvec,p,s)
 
 c      write(6,*) 's(1,5),s(1,6),s(2,5),s(2,6),s(5,6),s(3,4)',
 c     . s(1,5),s(1,6),s(2,5),s(2,6),s(5,6),s(3,4)
 c---impose cuts on final state
       call masscuts(s,*999)
-c----reject event if any  s(i,j)  is too small
+c----reject event if any s(i,j) is too small
       call smalls(s,npart,*999)
+      
+c---- DEBUG 
+c---- generate collinear points that satisy the jet cuts    
+c      call genclust2(p,rcut,jets,pjet,jetlabel)
+c      if ((-s(1,7) .lt. 1d-1) .and. (jets .eq. nqcdjets)
+c     . .and. (-p(1,4) .gt. 1d1) .and. (p(7,4) .gt. 1d1)) then
+c      do j=1,7
+c      write(6,77) j,p(j,1),p(j,2)
+c      write(6,78) p(j,3),p(j,4)
+c      enddo
+c      pause
+c      endif      
+c      goto 998
+c   77 format('      data p',i1,'/ ',f20.14,'d0,',f20.14,'d0,')
+c   78 format('     .  ',f20.14,'d0,',f20.14,'d0/')
+c---- DEBUG      
+      
       
 c----calculate the x's for the incoming partons from generated momenta
 
@@ -107,13 +132,12 @@ c----calculate the x's for the incoming partons from generated momenta
       if (debug) write(*,*) 'Reconstructed x1,x2 ',xx1,xx2
       
       if ((xx1 .gt. 1) .or. (xx2 .gt. 1)) then
-      realint=0d0
-      return
+         realint=0d0
+         return
       endif
 
       call fdist(pdlabel,ih1,xx1,scale,fx1)
       call fdist(pdlabel,ih2,xx2,scale,fx2)
-
 
       flux=fbGeV2/(two*xx1*xx2*W)
 
@@ -146,83 +170,7 @@ c--- set bbproc to TRUE if the process involves two b-jets
         call qqb_wbb_g(p,msq)      
         call qqb_wbb_gs(p,msqc)      
       elseif (case .eq. 'Zbbbar') then
-c      call qqb_Zbb_g(p,msq)
-c      write(*,*) 'OLD u ',msq(2,-2)
-c      write(*,*) 'OLD ub',msq(-2,2)
-c      write(*,*) 'OLD d ',msq(1,-1)
-c      write(*,*) 'OLD db',msq(-1,1)
-c      write(*,*) 'OLD ug ',msq(2,0)
-c      write(*,*) 'OLD ubg',msq(-2,0)
-c      write(*,*) 'OLD gu',msq(0,2)
-c      write(*,*) 'OLD gub',msq(0,-2)
       call qqb_Zbb_g(p,msq)
-c      write(*,*) 'NEW u ',msq(2,-2)
-c      write(*,*) 'NEW ub',msq(-2,2)
-c      write(*,*) 'NEW d ',msq(1,-1)
-c      write(*,*) 'NEW db',msq(-1,1)      
-c      write(*,*) 'NEW ug ',msq(2,0)
-c      write(*,*) 'NEW ubg',msq(-2,0)
-c      write(*,*) 'NEW gu',msq(0,2)
-c      write(*,*) 'NEW gub',msq(0,-2)
-c--- call MADGRAPH routines     
-c      do k=1,4
-c        if (k.lt.4) then
-c          j=k
-c        else
-c          j=0
-c        endif 
-c        p1(j)=-p(1,k)
-c        p2(j)=-p(2,k)
-c        p3(j)=p(3,k)
-c        p4(j)=p(4,k)
-c        p5(j)=p(5,k)
-c        p6(j)=p(6,k)
-c        p7(j)=p(7,k)
-c      enddo            
-c      call initialize
-c      do j=-nf,nf
-c      do k=-nf,nf
-c      msq(j,k)=0d0
-c      enddo
-c      enddo
-c      do j=-nf,nf
-c      do k=-nf,nf
-c      if     ((j.gt.0) .and. (k.eq.-j) .and. (j/2 .eq. (j+1)/2)) then
-c        msq(j,k)=3d0*gsq**3*esq**2/(fourpi/128d0)**2*
-c     .             suub_vevebbbg(p1,p2,p3,p4,p5,p6,p7)
-c      elseif ((j.lt.0) .and. (k.eq.-j) .and. (j/2 .eq. (j-1)/2)) then
-c        msq(j,k)=3d0*gsq**3*esq**2/(fourpi/128d0)**2*
-c     .             suub_vevebbbg(p2,p1,p3,p4,p5,p6,p7)
-c      elseif ((j.gt.0) .and. (k.eq.-j) .and. (j/2 .eq. (j-1)/2)) then
-c        msq(j,k)=3d0*gsq**3*esq**2/(fourpi/128d0)**2*
-c     .             sddb_vevebbbg(p1,p2,p3,p4,p5,p6,p7)
-c      elseif ((j.lt.0) .and. (k.eq.-j) .and. (j/2 .eq. (j+1)/2)) then
-c        msq(j,k)=3d0*gsq**3*esq**2/(fourpi/128d0)**2*
-c     .             sddb_vevebbbg(p2,p1,p3,p4,p5,p6,p7)
-c      elseif ((j.gt.0) .and. (k.eq.0) .and. (j/2 .eq. (j+1)/2)) then
-c        msq(j,k)=3d0*gsq**3*esq**2/(fourpi/128d0)**2*
-c     .             sug_vevebbbu(p1,p2,p3,p4,p5,p6,p7)
-c      elseif ((j.lt.0) .and. (k.eq.0) .and. (j/2 .eq. (j-1)/2)) then
-c        msq(j,k)=3d0*gsq**3*esq**2/(fourpi/128d0)**2*
-c     .             subg_vevebbbub(p1,p2,p3,p4,p5,p6,p7)
-c      elseif ((k.gt.0) .and. (j.eq.0) .and. (k/2 .eq. (k+1)/2)) then
-c        msq(j,k)=3d0*gsq**3*esq**2/(fourpi/128d0)**2*
-c     .             sgu_vevebbbu(p1,p2,p3,p4,p5,p6,p7)
-c      elseif ((k.lt.0) .and. (j.eq.0) .and. (k/2 .eq. (k-1)/2)) then
-c        msq(j,k)=3d0*gsq**3*esq**2/(fourpi/128d0)**2*
-c     .             sgub_vevebbbub(p1,p2,p3,p4,p5,p6,p7)
-c      endif
-c      enddo
-c      enddo
-c      write(*,*) 'MAD u ',msq(2,-2)
-c      write(*,*) 'MAD ub',msq(-2,2)
-c      write(*,*) 'MAD d ',msq(1,-1)
-c      write(*,*) 'MAD db',msq(-1,1)
-c      write(*,*) 'MAD ug ',msq(2,0)
-c      write(*,*) 'MAD ubg',msq(-2,0)
-c      write(*,*) 'MAD gu',msq(0,2)
-c      write(*,*) 'MAD gub',msq(0,-2)
-c      pause
         call qqb_zbb_gs(p,msqc) 
       elseif (case .eq. 'WHbbar') then
         call qqb_wh_gs(p,msqc)     
@@ -231,8 +179,140 @@ c      pause
         call qqb_zh_gs(p,msqc)     
         call qqb_zh_g(p,msq)      
       elseif (case .eq. 'W_2jet') then
-        call dotem(7,p,s)
-        call qqb_w2jet_g(p,msq)      
+        call qqb_w2jet_g(p,msq)  
+        call qqb_w2jet_gs(p,msqc)
+c---- include this section if you want to check subtraction cancellation
+        if (1 .eq. 2) then
+        do j=1,4
+        do k=1,9
+           call coll2(p,k,j)
+           write(*,*) 'Point ',j,':'
+           call qqb_w2jet_g(p,msq)  
+           call qqb_w2jet_gs(p,msqc) 
+           do jj=-nf,nf
+           do kk=-nf,nf
+              msqs(jj,kk)=0d0
+           enddo
+           enddo
+           do nd=1,ndmax
+              do jj=1,7
+              do kk=1,4
+                 q(jj,kk)=ptilde(nd,jj,kk)
+              enddo
+              enddo
+              call dotem(6,q,s)
+              call genclust2(q,rcut,jets,pjet,jetlabel)
+              if (jets .eq. nqcdjets) then
+                 do jj=-nf,nf
+                 do kk=-nf,nf
+                    msqs(jj,kk)=msqs(jj,kk)+msqc(nd,jj,kk)
+                 enddo
+                 enddo
+              endif
+           enddo
+
+c--- find smallest value of msq
+           debugsmall=1d0
+           do jj=-nf,nf
+           do kk=-nf,nf
+             if ((msq(jj,kk) .lt. debugsmall)
+     .       .and. (msq(jj,kk) .gt. 0d0)) debugsmall=msq(jj,kk)        
+           enddo
+           enddo                  
+        
+           do jj=-nf,nf
+           do kk=-nf,nf
+           if (msq(jj,kk) .eq. 0d0) then
+              if (msqs(jj,kk) .eq. 0d0) then
+                 debugmsg='   OK   zero msq and subtraction'
+              else
+                 debugmsg=' FAILED subtraction with msq=0'
+              endif
+              write(*,65) jj,kk,'    n/a   ',msq(jj,kk),msqs(jj,kk),
+     .        debugmsg
+              goto 64
+              endif
+
+           if ((msq(jj,kk)/debugsmall) .lt. 1d4) then
+              debugmsg='   OK   not singular'
+              write(*,63) jj,kk,msq(jj,kk)/msqs(jj,kk),
+     .                      msq(jj,kk),msqs(jj,kk),debugmsg
+           else
+               if (msqs(jj,kk) .eq. 0d0) then
+                  debugmsg=' FAILED singular, no subtraction'
+                  write(*,65) jj,kk,'    n/a   ',msq(jj,kk),msqs(jj,kk),
+     . debugmsg
+                  goto 64
+               endif
+               if (abs(abs(msq(jj,kk)/msqs(jj,kk))-1d0) .gt. 0.03d0)then
+                  debugmsg=' FAILED singularity uncancelled'
+               else
+                  debugmsg='   OK   cancelled'
+               endif
+               write(*,63) jj,kk,msq(jj,kk)/msqs(jj,kk),
+     .                    msq(jj,kk),msqs(jj,kk),debugmsg
+           endif
+        
+   64      continue
+           enddo
+           enddo
+
+        pause
+        
+        enddo
+        enddo 
+        endif
+
+      elseif (case .eq. 'Z_2jet') then
+        call compare(p)
+        pause
+        if (1 .eq. 2) then
+        do j=1,5
+        do k=1,9
+        call coll2(p,k,j)
+        write(*,*) 'Point ',j,':'
+c        call dotem(7,p,s)
+c        call compare(p)
+c        call qqb_w2jet_soft(p,msqs)  
+c        write(*,*) 'Expecting --->',nqcdjets,' jets'
+c        write(*,*) 'Clustering -->',jets,' jets'
+        call qqb_z2jet_g(p,msq)  
+        call qqb_z2jet_gs(p,msqc) 
+        do jj=-nf,nf
+        do kk=-nf,nf
+          msqs(jj,kk)=0d0
+        enddo
+        enddo
+        do nd=1,ndmax
+          do jj=1,7
+          do kk=1,4
+            q(jj,kk)=ptilde(nd,jj,kk)
+          enddo
+          enddo
+          call dotem(6,q,s)
+          call genclust2(q,rcut,jets,pjet,jetlabel)
+          if (jets .eq. nqcdjets) then
+            do jj=-nf,nf
+            do kk=-nf,nf
+              msqs(jj,kk)=msqs(jj,kk)+msqc(nd,jj,kk)
+            enddo
+            enddo
+          else
+          endif
+        enddo
+        do jj=-nf,nf
+        do kk=-nf,nf
+        if (msq(jj,kk) .ne. 0d0) then
+c          write(*,*) 'real  ',jj,kk,msq(jj,kk)
+c          write(*,*) 'dips  ',jj,kk,msqs(jj,kk)
+          write(*,*) 'ratio ',jj,kk,msq(jj,kk)/msqs(jj,kk),msq(jj,kk)
+        endif
+        enddo
+        enddo
+        pause
+        enddo
+        enddo
+        endif 
       elseif (case .eq. 'HWW_4l') then
         call qqb_hww_g(p,msq)      
         call qqb_hww_gs(p,msqc)     
@@ -247,82 +327,69 @@ c      pause
         call qqb_w_gs(p,msqc)     
       elseif (case .eq. 'Z_only') then
         call qqb_z_g(p,msq)      
-c      write(*,*) 'NEW u ',msq(2,-2)
-c      write(*,*) 'NEW ub',msq(-2,2)
-c      write(*,*) 'NEW d ',msq(1,-1)
-c      write(*,*) 'NEW db',msq(-1,1)      
-c      write(*,*) 'NEW ug ',msq(2,0)
-c      write(*,*) 'NEW ubg',msq(-2,0)
-c      write(*,*) 'NEW gu',msq(0,2)
-c      write(*,*) 'NEW gub',msq(0,-2)
-c--- call MADGRAPH routines     
-c      do k=1,4
-c        if (k.lt.4) then
-c          j=k
-c        else
-c          j=0
-c        endif 
-c        p1(j)=-p(1,k)
-c        p2(j)=-p(2,k)
-c        p3(j)=p(3,k)
-c        p4(j)=p(4,k)
-c        p5(j)=p(5,k)
-c      enddo            
-c      call initialize
-c      do j=-nf,nf
-c      do k=-nf,nf
-c      msq(j,k)=0d0
-c      enddo
-c      enddo
-c      do j=-nf,nf
-c      do k=-nf,nf
-c      if     ((j.gt.0) .and. (k.eq.-j) .and. (j/2 .eq. (j+1)/2)) then
-c        msq(j,k)=3d0*gsq*esq**2/(fourpi/128d0)**2*
-c     .             suub_veveg(p1,p2,p3,p4,p5)
-c        msq(j,k)=gsq*esq**2/(fourpi/128d0)**2*
-c     .             suub_emepg(p1,p2,p3,p4,p5)
-c      elseif ((j.lt.0) .and. (k.eq.-j) .and. (j/2 .eq. (j-1)/2)) then
-c        msq(j,k)=3d0*gsq*esq**2/(fourpi/128d0)**2*
-c     .             suub_veveg(p2,p1,p3,p4,p5)
-c      elseif ((j.gt.0) .and. (k.eq.-j) .and. (j/2 .eq. (j-1)/2)) then
-c        msq(j,k)=3d0*gsq*esq**2/(fourpi/128d0)**2*
-c     .             sddb_veveg(p1,p2,p3,p4,p5)
-c      elseif ((j.lt.0) .and. (k.eq.-j) .and. (j/2 .eq. (j+1)/2)) then
-c        msq(j,k)=3d0*gsq*esq**2/(fourpi/128d0)**2*
-c     .             sddb_veveg(p2,p1,p3,p4,p5)
-c      elseif ((j.gt.0) .and. (k.eq.0) .and. (j/2 .eq. (j+1)/2)) then
-c        msq(j,k)=3d0*gsq*esq**2/(fourpi/128d0)**2*
-c     .             sug_veveu(p1,p2,p3,p4,p5)
-c      elseif ((j.lt.0) .and. (k.eq.0) .and. (j/2 .eq. (j-1)/2)) then
-c        msq(j,k)=3d0*gsq*esq**2/(fourpi/128d0)**2*
-c     .             subg_veveub(p1,p2,p3,p4,p5)
-c      elseif ((k.gt.0) .and. (j.eq.0) .and. (k/2 .eq. (k+1)/2)) then
-c        msq(j,k)=3d0*gsq*esq**2/(fourpi/128d0)**2*
-c     .             sgu_veveu(p1,p2,p3,p4,p5)
-c      elseif ((k.lt.0) .and. (j.eq.0) .and. (k/2 .eq. (k-1)/2)) then
-c        msq(j,k)=3d0*gsq*esq**2/(fourpi/128d0)**2*
-c     .             sgub_veveub(p1,p2,p3,p4,p5)
-c      endif
-c      enddo
-c      enddo
-c      write(*,*) 'MAD u ',msq(2,-2)
-c      write(*,*) 'MAD ub',msq(-2,2)
-c      write(*,*) 'MAD d ',msq(1,-1)
-c      write(*,*) 'MAD db',msq(-1,1)
-c      write(*,*) 'MAD ug ',msq(2,0)
-c      write(*,*) 'MAD ubg',msq(-2,0)
-c      write(*,*) 'MAD gu',msq(0,2)
-c      write(*,*) 'MAD gub',msq(0,-2)
-c      pause
         call qqb_z_gs(p,msqc)     
       elseif (case .eq. 'W_1jet') then
         call qqb_w2jet(p,msq)      
         call qqb_w1jet_gs(p,msqc)  
-c        call qqb_w1jet_soft(p,msqs)  
+        if (1 .eq. 2) then
+        do i=1,1
+        do kx=2,6
+        call coll6(p,kx,i)
+        call dotem(6,p,s)
+        write(6,*)
+        if (abs(s(1,6)) .lt. 1d0) write(6,*) 's(1,6)',s(1,6)
+        if (abs(s(2,6)) .lt. 1d0) write(6,*) 's(2,6)',s(2,6)
+        if (abs(s(1,5)) .lt. 1d0) write(6,*) 's(1,5)',s(1,5)
+        if (abs(s(2,5)) .lt. 1d0) write(6,*) 's(2,5)',s(2,5)
+        if (abs(s(5,6)) .lt. 1d0) write(6,*) 's(5,6)',s(5,6)
+        call qqb_w2jet(p,msq)      
+        call qqb_w1jet_gs(p,msqc)  
+         do jj=-nf,nf
+         do kk=-nf,nf
+           msqs(jj,kk)=0d0
+         enddo
+         enddo
+         do nd=1,ndmax
+           do jj=1,6
+           do kk=1,4
+             q(jj,kk)=ptilde(nd,jj,kk)
+           enddo
+           enddo
+           call dotem(6,q,s)
+         if (i.le.3) 
+     .   test1=((abs(s(1,5)) .gt. 10d0) .and. (abs(s(2,5)) .gt. 10d0))
+         if (i.gt.3) 
+     .   test1=((abs(s(1,6)) .gt. 10d0) .and. (abs(s(2,6)) .gt. 10d0))
+         if (test1) then
+             do jj=-nf,nf
+             do kk=-nf,nf
+               msqs(jj,kk)=msqs(jj,kk)+msqc(nd,jj,kk)
+c            if ((jj.eq.2).and.(kk.eq.1)) write(*,*) nd,msqc(nd,jj,kk)
+             enddo
+             enddo
+         else
+         endif
+         enddo
+
+         do jj=-nf,nf
+         do kk=-nf,nf
+         if (abs(msq(jj,kk)/msqs(jj,kk))-1 .gt. 0.01d0) then
+           write(*,*) jj,kk,msq(jj,kk)/msqs(jj,kk),msq(jj,kk)
+c           write(*,*) 'real  ',jj,kk,msq(jj,kk)
+c           write(*,*) 'dips ',jj,kk,msqs(jj,kk)
+c           write(*,*) 'ratio ',jj,kk,msq(jj,kk)/msqs(jj,kk)
+         endif
+         enddo
+         enddo
+
+         enddo
+         pause
+         enddo
+         
+         endif
       elseif (case .eq. 'Z_1jet') then
         call qqb_z1jet_gs(p,msqc)  
         call qqb_z2jet(p,msq)      
-c        call qqb_z1jet_soft(p,msqs)  
       elseif ((case .eq. 'tt_bbl') .or .(case .eq. 'tt_bbl')) then
         write(6,*) 'No real correction to t_bbar yet'
         stop
@@ -339,87 +406,6 @@ c        call qqb_z1jet_soft(p,msqs)
          call qqb_zz_gs(p,msqc)      
       endif
       
-c      if (p(7,4) .lt. 2d0) then
-c      if (-s(1,7) .lt. 20d0) then
-c      write(*,*) 's17',s(1,7),'   s27',s(2,7)
-c      write(*,*) 's57',s(5,7),'   s67',s(6,7)
-c      write(*,*) 's56',s(5,6)
-c      write(*,*) 'p(7,4)',p(7,4)
-c      realint=0d0
-c      do nd=1,ndmax
-c      if (msqc(nd,0,0).ne.0d0) write(*,*) 'nd',nd,msqc(nd,0,0)
-c      realint=realint+msqc(nd,0,0)
-c      enddo
-c      write(*,*) 'c1+2',msqc(1,0,0)+msqc(2,0,0)
-c      write(*,*) 'c3+4',msqc(3,0,0)+msqc(4,0,0)
-c      write(*,*) 'c5+8',msqc(5,0,0)+msqc(8,0,0)
-c      write(*,*) 'c6+7',msqc(6,0,0)+msqc(7,0,0)
-c      write(*,*) 'c5-8',msqc(5,0,0)+msqc(6,0,0)
-c     .                 +msqc(7,0,0)+msqc(8,0,0)
-c      write(*,*) 'msqc',realint
-c      write(*,*) 'soft',msqs(0,0)
-c      write(*,*) 'msq ',msq(0,0)
-c      write(*,*) 'DIFF',1d0-msq(0,0)/realint
-c      pause
-c      endif
-      
-c--------debug
-       if (debug) then
-       if ((case .eq. 'W_1jet') .or. (case .eq. 'HWW_4l')) then
-        sum=+msqc(1,2,-1)+msqc(2,2,-1)+msqc(3,2,-1) 
-     .      +msqc(4,2,-1)+msqc(5,2,-1)+msqc(6,2,-1) 
-        write(6,*) 'msq(2,-1),sum,ratio',msq(2,-1),sum,msq(2,-1)/sum 
-        write(6,*) 
-
-        sum=+msqc(1,-1,2)+msqc(2,-1,2)+msqc(3,-1,2) 
-     .      +msqc(4,-1,2)+msqc(5,-1,2)+msqc(6,-1,2) 
-        write(6,*) 'msq(-1,2),sum,ratio',msq(-1,2),sum,msq(-1,2)/sum 
-        write(6,*) 
-
-        elseif (case .eq. 'Z_1jet') then
-
-        sum=+msqc(1,1,-1)+msqc(2,1,-1)+msqc(3,1,-1) 
-     .      +msqc(4,1,-1)+msqc(5,1,-1)+msqc(6,1,-1) 
-        write(6,*) 'msq(1,-1),sum,ratio',msq(1,-1),sum,msq(1,-1)/sum 
-        write(6,*) 
-
-        sum=+msqc(1,-1,1)+msqc(2,-1,1)+msqc(3,-1,1) 
-     .      +msqc(4,-1,1)+msqc(5,-1,1)+msqc(6,-1,1) 
-        write(6,*) 'msq(-1,1),sum,ratio',msq(-1,1),sum,msq(-1,1)/sum 
-        write(6,*) 
-
-        endif
-
-        sum=+msqc(1,-1,0)+msqc(2,-1,0)+msqc(3,-1,0) 
-     .      +msqc(4,-1,0)+msqc(5,-1,0)+msqc(6,-1,0) 
-        write(6,*) 'msq(-1,0),sum,ratio',msq(-1,0),sum,msq(-1,0)/sum 
-        write(6,*) 
-
-        sum=+msqc(1,0,-1)+msqc(2,0,-1)+msqc(3,0,-1) 
-     .      +msqc(4,0,-1)+msqc(5,0,-1)+msqc(6,0,-1) 
-        write(6,*) 'msq(0,-1),sum,ratio',msq(0,-1),sum,msq(0,-1)/sum 
-        write(6,*) 
-
-        sum=+msqc(1,2,0)+msqc(2,2,0)+msqc(3,2,0) 
-     .      +msqc(4,2,0)+msqc(5,2,0)+msqc(6,2,0) 
-        write(6,*) 'msq(2,0),sum,ratio',msq(2,0),sum,msq(2,0)/sum 
-        write(6,*) 
-
-        sum=+msqc(1,0,2)+msqc(2,0,2)+msqc(3,0,2) 
-     .      +msqc(4,0,2)+msqc(5,0,2)+msqc(6,0,2) 
-        write(6,*) 'msq(0,2),sum,ratio',msq(0,2),sum,msq(0,2)/sum 
-        write(6,*) 
-
-        sum=+msqc(1,0,0)+msqc(2,0,0)+msqc(3,0,0) 
-     .      +msqc(4,0,0)+msqc(5,0,0)+msqc(6,0,0) 
-        write(6,*) 'msq(0,0),sum,ratio',msq(0,0),sum,msq(0,0)/sum 
-        write(6,*) 
-
-        pause
-        goto 30
-        endif 
-c--------debug
-
       do j=0,ndmax
       xmsq(j)=0d0
       enddo
@@ -490,7 +476,7 @@ c--- if nqcdjets=0, no clustering is performed and pjet=p
           q(j,k)=p(j,k)
           enddo
           enddo
-          call genclust2(p,rcut,jets,pjet,jetlabel)
+          call genclust2(q,rcut,jets,pjet,jetlabel)
 c          write(*,*) 'should have ',nqcdjets
 c          write(*,*) 'actually have ',jets
 c          do j=1,jets
@@ -503,10 +489,26 @@ c          enddo
 c          write(*,*) 'now have ',jets
 c          pause
           if (jets .ne. nqcdjets) then
+c--- DEBUG
+          njetzero=njetzero+1
+          ncutzero=ncutzero-1
+          if (nqcdjets .eq. 0) then
             do j=0,ndmax
             xmsq(j)=0d0
             enddo       
             goto 998
+          else
+            failed=.true.
+            goto 996
+          endif
+c--- two lines above are added
+c            njetzero=njetzero+1
+c            ntotzero=ntotzero+1
+c            do j=0,ndmax
+c            xmsq(j)=0d0
+c            enddo       
+c            goto 998
+c--- DEBUG
           endif
         endif
         else
@@ -519,7 +521,6 @@ c---call clustering for counter-event
           enddo
           jets=2
         else
-
           do j=1,7
           do k=1,4
           q(j,k)=ptilde(nd,j,k)
@@ -527,8 +528,7 @@ c---call clustering for counter-event
           enddo
 c--- cluster partons (nqcdstart) to (nqcdstart+nqcdjets-1)
 c--- if nqcdjets=0, no clustering is performed and pjet=p      
-          call genclust(q,nqcdstart,nqcdstart+nqcdjets-1,
-     .                   rcut,jets,pjet,jetlabel)
+          call genclust2(q,rcut,jets,pjet,jetlabel)
         endif
         endif
 
@@ -536,7 +536,7 @@ c--- if nqcdjets=0, no clustering is performed and pjet=p
 
 c---check to see if (counter-)event passes cuts
         failed=.false.
-        if ((clustering) .and. (jets .ne. nqcdjets)) then
+        if (clustering .and. (jets .ne. nqcdjets)) then
           failed=.true.
           goto 996
         endif
@@ -548,10 +548,11 @@ c---check to see if (counter-)event passes cuts
           endif
         endif
  996    if (failed) then
-c          call dotem(nvec,p,s)
-c          if (( s(6,7) .lt. 50d0).and.(xmsq(0).ne.0d0)) then
-c            write(*,*) 'dropping ',nd,xmsq(nd),' with ',jets,' jets'
-c          endif
+          if (nd .eq. 0) then
+            ncutzero=ncutzero+1
+            ntotzero=ntotzero+1
+          endif
+          call dotem(nvec,p,s)
           xmsq(nd)=0d0
           goto 997         
         endif
@@ -572,89 +573,6 @@ c---otherwise, skip contribution
 
       call dotem(nvec,p,s)
 
-c      if (abs(xmsq(0)). gt. 2000d0) then
-c      if ((xmsq(0) .ne. 0d0) .and.
-c     .   ((-s(1,7) .lt. 1d0) .or. (-s(2,7) .lt. 1d0)
-c     ..or.( s(5,7) .lt. 1d0) .or. ( s(6,7) .lt. 1d0))) then
-c      if (p(7,4) .lt. 1d0) then
-
-c      if (( -s(1,7) .lt. 100d0).and.( -s(2,7) .lt. 100d0)
-c     . .and. (xmsq(0).ne.0d0)) then
-c      write(*,*) 's17',s(1,7),'   s27',s(2,7)
-c      write(*,*) 's57',s(5,7),'   s67',s(6,7)
-c      write(*,*) 's56',s(5,6)
-c      do j=1,7
-c        write(*,*) 'part ',j,p(j,4),p(j,1),p(j,2),p(j,3)
-c      enddo
-c      write(*,*)
-c      call genclust(p,nqcdstart,nqcdstart+nqcdjets,
-c     .               rcut,jets,pjet,jetlabel)
-c      do j=1,6
-c        write(*,*) ' jet ',j,pjet(j,4),pjet(j,1),pjet(j,2),pjet(j,3)
-c      enddo
-c      write(*,*)
-c      realint=0d0
-c      do nd=1,ndmax
-c      write(*,*) 'nd',nd,xmsq(nd)/flux/pswt*BrnRat
-c      realint=realint+xmsq(nd)
-c      enddo
-c      write(*,*) 'msqc',realint/flux/pswt*BrnRat
-c      write(*,*) 'msq ',xmsq(0)/flux/pswt*BrnRat
-c      write(*,*) 'DIFF',1d0+xmsq(0)/realint
-c      pause
-c      endif
-
-c      if ((-s(1,7) .lt. 50d0) .or. (-s(2,7) .lt. 50d0)) then
-c      call compare(p)
-c      if (xmsq(0) .eq. 0d0) then
-c      write(*,*) s(5,6),s(1,5)*s(2,5)/s(1,2),s(1,6)*s(2,6)/s(1,2)
-c      write(*,*) s(1,5),s(2,5)
-c      write(*,*) 's17',s(1,7),'   s27',s(2,7)
-c      if ((s(5,7) .lt. 50d0) .or. (s(6,7) .lt. 50d0)) then
-c      write(*,*) 'msq ',xmsq(0)
-c      realint=0d0
-c      do nd=1,ndmax
-c      write(*,*) 'nd',nd,xmsq(nd)
-c      realint=realint+xmsq(nd)
-c      enddo
-c      write(*,*) 'msqc',realint 
-c      write(*,*) 'DIFF',1d0+xmsq(0)/realint
-c      if (xmsq(0) .eq. 0d0) then
-c      if ((s(5,7) .lt. 50d0) .or. (s(6,7) .lt. 50d0)) then
-c      write(*,*) 'nd     s56         pt5       pt6      xmsq'
-c      write(*,*) '0',s(5,6),s(1,5)*s(2,5)/s(1,2),s(1,6)*s(2,6)/s(1,2),
-c     . xmsq(0)
-c      do nd=1,ndmax
-c        do j=1,7
-c        do k=1,4
-c        q(j,k)=ptilde(nd,j,k)
-c        enddo
-c        enddo
-c      call dotem(nvec,q,s)
-c      write(*,*) nd,s(5,6),s(1,5)*s(2,5)/s(1,2),s(1,6)*s(2,6)/s(1,2),
-c     . xmsq(nd)
-c      enddo
-c      write(*,*) 'total ',realint,'    with diff ',1d0+xmsq(0)/realint
-c      do j=1,6
-c      write(*,*) j,p(j,4),p(j,1),p(j,2),p(j,3)
-c      enddo
-c      do nd=1,2
-c      do j=1,6
-c      write(*,*) j,ptilde(nd,j,4),ptilde(nd,j,1),
-c     .ptilde(nd,j,2),ptilde(nd,j,3)
-c      enddo
-c      enddo
-c      call dotem(p,s)
-c      write(*,*) 's12',s(1,2)
-c      write(*,*) 's34',s(3,4)
-c      write(*,*) 's15',s(1,5)
-c      write(*,*) 's16',s(1,6)
-c      write(*,*) 's25',s(2,5)
-c      write(*,*) 's26',s(2,6)
-c      write(*,*) 's56',s(5,6)
-c      pause
-c      endif            
-
  998  continue
 
       if (realwt) then
@@ -665,20 +583,47 @@ c      endif
       xreal=xreal+xint*wgt/dfloat(itmx)
       xreal2=xreal2+xint**2*wgt/dfloat(itmx)
 
-      if (debug) write(6,*) 'flux',flux
-      if (debug) write(6,*) 'pswt',pswt
-      if (debug) write(6,*) 'xmsq(0)',xmsq(0)
-      if (debug) write(6,*) 'xmsq(1)',xmsq(1)
-      if (debug) write(6,*) 'xmsq(2)',xmsq(2)
-      if (debug) write(6,*) 'xmsq(3)',xmsq(3)
-      if (debug) write(6,*) 'xmsq(4)',xmsq(4)
-      if (debug) write(6,*) 'xmsq(5)',xmsq(5)
-      if (debug) write(6,*) 'xmsq(6)',xmsq(6)
-      if (debug) pause
-
+      if (abs(realint) .gt. 1d99) then
+        write(*,*) realint
+        call dotem(nvec,p,s)
+        write(*,*) 's12',s(1,2)
+        write(*,*) 's34',s(3,4)
+        write(*,*) 's15',s(1,5)
+        write(*,*) 's25',s(2,5)
+        write(*,*) 's16',s(1,6)
+        write(*,*) 's26',s(2,6)
+        write(*,*) 's17',s(1,7)
+        write(*,*) 's27',s(2,7)
+        write(*,*) 's56',s(5,6)
+        write(*,*) 's57',s(5,7)
+        write(*,*) 's67',s(6,7)
+        write(*,*) 'pt5',dsqrt(s(1,5)*s(2,5)/s(1,2))
+        write(*,*) 'pt6',dsqrt(s(1,6)*s(2,6)/s(1,2))
+        write(*,*) 'pt7',dsqrt(s(1,7)*s(2,7)/s(1,2))
+        write(*,*) 'y5',0.5d0*dabs(log((p(5,4)+p(5,3))/(p(5,4)-p(5,3))))
+        write(*,*) 'y6',0.5d0*dabs(log((p(6,4)+p(6,3))/(p(6,4)-p(6,3))))
+        write(*,*) 'y7',0.5d0*dabs(log((p(7,4)+p(7,3))/(p(7,4)-p(7,3))))
+        do nd=1,ndmax
+c          write(*,*) 'nd',nd,xmsq(nd)
+        enddo
+        write(*,*) 'dipoles',realint-xmsq(0)
+        write(*,*) 'real   ',xmsq(0)
+        do j=1,7
+        do k=1,4
+c          write(*,*) '     p(',j,',',k,')=',p(j,k),'d0'
+        enddo
+        enddo
+c        write(*,*) '     pswt=',pswt,'d0'
+        pause
+      endif
+      
       return
 
  999  realint=0d0
+      ntotzero=ntotzero+1
+ 
+   63 format(1x,2i3,f10.6,2e14.6,1x,a32)
+   65 format(1x,2i3,a10,2e14.6,1x,a32)
       return
       end
 

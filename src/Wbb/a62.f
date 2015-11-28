@@ -3,6 +3,7 @@
 ************************************************************************
 *     Author: R.K. Ellis                                               *
 *     July, 1998.                                                      *
+*     Updated 8/16/01: UV subtraction included                         *
 ************************************************************************
 *     implementation of Eqs. (2.7) and (2.8) of BDKW hep-ph/9610370
 *     with ns=0
@@ -13,10 +14,10 @@
       character*2 st
       double complex a6,aa6sf,aa6uv
 
-c----ultraviolet subtraction aa6uv not implemented.
-c----but since a62 is never neeeded I will not bother.
+c----Includes ultraviolet subtraction aa6uv (with +ve sign since
+c--- it appears in interference terms,e.g. 1234 x 3214)
       call a6routine(st,j1,j2,j3,j4,j5,j6,za,zb,aa6sf,aa6uv) 
-      a62=a6(st,j1,j2,j3,j4,j5,j6,za,zb)/xnsq+aa6sf*dble(nf)/xn
+      a62=a6(st,j1,j2,j3,j4,j5,j6,za,zb)/xnsq+aa6sf*dble(nf)/xn+aa6uv
 
       if (st .eq. 'pp') then
       a62=a62+a6('pm',j1,j3,j2,j4,j5,j6,za,zb)*(one+one/xnsq)

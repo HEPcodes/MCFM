@@ -1,7 +1,7 @@
 # Makefile routine.
 
-MCFMHOME        = /scratch1/johnmc/MCFM_download
-MYHOME          = /scratch1/johnmc/MCFM_download
+MCFMHOME	= /home/johnmc/MCFM-2.0
+MYHOME   	= /home/johnmc/MCFM-2.0
 SOURCEDIR	= $(MCFMHOME)/src
 VPATH		= $(DIRS)
 BIN		= $(MYHOME)/Bin
@@ -21,12 +21,13 @@ DIRS	=	$(SOURCEDIR)/User:\
 		$(SOURCEDIR)/W:$(SOURCEDIR)/Z:\
 		$(SOURCEDIR)/W1jet:$(SOURCEDIR)/Z1jet:\
 		$(SOURCEDIR)/W2jet:$(SOURCEDIR)/W2jetvirt:\
-		$(SOURCEDIR)/Z2jet:
-
+		$(SOURCEDIR)/Z2jet
 
 FC = g77
-FFLAGS 	=	-c -I$(INCPATH) 
-#CRNLIB = /home/johnmc/Fortran/Cernlib/
+# Basic compiler flags
+FFLAGS      = -c -I$(INCPATH)
+# These are the options we use for a Linux Pentium 3 system
+# FFLAGS 	= -c -malign-double -O2 -I$(INCPATH) 
 
 # -----------------------------------------------------------------------------
 # Specify the object files. 
@@ -49,7 +50,9 @@ qqb_hww_v.o
 
 HTAUTAUFILES = \
 qqb_higgs.o \
+qqb_higgs_odd.o \
 ehsv.o \
+ehsv_odd.o \
 li2.o \
 Htautau.o
 
@@ -74,6 +77,9 @@ dclaus.o \
 ddilog.o
 
 NEEDFILES = \
+coll.o \
+coll2.o \
+coll6.o \
 angle.o \
 anglephi.o \
 banner.o \
@@ -98,6 +104,7 @@ dotpr.o \
 etmiss.o \
 gasdev.o \
 storeptilde.o \
+storedip.o \
 gtperp.o \
 higgsp.o \
 higgsw.o \
@@ -216,6 +223,7 @@ ttgdiags.o
 USERFILES = \
 genclust.o \
 genclust2.o \
+deltarj.o \
 mdata.o \
 nplotter.o \
 jetcuts.o \
@@ -236,31 +244,24 @@ qqb_w_gs.o \
 qqb_w_v.o \
 qqb_w_z.o
 
-W2JETFILES_jmc = \
-aqqb_wgg.o \
-qqb_w2jet.o\
-qqb_w2jet_g.o\
-qqb_w2jet_gvec.o\
-itwojet.o \
-twojet.o \
-initqqqq.o \
-initqqgg.o \
-xmqqqq.o \
-xmqqgg.o \
-xwqqqq.o \
-xwqqbqqb.o \
-xzqqqq.o \
-couplant.o \
-subqcd.o \
-jetcuts.o \
-subqcd_new.o \
-subqed.o
-
 W2JETFILES = \
+storeqq.o \
 qqb_w2jet.o \
 qqb_w2jet_g.o \
 qqb_w2jet_gvec.o \
 qqb_w2jet_gs.o \
+qqb_w2jet_v.o \
+qqb_w2jet_z.o \
+qqb_w2jet_soft.o \
+w2jetsq.o \
+msq_qqQQg.o \
+xwqqgg_v.o \
+xwqqggg.o \
+bit.o \
+qqb_w2jetx.o \
+qqb_w2jet_gvecx.o \
+qqbw2j_loop.o \
+dipolesubx.o \
 xwqqqq.o \
 xwqqbqqb.o \
 twojet.o \
@@ -274,7 +275,9 @@ subqcd.o \
 subqcdn.o \
 prod4.o \
 couplant.o \
-aqqb_wgg.o
+aqqb_wgg.o \
+compare.o \
+initialize.o
 
 W1JETFILES = \
 qqb_w1jet_gs.o \
@@ -294,7 +297,15 @@ qqb_z1jet_gs.o \
 qqb_z1jet_soft.o
 
 Z2JETFILES = \
+work.o \
+makem.o \
+makemb.o \
 qqb_z2jet.o \
+qqb_z2jet_g.o \
+qqb_z2jet_gs.o \
+msq_ZqqQQg.o \
+storecsz.o \
+z2jetsqn.o \
 z2jetsq.o
 
 WHBBARFILES = \
@@ -412,6 +423,7 @@ qqb_zbb_z.o \
 a6treeg.o \
 xzqqgg_v.o \
 xzqqggg.o \
+ampqqb_qqb.o \
 amp_qqgg.o \
 amp_qqggg.o \
 a61g.o \
@@ -434,67 +446,34 @@ vvg.o \
 Amptree2q3g_debr.o \
 qqb_zbb_gvec.o \
 spassign.o \
-nagyqqqqg.o
+nagyqqqqg.o \
+nagy1.o \
+nagy2.o 
 
 # Master program.
-# extra lines: -L$(CRNLIB) -L/home/johnmc/madgraph/lib/ 
-#              -ldhelas
 
 mcfm:		\
-            $(INTEGRATEFILES) $(LIBFILES) $(NEEDFILES) \
-            $(PARTONFILES) $(PHASEFILES) $(SINGLETOPFILES) $(TOPFILES) \
-            $(TOPHFILES) $(TOPZFILES) $(TOPGFILES) \
-            $(USERFILES) $(VOLFILES) $(WFILES) $(W2JETFILES) $(W2JETVIRT) $(WHBBARFILES) \
-            $(WWFILES) $(WZFILES) $(WBBFILES) $(ZFILES) $(ZHBBARFILES) \
-            $(ZZFILES) $(ZBBFILES) $(ZGFILES) $(W1JETFILES) $(Z2JETFILES) \
-		$(Z1JETFILES) $(HBBBARFILES) $(HWWFILES) $(HZZFILES) \
-            $(TAUTAUFILES) $(HTAUTAUFILES) $(SPINORFILES) 
-		$(FC) -o $@ \
-            $(INTEGRATEFILES) $(LIBFILES) $(NEEDFILES) \
-            $(PARTONFILES) $(PHASEFILES) $(SINGLETOPFILES) $(TOPFILES) \
-            $(TOPHFILES) $(TOPZFILES) $(TOPGFILES) \
-            $(USERFILES) $(VOLFILES) $(WFILES) $(W2JETFILES) $(W2JETVIRT) $(WHBBARFILES) \
-            $(WWFILES) $(WZFILES) $(WBBFILES) $(ZFILES) $(ZHBBARFILES) \
-            $(ZZFILES) $(ZBBFILES) $(ZGFILES) $(W1JETFILES) $(Z2JETFILES) \
-		$(Z1JETFILES) $(HBBBARFILES) $(HWWFILES) $(HZZFILES) \
-            $(TAUTAUFILES) $(HTAUTAUFILES) $(SPINORFILES)
-
+	$(INTEGRATEFILES) $(LIBFILES) $(NEEDFILES) \
+	$(PARTONFILES) $(PHASEFILES) $(SINGLETOPFILES) $(TOPFILES) \
+	$(TOPHFILES) $(TOPZFILES) $(TOPGFILES) \
+	$(USERFILES) $(VOLFILES) $(WFILES) $(W2JETFILES) $(W2JETVIRT) $(WHBBARFILES) \
+	$(WWFILES) $(WZFILES) $(WBBFILES) $(ZFILES) $(ZHBBARFILES) \
+	$(ZZFILES) $(ZBBFILES) $(ZGFILES) $(W1JETFILES) $(Z2JETFILES) \
+	$(Z1JETFILES) $(HBBBARFILES) $(HWWFILES) $(HZZFILES) \
+	$(TAUTAUFILES) $(HTAUTAUFILES) $(SPINORFILES)
+	$(FC) -o $@ \
+	$(INTEGRATEFILES) $(LIBFILES) $(NEEDFILES) \
+	$(PARTONFILES) $(PHASEFILES) $(SINGLETOPFILES) $(TOPFILES) \
+	$(TOPHFILES) $(TOPZFILES) $(TOPGFILES) \
+	$(USERFILES) $(VOLFILES) $(WFILES) $(W2JETFILES) $(W2JETVIRT) $(WHBBARFILES) \
+	$(WWFILES) $(WZFILES) $(WBBFILES) $(ZFILES) $(ZHBBARFILES) \
+	$(ZZFILES) $(ZBBFILES) $(ZGFILES) $(W1JETFILES) $(Z2JETFILES) \
+	$(Z1JETFILES) $(HBBBARFILES) $(HWWFILES) $(HZZFILES) \
+	$(TAUTAUFILES) $(HTAUTAUFILES) $(SPINORFILES)
 	mv mcfm Bin/
+
 # -----------------------------------------------------------------------------
 # Specify the dependencies of the .o files and the rules to make them.
-
-FTNCHEKPATH = /home/ellis/Fortran/Ftnchek/ftnchek-2.10.1
-
-.SUFFIXES: .prj
-
-# improved so that .prj files are moved out of src directory and
-# into base, only for .f files that don't already exist there
-.f.prj: 
-		$(FTNCHEKPATH)/ftnchek -project -noextern -library -quiet \
-            -include=$(INCPATH) $< ; \
-            if ! [ -e $(MYHOME)/$(notdir $<) ] ; then \
-            mv $(basename $<).prj $(MYHOME) ; fi
-            
-PRJS =      $(INTEGRATEFILES:.o=.prj) $(LIBFILES:.o=.prj) \
-            $(NEEDFILES:.o=.prj) $(PARTONFILES:.o=.prj) \
-            $(PHASEFILES:.o=.prj) $(SINGLETOPFILES:.o=.prj) \
-            $(TOPFILES:.o=.prj) $(TOPHFILES:.o=.prj) \
-            $(TOPZFILES:.o=.prj) $(TOPGFILES:.o=.prj) \
-            $(USERFILES:.o=.prj) $(VOLFILES:.o=.prj) \
-            $(WFILES:.o=.prj) $(W2JETFILES:.o=.prj) \
-            $(W2JETVIRT:.o=.prj) $(WHBBARFILES:.o=.prj) \
-            $(WWFILES:.o=.prj) $(WZFILES:.o=.prj) \
-            $(WBBFILES:.o=.prj) $(ZFILES:.o=.prj) \
-            $(ZHBBARFILES:.o=.prj) $(ZZFILES:.o=.prj) \
-            $(ZBBFILES:.o=.prj) $(ZGFILES:.o=.prj) \
-            $(W1JETFILES:.o=.prj) $(Z2JETFILES:.o=.prj) \
-		$(Z1JETFILES:.o=.prj) $(HBBBARFILES:.o=.prj) \
-            $(HWWFILES:.o=.prj) $(HZZFILES:.o=.prj) \
-            $(TAUTAUFILES:.o=.prj) $(HTAUTAUFILES:.o=.prj) \
-            $(SPINORFILES:.o=.prj)
-
-check:      $(PRJS) 
-		$(FTNCHEKPATH)/ftnchek $(PRJS)
 
 # -----------------------------------------------------------------------------
 # Specify other options.

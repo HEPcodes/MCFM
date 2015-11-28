@@ -1,4 +1,6 @@
       subroutine chooser(nproc)
+c--- Modified August, 2001 to implement Version 2.0
+c--- Various processes that are under construction removed
       implicit none
       include 'constants.f'
       include 'masses.f'
@@ -7,6 +9,7 @@
       include 'zcouple.f'
       include 'vegas_common.f'
       include 'zerowidth.f'
+      include 'flags.f'
       character*4 part
       common/part/part
       double precision rtsmin
@@ -17,7 +20,7 @@
       common/breit/n2,n3,mass2,width2,mass3,width3
       integer nproc,nnproc,mproc,j,nwz,n2,n3,nqcdjets,nqcdstart
       logical spira
-      character*100 pname
+      character*66 pname
       character*2 plabel(mxpart)
       character*6 case
       common/process/case
@@ -28,6 +31,36 @@
       common/nqcdjets/nqcdjets,nqcdstart
       common/plabel/plabel
 
+c--- Version 2.0 removed processes
+      if   ((nproc .eq. 10)
+     . .or. (nproc .eq. 11)
+     . .or. (nproc .eq. 16)
+     . .or. (nproc .eq. 22)
+     . .or. (nproc .eq. 27)
+     . .or. (nproc .eq. 40)
+     . .or. (nproc .eq. 41)
+     . .or. (nproc .eq. 42)
+     . .or. (nproc .eq. 43)
+     . .or. (nproc .eq. 44)
+     . .or. (nproc .eq. 131)
+     . .or. (nproc .eq. 180)
+     . .or. (nproc .eq. 181)
+     . .or. (nproc .eq. 198)
+     . .or. (nproc .eq. 199)
+     . .or. (nproc .eq. 202)) then
+      write(6,*)
+      write(6,*) '**************************************************'//
+     . '********************'
+      write(6,*) '*     Sorry, this process is currently being'
+     . //' implemented in MCFM     *'
+      write(6,*) '*             Please contact us for further details'
+     . //'                  *'
+      write(6,*) '**************************************************'//
+     . '********************'
+      write(6,*)
+      stop      
+      endif
+
 c set-up twidth
       x=wmass/mt
       y=mb/mt
@@ -37,8 +70,8 @@ c set-up twidth
 
       open(unit=21,file='process.DAT',status='old',err=43)
       nnproc=nproc
-      write(6,*) 'Chooser:process chosen by nproc=',nproc
-      do j=1,100
+c      write(6,*) 'Chooser:process chosen by nproc=',nproc
+      do j=1,200
       read(21,*,err=44) mproc,pname
       if (nproc .lt. 0) then 
       write(6,*) mproc,pname 
@@ -49,11 +82,13 @@ c set-up twidth
 
       goto 44
 
- 42   write(6,*) mproc
-      write(6,*)
-      write(6,*) '*****************************************************'
-      write(6,*) pname
-      write(6,*) '*****************************************************'
+c 42   write(6,*) mproc
+ 42   write(6,*)
+      write(6,*) '**************************************************'//
+     . '********************'
+      write(6,*) '* ',pname,' *'
+      write(6,*) '**************************************************'//
+     . '********************'
       write(6,*)
 
       close(unit=21)
@@ -102,24 +137,30 @@ c---total cross-section
              nqcdjets=1
              nqcdstart=5
              BrnRat=1d0
-             if (nproc .eq. 11) then
              case='W_1jet'
+             ndim=7
+             mb=0
+             n2=0
+             n3=1
+             mass3=wmass
+             width3=wwidth
+             plabel(5)='pp'
+             plabel(6)='pp'
+             BrnRat=1d0
+             if (nproc .eq. 10) then
+             plabel(3)='nl'
+             plabel(4)='ea'
              nwz=1
-             ndim=7
-             mb=0
-             n2=0
-             n3=1
-             mass3=wmass
-             width3=wwidth
+             call branch(brwen,brzee,brtau,brtop)
+             BrnRat=brwen
+             elseif (nproc .eq. 11) then
+             nwz=1
+             plabel(3)='nl'
+             plabel(4)='ea'
              elseif (nproc .eq. 16) then
-             case='W_1jet'
+             plabel(3)='el'
+             plabel(4)='na'
              nwz=-1
-             ndim=7
-             mb=0
-             n2=0
-             n3=1
-             mass3=wmass
-             width3=wwidth
              endif
 c---case w+jet
       elseif (nproc/10 .eq. 2) then
@@ -173,6 +214,11 @@ c---case w+jet
              endif
              if (nproc .eq. 27) then
              case='W_2jet'
+             plabel(3)='el'
+             plabel(4)='na'
+             plabel(5)='pp'
+             plabel(6)='pp'
+             plabel(7)='pp'
              nwz=-1
              ndim=10
              mb=0
@@ -235,7 +281,17 @@ c---case w+jet
              n3=1
              mass3=zmass
              width3=zwidth
-             if (nproc .eq. 41) then
+             if (nproc .eq. 40) then
+             plabel(3)='el'
+             plabel(4)='ea'
+             plabel(5)='pp'
+             plabel(6)='pp'
+             q1=-1d0
+             l1=le
+             r1=re
+             call branch(brwen,brzee,brtau,brtop)
+             BrnRat=brzee
+             elseif (nproc .eq. 41) then
              nqcdjets=1
              nqcdstart=5
              plabel(3)='el'
@@ -602,7 +658,7 @@ c--reset higgs width so that whole gives correct BR
                nqcdjets=2
                nwz=-1
              endif
-             write(6,*) 'Higgs mass and width and br',hmass,hwidth,br
+             write(6,99) hmass,hwidth,br
 c---case ZH
       elseif (nproc/10 .eq. 10) then
              case='ZHbbar'
@@ -621,7 +677,7 @@ C--reset higgs width so that whole gives coreect BR
              endif 
              hwidth=xn*sqrt(2d0)/8d0/pi*gf*hmass*mbsq
      .         *(1d0-4d0*mbsq/hmass**2)**1.5d0/br
-             write(6,*) 'Higgs mass and width and br',hmass,hwidth,br
+             write(6,99) hmass,hwidth,br
 
              ndim=10
              nwz=0
@@ -684,7 +740,7 @@ C--- NEED TO LOOK AT THIS TO CLUSTER 4 JETS STARTING FROM 3
              else
                  call higgsw(br)
              endif 
-             write(6,*) 'Higgs mass and width and br',hmass,hwidth,br
+             write(6,99) hmass,hwidth,br
 
              if ((nproc .eq. 110) .or. (nproc .eq. 111)) then
 c--reset higgs width so that whole gives correct BR
@@ -749,7 +805,7 @@ c--reset higgs width so that whole gives correct BR
              else
                  call higgsw(br)
              endif 
-             write(6,*) 'Higgs mass and width and br',hmass,hwidth,br
+             write(6,99) hmass,hwidth,br
 
              if (nproc .eq. 121) then
                plabel(3)='el'
@@ -941,7 +997,7 @@ C--reset higgs width so that whole gives correct BR, (if we have set
 C mb=0, keeps mbsq in the coupling but ignores it in the phase space) 
              hwidth=xn*sqrt(2d0)/8d0/pi*gf*hmass*mbsq
      .         *(1d0-4d0*mb**2/hmass**2)**1.5d0/br
-             write(6,*) 'Higgs mass and width and br',hmass,hwidth,br
+             write(6,99) hmass,hwidth,br
              write(6,*) 'chooser:mbsq',mbsq
              if (nproc .eq. 191) then 
              call branch(brwen,brzee,brtau,brtop)
@@ -1028,7 +1084,7 @@ C--reset higgs width so that whole gives correct BR, (if we have set
 C mb=0, keeps mbsq in the coupling but ignores it in the phase space) 
              hwidth=xn*sqrt(2d0)/8d0/pi*gf*hmass*mbsq
      .         *(1d0-4d0*mbsq/hmass**2)**1.5d0/br
-             write(6,*) 'Higgs mass and width and br',hmass,hwidth,br
+             write(6,99) hmass,hwidth,br
              write(6,*) 'chooser:mbsq',mbsq
              mass3=hmass
              width3=hwidth
@@ -1055,6 +1111,18 @@ c---now compensate for b-bbar branching ratio
              nqcdjets=1
              nqcdstart=9
              Brnrat=1d0
+             elseif (nproc .eq. 205) then
+               case='attjet'
+               BrnRat=br
+             elseif (nproc .eq. 206) then
+               case='attjet'
+c---first work out width into a tau pair (EHSV, 1.3)
+               BrnRat=gwsq/4d0/pi*mtausq*hmass/8d0/wmass**2*
+     .                 (1d0-4d0*mtausq/hmass**2)**1.5d0
+               Brnrat=BrnRat/hwidth
+               write(6,*) 'Branching ratio of higgs -> tau tau: ',Brnrat
+c---now compensate for b-bbar branching ratio
+               Brnrat=br/Brnrat
              endif
       elseif (nproc/10 .eq. 30) then
              write(6,*) 'Setting part to lord and zerowidth to false'
@@ -1122,10 +1190,6 @@ c---now compensate for b-bbar branching ratio
 
       call ckmfill(nwz)
 
-      write(6,*) 'case= ',case
-
-
-
       return
 
  43   write(6,*) 'problems opening process.DAT'
@@ -1133,4 +1197,12 @@ c---now compensate for b-bbar branching ratio
 
  44   write(6,*) 'Unimplemented process number'
       stop
+      
+ 99   format(/,
+     .       ' ****************** Higgs parameters ****************'/, 
+     .       ' *                                                  *'/, 
+     .       ' *   mass(H) = ',f7.2,'      width(H) = ',e12.5,' *'/,
+     .       ' *              Br( H -> b bbar) = ',f8.4,'         *'/,
+     .       ' ****************************************************')
+     
       end

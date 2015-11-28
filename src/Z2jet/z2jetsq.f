@@ -1,4 +1,3 @@
-
       subroutine z2jetsq(i1,i2,i3,i4,i5,i6,za,zb,msq)
 c-----Author R.K. Ellis
 c---Matrix element squared averaged over initial colors and spins
@@ -10,6 +9,7 @@ c--all momenta incoming
       implicit none
       include 'constants.f'
       include 'sprodx.f'
+      include 'msq_cs.f'
       double complex qcd1LL(-1:1,-1:1),qcd2LL(-1:1,-1:1)
       double complex qcd1LR(-1:1,-1:1),qcd2LR(-1:1,-1:1)
 c      double complex qcd1RL(-1:1,-1:1),qcd2RL(-1:1,-1:1)
@@ -20,6 +20,7 @@ c      double complex qedRL(-1:1,-1:1),qedRR(-1:1,-1:1)
       integer i1,i2,i3,i4,i5,i6,j,k,pol(2),pq,pl
       data pol/-1,1/
       save pol      
+
       call subqcd(i1,i2,i3,i4,i5,i6,za,zb,qcd1LL)
       call subqcd(i1,i2,i3,i4,i6,i5,za,zb,qcd2LL)
 
@@ -73,12 +74,23 @@ c      msqq(2,2)=msqq(2,2)+abs(qedRR(pol(j),pol(k)))**2
       enddo                   
       enddo                   
 
-      do pq=1,1
+
+      msq1(2,2)=msq2(1,1)
+      msq1(2,1)=msq2(1,2)
+
+      msq2(2,2)=msq1(1,1)
+      msq2(2,1)=msq1(1,2)
+
+      msqq(2,2)=msqq(1,1)
+      msqq(2,1)=msqq(1,2)
+
+      do pq=1,2
       do pl=1,2
-      msq(pq,pl)=msq1(pq,pl)+msq2(pq,pl)-ninth*msqq(pq,pl)
+      mmsq_cs(0,pq,pl)=-ninth*msqq(pq,pl)
+      mmsq_cs(1,pq,pl)=msq1(pq,pl)
+      mmsq_cs(2,pq,pl)=msq2(pq,pl)
+      msq(pq,pl)=mmsq_cs(2,pq,pl)+mmsq_cs(1,pq,pl)+mmsq_cs(0,pq,pl)
       enddo                   
       enddo                   
-      msq(2,2)=msq(1,1)
-      msq(2,1)=msq(1,2)
       return
       end

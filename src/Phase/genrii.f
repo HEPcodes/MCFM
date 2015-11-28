@@ -17,7 +17,7 @@ c----i7 label of generated vector
       phi=twopi*phit
 c      omxmin=one-xmin
       omxmin=one-xx(i1)
-      r1=0.5
+      r1=0.5d0
 c      write(6,*) 'Enter r1' 
 c      read(5,*) r1 
       write(6,*) 'Enter r2' 

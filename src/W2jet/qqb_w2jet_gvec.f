@@ -19,21 +19,34 @@ c   in the final state.
       include 'dprodx.f'
       include 'ckm.f'
 C ip is the label of the emitter
-      integer j,k,in
+      integer j,k,in,i,n1,n2
       double precision msq(-nf:nf,-nf:nf),p(mxpart,4)
-      double precision fac,prop,w2jetn,p1p2(-1:1,-1:1),n(4)
+      double precision fac,prop,p1p2(0:2,-1:1,-1:1),n(4),Vfac
       double complex zab(mxpart,mxpart),zba(mxpart,mxpart)
-
+      double precision msqv_cs(0:2,-nf:nf,-nf:nf),mmsqv_cs(0:2,2,2)
+      common/msqv_cols/msqv_cs,mmsqv_cs
+      common/p1p2/p1p2
+c--- note that we will use the first index of p1p2 to label
+c--- the colour structure of the squared matrix element:
+c---     0 --> -ninth*(qed piece)
+c---     1 --> +(qcd ordering 1)
+c---     2 --> +(qcd ordering 1)
+c---     3 --> Total (0+1+2)
 
       do j=-nf,nf
       do k=-nf,nf
       msq(j,k)=0d0
+      do i=0,2
+        msqv_cs(i,j,k)=0d0
+      enddo
       enddo
       enddo
 
+      do i=0,2
       do j=-1,1
       do k=-1,1
-      p1p2(j,k)=0d0
+      p1p2(i,j,k)=0d0
+      enddo
       enddo
       enddo
 
@@ -47,57 +60,138 @@ c---za(i,j)*zb(j,i)=s(i,j)
 
       if (in .eq. 1) then
 C--initial-initial
-      p1p2(0,+1)=aveqg*fac*w2jetn(2,6,3,4,5,1,p,n,za,zb,zab,zba)
-      p1p2(0,-1)=aveqg*fac*w2jetn(6,2,3,4,5,1,p,n,za,zb,zab,zba)
+        call w2jetn(2,5,3,4,6,1,p,n,za,zb,zab,zba)
+        call storecsv(0,+1)
+        call w2jetn(5,2,3,4,6,1,p,n,za,zb,zab,zba)
+        call storecsv(0,-1)
+        call w2jetn(5,6,3,4,2,1,p,n,za,zb,zab,zba)
+        call storecsv(0,0)
+        do i=0,2
+          p1p2(i,0,+1)=aveqg*fac*p1p2(i,0,+1)
+          p1p2(i,0,-1)=aveqg*fac*p1p2(i,0,-1)
+          p1p2(i,0, 0)=avegg*fac*p1p2(i,0,0)
+        enddo
+c      p1p2(0,+1)=aveqg*fac*w2jetn(2,6,3,4,5,1,p,n,za,zb,zab,zba)
+c      p1p2(0,-1)=aveqg*fac*w2jetn(6,2,3,4,5,1,p,n,za,zb,zab,zba)
       elseif (in .eq. 2) then
-      p1p2(+1,0)=aveqg*fac*w2jetn(1,6,3,4,5,2,p,n,za,zb,zab,zba)
-      p1p2(-1,0)=aveqg*fac*w2jetn(6,1,3,4,5,2,p,n,za,zb,zab,zba)
-
+        call w2jetn(1,5,3,4,6,2,p,n,za,zb,zab,zba)
+        call storecsv(+1,0)
+        call w2jetn(5,1,3,4,6,2,p,n,za,zb,zab,zba)
+        call storecsv(-1,0)
+        call w2jetn(5,6,3,4,1,2,p,n,za,zb,zab,zba)
+        call storecsv(0,0)
+        do i=0,2
+          p1p2(i,+1,0)=aveqg*fac*p1p2(i,+1,0)
+          p1p2(i,-1,0)=aveqg*fac*p1p2(i,-1,0)
+          p1p2(i,0, 0)=avegg*fac*p1p2(i,0,0)
+        enddo
+c      p1p2(+1,0)=aveqg*fac*w2jetn(1,6,3,4,5,2,p,n,za,zb,zab,zba)
+c      p1p2(-1,0)=aveqg*fac*w2jetn(6,1,3,4,5,2,p,n,za,zb,zab,zba)
       elseif (in .eq. 5) then
-      p1p2(1,-1)=aveqq*fac*w2jetn(1,2,3,4,6,5,p,n,za,zb,zab,zba)
-      p1p2(-1,1)=aveqq*fac*w2jetn(2,1,3,4,6,5,p,n,za,zb,zab,zba)
-      p1p2(+1,0)=aveqg*fac*w2jetn(1,6,3,4,2,5,p,n,za,zb,zab,zba)
-      p1p2(-1,0)=aveqg*fac*w2jetn(6,1,3,4,2,5,p,n,za,zb,zab,zba)
-      p1p2(0,+1)=aveqg*fac*w2jetn(2,6,3,4,1,5,p,n,za,zb,zab,zba)
-      p1p2(0,-1)=aveqg*fac*w2jetn(6,2,3,4,1,5,p,n,za,zb,zab,zba) 
-
+        call w2jetn(1,2,3,4,6,5,p,n,za,zb,zab,zba)
+        call storecsv(1,-1)
+        call w2jetn(2,1,3,4,6,5,p,n,za,zb,zab,zba)
+        call storecsv(-1,1)
+        call w2jetn(1,6,3,4,2,5,p,n,za,zb,zab,zba)
+        call storecsv(+1,0)
+        call w2jetn(6,1,3,4,2,5,p,n,za,zb,zab,zba)
+        call storecsv(-1,0)
+        call w2jetn(2,6,3,4,1,5,p,n,za,zb,zab,zba)
+        call storecsv(0,+1)
+        call w2jetn(6,2,3,4,1,5,p,n,za,zb,zab,zba)
+        call storecsv(0,-1)
+        do i=0,2
+          p1p2(i,1,-1)=half*aveqq*fac*p1p2(i,1,-1)
+          p1p2(i,-1,1)=half*aveqq*fac*p1p2(i,-1,1)
+          p1p2(i,+1,0)=aveqg*fac*p1p2(i,+1,0)
+          p1p2(i,-1,0)=aveqg*fac*p1p2(i,-1,0)
+          p1p2(i,0,+1)=aveqg*fac*p1p2(i,0,+1)
+          p1p2(i,0,-1)=aveqg*fac*p1p2(i,0,-1)
+        enddo
+c      p1p2(1,-1)=aveqq*fac*w2jetn(1,2,3,4,6,5,p,n,za,zb,zab,zba)
+c      p1p2(-1,1)=aveqq*fac*w2jetn(2,1,3,4,6,5,p,n,za,zb,zab,zba)
+c      p1p2(+1,0)=aveqg*fac*w2jetn(1,6,3,4,2,5,p,n,za,zb,zab,zba)
+c      p1p2(-1,0)=aveqg*fac*w2jetn(6,1,3,4,2,5,p,n,za,zb,zab,zba)
+c      p1p2(0,+1)=aveqg*fac*w2jetn(2,6,3,4,1,5,p,n,za,zb,zab,zba)
+c      p1p2(0,-1)=aveqg*fac*w2jetn(6,2,3,4,1,5,p,n,za,zb,zab,zba) 
       elseif (in .eq. 6) then
-      p1p2(1,-1)=aveqq*fac*w2jetn(1,2,3,4,5,6,p,n,za,zb,zab,zba)
-      p1p2(-1,1)=aveqq*fac*w2jetn(2,1,3,4,5,6,p,n,za,zb,zab,zba)
-      p1p2(+1,0)=aveqg*fac*w2jetn(1,5,3,4,2,6,p,n,za,zb,zab,zba)
-      p1p2(-1,0)=aveqg*fac*w2jetn(5,1,3,4,2,6,p,n,za,zb,zab,zba)
-      p1p2(0,+1)=aveqg*fac*w2jetn(2,5,3,4,1,6,p,n,za,zb,zab,zba)
-      p1p2(0,-1)=aveqg*fac*w2jetn(5,2,3,4,1,6,p,n,za,zb,zab,zba)
-
+        call w2jetn(1,2,3,4,5,6,p,n,za,zb,zab,zba)
+        call storecsv(1,-1)
+        call w2jetn(2,1,3,4,5,6,p,n,za,zb,zab,zba)
+        call storecsv(-1,1)
+        call w2jetn(1,5,3,4,2,6,p,n,za,zb,zab,zba)
+        call storecsv(+1,0)
+        call w2jetn(5,1,3,4,2,6,p,n,za,zb,zab,zba)
+        call storecsv(-1,0)
+        call w2jetn(2,5,3,4,1,6,p,n,za,zb,zab,zba)
+        call storecsv(0,+1)
+        call w2jetn(5,2,3,4,1,6,p,n,za,zb,zab,zba)
+        call storecsv(0,-1)
+        do i=0,2
+          p1p2(i,1,-1)=half*aveqq*fac*p1p2(i,1,-1)
+          p1p2(i,-1,1)=half*aveqq*fac*p1p2(i,-1,1)
+          p1p2(i,+1,0)=aveqg*fac*p1p2(i,+1,0)
+          p1p2(i,-1,0)=aveqg*fac*p1p2(i,-1,0)
+          p1p2(i,0,+1)=aveqg*fac*p1p2(i,0,+1)
+          p1p2(i,0,-1)=aveqg*fac*p1p2(i,0,-1)
+        enddo
+c      p1p2(1,-1)=aveqq*fac*w2jetn(1,2,3,4,5,6,p,n,za,zb,zab,zba)
+c      p1p2(-1,1)=aveqq*fac*w2jetn(2,1,3,4,5,6,p,n,za,zb,zab,zba)
+c      p1p2(+1,0)=aveqg*fac*w2jetn(1,5,3,4,2,6,p,n,za,zb,zab,zba)
+c      p1p2(-1,0)=aveqg*fac*w2jetn(5,1,3,4,2,6,p,n,za,zb,zab,zba)
+c      p1p2(0,+1)=aveqg*fac*w2jetn(2,5,3,4,1,6,p,n,za,zb,zab,zba)
+c      p1p2(0,-1)=aveqg*fac*w2jetn(5,2,3,4,1,6,p,n,za,zb,zab,zba)
       endif
 
       do j=-nf,nf
       do k=-nf,nf
       if     ((j .gt. 0) .and. (k .lt. 0)) then
-          msq(j,k)=Vsq(j,k)*p1p2(1,-1)
+          do i=0,2
+            msqv_cs(i,j,k)=Vsq(j,k)*p1p2(i,1,-1)
+          enddo
       elseif ((j .lt. 0) .and. (k .gt. 0)) then
-          msq(j,k)=Vsq(j,k)*p1p2(-1,1)
+          do i=0,2
+            msqv_cs(i,j,k)=Vsq(j,k)*p1p2(i,-1,1)
+          enddo
       elseif ((j .gt. 0) .and. (k .eq. 0)) then
-          msq(j,k)=
-     &   (Vsq(j,-1)+Vsq(j,-2)+Vsq(j,-3)+Vsq(j,-4)+Vsq(j,-5))*p1p2(+1,0)
+          do i=0,2
+            msqv_cs(i,j,k)=
+     &  (Vsq(j,-1)+Vsq(j,-2)+Vsq(j,-3)+Vsq(j,-4)+Vsq(j,-5))*p1p2(i,+1,0)
+          enddo
       elseif ((j .lt. 0) .and. (k .eq. 0)) then
-          msq(j,k)=
-     &    (Vsq(j,+1)+Vsq(j,+2)+Vsq(j,+3)+Vsq(j,+4)+Vsq(j,+5))*p1p2(-1,0)
+          do i=0,2
+            msqv_cs(i,j,k)=
+     &  (Vsq(j,+1)+Vsq(j,+2)+Vsq(j,+3)+Vsq(j,+4)+Vsq(j,+5))*p1p2(i,-1,0)
+          enddo
       elseif ((j .eq. 0) .and. (k .gt. 0)) then
-          msq(j,k)=
-     &    (Vsq(-1,k)+Vsq(-2,k)+Vsq(-3,k)+Vsq(-4,k)+Vsq(-5,k))*p1p2(0,+1)
+          do i=0,2
+            msqv_cs(i,j,k)=
+     &  (Vsq(-1,k)+Vsq(-2,k)+Vsq(-3,k)+Vsq(-4,k)+Vsq(-5,k))*p1p2(i,0,+1)
+          enddo
       elseif ((j .eq. 0) .and. (k .lt. 0)) then
-          msq(j,k)=
-     &    (Vsq(+1,k)+Vsq(+2,k)+Vsq(+3,k)+Vsq(+4,k)+Vsq(+5,k))*p1p2(0,-1)
+          do i=0,2
+            msqv_cs(i,j,k)=
+     &  (Vsq(+1,k)+Vsq(+2,k)+Vsq(+3,k)+Vsq(+4,k)+Vsq(+5,k))*p1p2(i,0,-1)
+          enddo
+      elseif ((j .eq. 0) .and. (k .eq. 0)) then
+          Vfac=0d0
+          do n1=1,nf
+            do n2=-nf,-1
+              Vfac=Vfac+Vsq(n1,n2)
+            enddo
+          enddo
+          do i=0,2
+            msqv_cs(i,j,k)=Vfac*p1p2(i,0,0)
+          enddo
       endif
+      msq(j,k)=msqv_cs(0,j,k)+msqv_cs(1,j,k)+msqv_cs(2,j,k)
+      enddo
+      enddo
 
-      enddo
-      enddo
       return
       end
  
-      double precision function w2jetn(i1,i2,i3,i4,i5,i6,p,n,
-     & za,zb,zab,zba)
+      subroutine w2jetn(i1,i2,i3,i4,i5,i6,p,n,za,zb,zab,zba)
 C----matrix element squared with p5 line contracted with n(mu)
 C----nDp6 should be equal to zero
       implicit none
@@ -108,13 +202,22 @@ C----nDp6 should be equal to zero
       double precision msq1,msq2,msqq,n(4),p(mxpart,4)
       double precision nDp5,nDp6
       integer i1,i2,i3,i4,i5,i6
+      double precision msqv_cs(0:2,-nf:nf,-nf:nf),mmsqv_cs(0:2,2,2)
+      common/msqv_cols/msqv_cs,mmsqv_cs
+
+      nDp5=n(4)*p(i5,4)-n(3)*p(i5,3)-n(2)*p(i5,2)-n(1)*p(i5,1)
       nDp6=n(4)*p(i6,4)-n(3)*p(i6,3)-n(2)*p(i6,2)-n(1)*p(i6,1)
-      if (abs(nDp6) .gt. 1d-12) then 
+c--- appropriate scale is approx 1d-3*energy(incoming)
+c--- so of order(1) for the Tevatron
+      if (abs(nDp6).gt.1d-3*abs(p(i1,4))) then 
+         write(*,*) 'Error for :',i1,i2,i3,i4,i5,i6
+         write(*,*) 'cutoff',1d-3*abs(p(i1,4))
+         write(6,*) 'nDp5',nDp5
          write(6,*) 'nDp6',nDp6
+         call flush(6)
          stop
       endif
 
-      nDp5=n(4)*p(i5,4)-n(3)*p(i5,3)-n(2)*p(i5,2)-n(1)*p(i5,1)
       call subqcdn(i1,i2,i3,i4,i5,i6,nDp5,za,zb,zab,zba,qcdabn,qcdban)
             
 C--first argument is quark line
@@ -122,14 +225,35 @@ C--second argument is polarization of i5 line
 C  1=L,2=R
       qedn(1,1,1)=qcdabn(1,1,1)+qcdban(1,1,1) 
       qedn(2,1,1)=qcdabn(2,1,1)+qcdban(2,1,1) 
+
       msq1= abs(qcdabn(1,1,1))**2+abs(qcdabn(2,1,1))**2
       msq2= abs(qcdban(1,1,1))**2+abs(qcdban(2,1,1))**2 
       msqq= abs(qedn(1,1,1))**2+abs(qedn(2,1,1))**2
 
-      w2jetn=msq1+msq2-ninth*msqq
+      mmsqv_cs(0,+1,+1)=-ninth*msqq
+      mmsqv_cs(1,+1,+1)=msq1
+      mmsqv_cs(2,+1,+1)=msq2
 
       return
       end
 
+      subroutine storecsv(i,j)
+c-- this routine transfers the information on the colour structure
+c-- for the W2jet_gvec matrix elements into elements (..,i,j) of p1p2
+      implicit none
+      include 'constants.f'
+      integer i,j,k
+      double precision p1p2(0:2,-1:1,-1:1)
+      double precision msqv_cs(0:2,-nf:nf,-nf:nf),mmsqv_cs(0:2,2,2)
+      common/msqv_cols/msqv_cs,mmsqv_cs
+      common/p1p2/p1p2
+      
+      do k=0,2
+        p1p2(k,i,j)=mmsqv_cs(k,+1,+1)
+      enddo
+      
+      return
+      end
+      
 
 

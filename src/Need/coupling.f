@@ -24,6 +24,8 @@
       include 'ewcouple.f'
       include 'qcdcouple.f'
       include 'scale.f'
+      character*4 part
+      common/part/part
       character*7 pdlabel
       integer nproc
       common/nproc/nproc
@@ -111,12 +113,21 @@ c--wz
       write(6,*) 'gw for Frix/Nas',gw
       write(6,*) 'xw for Frix/Nas',xw
       endif
-      write(6,*) 'zmass',zmass
-      write(6,*) 'wmass',wmass
-      write(6,*) 'gwsq',gwsq
-      write(6,*) 'gw',gw
-      write(6,*) 'xw',xw
+      
+c      write(6,*) 'zmass',zmass
+c      write(6,*) 'wmass',wmass
+c      write(6,*) 'gwsq',gwsq
+c      write(6,*) 'gw',gw
+c      write(6,*) 'xw',xw
+      write(6,*) '************** Electroweak parameters **************'
+      write(6,*) '*                                                  *'
+      write(6,75) 'zmass',zmass,'wmass',wmass
+      write(6,75) 'gwsq',gwsq,'gw',gw
+      write(6,76) 'xw',xw
+      write(6,*) '****************************************************'
 
+   75 format(' *  ',a6,f12.8,10x,a6,f12.8,'  *')
+   76 format(' *  ',a6,f12.8,28x,'  *')
 
       if(scale.le.0d0) then
         if((nproc .ge. 70) .and. (nproc .le. 79)) then
@@ -151,27 +162,54 @@ C appropriate scale to approximately include higher orders
       cmass=sqrt(mcsq)
       bmass=sqrt(mbsq)
       musq=scale**2
-      as=alphas(scale,amz,nloop)
+      if (part .eq. 'lord') then
+        as=alphas(scale,amz,1)
+      else
+        as=alphas(scale,amz,2)
+      endif
       ason2pi=as/twopi
       gsq=fourpi*as
-
-      if (verbose) write(6,*) 'alpha_s',gsq/fourpi,
-     . ' corresponding to alpha_s(zmass)= ',amz
-
 
       call couplz(xw)
 
 ***************************************
 
+c--- if we're doing W+2jets, automatically make the CKM matrix
+c--- diagonal since we're not interested in these small effects   
+      if ((nproc .eq. 22) .or. (nproc .eq. 27)) then
+        Vud=1d0
+        Vus=0d0
+        Vub=0d0
+        Vcd=0d0
+        Vcs=1d0
+        Vcb=0d0
+      endif
+
       if (verbose) then
-      write(6,*) 'Effective sin^2 theta_W xw',xw
+      write(6,*)
+      write(6,*) '***************** CKM mixing matrix ****************'
+      write(6,*) '*                                                  *'
       write(6,47) Vud,Vus,Vub
       write(6,48) Vcd,Vcs,Vcb
- 47   format(' CKM:  Vud=',g10.5,'Vus=',g10.5,'Vub=',g10.5)
- 48   format(' CKM   Vcd=',g10.5,'Vcs=',g10.5,'Vcb=',g10.5)
+      write(6,*) '****************************************************'
+      if ((nproc .eq. 22) .or. (nproc .eq. 27)) then
+      write(6,*) '* Forced to be diagonal for simplicity in W+2 jets *'
+      write(6,*) '****************************************************'
+      endif
+ 47   format(' *      Vud=',g10.5,'Vus=',g10.5,'Vub=',g10.5,'  *')
+ 48   format(' *      Vcd=',g10.5,'Vcs=',g10.5,'Vcb=',g10.5,'  *')
       endif      
 
-
+      if (verbose) then
+      write(6,*)
+      write(6,*) '************* Strong coupling, alpha_s  ************'
+      write(6,*) '*                                                  *'
+      write(6,49) 'alpha_s (scale)',gsq/fourpi
+      write(6,49) 'alpha_s (zmass)',amz
+      write(6,*) '****************************************************'
+ 49   format(' *  ',a20,f12.8,16x,'*')
+      endif
+      
       return
       end
 

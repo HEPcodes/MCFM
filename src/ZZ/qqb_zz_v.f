@@ -32,7 +32,7 @@ c----No statistical factor of 1/2 included.
       double complex qqb1(2,2,2),qbq1(2,2,2),qqb2(2,2,2),qbq2(2,2,2)
       double complex propz1,propz2,props,a6trees,a6loops,cprop
       double complex aqqb,aqbq,bqqb,bqbq,Vpole,Vpole12,suppl
-      double precision prop12,prop34,prop56
+      double complex prop12,prop34,prop56
 	
 
       integer j,k,polq,pol1,pol2
@@ -85,23 +85,20 @@ c   DKS have--- q(q2) +qbar(q1) -->mu^-(q3)+mu^+(q4)+e^-(q6)+e^+(q5)
 c--   s returned from sprod (common block) is 2*dot product
 
 c--   calculate propagators
-      if (zerowidth) then
-        propz1=one/(s(3,4)-zmass**2+im*zmass*zwidth)
-        propz2=one/(s(5,6)-zmass**2+im*zmass*zwidth)
-        props=one/(s(1,2)-zmass**2+im*zmass*zwidth)
-        prop12=s(1,2)
-        prop34=s(3,4)
-        prop56=s(5,6)
-      else
+      if     (dronly  .eqv. .true.) then
+        prop12=s(1,2)/(s(1,2)-zmass**2+im*zmass*zwidth)
+        prop34=s(3,4)/(s(3,4)-zmass**2+im*zmass*zwidth)
+        prop56=s(5,6)/(s(5,6)-zmass**2+im*zmass*zwidth)
+        cprop=dcmplx(1d0)
+      elseif (dronly .neqv. .true.) then
+        prop12=dcmplx(s(1,2)/(s(1,2)-zmass**2))
+        prop34=dcmplx(s(3,4)/(s(3,4)-zmass**2))
+        prop56=dcmplx(s(5,6)/(s(5,6)-zmass**2))
         propz1=(s(3,4)-zmass**2)/(s(3,4)-zmass**2+im*zmass*zwidth)
         propz2=(s(5,6)-zmass**2)/(s(5,6)-zmass**2+im*zmass*zwidth)
         props=(s(1,2)-zmass**2)/(s(1,2)-zmass**2+im*zmass*zwidth)
-        prop12=s(1,2)/(s(1,2)-zmass**2)
-        prop34=s(3,4)/(s(3,4)-zmass**2)
-        prop56=s(5,6)/(s(5,6)-zmass**2)
+        cprop=propz1*propz2*props
       endif
-      
-      cprop=propz1*propz2*props
       
 c-- here the labels correspond to the polarizations of the
 c-- quark, lepton 4 and lepton 6 respectively
@@ -254,17 +251,6 @@ C-- Inclusion of width a la Baur and Zeppenfeld
 
       msqv(j,k)=sub*msq(j,k)+virt
 
-c       if(msqv(j,k).ne.0d0) then
-c          write(*,*) 'j,k             ',j,k
-c  	    write(*,*) 'epinv           ',epinv
-c  	    write(*,*) 'sub             ',sub
-c          write(*,*) 'msq(j,k)        ',msq(j,k)
-c          write(*,*) 'sub * msq(j,k)  ',msq(j,k)*sub
-c          write(*,*) 'virt            ',virt
-c          write(*,*) 'ratio            ',msq(j,k)*sub/virt
-c          pause
-c	 endif	  
-              
  20   continue
       enddo
 

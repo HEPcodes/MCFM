@@ -23,7 +23,7 @@ c     qi(-p1)+qj(-p2)-->qk(p3)+qj(p4)+W+/-  (k .ne. i,j)
 
       fac=0d0
       do nk=-nf,nf
-      if ((nk .eq. n1) .or. (nk .eq. n2)) then
+      if ((nk .eq. n1) .or. (nk .eq. -n2)) then
       continue
       else
       fac=fac+(fl*gl(n1,nk)*VV(n1,nk))**2
@@ -42,7 +42,7 @@ c     qi(-p1)+qj(-p2)-->qi(p3)+qk(p4)+W+/-  (k .ne. i,j)
 
       fac=0d0
       do nk=-nf,nf
-      if ((nk .eq. n1) .or. (nk .eq. n2)) then
+      if ((nk .eq. -n1) .or. (nk .eq. n2)) then
       continue
       else
       fac=fac+(fl*gl(n2,nk)*VV(n2,nk))**2
@@ -62,7 +62,7 @@ c++++ subcase c
 c     qi(-p1)+qj(-p2)-->qj(p3)+qj(p4)+W+/-  (k .eq. j)
 
 
-      fac=(fl*gl(n1,n2)*VV(n1,n2))**2
+      fac=(fl*gl(n1,-n2)*VV(n1,-n2))**2
 
 c      left-left matrix element
       mlll1=+Lla(i1,i2,i3,i4)
@@ -78,7 +78,7 @@ c      left-right matrix element
 c++++ subcase d
 c     qi(-p1)+qj(-p2)-->qi(p3)+qi(p4)+W+/-  (k .eq. i)
 
-      fac=(fl*gl(n2,n1)*VV(n2,n1))**2
+      fac=(fl*gl(n2,-n1)*VV(n2,-n1))**2
 
 c      left-left matrix element
       mlll1=+Lla(i2,i1,i4,i3)      
@@ -117,11 +117,19 @@ c----left-left matrix element
       mlll1=+Lla(i1,i2,i3,i4)
       mlll2=-Lla(i2,i1,i3,i4)
 
+c--- new expression, testing
+c      mlll2=-Lla(i1,i2,i4,i3)
+c--- new expression, testing
+
 c----left-right matrix element
       mlrl1=+Lla(i1,i4,i3,i2)
 
 c----right-left matrix element
       mrll2=-Lla(i2,i4,i3,i1)
+
+c--- new expression, testing
+c      mrll2=-Lla(i1,i3,i4,i2)
+c--- new expression, testing
 
       xwqqqq=fac*aveqq*Von4*(
      & +abs(mlll1)**2+abs(mlll2)**2

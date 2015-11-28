@@ -1,17 +1,19 @@
-      double complex function amp_qqggg(i1,h1,i2,h2,i3,h3,i4,h4,i5,lh)
+      double complex function amp_qqggg(i1,qh,i2,h2,i3,h3,i4,h4,i5,lh,
+     . j6,j7)
 C--Results taken from Nagy and Trocsanyi-hep-ph/9806317
 C--Appendix A
       implicit none
       include 'constants.f'
       include 'masses.f'
       include 'prods.f'
-      integer i1,i2,i3,i4,i5,i6,i7,j,k,h1,h2,h3,h4,lh,g1,g2,g3,g4,lg
-      double complex t2a,t2b,t3a,t3b,tx,A(2,2,2,2,2)
+      integer i1,i2,i3,i4,i5,i6,i7,j,k,qh,h2,h3,h4,lh,g1,g2,g3,g4,lg,
+     . j6,j7
+      double complex t2a,t3a,t3b,tx,A(2,2,2,2,2)
       double complex xa(mxpart,mxpart),xb(mxpart,mxpart)
       double precision t123,t234,t345,t567,t167
 
       t2a(i1,i2,i3,i4)=xa(i1,i2)*xb(i2,i4)+xa(i1,i3)*xb(i3,i4)
-      t2b(i1,i2,i3,i4)=xb(i1,i2)*xa(i2,i4)+xb(i1,i3)*xa(i3,i4)
+c      t2b(i1,i2,i3,i4)=xb(i1,i2)*xa(i2,i4)+xb(i1,i3)*xa(i3,i4)
       t3a(i1,i2,i3,i4,i5,i6)=xa(i1,i2)*xb(i2,i4)*xa(i4,i6)
      .                      +xa(i1,i2)*xb(i2,i5)*xa(i5,i6)
      .                      +xa(i1,i3)*xb(i3,i4)*xa(i4,i6)
@@ -21,21 +23,20 @@ C--Appendix A
      .                      +xb(i1,i3)*xa(i3,i4)*xb(i4,i6)
      .                      +xb(i1,i3)*xa(i3,i5)*xb(i5,i6)
       
-C---A(h1,h2,h3,h4,lh)
+C---A(qh,h2,h3,h4,lh)
 C---h=1 LH
 C---h=2 RH
 
-      g1=h1
+      g1=qh
       g2=h2
       g3=h3
       g4=h4
       lg=lh
-      i6=6
-      i7=7
-
+      i6=j6
+      i7=j7
       if (g1*lg.eq.2)then
-      i6=7
-      i7=6
+      i7=j6
+      i6=j7
       lg=3-lg  
       endif 
 
@@ -48,10 +49,10 @@ C---h=2 RH
       enddo
       elseif (g1.eq.1) then
       g1=2
-      g2=g2-(-1)**g2
-      g3=g3-(-1)**g3
-      g4=g4-(-1)**g4
-      lg=lg-(-1)**lg
+      g2=3-g2
+      g3=3-g3
+      g4=3-g4
+      lg=3-lg
       do j=1,mxpart
       do k=1,mxpart
       xa(j,k)=zb(k,j)
@@ -72,7 +73,6 @@ C--A43 (2,2,2,2,2)
      . ) then 
       amp_qqggg =
      .-xa(i6,i5)**2*xb(i6,i7)/(xa(i1,i2)*xa(i2,i3)*xa(i3,i4)*xa(i4,i5))
-
 C--A49
 C        A(2,1,1,1,2) =
       elseif 
@@ -226,7 +226,7 @@ c--- extra minus sign after CP symmetry
       endif
 
 c--- divide out by the photon propagator that we put back in later
-      amp_qqggg = amp_qqggg/s(6,7)
+      amp_qqggg = amp_qqggg/s(j6,j7)
 
       return 
       end

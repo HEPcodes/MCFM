@@ -1,2 +1,2 @@
       double precision epinv
-      parameter(epinv=1d0)
+      parameter(epinv=1d3)

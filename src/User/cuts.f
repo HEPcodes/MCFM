@@ -194,11 +194,13 @@ c      pause
       include 'constants.f'
       integer j
       double precision p(mxpart,4)
-      if (dabs(p(j,4)) .lt. 1d-13) then
-C--set to 100 if Energy vanishes
+      ayrap=(p(j,4)+p(j,3))/(p(j,4)-p(j,3))
+      if (ayrap .lt. 1d-13) then
+C-- set to 100 if this is very close to or less than zero
+c-- rapidities of 100 will be rejected by any sensible cuts
       ayrap=100d0
       else 
-      ayrap=0.5d0*dabs(log((p(j,4)+p(j,3))/(p(j,4)-p(j,3))))
+      ayrap=0.5d0*dabs(dlog(ayrap))
       endif
       return
       end
@@ -208,11 +210,13 @@ C--set to 100 if Energy vanishes
       include 'constants.f'
       integer j
       double precision p(mxpart,4)
-      if (dabs(p(j,4)) .lt. 1d-13) then
-C--set to 100 if Energy vanishes
+      yrap=(p(j,4)+p(j,3))/(p(j,4)-p(j,3))
+      if (yrap .lt. 1d-13) then
+C-- set to 100 if this is very close to or less than zero
+c-- rapidities of 100 will be rejected by any sensible cuts
       yrap=100d0
       else 
-      yrap=0.5d0*log((p(j,4)+p(j,3))/(p(j,4)-p(j,3)))
+      yrap=0.5d0*dlog(yrap)
       endif
       return
       end

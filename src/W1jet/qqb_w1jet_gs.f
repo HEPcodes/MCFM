@@ -14,10 +14,12 @@ c   positively charged W only
       include 'masses.f'
       include 'ptilde.f'
       include 'qqgg.f'
+      include 'flags.f'
+      include 'ckm.f'
       integer j,k,nd
 c --- remember: nd will count the dipoles
       
-      double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf)
+      double precision p(mxpart,4),msq(maxd,-nf:nf,-nf:nf),stat
       double precision 
      & msq15_2(-nf:nf,-nf:nf),msq25_1(-nf:nf,-nf:nf),
      & msq16_2(-nf:nf,-nf:nf),msq26_1(-nf:nf,-nf:nf),
@@ -25,28 +27,28 @@ c --- remember: nd will count the dipoles
      & msq56_1v(-nf:nf,-nf:nf),msq56_2v(-nf:nf,-nf:nf),
      & msq26_5v(-nf:nf,-nf:nf),msq26_1v(-nf:nf,-nf:nf),
      & msq15_6v(-nf:nf,-nf:nf),msq16_2v(-nf:nf,-nf:nf),
-     & msq15_2v(-nf:nf,-nf:nf),
+     & msq15_2v(-nf:nf,-nf:nf),msq25_1v(-nf:nf,-nf:nf),
      & dummy(-nf:nf,-nf:nf),dummyv(-nf:nf,-nf:nf),
      & sub15_2(4),sub25_1(4),sub16_2(4),sub26_1(4),
      & sub15_6(4),sub16_5(4),sub25_6(4),sub26_5(4),
      & sub56_1(4),sub56_2(4),sub56_1v,sub56_2v,
      & sub26_5v,sub26_1v,sub16_5v,sub16_2v,sub15_2v,sub15_6v,sub25_6v,
-     & dsubv
+     & sub25_1v,dsubv
       external qqb_w_g,qqb_w_gvec,donothing_gvec
       ndmax=6
 
-c--- Not yet clear why msq15_2v, msq25_1v are not needed
-c--- Further work required
-
 c--- calculate all the initial-initial dipoles
-      call dips(1,p,1,5,2,sub15_2,dsubv,msq15_2,dummyv,
-     . qqb_w_g,donothing_gvec)
-      call dips(2,p,2,5,1,sub25_1,dsubv,msq25_1,dummyv,
-     . qqb_w_g,donothing_gvec)
+      call dips(1,p,1,5,2,sub15_2,sub15_2v,msq15_2,msq15_2v,
+     . qqb_w_g,qqb_w_gvec)
+      call dips(2,p,2,5,1,sub25_1,sub25_1v,msq25_1,msq25_1v,
+     . qqb_w_g,qqb_w_gvec)
       call dips(3,p,1,6,2,sub16_2,sub16_2v,msq16_2,msq16_2v,
      . qqb_w_g,qqb_w_gvec)
       call dips(4,p,2,6,1,sub26_1,sub26_1v,msq26_1,msq26_1v,
      . qqb_w_g,qqb_w_gvec)
+
+
+
 c--- now the basic initial final ones
       call dips(5,p,1,5,6,sub15_6,sub15_6v,msq15_6,msq15_6v,
      . qqb_w_g,qqb_w_gvec)
@@ -72,7 +74,12 @@ c--- final-initial, again msq is already set up
       do nd=1,ndmax
         msq(nd,j,k)=0d0
       enddo
+      enddo
+      enddo
 
+      if (Gflag) then
+      do j=-nf,nf
+      do k=-nf,nf
 c--- do only q-qb and qb-q cases      
       if (  ((j .gt. 0).and.(k .lt. 0))
      . .or. ((j .lt. 0).and.(k .gt. 0))) then
@@ -136,7 +143,113 @@ c--- note g,g = 1,2 and qb=5, q=6 so (15),(25)-->q and (16),(26)-->qb
       
       enddo
       enddo
+      endif
+
+      if (Qflag) then       
+      do j=-nf,nf
+      do k=-nf,nf
+
+c--- statistical factor = 1/2 if (q,Q) are in the same family
+c--- since Q --> Wq
+      if ((j-1)/2 .eq. (k-1)/2) then
+        stat=0.5d0
+      else
+        stat=1d0
+      endif      
+
+      if ((j .gt. 0) .and. (k .gt. 0)) then
+c--- Q Q - different flavours
+        if (j. ne. k) then
+         msq(1,j,k)=msq(1,j,k)+stat*(xn-1d0/xn)
+     .  *(msq15_2(0,k)*sub15_2(gq)+msq15_2v(0,k)*sub15_2v)
+        msq(4,j,k)=msq(4,j,k)+stat*(xn-1d0/xn)
+     .  *(msq26_1(j,0)*sub26_1(gq)+msq26_1v(j,0)*sub26_1v)
+        if (Vsq(j,-k) .ne. 0d0) then
+        msq(2,j,k)=msq(2,j,k)+0.5d0*(xn-1d0/xn)
+     .  *(msq25_1(j,0)*sub25_1(gq)+msq25_1v(j,0)*sub25_1v)
+        endif
+        if (Vsq(k,-j) .ne. 0d0) then
+        msq(3,j,k)=msq(3,j,k)+0.5d0*(xn-1d0/xn)
+     .  *(msq16_2(0,k)*sub16_2(gq)+msq16_2v(0,k)*sub16_2v)
+        endif
+        else
+c--- Q Q - same flavours
+c--- note: W+2 jet qq piece only includes W radiation off
+c---       the 15 line, hence these are the only contributions
+c---       (we could include 15,25 subtractions if W+2jet had
+c---        radiation off the 26 line also)
+        msq(3,j,k)=msq(3,j,k)+(xn-1d0/xn)
+     .  *(msq16_2(0,k)*sub16_2(gq)+msq16_2v(0,k)*sub16_2v)
+        msq(4,j,k)=msq(4,j,k)+(xn-1d0/xn)
+     .  *(msq26_1(j,0)*sub26_1(gq)+msq26_1v(j,0)*sub26_1v)
+        endif
+
+       elseif ((j .lt. 0).and.(k .lt. 0)) then
+        if (j. ne. k) then
+c--- QBAR QBAR - different flavours
+        msq(1,j,k)=msq(1,j,k)+stat*(xn-1d0/xn)
+     .    *(msq15_2(0,k)*sub15_2(gq)+msq15_2v(0,k)*sub15_2v)
+        msq(4,j,k)=msq(4,j,k)+stat*(xn-1d0/xn)
+     .    *(msq26_1(j,0)*sub26_1(gq)+msq26_1v(j,0)*sub26_1v)
+        if (Vsq(j,-k) .ne. 0d0) then
+        msq(2,j,k)=msq(2,j,k)+0.5d0*(xn-1d0/xn)
+     .    *(msq25_1(j,0)*sub25_1(gq)+msq25_1v(j,0)*sub25_1v)
+        endif
+        if (Vsq(k,-j) .ne. 0d0) then
+        msq(3,j,k)=msq(3,j,k)+0.5d0*(xn-1d0/xn)
+     .    *(msq16_2(0,k)*sub16_2(gq)+msq16_2v(0,k)*sub16_2v)
+        endif
+        else
+c--- QBAR QBAR - same flavours     
+        msq(3,j,k)=msq(3,j,k)+(xn-1d0/xn)
+     .  *(msq16_2(0,k)*sub16_2(gq)+msq16_2v(0,k)*sub16_2v)
+        msq(4,j,k)=msq(4,j,k)+(xn-1d0/xn)
+     .  *(msq26_1(j,0)*sub26_1(gq)+msq26_1v(j,0)*sub26_1v)
+        endif
+
+      elseif ((j .gt. 0).and.(k .lt. 0)) then
+c--- Q QBAR
+        if (j .eq. -k) then
+        msq(1,j,k)=msq(1,j,k)+(xn-1d0/xn)
+     .    *(msq15_2(0,k)*sub15_2(gq)+msq15_2v(0,k)*sub15_2v)
+        msq(4,j,k)=msq(4,j,k)+(xn-1d0/xn)
+     .    *(msq26_1(j,0)*sub26_1(gq)+msq26_1v(j,0)*sub26_1v)
+        msq(6,j,k)=msq(6,j,k)+2d0*tr*dfloat(nf)
+     .    *(msq26_5(j,k)*sub56_2(gq)-msq56_2v(j,k)*sub56_2v)
+        else 
+        msq(1,j,k)=msq(1,j,k)+(xn-1d0/xn)
+     .    *(msq15_2(0,k)*sub15_2(gq)+msq15_2v(0,k)*sub15_2v)
+        msq(4,j,k)=msq(4,j,k)+(xn-1d0/xn)
+     .    *(msq26_1(j,0)*sub26_1(gq)+msq26_1v(j,0)*sub26_1v)
+        msq(6,j,k)=msq(6,j,k)+2d0*tr*dfloat(nf)
+     .    *(msq26_5(j,k)*sub56_2(gq)-msq56_2v(j,k)*sub56_2v)
+        endif
+c--QBAR Q
+      elseif ((j .lt. 0).and.(k .gt. 0)) then
+      if (j .eq. -k) then
+      msq(2,j,k)=msq(2,j,k)+(xn-1d0/xn)
+     .  *(msq25_1(j,0)*sub25_1(gq)+msq25_1v(j,0)*sub25_1v)
+      msq(3,j,k)=msq(3,j,k)+(xn-1d0/xn)
+     .  *(msq16_2(0,k)*sub16_2(gq)+msq16_2v(0,k)*sub16_2v)
+
+      msq(6,j,k)=msq(6,j,k)+2d0*tr*dfloat(nf)
+     . *(msq26_5(j,k)*sub56_2(gq)-msq56_2v(j,k)*sub56_2v)
+      else 
+      msq(2,j,k)=msq(2,j,k)+(xn-1d0/xn)
+     .  *(msq25_1(j,0)*sub25_1(gq)+msq25_1v(j,0)*sub25_1v)
+      msq(3,j,k)=msq(3,j,k)+(xn-1d0/xn)
+     .  *(msq16_2(0,k)*sub16_2(gq)+msq16_2v(0,k)*sub16_2v)
+      msq(6,j,k)=msq(6,j,k)+2d0*tr*dfloat(nf)
+     .  *(msq26_5(j,k)*sub56_2(gq)-msq56_2v(j,k)*sub56_2v)
+
+      endif
+      endif
+
+
+      enddo
+      enddo
+      endif
 
       return
       end
-      
+

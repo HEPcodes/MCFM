@@ -20,8 +20,23 @@ c--- where non-jet four vectors are set equal to the incoming q
       common/npart/npart
       common/nqcdjets/nqcdjets,nqcdstart
       common/nproc/nproc
-      parameter (ptjetmin=15d0,yjetmax=2.5d0)
+      logical first
+      data first/.true./
+      save first
+      parameter (ptjetmin=15d0,yjetmax=2d0)
       
+      if ((first) .and. (nqcdjets .gt. 0)) then
+        first=.false.
+      write(6,*)
+      write(6,*) '*********** Basic jet-defining parameters **********'
+      write(6,*) '*                                                  *'
+      write(6,79) ' *    pt(jet)      >   ',ptjetmin
+      write(6,79) ' *   |rap(jet)|    <   ',yjetmax
+      write(6,79) ' *  cone size, R   :   ',R
+      write(6,*) '****************************************************'
+      endif
+   79 format(a23,f6.3,'                       *')
+
       njet=0
       maxjet=0
 
@@ -31,11 +46,13 @@ c--- where non-jet four vectors are set equal to the incoming q
         enddo
       enddo
 
-c--- pick out jets: note that we search to npart+2 to prevent
-c--- extra gluons identified in 'chooser' contaminating lowest order      
+c--- pick out jets: note that we search to npart+2 and to prevent
+c--- extra gluons identified in 'chooser' contaminating lowest order
+c--- we check that the energy of the particle is not zero     
       do i=3,npart+2
-      if ((plabel(i) .eq. 'pp') .or. (plabel(i) .eq. 'pj')
-     ..or.(plabel(i) .eq. 'bq') .or. (plabel(i) .eq. 'ba')) then
+      if (((plabel(i) .eq. 'pp') .or. (plabel(i) .eq. 'pj')
+     ..or.(plabel(i) .eq. 'bq') .or. (plabel(i) .eq. 'ba'))
+     ..and. (q(i,4) .gt. 1d-10)) then
         maxjet=maxjet+1
         jetindex(maxjet)=i
         jetlabel(maxjet)=plabel(i)
@@ -44,7 +61,7 @@ c--- extra gluons identified in 'chooser' contaminating lowest order
         enddo
       endif
       enddo
-      
+
 c--- for no partons, just switch q into qfinal
       if (maxjet .eq. 0) then
         do i=1,mxpart
@@ -127,13 +144,17 @@ c--- set all other momenta to zero and restore leptons
 c----remove jets that are below the pT threhold or which lie outside
 c----the observable rapidity region
      
-c      write(*,*) 'Obtained ',njet,' jets'
+c      write(*,*) 'AFTER CLUSTERING: Obtained ',njet,' jets'
 
 c--- restore jets
       ajet=0
       do i=1,njet
+c      write(*,*) 'Jet ',i,' , pt :',ptjet(i,q,qjet)
+c        write(*,*) 'Jet ',i
+c        write(*,*) 'pt: ',ptjet(i,q,qjet),' vs min. ',ptjetmin
+c        write(*,*) 'ay: ',ayrap(i,qjet),' vs max. ',yjetmax
         if ((ptjet(i,q,qjet) .gt. ptjetmin) .and.
-     .      (ayrap(i,qjet) .lt. yjetmax)) then     
+     .      (ayrap(i,qjet)   .lt. yjetmax)) then     
         ajet=ajet+1
         do nu=1,4
           qfinal(jetindex(ajet),nu)=qjet(i,nu)
@@ -142,7 +163,7 @@ c--- restore jets
         endif
       enddo
 
-c--- if any jets are removed by eta and pt cuts, then njet=ajet
+c--- if no jets are removed by eta and pt cuts, then njet=ajet
       if (ajet .lt. njet) then
         do i=ajet+1,njet
           do nu=1,4

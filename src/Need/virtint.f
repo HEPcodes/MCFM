@@ -7,7 +7,12 @@
       include 'dprodx.f'
       include 'npart.f'
       include 'PR.f'
+      include 'PR_cs.f'
+      include 'msq_cs.f'
       include 'scale.f'
+      include 'clustering.f'
+      include 'flags.f'
+      include 'efficiency.f'
       integer ih1,ih2,j,k,cs,jets,nproc,nvec
       double precision p(mxpart,4),pjet(mxpart,4),r(mxdim),W,sqrts,xmsq,
      . val,fx1(-nf:nf),fx2(-nf:nf),fx1z(-nf:nf),fx2z(-nf:nf)
@@ -16,9 +21,6 @@
       double precision xx(2),z,x1onz,x2onz,flux,vol,taumin,
      . xlog,BrnRat
       double precision bbsqmin,bbsqmax,wsqmin,wsqmax,ptjet,rcut     
-      double precision Rgg_g_cs(0:2),Rg_gg_cs(0:2),
-     .                 Pgg_g_cs(0:2),Pg_gg_cs(0:2)
-      double precision msq_cs(0:2,-nf:nf,-nf:nf),mmsq_cs(0:2,2,2)
       integer nqcdjets,nqcdstart
       character*6 case
       character pdlabel*7,jetlabel(mxpart)*2
@@ -38,13 +40,27 @@
       common/makecuts/makecuts
       common/nproc/nproc
       common/rcut/rcut
-      common/RP_cols/Rgg_g_cs,Rg_gg_cs,Pgg_g_cs,Pg_gg_cs
-      common/msq_cols/msq_cs,mmsq_cs
       
       data Rgg_q,Rgq_q,Rg_qq,Rg_qg,Rq_gg,Rq_gq,Rqq_g,Rqg_g,
      & Rqq_qb,Rq_qbqb,Rqb_qq,Rqbqb_q,Rgq_g,Rg_gq,Rgg_g,Rg_gg,
      & Pgg_q,Pgq_q,Pg_qq,Pg_qg,Pq_gg,Pq_gq,Pqq_g,Pqg_g,
      & Pqq_qb,Pq_qbqb,Pqb_qq,Pqbqb_q,Pgq_g,Pg_gq,Pgg_g,Pg_gg/32*0d0/
+
+      data Rgg_g_cs,Rg_gg_cs,Pgg_g_cs,Pg_gg_cs,
+     .     Rqq_qb_cs,Rq_qbqb_cs,Pqq_qb_cs,Pq_qbqb_cs,
+     .     Rqbqb_q_cs,Rqb_qq_cs,Pqbqb_q_cs,Pqb_qq_cs,
+     .     Rqq_g_cs,Rq_gg_cs,Pqq_g_cs,Pq_gg_cs,
+     .     Rqbqb_g_cs,Rqb_gg_cs,Pqbqb_g_cs,Pqb_gg_cs,
+     .     Rgg_q_cs,Rg_qq_cs,Pgg_q_cs,Pg_qq_cs,
+     .     Rgg_qb_cs,Rg_qbqb_cs,Pgg_qb_cs,Pg_qbqb_cs,
+     .     Rgq_g_cs,Rg_gq_cs,Rgqb_g_cs,Rg_gqb_cs,
+     .     Pgq_g_cs,Pg_gq_cs,Pgqb_g_cs,Pg_gqb_cs,
+     .     Rgq_qb_cs,Rq_gqb_cs,Rgqb_q_cs,Rqb_gq_cs,
+     .     Pgq_qb_cs,Pq_gqb_cs,Pgqb_q_cs,Pqb_gq_cs,
+     .     Pg_qg_cs,Pqg_g_cs,Rg_qg_cs,Rqg_g_cs,
+     .     Rqq_q_cs,Rq_qq_cs,Rqbqb_qb_cs,Rqb_qbqb_cs,
+     .     Pqq_q_cs,Pq_qq_cs,Pqbqb_qb_cs,Pqb_qbqb_cs/168*0d0/
+
 
       do cs=0,2
         Rgg_g_cs(cs)=0d0
@@ -53,6 +69,7 @@
         Pg_gg_cs(cs)=0d0
       enddo
       
+      ntotshot=ntotshot+1
       virtint=0d0
 
       W=sqrts**2
@@ -75,6 +92,8 @@
       call dotem(nvec,p,s)
 c---impose mass cuts on final state
       call masscuts(s,*999)
+c----reject event if any s(i,j) is too small
+      call smalls(s,npart,*999)
 
 c---impose experimental cuts on final state
 
@@ -176,6 +195,10 @@ c--- set bbproc to TRUE if the process involves two b-jets
          call qqb_w_g(p,msq)
          call qqb_w1jet_v(p,msqv)
          call qqb_w1jet_z(p,z)
+      elseif (case .eq. 'W_2jet') then         
+         call qqb_w2jet(p,msq)
+         call qqb_w2jet_v(p,msqv)
+         call qqb_w2jet_z(p,z)
       elseif (case .eq. 'Z_only') then
          call qqb_z(p,msq)
          call qqb_z_v(p,msqv)
@@ -210,7 +233,7 @@ C---initialize to zero
 
       do j=-nf,nf
       do k=-nf,nf
-
+      
       if (ggonly) then
       if ((j.ne.0) .or. (k.ne.0)) goto 20
       endif
@@ -223,6 +246,117 @@ C---initialize to zero
       if ((j.eq.0) .or. (k.eq.0)) goto 20
       endif
 
+      if ((case .eq. 'W_2jet') .or. (case .eq. 'Z_2jet')) then
+c--- SUM BY COLOUR STRUCTURES: W/Z + 2 jet only
+      xmsq=xmsq+fx1(j)*fx2(k)*(msq(j,k)+msqv(j,k))
+
+      if     ((j .gt. 0) .and. (k.lt.0)) then
+      do cs=0,2
+      xmsq=xmsq
+     & +fx1(j)*fx2(k)*msq_cs(cs,j,k)*(-Pqq_qb_cs(cs)-Pq_qbqb_cs(cs))
+     & +fx1z(j)*fx2(k)*msq_cs(cs,j,k)*(Pqq_qb_cs(cs)+Rqq_qb_cs(cs))/z
+     & +fx1(j)*fx2z(k)*msq_cs(cs,j,k)*(Pq_qbqb_cs(cs)+Rq_qbqb_cs(cs))/z
+      enddo
+      
+      elseif ((j .lt. 0) .and. (k.gt.0)) then
+      do cs=0,2
+      xmsq=xmsq
+     & +fx1(j)*fx2(k)*msq_cs(cs,j,k)*(-Pqbqb_q_cs(cs)-Pqb_qq_cs(cs))
+     & +fx1z(j)*fx2(k)*msq_cs(cs,j,k)*(Pqbqb_q_cs(cs)+Rqbqb_q_cs(cs))/z
+     & +fx1(j)*fx2z(k)*msq_cs(cs,j,k)*(Pqb_qq_cs(cs)+Rqb_qq_cs(cs))/z
+      enddo
+      
+      elseif ((j .gt. 0) .and. (k.gt.0)) then
+      do cs=0,2
+      xmsq=xmsq
+     & +fx1(j)*fx2(k)*msq_cs(cs,j,k)*(-Pqq_q_cs(cs)-Pq_qq_cs(cs))
+     & +fx1z(j)*fx2(k)*msq_cs(cs,j,k)*(Pqq_q_cs(cs)+Rqq_q_cs(cs))/z
+     & +fx1(j)*fx2z(k)*msq_cs(cs,j,k)*(Pq_qq_cs(cs)+Rq_qq_cs(cs))/z
+      enddo
+      
+      elseif ((j .lt. 0) .and. (k.lt.0)) then
+      do cs=0,2
+      xmsq=xmsq
+     &+fx1(j)*fx2(k)*msq_cs(cs,j,k)*(-Pqbqb_qb_cs(cs)-Pqb_qbqb_cs(cs))
+     &+fx1z(j)*fx2(k)*msq_cs(cs,j,k)*(Pqbqb_qb_cs(cs)+Rqbqb_qb_cs(cs))/z
+     &+fx1(j)*fx2z(k)*msq_cs(cs,j,k)*(Pqb_qbqb_cs(cs)+Rqb_qbqb_cs(cs))/z
+      enddo
+      
+      elseif ((j .eq. 0) .and. (k.eq.0)) then
+      msq_qg=msq_cs(cs,+5,k)+msq_cs(cs,+4,k)+msq_cs(cs,+3,k)
+     &      +msq_cs(cs,+2,k)+msq_cs(cs,+1,k)
+     &      +msq_cs(cs,-5,k)+msq_cs(cs,-4,k)+msq_cs(cs,-3,k)
+     &      +msq_cs(cs,-2,k)+msq_cs(cs,-1,k)
+      msq_gq=msq_cs(cs,j,+5)+msq_cs(cs,j,+4)+msq_cs(cs,j,+3)
+     &      +msq_cs(cs,j,+2)+msq_cs(cs,j,+1)
+     &      +msq_cs(cs,j,-5)+msq_cs(cs,j,-4)+msq_cs(cs,j,-3)
+     &      +msq_cs(cs,j,-2)+msq_cs(cs,j,-1)
+      do cs=0,2
+      xmsq=xmsq
+     & +fx1(j)*fx2(k)*(-msq_qg*Pgq_g_cs(cs)-msq_gq*Pg_gq_cs(cs))
+     & +fx1z(j)*fx2(k)*(+msq_qg*(Pgq_g_cs(cs)+Rgq_g_cs(cs))/z)
+     & +fx1(j)*fx2z(k)*(+msq_gq*(Pg_gq_cs(cs)+Rg_gq_cs(cs))/z)
+      xmsq=xmsq
+     & +fx1(j)*fx2(k)*((-Pgg_g_cs(cs)-Pg_gg_cs(cs))*msq_cs(cs,j,k))
+     & +fx1z(j)*fx2(k)*((Pgg_g_cs(cs)+Rgg_g_cs(cs))/z*msq_cs(cs,j,k))
+     & +fx1(j)*fx2z(k)*((Pg_gg_cs(cs)+Rg_gg_cs(cs))/z*msq_cs(cs,j,k))
+      enddo
+      
+      elseif ((j .eq. 0) .and. (k .gt. 0)) then
+      msq_qq=msq_cs(cs,-1,k)+msq_cs(cs,-2,k)+msq_cs(cs,-3,k)
+     &      +msq_cs(cs,-4,k)+msq_cs(cs,-5,k)
+      do cs=0,2
+       xmsq=xmsq     
+     &  +fx1 (j)*fx2 (k)*(msq_cs(cs,j,k)*(-Pgg_q_cs(cs)-Pg_qq_cs(cs))
+     &                   -msq_qq*Pgqb_q_cs(cs))
+     &  +fx1z(j)*fx2 (k)*((Pgg_q_cs(cs)+Rgg_q_cs(cs))/z*msq_cs(cs,j,k)
+     &                   +(Pgqb_q_cs(cs)+Rgqb_q_cs(cs))/z*msq_qq)
+     &  +fx1 (j)*fx2z(k)*((Pg_qq_cs(cs)+Rg_qq_cs(cs))/z*msq_cs(cs,j,k)
+     &                   +(Pg_qg_cs(cs)+Rg_qg_cs(cs))/z*msq_cs(cs,0,0))
+      enddo
+      
+      elseif ((j .eq. 0) .and. (k .lt. 0)) then
+      msq_qq=msq_cs(cs,+1,k)+msq_cs(cs,+2,k)+msq_cs(cs,+3,k)
+     &      +msq_cs(cs,+4,k)+msq_cs(cs,+5,k)
+      do cs=0,2
+       xmsq=xmsq     
+     &  +fx1 (j)*fx2 (k)*(msq_cs(cs,j,k)*(-Pgg_q_cs(cs)-Pg_qq_cs(cs))
+     &                   -msq_qq*Pgq_qb_cs(cs))
+     &  +fx1z(j)*fx2 (k)*((Pgg_q_cs(cs)+Rgg_q_cs(cs))/z*msq_cs(cs,j,k)
+     &                   +(Pgq_qb_cs(cs)+Rgq_qb_cs(cs))/z*msq_qq)
+     &  +fx1 (j)*fx2z(k)*((Pg_qq_cs(cs)+Rg_qq_cs(cs))/z*msq_cs(cs,j,k)
+     &                   +(Pg_qg_cs(cs)+Rg_qg_cs(cs))/z*msq_cs(cs,0,0))
+      enddo
+      
+      elseif ((k .eq. 0) .and. (j .gt. 0)) then
+      msq_qq=msq_cs(cs,j,-1)+msq_cs(cs,j,-2)+msq_cs(cs,j,-3)
+     &      +msq_cs(cs,j,-4)+msq_cs(cs,j,-5)
+      do cs=0,2
+       xmsq=xmsq     
+     &  +fx1 (j)*fx2 (k)*(msq_cs(cs,j,k)*(-Pq_gg_cs(cs)-Pqq_g_cs(cs))
+     &                   -msq_qq*Pq_gqb_cs(cs))
+     &  +fx1 (j)*fx2z(k)*((Pq_gg_cs(cs)+Rq_gg_cs(cs))/z*msq_cs(cs,j,k)
+     &                   +(Pq_gqb_cs(cs)+Rq_gqb_cs(cs))/z*msq_qq)
+     &  +fx1z(j)*fx2 (k)*((Pqq_g_cs(cs)+Rqq_g_cs(cs))/z*msq_cs(cs,j,k)
+     &                   +(Pqg_g_cs(cs)+Rqg_g_cs(cs))/z*msq_cs(cs,0,0))
+      enddo
+      
+      elseif ((k .eq. 0) .and. (j .lt. 0)) then
+      msq_qq=msq_cs(cs,j,+1)+msq_cs(cs,j,+2)+msq_cs(cs,j,+3)
+     &      +msq_cs(cs,j,+4)+msq_cs(cs,j,+5)
+      do cs=0,2
+       xmsq=xmsq     
+     &  +fx1 (j)*fx2 (k)*(msq_cs(cs,j,k)*(-Pq_gg_cs(cs)-Pqq_g_cs(cs))
+     &                   -msq_qq*Pqb_gq_cs(cs))
+     &  +fx1 (j)*fx2z(k)*((Pq_gg_cs(cs)+Rq_gg_cs(cs))/z*msq_cs(cs,j,k)
+     &                   +(Pqb_gq_cs(cs)+Rqb_gq_cs(cs))/z*msq_qq)
+     &  +fx1z(j)*fx2 (k)*((Pqq_g_cs(cs)+Rqq_g_cs(cs))/z*msq_cs(cs,j,k)
+     &                   +(Pqg_g_cs(cs)+Rqg_g_cs(cs))/z*msq_cs(cs,0,0))
+      enddo
+      endif
+      
+      else
+c--- SUM BY TOTAL MATRIX ELEMENTS: everything else
       if     ((j .gt. 0) .and. (k.lt.0)) then
       xmsq=xmsq
      & +fx1(j)*fx2(k)*(msq(j,k)*(one-Pqq_qb-Pq_qbqb)+msqv(j,k))
@@ -299,26 +433,45 @@ C---initialize to zero
      &                   +(Pqg_g+Rqg_g)/z*msq(0,0))
        endif
       endif
+      
+      endif
+      
  20   continue
       enddo
       enddo
-
+      
 c--- cluster partons 5 to (4+nqcdjets)
 c--- if nqcdjets=0, no clustering is performed and pjet=p      
-      call genclust2(p,rcut,jets,pjet,jetlabel)
-      if ((jets .ne. nqcdjets) .and. (nqcdjets .gt. 0)) then
-        goto 999
-      endif        
-
+      if (clustering .eqv. .false.) then
+        do j=1,mxpart
+        do k=1,4
+          pjet(j,k)=p(j,k)
+        enddo
+        enddo
+        jets=nqcdjets
+      else
+        call genclust2(p,rcut,jets,pjet,jetlabel)
+        if ((jets .ne. nqcdjets) .and. (nqcdjets .gt. 0)) then
+          njetzero=njetzero+1
+          goto 999
+        endif        
+      endif
+      
       call dotem(nvec,pjet,s)
 
 c--- make some cuts ....
       if (makecuts) then
 c--- ... either using pre-prepared ones
         if (bbproc) then
-          if (cuts(pjet)) goto 999
+          if (cuts(pjet)) then
+            ncutzero=ncutzero+1
+            goto 999
+          endif
         else
-          if (madejetcuts(p,pjet,jets) .eqv. .false.) goto 999
+          if (madejetcuts(p,pjet,jets) .eqv. .false.) then
+            ncutzero=ncutzero+1
+            goto 999
+          endif
         endif
       endif
     
@@ -329,7 +482,10 @@ c--- ... either using pre-prepared ones
       call nplotter(r,s,pjet,val,0)
       endif
 
+      return
+
  999  continue
+      ntotzero=ntotzero+1
       
       return
       end

@@ -11,10 +11,12 @@
 
       if (first) then
       first=.false.
-      write(6,*) 'sqrt(min34)',sqrt(wsqmin)
-      write(6,*) 'sqrt(max34)',sqrt(wsqmax)
-      write(6,*) 'sqrt(min56)',sqrt(bbsqmin)
-      write(6,*) 'sqrt(max56)',sqrt(bbsqmax)
+      write(6,*)
+      write(6,*) '****************** Basic mass cuts *****************'
+      write(6,*) '*                                                  *'
+      write(6,99) dsqrt(wsqmin),'m34',dsqrt(wsqmax)
+      write(6,99) dsqrt(bbsqmin),'m56',dsqrt(bbsqmax)
+      write(6,*) '****************************************************'
       endif
       
       if (  (s(3,4) .lt. wsqmin) 
@@ -26,6 +28,8 @@
      .   .or. (s(5,6) .gt. bbsqmax))
      .    return 1
       endif
+     
+   99 format(' *          ',f8.2,'  <   ',a3,'  < ',f8.2,'           *')
       
       return
       end

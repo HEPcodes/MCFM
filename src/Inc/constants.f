@@ -35,6 +35,6 @@ c-----------------------------------------------------
       double complex im,impi,czip,cone
       parameter(im=(0d0,1d0),impi=im*pi,czip=(0d0,0d0),cone=(1d0,0d0))
 c-----------------------------------------------------
-      integer nloop,nf,mxpart
-      parameter(nloop=2,nf=5,mxpart=10)
+      integer nloop,nf,fn,mxpart
+      parameter(nloop=2,nf=5,fn=-5,mxpart=10)
 

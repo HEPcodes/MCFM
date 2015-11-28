@@ -18,8 +18,10 @@
      . k(4),kt(4),ks(4),kDk,ksDks,kDp(3:mxpart),ksDp(3:mxpart)
       integer ip,kp,j,nu,jp,ipart
 
+      do j=1,npart+2
       do nu=1,4
-      q(npart+2,nu)=0d0
+        q(j,nu)=0d0
+      enddo
       enddo
 
       if ((ip .le. 2) .and. (kp .le. 2)) then

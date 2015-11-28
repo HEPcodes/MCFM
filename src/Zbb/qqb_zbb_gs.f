@@ -17,6 +17,7 @@ c--initial state gluons coupling to b not included
       include 'masses.f'
       include 'ptilde.f'
       include 'qqgg.f'
+      include 'msq_cs.f'
       integer j,k,nd
 c --- remember: nd will count the dipoles
       
@@ -47,8 +48,6 @@ c --- remember: nd will count the dipoles
      &                 mgg17_6v(0:2),mgg67_1v(0:2),
      &                 mgg27_5v(0:2),mgg57_2v(0:2),
      &                 mgg27_6v(0:2),mgg67_2v(0:2)
-      double precision msq_cs(0:2,-nf:nf,-nf:nf),mmsq_cs(0:2,2,2)
-      common/msq_cols/msq_cs,mmsq_cs
 
       external qqb_zbb,donothing_gvec
       external qqb_zbb_gvec,qqb_z2jet
@@ -150,9 +149,9 @@ c---------g-g
      .                +sub27_5v*(mgg27_5v(2)+mgg27_5v(0)))*xn
           msq(8,j,k)=((sub27_6(gg)+sub67_2(qq))*(mgg27_6(1)+mgg27_6(0))
      .                +sub27_6v*(mgg27_6v(1)+mgg27_6v(0)))*xn
-      write(*,*) 'subt 1',sub17_2(gg)*mgg17_2(1)*xn
-      write(*,*) 'subt 2',sub17_5(gg)*mgg17_5(1)*xn
-      write(*,*) 'subt 3',sub57_1(qq)*mgg17_5(1)*xn
+c      write(*,*) 'subt 1',sub17_2(gg)*mgg17_2(1)*xn
+c      write(*,*) 'subt 2',sub17_5(gg)*mgg17_5(1)*xn
+c      write(*,*) 'subt 3',sub57_1(qq)*mgg17_5(1)*xn
       elseif (j.eq.0) then
           if (k.gt.0) then
 c---------g-q
@@ -192,16 +191,14 @@ c--- structure from a common block into separate arrays for
 c--- each parton configuration
       implicit none
       include 'constants.f'
+      include 'msq_cs.f'
       integer i
       double precision mgg(0:2),mggv(0:2)
-      double precision msq_cs(0:2,-nf:nf,-nf:nf),mmsq_cs(0:2,2,2),
-     .                msqv_cs(0:2,-nf:nf,-nf:nf),mmsqv_cs(0:2,2,2)
-      common/msq_cols/msq_cs,mmsq_cs
+      double precision msqv_cs(0:2,-nf:nf,-nf:nf),mmsqv_cs(0:2,2,2)
       common/msqv_cols/msqv_cs,mmsqv_cs
       
       do i=0,2
         mgg(i)=msq_cs(i,0,0)
-c--- need to add part for mggv here
         mggv(i)=msqv_cs(i,0,0)
       enddo
       

@@ -106,6 +106,7 @@ c
 c
  8       if(nprn.ge.0)write(6,200)ndim,calls,it,itmx,acc
      1   ,mds,nd,(xl(j),xu(j),j=1,ndim)
+         call flush(6)
 c
          entry vegas3(fxn,avgi,sd,chi2a)
 c         main integration loop
@@ -180,6 +181,7 @@ c
         if(nprn.eq.0)go to 21
         tsi=dsqrt(tsi)
         write(6,201)it,ti,tsi,avgi,sd,chi2a
+        call flush(6)
         if(nprn.ge.0)go to 21
         do 20 j=1,ndim
  20     write(6,202) j,(xi(i,j),di(i,j),d(i,j),i=1,nd)
@@ -231,10 +233,10 @@ c
      1  '   ncall=',f8.0/28x,'  it=',i5,'    itmx=',i5/28x,
      2  '  acc=',g9.3/28x,'  mds=',i3,'     nd=',i4/28x,
      3  '  (xl,xu)=',(t40,'( ',g12.6,' , ',g12.6,' )'))
- 201    format(///' Integration by vegas' / ' iteration no.',i3,
+ 201    format(/' Integration by vegas' / ' iteration no.',i3,
      1  ':  integral=',g14.8/21x,'std dev =',g14.8 /
      2  ' accumulated results:   integral=',g14.8/
-     3  24x,'std dev =',g14.8 / 24x,'chi**2 per it''n =',g10.4)
+     3  24x,'std dev =',g14.8 / 24x,'chi**2 per it''n =',g10.4 /)
  202    format(1X,' data for axis',i2,/,' ',6x,'x',7x,'  delt i ',
      1  2x,'conv','ce   ',11x,'x',7x,'  delt i ',2x,'conv','ce  '
      2  ,11x,'x',7x,'   delt i ',2x,'conv','CE  ',/,

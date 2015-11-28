@@ -20,6 +20,7 @@
       include 'epinv.f'
       include 'scale.f'
       include 'hardscale.f'
+      include 'msq_cs.f'
       logical msbar
       common/msbar/msbar
       double precision msq(-nf:nf,-nf:nf),msqv(-nf:nf,-nf:nf),
@@ -29,8 +30,6 @@
       double complex tamp,lamp,atreez,a61z,prop
       integer nu,j,k,polq,polb,polz
       double precision ii_qg,ii_gq,if_qg,fi_qg,ff_qg,ii_gg,if_gg
-      double precision msq_cs(0:2,-nf:nf,-nf:nf),mmsq_cs(0:2,2,2)
-      common/msq_cols/msq_cs,mmsq_cs
 
       do j=-nf,nf
       do k=-nf,nf
@@ -47,7 +46,7 @@ c---twopij with s_{ij} (in rke notation)
      . .or. (s(1,5)*s(2,5)/s(1,2) .lt. hscalesq) 
      . .or. (s(1,6)*s(2,6)/s(1,2) .lt. hscalesq) ) return 
 
-      prop=s(3,4)/(s(3,4)-zmass**2+im*zmass*zwidth)
+      prop=s(3,4)/dcmplx((s(3,4)-zmass**2),zmass*zwidth)
 
 c---add result of integrating subtraction terms
       xl12=log(s(1,2)/musq)

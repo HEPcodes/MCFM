@@ -84,7 +84,8 @@ c   contracted with the vector n(mu)
       include 'masses.f'
       include 'dprodx.f'
       integer j1,j2,j3,j4,j5
-      double precision p(mxpart,4),n(4),nDn,prop,nDp1,nDp2,nDp3,nDp4
+      double precision p(mxpart,4),n(4),nDn,prop,
+     .                 nDp1,nDp2,nDp3,nDp4,nDp5
       j3=3
       j4=4
       nDp1=n(4)*p(j1,4)-n(3)*p(j1,3)-n(2)*p(j1,2)-n(1)*p(j1,1)
@@ -93,13 +94,20 @@ c   contracted with the vector n(mu)
       nDp4=n(4)*p(j4,4)-n(3)*p(j4,3)-n(2)*p(j4,2)-n(1)*p(j4,1)
       nDn=n(4)**2-n(3)**2-n(2)**2-n(1)**2
 
+      nDp5=n(4)*p(j5,4)-n(3)*p(j5,3)-n(2)*p(j5,2)-n(1)*p(j5,1)
+
+c--- appropriate scale is approx 1d-3*energy(incoming)
+c--- so of order(1) for the Tevatron
+      if (abs(nDp5).gt.1d-3*abs(p(j1,4))) then 
+         write(*,*) 'Error for :',j1,j2,j3,j4,j5
+         write(*,*) 'cutoff',1d-3*abs(p(j1,4))
+         write(6,*) 'nDp5',nDp5
+         call flush(6)
+         stop
+      endif
+
 c---calculate the propagator
       prop=((s(j3,j4)-wmass**2)**2+(wmass*wwidth)**2)
-
-c	Id,nbit=16*gs^2*gw^4*(
-c	 +(p1Dn*s23/s15-p2Dn*s14/s25)**2
-c	 +(s23*p1Dn/s15-s14*p2Dn/s25)*(p2Dn+p3Dn-p4Dn-p1Dn)
-c	 -(s14-s23)^2*s34*nDn/4/s15/s25-(p1Dn+p4Dn)*(p2Dn+p3Dn))
 
       w1jetn=(nDp1*s(j2,j3)/s(j1,j5)-nDp2*s(j1,j4)/s(j2,j5))**2
      . +(s(j2,j3)*nDp1/s(j1,j5)-s(j1,j4)*nDp2/s(j2,j5))

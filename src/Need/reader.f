@@ -56,6 +56,9 @@
       data impsample/.false./
       data msbar/.false./
 
+      write(6,*) '****************'
+      write(6,*) 'Options file:'
+      write(6,*)
       open(unit=20,file='options.DAT',status='old',err=999)
       read(20,*) nproc
       write(6,*) 'nproc=',nproc
@@ -137,7 +140,9 @@ c      if (debug) then
       if (verbose) write(6,*) 'clustering',clustering
       close(unit=21)
 c      endif
-
+      write(6,*) '****************'
+      write(6,*)
+ 
       if (ggonly .and. ggexcl) then
         write(6,*) 'ggonly and ggexcl BOTH .true. - pick one!'
         stop
@@ -162,7 +167,7 @@ c---initialize masses for alpha_s routine
 c-----stange-marciano formula for resolution
       deltam=sqrt(0.64d0*hmass+0.03d0**2*hmass**2)
 
-      if (verbose) write(6,*) 'delta m',deltam
+c      if (verbose) write(6,*) 'delta m',deltam
 
       return
  999  continue

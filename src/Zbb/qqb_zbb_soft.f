@@ -10,6 +10,7 @@ c--all momenta incoming
       include 'constants.f'
       include 'qcdcouple.f'
       include 'masses.f'
+      include 'msq_cs.f'
       integer j,k
 
       double precision P(mxpart,4),msq(-nf:nf,-nf:nf),
@@ -17,8 +18,6 @@ c--all momenta incoming
       double precision eik17_2,eik17_5,eik17_6,eik27_5,eik27_6
       double precision eik27_1,eik57_1,eik67_1,eik57_2,eik67_2
       double precision eik57_6,eik67_5
-      double precision msq_cs(0:2,-nf:nf,-nf:nf),mmsq_cs(0:2,2,2)
-      common/msq_cols/msq_cs,mmsq_cs
       
       do j=-nf,nf
       do k=-nf,nf

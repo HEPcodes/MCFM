@@ -1,4 +1,4 @@
-      subroutine xzqqggg(mqqb)
+      subroutine xzqqggg(j1,j2,j3,j4,j5,j6,j7,mqqb)
       implicit none
 C     Author J.M.Campbell, February 2000
 C     Returns the amplitudes squared for the process
@@ -10,31 +10,44 @@ C     the second for helicity of lepton line.
       include 'dprodx.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
-      integer i2(6),i3(6),i4(6),i6(2),i7(2),j,lh,h2,h3,h4,hq,h(2:4)
-      double precision mqqb(2,2),m1,m2,m0,x,omx,fac
+      include 'lc.f'
+      integer i2(6),i3(6),i4(6),j,lh,h2,h3,h4,hq,h(7)
+      integer j1,j2,j3,j4,j5,j6,j7
+      double precision mqqb(2,2),m1,m2,m0,fac
       double complex tempm0,m(6),amp_qqggg
       double complex mppppm,mpmmmm,mpppmm,mppmpm,
      .    mpmppm,mppmmm,mpmpmm,mpmmpm
-     
-        parameter(x=0.5d0*xn/cf,omx=1d0-x)
-      data i2/2,2,4,3,3,4/
-      data i3/3,4,2,4,2,3/
-      data i4/4,3,3,2,4,2/
-      data i6/7,6/
-      data i7/6,7/
+c        parameter(x=0.5d0*xn/cf,omx=1d0-x)
+c      data i2/2,2,4,3,3,4/
+c      data i3/3,4,2,4,2,3/
+c      data i4/4,3,3,2,4,2/
 C first argument is quark line helicity
 C second argument is lepton line helicity
       
 C ---final matrix element squared is needed as function of quark line helicity
 C----and lepton line helicity
-      mqqb(1,1)=0d0
-      mqqb(1,2)=0d0
-      mqqb(2,1)=0d0
-      mqqb(2,2)=0d0
       
-      fac=avegg*gsq**3*esq**2*xn**3*cf
+      fac=avegg*gsq**3*esq**2*xn**3*cf*8d0
 c--- extra factor of 8 due to colour matrix normalization (rt2**6)
-      fac=fac*8d0
+
+      i2(1)=j2
+      i3(1)=j3
+      i4(1)=j4
+      i2(2)=j2
+      i3(2)=j4
+      i4(2)=j3
+      i2(3)=j4
+      i3(3)=j2
+      i4(3)=j3
+      i2(4)=j3
+      i3(4)=j4
+      i4(4)=j2
+      i2(5)=j3
+      i3(5)=j2
+      i4(5)=j4
+      i2(6)=j4
+      i3(6)=j3
+      i4(6)=j2
 
       do hq=1,2
       do lh=1,2
@@ -45,19 +58,20 @@ C initialize loop sums to zero
       do h3=1,2
       do h4=1,2
 
-        h(2)=h2
-        h(3)=h3
-        h(4)=h4
+        h(j2)=h2
+        h(j3)=h3
+        h(j4)=h4
         tempm0=czip
         m2=zip
 
         do j=1,6
-          m(j)=amp_qqggg(1,hq,i2(j),h(i2(j)),i3(j),h(i3(j)),
-     .                                       i4(j),h(i4(j)),5,lh)
+          m(j)=amp_qqggg(j1,hq,i2(j),h(i2(j)),i3(j),h(i3(j)),
+     .                                       i4(j),h(i4(j)),j5,lh,j6,j7)
           tempm0=tempm0+m(j)
           m2=m2+abs(m(j))**2
         enddo
-
+c        write(6,*) 'm2',m2  
+        
         m0=cdabs(tempm0)**2
 c--- check sign of the last three terms: original ver. had + vs. (B33)
         m1=-2d0*m2
@@ -80,8 +94,11 @@ c--- note that the x defined in this routine differs by a factor
 c--- of 2 from the x defined in Nagy-Trocs, cf. (39), (B30)
 c        mqqb(hq,lh)=mqqb(hq,lh)+fac*(omx**2*m0-x*omx*m1+x**2*m2)
 c--- re-written to make colour hierarchy explicit
-        mqqb(hq,lh)=mqqb(hq,lh)+fac*(
-     .               m2-m1/xnsq+(xnsq+1d0)*m0/xnsq**2)
+      if (LConly) then
+      mqqb(hq,lh)=mqqb(hq,lh)+fac*m2
+      else        
+      mqqb(hq,lh)=mqqb(hq,lh)+fac*(m2-m1/xnsq+(xnsq+1d0)*m0/xnsq**2)
+      endif
       enddo
       enddo
       enddo

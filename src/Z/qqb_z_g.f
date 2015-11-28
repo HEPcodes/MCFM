@@ -36,7 +36,7 @@ c---protect from soft and collinear singularities
 C-----Protect from photon pole by cutting off at some value about 10 GeV
       if (s(3,4) .lt. 4d0*mbsq) return
 
-      prop=s(3,4)/(s(3,4)-zmass**2+im*zmass*zwidth)
+      prop=s(3,4)/Dcmplx((s(3,4)-zmass**2),zmass*zwidth)
       fac=4d0*V*esq**2*gsq
 
 c      qqbZg= +aveqq*s(3,4)**2*fac*z1jet(1,2,3,4,5)
@@ -140,11 +140,12 @@ c      gqZq=  -aveqg*s(3,4)**2*fac*z1jet(2,5,3,4,1)
       s15=s(j1,j5)
       s25=s(j2,j5)
 c---calculate the propagator
-      z1jet=
-     . (s12*(2d0*s(j1,j4)*s(j2,j3)+s(j1,j4)*s(j3,j5)+s(j2,j3)*s(j4,j5))
-     . +s15*(s(j1,j4)*s(j2,j3)+s(j1,j4)*s(j3,j5)-s(j2,j3)*s(j2,j4))
-     . +s25*(s(j1,j4)*s(j2,j3)+s(j2,j3)*s(j4,j5)-s(j1,j3)*s(j1,j4)))
-     . /(s15*s25*s(j3,j4)**2)
+      z1jet=(s(j1,j4)**2+s(j2,j3)**2)/(s25*s15*s(j3,j4))
+c      z1jet=
+c     . (s12*(2d0*s(j1,j4)*s(j2,j3)+s(j1,j4)*s(j3,j5)+s(j2,j3)*s(j4,j5))
+c     . +s15*(s(j1,j4)*s(j2,j3)+s(j1,j4)*s(j3,j5)-s(j2,j3)*s(j2,j4))
+c     . +s25*(s(j1,j4)*s(j2,j3)+s(j2,j3)*s(j4,j5)-s(j1,j3)*s(j1,j4)))
+c     . /(s15*s25*s(j3,j4)**2)
       return
       end
 

@@ -9,14 +9,13 @@ C     the second for helicity of lepton line.
       include 'prods.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
+      include 'msq_cs.f'
       integer i1(2),i2(2),i3(2),i4(2),i5(2),i6(2),j,lh,h2,h3,hq,h(2:3)
       double precision mqqb(2,2),m1,m0,x,fac
       double complex tempm0,m(2)
       double complex amp_qqgg,a6treeg,a6treeg1,tamp
       character*9 st(2,2)
       logical compare
-      double precision msq_cs(0:2,-nf:nf,-nf:nf),mmsq_cs(0:2,2,2)
-      common/msq_cols/msq_cs,mmsq_cs
       parameter(x=xn/cf)
       data i1/1,4/
       data i2/2,3/

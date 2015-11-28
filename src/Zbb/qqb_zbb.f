@@ -12,13 +12,16 @@ c      include 'ewcouple.f'
       include 'hardscale.f'
       include 'ewcouple.f'
       include 'qcdcouple.f'
-      integer j,k,nu,ics
+      include 'msq_cs.f'
+      integer j,k,nu,ics,j1,j2,j3,swap(2)
       double precision p(mxpart,4),msq(-nf:nf,-nf:nf),mmsq(2,2),
-     . pswap(mxpart,4)
-      double precision msq_cs(0:2,-nf:nf,-nf:nf),mmsq_cs(0:2,2,2),faclo
+     . pswap(mxpart,4),faclo
       double complex qqb1,qbq1,qqb2,qbq2,qqb3,qbq3,qqb4,qbq4,tamp,prop
       double complex qqb5,qbq5,qqb6,qbq6,qqb7,qbq7,qqb8,qbq8
-      common/msq_cols/msq_cs,mmsq_cs
+      double complex qqb_a(2,2,2),qqb_b(2,2,2)
+      double complex qbq_a(2,2,2),qbq_b(2,2,2)
+      data swap/2,1/
+      save swap
       
 c--initialize to zero
       do j=-nf,nf
@@ -40,7 +43,7 @@ c--initialize to zero
       
 C---Fill spinor products
       call spinoru(6,p,za,zb)
-      prop=s(3,4)/(s(3,4)-zmass**2+im*zmass*zwidth)
+      prop=s(3,4)/dcmplx((s(3,4)-zmass**2),zmass*zwidth)
 
 c ensure that we have a hard process
       if (
@@ -49,16 +52,17 @@ c ensure that we have a hard process
      . .or. (s(1,6)*s(2,6)/s(1,2) .lt. hscalesq) ) return
 
 c--- qqb
-      call msqzbb(1,2,5,6,qqb1,qqb2,qqb3,qqb4,qqb5,qqb6,qqb7,qqb8)
+      call ampqqb_qqb(1,2,5,6,qqb_a,qqb_b)
+C Instead of calling ampqqb_qqb(2,1,5,6,qbq_a,qbq_b)
 c--- qbq from symmetries
-      qbq1 = -qqb5
-      qbq2 = +qqb6
-      qbq3 = -qqb7
-      qbq4 = +qqb8
-      qbq5 = -qqb1
-      qbq6 = +qqb2
-      qbq7 = -qqb3
-      qbq8 = +qqb4
+      do j1=1,2
+      do j2=1,2
+      do j3=1,2
+      qbq_a(j1,j2,j3)=-qqb_a(swap(j1),j2,j3)
+      qbq_b(j1,j2,j3)=+qqb_b(swap(j1),j2,j3)
+      enddo
+      enddo
+      enddo
 
       faclo=4d0*V*gsq**2*esq**2*aveqq 
 
@@ -78,54 +82,54 @@ c--- qbq from symmetries
      .      +abs(Q(1)*q1+R(1)*r1*prop)**2*mmsq_cs(ics,2,2)
             enddo
           elseif ((j .gt. 0) .and. (k .lt. 0)) then
-            tamp=(Q(j)*q1+L(j)*l1*prop)*qqb1
-     .          +(Q(1)*q1+L(1)*l1*prop)*qqb2
+            tamp=(Q(j)*q1+L(j)*l1*prop)*qqb_a(1,1,1)
+     .          +(Q(1)*q1+L(1)*l1*prop)*qqb_b(1,1,1)
             msq(j,k)=faclo*abs(tamp)**2
-            tamp=(Q(j)*q1+L(j)*l1*prop)*qqb3
-     .          +(Q(1)*q1+R(1)*l1*prop)*qqb4
+            tamp=(Q(j)*q1+L(j)*l1*prop)*qqb_a(1,2,1)
+     .          +(Q(1)*q1+R(1)*l1*prop)*qqb_b(1,2,1)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
-            tamp=(Q(j)*q1+L(j)*r1*Dconjg(prop))*qqb7
-     .          +(Q(1)*q1+L(1)*r1*Dconjg(prop))*qqb8
+            tamp=(Q(j)*q1+L(j)*r1*prop)*qqb_a(1,1,2)
+     .          +(Q(1)*q1+L(1)*r1*prop)*qqb_b(1,1,2)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
-            tamp=(Q(j)*q1+L(j)*r1*Dconjg(prop))*qqb5
-     .          +(Q(1)*q1+R(1)*r1*Dconjg(prop))*qqb6
+            tamp=(Q(j)*q1+L(j)*r1*prop)*qqb_a(1,2,2)
+     .          +(Q(1)*q1+R(1)*r1*prop)*qqb_b(1,2,2)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
-            tamp=(Q(j)*q1+R(j)*l1*prop)*qqb5
-     .          +(Q(1)*q1+L(1)*l1*prop)*qqb6
+            tamp=(Q(j)*q1+R(j)*l1*prop)*qqb_a(2,1,1)
+     .          +(Q(1)*q1+L(1)*l1*prop)*qqb_b(2,1,1)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
-            tamp=(Q(j)*q1+R(j)*l1*prop)*qqb7
-     .          +(Q(1)*q1+R(1)*l1*prop)*qqb8
+            tamp=(Q(j)*q1+R(j)*l1*prop)*qqb_a(2,2,1)
+     .          +(Q(1)*q1+R(1)*l1*prop)*qqb_b(2,2,1)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
-            tamp=(Q(j)*q1+R(j)*r1*Dconjg(prop))*qqb3
-     .          +(Q(1)*q1+L(1)*r1*Dconjg(prop))*qqb4
+            tamp=(Q(j)*q1+R(j)*r1*prop)*qqb_a(2,1,2)
+     .          +(Q(1)*q1+L(1)*r1*prop)*qqb_b(2,1,2)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
-            tamp=(Q(j)*q1+R(j)*r1*Dconjg(prop))*qqb1
-     .          +(Q(1)*q1+R(1)*r1*Dconjg(prop))*qqb2
+            tamp=(Q(j)*q1+R(j)*r1*prop)*qqb_a(2,2,2)
+     .          +(Q(1)*q1+R(1)*r1*prop)*qqb_b(2,2,2)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
           elseif ((j .lt. 0) .and. (k. gt. 0)) then
-            tamp=(Q(k)*q1+L(k)*l1*prop)*qbq1
-     .          +(Q(1)*q1+L(1)*l1*prop)*qbq2
+            tamp=(Q(k)*q1+L(k)*l1*prop)*qbq_a(1,1,1)
+     .          +(Q(1)*q1+L(1)*l1*prop)*qbq_b(1,1,1)
             msq(j,k)=faclo*abs(tamp)**2
-            tamp=(Q(k)*q1+L(k)*l1*prop)*qbq3
-     .          +(Q(1)*q1+R(1)*l1*prop)*qbq4
+            tamp=(Q(k)*q1+L(k)*l1*prop)*qbq_a(1,2,1)
+     .          +(Q(1)*q1+R(1)*l1*prop)*qbq_b(1,2,1)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
-            tamp=(Q(k)*q1+L(k)*r1*Dconjg(prop))*qbq7
-     .          +(Q(1)*q1+L(1)*r1*Dconjg(prop))*qbq8
+            tamp=(Q(k)*q1+L(k)*r1*prop)*qbq_a(1,1,2)
+     .          +(Q(1)*q1+L(1)*r1*prop)*qbq_b(1,1,2)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
-            tamp=(Q(k)*q1+L(k)*r1*Dconjg(prop))*qbq5
-     .          +(Q(1)*q1+R(1)*r1*Dconjg(prop))*qbq6
+            tamp=(Q(k)*q1+L(k)*r1*prop)*qbq_a(1,2,2)
+     .          +(Q(1)*q1+R(1)*r1*prop)*qbq_b(1,2,2)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
-            tamp=(Q(k)*q1+R(k)*l1*prop)*qbq5
-     .          +(Q(1)*q1+L(1)*l1*prop)*qbq6
+            tamp=(Q(k)*q1+R(k)*l1*prop)*qbq_a(2,1,1)
+     .          +(Q(1)*q1+L(1)*l1*prop)*qbq_b(2,1,1)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
-            tamp=(Q(k)*q1+R(k)*l1*prop)*qbq7
-     .          +(Q(1)*q1+R(1)*l1*prop)*qbq8
+            tamp=(Q(k)*q1+R(k)*l1*prop)*qbq_a(2,2,1)
+     .          +(Q(1)*q1+R(1)*l1*prop)*qbq_b(2,2,1)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
-            tamp=(Q(k)*q1+R(k)*r1*Dconjg(prop))*qbq3
-     .          +(Q(1)*q1+L(1)*r1*Dconjg(prop))*qbq4
+            tamp=(Q(k)*q1+R(k)*r1*prop)*qbq_a(2,1,2)
+     .          +(Q(1)*q1+L(1)*r1*prop)*qbq_b(2,1,2)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
-            tamp=(Q(k)*q1+R(k)*r1*Dconjg(prop))*qbq1
-     .          +(Q(1)*q1+R(1)*r1*Dconjg(prop))*qbq2
+            tamp=(Q(k)*q1+R(k)*r1*prop)*qbq_a(2,2,2)
+     .          +(Q(1)*q1+R(1)*r1*prop)*qbq_b(2,2,2)
             msq(j,k)=msq(j,k)+faclo*abs(tamp)**2
           endif
       enddo
@@ -134,55 +138,5 @@ c--- qbq from symmetries
 
 
 
-
-
-      subroutine msqzbb(i1,i2,i5,i6,amp1,amp2,amp3,amp4,
-     .                                    amp5,amp6,amp7,amp8)
-      implicit none
-      include 'constants.f'
-      include 'qcdcouple.f'
-      include 'ewcouple.f'
-      integer i1,i2,i5,i6
-      double complex aqqb_zbb_new,amp1,amp2,amp3,amp4
-      double complex amp5,amp6,amp7,amp8
-
-c--- also include diagrams where the Z is attached to b-bbar line  
-c--- we swap 1 <--> 5, 2 <-->6 to obtain the correct diagram
-c--- parity (charge conjugation) fixes helicities for the quarks
-c--- and lepton helicity is recovered by 3 <--> 4
-c--- overall minus sign for parity
-c---
-c--- notation: (qqb hel, bbb hel) - lepton helicity (p4) is right-handed
-c--- Z to qqb, L L
-      amp1=+aqqb_zbb_new(i1,i6,i5,i2,3,4)
-c--- Z to bbb, L L
-      amp2=-Dconjg(aqqb_zbb_new(i5,i2,i1,i6,4,3))
-c--- Z to qqb, L R
-      amp3=-aqqb_zbb_new(i1,i5,i6,i2,3,4)
-c--- Z to bbb, L R
-      amp4=+(aqqb_zbb_new(i5,i1,i2,i6,3,4))
-c--- Z to qqb, R L
-      amp5=+Dconjg(aqqb_zbb_new(i1,i5,i6,i2,4,3))    
-c--- Z to bbb, R L
-      amp6=-Dconjg(aqqb_zbb_new(i5,i1,i2,i6,4,3))    
-c--- Z to qqb, R R
-      amp7=-Dconjg(aqqb_zbb_new(i1,i6,i5,i2,4,3))
-c--- Z to bbb, R R
-      amp8=+aqqb_zbb_new(i5,i2,i1,i6,3,4)
-      
-c--- note that qbq amplitudes can be obtained from these by the
-c--- following symmetries, since 1 <--> 2 is equivalent to
-c--- parity (c.c.) followed by 3 <--> 4 and 5 <--> 6
-c--- qbq1 = -qqb5
-c--- qbq2 = +qqb6
-c--- qbq3 = -qqb7
-c--- qbq4 = +qqb8
-c--- qbq5 = -qqb1
-c--- qbq6 = +qqb2
-c--- qbq7 = -qqb3
-c--- qbq8 = +qqb4
-      
-      return 
-      end
 
 

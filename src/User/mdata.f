@@ -30,19 +30,35 @@ c---Vub=Vcb=0
      &    /0.975d0,0.22220486d0,0.0d0,
      &     0.22220486d0,0.975d0,0.0d0/
 
+c       data Vud,    Vus,    Vub,
+c     &      Vcd,    Vcs,    Vcb
+c     &    /1d0,0d0,0.0d0,
+c     &     0d0,1d0,0.0d0/
+
       end
 
       block data block8
       implicit none
       double precision aemmz
       common/em/aemmz
+c--- This is the preferred value, aemmz = 1/128.89  
       data aemmz/7.7585538055706D-03/
-c     value is 1/128.89
+c--- Use this value for comparing with MADGRAPH, aemmz = 1/128
+c      data aemmz/7.8125D-03/
+      end 
+
+      block data blockf
+      implicit none
+      include 'flags.f'
+      data Gflag/.true./
+      data Qflag/.false./
       end 
 
 
-
-
-
-
+      block data blocklc
+      implicit none
+      include 'lc.f'
+      data LConly/.false./
+      data colourchoice/0/
+      end 
 
