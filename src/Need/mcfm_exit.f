@@ -1,4 +1,4 @@
-      subroutine mcfm_exit(xinteg,xinteg_err)
+      subroutine mcfm_exit(itmx,xinteg,xinteg_err)
 ************************************************************************
 *                                                                      *
 *  This routine should perform the final processing and print-outs     *
@@ -7,7 +7,7 @@
       implicit none
       include 'efficiency.f'
       include 'PDFerrors.f'
-      integer j,k,itno
+      integer j,k,itno,itmx
       double precision xinteg,xinteg_err,minPDFxsec,maxPDFxsec
       double precision PDFerror,PDFperror,PDFnerror
       double precision lord_bypart(-1:1,-1:1),lordnorm
@@ -24,7 +24,7 @@ c--- Print-out the value of the integral and its error
       write(6,53)'Value of final ',part,' integral is',
      . xinteg,' +/-',xinteg_err, ' fb'
      
-   53 format(a15,a4,a12,f15.3,a4,f12.3,a3)
+   53 format(a15,a4,a12,f13.3,a4,f10.3,a3)
 
 c--- Print-out a summary of the effects of jets and cuts
       write(6,*) 
@@ -119,7 +119,7 @@ c--- Finalize the histograms, if we're not filling ntuples instead
       if (creatent .eqv. .false.) then
         if (dswhisto .eqv. .false.) then
 c--- Traditional MCFM histograms
-          call histofin(xinteg,xinteg_err,0)
+          call histofin(xinteg,xinteg_err,0,itmx)
         else
 c--- DSW histograms - store the information
           call dswhbook(200,'Sigma   ',1.0d0,0.0d0,10.0d0)
@@ -131,7 +131,7 @@ c--- DSW histograms - output and close file
         endif
       else
 c--- ADDED - to produce normal histograms as well
-        call histofin(xinteg,xinteg_err,0)
+        call histofin(xinteg,xinteg_err,0,itmx)
         call dswhrout
         call dswclose
       endif

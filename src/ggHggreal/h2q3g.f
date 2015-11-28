@@ -14,10 +14,7 @@ C-----has to be preceded by a call to spinoru to set up the za,zb
       double precision Hqaggg
       double complex qamp(6,2,2,2,2),temp(6,2,2,2,2)
       double complex A2q3g_mpppp,A2q3g_mmmpp, A2q3g_mmpmp, A2q3g_mpmmp
-      integer i3(6),i4(6),i5(6),j,k,h1,h3,h4,h5,p1,p2,p3,p4,p5,n(5)
-      data i3/3,3,4,4,5,5/
-      data i4/4,5,3,5,3,4/
-      data i5/5,4,5,3,4,3/
+
 
       double precision DJK(6,6),xa,xb,xc,xd
 c--- Full result
@@ -31,6 +28,11 @@ c      parameter(xa=0.25d0/xn,xb=0.25d0/xn,xc=0.25d0/xn,xd=0.25d0/xn)
 c--- Note that the definition of matrix DJK here differs from the one
 c--- in (B.22) of the paper by an overall factor of Cf which is
 c--- restored in the sum below
+      integer i3(6),i4(6),i5(6),j,k,h1,h3,h4,h5,p1,p2,p3,p4,p5,n(5)
+      data i3/3,3,4,4,5,5/
+      data i4/4,5,3,5,3,4/
+      data i5/5,4,5,3,4,3/
+
       DATA  (DJK(J,1),J=1,6)/xa,xb,xb,xc,xc,xd/
       DATA  (DJK(J,2),J=1,6)/xb,xa,xc,xd,xb,xc/
       DATA  (DJK(J,3),J=1,6)/xb,xc,xa,xb,xd,xc/

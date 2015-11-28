@@ -20,6 +20,11 @@ c      DATA CHECKS/.false./
  	      
 c--   permutations
       INTEGER IP(NGLUONS,6)
+
+c--   color matrix
+c     c_ij= (N^2-1)*N^3/4*CIJ/2 in the GM normalization
+      INTEGER CIJ(6,6)
+
       DATA  (IP(I,1),i=1,5)/1,2,3,4,5/
       DATA  (IP(I,2),i=1,5)/1,2,4,3,5/
       DATA  (IP(I,3),i=1,5)/1,3,2,4,5/
@@ -27,9 +32,6 @@ c--   permutations
       DATA  (IP(I,5),i=1,5)/1,4,2,3,5/
       DATA  (IP(I,6),i=1,5)/1,4,3,2,5/
 
-c--   color matrix
-c     c_ij= (N^2-1)*N^3/4*CIJ/2 in the GM normalization
-      INTEGER CIJ(6,6)
       DATA  (CIJ(I,1),i=1,6)/8,4,4,2,2,0/
       DATA  (CIJ(I,2),i=1,6)/4,8,2,0,4,2/
       DATA  (CIJ(I,3),i=1,6)/4,2,8,4,0,2/

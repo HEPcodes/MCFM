@@ -53,7 +53,7 @@ C---   Fully simplified expression with specific choice of q=i5
      .  /za(i1,i2)/za(i2,i3)/za(i3,i4)/za(i4,i5)/za(i5,i1)+
      .  za(i3,i1)**3*za(i3,i5)*zab3(i2,i1,i3,i4,i5)**2/
      .  zab2(i3,i1,i4,i5)/zab2(i1,i3,i4,i5)/(S4(i1,i3,i4,i5))
-     .  /za(i3,i4)/za(i4,i5)/za(i5,i1);
+     .  /za(i3,i4)/za(i4,i5)/za(i5,i1)
 
 
        ! NEED TO UNDERSTAND THE SIGN! 
@@ -93,5 +93,4 @@ C     .  za(i1,i2))/za(i1,i2)/za(i2,i3)/za(i3,i4)/za(i4,i5)/za(i5,i1)+
 C     .  za(i3,i1)**3*za(i3,i5)*zab4(i2,i1,i3,i4,i5,q)**2/
 C     .  zab4(i3,i1,i3,i4,i5,q)/zab4(i1,i1,i3,i4,i5,q)/
 C     .  (S(i1,i3)+S(i1,i4)+S(i1,i5)+S(i3,i4)+S(i3,i5)+S(i4,i5))
-C     .  /za(i3,i4)/za(i4,i5)/za(i5,i1);
-
+C     .  /za(i3,i4)/za(i4,i5)/za(i5,i1)

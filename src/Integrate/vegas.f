@@ -199,7 +199,7 @@ c          write(6,201) it,ti,tsi,tgral,sd,chi2a
 c--- added to write out intermediate results
       if ((bin) .and. (it .lt. itmx)) then
         write(6,*) 'Writing out intermediate results for iteration',it
-        call histofin(tgral,sd,it) 
+        call histofin(tgral,sd,it,itmx) 
       endif
 28    continue
 

@@ -19,8 +19,9 @@
       include 'removebr.f'
       include 'dynamicscale.f'
       include 'PDFerrors.f'
-      integer unitno,j,itno
+      integer unitno,j,k,itno
       double precision xsec,xsec_err
+      double precision lord_bypart(-1:1,-1:1),lordnorm
       double precision ggpart,gqpart,qgpart,qqpart,qqbpart
       
       character*4 part
@@ -55,14 +56,28 @@
 
       common/origij/origij
 
+      common/bypart/lord_bypart
       common/finalpart/ggpart,gqpart,qgpart,qqpart,qqbpart
 
       if (itno .gt. 0) then
+c--- write warning that result is only intermediate; populate the
+c--- variables in finalpart (normally done in mcfm_exit)
       write(unitno,*) '( Intermediate result for iteration',itno,')'
+      lordnorm=0d0
+      do j=-1,1
+      do k=-1,1
+        lordnorm=lordnorm+lord_bypart(j,k)
+      enddo
+      enddo
+      ggpart=lord_bypart( 0, 0)/lordnorm
+      gqpart=(lord_bypart( 0,+1)+lord_bypart( 0,-1))/lordnorm
+      qgpart=(lord_bypart(+1, 0)+lord_bypart(-1, 0))/lordnorm
+      qqpart=(lord_bypart(+1,+1)+lord_bypart(-1,-1))/lordnorm
+      qqbpart=(lord_bypart(+1,-1)+lord_bypart(-1,+1))/lordnorm      
       endif
       write(unitno,*) '( Cross-section is: ',xsec,'+/-',xsec_err,')'
       write(unitno,*)
-      if (itno .eq. 0) then
+
       write(unitno,*) '( Contribution from parton sub-processes:'
       write(unitno,95) '   GG    ',ggpart*xsec,ggpart*100d0
       write(unitno,95) 'GQ + GQB ',gqpart*xsec,gqpart*100d0
@@ -70,7 +85,6 @@
       write(unitno,95) 'QQ + QBQB',qqpart*xsec,qqpart*100d0
       write(unitno,95) '   QQB   ',qqbpart*xsec,qqbpart*100d0
       write(unitno,*)
-      endif
 
       if (PDFerrors) then
         do j=0,maxPDFsets

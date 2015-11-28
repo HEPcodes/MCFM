@@ -49,7 +49,7 @@ C---   Fully simplified expression with specific choice of q=i5
      .za(i1,i2)+za(i4,i1)**3*za(i4,i5)*zab3(i3,i1,i2,i4,i5)**2/
      .zab2(i4,i1,i2,i5)/zab2(i2,i1,i4,i5)/S4(i1,i2,i4,i5)
      .*za(i3,i4)*za(i2,i3))/
-     .za(i1,i2)/za(i2,i3)/za(i3,i4)/za(i4,i5)/za(i5,i1);
+     .za(i1,i2)/za(i2,i3)/za(i3,i4)/za(i4,i5)/za(i5,i1)
 
        ! NEED TO UNDERSTAND THE SIGN! 
        A2q3g_mpmmp = - A2q3g_mpmmp - zb(i2,i1)*zb(i2,i5)**3/
@@ -83,7 +83,7 @@ C     .,i5,q)/zab3(i1,i1,i4,i5,q)/(S(i1,i4)+S(i1,i5)+S(i4,i5))*za(i3,i4)*
 C     .za(i1,i2)+za(i4,i1)**3*za(i4,i5)*zab4(i3,i1,i2,i4,i5,q)**2/
 C     .zab4(i4,i1,i2,i4,i5,q)/zab4(i2,i1,i2,i4,i5,q)/(S(i1,i2)+S(i1,i4)+
 C     .S(i1,i5)+S(i2,i4)+S(i2,i5)+S(i4,i5))*za(i3,i4)*za(i2,i3))/
-C     .za(i1,i2)/za(i2,i3)/za(i3,i4)/za(i4,i5)/za(i5,i1);
+C     .za(i1,i2)/za(i2,i3)/za(i3,i4)/za(i4,i5)/za(i5,i1)
 C
 C       if (abs(A2q3g_mpmmp-A2q3g_mpmmp2) > 0.0001d0) then 
 C          write(*,*) 'A2q3g_mpmmp',A2q3g_mpmmp,A2q3g_mpmmp2

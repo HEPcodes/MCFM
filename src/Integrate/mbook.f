@@ -300,9 +300,12 @@ c    7 FORMAT(4X,'HIST = ',I3,'   19',I2,'-',I2,'-',I2,1X,A5/)
       SUBROUTINE MTOP(N,M,BTIT,LTIT,SCALE)
       IMPLICIT REAL*8 (A-H,O-Z)
       IMPLICIT INTEGER (I-N)
-      DOUBLE PRECISION HISTINT(100)
       CHARACTER*(*) LTIT,BTIT,SCALE
       include 'histo.f'
+c--- added these variables to scale plots at intermediate steps
+      logical scaleplots                  
+      double precision scalefac
+      common/scaleplots/scaleplots,scalefac
 c      DATA INI/0/
 c      IF(INI.EQ.0) THEN
 c      CALL IDATE(IMON,IDAY,IYEAR)
@@ -350,13 +353,23 @@ c     &' SET ORDER X Y DY ')
      &' SET ORDER X Y DY ')
       DO 1 J=1,NBIN(N)
       IF(HIST(N,J).EQ.0.) GO TO 1
+      if (scaleplots) then
+      WRITE(99,'(3X,G13.6,2(2X,G13.6))')  
+     & XHIS(N,J),scalefac*HIST(N,J),scalefac*HIST(M,J)
+      else
       WRITE(99,'(3X,G13.6,2(2X,G13.6))')  
      &                            XHIS(N,J),HIST(N,J),HIST(M,J)
+      endif
     1 CONTINUE
       WRITE(99,200)
   200 FORMAT('   PLOT')
+      if (scaleplots) then
+      WRITE(99,300) scalefac*HINT(N),scalefac*HAVG(N),scalefac*HSIG(N),
+     & IENT(N),IUSCORE(N),IOSCORE(N)
+      else
       WRITE(99,300) HINT(N),HAVG(N),HSIG(N),IENT(N),IUSCORE(N)
      &   ,IOSCORE(N)
+      endif
 c  300 FORMAT( /1x,                               
 c     &' BOX 7. 0.75 SIZE 9. 1.5'/,1X,
 c     &' SET WINDOW Y 0. TO 2.'/,1X,
@@ -378,32 +391,6 @@ c     &' SET TITLE SIZE -2')
      &' SET TITLE SIZE -2')
       WRITE(99,400)
   400 FORMAT('   NEW PLOT')
-  
-c--- added lines for integrated pt plots
-      if (INDEX(TITLE(N),'pt') .GT. 0) then
-        WRITE(99,101) 'Integrated '//TITLE(N),
-     .   TITLE(N),TITLE(N),SCALE,HMIN(N),HMAX(N)
-        HISTINT(NBIN(N))=HIST(N,NBIN(N))*HDEL(N)
-        DO J=NBIN(N)-1,1,-1
-c        write(6,*) J,HIST(N,J)
-        IF(HIST(N,J).EQ.0.) THEN
-          HISTINT(J)=0d0
-        ELSE
-          HISTINT(J)=HIST(N,J)*HDEL(N)+HISTINT(J+1)
-        ENDIF
-        ENDDO
-        DO 2 J=1,NBIN(N)
-        IF(HISTINT(J).EQ.0d0) GO TO 2
-        WRITE(99,'(3X,G13.6,2(2X,G13.6))')  
-     &                              XHIS(N,J),HISTINT(J),0d0
-    2   CONTINUE
-        
-        WRITE(99,200)
-        WRITE(99,300) HINT(N),HAVG(N),HSIG(N),IENT(N),IUSCORE(N)
-     &     ,IOSCORE(N)
-        WRITE(99,400)        
-      endif  
-  
       END
 C*******************************************************************
 C     END OF THE HISTOGRAMMING PACKAGE

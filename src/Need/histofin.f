@@ -4,7 +4,7 @@
       data linlog/150*'lin'/
       end
 
-      subroutine histofin(xsec,xsec_err,itno)
+      subroutine histofin(xsec,xsec_err,itno,itmx)
 c--- This outputs the final histograms for itno=0
 c--- For itno>0, this is an intermediate result only
       implicit none
@@ -12,18 +12,19 @@ c--- For itno>0, this is an intermediate result only
       include 'verbose.f'
       include 'PDFerrors.f'
       include 'histo.f'
-      integer j,nlength,itno,nplotmax
+      integer j,nlength,itno,itmx,nplotmax
       character*72 runname,outfiledat,outfiletop,outfileerr
-      character*4 mypart
       character*3 oldbook
-      double precision xsec,xsec_err
+      double precision xsec,xsec_err,scalefac
       double precision EHIST(4,40,100)   
-      integer IHISTOMATCH(100),ICOUNTHISTO                    
+      integer IHISTOMATCH(100),ICOUNTHISTO  
+      logical scaleplots                  
       common/runname/runname
       common/nlength/nlength
       common/nplotmax/nplotmax
-      common/mypart/mypart
       COMMON/EHISTO/EHIST,IHISTOMATCH,ICOUNTHISTO
+      common/scaleplots/scaleplots,scalefac
+      
       
       if (itno .eq. 0) then
       write(6,*)
@@ -31,6 +32,10 @@ c--- For itno>0, this is an intermediate result only
       write(6,*) 'output files  ',runname
       write(6,*) '****************************************************'
       call flush(6)
+      scaleplots=.false.
+      else
+      scaleplots=.true.
+      scalefac=dfloat(itmx)/dfloat(itno)
       endif
 
       outfiledat=runname
@@ -45,22 +50,20 @@ c--- For itno>0, this is an intermediate result only
       endif
       open(unit=98,file=outfiledat,status='unknown')
       open(unit=99,file=outfiletop,status='unknown')
-
+      
 c--- write out run info to top of files
       call writeinfo(98,xsec,xsec_err,itno)      
       call writeinfo(99,xsec,xsec_err,itno)      
 
-c--- calculate the errors in each plot (and store in 100+j)  - lord and virt only   
-      if ((mypart .eq. 'lord') .or. (mypart .eq. 'virt')) then
-        do j=1,nplotmax
-        if (verbose) then
-c          write(6,*) 'Finalizing plot ',j
-          call flush(6)
-        endif
-        call mopera(j,'V',50+j,100+j,1d0,1d0)
-        enddo
+c--- calculate the errors in each plot (and store in 100+j)    
+      do j=1,nplotmax
+      if (verbose) then
+c        write(6,*) 'Finalizing plot ',j
+        call flush(6)
       endif
-      
+      call mopera(j,'V',50+j,100+j,1d0,1d0)
+      enddo
+
       do j=1,nplotmax
       if (verbose) then
 c        write(6,*) 'Finalizing plot ',j

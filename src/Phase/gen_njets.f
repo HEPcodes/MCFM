@@ -34,9 +34,9 @@ c---- are required
       common/x1x2/xx
       common/reset/reset,scalereset
       logical reset,scalereset
+      parameter(flatreal=.false.)
       data first/.true./,xxerror/.false./
       save first,ptjetmin,etajetmin,etajetmax,pbreak,xxerror
-      parameter(flatreal=.false.)
       
       if (first .or. reset) then
         first=.false.

@@ -24,7 +24,7 @@ PDFROUTINES = NATIVE
 NTUPLES = NO
 
 FC = g77
-FFLAGS 	= -fno-automatic -fno-f2c -O2 -g -I$(INCPATH)
+FFLAGS 	= -fno-automatic -fno-f2c -O0 -g -I$(INCPATH)
 
 DIRS	=	$(MCFMHOME):\
 		$(MCFMHOME)/obj:\

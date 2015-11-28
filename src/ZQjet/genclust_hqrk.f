@@ -11,8 +11,8 @@ c--- To reject an event, return jets=-1
       include 'jetlabel.f'
       double precision q(mxpart,4),qjet(mxpart,4),qfinal(mxpart,4)
       double precision pt,Rmin,Ry,Rbbmin,ayrap
-      double precision rtest,rab,ia,ib
-      integer isub,i,j,k,nu,icandj,maxjet,jetindex(mxpart)
+      double precision rtest,rab
+      integer isub,i,j,k,nu,icandj,maxjet,jetindex(mxpart),ia,ib
       integer nproc
       logical jetmerge,verbalg
       character*2 plabel(mxpart)

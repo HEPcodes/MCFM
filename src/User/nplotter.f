@@ -585,7 +585,7 @@ cz // Can now plot pt-ordered jets, and b~ fraction (with wt*bwgt)
 
 c--- Book and fill ntuple if that option is set
       if (creatent .eqv. .true.) then
-        call bookfill(tag,p,wt,wt2)  
+        call bookfill(tag,p,wt)  
 c--- REMOVED - to produce normal histograms as well
 c        return    
       endif

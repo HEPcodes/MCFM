@@ -15,7 +15,7 @@
       include 'maxwt.f'
       include 'eventbuffer.f'
       include 'gridinfo.f'
-      integer itmx1,ncall1,itmx2,ncall2
+      integer itmx1,ncall1,itmx2,ncall2,itmxplots
       double precision integ,integ_err
       logical dryrun
       integer i,pflav,pbarflav
@@ -45,6 +45,7 @@
       if ((dryrun .eqv. .false.) .or. 
      .    ((dryrun) .and. (readin .eqv. .false.))) then
         call mcfm_vegas(0,itmx1,ncall1,dryrun,integ,integ_err)
+        itmxplots=itmx1
       endif
 * This is the mcfm_vegas(accum) call
 * This takes place only if dryrun is false
@@ -55,6 +56,7 @@
       if ((dryrun .eqv. .false.) .or. 
      .    ((dryrun) .and. (readin .eqv. .true.))) then
         call mcfm_vegas(1,itmx2,ncall2,.true.,integ,integ_err)
+        itmxplots=itmx2
       endif
       
 * So far we have not used VEGAS to generate any events.
@@ -71,7 +73,7 @@ c         call write_stdhep(6)
       endif
 
 * final processing and print-out
-      call mcfm_exit(integ,integ_err)
+      call mcfm_exit(itmxplots,integ,integ_err)
       
       stop
       end
